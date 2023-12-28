@@ -1,3 +1,5 @@
 import { AuthService } from "./auth.service";
 
-export const authService = new AuthService("https://api.national-acts.com"); 
+const authServiceUrl: string = `${process.env.NEXT_PUBLIC_SERVICE_URL}`;
+
+export const authService = new AuthService(authServiceUrl); 

@@ -16,7 +16,7 @@ export class AuthService {
   login = (username: string, password: string) => {
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': 'AhRTNs.Hi63UCJetidPliMbyNeBMRbtkK58k-0rqmcnk3RsUWnbZ'
+      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`
     };
 
     const data = {
