@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { authRoutes, protectedRoutes } from "./src/router/routes";
+import { clearUser } from "@/lib/userSlice";
 
 export function middleware(request: NextRequest) {
   const currentUser = request.cookies.get("currentUser")?.value;
@@ -12,7 +13,7 @@ export function middleware(request: NextRequest) {
     request.cookies.delete("currentUser");
     const response = NextResponse.redirect(new URL("/login", request.url));
     response.cookies.delete("currentUser");
-
+    clearUser();
     return response;
   }
 

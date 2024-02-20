@@ -20,5 +20,14 @@ export type User = {
 
 export type UserSeller = {
     sellerId: number;
-    userSellerId: number;
+    sellerName: string;
+}
+
+export type UserReportSelection = {
+  sellerId: number;
+  start?: number;
+  end?: number;
+  showInactive?: boolean;
+  showDeleted?: boolean;
+  reloadEvents?: boolean;
 }

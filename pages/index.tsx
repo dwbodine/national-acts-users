@@ -2,14 +2,16 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCurrentUser } from "../src/hooks/useCurrentUser";
 import { useLogout } from "../src/hooks/useLogout";
+import { useSelector } from "react-redux";
+import type { RootState } from '../src/lib/store';
 import styles from "../styles/Home.module.css";
+import SelectSeller from "../components/selectSellerComponent";
 
 export default function Home() {
-  const { user: currentUser } = useCurrentUser();
   const { logout } = useLogout();
   const router = useRouter();
+  const currentUser = useSelector((state: RootState) => state.user);
 
   return (
     <div className={styles.container}>
@@ -26,7 +28,7 @@ export default function Home() {
 
         <p className={styles.description}>
           {currentUser
-            ? `Hello ${currentUser.username} `
+            ? <SelectSeller />
             : "You are not logged in !"}
           <br />
           {currentUser

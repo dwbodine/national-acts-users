@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useLogin } from "../src/hooks/useLogin";
+import { setUser, clearUser } from "@/lib/userSlice";
+import { useDispatch } from "react-redux";
 
 export default function Login() {
   const [name, setName] = useState("");
@@ -8,6 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const { login } = useLogin();
   const router = useRouter();
+  const dispatch = useDispatch();
   const onSubmit = () => {
     if (!name || !password) {
       setLoginError("Please enter username and password");
@@ -16,10 +19,19 @@ export default function Login() {
         .then((response) => {
           if (response) {
             if (response.user && response.user.isAuthenticated) {
+              dispatch(
+                setUser(response.user)
+              );              
               router.push("/")
             } else if (response.loginError) {
+              dispatch(
+                clearUser()
+              );
               setLoginError(response.loginError);
             } else {
+              dispatch(
+                clearUser()
+              );
               setLoginError("Unknown error during login - please contact your administrator");
             }            
           } else {
@@ -28,6 +40,7 @@ export default function Login() {
         })
         .catch((e) => {
           console.log(e);
+          clearUser();
           setLoginError("Unknown error during login - please contact your administrator");
         });
     }

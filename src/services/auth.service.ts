@@ -29,19 +29,7 @@ export class AuthService {
         headers: headers
       })
       .then((res) => {
-        var user = {
-          userId: res.data.userId,
-          username: res.data.username,
-          firstName: res.data.firstName,
-          lastName: res.data.lastName,
-          notes: res.data.notes,
-          createdAt: res.data.createdAt,
-          token: res.data.access_token,
-          isAdmin: res.data.isAdmin,
-          showInactiveEvents: res.data.showInactiveEvents,
-          isAuthenticated: res.data.isAuthenticated,
-          sellers: res.data.sellers
-        };
+        const user = { ...res.data};
         return {
           user: user as User,
           loginError: null
