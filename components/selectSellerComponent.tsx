@@ -9,9 +9,10 @@ export default function SelectSeller() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
 
     const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        currentReportSelection.sellerId = parseInt(event.currentTarget.value);
+        let reportSelection = { ...currentReportSelection };
+        reportSelection.sellerId = parseInt(event.currentTarget.value);
         dispatch(
-            setSellerId(currentReportSelection)
+            setSellerId(reportSelection)
         )
     };
 

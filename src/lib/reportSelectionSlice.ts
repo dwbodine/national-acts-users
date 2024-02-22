@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { UserReportSelection } from "../types/user";
-import { stat } from "fs";
+import moment from 'moment';
 
 const initialState: UserReportSelection = {
     sellerId: 0,
@@ -30,21 +30,24 @@ export const userReportSelectionSlice = createSlice({
         setDateRange: (state, action: PayloadAction<UserReportSelection>) => {
             state.start = action.payload.start;
             state.end = action.payload.end;
-            state.reloadEvents = action.payload.reloadEvents;
             return state;
         },
-        setShowInactive: (state, action: PayloadAction<UserReportSelection>) => {
+        setShowInactive: (state, action: PayloadAction<boolean>) => {
             const previousInactive = state.showInactive;
-            const newInactive = action.payload.showInactive;
+            const newInactive = action.payload;
             state.showInactive = newInactive;
             state.reloadEvents = (previousInactive != newInactive);
             return state;
         },
-        setShowDeleted: (state, action: PayloadAction<UserReportSelection>) => {
+        setShowDeleted: (state, action: PayloadAction<boolean>) => {
             const previousDeleted = state.showDeleted;
-            const newDeleted = action.payload.showDeleted;
+            const newDeleted = action.payload;
             state.showDeleted = newDeleted;
             state.reloadEvents = (previousDeleted != newDeleted);
+            return state;
+        },
+        setReloadEvents: (state, action: PayloadAction<boolean>) => {
+            state.reloadEvents = action.payload;
             return state;
         },
         resetSelection: (state, action: PayloadAction<UserReportSelection>) => {
@@ -58,6 +61,6 @@ export const userReportSelectionSlice = createSlice({
     }
 })
 
-export const { setSellerId, setDateRange } = userReportSelectionSlice.actions
+export const { setSellerId, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer
