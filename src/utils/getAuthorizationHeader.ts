@@ -1,9 +1,12 @@
+import { AxiosHeaders, AxiosRequestConfig } from "axios";
 import Cookies from "js-cookie";
 
 export function getAuthorizationHeader() {
-  const currentUser = Cookies.get("currentUser");
+  const authToken = Cookies.get("currentUser") || '';
+  
+  let headers = new AxiosHeaders();
+  headers.set('Authorization', `Bearer ${authToken}`);
+  headers.set('Content-Type', 'application/json');
 
-  return {
-    Authorization: `Bearer ${JSON.parse(currentUser || "")?.accessToken || ""}`,
-  };
+  return headers;
 }

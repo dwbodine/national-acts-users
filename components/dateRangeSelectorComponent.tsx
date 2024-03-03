@@ -25,6 +25,7 @@ export default function DateRangeSelector() {
         let reportSelection = { ...currentReportSelection};
         reportSelection.start = selectedStart;
         reportSelection.end = selectedEnd;
+        reportSelection.retainDateSelection = true;
         dispatch(setDateRange(reportSelection));
         dispatch(setReloadEvents(true));
     };

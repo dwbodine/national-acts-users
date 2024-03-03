@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { UserReportSelection } from "../types/user";
-import moment from 'moment';
+import { VipEvent } from "@/types/event";
 
 const initialState: UserReportSelection = {
     sellerId: 0,
@@ -24,7 +24,11 @@ export const userReportSelectionSlice = createSlice({
             state.end = 0;
             state.showDeleted = false;
             state.showInactive = false;
+            state.retainDateSelection = false;
             state.reloadEvents = (previousSellerId != state.sellerId);
+            if (state.reloadEvents) {
+                state.currentEvents = [];
+            }
             return state;
         },
         setDateRange: (state, action: PayloadAction<UserReportSelection>) => {
@@ -37,6 +41,13 @@ export const userReportSelectionSlice = createSlice({
             const newInactive = action.payload;
             state.showInactive = newInactive;
             state.reloadEvents = (previousInactive != newInactive);
+            if (!state.retainDateSelection) {
+                state.start = 0;
+                state.end = 0;
+            }
+            if (state.reloadEvents) {
+                state.currentEvents = [];
+            }
             return state;
         },
         setShowDeleted: (state, action: PayloadAction<boolean>) => {
@@ -44,6 +55,18 @@ export const userReportSelectionSlice = createSlice({
             const newDeleted = action.payload;
             state.showDeleted = newDeleted;
             state.reloadEvents = (previousDeleted != newDeleted);
+            if (!state.retainDateSelection) {
+                state.start = 0;
+                state.end = 0;
+            }
+            if (state.reloadEvents) {
+                state.currentEvents = [];
+            }
+            return state;
+        },
+        setEvents: (state, action: PayloadAction<VipEvent[]>) => {
+            state.currentEvents = action.payload;
+            state.reloadEvents = false;
             return state;
         },
         setReloadEvents: (state, action: PayloadAction<boolean>) => {
@@ -56,11 +79,13 @@ export const userReportSelectionSlice = createSlice({
             state.showDeleted = false;
             state.showInactive = false;
             state.reloadEvents = true;
+            state.retainDateSelection = false;
+            state.currentEvents = [];
             return state;
         },
     }
 })
 
-export const { setSellerId, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection } = userReportSelectionSlice.actions
+export const { setSellerId, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer

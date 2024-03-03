@@ -20,7 +20,6 @@ export default function SelectSeller() {
         if (currentUser.sellers.length > 1) {
             return (        
                 <div>
-                    <label htmlFor="seller">Select One:</label>
                     <select id="seller" value={currentReportSelection.sellerId} onChange={handleChange}>
                         <option value="0"> -- Select One --</option>
                         { currentUser.sellers.map((seller) => {

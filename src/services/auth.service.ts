@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
-import { User } from "../types/user";
+import { User, UserLoginResponse } from "../types/user";
 
 export class AuthService {
   protected readonly instance: AxiosInstance;
@@ -13,7 +12,7 @@ export class AuthService {
     });
   }
 
-  login = (username: string, password: string) => {
+  login = async (username: string, password: string): Promise<UserLoginResponse> => {
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`
@@ -24,16 +23,19 @@ export class AuthService {
       "password": password,
     };
 
+    let userResponse: UserLoginResponse = {
+      user: undefined,
+      loginError: undefined
+    };
+
     return this.instance
       .post("/user/login", data, {
         headers: headers
       })
       .then((res) => {
         const user = { ...res.data};
-        return {
-          user: user as User,
-          loginError: null
-        }
+        userResponse.user = user as User;
+        return userResponse;
       })
       .catch((err) => {
         console.log(err);
@@ -43,20 +45,8 @@ export class AuthService {
         } else {
           errorMessage = "Unknown error during login - please contact your administrator";
         }
-        return {
-          user: null,
-          loginError: errorMessage
-        }
-      });
-  };
-
-  getMe = (userId: string) => {
-    return this.instance
-      .get(`/user/profile/${userId}`, {
-        headers: getAuthorizationHeader(),
-      })
-      .then((res) => {
-        return res.data;
+        userResponse.loginError = errorMessage;
+        return userResponse;
       });
   };
 }

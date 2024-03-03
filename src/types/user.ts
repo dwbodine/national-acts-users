@@ -1,3 +1,5 @@
+import { VipEvent } from "./event";
+
 export type LoginResponse = {
   user?: User;
   loginError?: string;
@@ -30,4 +32,11 @@ export type UserReportSelection = {
   showInactive?: boolean;
   showDeleted?: boolean;
   reloadEvents?: boolean;
+  retainDateSelection?: boolean;
+  currentEvents?: VipEvent[];
+}
+
+export type UserLoginResponse = {
+  user?: User;
+  loginError?: string;
 }

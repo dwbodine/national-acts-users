@@ -41,8 +41,13 @@ export interface Venue {
     timezone?: string;
 }
 
-export interface Event {
+export interface VipEvent {
     eventId: number;
+    title: string;
+    venue?: Venue;
+    eventDate: string;
+    thumbnail?: string;
+    ticketSocketUrl?: string;
     totalRevenue: number;
     totalTickets: number;
     shirtSales?: ShirtSales[];
@@ -60,5 +65,10 @@ export interface Event {
     isExternal: boolean;
     hasShirtData: boolean;
     hasPhoneData: boolean;
-    hasNonUSAOrders: boolean;
+    hasNonUSAOrders: boolean;    
+}
+
+export interface GetEventsResponse {
+    events?: VipEvent[];
+    eventError?: string;
 }
