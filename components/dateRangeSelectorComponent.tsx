@@ -33,9 +33,9 @@ export default function DateRangeSelector() {
     const dateValues: DateRange = [start, end];
     
     return (
-        <div>
-            <DateRangePicker format="MM/dd/yyyy" character=" – " onChange={handleChange} value={dateValues}/>
-        </div>
+        <>
+            <DateRangePicker format="MM/dd/yyyy" character=" – " onChange={handleChange} value={dateValues} disabled={(currentReportSelection.sellerId <= 0)}/>
+        </>
     );        
  
 }

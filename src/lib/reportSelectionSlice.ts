@@ -54,6 +54,9 @@ export const userReportSelectionSlice = createSlice({
             const previousDeleted = state.showDeleted;
             const newDeleted = action.payload;
             state.showDeleted = newDeleted;
+            if (state.showDeleted) {
+                state.showInactive = true;
+            }
             state.reloadEvents = (previousDeleted != newDeleted);
             if (!state.retainDateSelection) {
                 state.start = 0;

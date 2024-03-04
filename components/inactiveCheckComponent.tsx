@@ -14,9 +14,9 @@ export default function InactiveCheck() {
     };
     
     return (
-        <div>
-            <Checkbox onChange={handleChange}/> Show inactive?
-        </div>
+        <>
+            <Checkbox onChange={handleChange} disabled={currentReportSelection.showDeleted || (currentReportSelection.sellerId <= 0)} /> Show inactive?
+        </>
     );        
  
 }

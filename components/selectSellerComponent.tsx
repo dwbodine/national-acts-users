@@ -19,14 +19,12 @@ export default function SelectSeller() {
     if (currentUser && currentUser.sellers && currentUser.sellers.length > 0) {
         if (currentUser.sellers.length > 1) {
             return (        
-                <div>
-                    <select id="seller" value={currentReportSelection.sellerId} onChange={handleChange}>
-                        <option value="0"> -- Select One --</option>
-                        { currentUser.sellers.map((seller) => {
-                            return <option key={seller.sellerId} value={seller.sellerId}>{seller.sellerName}</option>;                    
-                        })}
-                    </select>
-                </div>        
+                <select id="seller" value={currentReportSelection.sellerId} onChange={handleChange}>
+                    <option value="0"> -- Select One --</option>
+                    { currentUser.sellers.map((seller) => {
+                        return <option key={seller.sellerId} value={seller.sellerId}>{seller.sellerName}</option>;                    
+                    })}
+                </select>
             );
         }
         else {
@@ -38,12 +36,12 @@ export default function SelectSeller() {
                 )
             }            
             return (
-                <div><span>{ seller.sellerName }</span></div>
+                <span>{ seller.sellerName }</span>
             );
         }
     } else {
         return (
-            <div><span>No sellers returned</span></div>
+            <span>No sellers returned</span>
         );        
     }
 }

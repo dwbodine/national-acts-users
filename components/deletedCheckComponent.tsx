@@ -14,9 +14,9 @@ export default function DeletedCheck() {
     };
     
     return (
-        <div>
-            <Checkbox onChange={handleChange}/> Show deleted?
-        </div>
+        <>
+            <Checkbox onChange={handleChange} disabled={(currentReportSelection.sellerId <= 0)}/> Show deleted?
+        </>
     );        
  
 }
