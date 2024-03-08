@@ -2,9 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { UserReportSelection } from "../types/user";
 import { VipEvent } from "@/types/event";
+import { act } from "react-dom/test-utils";
 
 const initialState: UserReportSelection = {
-    sellerId: 0,
+    seller: {
+        sellerId: 0,
+        sellerName: ''
+    },
     start: 0,
     end: 0,
     showDeleted: false,
@@ -17,15 +21,15 @@ export const userReportSelectionSlice = createSlice({
     initialState,
     reducers: {
         setSellerId: (state, action: PayloadAction<UserReportSelection>) => {
-            const previousSellerId = state.sellerId;
-            const newSellerId = action.payload.sellerId;
-            state.sellerId = newSellerId;
+            const previousSellerId = state.seller.sellerId;
+            const newSellerId = action.payload.seller.sellerId;
+            state.seller = action.payload.seller;
             state.start = 0;
             state.end = 0;
             state.showDeleted = false;
             state.showInactive = false;
             state.retainDateSelection = false;
-            state.reloadEvents = (previousSellerId != state.sellerId);
+            state.reloadEvents = (previousSellerId != newSellerId);
             if (state.reloadEvents) {
                 state.currentEvents = [];
             }
@@ -76,7 +80,21 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = action.payload;
             return state;
         },
-        resetSelection: (state, action: PayloadAction<UserReportSelection>) => {
+        resetSelection: (state) => {
+            state.start = 0;
+            state.end = 0;
+            state.showDeleted = false;
+            state.showInactive = false;
+            state.reloadEvents = true;
+            state.retainDateSelection = false;
+            state.currentEvents = [];
+            return state;
+        },
+        resetAll: (state) => {
+            state.seller = {
+                sellerId: 0,
+                sellerName: ''
+            };
             state.start = 0;
             state.end = 0;
             state.showDeleted = false;
@@ -89,6 +107,6 @@ export const userReportSelectionSlice = createSlice({
     }
 })
 
-export const { setSellerId, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents } = userReportSelectionSlice.actions
+export const { setSellerId, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, resetAll } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer

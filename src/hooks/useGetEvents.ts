@@ -8,7 +8,7 @@ export const useGetEvents = () => {
         events: [],
         eventError: undefined
     };
-    if (reportSelection.sellerId > 0) {
+    if (reportSelection.seller.sellerId > 0) {
         if (reportSelection.reloadEvents) {
             response = await eventService.getEvents(reportSelection);
         } else {

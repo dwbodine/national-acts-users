@@ -1,22 +1,20 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { authRoutes, protectedRoutes } from "./src/router/routes";
-import { clearUser } from "@/lib/userSlice";
 
 export function middleware(request: NextRequest) {
-  const currentUserCookie = request.cookies.get("currentUser");
+  const authTokenCookie = request.cookies.get("authToken");
   if (
     protectedRoutes.includes(request.nextUrl.pathname) &&
-    (!currentUserCookie || !currentUserCookie.value)
+    (!authTokenCookie || !authTokenCookie.value)
   ) {
-    request.cookies.delete("currentUser");
+    request.cookies.delete("authToken");
     const response = NextResponse.redirect(new URL("/login", request.url));
-    response.cookies.delete("currentUser");
-    clearUser();
+    response.cookies.delete("authToken");
     return response;
   }
 
-  if (authRoutes.includes(request.nextUrl.pathname) && currentUserCookie && currentUserCookie.value) {
+  if (authRoutes.includes(request.nextUrl.pathname) && authTokenCookie && authTokenCookie.value) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 }

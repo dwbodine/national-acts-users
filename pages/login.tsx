@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useLogin } from "../src/hooks/useLogin";
-import { setUser, clearUser } from "@/lib/userSlice";
-import { useDispatch } from "react-redux";
+import Container from 'react-bootstrap/Container';
+import { Col, Row, Button } from "react-bootstrap";
 
 export default function Login() {
   const [name, setName] = useState("");
@@ -10,7 +10,15 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const { login } = useLogin();
   const router = useRouter();
-  const dispatch = useDispatch();
+
+  const register = () => {
+    router.push('/register');
+  };
+
+  const forgotPassword = () => {
+    router.push('/forgot-password');
+  };
+
   const onSubmit = () => {
     if (!name || !password) {
       setLoginError("Please enter username and password");
@@ -19,19 +27,10 @@ export default function Login() {
         .then((response) => {
           if (response) {
             if (response.user && response.user.isAuthenticated) {
-              dispatch(
-                setUser(response.user)
-              );              
               router.push("/")
             } else if (response.loginError) {
-              dispatch(
-                clearUser()
-              );
               setLoginError(response.loginError);
             } else {
-              dispatch(
-                clearUser()
-              );
               setLoginError("Unknown error during login - please contact your administrator");
             }            
           } else {
@@ -40,44 +39,63 @@ export default function Login() {
         })
         .catch((e) => {
           console.log(e);
-          clearUser();
           setLoginError("Unknown error during login - please contact your administrator");
         });
     }
   };
 
   return (
-    <div className="w-screen h-screen flex flex-row items-center justify-center">
-      <div className="h-fit flex flex-col gap-2 justify-center">
-        <p className="text-2xl font-bold">Login Form</p>
-        <label>Username</label>
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-80 h-8 px-2 border border-solid border-black rounded"
-          placeholder="username"
-        />
-        <label className="mt-4">Password</label>
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-80 h-8 px-2 border border-solid border-black rounded"
-          placeholder="password"
-          type="password"
-        />
-        <button
-          onClick={onSubmit}
-          className="h-10 w-80 mt-8 bg-black rounded text-white"
-        >
-          Login
-        </button>
-      </div>
-      <div className="h-fit flex flex-row gap-2 items-center justify-center">
-        {loginError ? 
-          <div className="danger">{loginError}</div> :
-          ''
-        }
-      </div>
-    </div>
+    <Container className="wrapper">
+      <Row>
+        <Col>
+          <h2>Login</h2>
+          <p>Please fill in your credentials to log in.</p>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <div className="form-group">
+            <label>Username</label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-80 h-8 px-2 border border-solid border-black rounded"
+              placeholder="username"
+            />
+          </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <div className="form-group">
+            <label className="mt-4">Password</label>
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-80 h-8 px-2 border border-solid border-black rounded"
+              placeholder="password"
+              type="password"
+            />
+          </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <div className="form-group">
+            <Button onClick={onSubmit}>Login</Button>
+            {loginError ? 
+              <div className="h-fit flex flex-row gap-2 items-center justify-center danger">{loginError}</div> :
+              ''
+            }
+          </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <p>Don&apos;t have an account? <a onClick={register} title="Sign up now">Sign up now</a></p>
+          <p>Forgot Password? <a onClick={forgotPassword} title="Forgot Password?">Click here.</a></p>
+        </Col>
+      </Row>
+    </Container>
   );
 }

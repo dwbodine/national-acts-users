@@ -5,6 +5,8 @@ import { setDateRange, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
 import moment from 'moment';
+import { FaCalendar } from 'react-icons/fa';
+import 'rsuite/DateRangePicker/styles/index.css';
 
 export default function DateRangeSelector() {
     const dispatch = useDispatch(); 
@@ -34,7 +36,7 @@ export default function DateRangeSelector() {
     
     return (
         <>
-            <DateRangePicker format="MM/dd/yyyy" character=" – " onChange={handleChange} value={dateValues} disabled={(currentReportSelection.sellerId <= 0)}/>
+            <DateRangePicker caretAs={FaCalendar} placement="bottomEnd" appearance="default" format="MM/dd/yyyy" character=" – " onChange={handleChange} value={dateValues} disabled={(currentReportSelection.seller.sellerId <= 0)}/>
         </>
     );        
  

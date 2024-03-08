@@ -1,20 +1,123 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
+  font: 14px "Open Sans", sans-serif;
+  min-height: 100vh;  
 }
 
 * {
   box-sizing: border-box;
+}
+
+.danger {
+  color: red;
+}
+
+.wrapper {
+  width: 360px;
+  padding: 20px;
+}
+
+.wrapper a {
+  cursor: pointer;
+}
+
+.form-group {
+  margin: 10px 0;
+}
+
+.form-group label {
+  font-weight: bold;
+  display: block;
+}
+
+.form-check-input[type=checkbox] {
+  margin-right: 5px;
+}
+
+.wrapper button {
+  margin: 0 10px 0 0;
+}
+
+.page-header {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  box-shadow: none;
+  padding: 5px 20px;
+  margin: 15px 0;
+  border: 0px !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+  background-color: #EFEFEF;
+}
+
+.page-header .title-container {
+  vertical-align: middle;
+  line-height: 36px;
+}
+
+.page-header .title {
+  margin: auto;
+  text-transform: uppercase;
+}
+
+.page-header .control-container {
+  text-align: right;
+}
+
+.page-header .control-container .action-button {
+  float: right;
+  margin: auto 10px;
+  cursor: pointer;
+  color: black;
+}
+
+.inactive-check div, .deleted-check div {
+  margin-left: 20px;
+  display: inline;
+}
+
+.reset-button-div {
+  margin-top: 10px;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 33vh;
+}
+
+.resultsTable {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid black;
+  margin: 15px 0 0 5px;
+}
+
+.resultsTable th,
+.resultsTable td {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.resultsTable th.center {
+  text-align: center;
+}
+
+.resultsTable td.pull-right {
+  float: unset;
+  text-align: right;
+}
+
+.resultsTable tr.event-inactive {
+  color: red;
+}
+
+.resultsTable tr.event-deleted {
+  color: blue;
+}
+
+.resultsTable thead, .resultsTable tfoot {
+  font-weight: bold;
 }

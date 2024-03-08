@@ -1,17 +1,30 @@
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import { User } from "../types/user";
-import { authService } from "../services";
 
 export const useCurrentUser = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>({
+    userId: 0,
+    username: '',
+    isActive: false,
+    isAdmin: false,
+    showInactiveEvents: false
+  });
 
   useEffect(() => {
-    const currentUser = Cookies.get("currentUser");
-    if (currentUser) {
-      setUser(JSON.parse(currentUser));
+    const currentUserStr = sessionStorage.getItem('currentUser') || '';
+    if (currentUserStr) {
+      const currentUser = JSON.parse(currentUserStr) as User;
+      setUser(currentUser);
+    } else {
+      setUser({
+        userId: 0,
+        username: '',
+        isActive: false,
+        isAdmin: false,
+        showInactiveEvents: false
+      });
     }
-  }, []);
+  }, [setUser]);
 
   return { user };
 };

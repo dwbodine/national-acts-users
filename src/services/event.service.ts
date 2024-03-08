@@ -15,7 +15,7 @@ export class EventService {
   }
 
   getEvents = async (reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
-    let url = `/user/eventsAndOrdersSecured?sellerId=${reportSelection.sellerId}`;
+    let url = `/user/eventsAndOrdersSecured?sellerId=${reportSelection.seller.sellerId}`;
 
     if (reportSelection.start) {
       url += `&start=${reportSelection.start}`;

@@ -18,6 +18,7 @@ export type User = {
   isAdmin: boolean;
   showInactiveEvents: boolean;
   sellers?: UserSeller[];
+  selectedSellerId?: number;
 };
 
 export type UserSeller = {
@@ -26,7 +27,7 @@ export type UserSeller = {
 }
 
 export type UserReportSelection = {
-  sellerId: number;
+  seller: UserSeller;
   start?: number;
   end?: number;
   showInactive?: boolean;
@@ -40,3 +41,14 @@ export type UserLoginResponse = {
   user?: User;
   loginError?: string;
 }
+
+export type UserResponse = {
+  user?: User;
+  errorMessage?: string;
+}
+
+export enum ForgotPasswordMode {
+  SendPasswordReset,
+  ValidateResetCode,
+  ResetPassword
+};

@@ -1,19 +1,37 @@
 import { VipEvent } from "@/types/event";
 import React, { Component } from 'react';
-
+import moment from "moment";
 
 export default function EventComponent(props: any) {
 
-    let statusClass = 'flex-table row';
+    const vipEvent = props.VipEvent as VipEvent;
+    const isAdmin = props.IsAdmin as boolean;
+
+    let statusClass = '';
     if (props.VipEvent.isDeleted) {
-        statusClass += ' event-deleted';
+        statusClass += 'event-deleted';
     } else if (!props.VipEvent.isActive) {
-        statusClass += ' event-inactive';
+        statusClass += 'event-inactive';
     }
-    
+
+    const venueName = vipEvent.venue?.name;
+    let location = `${vipEvent.venue?.city}, ${vipEvent.venue?.state}`;
+    if (vipEvent.venue?.country && vipEvent.venue.country != "United States" && vipEvent.venue.country != "USA") {
+        location += ", " + vipEvent.venue.country;
+    }
+    const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
+    const revenue = new Number(vipEvent.totalRevenue).toFixed(2);
+        
     return (
-        <div className={statusClass}>
-            <div className="flex-row first" role="cell">{props.VipEvent.title} - {props.VipEvent.eventDate}</div>
-        </div>
+        <tr className={statusClass}>
+            <td>{eventDate}</td>
+            <td>{vipEvent.title}</td>
+            <td>{venueName}</td>
+            <td>{location}</td>
+            <td className="pull-right">{vipEvent.totalTickets}</td>
+            <td className="pull-right">{revenue}</td>
+            { isAdmin ? <td>Deactivate</td> : ''}
+            { isAdmin ? <td>Delete</td> : ''}
+        </tr>
     );
 }
