@@ -112,7 +112,7 @@ export default function CurrentEvents() {
 
         setTimeout(() => {
             setChartsHidden(false);
-        }, 100);
+        }, 500);
     }
 
     return (
