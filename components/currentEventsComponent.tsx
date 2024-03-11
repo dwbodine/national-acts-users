@@ -34,7 +34,7 @@ export default function CurrentEvents() {
             return [];
         }
         return vipEvents.map<IRevenueKeys>((vipEvent) => ({
-            EventDate: vipEvent.eventDate,
+            EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
             Revenue: parseFloat(vipEvent.totalRevenue.toFixed(2))
         }));
     };
@@ -44,7 +44,7 @@ export default function CurrentEvents() {
             return [];
         }
         return vipEvents.map<IOrderKeys>((vipEvent) => ({
-            EventDate: vipEvent.eventDate,
+            EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
             Orders: vipEvent.orders?.length || 0
         }));
     };
@@ -54,7 +54,7 @@ export default function CurrentEvents() {
             return [];
         }
         return vipEvents.map<ITicketKeys>((vipEvent) => ({
-            EventDate: vipEvent.eventDate,
+            EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
             Tickets: vipEvent.totalTickets
         }));
     };
@@ -117,10 +117,11 @@ export default function CurrentEvents() {
 
     return (
         <>
-            <Row hidden={isLoading || vipEvents?.length == 0}>
-                <Col xs={3}>
+             {(vipEvents && vipEvents.length > 0) ?
+            <Row hidden={isLoading}>
+                <Col xs={3} className="chartColumn">
                         <AreaChart
-                            width={400}
+                            width={425}
                             height={200}
                             data={[...revenueData]}
                             margin={{
@@ -141,7 +142,7 @@ export default function CurrentEvents() {
                 </Col>
                 <Col xs={3}>
                         <AreaChart
-                            width={400}
+                            width={425}
                             height={200}
                             data={[...orderData]}
                             margin={{
@@ -162,7 +163,7 @@ export default function CurrentEvents() {
                 </Col>
                 <Col xs={3}>
                         <AreaChart
-                            width={400}
+                            width={425}
                             height={200}
                             data={[...ticketData]}
                             margin={{
@@ -181,7 +182,7 @@ export default function CurrentEvents() {
                             : ''}
                         </AreaChart>
                 </Col>
-            </Row>
+            </Row> : '' }
             <Row>
                 <Col className="spinner-container" hidden={!isLoading}>
                     <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />

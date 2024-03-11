@@ -132,6 +132,10 @@ body {
   font-weight: bold;
 }
 
+.chartColumn {
+  padding: 10px 0 10px 25px;
+}
+
 @media (max-width: 768px) {
   .wrapper {
     width: 368px;
