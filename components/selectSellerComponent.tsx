@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from '../src/lib/store';
-import { setSellerId } from '@/lib/reportSelectionSlice';
+import { setSeller } from '@/lib/reportSelectionSlice';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export default function SelectSeller() {
@@ -20,22 +20,19 @@ export default function SelectSeller() {
     let selectedSellerId = currentReportSelection.seller.sellerId;
 
     if (selectedSellerId <= 0 && user && user.selectedSellerId && user.selectedSellerId > 0) {
-        selectedSellerId = user.selectedSellerId;
-        let reportSelection = { ...currentReportSelection };
-        reportSelection.seller = getSelectedSeller(selectedSellerId);
+        const seller = getSelectedSeller(user.selectedSellerId);
         dispatch(
-            setSellerId(reportSelection)
+            setSeller(seller)
         )
     }    
 
     const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        let reportSelection = { ...currentReportSelection };
         const sellerId = parseInt(event.currentTarget.value);
         user.selectedSellerId = sellerId;
         sessionStorage.setItem('currentUser', JSON.stringify(user));
-        reportSelection.seller = getSelectedSeller(sellerId);
+        const seller = getSelectedSeller(sellerId);
         dispatch(
-            setSellerId(reportSelection)
+            setSeller(seller)
         )
     };
 
@@ -53,9 +50,8 @@ export default function SelectSeller() {
         else {
             const seller = user.sellers[0];
             if (seller.sellerId != selectedSellerId) {
-                currentReportSelection.seller = seller;
                 dispatch(
-                    setSellerId(currentReportSelection)
+                    setSeller(seller)
                 )
             }            
             return (

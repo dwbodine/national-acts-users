@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { UserReportSelection } from "../types/user";
+import { UserReportSelection, UserSeller } from "../types/user";
 import { VipEvent } from "@/types/event";
 import { act } from "react-dom/test-utils";
 
@@ -20,16 +20,21 @@ export const userReportSelectionSlice = createSlice({
     name: 'userReportSelection',
     initialState,
     reducers: {
-        setSellerId: (state, action: PayloadAction<UserReportSelection>) => {
+        setSeller: (state, action: PayloadAction<UserSeller>) => {
             const previousSellerId = state.seller.sellerId;
-            const newSellerId = action.payload.seller.sellerId;
-            state.seller = action.payload.seller;
+            const newSellerId = action.payload.sellerId;
+            if (previousSellerId != newSellerId) {
+                state.seller = action.payload;
+                state.reloadEvents = true;
+            } else {
+                state.reloadEvents = false;
+            }
+            state.seller = action.payload;
             state.start = 0;
             state.end = 0;
             state.showDeleted = false;
             state.showInactive = false;
             state.retainDateSelection = false;
-            state.reloadEvents = (previousSellerId != newSellerId);
             if (state.reloadEvents) {
                 state.currentEvents = [];
             }
@@ -107,6 +112,6 @@ export const userReportSelectionSlice = createSlice({
     }
 })
 
-export const { setSellerId, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, resetAll } = userReportSelectionSlice.actions
+export const { setSeller, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, resetAll } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer

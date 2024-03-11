@@ -226,7 +226,7 @@ export default function ForgotPassword() {
                     <Row>
                         <Col>
                             <div className="form-group">
-                                <Button onClick={onForgotPassword}>Login</Button><Button onClick={onBack}>Back</Button>
+                                <Button onClick={onForgotPassword}>Send</Button><Button onClick={onBack}>Back</Button>
                                 {resetError ? 
                                 <div className="h-fit flex flex-row gap-2 items-center justify-center danger">{resetError}</div> :
                                 ''

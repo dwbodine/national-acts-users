@@ -202,4 +202,47 @@ export class AuthService {
       });
   };
 
+  register = async (username: string, firstName: string, lastName: string, sellerId: number, password: string, confirmPassword: string, notes?: string): Promise<UserResponse> => {
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`
+    };
+
+    const data = {
+      "username": username,
+      "firstName": firstName,
+      "lastName": lastName,
+      "sellerId": sellerId,
+      "password": password,
+      "confirmPassword": confirmPassword,
+      "notes": notes
+    };
+
+    let userResponse: UserResponse = {
+      user: undefined,
+      errorMessage: undefined
+    };
+
+    return this.instance
+      .post("/user/register", data, {
+        headers: headers
+      })
+      .then((res) => {
+        const response = { ...res.data};
+        userResponse = response as UserResponse;
+        return userResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while registering user - please contact your administrator";
+        }
+        userResponse.errorMessage = errorMessage;
+        return userResponse;
+      });
+  };
+
 }

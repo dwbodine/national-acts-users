@@ -10,10 +10,16 @@ body {
 
 .danger {
   color: red;
+  font-weight: bold;
+}
+
+.success {
+  color: green;
+  font-weight: bold;
 }
 
 .wrapper {
-  width: 360px;
+  width: 720px;
   padding: 20px;
 }
 
@@ -36,6 +42,10 @@ body {
 
 .wrapper button {
   margin: 0 10px 0 0;
+}
+
+.wrapper input, .wrapper select, .wrapper textarea {
+  width: 100%;
 }
 
 .page-header {
@@ -120,4 +130,10 @@ body {
 
 .resultsTable thead, .resultsTable tfoot {
   font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    width: 368px;
+  }
 }

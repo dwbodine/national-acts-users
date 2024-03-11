@@ -72,3 +72,8 @@ export interface GetEventsResponse {
     events?: VipEvent[];
     eventError?: string;
 }
+
+export interface GetSellersResponse {
+    sellers?: Seller[];
+    sellersError?: string;
+}
