@@ -18,6 +18,9 @@ export interface Ticket {
 
 export interface Order {
   eventId: number;
+  ticketSocketEventId: number;
+  ticketSocketOrderId: number;
+  numTickets: number;
   orderId: number;
   isActive: boolean;
   isDeleted: boolean;
@@ -28,6 +31,15 @@ export interface Order {
   currencySymbol: string;
   currencyAbbrev: string;
   tickets?: Ticket[];
+  purchaseDate: string;
+  purchaseTimestamp: string;
+  phone?: string;
+  email: string;
+  purchaserLastName: string;
+  purchaserFirstName: string;
+  revenue: number;
+  attendeeNames?: string[];
+  shirts?: string[];
 }
 
 export interface Venue {
@@ -42,6 +54,7 @@ export interface Venue {
 }
 
 export interface VipEvent {
+  ticketSocketEventId: number;
   eventId: number;
   title: string;
   venue?: Venue;

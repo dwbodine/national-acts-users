@@ -157,12 +157,18 @@ body {
   max-width: 360px;
 }
 
+.vipDetailsTable tr {
+  vertical-align: top;
+}
+
 .vipDetailsTable td {
   padding: 5px;
+  white-space: nowrap;
 }
 
 .vipDetailsTable .vipLabel {
-  text-align: right;
+  font-weight: bold;
+  text-align: right;  
 }
 
 .vipTitle {
@@ -173,6 +179,37 @@ body {
   margin-top: 5px;
   width: 425px;
   text-align: center;
+}
+
+.vipTable {
+  margin: 25px 5px;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+.vipTable tr {
+  vertical-align: top;
+}
+
+.vipTable th,
+.vipTable td {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.vipTable th {
+  background-color: lightgray;
+  font-weight: bold;
+}
+
+.vipTable .inactive {
+  color: red;
+}
+
+.vipTable .deleted {
+  color: darkgray;
+  font-weight: bold;
 }
 
 @media (max-width: 768px) {
