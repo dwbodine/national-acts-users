@@ -35,6 +35,7 @@ export type UserReportSelection = {
   reloadEvents?: boolean;
   retainDateSelection?: boolean;
   currentEvents?: VipEvent[];
+  selectedEvent?: VipEvent;
 }
 
 export type UserLoginResponse = {

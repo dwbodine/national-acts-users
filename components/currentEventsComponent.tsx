@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from '../src/lib/store';
 import { useGetEvents } from '@/hooks/useGetEvents';
 import { setEvents, setDateRange } from '@/lib/reportSelectionSlice';
-import { VipEvent } from "@/types/event";
+import { IOrderKeys, IRevenueKeys, IShirtData, ITicketData, ITicketTypeData, VipEvent } from "@/types/event";
 import { useEffect, useState } from "react";
 import EventComponent from "./eventComponent";
 import moment from "moment";
@@ -11,27 +11,32 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-interface IRevenueKeys { EventDate: string; Revenue: number }
-interface ITicketKeys { EventDate: string; Tickets: number }
-interface IOrderKeys { EventDate: string; Orders: number }
+import RevenueChart from "./revenueChartComponent";
+import OrderChart from "./orderChartComponent";
+import TicketTypesChart from "./ticketTypesChartComponent";
+import EventDetail from "./eventDetailComponent";
+import { getTicketDataFromEvents } from "@/utils/getTicketData";
+import { getShirtDataFromEvents } from "@/utils/getShirtData";
+import ShirtSizesChart from "./shirtSizesChartComponent";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const { user } = useCurrentUser();
     const { getEvents } = useGetEvents();
     const dispatch = useDispatch(); 
-    let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;
     const [isLoading, setIsLoading] = useState(false);
     const [chartsHidden, setChartsHidden] = useState(true);
-    let revenueData: IRevenueKeys[] = [];
-    let ticketData: ITicketKeys[] = [];
-    let orderData: IOrderKeys[] = [];
+
+    let revenueData: IRevenueKeys[] | undefined = undefined;
+    let ticketData: ITicketData | undefined = undefined;
+    let orderData: IOrderKeys[] | undefined = undefined;
+    let shirtData: IShirtData | undefined = undefined;
+    const showEventDetail = (currentReportSelection?.selectedEvent != undefined);
+    let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;    
     
-    const getRevenueData = (): IRevenueKeys[] => {
+    const getRevenueData = (): IRevenueKeys[] | undefined => {
         if (!vipEvents || vipEvents.length == 0) {
-            return [];
+            return undefined;
         }
         return vipEvents.map<IRevenueKeys>((vipEvent) => ({
             EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
@@ -39,9 +44,9 @@ export default function CurrentEvents() {
         }));
     };
 
-    const getOrderData = (): IOrderKeys[] => {
+    const getOrderData = (): IOrderKeys[] | undefined => {
         if (!vipEvents || vipEvents.length == 0) {
-            return [];
+            return undefined;
         }
         return vipEvents.map<IOrderKeys>((vipEvent) => ({
             EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
@@ -49,15 +54,21 @@ export default function CurrentEvents() {
         }));
     };
 
-    const getTicketData = (): ITicketKeys[] => {
+    const getTicketData = (): ITicketData | undefined => {
         if (!vipEvents || vipEvents.length == 0) {
-            return [];
+            return undefined;
         }
-        return vipEvents.map<ITicketKeys>((vipEvent) => ({
-            EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
-            Tickets: vipEvent.totalTickets
-        }));
+
+        return getTicketDataFromEvents(vipEvents);
     };
+
+    const getShirtData = (): IShirtData | undefined => {
+        if (!vipEvents || vipEvents.length == 0) {
+            return undefined;
+        }
+
+        return getShirtDataFromEvents(vipEvents);
+    }
 
     useEffect(() => {
         if (currentReportSelection.reloadEvents && currentReportSelection.seller.sellerId > 0) {
@@ -65,11 +76,9 @@ export default function CurrentEvents() {
             setChartsHidden(true);
             getEvents(currentReportSelection).then((response) => {
                 if (!response.eventError && response.events) {
-                    // eslint-disable-next-line react-hooks/exhaustive-deps
-                    vipEvents = response.events;
-                    if (vipEvents?.length > 0) {
-                        const start = moment(vipEvents[0].eventDate).unix();
-                        const end = moment(vipEvents[vipEvents.length-1].eventDate).unix();
+                    if (response.events.length > 0) {
+                        const start = moment(response.events[0].eventDate).unix();
+                        const end = moment(response.events[response.events.length-1].eventDate).unix();
                         const selection: UserReportSelection = {
                             ...currentReportSelection,
                             start: start,
@@ -83,29 +92,38 @@ export default function CurrentEvents() {
                         setEvents(response.events)
                     );
                 } else {
-                    vipEvents = [];
+                    dispatch(
+                        setEvents([])
+                    );
                 }
                 setIsLoading(false);
             });
         }
-    }, [currentReportSelection]);     
+    }, [currentReportSelection, dispatch, getEvents]);     
     
     const rows = [];
     let totalTickets = 0;
     let totalRevenue = 0.0;
+    let totalShirts = 0;
+    let totalOrders = 0;
 
     if (vipEvents && vipEvents.length > 0) {
         revenueData = getRevenueData();
         ticketData = getTicketData();
         orderData = getOrderData();
+        shirtData = getShirtData();
 
         let i = 0;
-        for (const vipEvent of vipEvents) {
+        for (const evt of vipEvents) {
             const key = `ev${i}`;
-            rows.push(<EventComponent key={key} VipEvent={vipEvent} IsAdmin={user.isAdmin} />);
-            if (vipEvent.isActive && !vipEvent.isDeleted) {
-                totalTickets += vipEvent.totalTickets;
-                totalRevenue += vipEvent.totalRevenue;
+            rows.push(<EventComponent key={key} VipEvent={evt} IsAdmin={user.isAdmin} />);
+            totalTickets += evt.totalTickets;
+            totalRevenue += evt.totalRevenue;
+            totalOrders += evt.orders?.length ?? 0;
+            if (evt.shirtSales && evt.shirtSales.length > 0) {
+                evt.shirtSales.forEach((sale) => {
+                    totalShirts += sale.total ?? 0;
+                });
             }
             i++;
         }
@@ -117,77 +135,26 @@ export default function CurrentEvents() {
 
     return (
         <>
-             {(vipEvents && vipEvents.length > 0) ?
-            <Row hidden={isLoading}>
-                <Col xs={3} className="chartColumn">
-                        <AreaChart
-                            width={425}
-                            height={200}
-                            data={[...revenueData]}
-                            margin={{
-                                top: 10,
-                                right: 30,
-                                left: 0,
-                                bottom: 0,
-                            }}
-                            >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="EventDate" hide={true} />
-                            <YAxis label={{ value: 'Revenue (USD)', angle: -90, position: 'insideLeft' }} />
-                            <Tooltip />
-                            {!chartsHidden ? 
-                            <Area type="monotone" dataKey="Revenue" stroke="#8884d8" fill="#8884d8" />
-                            : ''}
-                        </AreaChart>
+             {(!showEventDetail && (vipEvents && vipEvents.length > 0)) ?
+            <Row hidden={isLoading || chartsHidden}>
+                <Col xs={3} className="chartColumn" hidden={!revenueData}>
+                    <RevenueChart ChartHidden={chartsHidden || !revenueData} RevenueData={revenueData} TotalRevenue={totalRevenue} />
                 </Col>
-                <Col xs={3}>
-                        <AreaChart
-                            width={425}
-                            height={200}
-                            data={[...orderData]}
-                            margin={{
-                                top: 10,
-                                right: 30,
-                                left: 0,
-                                bottom: 0,
-                            }}
-                            >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="EventDate" hide={true} />
-                            <YAxis label={{ value: 'Orders', angle: -90, position: 'insideLeft' }} />
-                            <Tooltip />
-                            {!chartsHidden ? 
-                            <Area type="monotone" dataKey="Orders" stroke="#8884d8" fill="#8884d8" />
-                            : ''}
-                        </AreaChart>
+                <Col xs={3} className="chartColumn" hidden={!orderData}>
+                    <OrderChart ChartHidden={chartsHidden || !orderData} OrderData={orderData} TotalOrders={totalOrders} />
                 </Col>
-                <Col xs={3}>
-                        <AreaChart
-                            width={425}
-                            height={200}
-                            data={[...ticketData]}
-                            margin={{
-                                top: 10,
-                                right: 30,
-                                left: 0,
-                                bottom: 0,
-                            }}
-                            >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="EventDate" hide={true} />
-                            <YAxis label={{ value: 'Tickets', angle: -90, position: 'insideLeft' }} />
-                            <Tooltip />
-                            {!chartsHidden ? 
-                            <Area type="monotone" dataKey="Tickets" stroke="#8884d8" fill="#8884d8" />
-                            : ''}
-                        </AreaChart>
+                <Col xs={3} className="chartColumn" hidden={!ticketData}>
+                    <TicketTypesChart ChartHidden={chartsHidden || !ticketData} TicketData={ticketData} TotalTickets={totalTickets} />
+                </Col>
+                <Col xs={3} className="chartColumn" hidden={!shirtData}>
+                    <ShirtSizesChart ChartHidden={chartsHidden || !shirtData} ShirtData={shirtData} TotalShirts={totalShirts} />
                 </Col>
             </Row> : '' }
             <Row>
                 <Col className="spinner-container" hidden={!isLoading}>
                     <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
                 </Col>
-                <Col hidden={isLoading}>
+                <Col hidden={isLoading || showEventDetail}>
                     {(vipEvents && vipEvents.length > 0) ?
                         <table className="resultsTable">
                             <thead>
@@ -213,8 +180,14 @@ export default function CurrentEvents() {
                                 </tr>
                             </tfoot>
                         </table>
+                    : ''} 
+                    {((!vipEvents || vipEvents.length == 0) && currentReportSelection.seller.sellerId > 0) ? 
+                    <Col className="no-events">
+                        No events found
+                    </Col>
                     : ''}
                 </Col>
+                <EventDetail hidden={!showEventDetail} IsAdmin={user.isAdmin} />
             </Row>
         </>
     );        

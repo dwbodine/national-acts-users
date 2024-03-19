@@ -13,7 +13,8 @@ const initialState: UserReportSelection = {
     end: 0,
     showDeleted: false,
     showInactive: false,
-    reloadEvents: true
+    reloadEvents: true,
+    selectedEvent: undefined
 };
 
 export const userReportSelectionSlice = createSlice({
@@ -35,6 +36,7 @@ export const userReportSelectionSlice = createSlice({
             state.showDeleted = false;
             state.showInactive = false;
             state.retainDateSelection = false;
+            state.selectedEvent = undefined;
             if (state.reloadEvents) {
                 state.currentEvents = [];
             }
@@ -56,6 +58,7 @@ export const userReportSelectionSlice = createSlice({
             }
             if (state.reloadEvents) {
                 state.currentEvents = [];
+                state.selectedEvent = undefined;
             }
             return state;
         },
@@ -73,6 +76,7 @@ export const userReportSelectionSlice = createSlice({
             }
             if (state.reloadEvents) {
                 state.currentEvents = [];
+                state.selectedEvent = undefined;
             }
             return state;
         },
@@ -85,6 +89,10 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = action.payload;
             return state;
         },
+        setSelectedEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
+            state.selectedEvent = action.payload;
+            return state;
+        },
         resetSelection: (state) => {
             state.start = 0;
             state.end = 0;
@@ -93,6 +101,7 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = true;
             state.retainDateSelection = false;
             state.currentEvents = [];
+            state.selectedEvent = undefined;
             return state;
         },
         resetAll: (state) => {
@@ -107,11 +116,12 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = true;
             state.retainDateSelection = false;
             state.currentEvents = [];
+            state.selectedEvent = undefined;
             return state;
         },
     }
 })
 
-export const { setSeller, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, resetAll } = userReportSelectionSlice.actions
+export const { setSeller, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, setSelectedEvent, resetAll } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer

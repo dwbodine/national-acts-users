@@ -1,79 +1,109 @@
 export interface Seller {
-    sellerId: number;
-    name: string;
-    hideInList?: boolean;
-    isActive?: boolean;
+  sellerId: number;
+  name: string;
+  hideInList?: boolean;
+  isActive?: boolean;
 }
 
 export interface ShirtSales {
-    size: string;
-    total?: number;
+  size: string;
+  total?: number;
 }
 
 export interface Ticket {
-    orderId?: number;
-    ticketId?: number;
-    isActive?: boolean;
+  price?: number;
+  isActive?: boolean;
+  ticketType: string;
 }
 
 export interface Order {
-    eventId: number;
-    orderId: number;
-    isActive: boolean;
-    isDeleted: boolean;
-    isRefunded: boolean;
-    totalShirts?: number;
-    revenueUsd: number;
-    exchangeRate: number;
-    currencySymbol: string;
-    currencyAbbrev: string;
-    tickets?: Ticket[]
+  eventId: number;
+  orderId: number;
+  isActive: boolean;
+  isDeleted: boolean;
+  isRefunded: boolean;
+  totalShirts?: number;
+  revenueUsd: number;
+  exchangeRate: number;
+  currencySymbol: string;
+  currencyAbbrev: string;
+  tickets?: Ticket[];
 }
 
 export interface Venue {
-    name: string;
-    address1?: string;
-    address2?: string;
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    country?: string;
-    timezone?: string;
+  name: string;
+  address1?: string;
+  address2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  timezone?: string;
 }
 
 export interface VipEvent {
-    eventId: number;
-    title: string;
-    venue?: Venue;
-    eventDate: string;
-    thumbnail?: string;
-    ticketSocketUrl?: string;
-    totalRevenue: number;
-    totalTickets: number;
-    shirtSales?: ShirtSales[];
-    isActive: boolean;
-    orders?: Order[];
-    externalEventId?: number;
-    externalSellerId?: number;
-    externalThumbnail?: string;
-    externalUrl?: string;
-    externalVenue?: Venue;
-    disableLinkButton?: boolean;
-    disableLinkReason?: boolean;
-    isVip: boolean;
-    isDeleted: boolean;
-    isExternal: boolean;
-    hasShirtData: boolean;
-    hasPhoneData: boolean;
-    hasNonUSAOrders: boolean;    
+  eventId: number;
+  title: string;
+  venue?: Venue;
+  eventDate: string;
+  thumbnail?: string;
+  ticketSocketUrl?: string;
+  totalRevenue: number;
+  totalTickets: number;
+  totalShirts: number;
+  shirtSales?: ShirtSales[];
+  isActive: boolean;
+  orders?: Order[];
+  externalEventId?: number;
+  externalSellerId?: number;
+  externalThumbnail?: string;
+  externalUrl?: string;
+  externalVenue?: Venue;
+  disableLinkButton?: boolean;
+  disableLinkReason?: boolean;
+  isVip: boolean;
+  isDeleted: boolean;
+  isExternal: boolean;
+  hasShirtData: boolean;
+  hasPhoneData: boolean;
+  hasNonUSAOrders: boolean;
 }
 
 export interface GetEventsResponse {
-    events?: VipEvent[];
-    eventError?: string;
+  events?: VipEvent[];
+  eventError?: string;
 }
 
 export interface GetSellersResponse {
-    sellers?: Seller[];
-    sellersError?: string;
+  sellers?: Seller[];
+  sellersError?: string;
+}
+
+export interface IRevenueKeys {
+  EventDate: string;
+  Revenue: number;
+}
+
+export interface IOrderKeys {
+  EventDate: string;
+  Orders: number;
+}
+export interface ITicketData {
+  TicketTypes: string[];
+  TicketData?: Map<string, ITicketTypeData[]>;
+}
+
+export interface ITicketTypeData {
+  TicketType: string;
+  Number: number;
+}
+
+export interface IShirtData {
+  ShirtSizes: string[];
+  ShirtData?: Map<string, IShirtSizeData[]>;
+}
+
+export interface IShirtSizeData {
+  ShirtSize: string;
+  Number: number;
 }

@@ -16,6 +16,7 @@ export default function AdminBar() {
     
     const { user } = useCurrentUser();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
+    const showEventDetail = (currentReportSelection?.selectedEvent != undefined);
 
     let pageTitle: string = "Sales Overview";
     if (user.isAdmin) {
@@ -26,28 +27,32 @@ export default function AdminBar() {
 
     return (
         <>
-            <Row className="page-header">
-                <Col className="title-container">
-                    <div className="title">{pageTitle}</div>
-                </Col>
-                <Col className="control-container">
-                    <DateRangeSelector />
-                    <LogoutButton />
-                    <ResetPasswordButton />                    
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <SelectSeller />
-                    {user.showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
-                    {user.isAdmin && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
-                </Col>
-            </Row>
+        {(!showEventDetail) ?
+            <>
+                <Row className="page-header">
+                    <Col className="title-container">
+                        <div className="title">{pageTitle}</div>
+                    </Col>
+                    <Col className="control-container">
+                        <DateRangeSelector />
+                        <LogoutButton />
+                        <ResetPasswordButton />                    
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <SelectSeller />
+                        {user.showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
+                        {user.isAdmin && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
+                    </Col>
+                </Row>
+            </>
+            : ''}
         </>
     );
 }

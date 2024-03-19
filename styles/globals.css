@@ -132,8 +132,47 @@ body {
   font-weight: bold;
 }
 
+.resultsTable a {
+  cursor: pointer;
+  text-decoration: underline !important;
+}
+
+.resultsTable a:hover {
+  color: blue !important;
+  text-decoration: none !important;
+}
+
 .chartColumn {
   padding: 10px 0 10px 25px;
+}
+
+.no-events {
+  width: 100;
+  text-align: center;
+  font-size: 24px;
+  padding-top: 25px;
+}
+
+.vipDetailsTable {
+  max-width: 360px;
+}
+
+.vipDetailsTable td {
+  padding: 5px;
+}
+
+.vipDetailsTable .vipLabel {
+  text-align: right;
+}
+
+.vipTitle {
+  font-weight: bold;
+}
+
+.chart-total {
+  margin-top: 5px;
+  width: 425px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
