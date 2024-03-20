@@ -1,0 +1,93 @@
+import { VipEvent } from "@/types/event";
+import React from 'react';
+import moment from "moment";
+import { useDispatch } from "react-redux";
+import { setEvents, setSelectedEventId } from '@/lib/reportSelectionSlice';
+import { useSetEventInactive } from "@/hooks/useSetEventInactive";
+import { useSetEventDeleted } from "@/hooks/useSetEventDeleted";
+
+export default function EventRow(props: any) {
+    const dispatch = useDispatch(); 
+    const vipEvent = props.VipEvent as VipEvent;
+    const isAdmin = props.IsAdmin as boolean;
+    const { setEventInactive } = useSetEventInactive();
+    const { setEventDeleted } = useSetEventDeleted();
+
+    const setDetailEvent = () => {
+        dispatch(
+            setSelectedEventId(vipEvent.ticketSocketEventId)
+        );
+    };
+
+    const activateDeactivateEvent = () => {
+        const eventId = vipEvent.ticketSocketEventId;
+        const isActive = vipEvent.isActive;
+        setEventInactive(eventId, isActive)
+            .then((response) => {
+                if (!response.success) {
+                    console.log(response.eventError);
+                    return;
+                } else {
+                    dispatch(
+                        setEvents()
+                    )
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
+    const deleteUndeleteEvent = () => {
+        const eventId = vipEvent.ticketSocketEventId;
+        const isDeleted = vipEvent.isDeleted;
+        setEventDeleted(eventId, isDeleted)
+            .then((response) => {
+                if (!response.success) {
+                    console.log(response.eventError);
+                    return;
+                } else {
+                    dispatch(
+                        setEvents()
+                    )
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
+    let statusClass = '';
+    if (props.VipEvent.isDeleted) {
+        statusClass += 'event-deleted';
+    } else if (!props.VipEvent.isActive) {
+        statusClass += 'event-inactive';
+    }
+
+    const venueName = vipEvent.venue?.name;
+    let location = '';
+    if (vipEvent.venue) {
+        location = `${vipEvent.venue.city}, ${vipEvent.venue.state}`;
+        if (vipEvent.venue.country && vipEvent.venue.country != "United States" && vipEvent.venue.country != "USA" && vipEvent.venue.country != vipEvent.venue.state) {
+            location += ", " + vipEvent.venue.country;
+        }
+    }
+    
+    const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
+    const revenue = new Number(vipEvent.totalRevenue).toFixed(2);
+    const inactiveLabel = vipEvent.isActive ? "Deactivate" : "Activate";
+    const deletedLabel = vipEvent.isDeleted ? "Undelete" : "Delete";
+        
+    return (
+        <tr className={statusClass}>
+            <td>{eventDate}</td>
+            <td><a onClick={setDetailEvent}>{vipEvent.title}</a></td>
+            <td>{venueName}</td>
+            <td>{location}</td>
+            <td className="pull-right">{vipEvent.totalTickets}</td>
+            <td className="pull-right">{revenue}</td>
+            { isAdmin ? <td><a onClick={activateDeactivateEvent}>{inactiveLabel}</a></td> : ''}
+            { isAdmin ? <td><a onClick={deleteUndeleteEvent}>{deletedLabel}</a></td> : ''}
+        </tr>
+    );
+}

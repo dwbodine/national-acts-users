@@ -31,11 +31,13 @@ export type UserReportSelection = {
   start?: number;
   end?: number;
   showInactive?: boolean;
+  showInactiveOrders?: boolean;
   showDeleted?: boolean;
+  showDeletedOrders?: boolean;
   reloadEvents?: boolean;
   retainDateSelection?: boolean;
   currentEvents?: VipEvent[];
-  selectedEvent?: VipEvent;
+  selectedEventId?: number;
 }
 
 export type UserLoginResponse = {

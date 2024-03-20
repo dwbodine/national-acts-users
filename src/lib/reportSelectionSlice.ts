@@ -12,9 +12,11 @@ const initialState: UserReportSelection = {
     start: 0,
     end: 0,
     showDeleted: false,
+    showDeletedOrders: false,
     showInactive: false,
+    showInactiveOrders: false,
     reloadEvents: true,
-    selectedEvent: undefined
+    selectedEventId: undefined
 };
 
 export const userReportSelectionSlice = createSlice({
@@ -34,9 +36,11 @@ export const userReportSelectionSlice = createSlice({
             state.start = 0;
             state.end = 0;
             state.showDeleted = false;
+            state.showDeletedOrders = false;
             state.showInactive = false;
+            state.showInactiveOrders = false;
             state.retainDateSelection = false;
-            state.selectedEvent = undefined;
+            state.selectedEventId = undefined;
             if (state.reloadEvents) {
                 state.currentEvents = [];
             }
@@ -58,7 +62,21 @@ export const userReportSelectionSlice = createSlice({
             }
             if (state.reloadEvents) {
                 state.currentEvents = [];
-                state.selectedEvent = undefined;
+                state.selectedEventId = undefined;
+            }
+            return state;
+        },
+        setShowInactiveOrders:  (state, action: PayloadAction<boolean>) => {
+            const previousInactive = state.showInactiveOrders;
+            const newInactive = action.payload;
+            state.showInactiveOrders = newInactive;
+            state.reloadEvents = (previousInactive != newInactive);
+            if (!state.retainDateSelection) {
+                state.start = 0;
+                state.end = 0;
+            }
+            if (state.reloadEvents) {
+                state.currentEvents = [];
             }
             return state;
         },
@@ -76,21 +94,46 @@ export const userReportSelectionSlice = createSlice({
             }
             if (state.reloadEvents) {
                 state.currentEvents = [];
-                state.selectedEvent = undefined;
+                state.selectedEventId = undefined;
             }
             return state;
         },
-        setEvents: (state, action: PayloadAction<VipEvent[]>) => {
-            state.currentEvents = action.payload;
-            state.reloadEvents = false;
+        setShowDeletedOrders: (state, action: PayloadAction<boolean>) => {
+            const previousDeleted = state.showDeletedOrders;
+            const newDeleted = action.payload;
+            state.showDeletedOrders = newDeleted;
+            if (state.showDeletedOrders) {
+                state.showInactiveOrders = true;
+            }
+            state.reloadEvents = (previousDeleted != newDeleted);
+            if (!state.retainDateSelection) {
+                state.start = 0;
+                state.end = 0;
+            }
+            if (state.reloadEvents) {
+                state.currentEvents = [];
+            }
+            return state;
+        },
+        setEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
+            if (action.payload) {
+                state.currentEvents = action.payload;
+                state.reloadEvents = false;
+            } else {
+                state.currentEvents = [];
+                state.reloadEvents = true;
+            }
+            
             return state;
         },
         setReloadEvents: (state, action: PayloadAction<boolean>) => {
             state.reloadEvents = action.payload;
             return state;
         },
-        setSelectedEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
-            state.selectedEvent = action.payload;
+        setSelectedEventId: (state, action: PayloadAction<number | undefined>) => {
+            state.selectedEventId = action.payload;
+            state.showInactiveOrders = false;
+            state.showDeletedOrders = false;
             return state;
         },
         resetSelection: (state) => {
@@ -101,7 +144,7 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = true;
             state.retainDateSelection = false;
             state.currentEvents = [];
-            state.selectedEvent = undefined;
+            state.selectedEventId = undefined;
             return state;
         },
         resetAll: (state) => {
@@ -116,12 +159,12 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = true;
             state.retainDateSelection = false;
             state.currentEvents = [];
-            state.selectedEvent = undefined;
+            state.selectedEventId = undefined;
             return state;
         },
     }
 })
 
-export const { setSeller, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, setSelectedEvent, resetAll } = userReportSelectionSlice.actions
+export const { setSeller, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, setSelectedEventId, resetAll, setShowInactiveOrders, setShowDeletedOrders } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer

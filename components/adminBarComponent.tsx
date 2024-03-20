@@ -16,7 +16,7 @@ export default function AdminBar() {
     
     const { user } = useCurrentUser();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
-    const showEventDetail = (currentReportSelection?.selectedEvent != undefined);
+    const showEventDetail = (currentReportSelection?.selectedEventId != undefined);
 
     let pageTitle: string = "Sales Overview";
     if (user.isAdmin) {

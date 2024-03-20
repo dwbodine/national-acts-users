@@ -1,24 +1,27 @@
 import { IShirtData, IShirtSizeData, ITicketData, ITicketTypeData, VipEvent } from "@/types/event";
-import React from 'react';
+import React, { useState } from 'react';
 import moment from "moment";
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../src/lib/store';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { setSelectedEvent } from '@/lib/reportSelectionSlice';
-import { Button } from "react-bootstrap";
+import { setSelectedEventId, setShowInactiveOrders, setShowDeletedOrders } from '@/lib/reportSelectionSlice';
+import { Button, FormCheck } from "react-bootstrap";
 import { getTicketDataFromEvents } from "@/utils/getTicketData";
-import TicketTypeBreakdown from "./ticketTypeBreakdownComponent";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
-import ShirtSizeBreakdown from "./shirtSizeBreakdownComponent";
 import OrderRow from "./orderRowComponent";
 
 export default function EventDetail(props: any) {
     const dispatch = useDispatch(); 
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
+    
 
-    const vipEvent: VipEvent | undefined = currentReportSelection?.selectedEvent;
+    let vipEvent: VipEvent | undefined = undefined;
+    if (currentReportSelection?.selectedEventId && currentReportSelection?.currentEvents && currentReportSelection.currentEvents.length > 0) {
+        vipEvent = currentReportSelection.currentEvents.find(x => x.ticketSocketEventId == currentReportSelection.selectedEventId);
+    }
     const isAdmin = props.IsAdmin as boolean;
+    const showInactive = props.ShowInactive as boolean;
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
 
@@ -49,7 +52,7 @@ export default function EventDetail(props: any) {
                     if (data) {
                         number = data.Number;
                     }
-                    ticketBreakdownRows.push(<TicketTypeBreakdown TicketType={ticketType} NumTickets={number} />);
+                    ticketBreakdownRows.push(<div>{ticketType} ({number})</div>);
                 });
             });
         }
@@ -59,19 +62,34 @@ export default function EventDetail(props: any) {
             hasShirtData = true;
             shirtData?.ShirtData?.forEach((shirtSizeData: IShirtSizeData[]) => {
                 shirtSizeData.forEach((shirtSize) => {
-                    shirtSizeBreakdownRows.push(<ShirtSizeBreakdown ShirtSize={shirtSize.ShirtSize} NumShirts={shirtSize.Number} />);
+                    shirtSizeBreakdownRows.push(<div>{shirtSize.ShirtSize} ({shirtSize.Number})</div>);
                 });
             });
         }      
         
         vipEvent.orders?.forEach((order) => {
-            orderRows.push(<OrderRow EventDate={vipEvent.eventDate} EventName={vipEvent.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} />);
+            const showOrder = (!order.isDeleted && order.isActive) || (order.isDeleted && currentReportSelection.showDeletedOrders) || (!order.isActive && currentReportSelection.showInactiveOrders);
+            if (showOrder) {
+                orderRows.push(<OrderRow EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} />);
+            }            
         });    
     }
 
     const clearDetailEvent = (): void => {
         dispatch(
-            setSelectedEvent(undefined)
+            setSelectedEventId(undefined)
+        );
+    };
+
+    const handleShowInactive = () => {
+        dispatch (
+            setShowInactiveOrders(currentReportSelection.showInactiveOrders ? false : true)
+        );
+    };
+
+    const handleShowDeleted = () => {
+        dispatch (
+            setShowDeletedOrders(currentReportSelection.showDeletedOrders ? false : true)
         );
     };
 
@@ -116,6 +134,16 @@ export default function EventDetail(props: any) {
                             </tr>
                         </table>
                     </Row>
+                    <Row hidden={!isAdmin || !showInactive}>
+                        <Col>
+                            <span className="inactive-check">
+                                <FormCheck checked={currentReportSelection.showInactiveOrders} onChange={handleShowInactive} disabled={currentReportSelection.showDeletedOrders} /> Show Inactive Orders?
+                            </span>
+                            <span className="inactive-check">
+                                <FormCheck checked={currentReportSelection.showDeletedOrders} onChange={handleShowDeleted} /> Show Deleted Orders?
+                            </span>
+                        </Col>
+                    </Row>
                     <Row>
                         <table className="vipTable">
                             <thead>
@@ -132,7 +160,6 @@ export default function EventDetail(props: any) {
                                     {(hasPhoneData) ? <th>Phone #</th> : ''}
                                     {(hasShirtData) ? <th>Shirt Sizes</th> : ''}
                                     {(isAdmin) ? <th colSpan={2}>Admin Commands</th> : ''}
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>

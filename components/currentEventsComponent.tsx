@@ -2,9 +2,8 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from '../src/lib/store';
 import { useGetEvents } from '@/hooks/useGetEvents';
 import { setEvents, setDateRange } from '@/lib/reportSelectionSlice';
-import { IOrderKeys, IRevenueKeys, IShirtData, ITicketData, ITicketTypeData, VipEvent } from "@/types/event";
+import { IOrderKeys, IRevenueKeys, IShirtData, ITicketData, VipEvent } from "@/types/event";
 import { useEffect, useState } from "react";
-import EventComponent from "./eventComponent";
 import moment from "moment";
 import { UserReportSelection } from "@/types/user";
 import Row from 'react-bootstrap/Row';
@@ -18,6 +17,7 @@ import EventDetail from "./eventDetailComponent";
 import { getTicketDataFromEvents } from "@/utils/getTicketData";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import ShirtSizesChart from "./shirtSizesChartComponent";
+import EventRow from "./eventRowComponent";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -26,12 +26,12 @@ export default function CurrentEvents() {
     const dispatch = useDispatch(); 
     const [isLoading, setIsLoading] = useState(false);
     const [chartsHidden, setChartsHidden] = useState(true);
+    const showEventDetail = (currentReportSelection?.selectedEventId != undefined);
 
     let revenueData: IRevenueKeys[] | undefined = undefined;
     let ticketData: ITicketData | undefined = undefined;
     let orderData: IOrderKeys[] | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
-    const showEventDetail = (currentReportSelection?.selectedEvent != undefined);
     let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;    
     
     const getRevenueData = (): IRevenueKeys[] | undefined => {
@@ -116,14 +116,16 @@ export default function CurrentEvents() {
         let i = 0;
         for (const evt of vipEvents) {
             const key = `ev${i}`;
-            rows.push(<EventComponent key={key} VipEvent={evt} IsAdmin={user.isAdmin} />);
-            totalTickets += evt.totalTickets;
-            totalRevenue += evt.totalRevenue;
-            totalOrders += evt.orders?.length ?? 0;
-            if (evt.shirtSales && evt.shirtSales.length > 0) {
-                evt.shirtSales.forEach((sale) => {
-                    totalShirts += sale.total ?? 0;
-                });
+            rows.push(<EventRow key={key} VipEvent={evt} IsAdmin={user.isAdmin} />);
+            if (!evt.isDeleted) {
+                totalTickets += evt.totalTickets;
+                totalRevenue += evt.totalRevenue;
+                totalOrders += evt.orders?.length ?? 0;
+                if (evt.shirtSales && evt.shirtSales.length > 0) {
+                    evt.shirtSales.forEach((sale) => {
+                        totalShirts += sale.total ?? 0;
+                    });
+                }
             }
             i++;
         }
@@ -187,7 +189,7 @@ export default function CurrentEvents() {
                     </Col>
                     : ''}
                 </Col>
-                <EventDetail hidden={!showEventDetail} IsAdmin={user.isAdmin} />
+                <EventDetail hidden={!showEventDetail} IsAdmin={user.isAdmin} ShowInactive={user.showInactiveEvents} />
             </Row>
         </>
     );        

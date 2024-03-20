@@ -125,19 +125,19 @@ body {
 }
 
 .resultsTable tr.event-deleted {
-  color: blue;
+  color: darkgray;
 }
 
 .resultsTable thead, .resultsTable tfoot {
   font-weight: bold;
 }
 
-.resultsTable a {
+.resultsTable a, .vipTable a {
   cursor: pointer;
   text-decoration: underline !important;
 }
 
-.resultsTable a:hover {
+.resultsTable a:hover, .vipTable a:hover {
   color: blue !important;
   text-decoration: none !important;
 }
@@ -183,7 +183,7 @@ body {
 
 .vipTable {
   margin: 25px 5px;
-  width: 100%;
+  width: 99%;
   border-collapse: collapse;
   border: 1px solid black;
 }

@@ -87,6 +87,16 @@ export interface GetEventsResponse {
   eventError?: string;
 }
 
+export interface ModifyEventResponse {
+  success: boolean;
+  eventError?: string;
+}
+
+export interface ModifyOrderResponse {
+  success: boolean;
+  orderError?: string;
+}
+
 export interface GetSellersResponse {
   sellers?: Seller[];
   sellersError?: string;
