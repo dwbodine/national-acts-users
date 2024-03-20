@@ -1,5 +1,5 @@
 import { IShirtData, IShirtSizeData, ITicketData, ITicketTypeData, VipEvent } from "@/types/event";
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import moment from "moment";
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../src/lib/store';
@@ -81,15 +81,15 @@ export default function EventDetail(props: any) {
         );
     };
 
-    const handleShowInactive = () => {
+    const handleShowInactive = (event: ChangeEvent<HTMLInputElement>) => {
         dispatch (
-            setShowInactiveOrders(currentReportSelection.showInactiveOrders ? false : true)
+            setShowInactiveOrders(event.target.checked)
         );
     };
 
-    const handleShowDeleted = () => {
+    const handleShowDeleted = (event: ChangeEvent<HTMLInputElement>) => {
         dispatch (
-            setShowDeletedOrders(currentReportSelection.showDeletedOrders ? false : true)
+            setShowDeletedOrders(event.target.checked)
         );
     };
 
