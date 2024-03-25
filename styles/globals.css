@@ -88,8 +88,9 @@ body {
   display: inline;
 }
 
-.reset-button-div {
-  margin-top: 10px;
+.admin-button {
+  display: inline-block;
+  margin: 10px 5px 10px 0;
 }
 
 .spinner-container {

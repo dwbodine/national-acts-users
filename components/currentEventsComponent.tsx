@@ -18,6 +18,7 @@ import { getTicketDataFromEvents } from "@/utils/getTicketData";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import ShirtSizesChart from "./shirtSizesChartComponent";
 import EventRow from "./eventRowComponent";
+import router from "next/router";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -91,6 +92,8 @@ export default function CurrentEvents() {
                     dispatch(
                         setEvents(response.events)
                     );
+                } else if (response.statusCode == 401) {
+                    router.push('/logout');
                 } else {
                     dispatch(
                         setEvents([])
@@ -166,7 +169,7 @@ export default function CurrentEvents() {
                                     <th>Venue</th>
                                     <th>Location</th>
                                     <th>Tickets Sold</th>
-                                    <th>Revenue</th>
+                                    <th>Revenue (USD)</th>
                                     { user.isAdmin ? <th colSpan={2} className="center">Admin Commands</th> : ''}            
                                 </tr>
                             </thead>

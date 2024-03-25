@@ -5,6 +5,7 @@ import { Order } from '@/types/event';
 import moment from 'moment';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import router from 'next/router';
 
 export default function OrderRow(props: any) {
     const dispatch = useDispatch();
@@ -76,7 +77,11 @@ export default function OrderRow(props: any) {
         setOrderInactive(orderId, isActive)
             .then((response) => {
                 if (!response.success) {
-                    console.log(response.orderError);
+                    if (response.statusCode == 401) {
+                        router.push('/logout');
+                    } else {
+                        console.log(response.orderError);
+                    }
                     return;
                 } else {
                     dispatch(
@@ -95,7 +100,11 @@ export default function OrderRow(props: any) {
         setOrderDeleted(orderId, isDeleted)
             .then((response) => {
                 if (!response.success) {
-                    console.log(response.orderError);
+                    if (response.statusCode == 401) {
+                        router.push('/logout');
+                    } else {
+                        console.log(response.orderError);
+                    }
                     return;
                 } else {
                     dispatch(

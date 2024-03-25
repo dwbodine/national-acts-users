@@ -12,9 +12,9 @@ export default function ResetButton() {
     };
     
     return (
-        <div className="reset-button-div">
+        <span className="admin-button">
             <Button onClick={handleClick} disabled={(currentReportSelection.seller.sellerId <= 0)}>Reset</Button>
-        </div>
+        </span>
     );        
  
 }

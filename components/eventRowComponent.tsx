@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { setEvents, setSelectedEventId } from '@/lib/reportSelectionSlice';
 import { useSetEventInactive } from "@/hooks/useSetEventInactive";
 import { useSetEventDeleted } from "@/hooks/useSetEventDeleted";
+import { useGetLocation } from "@/hooks/useGetLocation";
+import router from "next/router";
 
 export default function EventRow(props: any) {
     const dispatch = useDispatch(); 
@@ -12,6 +14,7 @@ export default function EventRow(props: any) {
     const isAdmin = props.IsAdmin as boolean;
     const { setEventInactive } = useSetEventInactive();
     const { setEventDeleted } = useSetEventDeleted();
+    const { getLocation } = useGetLocation();
 
     const setDetailEvent = () => {
         dispatch(
@@ -25,7 +28,11 @@ export default function EventRow(props: any) {
         setEventInactive(eventId, isActive)
             .then((response) => {
                 if (!response.success) {
-                    console.log(response.eventError);
+                    if (response.statusCode == 401) {
+                        router.push('/logout');
+                    } else {
+                        console.log(response.eventError);
+                    }                    
                     return;
                 } else {
                     dispatch(
@@ -44,7 +51,11 @@ export default function EventRow(props: any) {
         setEventDeleted(eventId, isDeleted)
             .then((response) => {
                 if (!response.success) {
-                    console.log(response.eventError);
+                    if (response.statusCode == 401) {
+                        router.push('/logout');
+                    } else {
+                        console.log(response.eventError);
+                    }
                     return;
                 } else {
                     dispatch(
@@ -67,10 +78,7 @@ export default function EventRow(props: any) {
     const venueName = vipEvent.venue?.name;
     let location = '';
     if (vipEvent.venue) {
-        location = `${vipEvent.venue.city}, ${vipEvent.venue.state}`;
-        if (vipEvent.venue.country && vipEvent.venue.country != "United States" && vipEvent.venue.country != "USA" && vipEvent.venue.country != vipEvent.venue.state) {
-            location += ", " + vipEvent.venue.country;
-        }
+        location = getLocation(vipEvent.venue);
     }
     
     const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');

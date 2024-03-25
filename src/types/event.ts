@@ -80,20 +80,25 @@ export interface VipEvent {
   hasShirtData: boolean;
   hasPhoneData: boolean;
   hasNonUSAOrders: boolean;
+  nonUsaCurrencySymbol?: string;
+  nonUsaCurrencyAbbrev?: string;
 }
 
 export interface GetEventsResponse {
   events?: VipEvent[];
+  statusCode?: number;
   eventError?: string;
 }
 
 export interface ModifyEventResponse {
   success: boolean;
+  statusCode?: number;
   eventError?: string;
 }
 
 export interface ModifyOrderResponse {
   success: boolean;
+  statusCode?: number;
   orderError?: string;
 }
 

@@ -10,12 +10,17 @@ import { Button, FormCheck } from "react-bootstrap";
 import { getTicketDataFromEvents } from "@/utils/getTicketData";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import OrderRow from "./orderRowComponent";
+import { useGetLocation } from "@/hooks/useGetLocation";
+import { useGetExport } from "@/hooks/useGetExport";
+import getFileNameFromReportSelection from "@/utils/getFileNameFromReportSelection";
+import downloadFile from "@/utils/downloadFile";
 
 export default function EventDetail(props: any) {
     const dispatch = useDispatch(); 
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
+    const { getLocation } = useGetLocation();
+    const { exportEventCustomerDataToCsv } = useGetExport();
     
-
     let vipEvent: VipEvent | undefined = undefined;
     if (currentReportSelection?.selectedEventId && currentReportSelection?.currentEvents && currentReportSelection.currentEvents.length > 0) {
         vipEvent = currentReportSelection.currentEvents.find(x => x.ticketSocketEventId == currentReportSelection.selectedEventId);
@@ -29,16 +34,24 @@ export default function EventDetail(props: any) {
     const hasPhoneData = vipEvent?.hasPhoneData ?? false;
     let hasTicketData: boolean = false;
     let hasShirtData: boolean = false;
+    const hasNonUsaOrders: boolean = vipEvent?.hasNonUSAOrders ?? false;
+    const currencySymbol: string | undefined = vipEvent?.nonUsaCurrencySymbol;
+    const currencyAbbrev: string | undefined = vipEvent?.nonUsaCurrencyAbbrev;
     const ticketBreakdownRows: any[] = [];
     const shirtSizeBreakdownRows: any[] = [];
     const orderRows: any[] = [];
 
+    const exportOrdersToCsv = () => {
+        if (vipEvent != undefined) {
+            const csvData = exportEventCustomerDataToCsv(vipEvent, hasPhoneData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+            const fileName = getFileNameFromReportSelection(currentReportSelection, 'orders');
+            downloadFile(fileName, csvData);
+        }
+    };
+
     if (vipEvent != undefined) {
         if (vipEvent.venue) {
-            location = `${vipEvent.venue.city}, ${vipEvent.venue.state}`;
-            if (vipEvent.venue.country && vipEvent.venue.country != "United States" && vipEvent.venue.country != "USA" && vipEvent.venue.country != vipEvent.venue.state) {
-                location += ", " + vipEvent.venue.country;
-            }
+            location = getLocation(vipEvent.venue);
         }    
         
         ticketData = getTicketDataFromEvents([vipEvent]);
@@ -136,6 +149,9 @@ export default function EventDetail(props: any) {
                     </Row>
                     <Row hidden={!isAdmin || !showInactive}>
                         <Col>
+                            <span className="inactive-check">
+                                <Button onClick={exportOrdersToCsv}>Export to Csv</Button>
+                            </span>
                             <span className="inactive-check">
                                 <FormCheck checked={currentReportSelection.showInactiveOrders} onChange={handleShowInactive} disabled={currentReportSelection.showDeletedOrders} /> Show Inactive Orders?
                             </span>
