@@ -1,15 +1,14 @@
 import Cookies from 'js-cookie';
 import { authRoutes, protectedRoutes } from "../src/router/routes";
-import { useRouter } from 'next/router';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function CheckAuth() {
-  const router = useRouter();
   const authTokenCookie = Cookies.get("authToken");
+  const router = useRouter();
+  const pathName = usePathname();
 
   useEffect(() => {    
-    const pathName = router.asPath;
-
     if (protectedRoutes.includes(pathName) && !authTokenCookie) {
         Cookies.remove("authToken");
         router.push('/login');
@@ -19,7 +18,7 @@ export default function CheckAuth() {
     if (authRoutes.includes(pathName) && authTokenCookie) {
         router.push('/');
     }
-  }, [router, authTokenCookie]);  
+  }, [authTokenCookie, router, pathName]);  
 
   return (<></>);
 }
