@@ -41,7 +41,7 @@ export default function CurrentEvents() {
         }
         return vipEvents.map<IRevenueKeys>((vipEvent) => ({
             EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
-            Revenue: parseFloat(vipEvent.totalRevenue.toFixed(2))
+            Revenue: parseFloat(vipEvent.totalRevenue?.toFixed(2))
         }));
     };
 

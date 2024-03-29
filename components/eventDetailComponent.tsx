@@ -135,7 +135,7 @@ export default function EventDetail(props: any) {
                             </tr>
                             <tr>
                                 <td className="vipLabel">Total Revenue:</td>
-                                <td>${vipEvent.totalRevenue.toFixed(2)}</td>
+                                <td>${vipEvent.totalRevenue?.toFixed(2)}</td>
                             </tr>
                             <tr hidden={!hasTicketData}>
                                 <td className="vipLabel">Ticket Breakdown:</td>
