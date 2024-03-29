@@ -99,6 +99,36 @@ body {
   padding-top: 33vh;
 }
 
+.stat-block {
+  padding: 10px;
+  margin: 15px;
+  background-color: #EFEFEF;
+  border: 1px solid #dedede;
+  border-radius: 4px;
+  line-height: 14px;
+  height: 100%;
+  min-height: 285px;
+}
+
+.stat-block svg {
+  display: block;
+  margin: 0 5px 10px 0;
+}
+
+.stat-block div {
+  white-space: nowrap;
+  margin-bottom: 15px;
+}
+
+.stat-block span {
+  display: table;
+  font-weight: bold;
+}
+
+.stat-block .totalSpan {
+  margin-top: 15px;
+}
+
 .resultsTable {
   width: 100%;
   border-collapse: collapse;

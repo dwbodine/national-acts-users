@@ -19,6 +19,10 @@ import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import ShirtSizesChart from "./shirtSizesChartComponent";
 import EventRow from "./eventRowComponent";
 import router from "next/router";
+import ShowsListedWidget from "./showsListedWidgetComponent";
+import TicketTypesWidget from "./ticketTypesWidgetComponent";
+import ShirtSizesWidget from "./shirtSizesWidgetComponent";
+import RevenueWidget from "./revenueWidgetComponent";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -141,20 +145,21 @@ export default function CurrentEvents() {
     return (
         <>
              {(!showEventDetail && (vipEvents && vipEvents.length > 0)) ?
-            <Row hidden={isLoading || chartsHidden}>
-                <Col xs={3} className="chartColumn" hidden={!revenueData}>
-                    <RevenueChart ChartHidden={chartsHidden || !revenueData} RevenueData={revenueData} TotalRevenue={totalRevenue} />
+             <Row>
+                <Col lg={2} md={5} className="stat-block">
+                    <ShowsListedWidget totalShows={vipEvents.length} />
                 </Col>
-                <Col xs={3} className="chartColumn" hidden={!orderData}>
-                    <OrderChart ChartHidden={chartsHidden || !orderData} OrderData={orderData} TotalOrders={totalOrders} />
+                <Col hidden={totalTickets == 0} lg={2} md={5} className="stat-block">
+                    <TicketTypesWidget TicketData={ticketData} TotalTickets={totalTickets} />
                 </Col>
-                <Col xs={3} className="chartColumn" hidden={!ticketData}>
-                    <TicketTypesChart ChartHidden={chartsHidden || !ticketData} TicketData={ticketData} TotalTickets={totalTickets} />
+                <Col hidden={totalShirts == 0} lg={2} md={5} className="stat-block">
+                    <ShirtSizesWidget ShirtData={shirtData} TotalShirts={totalShirts} />
                 </Col>
-                <Col xs={3} className="chartColumn" hidden={!shirtData}>
-                    <ShirtSizesChart ChartHidden={chartsHidden || !shirtData} ShirtData={shirtData} TotalShirts={totalShirts} />
+                <Col lg={2} md={5} className="stat-block">
+                    <RevenueWidget TotalRevenue={totalRevenue} />
                 </Col>
-            </Row> : '' }
+             </Row>
+            : '' }
             <Row>
                 <Col className="spinner-container" hidden={!isLoading}>
                     <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
@@ -194,6 +199,21 @@ export default function CurrentEvents() {
                 </Col>
                 <EventDetail hidden={!showEventDetail} IsAdmin={user.isAdmin} ShowInactive={user.showInactiveEvents} />
             </Row>
+            {(!showEventDetail && (vipEvents && vipEvents.length > 0)) ?
+            <Row hidden={isLoading || chartsHidden}>
+                <Col xl={6} xxl={3} className="chartColumn" hidden={!revenueData}>
+                    <RevenueChart ChartHidden={chartsHidden || !revenueData} RevenueData={revenueData} TotalRevenue={totalRevenue} />
+                </Col>
+                <Col xl={6} xxl={3} className="chartColumn" hidden={!orderData}>
+                    <OrderChart ChartHidden={chartsHidden || !orderData} OrderData={orderData} TotalOrders={totalOrders} />
+                </Col>
+                <Col xl={6} xxl={3} className="chartColumn" hidden={!ticketData}>
+                    <TicketTypesChart ChartHidden={chartsHidden || !ticketData} TicketData={ticketData} TotalTickets={totalTickets} />
+                </Col>
+                <Col xl={6} xxl={3} className="chartColumn" hidden={!shirtData}>
+                    <ShirtSizesChart ChartHidden={chartsHidden || !shirtData} ShirtData={shirtData} TotalShirts={totalShirts} />
+                </Col>
+            </Row> : '' }
         </>
     );        
  
