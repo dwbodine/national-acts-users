@@ -12,7 +12,7 @@ export default function RevenueChart(props: any) {
             <AreaChart
                 width={425}
                 height={200}
-                data={[...revenueData]}
+                data={revenueData ? [...revenueData] : []}
                 margin={{
                     top: 10,
                     right: 30,

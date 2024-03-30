@@ -12,7 +12,7 @@ export default function OrderChart(props: any) {
             <AreaChart
                 width={425}
                 height={200}
-                data={[...orderData]}
+                data={orderData ? [...orderData] : []}
                 margin={{
                     top: 10,
                     right: 30,

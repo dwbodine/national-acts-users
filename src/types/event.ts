@@ -126,6 +126,11 @@ export interface ITicketTypeData {
   Number: number;
 }
 
+export interface ITicketSalesData {
+  EventDate: string;
+  Tickets: number;
+}
+
 export interface IShirtData {
   ShirtSizes: string[];
   ShirtData?: Map<string, IShirtSizeData[]>;
