@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from '../src/lib/store';
 import { useGetEvents } from '@/hooks/useGetEvents';
 import { setEvents, setDateRange } from '@/lib/reportSelectionSlice';
-import { IOrderKeys, IRevenueKeys, IShirtData, ITicketData, VipEvent } from "@/types/event";
+import { IOrderKeys, IRevenueKeys, IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import { UserReportSelection } from "@/types/user";
@@ -17,6 +17,7 @@ import EventRow from "./eventRowComponent";
 import router from "next/router";
 import WidgetBar from "./widgetBarComponent";
 import ChartBar from "./chartBarComponent";
+import TicketSalesChart from "./ticketSalesChartComponent";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -32,6 +33,7 @@ export default function CurrentEvents() {
     let orderData: IOrderKeys[] | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
     let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;    
+    let ticketSalesData: ITicketSalesData[] | undefined = undefined;
     
     const getRevenueData = (): IRevenueKeys[] | undefined => {
         if (!vipEvents || vipEvents.length == 0) {
@@ -59,6 +61,17 @@ export default function CurrentEvents() {
         }
 
         return getTicketDataFromEvents(vipEvents);
+    };
+
+    const getTicketSalesData = (): ITicketSalesData[] | undefined => {
+        if (!vipEvents || vipEvents.length == 0) {
+            return undefined;
+        }
+
+        return vipEvents.map<ITicketSalesData>((vipEvent) => ({
+            EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
+            Tickets: vipEvent.totalTickets || 0
+        }));
     };
 
     const getShirtData = (): IShirtData | undefined => {
@@ -117,6 +130,7 @@ export default function CurrentEvents() {
         ticketData = getTicketData();
         orderData = getOrderData();
         shirtData = getShirtData();
+        ticketSalesData = getTicketSalesData();
 
         let i = 0;
         for (const evt of vipEvents) {
@@ -134,16 +148,13 @@ export default function CurrentEvents() {
             }
             i++;
         }
-
-        setTimeout(() => {
-            setChartsHidden(false);
-        }, 500);
     }
 
     return (
         <>
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
                 ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} />
+            <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} />
             <Row>
                 <Col className="spinner-container" hidden={!isLoading}>
                     <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
@@ -183,10 +194,6 @@ export default function CurrentEvents() {
                 </Col>
                 <EventDetail hidden={!showEventDetail} IsAdmin={user.isAdmin} ShowInactive={user.showInactiveEvents} />
             </Row>
-            <ChartBar hidden={showEventDetail || (!vipEvents || vipEvents.length == 0)} TotalShows={vipEvents?.length} 
-                ChartHidden={chartsHidden} IsLoading={isLoading} RevenueData={revenueData} TotalRevenue={totalRevenue}
-                OrderData={orderData} TotalOrders={totalOrders} TicketData={ticketData} TotalTickets={totalTickets} 
-                ShirtData={shirtData} TotalShirts={totalShirts} />
         </>
     );        
  

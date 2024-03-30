@@ -8,7 +8,6 @@ import ShirtSizesChart from "./shirtSizesChartComponent";
 
 export default function ChartBar(props: any) {
 
-    const chartsHidden: boolean = props.ChartsHidden as boolean;
     const isLoading: boolean = props.IsLoading as boolean;
     const totalTickets: number = props.TotalTickets as number;
     const totalRevenue: number = props.TotalRevenue as number;
@@ -18,9 +17,10 @@ export default function ChartBar(props: any) {
     const orderData: IOrderKeys[] = props.OrderData as IOrderKeys[];
     const ticketData: ITicketData | undefined = props.TicketData as ITicketData | undefined;
     const shirtData: IShirtData | undefined = props.ShirtData as IShirtData | undefined;
-    
+    const chartsHidden: boolean = props.ChartHidden as boolean;
+
     return (
-        <Row hidden={chartsHidden || isLoading}>
+        <Row>
             <Col xl={6} xxl={3} className="chartColumn" hidden={!revenueData}>
                 <RevenueChart ChartHidden={chartsHidden || !revenueData} RevenueData={revenueData} TotalRevenue={totalRevenue} />
             </Col>
