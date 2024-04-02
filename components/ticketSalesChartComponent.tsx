@@ -8,8 +8,7 @@ export default function TicketSalesChart(props: any) {
     const ticketSalesData: ITicketSalesData[] = props.TicketSalesData as ITicketSalesData[];
     const [chartsHidden, setChartsHidden] = useState(true);
     const hideCharts: boolean = props.ChartHidden as boolean;
-    const hideRow: boolean = props.HideRow as boolean;
-
+    
     useEffect(() => {
         setTimeout(() => {
             setChartsHidden(hideCharts);
