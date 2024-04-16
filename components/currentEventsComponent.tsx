@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from '../src/lib/store';
 import { useGetEvents } from '@/hooks/useGetEvents';
 import { setEvents, setDateRange } from '@/lib/reportSelectionSlice';
-import { IOrderKeys, IRevenueKeys, IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
+import { IOrderKeys, IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import { UserReportSelection } from "@/types/user";
@@ -10,14 +10,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import EventDetail from "./eventDetailComponent";
 import { getTicketDataFromEvents } from "@/utils/getTicketData";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import EventRow from "./eventRowComponent";
 import router from "next/router";
 import WidgetBar from "./widgetBarComponent";
-import ChartBar from "./chartBarComponent";
 import TicketSalesChart from "./ticketSalesChartComponent";
+import { getPurchaseDataFromEvents } from "@/utils/getPurchaseData";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -26,25 +25,12 @@ export default function CurrentEvents() {
     const dispatch = useDispatch(); 
     const [isLoading, setIsLoading] = useState(false);
     const [chartsHidden, setChartsHidden] = useState(true);
-    const showEventDetail = (currentReportSelection?.selectedEventId != undefined);
 
-    let revenueData: IRevenueKeys[] | undefined = undefined;
     let ticketData: ITicketData | undefined = undefined;
-    let orderData: IOrderKeys[] | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
     let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;    
     let ticketSalesData: ITicketSalesData[] | undefined = undefined;
     
-    const getRevenueData = (): IRevenueKeys[] | undefined => {
-        if (!vipEvents || vipEvents.length == 0) {
-            return undefined;
-        }
-        return vipEvents.map<IRevenueKeys>((vipEvent) => ({
-            EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
-            Revenue: parseFloat(vipEvent.totalRevenue?.toFixed(2))
-        }));
-    };
-
     const getOrderData = (): IOrderKeys[] | undefined => {
         if (!vipEvents || vipEvents.length == 0) {
             return undefined;
@@ -68,10 +54,7 @@ export default function CurrentEvents() {
             return undefined;
         }
 
-        return vipEvents.map<ITicketSalesData>((vipEvent) => ({
-            EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
-            Tickets: vipEvent.totalTickets || 0
-        }));
+        return getPurchaseDataFromEvents(vipEvents);
     };
 
     const getShirtData = (): IShirtData | undefined => {
@@ -96,6 +79,8 @@ export default function CurrentEvents() {
                             start: start,
                             end: end
                         };
+                        setChartsHidden(false);
+                        
                         dispatch(
                             setDateRange(selection)
                         );
@@ -126,9 +111,7 @@ export default function CurrentEvents() {
     if (vipEvents && vipEvents.length > 0) {
         showWidgetBar = true;
         totalEvents = vipEvents.length;
-        revenueData = getRevenueData();
         ticketData = getTicketData();
-        orderData = getOrderData();
         shirtData = getShirtData();
         ticketSalesData = getTicketSalesData();
 
@@ -159,7 +142,7 @@ export default function CurrentEvents() {
                 <Col className="spinner-container" hidden={!isLoading}>
                     <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
                 </Col>
-                <Col hidden={isLoading || showEventDetail}>
+                <Col hidden={isLoading}>
                     {(vipEvents && vipEvents.length > 0) ?
                         <table className="resultsTable">
                             <thead>
@@ -192,7 +175,6 @@ export default function CurrentEvents() {
                     </Col>
                     : ''}
                 </Col>
-                <EventDetail hidden={!showEventDetail} IsAdmin={user.isAdmin} ShowInactive={user.showInactiveEvents} />
             </Row>
         </>
     );        

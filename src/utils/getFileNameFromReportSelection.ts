@@ -1,6 +1,6 @@
 import { UserReportSelection } from "@/types/user";
 
-export default function getFileNameFromReportSelection(currentReportSelection: UserReportSelection, fileNameStub?: string) {
+export default function getFileNameFromReportSelection(currentReportSelection: UserReportSelection | undefined, fileNameStub?: string) {
     let fileName = '';
     if (currentReportSelection && currentReportSelection.seller) {
         const sellerName = currentReportSelection.seller.sellerName;

@@ -1,12 +1,14 @@
 import { VipEvent } from "@/types/event";
 import React from 'react';
 import moment from "moment";
-import { useDispatch } from "react-redux";
-import { setEvents, setSelectedEventId } from '@/lib/reportSelectionSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { setEvents } from '@/lib/reportSelectionSlice';
 import { useSetEventInactive } from "@/hooks/useSetEventInactive";
 import { useSetEventDeleted } from "@/hooks/useSetEventDeleted";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import router from "next/router";
+import { RootState } from "@/lib/store";
+import { cacheCurrentReportSelection } from "@/lib/cache";
 
 export default function EventRow(props: any) {
     const dispatch = useDispatch(); 
@@ -15,11 +17,12 @@ export default function EventRow(props: any) {
     const { setEventInactive } = useSetEventInactive();
     const { setEventDeleted } = useSetEventDeleted();
     const { getLocation } = useGetLocation();
+    const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
 
     const setDetailEvent = () => {
-        dispatch(
-            setSelectedEventId(vipEvent.ticketSocketEventId)
-        );
+        cacheCurrentReportSelection(currentReportSelection);
+        const url = `/event/${vipEvent.ticketSocketEventId}`;
+        window.open(url, "_blank");
     };
 
     const activateDeactivateEvent = () => {

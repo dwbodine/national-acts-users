@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { UserReportSelection, UserSeller } from "../types/user";
 import { VipEvent } from "@/types/event";
-import { act } from "react-dom/test-utils";
 
 const initialState: UserReportSelection = {
     seller: {
@@ -16,7 +15,7 @@ const initialState: UserReportSelection = {
     showInactive: false,
     showInactiveOrders: false,
     reloadEvents: true,
-    selectedEventId: undefined
+    currentEvents: []
 };
 
 export const userReportSelectionSlice = createSlice({
@@ -40,7 +39,6 @@ export const userReportSelectionSlice = createSlice({
             state.showInactive = false;
             state.showInactiveOrders = false;
             state.retainDateSelection = false;
-            state.selectedEventId = undefined;
             if (state.reloadEvents) {
                 state.currentEvents = [];
             }
@@ -62,21 +60,6 @@ export const userReportSelectionSlice = createSlice({
             }
             if (state.reloadEvents) {
                 state.currentEvents = [];
-                state.selectedEventId = undefined;
-            }
-            return state;
-        },
-        setShowInactiveOrders:  (state, action: PayloadAction<boolean>) => {
-            const previousInactive = state.showInactiveOrders;
-            const newInactive = action.payload;
-            state.showInactiveOrders = newInactive;
-            state.reloadEvents = (previousInactive != newInactive);
-            if (!state.retainDateSelection) {
-                state.start = 0;
-                state.end = 0;
-            }
-            if (state.reloadEvents) {
-                state.currentEvents = [];
             }
             return state;
         },
@@ -86,24 +69,6 @@ export const userReportSelectionSlice = createSlice({
             state.showDeleted = newDeleted;
             if (state.showDeleted) {
                 state.showInactive = true;
-            }
-            state.reloadEvents = (previousDeleted != newDeleted);
-            if (!state.retainDateSelection) {
-                state.start = 0;
-                state.end = 0;
-            }
-            if (state.reloadEvents) {
-                state.currentEvents = [];
-                state.selectedEventId = undefined;
-            }
-            return state;
-        },
-        setShowDeletedOrders: (state, action: PayloadAction<boolean>) => {
-            const previousDeleted = state.showDeletedOrders;
-            const newDeleted = action.payload;
-            state.showDeletedOrders = newDeleted;
-            if (state.showDeletedOrders) {
-                state.showInactiveOrders = true;
             }
             state.reloadEvents = (previousDeleted != newDeleted);
             if (!state.retainDateSelection) {
@@ -130,12 +95,6 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = action.payload;
             return state;
         },
-        setSelectedEventId: (state, action: PayloadAction<number | undefined>) => {
-            state.selectedEventId = action.payload;
-            state.showInactiveOrders = false;
-            state.showDeletedOrders = false;
-            return state;
-        },
         resetSelection: (state) => {
             state.start = 0;
             state.end = 0;
@@ -144,7 +103,6 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = true;
             state.retainDateSelection = false;
             state.currentEvents = [];
-            state.selectedEventId = undefined;
             return state;
         },
         resetAll: (state) => {
@@ -159,12 +117,26 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = true;
             state.retainDateSelection = false;
             state.currentEvents = [];
-            state.selectedEventId = undefined;
             return state;
         },
+        cacheEvents: (state) => {
+            if (state?.currentEvents?.length ?? 0 > 0) {
+                var json = JSON.stringify(state.currentEvents);
+                sessionStorage.setItem('currentEvents', json);
+            }            
+            return state
+        },
+        restoreEventsFromCache: (state) => {
+            var json = sessionStorage.getItem('currentEvents');
+            if (json) {
+                var events  = JSON.parse(json) as VipEvent[];
+                state.currentEvents = events;
+            }
+            return state
+        }
     }
 })
 
-export const { setSeller, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, setSelectedEventId, resetAll, setShowInactiveOrders, setShowDeletedOrders } = userReportSelectionSlice.actions
+export const { setSeller, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, resetAll } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer

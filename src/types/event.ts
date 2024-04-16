@@ -127,7 +127,7 @@ export interface ITicketTypeData {
 }
 
 export interface ITicketSalesData {
-  EventDate: string;
+  PurchaseDate: string;
   Tickets: number;
 }
 

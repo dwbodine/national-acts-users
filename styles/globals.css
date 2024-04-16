@@ -243,6 +243,18 @@ body {
   font-weight: bold;
 }
 
+.custom-tooltip {
+  border-radius: 5px;
+  border: 2px solid red;
+  background-color: white;
+  padding: 10px;
+}
+
+.custom-tooltip .label {
+  color: black;
+  font-weight: bold;
+}
+
 @media (max-width: 768px) {
   .wrapper {
     width: 368px;

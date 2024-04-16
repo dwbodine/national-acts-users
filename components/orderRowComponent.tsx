@@ -43,8 +43,11 @@ export default function OrderRow(props: any) {
             ticketMap.set(ticket.ticketType, num);
             
         });
-        ticketMap.forEach((value: Number, key: string) => {
-            ticketTypeRows.push(<div>{key} ({value.toString()})</div>)
+        let i = 0;
+        ticketMap.forEach((tickets: Number, ticketType: string) => {
+            const key = `ttr${i}`;
+            ticketTypeRows.push(<div key={key}>{ticketType} ({tickets.toString()})</div>)
+            i++;
         });
     }
     
@@ -59,15 +62,21 @@ export default function OrderRow(props: any) {
             } 
             shirtMap.set(shirt, num);
         });
-        shirtMap.forEach((value: Number, key: string) => {
-            shirtSizeRows.push(<div>{key} ({value.toString()})</div>)
+        let i = 0;
+        shirtMap.forEach((numShirts: Number, shirtSize: string) => {
+            const key = `sm${i}`;
+            shirtSizeRows.push(<div key={key}>{shirtSize} ({numShirts.toString()})</div>)
+            i++;
         });
     }
 
     const attendeeNameRows: any[] = [];
     if (order.attendeeNames && order.attendeeNames.length > 0) {
+        let i = 0;
         order.attendeeNames.forEach((name) => {
-            attendeeNameRows.push(<div>{name}</div>);
+            const key = `anr${i}`;
+            attendeeNameRows.push(<div key={key}>{name}</div>);
+            i++;
         });
     }
 

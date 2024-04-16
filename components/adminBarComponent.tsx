@@ -21,7 +21,6 @@ export default function AdminBar() {
     const { user } = useCurrentUser();
     const { exportEventsToCsv, exportCustomerDataToCsv } = useGetExport();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
-    const showEventDetail = (currentReportSelection?.selectedEventId != undefined);
     const hasEvents = (currentReportSelection?.currentEvents?.length ?? 0 > 0);
 
     const exportEventData = () => {
@@ -63,38 +62,34 @@ export default function AdminBar() {
 
     return (
         <>
-        {(!showEventDetail) ?
-            <>
-                <Row className="page-header">
-                    <Col md={5} sm={12} className="title-container">
-                        <div className="title">{pageTitle}</div>
-                    </Col>
-                    <Col lg={5} sm={12} className="control-container">
-                        <DateRangeSelector />
-                    </Col>
-                    <Col lg={2} sm={12} className="control-container">
-                        <LogoutButton />
-                        <ResetPasswordButton />                    
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={3} sm={12}>
-                        <SelectSeller />
-                    </Col>
-                    <Col md={9} sm={12}>
-                        {user.showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
-                        {user.isAdmin && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
-                        {(user.isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
-                        {(user.isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}
-                    </Col>
-                </Row>
-            </>
-            : ''}
-        </>
+            <Row className="page-header">
+                <Col md={5} sm={12} className="title-container">
+                    <div className="title">{pageTitle}</div>
+                </Col>
+                <Col lg={5} sm={12} className="control-container">
+                    <DateRangeSelector />
+                </Col>
+                <Col lg={2} sm={12} className="control-container">
+                    <LogoutButton />
+                    <ResetPasswordButton />                    
+                </Col>
+            </Row>
+            <Row>
+                <Col md={3} sm={12}>
+                    <SelectSeller />
+                </Col>
+                <Col md={9} sm={12}>
+                    {user.showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
+                    {user.isAdmin && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
+                    {(user.isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
+                    {(user.isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}
+                </Col>
+            </Row>
+        </>           
     );
 }
