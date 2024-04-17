@@ -67,9 +67,7 @@ export const userReportSelectionSlice = createSlice({
             const previousDeleted = state.showDeleted;
             const newDeleted = action.payload;
             state.showDeleted = newDeleted;
-            if (state.showDeleted) {
-                state.showInactive = true;
-            }
+            state.showInactive = state.showDeleted;
             state.reloadEvents = (previousDeleted != newDeleted);
             if (!state.retainDateSelection) {
                 state.start = 0;
@@ -122,12 +120,12 @@ export const userReportSelectionSlice = createSlice({
         cacheEvents: (state) => {
             if (state?.currentEvents?.length ?? 0 > 0) {
                 var json = JSON.stringify(state.currentEvents);
-                sessionStorage.setItem('currentEvents', json);
+                localStorage.setItem('currentEvents', json);
             }            
             return state
         },
         restoreEventsFromCache: (state) => {
-            var json = sessionStorage.getItem('currentEvents');
+            var json = localStorage.getItem('currentEvents');
             if (json) {
                 var events  = JSON.parse(json) as VipEvent[];
                 state.currentEvents = events;

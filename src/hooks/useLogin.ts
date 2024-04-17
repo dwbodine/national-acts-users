@@ -7,7 +7,9 @@ export const useLogin = () => {
     const response = await authService.login(username, password);
     if (response && response.user && response.user.isAuthenticated) {
       const user: User = { ...response.user};
-      sessionStorage.setItem('currentUser', JSON.stringify(user));
+      user.selectedSellerId = 0;
+      localStorage.clear();
+      localStorage.setItem('currentUser', JSON.stringify(user));
       Cookies.set('authToken', user.token || '');
     }
     return response;

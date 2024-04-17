@@ -4,6 +4,8 @@ import { useLogin } from "../src/hooks/useLogin";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
 import CheckAuth from "../components/checkAuthComponent";
+import { useDispatch } from "react-redux";
+import { resetAll } from "@/lib/reportSelectionSlice";
 
 export default function Login() {
   const [name, setName] = useState("");
@@ -11,6 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const { login } = useLogin();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const register = () => {
     router.push('/register');
@@ -21,6 +24,10 @@ export default function Login() {
   };
 
   const onSubmit = () => {
+    dispatch(
+      resetAll()
+    );
+    
     if (!name || !password) {
       setLoginError("Please enter username and password");
     } else {

@@ -5,7 +5,7 @@ export const useLogout = () => {
         let success = true;
         try {
             Cookies.remove("authToken");
-            sessionStorage.removeItem('currentUser');
+            localStorage.clear();
         } catch (e) {
             console.log(e);
             success = false;

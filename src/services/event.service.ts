@@ -8,13 +8,15 @@ import { getShirtDataFromEvents } from "@/utils/getShirtData";
 
 export class EventService {
   protected readonly instance: AxiosInstance;
+  protected readonly eventUrl: string;
   
-  public constructor(url: string) {
+  public constructor(url: string, eUrl: string) {
     this.instance = axios.create({
       baseURL: url,
       timeout: 30000,
       timeoutErrorMessage: "Time out!",
     });
+    this.eventUrl = eUrl;
   }
 
   getEvents = async (reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
@@ -232,6 +234,10 @@ export class EventService {
         return modifyResponse;
       });
   };
+
+  getEventUrl = (): string => {
+    return this.eventUrl;
+  }
 
   exportEventsToCsv = (events: VipEvent[]): string => {
     if (!events || events.length == 0) {

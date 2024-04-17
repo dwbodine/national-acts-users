@@ -11,7 +11,7 @@ export const useCurrentUser = () => {
   });
 
   useEffect(() => {
-    const currentUserStr = sessionStorage.getItem('currentUser') || '';
+    const currentUserStr = localStorage.getItem('currentUser') || '';
     if (currentUserStr) {
       const currentUser = JSON.parse(currentUserStr) as User;
       setUser(currentUser);

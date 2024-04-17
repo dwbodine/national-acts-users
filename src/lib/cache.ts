@@ -1,21 +1,24 @@
-import { VipEvent } from "@/types/event";
 import { UserReportSelection } from "@/types/user";
 
 export function cacheCurrentReportSelection(selection: UserReportSelection) : void {
-    if (!selection || !sessionStorage) {
+    if (!selection || !localStorage) {
         return;
     }
     var json = JSON.stringify(selection);
-    sessionStorage.setItem('currentReportSelection', json); 
+    localStorage.setItem('currentReportSelection', json); 
 }
 
 export function restoreCurrentReportSelection() : UserReportSelection | undefined {
-    if (sessionStorage) {
-        var json = sessionStorage.getItem('currentReportSelection');
+    if (localStorage) {
+        var json = localStorage.getItem('currentReportSelection');
         if (json) {
             const selection: UserReportSelection = JSON.parse(json) as UserReportSelection;
             return selection;
         }
     }    
     return undefined;
+}
+
+export function clearCurrentReportSelectionCache() {
+    localStorage.removeItem('currentReportSelection');
 }

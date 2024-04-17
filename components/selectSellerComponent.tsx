@@ -29,7 +29,7 @@ export default function SelectSeller() {
     const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
         const sellerId = parseInt(event.currentTarget.value);
         user.selectedSellerId = sellerId;
-        sessionStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem('currentUser', JSON.stringify(user));
         const seller = getSelectedSeller(sellerId);
         dispatch(
             setSeller(seller)

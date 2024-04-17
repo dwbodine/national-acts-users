@@ -17,6 +17,7 @@ import router from "next/router";
 import WidgetBar from "./widgetBarComponent";
 import TicketSalesChart from "./ticketSalesChartComponent";
 import { getPurchaseDataFromEvents } from "@/utils/getPurchaseData";
+import { clearCurrentReportSelectionCache } from "@/lib/cache";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -69,6 +70,7 @@ export default function CurrentEvents() {
         if (currentReportSelection.reloadEvents && currentReportSelection.seller.sellerId > 0) {
             setIsLoading(true);
             setChartsHidden(true);
+            clearCurrentReportSelectionCache();
             getEvents(currentReportSelection).then((response) => {
                 if (!response.eventError && response.events) {
                     if (response.events.length > 0) {

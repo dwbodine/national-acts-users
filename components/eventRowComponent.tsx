@@ -9,6 +9,7 @@ import { useGetLocation } from "@/hooks/useGetLocation";
 import router from "next/router";
 import { RootState } from "@/lib/store";
 import { cacheCurrentReportSelection } from "@/lib/cache";
+import { eventService } from "@/services";
 
 export default function EventRow(props: any) {
     const dispatch = useDispatch(); 
@@ -17,11 +18,12 @@ export default function EventRow(props: any) {
     const { setEventInactive } = useSetEventInactive();
     const { setEventDeleted } = useSetEventDeleted();
     const { getLocation } = useGetLocation();
-    const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
+    const currentReportSelection = useSelector((state: RootState) => state.reportSelection);   
+    const eUrl: string = eventService.getEventUrl(); 
 
     const setDetailEvent = () => {
         cacheCurrentReportSelection(currentReportSelection);
-        const url = `/event/${vipEvent.ticketSocketEventId}`;
+        const url = `/${eUrl}?id=${vipEvent.ticketSocketEventId}`;
         window.open(url, "_blank");
     };
 
