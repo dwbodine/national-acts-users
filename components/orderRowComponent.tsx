@@ -15,6 +15,7 @@ export default function OrderRow(props: any) {
     const isAdmin = props.IsAdmin as boolean;
     const hasPhoneData = props.HasPhoneData as boolean;
     const hasShirtData = props.HasShirtData as boolean;
+    const hideRev = props.HideRevenue as boolean;
 
     const { setOrderInactive } = useSetOrderInactive();
     const { setOrderDeleted } = useSetOrderDeleted();
@@ -139,12 +140,12 @@ export default function OrderRow(props: any) {
             <td>{eventName}</td>
             <td>{ticketTypeRows}</td>
             <td>{order.numTickets}</td>
-            <td className="pull-right">{revenue}</td>
+            <td className="pull-right" hidden={hideRev}>{revenue}</td>
             <td>{order.email}</td>
             { hasPhoneData ? <td>{order.phone}</td> : ''}
             { hasShirtData ? <td>{shirtSizeRows}</td> : ''}
-            { isAdmin ? <td><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
-            { isAdmin ? <td><a onClick={deleteUndeleteOrder}>{deletedLabel}</a></td> : ''}
+            { isAdmin ? <td className="no-print"><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
+            { isAdmin ? <td className="no-print"><a onClick={deleteUndeleteOrder}>{deletedLabel}</a></td> : ''}
         </tr>
     );
 }

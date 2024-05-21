@@ -16,6 +16,7 @@ import { cacheCurrentReportSelection, restoreCurrentReportSelection } from "@/li
 import { UserReportSelection } from "@/types/user";
 import { useGetEvents } from "@/hooks/useGetEvents";
 import { CirclesWithBar } from "react-loader-spinner";
+import PrintButton from "./printButtonComponent";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
@@ -27,6 +28,7 @@ export default function EventDetail(props: any) {
     const [checkChanged, setCheckChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { getEvents } = useGetEvents();
+    const hideRev: boolean = currentReportSelection?.hideRevenue ?? false;
 
     const id: number | undefined = props.Id as number;
     
@@ -110,7 +112,7 @@ export default function EventDetail(props: any) {
             const key = `or${i}`;
             const showOrder = (!order.isDeleted && order.isActive) || (order.isDeleted && currentReportSelection?.showDeletedOrders) || (!order.isActive && currentReportSelection?.showInactiveOrders);
             if (showOrder) {
-                orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} />);
+                orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRev} />);
             }            
             i++;
         });    
@@ -167,7 +169,14 @@ export default function EventDetail(props: any) {
         }
     };
 
-    
+    const handleHideRevenue = async(event: ChangeEvent<HTMLInputElement>) => {
+        if (currentReportSelection) {
+            let reportSelection = { ...currentReportSelection };
+            reportSelection.hideRevenue = event.target.checked;
+            cacheCurrentReportSelection(reportSelection);
+            setCheckChanged(!checkChanged);
+        }
+    };    
 
     return (
         <>
@@ -193,7 +202,7 @@ export default function EventDetail(props: any) {
                                     <td className="vipLabel">Total Tickets:</td>
                                     <td>{vipEvent.totalTickets}</td>
                                 </tr>
-                                <tr>
+                                <tr hidden={hideRev}>
                                     <td className="vipLabel">Total Revenue:</td>
                                     <td>${vipEvent.totalRevenue?.toFixed(2)}</td>
                                 </tr>
@@ -213,16 +222,24 @@ export default function EventDetail(props: any) {
                             <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
                         </Col>
                     </Row>
-                    <Row hidden={!isAdmin || !showInactive || isLoading}>
-                        <Col>
-                            <span className="inactive-check">
+                    <Row hidden={!isAdmin || !showInactive || isLoading} className="no-print">
+                        <Col md={1} sm={1}>
+                            <span className="admin-button">
                                 <Button onClick={exportOrdersToCsv}>Export to Csv</Button>
                             </span>
+                        </Col>
+                        <Col md={1} sm={11}>
+                            <PrintButton />
+                        </Col>
+                        <Col md={10} sm={12}>
                             <span className="inactive-check">
                                 <FormCheck checked={currentReportSelection?.showInactiveOrders} onChange={handleShowInactive} disabled={currentReportSelection?.showDeletedOrders} /> Show Inactive Orders?
                             </span>
                             <span className="inactive-check">
                                 <FormCheck checked={currentReportSelection?.showDeletedOrders} onChange={handleShowDeleted} /> Show Deleted Orders?
+                            </span>
+                            <span className="inactive-check">
+                                <FormCheck checked={currentReportSelection?.hideRevenue} onChange={handleHideRevenue} /> Hide Revenue Items?
                             </span>
                         </Col>
                     </Row>
@@ -237,11 +254,11 @@ export default function EventDetail(props: any) {
                                     <th>Event Name</th>
                                     <th>Ticket Type</th>
                                     <th># of tickets</th>
-                                    <th>Revenue</th>
+                                    <th hidden={hideRev}>Revenue</th>
                                     <th>Email</th>
                                     {(hasPhoneData) ? <th>Phone #</th> : ''}
                                     {(hasShirtData) ? <th>Shirt Sizes</th> : ''}
-                                    {(isAdmin) ? <th colSpan={2}>Admin Commands</th> : ''}
+                                    {(isAdmin) ? <th colSpan={2} className="no-print">Admin Commands</th> : ''}
                                 </tr>
                             </thead>
                             <tbody>
