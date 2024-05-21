@@ -78,6 +78,10 @@ export const userReportSelectionSlice = createSlice({
             }
             return state;
         },
+        setHideRevenue: (state, action: PayloadAction<boolean>) => {
+            state.hideRevenue = action.payload;
+            return state;
+        },
         setEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
             if (action.payload) {
                 state.currentEvents = action.payload;
@@ -135,6 +139,6 @@ export const userReportSelectionSlice = createSlice({
     }
 })
 
-export const { setSeller, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, resetAll } = userReportSelectionSlice.actions
+export const { setSeller, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, resetAll, setHideRevenue } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer

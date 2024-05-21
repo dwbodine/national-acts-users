@@ -34,7 +34,7 @@ export default function TicketSalesChart(props: any) {
     };
     
     return (
-        <Row hidden={!ticketSalesData}>
+        <Row className='no-print' hidden={!ticketSalesData}>
             <Col>
                 <ResponsiveContainer width="100%" height={200}>
                     <AreaChart

@@ -26,6 +26,7 @@ export default function CurrentEvents() {
     const dispatch = useDispatch(); 
     const [isLoading, setIsLoading] = useState(false);
     const [chartsHidden, setChartsHidden] = useState(true);
+    const [hideRevItem, setHideRevItem] = useState(false);
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -67,39 +68,44 @@ export default function CurrentEvents() {
     }
 
     useEffect(() => {
-        if (currentReportSelection.reloadEvents && currentReportSelection.seller.sellerId > 0) {
-            setIsLoading(true);
-            setChartsHidden(true);
-            clearCurrentReportSelectionCache();
-            getEvents(currentReportSelection).then((response) => {
-                if (!response.eventError && response.events) {
-                    if (response.events.length > 0) {
-                        const start = moment(response.events[0].eventDate).unix();
-                        const end = moment(response.events[response.events.length-1].eventDate).unix();
-                        const selection: UserReportSelection = {
-                            ...currentReportSelection,
-                            start: start,
-                            end: end
-                        };
-                        setChartsHidden(false);
-                        
+        if (currentReportSelection.seller.sellerId > 0) {
+            setHideRevItem(currentReportSelection.hideRevenue ?? false);
+
+            if (currentReportSelection.reloadEvents) {
+                setIsLoading(true);
+                setChartsHidden(true);
+                clearCurrentReportSelectionCache();
+                getEvents(currentReportSelection).then((response) => {
+                    if (!response.eventError && response.events) {
+                        if (response.events.length > 0) {
+                            const start = moment(response.events[0].eventDate).unix();
+                            const end = moment(response.events[response.events.length-1].eventDate).unix();
+                            const selection: UserReportSelection = {
+                                ...currentReportSelection,
+                                start: start,
+                                end: end
+                            };
+                            setChartsHidden(false);
+                            
+                            dispatch(
+                                setDateRange(selection)
+                            );
+                        }
                         dispatch(
-                            setDateRange(selection)
+                            setEvents(response.events)
+                        );
+                    } else if (response.statusCode == 401) {
+                        router.push('/logout');
+                    } else {
+                        dispatch(
+                            setEvents([])
                         );
                     }
-                    dispatch(
-                        setEvents(response.events)
-                    );
-                } else if (response.statusCode == 401) {
-                    router.push('/logout');
-                } else {
-                    dispatch(
-                        setEvents([])
-                    );
-                }
-                setIsLoading(false);
-            });
-        }
+                    setIsLoading(false);
+                });
+            }
+        }        
+        
     }, [currentReportSelection, dispatch, getEvents]);     
     
     const rows = [];
@@ -120,7 +126,7 @@ export default function CurrentEvents() {
         let i = 0;
         for (const evt of vipEvents) {
             const key = `ev${i}`;
-            rows.push(<EventRow key={key} VipEvent={evt} IsAdmin={user.isAdmin} />);
+            rows.push(<EventRow key={key} VipEvent={evt} IsAdmin={user.isAdmin} HideRevenue={hideRevItem} />);
             if (!evt.isDeleted) {
                 totalTickets += evt.totalTickets;
                 totalRevenue += evt.totalRevenue;
@@ -138,7 +144,7 @@ export default function CurrentEvents() {
     return (
         <>
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
-                ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} />
+                ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} />
             <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} />
             <Row>
                 <Col className="spinner-container" hidden={!isLoading}>
@@ -154,8 +160,8 @@ export default function CurrentEvents() {
                                     <th>Venue</th>
                                     <th>Location</th>
                                     <th>Tickets Sold</th>
-                                    <th>Revenue (USD)</th>
-                                    { user.isAdmin ? <th colSpan={2} className="center">Admin Commands</th> : ''}            
+                                    <th hidden={hideRevItem}>Revenue (USD)</th>
+                                    { user.isAdmin ? <th colSpan={2} className="center no-print">Admin Commands</th> : ''}            
                                 </tr>
                             </thead>
                             <tbody>
@@ -165,8 +171,8 @@ export default function CurrentEvents() {
                                 <tr>
                                     <td colSpan={4}>Total</td> 
                                     <td className="pull-right">{totalTickets}</td>
-                                    <td className="pull-right">{totalRevenue.toFixed(2)}</td>
-                                    { user.isAdmin ? <td colSpan={2}></td> : ''}            
+                                    <td className="pull-right" hidden={hideRevItem}>{totalRevenue.toFixed(2)}</td>
+                                    { user.isAdmin ? <td colSpan={2} className="no-print"></td> : ''}            
                                 </tr>
                             </tfoot>
                         </table>

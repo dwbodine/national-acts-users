@@ -83,7 +83,7 @@ body {
   color: black;
 }
 
-.inactive-check div, .deleted-check div {
+.inactive-check div, .deleted-check div, .revenue-check div {
   margin-left: 20px;
   display: inline;
 }
@@ -258,5 +258,17 @@ body {
 @media (max-width: 768px) {
   .wrapper {
     width: 368px;
+  }
+}
+
+@media (max-width: 576px) {
+  .no-mobile {
+    display: none;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none;
   }
 }
