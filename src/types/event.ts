@@ -129,6 +129,7 @@ export interface ITicketTypeData {
 export interface ITicketSalesData {
   PurchaseDate: string;
   Tickets: number;
+  Revenue: number;
 }
 
 export interface IShirtData {

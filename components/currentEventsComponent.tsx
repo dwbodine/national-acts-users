@@ -145,7 +145,7 @@ export default function CurrentEvents() {
         <>
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
                 ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} />
-            <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} />
+            <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} HideRevenue={hideRevItem} />
             <Row>
                 <Col className="spinner-container" hidden={!isLoading}>
                     <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />

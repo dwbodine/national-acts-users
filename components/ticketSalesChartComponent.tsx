@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { ITicketSalesData } from '@/types/event';
 import { XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, Legend, Label, AreaChart, Area } from 'recharts';
 import { Row, Col } from 'react-bootstrap';
+import { LabelPosition } from 'recharts/types/component/Label';
 
 export default function TicketSalesChart(props: any) {
 
     const ticketSalesData: ITicketSalesData[] = props.TicketSalesData as ITicketSalesData[];
     const [chartsHidden, setChartsHidden] = useState(true);
     const hideCharts: boolean = props.ChartsHidden as boolean;
+    const hideRev: boolean = props.HideRevenue as boolean;
     
     useEffect(() => {
         if (hideCharts) {
@@ -26,12 +28,16 @@ export default function TicketSalesChart(props: any) {
             <div className="custom-tooltip">
                 <p className="label">{`Purchase Date: ${label}`}</p>
                 <p className="label">{`Ticket Sales: ${payload[0].value}`}</p>
+                {!hideRev ? <p className="label">{`Revenue: $${parseFloat(payload[1].value).toFixed(2)}`}</p> : ''}
             </div>
             );
         }
         
         return null;
     };
+
+    const yLabel: string = hideRev ? "Tickets" : "Tickets / Revenue ($)";
+    const yPosition: LabelPosition = hideRev ? "insideLeft" : "insideBottomLeft";
     
     return (
         <Row className='no-print' hidden={!ticketSalesData}>
@@ -51,11 +57,14 @@ export default function TicketSalesChart(props: any) {
                             <Label value="Purchase Date" offset={-4} position="insideBottom" />
                         </XAxis>
                         <YAxis>
-                            <Label value="Tickets" position="insideLeft" angle={-90} />
+                            <Label value={yLabel} position={yPosition} angle={-90} offset={15} />
                         </YAxis>
                         <Tooltip content={<CustomTooltip />}/>
                         {!chartsHidden ? 
-                        <Area type="monotone" dataKey="Tickets" stroke="#FF0000" fill="#d88884" dot={{ stroke: 'red', strokeWidth: 1, r: 3 }} />
+                        <Area type="monotone" dataKey="Tickets" stroke="#000000" fill="#d88884" />
+                        : ''}
+                        {!chartsHidden && !hideRev ? 
+                        <Area type="monotone" dataKey="Revenue" stroke="#FF0000" fill="#8884d8"  />
                         : ''}
                     </AreaChart>
                 </ResponsiveContainer>

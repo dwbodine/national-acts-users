@@ -11,11 +11,13 @@ export function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[
             if (!salesData) {
                 const data: ITicketSalesData = {
                     PurchaseDate: moment(key).format('MM/DD/YYYY'),
-                    Tickets: order.numTickets
+                    Tickets: order.numTickets,
+                    Revenue: order.revenueUsd
                 };
                 map.set(key, data);
             } else {
                 salesData.Tickets += order.numTickets;
+                salesData.Revenue += order.revenueUsd;
                 map.set(key, salesData);
             }
         });
@@ -32,7 +34,8 @@ export function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[
             if (!salesData) {
                 const data: ITicketSalesData = {
                     PurchaseDate: moment(key).format('MM/DD/YYYY'),
-                    Tickets: 0
+                    Tickets: 0,
+                    Revenue: 0
                 };
                 ticketSalesData.push(data);
             } else {
