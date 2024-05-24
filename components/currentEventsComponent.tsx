@@ -115,6 +115,7 @@ export default function CurrentEvents() {
     let totalShirts = 0;
     let totalOrders = 0;
     let showWidgetBar = false;
+    let ticketsRefunded = 0;
 
     if (vipEvents && vipEvents.length > 0) {
         showWidgetBar = true;
@@ -130,12 +131,9 @@ export default function CurrentEvents() {
             if (!evt.isDeleted) {
                 totalTickets += evt.totalTickets;
                 totalRevenue += evt.totalRevenue;
+                ticketsRefunded += evt.numTicketsRefunded ?? 0;
                 totalOrders += evt.orders?.length ?? 0;
-                if (evt.shirtSales && evt.shirtSales.length > 0) {
-                    evt.shirtSales.forEach((sale) => {
-                        totalShirts += sale.total ?? 0;
-                    });
-                }
+                totalShirts += evt.totalShirts;
             }
             i++;
         }
@@ -144,7 +142,7 @@ export default function CurrentEvents() {
     return (
         <>
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
-                ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} />
+                ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} TicketsRefunded={ticketsRefunded} />
             <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} HideRevenue={hideRevItem} />
             <Row>
                 <Col className="spinner-container" hidden={!isLoading}>

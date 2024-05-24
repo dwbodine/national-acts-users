@@ -15,6 +15,7 @@ export default function WidgetBar(props: any) {
     const ticketData: ITicketData | undefined = props.TicketData as ITicketData | undefined;
     const shirtData: IShirtData | undefined = props.ShirtData as IShirtData | undefined;
     const hideRevItem = props.HideRevenue as boolean;
+    const ticketsRefunded: number = props.TicketsRefunded as number;
     
     return (
         <Row className="no-print" hidden={!totalShows}>
@@ -28,7 +29,7 @@ export default function WidgetBar(props: any) {
                 <ShirtSizesWidget ShirtData={shirtData} TotalShirts={totalShirts} />
             </Col>
             <Col hidden={hideRevItem} lg={2} md={5} className="stat-block">
-                <RevenueWidget TotalRevenue={totalRevenue} />
+                <RevenueWidget TotalRevenue={totalRevenue} TicketsRefunded={ticketsRefunded} />
             </Col>
         </Row>
     )

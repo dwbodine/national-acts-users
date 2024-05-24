@@ -36,6 +36,7 @@ export default function DateRangeSelector() {
     
     return (
         <>
+            <span className="date-range-title">Event date range:</span>
             <DateRangePicker caretAs={FaCalendar} placement="bottomEnd" appearance="default" format="MM/dd/yyyy" character=" – " onChange={handleChange} value={dateValues} disabled={(currentReportSelection.seller.sellerId <= 0)}/>
         </>
     );        

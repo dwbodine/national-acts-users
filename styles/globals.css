@@ -83,6 +83,11 @@ body {
   color: black;
 }
 
+.date-range-title, .seller-title 
+{
+  margin-right: 10px;
+}
+
 .inactive-check div, .deleted-check div, .revenue-check div {
   margin-left: 20px;
   display: inline;
@@ -112,12 +117,12 @@ body {
 
 .stat-block svg {
   display: block;
-  margin: 0 5px 10px 0;
+  margin: 0 5px 0 0;
 }
 
 .stat-block div {
   white-space: nowrap;
-  margin-bottom: 15px;
+  margin: 15px 0;
 }
 
 .stat-block span {

@@ -38,13 +38,16 @@ export default function SelectSeller() {
 
     if (user && user.sellers && user.sellers.length > 0) {
         if (user.sellers.length > 1) {
-            return (        
-                <select id="seller" value={selectedSellerId} onChange={handleChange}>
-                    <option value="0"> -- Select One --</option>
-                    { user.sellers.map((seller) => {
-                        return <option key={seller.sellerId} value={seller.sellerId}>{seller.sellerName}</option>;                    
-                    })}
-                </select>
+            return (    
+                <>
+                    <span className="seller-title">Seller:</span>    
+                    <select id="seller" value={selectedSellerId} onChange={handleChange}>
+                        <option value="0"> -- Select One --</option>
+                        { user.sellers.map((seller) => {
+                            return <option key={seller.sellerId} value={seller.sellerId}>{seller.sellerName}</option>;                    
+                        })}
+                    </select>
+                </>
             );
         }
         else {

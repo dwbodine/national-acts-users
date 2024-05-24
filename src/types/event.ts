@@ -82,6 +82,7 @@ export interface VipEvent {
   hasNonUSAOrders: boolean;
   nonUsaCurrencySymbol?: string;
   nonUsaCurrencyAbbrev?: string;
+  numTicketsRefunded?: number;
 }
 
 export interface GetEventsResponse {
