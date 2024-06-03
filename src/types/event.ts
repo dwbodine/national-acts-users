@@ -14,6 +14,7 @@ export interface Ticket {
   price?: number;
   isActive?: boolean;
   ticketType: string;
+  serviceFee?: number;
 }
 
 export interface Order {
@@ -27,6 +28,7 @@ export interface Order {
   isRefunded: boolean;
   totalShirts?: number;
   revenueUsd: number;
+  serviceFees: number;
   exchangeRate: number;
   currencySymbol: string;
   currencyAbbrev: string;
@@ -62,6 +64,7 @@ export interface VipEvent {
   thumbnail?: string;
   ticketSocketUrl?: string;
   totalRevenue: number;
+  totalServiceFees: number;
   totalTickets: number;
   totalShirts: number;
   shirtSales?: ShirtSales[];
