@@ -8,8 +8,8 @@ import { useSetEventDeleted } from "@/hooks/useSetEventDeleted";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import router from "next/router";
 import { RootState } from "@/lib/store";
-import { cacheCurrentReportSelection } from "@/lib/cache";
 import { eventService } from "@/services";
+import { userAgent } from "next/server";
 
 export default function EventRow(props: any) {
     const dispatch = useDispatch(); 
@@ -23,7 +23,6 @@ export default function EventRow(props: any) {
     const eUrl: string = eventService.getEventUrl(); 
 
     const setDetailEvent = () => {
-        cacheCurrentReportSelection(currentReportSelection);
         const url = `/${eUrl}?id=${vipEvent.ticketSocketEventId}`;
         window.open(url, "_blank");
     };
@@ -89,6 +88,7 @@ export default function EventRow(props: any) {
     
     const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
     const revenue = new Number(vipEvent.totalRevenue).toFixed(2);
+    const serviceFees = new Number(vipEvent.totalServiceFees).toFixed(2);
     const inactiveLabel = vipEvent.isActive ? "Deactivate" : "Activate";
     const deletedLabel = vipEvent.isDeleted ? "Undelete" : "Delete";
         
@@ -99,7 +99,8 @@ export default function EventRow(props: any) {
             <td>{venueName}</td>
             <td>{location}</td>
             <td className="pull-right">{vipEvent.totalTickets}</td>
-            <td className="pull-right" hidden={hideRevItem}>{revenue}</td>
+            <td className="pull-right" hidden={hideRevItem}>{serviceFees}</td>
+            <td className="pull-right" hidden={hideRevItem || !isAdmin}>{revenue}</td>
             { isAdmin ? <td className="no-print"><a onClick={activateDeactivateEvent}>{inactiveLabel}</a></td> : ''}
             { isAdmin ? <td className="no-print"><a onClick={deleteUndeleteEvent}>{deletedLabel}</a></td> : ''}
         </tr>

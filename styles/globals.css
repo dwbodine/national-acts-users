@@ -161,7 +161,8 @@ body {
 }
 
 .resultsTable tr.event-deleted {
-  color: darkgray;
+  color: maroon;
+  font-weight: bold;
 }
 
 .resultsTable thead, .resultsTable tfoot {
@@ -244,7 +245,7 @@ body {
 }
 
 .vipTable .deleted {
-  color: darkgray;
+  color: maroon;
   font-weight: bold;
 }
 
