@@ -1,6 +1,6 @@
 import { useSetOrderDeleted } from '@/hooks/useSetOrderDeleted';
 import { useSetOrderInactive } from '@/hooks/useSetOrderInadtive';
-import { setEvents } from '@/lib/reportSelectionSlice';
+import { setEvents, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { Order } from '@/types/event';
 import moment from 'moment';
 import React from 'react';
@@ -31,6 +31,7 @@ export default function OrderRow(props: any) {
     const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
     const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
     const revenue = new Number(order.revenueUsd).toFixed(2);
+    const serviceFees = new Number(order.serviceFees).toFixed(2);
 
     const ticketTypeRows: any[] = [];
     if (order.tickets && order.tickets.length > 0) {
@@ -95,8 +96,9 @@ export default function OrderRow(props: any) {
                     return;
                 } else {
                     dispatch(
-                        setEvents()
-                    )
+                        setReloadEvents(true)
+                    );
+                    window.opener.location.reload(true);
                 }
             })
             .catch((e) => {
@@ -118,8 +120,9 @@ export default function OrderRow(props: any) {
                     return;
                 } else {
                     dispatch(
-                        setEvents()
-                    )
+                        setReloadEvents(true)
+                    );
+                    window.opener.location.reload(true);
                 }
             })
             .catch((e) => {
@@ -140,6 +143,7 @@ export default function OrderRow(props: any) {
             <td>{eventName}</td>
             <td>{ticketTypeRows}</td>
             <td>{order.numTickets}</td>
+            <td className="pull-right" hidden={hideRev || !isAdmin}>{serviceFees}</td>
             <td className="pull-right" hidden={hideRev}>{revenue}</td>
             <td>{order.email}</td>
             { hasPhoneData ? <td>{order.phone}</td> : ''}

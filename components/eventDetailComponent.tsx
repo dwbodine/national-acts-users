@@ -12,11 +12,12 @@ import { useGetExport } from "@/hooks/useGetExport";
 import getFileNameFromReportSelection from "@/utils/getFileNameFromReportSelection";
 import downloadFile from "@/utils/downloadFile";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { cacheCurrentReportSelection, restoreCurrentReportSelection } from "@/lib/cache";
-import { UserReportSelection } from "@/types/user";
-import { useGetEvents } from "@/hooks/useGetEvents";
 import { CirclesWithBar } from "react-loader-spinner";
 import PrintButton from "./printButtonComponent";
+import { useGetEventDetails } from "@/hooks/useGetEventDetails";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders } from "@/lib/reportSelectionSlice";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
@@ -24,30 +25,42 @@ export default function EventDetail(props: any) {
     const showInactive = user.showInactiveEvents;
     const { getLocation } = useGetLocation();
     const { exportEventCustomerDataToCsv } = useGetExport();
-    const [currentReportSelection, setCurrentReportSelection] = useState<UserReportSelection | undefined>(undefined);
+    const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const [checkChanged, setCheckChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { getEvents } = useGetEvents();
+    const { getEventDetails } = useGetEventDetails();
+    const dispatch = useDispatch(); 
     const hideRev: boolean = currentReportSelection?.hideRevenue ?? false;
-
+    const [vipEvent, setVipEvent] = useState<VipEvent | undefined>(undefined);
     const id: number | undefined = props.Id as number;
-    
-    useEffect(() => {        
-        const selection = restoreCurrentReportSelection();
-        if (selection) {
-            setCurrentReportSelection(selection);
-        }
-    }, [checkChanged]);    
 
-    if (!currentReportSelection) {
-        return (<></>);
-    }
+    useEffect(() => {     
+        async function fetchEvent() {
+            if (id && currentReportSelection && currentReportSelection.reloadEvents) {
+                setIsLoading(true);
+                const results = await getEventDetails(id, currentReportSelection);
+                if (results && results.events && results.events.length > 0) {
+                    setVipEvent(results.events[0]);
+                    if (currentReportSelection.currentEvents && results.events[0] != undefined) {
+                        const newEvent: VipEvent = results.events[0];
+                        currentReportSelection.currentEvents.map((evt) => {
+                            return evt.ticketSocketEventId == newEvent.ticketSocketEventId ? newEvent : evt;
+                        });
+                        dispatch (
+                            setEvents(currentReportSelection.currentEvents)
+                        );
+                    } 
+                    dispatch (
+                        setReloadEvents(false)
+                    )
+                }                
+                setIsLoading(false);
+            }
+        }   
+        fetchEvent();
+        
+    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails]);
 
-    let vipEvent: VipEvent | undefined = undefined;
-    if (id && currentReportSelection?.currentEvents && currentReportSelection.currentEvents.length > 0) {
-        vipEvent = currentReportSelection.currentEvents.find(x => x.ticketSocketEventId == id);
-    }    
-    
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
 
@@ -120,60 +133,27 @@ export default function EventDetail(props: any) {
 
     const handleShowInactive = async (event: ChangeEvent<HTMLInputElement>) => {
         if (currentReportSelection) {
-            setIsLoading(true);
-            let reportSelection = { ...currentReportSelection };
-            const previousInactive = reportSelection.showInactiveOrders;
-            const newInactive = event.target.checked;
-            reportSelection.showInactiveOrders = newInactive;
-            reportSelection.reloadEvents = (previousInactive != newInactive);
-            if (!reportSelection.retainDateSelection) {
-                reportSelection.start = 0;
-                reportSelection.end = 0;
-            }
-            if (reportSelection.reloadEvents) {
-                reportSelection.currentEvents = [];
-                const response = await getEvents(reportSelection);
-                if (response.events && response.events.length > 0) {
-                    reportSelection.currentEvents = response.events;
-                }                
-            }
-            cacheCurrentReportSelection(reportSelection);
-            setCheckChanged(!checkChanged);
-            setIsLoading(false);
+            dispatch(
+                setShowInactiveOrders(event.target.checked)
+            );
+            setVipEvent(undefined);            
         }
     };
 
     const handleShowDeleted = async (event: ChangeEvent<HTMLInputElement>) => {
         if (currentReportSelection) {
-            setIsLoading(true);
-            let reportSelection = { ...currentReportSelection };
-            const previousDeleted = reportSelection.showDeletedOrders;
-            const newDeleted = event.target.checked;
-            reportSelection.showDeletedOrders = newDeleted;
-            reportSelection.showInactiveOrders = reportSelection.showDeletedOrders;
-            reportSelection.reloadEvents = (previousDeleted != newDeleted);
-            if (!reportSelection.retainDateSelection) {
-                reportSelection.start = 0;
-                reportSelection.end = 0;
-            }
-            if (reportSelection.reloadEvents) {
-                reportSelection.currentEvents = [];
-                const response = await getEvents(reportSelection);
-                if (response.events && response.events.length > 0) {
-                    reportSelection.currentEvents = response.events;
-                }                
-            }
-            cacheCurrentReportSelection(reportSelection);
-            setCheckChanged(!checkChanged);
-            setIsLoading(false);
+            dispatch(
+                setShowDeletedOrders(event.target.checked)
+            );
+            setVipEvent(undefined);            
         }
     };
 
     const handleHideRevenue = async(event: ChangeEvent<HTMLInputElement>) => {
         if (currentReportSelection) {
-            let reportSelection = { ...currentReportSelection };
-            reportSelection.hideRevenue = event.target.checked;
-            cacheCurrentReportSelection(reportSelection);
+            dispatch (
+                setHideRevenue(event.target.checked)
+            );
             setCheckChanged(!checkChanged);
         }
     };    
@@ -205,6 +185,10 @@ export default function EventDetail(props: any) {
                                 <tr hidden={hideRev}>
                                     <td className="vipLabel">Total Revenue:</td>
                                     <td>${vipEvent.totalRevenue?.toFixed(2)}</td>
+                                </tr>
+                                <tr hidden={hideRev || !user.isAdmin}>
+                                    <td className="vipLabel">Total Service Fees:</td>
+                                    <td>${vipEvent.totalServiceFees?.toFixed(2)}</td>
                                 </tr>
                                 <tr hidden={!hasTicketData}>
                                     <td className="vipLabel">Ticket Breakdown:</td>
@@ -254,6 +238,7 @@ export default function EventDetail(props: any) {
                                     <th>Event Name</th>
                                     <th>Ticket Type</th>
                                     <th># of tickets</th>
+                                    <th hidden={hideRev || !user.isAdmin}>Service Fees</th>
                                     <th hidden={hideRev}>Revenue</th>
                                     <th>Email</th>
                                     {(hasPhoneData) ? <th>Phone #</th> : ''}

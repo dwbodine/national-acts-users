@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { constants } from "os";
 import CheckAuth from "../components/checkAuthComponent";
 import EventDetail from "../components/eventDetailComponent";
 import { useEffect, useState } from "react";
@@ -6,13 +6,12 @@ import { useEffect, useState } from "react";
 export default function EventPage() {
     const [detailHidden, setDetailHidden] = useState(true);
     const [id, setId] = useState(0);
-    const router = useRouter();
 
     useEffect(() => {
         setDetailHidden(true);
-
-        if (router && router.query) {
-            const idRoute = router.query.id;
+        const searchParams = new URLSearchParams(window.location.search);
+        if (searchParams) {
+            const idRoute = searchParams.get('id');
             if (idRoute) {
                 const idVal = parseInt(idRoute.toString());
                 if (!isNaN(idVal)) {
@@ -22,7 +21,7 @@ export default function EventPage() {
             }
         }            
 
-    }, [router, detailHidden, setDetailHidden, id, setId]);    
+    }, [detailHidden, setDetailHidden, id, setId]);    
 
     return (
         <>

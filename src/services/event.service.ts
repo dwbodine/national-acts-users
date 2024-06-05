@@ -71,6 +71,50 @@ export class EventService {
       });
   };
 
+  getEventDetail = async (eventId: number, reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
+    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&tsEventId=${eventId}`;
+
+    if (reportSelection.showInactiveOrders) {
+      url += '&inactive=1';
+    }
+
+    if (reportSelection.showDeletedOrders) {
+      url += '&deleted=1';
+    }
+
+    let eventResponse: GetEventsResponse = {
+      events: undefined,
+      eventError: undefined,
+      statusCode: 200
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers
+      })
+      .then((res) => {
+        const events = res.data;
+        eventResponse.events = events.length ? events as VipEvent[] : [];
+        return eventResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          eventResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while fetching events - please contact your administrator";
+        }
+        eventResponse.eventError = errorMessage;
+        return eventResponse;
+      });
+  };
+
   setEventInactive = async(eventId: number, isActive: boolean): Promise<ModifyEventResponse> => {
     const url = "/user/setEventInactiveSecured";
     const headers = getAuthorizationHeader();

@@ -17,7 +17,6 @@ import router from "next/router";
 import WidgetBar from "./widgetBarComponent";
 import TicketSalesChart from "./ticketSalesChartComponent";
 import { getPurchaseDataFromEvents } from "@/utils/getPurchaseData";
-import { clearCurrentReportSelectionCache } from "@/lib/cache";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -74,7 +73,6 @@ export default function CurrentEvents() {
             if (currentReportSelection.reloadEvents) {
                 setIsLoading(true);
                 setChartsHidden(true);
-                clearCurrentReportSelectionCache();
                 getEvents(currentReportSelection).then((response) => {
                     if (!response.eventError && response.events) {
                         if (response.events.length > 0) {
@@ -116,6 +114,7 @@ export default function CurrentEvents() {
     let totalOrders = 0;
     let showWidgetBar = false;
     let ticketsRefunded = 0;
+    let totalServiceFees = 0;
 
     if (vipEvents && vipEvents.length > 0) {
         showWidgetBar = true;
@@ -134,6 +133,7 @@ export default function CurrentEvents() {
                 ticketsRefunded += evt.numTicketsRefunded ?? 0;
                 totalOrders += evt.orders?.length ?? 0;
                 totalShirts += evt.totalShirts;
+                totalServiceFees += evt.totalServiceFees;
             }
             i++;
         }
@@ -158,6 +158,7 @@ export default function CurrentEvents() {
                                     <th>Venue</th>
                                     <th>Location</th>
                                     <th>Tickets Sold</th>
+                                    <th hidden={hideRevItem || !user.isAdmin}>Service Fees</th>
                                     <th hidden={hideRevItem}>Revenue (USD)</th>
                                     { user.isAdmin ? <th colSpan={2} className="center no-print">Admin Commands</th> : ''}            
                                 </tr>
@@ -169,6 +170,7 @@ export default function CurrentEvents() {
                                 <tr>
                                     <td colSpan={4}>Total</td> 
                                     <td className="pull-right">{totalTickets}</td>
+                                    <td className="pull-right" hidden={hideRevItem || !user.isAdmin}>{totalServiceFees.toFixed(2)}</td>
                                     <td className="pull-right" hidden={hideRevItem}>{totalRevenue.toFixed(2)}</td>
                                     { user.isAdmin ? <td colSpan={2} className="no-print"></td> : ''}            
                                 </tr>

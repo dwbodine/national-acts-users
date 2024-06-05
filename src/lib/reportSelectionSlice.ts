@@ -63,6 +63,13 @@ export const userReportSelectionSlice = createSlice({
             }
             return state;
         },
+        setShowInactiveOrders: (state, action: PayloadAction<boolean>) => {
+            const previousInactive = state.showInactiveOrders;
+            const newInactive = action.payload;
+            state.showInactiveOrders = newInactive;
+            state.reloadEvents = (previousInactive != newInactive);
+            return state;
+        },
         setShowDeleted: (state, action: PayloadAction<boolean>) => {
             const previousDeleted = state.showDeleted;
             const newDeleted = action.payload;
@@ -76,6 +83,14 @@ export const userReportSelectionSlice = createSlice({
             if (state.reloadEvents) {
                 state.currentEvents = [];
             }
+            return state;
+        },
+        setShowDeletedOrders: (state, action: PayloadAction<boolean>) => {
+            const previousDeleted = state.showDeletedOrders;
+            const newDeleted = action.payload;
+            state.showDeletedOrders = newDeleted;
+            state.showInactiveOrders = state.showDeletedOrders;
+            state.reloadEvents = (previousDeleted != newDeleted);
             return state;
         },
         setHideRevenue: (state, action: PayloadAction<boolean>) => {
@@ -139,6 +154,17 @@ export const userReportSelectionSlice = createSlice({
     }
 })
 
-export const { setSeller, setDateRange, setReloadEvents, setShowInactive, setShowDeleted, resetSelection, setEvents, resetAll, setHideRevenue } = userReportSelectionSlice.actions
+export const { setSeller, 
+               setDateRange, 
+               setReloadEvents, 
+               setShowInactive, 
+               setShowDeleted, 
+               resetSelection, 
+               setEvents, 
+               resetAll, 
+               setHideRevenue, 
+               setShowInactiveOrders,
+               setShowDeletedOrders
+             } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer
