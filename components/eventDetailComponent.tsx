@@ -9,7 +9,6 @@ import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import OrderRow from "./orderRowComponent";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { useGetExport } from "@/hooks/useGetExport";
-import getFileNameFromReportSelection from "@/utils/getFileNameFromReportSelection";
 import downloadFile from "@/utils/downloadFile";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { CirclesWithBar } from "react-loader-spinner";
@@ -18,6 +17,7 @@ import { useGetEventDetails } from "@/hooks/useGetEventDetails";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders } from "@/lib/reportSelectionSlice";
+import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
@@ -78,7 +78,7 @@ export default function EventDetail(props: any) {
     const exportOrdersToCsv = () => {
         if (vipEvent != undefined) {
             const csvData = exportEventCustomerDataToCsv(vipEvent, user.isAdmin, hasPhoneData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
-            const fileName = getFileNameFromReportSelection(currentReportSelection, 'orders');
+            const fileName = getFileNameFromEvent(vipEvent, `orders`);
             downloadFile(fileName, csvData);
         }
     };
