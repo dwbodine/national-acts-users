@@ -27,7 +27,7 @@ export default function AdminBar() {
 
     const exportEventData = () => {
         if (currentReportSelection && currentReportSelection.currentEvents) {
-            const csvData = exportEventsToCsv(currentReportSelection.currentEvents);
+            const csvData = exportEventsToCsv(currentReportSelection.currentEvents, user.isAdmin);
             const fileName = getFileNameFromReportSelection(currentReportSelection);
             downloadFile(fileName, csvData);
         }        
@@ -49,7 +49,7 @@ export default function AdminBar() {
                 }
             }
             
-            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, user.isAdmin, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
             const fileName = getFileNameFromReportSelection(currentReportSelection, 'customer');
             downloadFile(fileName, csvData);
         } 
