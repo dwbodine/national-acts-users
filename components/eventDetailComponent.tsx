@@ -77,7 +77,7 @@ export default function EventDetail(props: any) {
 
     const exportOrdersToCsv = () => {
         if (vipEvent != undefined) {
-            const csvData = exportEventCustomerDataToCsv(vipEvent, hasPhoneData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+            const csvData = exportEventCustomerDataToCsv(vipEvent, user.isAdmin, hasPhoneData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
             const fileName = getFileNameFromReportSelection(currentReportSelection, 'orders');
             downloadFile(fileName, csvData);
         }

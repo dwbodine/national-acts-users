@@ -28,7 +28,7 @@ export interface Order {
   isRefunded: boolean;
   totalShirts?: number;
   revenueUsd: number;
-  serviceFees: number;
+  serviceFeesUsd?: number;
   exchangeRate: number;
   currencySymbol: string;
   currencyAbbrev: string;
@@ -40,6 +40,7 @@ export interface Order {
   purchaserLastName: string;
   purchaserFirstName: string;
   revenue: number;
+  serviceFees?: number;
   attendeeNames?: string[];
   shirts?: string[];
 }
