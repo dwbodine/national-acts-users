@@ -125,7 +125,7 @@ export default function ForgotPassword() {
                                 type="number"
                                 value={code}
                                 onChange={(e) => setCode(parseInt(e.target.value))}
-                                className="w-80 h-8 px-2 border border-solid border-black rounded"
+                                className="form-control"
                                 autoComplete="off"
                                 />
                             </div>
@@ -162,7 +162,7 @@ export default function ForgotPassword() {
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-80 h-8 px-2 border border-solid border-black rounded"
+                                className="form-control"
                                 autoComplete="off"
                                 />
                             </div>
@@ -176,7 +176,7 @@ export default function ForgotPassword() {
                                 type="password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-80 h-8 px-2 border border-solid border-black rounded"
+                                className="form-control"
                                 autoComplete="off"
                                 />
                             </div>
@@ -217,7 +217,7 @@ export default function ForgotPassword() {
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="w-80 h-8 px-2 border border-solid border-black rounded"
+                                className="form-control"
                                 placeholder="Please enter email address"
                                 />
                             </div>

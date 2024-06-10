@@ -23,13 +23,13 @@ export default function WidgetBar(props: any) {
                 <ShowsListedWidget TotalShows={totalShows} />
             </Col>
             <Col hidden={totalTickets == 0} lg={2} md={5} className="stat-block">
-                <TicketTypesWidget TicketData={ticketData} TotalTickets={totalTickets} />
+                <TicketTypesWidget TicketData={ticketData} TotalTickets={totalTickets} TicketsRefunded={ticketsRefunded} />
             </Col>
             <Col hidden={totalShirts == 0} lg={2} md={5} className="stat-block">
                 <ShirtSizesWidget ShirtData={shirtData} TotalShirts={totalShirts} />
             </Col>
             <Col hidden={hideRevItem} lg={2} md={5} className="stat-block">
-                <RevenueWidget TotalRevenue={totalRevenue} TicketsRefunded={ticketsRefunded} />
+                <RevenueWidget TotalRevenue={totalRevenue} />
             </Col>
         </Row>
     )

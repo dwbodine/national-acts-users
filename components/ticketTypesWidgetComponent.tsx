@@ -6,6 +6,7 @@ export default function TicketTypesWidget(props: any) {
 
     const ticketPropData: ITicketData = props.TicketData as ITicketData;
     const totalTickets: number = props.TotalTickets as number;
+    const ticketsRefunded: number = props.TicketsRefunded as number;
 
     const ticketTypes = ticketPropData?.TicketTypes;
     
@@ -37,6 +38,8 @@ export default function TicketTypesWidget(props: any) {
                 <div>Ticket types sold:</div>
                 {ttypes}
                 <span>Total: {totalTickets}</span>
+                <div className="second">Tickets refunded:</div>
+                <span>{ticketsRefunded}</span>
             </>
         );
     } else {
