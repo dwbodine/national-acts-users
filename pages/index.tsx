@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <CheckAuth />
-      <Container fluid hidden={!user?.isAuthenticated} className="vipContainer">
+      <Container fluid hidden={!user.isAuthenticated} className="vipContainer">
           <AdminBar />   
           <CurrentEvents />
       </Container>
