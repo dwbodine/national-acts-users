@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, KeyboardEvent } from "react";
 import { useLogin } from "../src/hooks/useLogin";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
@@ -21,6 +21,12 @@ export default function Login() {
 
   const forgotPassword = () => {
     router.push('/forgot-password');
+  };
+
+  const handlePasswordKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key == "Enter") {
+      onSubmit();
+    }
   };
 
   const onSubmit = () => {
@@ -69,7 +75,7 @@ export default function Login() {
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-80 h-8 px-2 border border-solid border-black rounded"
+                className="form-control"
                 placeholder="username"
               />
             </div>
@@ -82,7 +88,8 @@ export default function Login() {
               <input
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-80 h-8 px-2 border border-solid border-black rounded"
+                onKeyUp={(e) => handlePasswordKey(e)}
+                className="form-control"
                 placeholder="password"
                 type="password"
               />

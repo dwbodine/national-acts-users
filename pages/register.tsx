@@ -113,7 +113,7 @@ export default function Register() {
                         autoComplete="off"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className="w-80 h-8 px-2 border border-solid border-black rounded"
+                        className="form-control"
                         placeholder="Enter email address"
                         />
                     </div>
@@ -128,7 +128,7 @@ export default function Register() {
                         autoComplete="off"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        className="w-80 h-8 px-2 border border-solid border-black rounded"
+                        className="form-control"
                         placeholder="First name"
                         />
                     </div>
@@ -143,7 +143,7 @@ export default function Register() {
                         autoComplete="off"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        className="w-80 h-8 px-2 border border-solid border-black rounded"
+                        className="form-control"
                         placeholder="Last name"
                         />
                     </div>
@@ -153,7 +153,7 @@ export default function Register() {
                 <Col>
                     <div className="form-group">
                         <label>Associated Artist:</label>
-                        <select value={sellerId} onChange={handleSellerChange}>
+                        <select value={sellerId} onChange={handleSellerChange} className='form-control'>
                             <option value="0"> -- Select One --</option>
                             { sellers?.map((seller) => {
                                 return <option key={seller.sellerId} value={seller.sellerId}>{seller.name}</option>;                    
@@ -170,7 +170,7 @@ export default function Register() {
                             type="password" 
                             placeholder="Password"
                             autoComplete="off"
-                            className="w-80 h-8 px-2 border border-solid border-black rounded" 
+                            className="form-control" 
                             value={password} 
                             onChange={(e) => setPassword(e.target.value)}
                         />
@@ -185,7 +185,7 @@ export default function Register() {
                             type="password" 
                             placeholder="Confirm Password"
                             autoComplete="off"
-                            className="w-80 h-8 px-2 border border-solid border-black rounded" 
+                            className="form-control" 
                             value={confirmPassword} 
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
@@ -200,7 +200,7 @@ export default function Register() {
                         value={notes}
                         autoComplete="off"
                         onChange={(e) => setNotes(e.target.value)}
-                        className="w-80 h-8 px-2 border border-solid border-black rounded"
+                        className="form-control"
                         />
                     </div>
                 </Col>

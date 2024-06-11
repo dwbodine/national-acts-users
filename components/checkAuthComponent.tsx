@@ -1,7 +1,8 @@
 import Cookies from 'js-cookie';
-import { authRoutes, protectedRoutes } from "../src/router/routes";
+import { authRoutes, protectedRoutes, publicRoutes } from "../src/router/routes";
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { PathnameContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
 
 export default function CheckAuth() {
   const router = useRouter();
@@ -15,10 +16,8 @@ export default function CheckAuth() {
           Cookies.remove("authToken");
           router.push('/login');
           Cookies.remove("authToken");
-      }
-  
-      if (authRoutes.includes(pathName) && authTokenCookie) {
-          router.push('/');
+      } else if (authRoutes.includes(pathName) || publicRoutes.includes(pathName)) {
+        router.push(pathName);
       }
     }
     

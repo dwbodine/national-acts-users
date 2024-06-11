@@ -1,6 +1,7 @@
 import { IShirtData, IShirtSizeData, ITicketData, ITicketTypeData, VipEvent } from "@/types/event";
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import moment from "moment";
+import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Button, FormCheck } from "react-bootstrap";
@@ -161,98 +162,100 @@ export default function EventDetail(props: any) {
     return (
         <>
             {(vipEvent != undefined) ? 
-            <>  
-                <Col>
-                    <Row>
-                        <table className="vipDetailsTable">
-                            <tbody>
-                                <tr>
-                                    <td className="vipLabel">Event:</td>
-                                    <td className="vipTitle">{vipEvent.title}</td>
-                                </tr>
-                                <tr>
-                                    <td className="vipLabel">Venue:</td>
-                                    <td>{vipEvent.venue?.name} in {location}</td>
-                                </tr>
-                                <tr>
-                                    <td className="vipLabel">Date:</td>
-                                    <td>{moment(vipEvent.eventDate).format('MM/DD/YYYY')}</td>
-                                </tr>
-                                <tr>
-                                    <td className="vipLabel">Total Tickets:</td>
-                                    <td>{vipEvent.totalTickets}</td>
-                                </tr>
-                                <tr hidden={hideRev}>
-                                    <td className="vipLabel">Total Revenue:</td>
-                                    <td>${vipEvent.totalRevenue?.toFixed(2)}</td>
-                                </tr>
-                                <tr hidden={hideRev || !user.isAdmin}>
-                                    <td className="vipLabel">Total Service Fees:</td>
-                                    <td>${vipEvent.totalServiceFees?.toFixed(2)}</td>
-                                </tr>
-                                <tr hidden={!hasTicketData}>
-                                    <td className="vipLabel">Ticket Breakdown:</td>
-                                    <td>{ticketBreakdownRows}</td>
-                                </tr>
-                                <tr hidden={!hasShirtData}>
-                                    <td className="vipLabel">Shirt Breakdown:</td>
-                                    <td>{shirtSizeBreakdownRows}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </Row>
-                    <Row hidden={!isLoading}>
-                        <Col className="spinner-container" hidden={!isLoading}>
-                            <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
-                        </Col>
-                    </Row>
-                    <Row hidden={!isAdmin || !showInactive || isLoading} className="no-print">
-                        <Col md={1} sm={1}>
-                            <span className="admin-button">
-                                <Button onClick={exportOrdersToCsv}>Export to Csv</Button>
-                            </span>
-                        </Col>
-                        <Col md={1} sm={11}>
-                            <PrintButton />
-                        </Col>
-                        <Col md={10} sm={12}>
-                            <span className="inactive-check">
-                                <FormCheck checked={currentReportSelection?.showInactiveOrders} onChange={handleShowInactive} disabled={currentReportSelection?.showDeletedOrders} /> Show Inactive Orders?
-                            </span>
-                            <span className="inactive-check">
-                                <FormCheck checked={currentReportSelection?.showDeletedOrders} onChange={handleShowDeleted} /> Show Deleted Orders?
-                            </span>
-                            <span className="inactive-check">
-                                <FormCheck checked={currentReportSelection?.hideRevenue} onChange={handleHideRevenue} /> Hide Revenue Items?
-                            </span>
-                        </Col>
-                    </Row>
-                    <Row hidden={isLoading}>
-                        <table className="vipTable">
-                            <thead>
-                                <tr>
-                                    <th>Purchaser Name</th>
-                                    <th>Attendee Name</th>
-                                    <th>Purchase Date</th>
-                                    <th>Event Date</th>
-                                    <th>Event Name</th>
-                                    <th>Ticket Type</th>
-                                    <th># of tickets</th>
-                                    <th hidden={hideRev || !user.isAdmin}>Service Fees</th>
-                                    <th hidden={hideRev}>Revenue</th>
-                                    <th>Email</th>
-                                    {(hasPhoneData) ? <th>Phone #</th> : ''}
-                                    {(hasShirtData) ? <th>Shirt Sizes</th> : ''}
-                                    {(isAdmin) ? <th colSpan={2} className="no-print">Admin Commands</th> : ''}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                { orderRows }
-                            </tbody>
-                        </table>
-                    </Row>
-                </Col>
-            </>
+            <Container fluid className="vipContainer">  
+                <Row>
+                    <Col>
+                        <Row>
+                            <table className="vipDetailsTable">
+                                <tbody>
+                                    <tr>
+                                        <td className="vipLabel">Event:</td>
+                                        <td className="vipTitle">{vipEvent.title}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="vipLabel">Venue:</td>
+                                        <td>{vipEvent.venue?.name} in {location}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="vipLabel">Date:</td>
+                                        <td>{moment(vipEvent.eventDate).format('MM/DD/YYYY')}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="vipLabel">Total Tickets:</td>
+                                        <td>{vipEvent.totalTickets}</td>
+                                    </tr>
+                                    <tr hidden={hideRev}>
+                                        <td className="vipLabel">Total Revenue:</td>
+                                        <td>${vipEvent.totalRevenue?.toFixed(2)}</td>
+                                    </tr>
+                                    <tr hidden={hideRev || !user.isAdmin}>
+                                        <td className="vipLabel">Total Service Fees:</td>
+                                        <td>${vipEvent.totalServiceFees?.toFixed(2)}</td>
+                                    </tr>
+                                    <tr hidden={!hasTicketData}>
+                                        <td className="vipLabel">Ticket Breakdown:</td>
+                                        <td>{ticketBreakdownRows}</td>
+                                    </tr>
+                                    <tr hidden={!hasShirtData}>
+                                        <td className="vipLabel">Shirt Breakdown:</td>
+                                        <td>{shirtSizeBreakdownRows}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </Row>
+                        <Row hidden={!isLoading}>
+                            <Col className="spinner-container" hidden={!isLoading}>
+                                <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
+                            </Col>
+                        </Row>
+                        <Row hidden={!isAdmin || !showInactive || isLoading} className="no-print">
+                            <Col md={1} sm={1}>
+                                <span className="admin-button">
+                                    <Button onClick={exportOrdersToCsv}>Export to Csv</Button>
+                                </span>
+                            </Col>
+                            <Col md={1} sm={11}>
+                                <PrintButton />
+                            </Col>
+                            <Col md={10} sm={12}>
+                                <span className="inactive-check">
+                                    <FormCheck checked={currentReportSelection?.showInactiveOrders} onChange={handleShowInactive} disabled={currentReportSelection?.showDeletedOrders} /> Show Inactive Orders?
+                                </span>
+                                <span className="inactive-check">
+                                    <FormCheck checked={currentReportSelection?.showDeletedOrders} onChange={handleShowDeleted} /> Show Deleted Orders?
+                                </span>
+                                <span className="inactive-check">
+                                    <FormCheck checked={currentReportSelection?.hideRevenue} onChange={handleHideRevenue} /> Hide Revenue Items?
+                                </span>
+                            </Col>
+                        </Row>
+                        <Row hidden={isLoading}>
+                            <table className="vipTable">
+                                <thead>
+                                    <tr>
+                                        <th>Purchaser Name</th>
+                                        <th>Attendee Name</th>
+                                        <th>Purchase Date</th>
+                                        <th>Event Date</th>
+                                        <th>Event Name</th>
+                                        <th>Ticket Type</th>
+                                        <th># of tickets</th>
+                                        <th hidden={hideRev || !user.isAdmin}>Service Fees</th>
+                                        <th hidden={hideRev}>Revenue</th>
+                                        <th>Email</th>
+                                        {(hasPhoneData) ? <th>Phone #</th> : ''}
+                                        {(hasShirtData) ? <th>Shirt Sizes</th> : ''}
+                                        {(isAdmin) ? <th colSpan={2} className="no-print">Admin Commands</th> : ''}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    { orderRows }
+                                </tbody>
+                            </table>
+                        </Row>
+                    </Col>
+                </Row>
+            </Container>
             : ''}        
         </>
     );

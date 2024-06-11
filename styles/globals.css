@@ -8,6 +8,10 @@ body {
   box-sizing: border-box;
 }
 
+.btn {
+  white-space: nowrap;
+}
+
 .danger {
   color: red;
   font-weight: bold;
@@ -34,6 +38,7 @@ body {
 .form-group label {
   font-weight: bold;
   display: block;
+  margin-bottom: 5px;
 }
 
 .form-check-input[type=checkbox] {
@@ -113,6 +118,7 @@ body {
   line-height: 14px;
   height: 100%;
   min-height: 285px;
+  display: table;
 }
 
 .stat-block svg {
@@ -123,6 +129,10 @@ body {
 .stat-block div {
   white-space: nowrap;
   margin: 15px 0;
+}
+
+.stat-block div.second {
+  margin-top: 25px;
 }
 
 .stat-block span {
@@ -190,8 +200,14 @@ body {
   padding-top: 25px;
 }
 
+.vipContainer {
+  margin: 10px 0;
+  padding: 0 25px;
+}
+
 .vipDetailsTable {
   max-width: 360px;
+  margin-bottom: 10px;
 }
 
 .vipDetailsTable tr {
@@ -199,13 +215,13 @@ body {
 }
 
 .vipDetailsTable td {
-  padding: 5px;
+  padding: 5px 10px;
   white-space: nowrap;
 }
 
 .vipDetailsTable .vipLabel {
   font-weight: bold;
-  text-align: right;  
+  text-align: left;  
 }
 
 .vipTitle {
