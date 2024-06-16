@@ -40,6 +40,14 @@ export type UserReportSelection = {
   currentEvents?: VipEvent[];
 }
 
+export type AdminDashboardSelection = {
+  start?: number;
+  end?: number;
+  reloadEvents?: boolean;
+  retainDateSelection?: boolean;
+  currentEvents?: VipEvent[];
+}
+
 export type UserLoginResponse = {
   user?: User;
   loginError?: string;

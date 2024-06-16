@@ -3,13 +3,11 @@ import SelectSeller from "../components/selectSellerComponent";
 import DateRangeSelector from "../components/dateRangeSelectorComponent";
 import InactiveCheck from "../components/inactiveCheckComponent";
 import DeletedCheck from "../components/deletedCheckComponent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from '../src/lib/store';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ResetButton from "./resetButtonComponent";
-import ResetPasswordButton from "./resetPasswordComponent";
-import LogoutButton from "./logoutButtonComponent";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Button } from "react-bootstrap";
 import { useGetExport } from "@/hooks/useGetExport";
@@ -17,13 +15,15 @@ import getFileNameFromReportSelection from "@/utils/getFileNameFromReportSelecti
 import downloadFile from "@/utils/downloadFile";
 import PrintButton from "./printButtonComponent";
 import RevenueCheck from "./revenueCheckComponent";
+import { setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
 
 export default function AdminBar() {    
-    
+    const dispatch = useDispatch(); 
     const { user } = useCurrentUser();
     const { exportEventsToCsv, exportCustomerDataToCsv } = useGetExport();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const hasEvents = (currentReportSelection?.currentEvents?.length ?? 0 > 0);
+    const dateRangeTitle = "Event date range";
 
     const exportEventData = () => {
         if (currentReportSelection && currentReportSelection.currentEvents) {
@@ -56,10 +56,17 @@ export default function AdminBar() {
     };
 
     let pageTitle: string = "Sales Overview";
-    if (user.isAdmin) {
-        pageTitle += " - Admin";
-    } else if (currentReportSelection.seller.sellerId > 0) {
+    if (currentReportSelection.seller.sellerId > 0) {
         pageTitle += " - " + currentReportSelection.seller.sellerName;
+    }
+
+    const onDateChange = (selectedStart: number, selectedEnd: number) => {
+        let reportSelection = { ...currentReportSelection};
+        reportSelection.start = selectedStart;
+        reportSelection.end = selectedEnd;
+        reportSelection.retainDateSelection = true;
+        dispatch(setDateRange(reportSelection));
+        dispatch(setReloadEvents(true));
     }
 
     return (
@@ -69,11 +76,7 @@ export default function AdminBar() {
                     <div className="title">{pageTitle}</div>
                 </Col>
                 <Col lg={5} sm={12} className="control-container no-print">
-                    <DateRangeSelector />
-                </Col>
-                <Col lg={2} sm={12} className="control-container no-print">
-                    <LogoutButton />
-                    <ResetPasswordButton />                    
+                    <DateRangeSelector dateRangeTitle={dateRangeTitle} selectedStart={currentReportSelection?.start} selectedEnd={currentReportSelection?.end} disabled={(currentReportSelection.seller.sellerId <= 0 || !hasEvents)} onDateChange={onDateChange} />
                 </Col>
             </Row>
             <Row className="no-print">
