@@ -23,10 +23,10 @@ export default function OrderRow(props: any) {
     let statusClass = '';
     if (order.isDeleted) {
         statusClass += 'deleted';
+    }  else if (!order.isActive) {
+        statusClass += 'inactive';
     } else if (order.isRefunded) {
         statusClass += 'refunded';
-    } else if (!order.isActive) {
-        statusClass += 'inactive';
     }
 
    
