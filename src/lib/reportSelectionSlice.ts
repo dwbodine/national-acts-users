@@ -13,8 +13,9 @@ const initialState: UserReportSelection = {
     showDeleted: false,
     showDeletedOrders: false,
     showInactive: false,
-    showInactiveOrders: false,
+    showInactiveOrders: true,
     reloadEvents: true,
+    hideRevenue: true,
     currentEvents: []
 };
 
@@ -37,7 +38,7 @@ export const userReportSelectionSlice = createSlice({
             state.showDeleted = false;
             state.showDeletedOrders = false;
             state.showInactive = false;
-            state.showInactiveOrders = false;
+            state.showInactiveOrders = true;
             state.retainDateSelection = false;
             if (state.reloadEvents) {
                 state.currentEvents = [];
@@ -135,21 +136,6 @@ export const userReportSelectionSlice = createSlice({
             state.retainDateSelection = false;
             state.currentEvents = [];
             return state;
-        },
-        cacheEvents: (state) => {
-            if (state?.currentEvents?.length ?? 0 > 0) {
-                var json = JSON.stringify(state.currentEvents);
-                localStorage.setItem('currentEvents', json);
-            }            
-            return state
-        },
-        restoreEventsFromCache: (state) => {
-            var json = localStorage.getItem('currentEvents');
-            if (json) {
-                var events  = JSON.parse(json) as VipEvent[];
-                state.currentEvents = events;
-            }
-            return state
         }
     }
 })

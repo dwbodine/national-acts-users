@@ -5,7 +5,7 @@ import { setEvents, setDateRange } from '@/lib/reportSelectionSlice';
 import { IOrderKeys, IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
 import { useEffect, useState } from "react";
 import moment from "moment";
-import { UserReportSelection } from "@/types/user";
+import { UserReportSelection, UserRole } from "@/types/user";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';
@@ -21,6 +21,7 @@ import { getPurchaseDataFromEvents } from "@/utils/getPurchaseData";
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const { user } = useCurrentUser();
+    const isAdmin = (user.role == UserRole.Admin);
     const { getEvents } = useGetEvents();
     const dispatch = useDispatch(); 
     const [isLoading, setIsLoading] = useState(false);
@@ -126,7 +127,7 @@ export default function CurrentEvents() {
         let i = 0;
         for (const evt of vipEvents) {
             const key = `ev${i}`;
-            rows.push(<EventRow key={key} VipEvent={evt} IsAdmin={user.isAdmin} HideRevenue={hideRevItem} />);
+            rows.push(<EventRow key={key} VipEvent={evt} IsAdmin={isAdmin} HideRevenue={hideRevItem} />);
             if (!evt.isDeleted) {
                 totalTickets += evt.totalTickets;
                 totalRevenue += evt.totalRevenue;
@@ -158,9 +159,9 @@ export default function CurrentEvents() {
                                     <th>Venue</th>
                                     <th>Location</th>
                                     <th>Tickets Sold</th>
-                                    <th hidden={hideRevItem || !user.isAdmin}>Service Fees</th>
+                                    <th hidden={hideRevItem || !isAdmin}>Service Fees</th>
                                     <th hidden={hideRevItem}>Revenue (USD)</th>
-                                    { user.isAdmin ? <th colSpan={2} className="center no-print">Admin Commands</th> : ''}            
+                                    { isAdmin ? <th colSpan={2} className="center no-print">Admin Commands</th> : ''}            
                                 </tr>
                             </thead>
                             <tbody>
@@ -170,9 +171,9 @@ export default function CurrentEvents() {
                                 <tr>
                                     <td colSpan={4}>Total</td> 
                                     <td className="pull-right">{totalTickets}</td>
-                                    <td className="pull-right" hidden={hideRevItem || !user.isAdmin}>{totalServiceFees.toFixed(2)}</td>
+                                    <td className="pull-right" hidden={hideRevItem || !isAdmin}>{totalServiceFees.toFixed(2)}</td>
                                     <td className="pull-right" hidden={hideRevItem}>{totalRevenue.toFixed(2)}</td>
-                                    { user.isAdmin ? <td colSpan={2} className="no-print"></td> : ''}            
+                                    { isAdmin ? <td colSpan={2} className="no-print"></td> : ''}            
                                 </tr>
                             </tfoot>
                         </table>

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { User } from "../types/user";
+import { User, UserRole } from "../types/user";
 
 export const useCurrentUser = () => {
   const [user, setUser] = useState<User>({
     userId: 0,
+    role: UserRole.AccountManager,
     username: '',
     isActive: false,
-    isAdmin: false,
     showInactiveEvents: false
   });
 
@@ -18,9 +18,9 @@ export const useCurrentUser = () => {
     } else {
       setUser({
         userId: 0,
+        role: UserRole.AccountManager,
         username: '',
         isActive: false,
-        isAdmin: false,
         showInactiveEvents: false
       });
     }

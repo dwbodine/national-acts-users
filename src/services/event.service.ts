@@ -30,11 +30,11 @@ export class EventService {
       url += `&end=${reportSelection.end}`;
     }
 
-    if (reportSelection.showInactive || reportSelection.showInactiveOrders) {
+    if (reportSelection.showInactive) {
       url += '&inactive=1';
     }
 
-    if (reportSelection.showDeleted || reportSelection.showDeletedOrders) {
+    if (reportSelection.showDeleted) {
       url += '&deleted=1';
     }
 

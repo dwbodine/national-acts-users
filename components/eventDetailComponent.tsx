@@ -19,10 +19,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders } from "@/lib/reportSelectionSlice";
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
+import { UserReportSelection, UserRole } from "@/types/user";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
-    const isAdmin = user.isAdmin;
+    const isAdmin = (user.role == UserRole.Admin);
     const showInactive = user.showInactiveEvents;
     const { getLocation } = useGetLocation();
     const { exportEventCustomerDataToCsv } = useGetExport();
@@ -39,11 +40,16 @@ export default function EventDetail(props: any) {
         async function fetchEvent() {
             if (id && currentReportSelection && currentReportSelection.reloadEvents) {
                 setIsLoading(true);
-                const results = await getEventDetails(id, currentReportSelection);
+                let reportSelection: UserReportSelection = { ...currentReportSelection };
+                if (!isAdmin) {
+                    reportSelection.showInactiveOrders = false;
+                }
+                const results = await getEventDetails(id, reportSelection);
                 if (results && results.events && results.events.length > 0) {
                     setVipEvent(results.events[0]);
                     if (currentReportSelection.currentEvents && results.events[0] != undefined) {
                         const newEvent: VipEvent = results.events[0];
+                        document.title = newEvent.title;
                         currentReportSelection.currentEvents.map((evt) => {
                             return evt.ticketSocketEventId == newEvent.ticketSocketEventId ? newEvent : evt;
                         });
@@ -60,7 +66,7 @@ export default function EventDetail(props: any) {
         }   
         fetchEvent();
         
-    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails]);
+    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, isAdmin]);
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -78,7 +84,7 @@ export default function EventDetail(props: any) {
 
     const exportOrdersToCsv = () => {
         if (vipEvent != undefined) {
-            const csvData = exportEventCustomerDataToCsv(vipEvent, user.isAdmin, hasPhoneData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+            const csvData = exportEventCustomerDataToCsv(vipEvent, isAdmin, hasPhoneData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
             const fileName = getFileNameFromEvent(vipEvent, `orders`);
             downloadFile(fileName, csvData);
         }
@@ -188,7 +194,7 @@ export default function EventDetail(props: any) {
                                         <td className="vipLabel">Total Revenue:</td>
                                         <td>${vipEvent.totalRevenue?.toFixed(2)}</td>
                                     </tr>
-                                    <tr hidden={hideRev || !user.isAdmin}>
+                                    <tr hidden={hideRev || !isAdmin}>
                                         <td className="vipLabel">Total Service Fees:</td>
                                         <td>${vipEvent.totalServiceFees?.toFixed(2)}</td>
                                     </tr>
@@ -240,7 +246,7 @@ export default function EventDetail(props: any) {
                                         <th>Event Name</th>
                                         <th>Ticket Type</th>
                                         <th># of tickets</th>
-                                        <th hidden={hideRev || !user.isAdmin}>Service Fees</th>
+                                        <th hidden={hideRev || !isAdmin}>Service Fees</th>
                                         <th hidden={hideRev}>Revenue</th>
                                         <th>Email</th>
                                         {(hasPhoneData) ? <th>Phone #</th> : ''}

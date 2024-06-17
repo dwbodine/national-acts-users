@@ -5,8 +5,15 @@ export type LoginResponse = {
   loginError?: string;
 }
 
+export enum UserRole {
+  Admin = 1,
+  AccountManager = 2,
+  MerchPerson = 3
+};
+
 export type User = {
   userId: number;
+  role: UserRole;
   username: string;
   firstName?: string;
   lastName?: string;
@@ -15,7 +22,6 @@ export type User = {
   isAuthenticated?: boolean;
   token?: string;
   isActive: boolean;  
-  isAdmin: boolean;
   showInactiveEvents: boolean;
   sellers?: UserSeller[];
   selectedSellerId?: number;

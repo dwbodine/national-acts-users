@@ -279,6 +279,11 @@ body {
   font-weight: bold;
 }
 
+.vipTable .refunded {
+  color: blueviolet;
+  font-weight: bold;
+}
+
 .custom-tooltip {
   border-radius: 5px;
   border: 2px solid red;

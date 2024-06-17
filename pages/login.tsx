@@ -5,7 +5,8 @@ import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
 import CheckAuth from "../components/checkAuthComponent";
 import { useDispatch } from "react-redux";
-import { resetAll } from "@/lib/reportSelectionSlice";
+import { resetAll, setShowInactiveOrders } from "@/lib/reportSelectionSlice";
+import { UserRole } from "@/types/user";
 
 export default function Login() {
   const [name, setName] = useState("");
@@ -41,6 +42,11 @@ export default function Login() {
         .then((response) => {
           if (response) {
             if (response.user && response.user.isAuthenticated) {
+              if (response.user.role != UserRole.Admin) {
+                dispatch(
+                  setShowInactiveOrders(false)
+                );
+              }
               router.push("/")
             } else if (response.loginError) {
               setLoginError(response.loginError);

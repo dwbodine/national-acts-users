@@ -16,10 +16,12 @@ import downloadFile from "@/utils/downloadFile";
 import PrintButton from "./printButtonComponent";
 import RevenueCheck from "./revenueCheckComponent";
 import { setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
+import { UserRole } from "@/types/user";
 
 export default function AdminBar() {    
     const dispatch = useDispatch(); 
     const { user } = useCurrentUser();
+    const isAdmin = (user.role == UserRole.Admin);
     const { exportEventsToCsv, exportCustomerDataToCsv } = useGetExport();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const hasEvents = (currentReportSelection?.currentEvents?.length ?? 0 > 0);
@@ -27,7 +29,7 @@ export default function AdminBar() {
 
     const exportEventData = () => {
         if (currentReportSelection && currentReportSelection.currentEvents) {
-            const csvData = exportEventsToCsv(currentReportSelection.currentEvents, user.isAdmin);
+            const csvData = exportEventsToCsv(currentReportSelection.currentEvents, isAdmin);
             const fileName = getFileNameFromReportSelection(currentReportSelection);
             downloadFile(fileName, csvData);
         }        
@@ -49,7 +51,7 @@ export default function AdminBar() {
                 }
             }
             
-            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, user.isAdmin, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, isAdmin, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
             const fileName = getFileNameFromReportSelection(currentReportSelection, 'customer');
             downloadFile(fileName, csvData);
         } 
@@ -85,15 +87,15 @@ export default function AdminBar() {
                 </Col>
                 <Col md={9} sm={12}>
                     {user.showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
-                    {user.isAdmin && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
-                    {user.isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents ? <RevenueCheck /> : ''}    
+                    {isAdmin && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
+                    {isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents ? <RevenueCheck /> : ''}    
                 </Col>
             </Row>
             <Row className="no-print">
                 <Col>
                     {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
-                    {(user.isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
-                    {(user.isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}
+                    {(isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
+                    {(isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}
                     {(currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}
                 </Col>
             </Row>

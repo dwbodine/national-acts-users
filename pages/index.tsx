@@ -7,17 +7,19 @@ import { Tabs } from "rsuite";
 import 'rsuite/Tabs/styles/index.css';
 import NavBar from "../components/navBarComponent";
 import Dashboard from "../components/dashboardComponent";
+import { UserRole } from "@/types/user";
 
 
 export default function Home() {
   const { user } = useCurrentUser();
+  const isAdmin = (user.role == UserRole.Admin);
 
   return (
     <>
       <CheckAuth />
       <NavBar />
       <Container fluid hidden={!user.isAuthenticated} className="vipContainer">
-        { user.isAdmin ? 
+        { isAdmin ? 
           <>
           <Tabs defaultActiveKey="1">
             <Tabs.Tab eventKey="1" title="ADMIN DASHBOARD">
