@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITicketData, ITicketTypeData } from '@/types/event';
+import { ITicketData, ITicketTypeData, TicketType } from '@/types/event';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 export default function TicketTypesChart(props: any) {
@@ -18,13 +18,13 @@ export default function TicketTypesChart(props: any) {
             let arr: any = [];
             let total = 0;
             arr['EventDate'] = key;
-            ticketTypes.forEach((ticketType: string) => {
-                var data = ticketTypeData.find(x => x.TicketType == ticketType);
+            ticketTypes.forEach((ticketType: TicketType) => {
+                var data = ticketTypeData.find(x => x.TicketType == ticketType.ticketTypeName);
                 var number = 0;
                 if (data) {
                     number = data.Number;
                 }
-                arr[ticketType] = number;
+                arr[ticketType.ticketTypeName] = number;
                 total += number;
             });
             let obj: any = {};
@@ -42,7 +42,7 @@ export default function TicketTypesChart(props: any) {
         for (const ticketType of ticketTypes) {
             const key = `tt${i}`;
             const color = chartColors[i % 3];
-            areas.push(<Area key={key} type="monotone" dataKey={ticketType} stroke={color} fill={color} />);
+            areas.push(<Area key={key} type="monotone" dataKey={ticketType.ticketTypeName} stroke={color} fill={color} />);
             i++;
         }
 

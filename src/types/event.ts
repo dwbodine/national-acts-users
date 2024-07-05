@@ -56,6 +56,14 @@ export interface Venue {
   timezone?: string;
 }
 
+export interface TicketType {
+  eventId: number;
+  ticketTypeId: number;
+  ticketTypeName: string;
+  totalAvailable: number;
+  isActive: boolean;
+}
+
 export interface VipEvent {
   ticketSocketEventId: number;
   eventId: number;
@@ -87,6 +95,8 @@ export interface VipEvent {
   nonUsaCurrencySymbol?: string;
   nonUsaCurrencyAbbrev?: string;
   numTicketsRefunded?: number;
+  ticketTypes?: TicketType[];
+  hasTicketTypeData?: boolean;
 }
 
 export interface GetEventsResponse {
@@ -122,7 +132,7 @@ export interface IOrderKeys {
   Orders: number;
 }
 export interface ITicketData {
-  TicketTypes: string[];
+  TicketTypes: TicketType[];
   TicketData?: Map<string, ITicketTypeData[]>;
 }
 

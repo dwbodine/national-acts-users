@@ -1,4 +1,4 @@
-import { IShirtData, IShirtSizeData, ITicketData, ITicketTypeData, VipEvent } from "@/types/event";
+import { IShirtData, IShirtSizeData, ITicketData, ITicketTypeData, TicketType, VipEvent } from "@/types/event";
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import moment from "moment";
 import Container from 'react-bootstrap/Container';
@@ -17,7 +17,7 @@ import PrintButton from "./printButtonComponent";
 import { useGetEventDetails } from "@/hooks/useGetEventDetails";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders } from "@/lib/reportSelectionSlice";
+import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees } from "@/lib/reportSelectionSlice";
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
 import { UserReportSelection, UserRole } from "@/types/user";
 
@@ -33,6 +33,7 @@ export default function EventDetail(props: any) {
     const { getEventDetails } = useGetEventDetails();
     const dispatch = useDispatch(); 
     const hideRev: boolean = currentReportSelection?.hideRevenue ?? false;
+    const hideServiceFees: boolean = currentReportSelection?.hideServiceFees ?? false;
     const [vipEvent, setVipEvent] = useState<VipEvent | undefined>(undefined);
     const id: number | undefined = props.Id as number;
 
@@ -101,14 +102,18 @@ export default function EventDetail(props: any) {
             hasTicketData = true;
             let i = 0;
             ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
-                ticketTypes.forEach((ticketType: string) => {
+                ticketTypes.forEach((ticketType: TicketType) => {
                     const key = `ttd${i}`;
-                    var data = ticketTypeData.find(x => x.TicketType == ticketType);
+                    var data = ticketTypeData.find(x => x.TicketType == ticketType.ticketTypeName);
                     var number = 0;
+                    var total = '';
                     if (data) {
                         number = data.Number;
                     }
-                    ticketBreakdownRows.push(<div key={key}>{ticketType} ({number})</div>);
+                    if (ticketType.totalAvailable > 0) {
+                        total = `/${ticketType.totalAvailable}`;
+                    }
+                    ticketBreakdownRows.push(<div key={key}>{ticketType.ticketTypeName} ({number}{total})</div>);
                     i++;
                 });
             });
@@ -132,7 +137,7 @@ export default function EventDetail(props: any) {
             const key = `or${i}`;
             const showOrder = (!order.isDeleted && order.isActive) || (order.isDeleted && currentReportSelection?.showDeletedOrders) || (!order.isActive && currentReportSelection?.showInactiveOrders);
             if (showOrder) {
-                orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRev} />);
+                orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRev} HideServiceFees={hideServiceFees} />);
             }            
             i++;
         });    
@@ -163,7 +168,16 @@ export default function EventDetail(props: any) {
             );
             setCheckChanged(!checkChanged);
         }
-    };    
+    }; 
+    
+    const handleHideServiceFees = async(event: ChangeEvent<HTMLInputElement>) => {
+        if (currentReportSelection) {
+            dispatch (
+                setHideServiceFees(event.target.checked)
+            );
+            setCheckChanged(!checkChanged);
+        }
+    };  
 
     return (
         <>
@@ -194,7 +208,7 @@ export default function EventDetail(props: any) {
                                         <td className="vipLabel">Total Revenue:</td>
                                         <td>${vipEvent.totalRevenue?.toFixed(2)}</td>
                                     </tr>
-                                    <tr hidden={hideRev || !isAdmin}>
+                                    <tr hidden={hideServiceFees || !isAdmin}>
                                         <td className="vipLabel">Total Service Fees:</td>
                                         <td>${vipEvent.totalServiceFees?.toFixed(2)}</td>
                                     </tr>
@@ -233,6 +247,9 @@ export default function EventDetail(props: any) {
                                 <span className="inactive-check">
                                     <FormCheck checked={currentReportSelection?.hideRevenue} onChange={handleHideRevenue} /> Hide Revenue Items?
                                 </span>
+                                <span className="inactive-check">
+                                    <FormCheck checked={currentReportSelection?.hideServiceFees} onChange={handleHideServiceFees} /> Hide Service Fees?
+                                </span>
                             </Col>
                         </Row>
                         <Row hidden={isLoading}>
@@ -241,13 +258,13 @@ export default function EventDetail(props: any) {
                                     <tr>
                                         <th>Purchaser Name</th>
                                         <th>Attendee Name</th>
-                                        <th>Purchase Date</th>
+                                        <th className="no-print">Purchase Date</th>
                                         <th>Event Date</th>
                                         <th>Event Name</th>
                                         <th>Ticket Type</th>
                                         <th># of tickets</th>
-                                        <th hidden={hideRev || !isAdmin}>Service Fees</th>
                                         <th hidden={hideRev}>Revenue</th>
+                                        <th className="no-print" hidden={hideServiceFees || !isAdmin}>Service Fees</th>
                                         <th>Email</th>
                                         {(hasPhoneData) ? <th>Phone #</th> : ''}
                                         {(hasShirtData) ? <th>Shirt Sizes</th> : ''}

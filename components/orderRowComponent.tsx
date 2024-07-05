@@ -16,6 +16,7 @@ export default function OrderRow(props: any) {
     const hasPhoneData = props.HasPhoneData as boolean;
     const hasShirtData = props.HasShirtData as boolean;
     const hideRev = props.HideRevenue as boolean;
+    const hideServiceFees = props.HideServiceFees as boolean;
 
     const { setOrderInactive } = useSetOrderInactive();
     const { setOrderDeleted } = useSetOrderDeleted();
@@ -140,13 +141,13 @@ export default function OrderRow(props: any) {
         <tr className={statusClass}>
             <td>{purchaserName}</td>
             <td>{attendeeNameRows}</td>
-            <td>{purchaseDate}</td>
+            <td className="no-print">{purchaseDate}</td>
             <td>{moment(eventDate).format('MM/DD/YYYY')}</td>
             <td>{eventName}</td>
             <td>{ticketTypeRows}</td>
             <td>{order.numTickets}</td>
-            <td className="pull-right" hidden={hideRev || !isAdmin}>{serviceFees}</td>
             <td className="pull-right" hidden={hideRev}>{revenue}</td>
+            <td className="pull-right no-print" hidden={hideServiceFees || !isAdmin}>{serviceFees}</td>            
             <td>{order.email}</td>
             { hasPhoneData ? <td>{order.phone}</td> : ''}
             { hasShirtData ? <td>{shirtSizeRows}</td> : ''}

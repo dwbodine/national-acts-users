@@ -26,7 +26,8 @@ export default function CurrentEvents() {
     const dispatch = useDispatch(); 
     const [isLoading, setIsLoading] = useState(false);
     const [chartsHidden, setChartsHidden] = useState(true);
-    const [hideRevItem, setHideRevItem] = useState(false);
+    const [hideRevItem, setHideRevItem] = useState(true);
+    const [hideServiceFees, setHideServiceFees] = useState(true);
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -69,7 +70,8 @@ export default function CurrentEvents() {
 
     useEffect(() => {
         if (currentReportSelection.seller.sellerId > 0) {
-            setHideRevItem(currentReportSelection.hideRevenue ?? false);
+            setHideRevItem(currentReportSelection.hideRevenue ?? true);
+            setHideServiceFees(currentReportSelection.hideServiceFees ?? true);
 
             if (currentReportSelection.reloadEvents) {
                 setIsLoading(true);
@@ -127,7 +129,7 @@ export default function CurrentEvents() {
         let i = 0;
         for (const evt of vipEvents) {
             const key = `ev${i}`;
-            rows.push(<EventRow key={key} VipEvent={evt} IsAdmin={isAdmin} HideRevenue={hideRevItem} />);
+            rows.push(<EventRow key={key} VipEvent={evt} IsAdmin={isAdmin} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);
             if (!evt.isDeleted) {
                 totalTickets += evt.totalTickets;
                 totalRevenue += evt.totalRevenue;
@@ -159,8 +161,8 @@ export default function CurrentEvents() {
                                     <th>Venue</th>
                                     <th>Location</th>
                                     <th>Tickets Sold</th>
-                                    <th hidden={hideRevItem || !isAdmin}>Service Fees</th>
                                     <th hidden={hideRevItem}>Revenue (USD)</th>
+                                    <th className="no-print" hidden={hideServiceFees || !isAdmin}>Service Fees</th>
                                     { isAdmin ? <th colSpan={2} className="center no-print">Admin Commands</th> : ''}            
                                 </tr>
                             </thead>
@@ -171,8 +173,8 @@ export default function CurrentEvents() {
                                 <tr>
                                     <td colSpan={4}>Total</td> 
                                     <td className="pull-right">{totalTickets}</td>
-                                    <td className="pull-right" hidden={hideRevItem || !isAdmin}>{totalServiceFees.toFixed(2)}</td>
                                     <td className="pull-right" hidden={hideRevItem}>{totalRevenue.toFixed(2)}</td>
+                                    <td className="pull-right" hidden={hideServiceFees || !isAdmin}>{totalServiceFees.toFixed(2)}</td>
                                     { isAdmin ? <td colSpan={2} className="no-print"></td> : ''}            
                                 </tr>
                             </tfoot>

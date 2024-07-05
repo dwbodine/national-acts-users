@@ -107,7 +107,7 @@ body {
   margin-right: 10px;
 }
 
-.inactive-check div, .deleted-check div, .revenue-check div {
+.inactive-check div, .deleted-check div, .revenue-check div, .service-fees-check div {
   margin-left: 20px;
   display: inline;
 }

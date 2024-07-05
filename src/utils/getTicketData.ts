@@ -1,19 +1,33 @@
-import { ITicketData, ITicketTypeData, VipEvent } from "@/types/event";
+import { ITicketData, ITicketTypeData, TicketType, VipEvent } from "@/types/event";
 import moment from "moment";
 
 
 export function getTicketDataFromEvents(events: VipEvent[]): ITicketData {
     const map = new Map<string, ITicketTypeData[]>();
-    let ticketTypes: string[] = [];
+    let ticketTypes: TicketType[] = [];
     events?.forEach((evt) => {
         const key = moment(evt.eventDate).format('MM/DD/YYYY');
         let eventHasTickets: boolean = false;
+        let eventHasTicketTypes: boolean = evt.hasTicketTypeData ?? false;
+        if (eventHasTicketTypes) {
+            evt.ticketTypes?.forEach((ticketType) => {
+                if (!ticketTypes.find(x => x.ticketTypeName == ticketType.ticketTypeName)) {
+                    ticketTypes.push(ticketType);
+                }                
+            });
+        }
         evt.orders?.forEach((order) => {
             order.tickets?.forEach((ticket) => {
                 if (ticket.isActive) {
                     eventHasTickets = true; 
-                    if (!ticketTypes.find(x => x == ticket.ticketType)) {
-                        ticketTypes.push(ticket.ticketType);
+                    if (!eventHasTicketTypes && !ticketTypes.find(x => x.ticketTypeName == ticket.ticketType)) {
+                        ticketTypes.push({
+                            eventId: evt.ticketSocketEventId,
+                            ticketTypeId: 0,
+                            ticketTypeName: ticket.ticketType,
+                            totalAvailable: 0,
+                            isActive: true
+                        });
                     }
                     const collection = map.get(key);
                     if (!collection) {

@@ -16,6 +16,7 @@ const initialState: UserReportSelection = {
     showInactiveOrders: true,
     reloadEvents: true,
     hideRevenue: true,
+    hideServiceFees: true,
     currentEvents: []
 };
 
@@ -98,6 +99,10 @@ export const userReportSelectionSlice = createSlice({
             state.hideRevenue = action.payload;
             return state;
         },
+        setHideServiceFees: (state, action: PayloadAction<boolean>) => {
+            state.hideServiceFees = action.payload;
+            return state;
+        },
         setEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
             if (action.payload) {
                 state.currentEvents = action.payload;
@@ -149,6 +154,7 @@ export const { setSeller,
                setEvents, 
                resetAll, 
                setHideRevenue, 
+               setHideServiceFees,
                setShowInactiveOrders,
                setShowDeletedOrders
              } = userReportSelectionSlice.actions

@@ -40,6 +40,7 @@ export type UserReportSelection = {
   showInactiveOrders?: boolean;
   showDeleted?: boolean;
   hideRevenue?: boolean;
+  hideServiceFees?: boolean;
   showDeletedOrders?: boolean;
   reloadEvents?: boolean;
   retainDateSelection?: boolean;

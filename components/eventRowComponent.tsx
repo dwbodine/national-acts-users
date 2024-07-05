@@ -16,6 +16,7 @@ export default function EventRow(props: any) {
     const vipEvent = props.VipEvent as VipEvent;
     const isAdmin = props.IsAdmin as boolean;
     const hideRevItem = props.HideRevenue as boolean;
+    const hideServiceFees = props.HideServiceFees as boolean;
     const { setEventInactive } = useSetEventInactive();
     const { setEventDeleted } = useSetEventDeleted();
     const { getLocation } = useGetLocation();
@@ -99,8 +100,8 @@ export default function EventRow(props: any) {
             <td>{venueName}</td>
             <td>{location}</td>
             <td className="pull-right">{vipEvent.totalTickets}</td>
-            <td className="pull-right" hidden={hideRevItem}>{serviceFees}</td>
             <td className="pull-right" hidden={hideRevItem || !isAdmin}>{revenue}</td>
+            <td className="pull-right no-print" hidden={hideServiceFees}>{serviceFees}</td>
             { isAdmin ? <td className="no-print"><a onClick={activateDeactivateEvent}>{inactiveLabel}</a></td> : ''}
             { isAdmin ? <td className="no-print"><a onClick={deleteUndeleteEvent}>{deletedLabel}</a></td> : ''}
         </tr>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITicketData, ITicketTypeData } from '@/types/event';
+import { ITicketData, ITicketTypeData, TicketType } from '@/types/event';
 import { FaTicketAlt } from 'react-icons/fa';
 
 export default function TicketTypesWidget(props: any) {
@@ -13,13 +13,13 @@ export default function TicketTypesWidget(props: any) {
     let arr: any = [];
     if (ticketTypes?.length > 0) {
         ticketPropData.TicketData?.forEach((ticketTypeData: ITicketTypeData[], key: string) => {
-            ticketTypes.forEach((ticketType: string) => {
-                var data = ticketTypeData.find(x => x.TicketType == ticketType);
-                var number = arr[ticketType] ?? 0;
+            ticketTypes.forEach((ticketType: TicketType) => {
+                var data = ticketTypeData.find(x => x.TicketType.toLowerCase() == ticketType.ticketTypeName.toLowerCase());
+                var number = arr[ticketType.ticketTypeName] ?? 0;
                 if (data) {
                     number += data.Number;
                 }
-                arr[ticketType] = number;
+                arr[ticketType.ticketTypeName] = number;
             });
         });
    
@@ -28,7 +28,8 @@ export default function TicketTypesWidget(props: any) {
         let i = 0;
         for (const ticketType of ticketTypes) {
             const key = `ttw${i}`;
-            ttypes.push(<div key={key}>{ticketType} ({arr[ticketType]})</div>);
+            const total = ticketType.totalAvailable > 0 ? `/${ticketType.totalAvailable}` : '';
+            ttypes.push(<div key={key}>{ticketType.ticketTypeName} ({arr[ticketType.ticketTypeName]}{total})</div>);
             i++;
         }
 

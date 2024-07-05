@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue } from "../types/event";
+import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType } from "../types/event";
 import { UserReportSelection } from "@/types/user";
 import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
 import { getTicketDataFromEvents } from "@/utils/getTicketData";
@@ -296,13 +296,13 @@ export class EventService {
       exportStr += '"Ticket Types sold:"\n';
       let arr: any = [];
       ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
-        ticketTypes.forEach((ticketType: string) => {
-          var data = ticketTypeData.find(x => x.TicketType == ticketType);
-          var number = arr[ticketType] ?? 0;
+        ticketTypes.forEach((ticketType: TicketType) => {
+          var data = ticketTypeData.find(x => x.TicketType == ticketType.ticketTypeName);
+          var number = arr[ticketType.ticketTypeName] ?? 0;
           if (data) {
               number += data.Number;
           }
-          arr[ticketType] = number;
+          arr[ticketType.ticketTypeName] = number;
         });
       });
       for (const ticketType in arr) {
@@ -311,10 +311,12 @@ export class EventService {
     }
 
     exportStr += '"Date","Title","Venue","Location","Tickets sold",';
+    exportStr += '"Revenue (USD)",';
     if (isAdmin) {
-      exportStr += '"Service Fees (USD)",';
+      exportStr += '"Service Fees (USD)"\n';
+    } else {
+      exportStr += '\n';
     }
-    exportStr += '"Revenue (USD)"\n';
 
     let totalTcketsSold = 0;
     let totalRevenue = 0.0;
@@ -335,17 +337,21 @@ export class EventService {
       const serviceFees = vipEvent.totalServiceFees;
       totalRevenue += revenue;
       exportStr += `"${eventDate}","${title}","${venue}","${location}","${ticketsSold}",`;
+      exportStr += `"${revenue.toFixed(2)}",`;
       if (isAdmin) {
-        exportStr += `"${serviceFees.toFixed(2)}",`;
+        exportStr += `"${serviceFees.toFixed(2)}"\n`;
+      } else {
+        exportStr += '\n';
       }
-      exportStr += `"${revenue.toFixed(2)}"\n`;
     });
 
     exportStr += `"Total","","","","${totalTcketsSold}",`;
+    exportStr += `"${totalRevenue.toFixed(2)}",`;
     if (isAdmin) {
-      exportStr += `"${totalServiceFees.toFixed(2)}",`;
+      exportStr += `"${totalServiceFees.toFixed(2)}"\n`;
+    } else {
+      exportStr += '\n';
     }
-    exportStr += `"${totalRevenue.toFixed(2)}"\n`;
     
     return exportStr;
   };
@@ -383,11 +389,11 @@ export class EventService {
           const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
           const eventName = vipEvent.title;          
           const numTickets = order.numTickets;
-          const originalPrice = order.revenue.toFixed(2);
-          const originalServiceFees = order.serviceFees?.toFixed(2);
+          const originalPrice = order.revenue?.toFixed(2) ?? 0;
+          const originalServiceFees = order.serviceFees?.toFixed(2) ?? 0;
           const exchangeRate = order.exchangeRate;
-          const revenue = order.revenueUsd.toFixed(2);
-          const serviceFees = order.serviceFeesUsd?.toFixed(2);
+          const revenue = order.revenueUsd?.toFixed(2) ?? 0;
+          const serviceFees = order.serviceFeesUsd?.toFixed(2) ?? 0;
           const email = order.email;
           let phone = '';
           if (order.phone) {
@@ -466,8 +472,8 @@ export class EventService {
         exportStr += '"Ticket Types Sold:"\n';
         exportStr += '"Type","Number"\n';
         ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
-            ticketTypes.forEach((ticketType: string) => {
-                var data = ticketTypeData.find(x => x.TicketType == ticketType);
+            ticketTypes.forEach((ticketType: TicketType) => {
+                var data = ticketTypeData.find(x => x.TicketType == ticketType.ticketTypeName);
                 var number = 0;
                 if (data) {
                     number = data.Number;

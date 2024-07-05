@@ -17,6 +17,7 @@ import PrintButton from "./printButtonComponent";
 import RevenueCheck from "./revenueCheckComponent";
 import { setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
 import { UserRole } from "@/types/user";
+import ServiceFeesCheck from "./serviceFeesCheckComponent";
 
 export default function AdminBar() {    
     const dispatch = useDispatch(); 
@@ -89,6 +90,7 @@ export default function AdminBar() {
                     {user.showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
                     {isAdmin && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
                     {isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents ? <RevenueCheck /> : ''}    
+                    {isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents ? <ServiceFeesCheck /> : ''} 
                 </Col>
             </Row>
             <Row className="no-print">
