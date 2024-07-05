@@ -28,8 +28,7 @@ export default function TicketTypesWidget(props: any) {
         let i = 0;
         for (const ticketType of ticketTypes) {
             const key = `ttw${i}`;
-            const total = ticketType.totalAvailable > 0 ? `/${ticketType.totalAvailable}` : '';
-            ttypes.push(<div key={key}>{ticketType.ticketTypeName} ({arr[ticketType.ticketTypeName]}{total})</div>);
+            ttypes.push(<div key={key}>{ticketType.ticketTypeName} ({arr[ticketType.ticketTypeName]})</div>);
             i++;
         }
 
