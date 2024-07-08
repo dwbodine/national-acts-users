@@ -24,6 +24,7 @@ export default function Register() {
     const { register } = useRegister();
 
     useEffect(() => {
+        document.title = "Client Portal - Register";
         if (!dummyVal) {
             setDummyVal(true);
             getSellers()

@@ -1,7 +1,7 @@
 html,
 body {
   font: 14px "Open Sans", sans-serif;
-  min-height: 100vh;  
+  min-height: 100vh;
 }
 
 * {
@@ -49,8 +49,28 @@ body {
   margin: 0 10px 0 0;
 }
 
-.wrapper input, .wrapper select, .wrapper textarea {
+.wrapper input,
+.wrapper select,
+.wrapper textarea {
   width: 100%;
+}
+
+.login-logo-container {
+  width: 100%;
+  margin: 0;
+  padding: 0 0 25px 0;
+  text-align: center;
+}
+
+.login-logo {
+  margin: 0 auto;
+}
+
+.login-title-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
 .page-header {
@@ -80,6 +100,9 @@ body {
   box-shadow: none !important;
 }
 
+.navbar-icon-image {
+  margin: 10px 0 10px 25px;
+}
 
 .page-header .title-container {
   vertical-align: middle;
@@ -102,12 +125,15 @@ body {
   color: black;
 }
 
-.date-range-title, .seller-title 
-{
+.date-range-title,
+.seller-title {
   margin-right: 10px;
 }
 
-.inactive-check div, .deleted-check div, .revenue-check div, .service-fees-check div {
+.inactive-check div,
+.deleted-check div,
+.revenue-check div,
+.service-fees-check div {
   margin-left: 20px;
   display: inline;
 }
@@ -189,16 +215,19 @@ body {
   font-weight: bold;
 }
 
-.resultsTable thead, .resultsTable tfoot {
+.resultsTable thead,
+.resultsTable tfoot {
   font-weight: bold;
 }
 
-.resultsTable a, .vipTable a {
+.resultsTable a,
+.vipTable a {
   cursor: pointer;
   text-decoration: underline !important;
 }
 
-.resultsTable a:hover, .vipTable a:hover {
+.resultsTable a:hover,
+.vipTable a:hover {
   color: blue !important;
   text-decoration: none !important;
 }
@@ -235,7 +264,7 @@ body {
 
 .vipDetailsTable .vipLabel {
   font-weight: bold;
-  text-align: left;  
+  text-align: left;
 }
 
 .vipTitle {
@@ -309,7 +338,10 @@ body {
 }
 
 @media print {
-  .no-print, .rs-nav-item, .rs-nav-bar   {
+
+  .no-print,
+  .rs-nav-item,
+  .rs-nav-bar {
     display: none !important;
   }
 }

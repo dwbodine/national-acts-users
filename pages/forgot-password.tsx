@@ -1,5 +1,5 @@
 import { ForgotPasswordMode } from "@/types/user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
 import { useRouter } from "next/router";
@@ -20,6 +20,20 @@ export default function ForgotPassword() {
     const { forgotPassword } = useForgotPassword();
     const { validateResetCode  } = useValidateResetCode();
     const { resetPassword } = useResetPassword();
+
+    useEffect(() => {
+        switch (mode) {
+            case ForgotPasswordMode.ValidateResetCode:
+                document.title = "Client Portal - Validate Reset Code";
+                break;
+            case ForgotPasswordMode.ResetPassword:
+                document.title = "Client Portal - Reset Password";
+                break;
+            default:
+                document.title = "Client Portal - Forgot Password";
+                break;
+        }
+    }, [mode]);    
 
     const onForgotPassword = () => {
         setResetError('');

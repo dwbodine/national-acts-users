@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, useEffect } from "react";
 import { useLogin } from "../src/hooks/useLogin";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
@@ -7,6 +7,7 @@ import CheckAuth from "../components/checkAuthComponent";
 import { useDispatch } from "react-redux";
 import { resetAll, setShowInactiveOrders } from "@/lib/reportSelectionSlice";
 import { UserRole } from "@/types/user";
+import Image from 'next/image';
 
 export default function Login() {
   const [name, setName] = useState("");
@@ -15,6 +16,10 @@ export default function Login() {
   const { login } = useLogin();
   const router = useRouter();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    document.title = "Client Portal - Login";
+  }, [name, password, loginError, login]);  
 
   const register = () => {
     router.push('/register');
@@ -69,15 +74,20 @@ export default function Login() {
       <CheckAuth />
       <Container className="wrapper">
         <Row>
-          <Col>
-            <h2>Login</h2>
+          <Col className="login-logo-container">
+            <Image className="login-logo" src="/images/logo-new.png" alt="National Acts Client Portal" title="National Acts Client Portal" width={300} height={231} />
+          </Col>
+        </Row>
+        <Row>
+          <Col className="login-title-container">
+            <h2>CLIENT PORTAL</h2>
             <p>Please fill in your credentials to log in.</p>
           </Col>
         </Row>
         <Row>
           <Col>
             <div className="form-group">
-              <label>Username</label>
+              <label>USERNAME</label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -90,7 +100,7 @@ export default function Login() {
         <Row>
           <Col>
             <div className="form-group">
-              <label className="mt-4">Password</label>
+              <label className="mt-4">PASSWORD</label>
               <input
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

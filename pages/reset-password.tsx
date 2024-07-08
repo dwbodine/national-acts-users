@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useResetPasswordSecure } from '../src/hooks/useResetPasswordSecure';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -15,6 +15,11 @@ export default function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
+
+  useEffect(() => {
+    document.title = "Client Portal - Reset Password";
+  }, [router])
+  
 
   const handleSubmit = (event: any) => {
     const username = user.username;
