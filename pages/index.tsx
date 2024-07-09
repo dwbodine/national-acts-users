@@ -41,7 +41,7 @@ export default function Home() {
       <Container fluid hidden={!user.isAuthenticated} className="vipContainer">
         { isAdmin ? 
           <>
-          <Tabs defaultActiveKey="1" onSelect={onSelectTab}>
+          <Tabs defaultActiveKey="1" onSelect={onSelectTab} className="admin-tabs">
             <Tabs.Tab eventKey="1" title="HOME">
               <Dashboard />
             </Tabs.Tab>

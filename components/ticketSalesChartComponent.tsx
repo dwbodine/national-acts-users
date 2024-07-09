@@ -40,7 +40,7 @@ export default function TicketSalesChart(props: any) {
     const yPosition: LabelPosition = hideRev ? "insideLeft" : "insideBottomLeft";
     
     return (
-        <Row className='no-print' hidden={!ticketSalesData}>
+        <Row className='no-print ticket-sales-chart' hidden={!ticketSalesData}>
             <Col>
                 <ResponsiveContainer width="100%" height={200}>
                     <AreaChart

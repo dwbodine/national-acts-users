@@ -151,7 +151,7 @@ export default function CurrentEvents() {
                 <Col className="spinner-container" hidden={!isLoading}>
                     <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
                 </Col>
-                <Col hidden={isLoading}>
+                <Col hidden={isLoading} className="results-col">
                     {(vipEvents && vipEvents.length > 0) ?
                         <table className="resultsTable">
                             <thead>

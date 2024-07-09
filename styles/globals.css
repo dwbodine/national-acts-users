@@ -55,10 +55,21 @@ body {
   width: 100%;
 }
 
+.navbar {
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar .logo-col {
+  margin: 0;
+  padding: 0;
+}
+
 .login-logo-container {
   width: 100%;
   margin: 0;
-  padding: 0 0 25px 0;
+  padding: 0 0 15px 0;
   text-align: center;
 }
 
@@ -78,13 +89,14 @@ body {
   -moz-border-radius: 0px;
   border-radius: 0px;
   box-shadow: none;
-  padding: 5px 20px;
+  padding: 5px 15px 5px 2px;
   margin: 0 0 15px 0;
   border: 0px !important;
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
   box-shadow: none !important;
   background-color: #EFEFEF;
+  width: 100%;
 }
 
 .nav-header {
@@ -101,7 +113,7 @@ body {
 }
 
 .navbar-icon-image {
-  margin: 10px 0 10px 25px;
+  margin: 10px 0 10px 15px;
 }
 
 .page-header .title-container {
@@ -116,6 +128,7 @@ body {
 
 .control-container {
   text-align: right;
+  padding: 0;
 }
 
 .control-container .action-button {
@@ -125,17 +138,53 @@ body {
   color: black;
 }
 
-.date-range-title,
-.seller-title {
+.admin-tabs {
+  width: 100%;
+  gap: 0 !important;
+}
+
+.admin-seller-row {
+  margin: 0 0 10px 0;
+}
+
+.admin-check-row {
+  margin: 5px 0;
+}
+
+.admin-button-row {
+  margin: 0 0 0 10px;
+}
+
+.date-range-title {
   margin-right: 10px;
+}
+
+.seller-title {
+  margin: 0 15px;
+}
+
+.inactive-check,
+.deleted-check,
+.revenue-check,
+.service-fees-check {
+  margin: 0 0 0 20px;
+  float: left;
+  width: 160px;
+  white-space: nowrap;
 }
 
 .inactive-check div,
 .deleted-check div,
 .revenue-check div,
 .service-fees-check div {
-  margin-left: 20px;
-  display: inline;
+  float: left;
+}
+
+.inactive-check .form-check-input,
+.deleted-check .form-check-input,
+.revenue-check .form-check-input,
+.service-fees-check .form-check-input {
+  margin-right: 10px;
 }
 
 .admin-button {
@@ -146,18 +195,29 @@ body {
 .spinner-container {
   display: flex;
   justify-content: space-around;
-  padding-top: 33vh;
+  padding-top: 15px;
+}
+
+.widget-row {
+  margin: 0;
+  padding: 0;
+}
+
+.widget-col {
+  margin: 0;
+  padding: 10px 0 0 10px;
 }
 
 .stat-block {
   padding: 10px;
-  margin: 15px;
+  margin: 0;
   background-color: #EFEFEF;
   border: 1px solid #dedede;
   border-radius: 4px;
   line-height: 14px;
-  height: 100%;
+  width: 285px;
   min-height: 285px;
+  max-height: 100%;
   display: table;
 }
 
@@ -244,8 +304,9 @@ body {
 }
 
 .vipContainer {
+  width: 100vw;
   margin: 0;
-  padding: 0 25px;
+  padding: 0 0 0 15px;
 }
 
 .vipDetailsTable {
@@ -325,9 +386,66 @@ body {
   font-weight: bold;
 }
 
+@media (max-width: 1184px) {
+  .stat-block {
+    width: 200px;
+    min-height: 200px;
+    max-height: 100%;
+  }
+}
+
+@media (max-width: 991px) {
+  .inactive-check,
+  .deleted-check,
+  .revenue-check,
+  .service-fees-check {
+    margin-bottom: 15px;
+  }
+
+  .admin-button {
+    margin-top: 0;
+  }
+  
+  .stat-block {
+    width: 285px;
+    min-height: 285px;
+    max-height: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .ticket-sales-chart {
+    display: none;
+  }
+}
+
+@media (max-width: 867px) {
+  .control-container .date-range-title {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .wrapper {
     width: 368px;
+  }
+
+  .resultsTable {
+    width: unset;
+    max-width: 100%;
+  }
+
+  .resultsTable th, .resultsTable td {
+      padding: 2px;
+  }
+}
+
+@media (max-width: 610px) {
+  .stat-block {
+    width: 200px;
+    min-height: 200px;
+    height: 100%;
+    margin: 0;
   }
 }
 
@@ -335,7 +453,47 @@ body {
   .no-mobile {
     display: none;
   }
+
+  .control-container {
+    text-align: unset;
+  }  
+
+  .results-col {
+    padding-left: 5px;
+  }
 }
+
+@media (max-width: 435px) {
+  .no-mobile {
+    display: none;
+  }
+
+  .control-container {
+    text-align: unset;
+  }
+
+  .widget-col {
+    padding-right: 5px;
+  }
+
+  .stat-block {
+    padding-right: 0;
+    width: 92%;
+    min-height: 160px;
+    max-height: 100%;
+  }
+
+  
+
+  .resultsTable {
+    max-width: 360px;
+  }
+
+  .resultsCol {
+      padding: 0;
+  }
+}
+
 
 @media print {
 

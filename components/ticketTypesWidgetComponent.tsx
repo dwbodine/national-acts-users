@@ -33,14 +33,14 @@ export default function TicketTypesWidget(props: any) {
         }
 
         return (
-            <>
+            <div className="stat-block">
                 <FaTicketAlt size="2em" />
                 <div>Ticket types sold:</div>
                 {ttypes}
                 <span>Total: {totalTickets}</span>
                 <div className="second">Tickets refunded:</div>
                 <span>{ticketsRefunded}</span>
-            </>
+            </div>
         );
     } else {
         return(<></>);

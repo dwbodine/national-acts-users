@@ -33,12 +33,12 @@ export default function ShirtSizesWidget(props: any) {
         }
 
         return (
-            <>
+            <div className="stat-block">
                 <FaShirtsinbulk size="2em" />
                 <div>Shirt sizes sold:</div>
                 {sSizes}
                 <span>Total: {totalShirts}</span>
-            </>
+            </div>
         );
     } else {
         return (<></>);

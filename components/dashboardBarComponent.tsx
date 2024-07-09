@@ -26,10 +26,10 @@ export default function DashboardBar() {
     return (
         <>
             <Row className="page-header">
-                <Col md={5} sm={12} className="title-container">
+                <Col sm={6} xs={12} className="title-container">
                     <div className="title">{pageTitle}</div>
                 </Col>
-                <Col lg={5} sm={12} className="control-container no-print">
+                <Col sm={6} xs={12} className="control-container no-print">
                     <DateRangeSelector dateRangeTitle={dateRangeTitle} selectedStart={currentDashboardSelection?.start} selectedEnd={currentDashboardSelection?.end} disabled={false} onDateChange={onDateChange} />
                 </Col>
             </Row>

@@ -75,25 +75,33 @@ export default function AdminBar() {
     return (
         <>
             <Row className="page-header">
-                <Col md={5} sm={12} className="title-container">
+                <Col sm={6} xs={12} className="title-container">
                     <div className="title">{pageTitle}</div>
                 </Col>
-                <Col lg={5} sm={12} className="control-container no-print">
+                <Col sm={6} xs={12} className="control-container no-print">
                     <DateRangeSelector dateRangeTitle={dateRangeTitle} selectedStart={currentReportSelection?.start} selectedEnd={currentReportSelection?.end} disabled={(currentReportSelection.seller.sellerId <= 0 || !hasEvents)} onDateChange={onDateChange} />
                 </Col>
             </Row>
-            <Row className="no-print">
-                <Col md={3} sm={12}>
+            <Row className="no-print admin-seller-row">
+                <Col>
                     <SelectSeller />
                 </Col>
-                <Col md={9} sm={12}>
+            </Row>
+            <Row className="admin-check-row">
+                <Col xl={2} lg={3} md={6} sm={12}>
                     {user.showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
+                </Col>
+                <Col xl={2} lg={3} md={6} sm={12}>
                     {isAdmin && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
+                </Col>
+                <Col xl={2} lg={3} md={6} sm={12}>
                     {isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents ? <RevenueCheck /> : ''}    
+                </Col>
+                <Col xl={2} lg={3} md={6} sm={12}>
                     {isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents ? <ServiceFeesCheck /> : ''} 
                 </Col>
-            </Row>
-            <Row className="no-print">
+            </Row>            
+            <Row className="no-print admin-button-row">
                 <Col>
                     {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
                     {(isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportEventData}>Export Summary</Button></span> : ''}

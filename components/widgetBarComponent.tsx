@@ -18,17 +18,17 @@ export default function WidgetBar(props: any) {
     const ticketsRefunded: number = props.TicketsRefunded as number;
     
     return (
-        <Row className="no-print" hidden={!totalShows}>
-            <Col lg={2} md={5} className="stat-block">
+        <Row className="no-print widget-row" hidden={!totalShows}>
+            <Col lg={3} sm={6} xs={6} className="widget-col">
                 <ShowsListedWidget TotalShows={totalShows} />
             </Col>
-            <Col hidden={totalTickets == 0} lg={2} md={5} className="stat-block">
+            <Col hidden={totalTickets == 0} lg={3} sm={6} xs={6} className="widget-col">
                 <TicketTypesWidget TicketData={ticketData} TotalTickets={totalTickets} TicketsRefunded={ticketsRefunded} />
             </Col>
-            <Col hidden={totalShirts == 0} lg={2} md={5} className="stat-block">
+            <Col hidden={totalShirts == 0} lg={3} sm={6} xs={6} className="widget-col">
                 <ShirtSizesWidget ShirtData={shirtData} TotalShirts={totalShirts} />
             </Col>
-            <Col hidden={hideRevItem} lg={2} md={5} className="stat-block">
+            <Col hidden={hideRevItem} lg={3} sm={6} xs={6} className="widget-col">
                 <RevenueWidget TotalRevenue={totalRevenue} />
             </Col>
         </Row>

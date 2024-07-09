@@ -9,8 +9,8 @@ export default function NavBar() {
     
     return (
         <>
-            <Row className="no-print">
-                <Col>
+            <Row className="no-print navbar">
+                <Col className="logo-col">
                     <Image className="navbar-icon-image" src="/images/logo-icon.jpg" height={50} width={50} alt="National Acts" />
                 </Col>
                 <Col className="nav-header control-container no-print">
