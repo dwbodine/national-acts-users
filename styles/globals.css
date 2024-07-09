@@ -152,7 +152,7 @@ body {
 }
 
 .admin-button-row {
-  margin: 0 0 0 10px;
+  margin: 0 0 10px 10px;
 }
 
 .date-range-title {
@@ -187,9 +187,9 @@ body {
   margin-right: 10px;
 }
 
-.admin-button {
-  display: inline-block;
-  margin: 10px 5px 10px 0;
+.admin-button button {
+  width: 165px;
+  margin: 10px 0;
 }
 
 .spinner-container {

@@ -88,25 +88,31 @@ export default function AdminBar() {
                 </Col>
             </Row>
             <Row className="admin-check-row">
-                <Col xl={2} lg={3} md={6} sm={12}>
+                <Col xl={2} lg={3} md={6} sm={12} hidden={!user.showInactiveEvents}>
                     {user.showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
                 </Col>
-                <Col xl={2} lg={3} md={6} sm={12}>
+                <Col xl={2} lg={3} md={6} sm={12} hidden={!isAdmin}>
                     {isAdmin && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
                 </Col>
-                <Col xl={2} lg={3} md={6} sm={12}>
+                <Col xl={2} lg={3} md={6} sm={12} hidden={!isAdmin}>
                     {isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents ? <RevenueCheck /> : ''}    
                 </Col>
-                <Col xl={2} lg={3} md={6} sm={12}>
+                <Col xl={2} lg={3} md={6} sm={12} hidden={!isAdmin}>
                     {isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents ? <ServiceFeesCheck /> : ''} 
                 </Col>
             </Row>            
-            <Row className="no-print admin-button-row">
-                <Col>
+            <Row className="no-print admin-button-row" hidden={currentReportSelection.seller.sellerId <= 0}>
+                <Col className="col-xxl-2 col-xl-3 col-lg-4 col-sm-5 col-xs-6 admin-button">
                     {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
-                    {(isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
-                    {(isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className='admin-button'><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}
-                    {(currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}
+                </Col>
+                <Col className="col-xxl-2 col-xl-3 col-lg-4 col-sm-5 col-xs-6 admin-button">
+                    {(currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}                    
+                </Col>
+                <Col className="col-xxl-2 col-xl-3 col-lg-4 col-sm-5 col-xs-6 admin-button">
+                    {(isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <Button onClick={exportEventData}>Export Summary</Button> : ''}
+                </Col>
+                <Col className="col-xxl-2 col-xl-3 col-lg-4 col-sm-5 col-xs-6 admin-button">
+                    {(isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <Button onClick={exportCustomerData}>Export Customer Data</Button> : ''}                    
                 </Col>
             </Row>
         </>           

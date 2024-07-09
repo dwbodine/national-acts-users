@@ -19,7 +19,7 @@ export default function WidgetBar(props: any) {
     
     return (
         <Row className="no-print widget-row" hidden={!totalShows}>
-            <Col className="scol-lg-2 col-5 stat-block">
+            <Col className="col-lg-2 col-5 stat-block">
                 <ShowsListedWidget TotalShows={totalShows} />
             </Col>
             <Col hidden={totalTickets == 0} className="col-lg-2 col-5 stat-block">
