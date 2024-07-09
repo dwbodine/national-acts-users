@@ -19,16 +19,16 @@ export default function WidgetBar(props: any) {
     
     return (
         <Row className="no-print widget-row" hidden={!totalShows}>
-            <Col lg={3} sm={6} xs={6} className="widget-col">
+            <Col className="scol-lg-2 col-5 stat-block">
                 <ShowsListedWidget TotalShows={totalShows} />
             </Col>
-            <Col hidden={totalTickets == 0} lg={3} sm={6} xs={6} className="widget-col">
+            <Col hidden={totalTickets == 0} className="col-lg-2 col-5 stat-block">
                 <TicketTypesWidget TicketData={ticketData} TotalTickets={totalTickets} TicketsRefunded={ticketsRefunded} />
             </Col>
-            <Col hidden={totalShirts == 0} lg={3} sm={6} xs={6} className="widget-col">
+            <Col hidden={totalShirts == 0} className="col-lg-2 col-5 stat-block">
                 <ShirtSizesWidget ShirtData={shirtData} TotalShirts={totalShirts} />
             </Col>
-            <Col hidden={hideRevItem} lg={3} sm={6} xs={6} className="widget-col">
+            <Col hidden={hideRevItem} className="col-lg-2 col-5 stat-block">
                 <RevenueWidget TotalRevenue={totalRevenue} />
             </Col>
         </Row>

@@ -199,36 +199,30 @@ body {
 }
 
 .widget-row {
-  margin: 0;
-  padding: 0;
-}
-
-.widget-col {
-  margin: 0;
-  padding: 10px 0 0 10px;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100%;
 }
 
 .stat-block {
   padding: 10px;
-  margin: 0;
+  margin: 0 15px 15px 0;
   background-color: #EFEFEF;
   border: 1px solid #dedede;
   border-radius: 4px;
   line-height: 14px;
-  width: 285px;
-  min-height: 285px;
-  max-height: 100%;
-  display: table;
+  font-size: 10px;
+  min-height: 150px;
+  min-width: 150px;
 }
 
 .stat-block svg {
   display: block;
-  margin: 0 5px 0 0;
+  margin: 0 5px 10px 0;
 }
 
 .stat-block div {
-  white-space: nowrap;
-  margin: 15px 0;
+  margin-bottom: 5px;
 }
 
 .stat-block div.second {
@@ -387,11 +381,7 @@ body {
 }
 
 @media (max-width: 1184px) {
-  .stat-block {
-    width: 200px;
-    min-height: 200px;
-    max-height: 100%;
-  }
+  
 }
 
 @media (max-width: 991px) {
@@ -404,12 +394,6 @@ body {
 
   .admin-button {
     margin-top: 0;
-  }
-  
-  .stat-block {
-    width: 285px;
-    min-height: 285px;
-    max-height: 100%;
   }
 }
 
@@ -441,12 +425,7 @@ body {
 }
 
 @media (max-width: 610px) {
-  .stat-block {
-    width: 200px;
-    min-height: 200px;
-    height: 100%;
-    margin: 0;
-  }
+  
 }
 
 @media (max-width: 576px) {
@@ -471,19 +450,6 @@ body {
   .control-container {
     text-align: unset;
   }
-
-  .widget-col {
-    padding-right: 5px;
-  }
-
-  .stat-block {
-    padding-right: 0;
-    width: 92%;
-    min-height: 160px;
-    max-height: 100%;
-  }
-
-  
 
   .resultsTable {
     max-width: 360px;
