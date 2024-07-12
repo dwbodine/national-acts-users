@@ -10,7 +10,6 @@ import Dashboard from "../components/dashboardComponent";
 import { UserRole } from "@/types/user";
 import { useEffect, useState } from "react";
 
-
 export default function Home() {
   const { user } = useCurrentUser();
   const isAdmin = (user.role == UserRole.Admin);

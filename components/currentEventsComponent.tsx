@@ -17,6 +17,10 @@ import router from "next/router";
 import WidgetBar from "./widgetBarComponent";
 import TicketSalesChart from "./ticketSalesChartComponent";
 import { getPurchaseDataFromEvents } from "@/utils/getPurchaseData";
+import { useWindowSize } from "@/hooks/useWindowSize";
+import isMobileWidth from "@/utils/mobileUtil";
+import EventMobileRow from "./eventMobileRowComponent";
+import { Container } from "react-bootstrap";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -28,6 +32,8 @@ export default function CurrentEvents() {
     const [chartsHidden, setChartsHidden] = useState(true);
     const [hideRevItem, setHideRevItem] = useState(true);
     const [hideServiceFees, setHideServiceFees] = useState(true);
+    const windowSize = useWindowSize();
+    const isMobile = isMobileWidth(windowSize);
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -107,7 +113,7 @@ export default function CurrentEvents() {
             }
         }        
         
-    }, [currentReportSelection, dispatch, getEvents]);     
+    }, [currentReportSelection, dispatch, getEvents, isMobile]);     
     
     const rows = [];
     let totalEvents = 0;
@@ -129,7 +135,12 @@ export default function CurrentEvents() {
         let i = 0;
         for (const evt of vipEvents) {
             const key = `ev${i}`;
-            rows.push(<EventRow key={key} VipEvent={evt} IsAdmin={isAdmin} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);
+            if (isMobile) {
+                rows.push(<EventMobileRow key={key} VipEvent={evt} IsAdmin={isAdmin} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);    
+            } else {
+                rows.push(<EventRow key={key} VipEvent={evt} IsAdmin={isAdmin} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);    
+            }
+
             if (!evt.isDeleted) {
                 totalTickets += evt.totalTickets;
                 totalRevenue += evt.totalRevenue;
@@ -154,7 +165,7 @@ export default function CurrentEvents() {
                 <Col hidden={isLoading} className="results-col">
                     {(vipEvents && vipEvents.length > 0) ?
                         <table className="resultsTable">
-                            <thead>
+                            <thead hidden={isMobile}>
                                 <tr>
                                     <th>Date</th>
                                     <th>Title</th>
@@ -169,6 +180,28 @@ export default function CurrentEvents() {
                             <tbody>
                                 { rows }
                             </tbody>
+                            {isMobile ? 
+                            <tfoot>
+                                <tr>
+                                    <td>
+                                        <Container>
+                                            <Row>
+                                                <Col>Total Tickets:</Col>
+                                                <Col className="pull-right">{totalTickets}</Col>
+                                            </Row>
+                                            <Row hidden={hideRevItem}>
+                                                <Col>Total Revenue:</Col>
+                                                <Col className="pull-right">{totalRevenue.toFixed(2)}</Col>
+                                            </Row>
+                                            <Row hidden={hideServiceFees || !isAdmin}>
+                                                <Col>Total Service Fees:</Col>
+                                                <Col className="pull-right" >{totalServiceFees.toFixed(2)}</Col>
+                                            </Row>
+                                        </Container>
+                                    </td>
+                                </tr>                                
+                            </tfoot>
+                            :
                             <tfoot>
                                 <tr>
                                     <td colSpan={4}>Total</td> 
@@ -178,6 +211,7 @@ export default function CurrentEvents() {
                                     { isAdmin ? <td colSpan={2} className="no-print"></td> : ''}            
                                 </tr>
                             </tfoot>
+                            }
                         </table>
                     : ''} 
                     {((!vipEvents || vipEvents.length == 0) && currentReportSelection.seller.sellerId > 0) ? 

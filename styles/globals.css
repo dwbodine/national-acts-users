@@ -260,6 +260,10 @@ body {
   text-align: right;
 }
 
+.resultsTable div.pull-right {
+  text-align: right;
+}
+
 .resultsTable tr.event-inactive {
   color: red;
 }
@@ -380,6 +384,39 @@ body {
   font-weight: bold;
 }
 
+
+.mobile-event-card-container {
+  width: 100%;
+  margin: 5px 0;
+  border: 0;
+}
+
+.mobile-event-card-container td {
+  border: unset;
+  width: 100%;
+  text-align: center;
+}
+
+.mobile-event-card {
+  text-align: left;
+  margin: 0;
+  border: 2px solid gray;
+  padding: 15px;
+}
+
+.mobile-event-card .row {
+  padding: 5px;
+}
+
+.mobile-event-card button {
+  margin: 5px 25px 5px 0;
+}
+
+.resultsTable tfoot div {
+  padding: 5px;
+}
+
+
 @media (max-width: 1184px) {
   
 }
@@ -439,6 +476,14 @@ body {
 
   .results-col {
     padding-left: 5px;
+  }
+
+  .resultsTable, .resultsTable tbody, .resultsTable th, .resultsTable td {
+    border: unset
+  }
+
+  .resultsTable th, .resultsTable td {
+    padding: 5px;
   }
 }
 
