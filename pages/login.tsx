@@ -47,7 +47,7 @@ export default function Login() {
         .then((response) => {
           if (response) {
             if (response.user && response.user.isAuthenticated) {
-              if (response.user.role != UserRole.Admin) {
+              if (response.user.role != UserRole.SystemAdmin) {
                 dispatch(
                   setShowInactiveOrders(false)
                 );

@@ -10,6 +10,7 @@ export default function TicketSalesChart(props: any) {
     const [chartsHidden, setChartsHidden] = useState(true);
     const hideCharts: boolean = props.ChartsHidden as boolean;
     const hideRev: boolean = props.HideRevenue as boolean;
+    const hideMobile: boolean = props.HideMobile as boolean;
     
     useEffect(() => {
         if (hideCharts) {
@@ -40,7 +41,7 @@ export default function TicketSalesChart(props: any) {
     const yPosition: LabelPosition = hideRev ? "insideLeft" : "insideBottomLeft";
     
     return (
-        <Row className='no-print ticket-sales-chart' hidden={!ticketSalesData}>
+        <Row className='no-print ticket-sales-chart' hidden={hideMobile || !ticketSalesData}>
             <Col>
                 <ResponsiveContainer width="100%" height={200}>
                     <AreaChart

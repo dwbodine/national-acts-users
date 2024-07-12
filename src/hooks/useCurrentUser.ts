@@ -6,8 +6,7 @@ export const useCurrentUser = () => {
     userId: 0,
     role: UserRole.AccountManager,
     username: '',
-    isActive: false,
-    showInactiveEvents: false
+    isActive: false
   });
 
   useEffect(() => {
@@ -20,8 +19,7 @@ export const useCurrentUser = () => {
         userId: 0,
         role: UserRole.AccountManager,
         username: '',
-        isActive: false,
-        showInactiveEvents: false
+        isActive: false
       });
     }
   }, [setUser]);

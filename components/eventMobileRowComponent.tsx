@@ -1,4 +1,4 @@
-import { VipEvent } from "@/types/event";
+import { ITicketTypeData, TicketType, VipEvent } from "@/types/event";
 import React from 'react';
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,8 +9,9 @@ import { useGetLocation } from "@/hooks/useGetLocation";
 import router from "next/router";
 import { RootState } from "@/lib/store";
 import { eventService } from "@/services";
-import { userAgent } from "next/server";
 import { Button, Col, Container, Row } from "react-bootstrap";
+import { UserSellerType } from "@/types/user";
+import { getTicketDataFromEvents } from "@/utils/getTicketData";
 
 export default function EventMobileRow(props: any) {
     const dispatch = useDispatch(); 
@@ -23,6 +24,7 @@ export default function EventMobileRow(props: any) {
     const { getLocation } = useGetLocation();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);   
     const eUrl: string = eventService.getEventUrl(); 
+    const currentSellerType = currentReportSelection.seller.sellerType;
 
     const setDetailEvent = () => {
         const url = `/${eUrl}?id=${vipEvent.ticketSocketEventId}`;
@@ -87,12 +89,39 @@ export default function EventMobileRow(props: any) {
     if (vipEvent.venue) {
         location = getLocation(vipEvent.venue);
     }
+
+    const ticketBreakdownRows: any[] = [];
+    let hasTicketData = false;
+    const ticketData = getTicketDataFromEvents([vipEvent]);
+    const ticketTypes = ticketData?.TicketTypes;
+    if (ticketTypes?.length > 0) {
+        hasTicketData = true;
+        let i = 0;
+        ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
+            ticketTypes.forEach((ticketType: TicketType) => {
+                const key = `ttd${i}`;
+                var data = ticketTypeData.find(x => x.TicketType == ticketType.ticketTypeName);
+                var number = 0;
+                var total = '';
+                if (data) {
+                    number = data.Number;
+                }
+                if (ticketType.totalAvailable > 0) {
+                    total = `/${ticketType.totalAvailable}`;
+                }
+                ticketBreakdownRows.push(<div className="ticket-type" key={key}>{ticketType.ticketTypeName} ({number}{total})</div>);
+                i++;
+            });
+        });
+    }
+
     
     const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
     const revenue = new Number(vipEvent.totalRevenue).toFixed(2);
     const serviceFees = new Number(vipEvent.totalServiceFees).toFixed(2);
     const inactiveLabel = vipEvent.isActive ? "Deactivate" : "Activate";
     const deletedLabel = vipEvent.isDeleted ? "Undelete" : "Delete";
+    const buttonText = currentSellerType == UserSellerType.Venue ? "Customer List" : "VIP List";
         
     return (
         <tr className={'mobile-event-card-container ' + statusClass}>
@@ -104,7 +133,7 @@ export default function EventMobileRow(props: any) {
                     </Row>
                     <Row>
                         <Col>Title:</Col>
-                        <Col><a onClick={setDetailEvent}>{vipEvent.title}</a></Col>
+                        <Col>{vipEvent.title}</Col>
                     </Row>
                     <Row>
                         <Col>Venue:</Col>
@@ -118,13 +147,24 @@ export default function EventMobileRow(props: any) {
                         <Col>Tickets sold:</Col>
                         <Col>{vipEvent.totalTickets}</Col>
                     </Row>
-                    <Row hidden={hideRevItem || !isAdmin}>
+                    <Row>
+                        <Col>Ticket types sold:</Col>
+                        <Col>
+                            { ticketBreakdownRows }
+                        </Col>
+                    </Row>
+                    <Row hidden={hideRevItem}>
                         <Col>Revenue (USD):</Col>
                         <Col>{revenue}</Col>
                     </Row>
-                    <Row hidden={hideServiceFees} className="no-print">
+                    <Row hidden={hideServiceFees || !isAdmin} className="no-print">
                         <Col>Service Fees:</Col>
                         <Col>{serviceFees}</Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button onClick={setDetailEvent}>{buttonText}</Button>
+                        </Col>
                     </Row>
                     <Row className="no-print" hidden={!isAdmin}>
                         <Col>

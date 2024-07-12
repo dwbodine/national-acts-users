@@ -18,15 +18,28 @@ import RevenueCheck from "./revenueCheckComponent";
 import { setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
 import { UserRole } from "@/types/user";
 import ServiceFeesCheck from "./serviceFeesCheckComponent";
+import { useWindowSize } from "@/hooks/useWindowSize";
+import isMobileWidth from "@/utils/mobileUtil";
+import { useEffect, useState } from "react";
 
 export default function AdminBar() {    
     const dispatch = useDispatch(); 
     const { user } = useCurrentUser();
-    const isAdmin = (user.role == UserRole.Admin);
+    
     const { exportEventsToCsv, exportCustomerDataToCsv } = useGetExport();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const hasEvents = (currentReportSelection?.currentEvents?.length ?? 0 > 0);
     const dateRangeTitle = "Event date range";
+    const windowSize = useWindowSize();
+    const [isMobile, setIsMobile] = useState(false);
+
+    const isAdmin = (user.role == UserRole.SystemAdmin);
+    const showInactiveEvents = (user.role == UserRole.SystemAdmin || user.role == UserRole.AccountAdmin);
+    const showDeletedEvents = (user.role ==  UserRole.SystemAdmin);
+    const showServiceFees = (user.role == UserRole.SystemAdmin);
+    const showRevenueControls = (user.role == UserRole.SystemAdmin);
+    const showExports = (user.role == UserRole.SystemAdmin);
+    const showPrint = (user.role == UserRole.SystemAdmin);
 
     const exportEventData = () => {
         if (currentReportSelection && currentReportSelection.currentEvents) {
@@ -72,6 +85,10 @@ export default function AdminBar() {
         dispatch(setReloadEvents(true));
     }
 
+    useEffect(() => {
+        setIsMobile(isMobileWidth(windowSize));
+    }, [windowSize])
+
     return (
         <>
             <Row className="page-header">
@@ -88,31 +105,19 @@ export default function AdminBar() {
                 </Col>
             </Row>
             <Row className="admin-check-row">
-                <Col xl={2} lg={3} md={6} sm={12} hidden={!user.showInactiveEvents}>
-                    {user.showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
-                </Col>
-                <Col xl={2} lg={3} md={6} sm={12} hidden={!isAdmin}>
-                    {isAdmin && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
-                </Col>
-                <Col xl={2} lg={3} md={6} sm={12} hidden={!isAdmin}>
-                    {isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents ? <RevenueCheck /> : ''}    
-                </Col>
-                <Col xl={2} lg={3} md={6} sm={12} hidden={!isAdmin}>
-                    {isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents ? <ServiceFeesCheck /> : ''} 
+                <Col md={10} sm={12}>
+                    {showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
+                    {showDeletedEvents && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
+                    {showRevenueControls && currentReportSelection.seller.sellerId > 0 && hasEvents ? <RevenueCheck /> : ''}    
+                    {showServiceFees && currentReportSelection.seller.sellerId > 0 && hasEvents ? <ServiceFeesCheck /> : ''} 
                 </Col>
             </Row>            
             <Row className="no-print admin-button-row" hidden={currentReportSelection.seller.sellerId <= 0}>
-                <Col className="col-xxl-2 col-xl-3 col-lg-4 col-sm-5 col-xs-6 admin-button">
+                <Col md={10} sm={12}>
                     {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
-                </Col>
-                <Col className="col-xxl-2 col-xl-3 col-lg-4 col-sm-5 col-xs-6 admin-button">
-                    {(currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}                    
-                </Col>
-                <Col className="col-xxl-2 col-xl-3 col-lg-4 col-sm-5 col-xs-6 admin-button">
-                    {(isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <Button onClick={exportEventData}>Export Summary</Button> : ''}
-                </Col>
-                <Col className="col-xxl-2 col-xl-3 col-lg-4 col-sm-5 col-xs-6 admin-button">
-                    {(isAdmin && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <Button onClick={exportCustomerData}>Export Customer Data</Button> : ''}                    
+                    {(!isMobile && showPrint && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}                    
+                    {(!isMobile && showExports && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
+                    {(!isMobile && showExports && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}                    
                 </Col>
             </Row>
         </>           

@@ -25,7 +25,7 @@ import { Container } from "react-bootstrap";
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const { user } = useCurrentUser();
-    const isAdmin = (user.role == UserRole.Admin);
+    const isAdmin = (user.role == UserRole.SystemAdmin);
     const { getEvents } = useGetEvents();
     const dispatch = useDispatch(); 
     const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +34,9 @@ export default function CurrentEvents() {
     const [hideServiceFees, setHideServiceFees] = useState(true);
     const windowSize = useWindowSize();
     const isMobile = isMobileWidth(windowSize);
+    const hideTicketChart = windowSize.width < 1200;
+
+    const alwaysShowRevenue = (user.role == UserRole.AccountAdmin || user.role == UserRole.AccountManager);
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -76,7 +79,14 @@ export default function CurrentEvents() {
 
     useEffect(() => {
         if (currentReportSelection.seller.sellerId > 0) {
-            setHideRevItem(currentReportSelection.hideRevenue ?? true);
+            if (alwaysShowRevenue) {
+                setHideRevItem(false);
+            } else if (user.role == UserRole.MerchPerson) {
+                setHideRevItem(true);
+            } else {
+                setHideRevItem(currentReportSelection.hideRevenue ?? true);
+            }
+            
             setHideServiceFees(currentReportSelection.hideServiceFees ?? true);
 
             if (currentReportSelection.reloadEvents) {
@@ -113,7 +123,7 @@ export default function CurrentEvents() {
             }
         }        
         
-    }, [currentReportSelection, dispatch, getEvents, isMobile]);     
+    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, user.role]);     
     
     const rows = [];
     let totalEvents = 0;
@@ -121,12 +131,10 @@ export default function CurrentEvents() {
     let totalRevenue = 0.0;
     let totalShirts = 0;
     let totalOrders = 0;
-    let showWidgetBar = false;
     let ticketsRefunded = 0;
     let totalServiceFees = 0;
 
     if (vipEvents && vipEvents.length > 0) {
-        showWidgetBar = true;
         totalEvents = vipEvents.length;
         ticketData = getTicketData();
         shirtData = getShirtData();
@@ -156,9 +164,10 @@ export default function CurrentEvents() {
     return (
         <>
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
-                ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} TicketsRefunded={ticketsRefunded} />
-            <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} HideRevenue={hideRevItem} />
-            <Row>
+                ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} 
+                TicketsRefunded={ticketsRefunded} TotalServiceFees={totalServiceFees} HideServiceFees={hideServiceFees || !isAdmin} />
+            <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} HideRevenue={hideRevItem} HideMobile={hideTicketChart} />
+            <Row className="results-container">
                 <Col className="spinner-container" hidden={!isLoading}>
                     <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
                 </Col>
@@ -180,29 +189,7 @@ export default function CurrentEvents() {
                             <tbody>
                                 { rows }
                             </tbody>
-                            {isMobile ? 
-                            <tfoot>
-                                <tr>
-                                    <td>
-                                        <Container>
-                                            <Row>
-                                                <Col>Total Tickets:</Col>
-                                                <Col className="pull-right">{totalTickets}</Col>
-                                            </Row>
-                                            <Row hidden={hideRevItem}>
-                                                <Col>Total Revenue:</Col>
-                                                <Col className="pull-right">{totalRevenue.toFixed(2)}</Col>
-                                            </Row>
-                                            <Row hidden={hideServiceFees || !isAdmin}>
-                                                <Col>Total Service Fees:</Col>
-                                                <Col className="pull-right" >{totalServiceFees.toFixed(2)}</Col>
-                                            </Row>
-                                        </Container>
-                                    </td>
-                                </tr>                                
-                            </tfoot>
-                            :
-                            <tfoot>
+                            <tfoot hidden={isMobile}>
                                 <tr>
                                     <td colSpan={4}>Total</td> 
                                     <td className="pull-right">{totalTickets}</td>
@@ -211,7 +198,6 @@ export default function CurrentEvents() {
                                     { isAdmin ? <td colSpan={2} className="no-print"></td> : ''}            
                                 </tr>
                             </tfoot>
-                            }
                         </table>
                     : ''} 
                     {((!vipEvents || vipEvents.length == 0) && currentReportSelection.seller.sellerId > 0) ? 

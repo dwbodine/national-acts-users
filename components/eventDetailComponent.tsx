@@ -20,11 +20,13 @@ import { RootState } from "@/lib/store";
 import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees } from "@/lib/reportSelectionSlice";
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
 import { UserReportSelection, UserRole } from "@/types/user";
+import { useWindowSize } from "@/hooks/useWindowSize";
+import isMobileWidth from "@/utils/mobileUtil";
+import OrderMobileRow from "./orderMobileRowComponent";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
-    const isAdmin = (user.role == UserRole.Admin);
-    const showInactive = user.showInactiveEvents;
+    
     const { getLocation } = useGetLocation();
     const { exportEventCustomerDataToCsv } = useGetExport();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -32,15 +34,36 @@ export default function EventDetail(props: any) {
     const [isLoading, setIsLoading] = useState(false);
     const { getEventDetails } = useGetEventDetails();
     const dispatch = useDispatch(); 
-    const hideRev: boolean = currentReportSelection?.hideRevenue ?? false;
-    const hideServiceFees: boolean = currentReportSelection?.hideServiceFees ?? false;
+    const [hideRevItem, setHideRevItem] = useState(true);
+    
     const [vipEvent, setVipEvent] = useState<VipEvent | undefined>(undefined);
     const id: number | undefined = props.Id as number;
+    const windowSize = useWindowSize();
+    const isMobile = isMobileWidth(windowSize);
+    let hasOrders = false;
+
+    const isAdmin = (user.role == UserRole.SystemAdmin);
+    const showInactiveEvents = (user.role == UserRole.SystemAdmin || user.role == UserRole.AccountAdmin);
+    const showDeletedEvents = (user.role ==  UserRole.SystemAdmin);
+    const showServiceFees = (user.role == UserRole.SystemAdmin);
+    const showRevenueControls = (user.role == UserRole.SystemAdmin);
+    const alwaysShowRevenue = (user.role == UserRole.AccountAdmin || user.role == UserRole.AccountManager);
+    const showExports = (user.role == UserRole.SystemAdmin);
+    const showPrint = (user.role == UserRole.SystemAdmin);
+
+    const hideServiceFees: boolean = currentReportSelection?.hideServiceFees ?? false;
 
     useEffect(() => {     
         async function fetchEvent() {
             if (id && currentReportSelection && currentReportSelection.reloadEvents) {
                 setIsLoading(true);
+                if (alwaysShowRevenue) {
+                    setHideRevItem(false);
+                } else if (user.role == UserRole.MerchPerson) {
+                    setHideRevItem(true);
+                } else {
+                    setHideRevItem(currentReportSelection.hideRevenue ?? true);
+                }
                 let reportSelection: UserReportSelection = { ...currentReportSelection };
                 if (!isAdmin) {
                     reportSelection.showInactiveOrders = false;
@@ -67,7 +90,7 @@ export default function EventDetail(props: any) {
         }   
         fetchEvent();
         
-    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, isAdmin]);
+    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, isAdmin, alwaysShowRevenue, user.role]);
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -134,10 +157,15 @@ export default function EventDetail(props: any) {
         
         let i = 0;
         vipEvent.orders?.forEach((order) => {
+            hasOrders = true;
             const key = `or${i}`;
             const showOrder = (!order.isDeleted && order.isActive) || (order.isDeleted && currentReportSelection?.showDeletedOrders) || (!order.isActive && currentReportSelection?.showInactiveOrders);
             if (showOrder) {
-                orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRev} HideServiceFees={hideServiceFees} />);
+                if (isMobile) { 
+                    orderRows.push(<OrderMobileRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);
+                } else {
+                    orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);
+                }                
             }            
             i++;
         });    
@@ -204,7 +232,7 @@ export default function EventDetail(props: any) {
                                         <td className="vipLabel">Total Tickets:</td>
                                         <td>{vipEvent.totalTickets}</td>
                                     </tr>
-                                    <tr hidden={hideRev}>
+                                    <tr hidden={hideRevItem}>
                                         <td className="vipLabel">Total Revenue:</td>
                                         <td>${vipEvent.totalRevenue?.toFixed(2)}</td>
                                     </tr>
@@ -228,33 +256,33 @@ export default function EventDetail(props: any) {
                                 <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
                             </Col>
                         </Row>
-                        <Row hidden={!isAdmin || !showInactive || isLoading} className="no-print">
-                            <Col md={1} sm={1}>
-                                <span className="admin-button">
-                                    <Button onClick={exportOrdersToCsv}>Export to Csv</Button>
-                                </span>
-                            </Col>
-                            <Col md={1} sm={11}>
-                                <PrintButton />
+                        <Row hidden={isLoading} className="no-print">
+                            <Col md={10} sm={12} hidden={isMobile}>
+                                <div className="admin-button-row">
+                                    <span className="admin-button" hidden={!showExports}>
+                                        <Button onClick={exportOrdersToCsv}>Export to Csv</Button>
+                                    </span>
+                                    <PrintButton ShowPrint={showPrint} />
+                                </div>
                             </Col>
                             <Col md={10} sm={12}>
-                                <span className="inactive-check">
+                                <span className="inactive-check" hidden={!showInactiveEvents}>
                                     <FormCheck checked={currentReportSelection?.showInactiveOrders} onChange={handleShowInactive} disabled={currentReportSelection?.showDeletedOrders} /> Show Inactive Orders?
                                 </span>
-                                <span className="inactive-check">
+                                <span className="deleted-check" hidden={!showDeletedEvents}>
                                     <FormCheck checked={currentReportSelection?.showDeletedOrders} onChange={handleShowDeleted} /> Show Deleted Orders?
                                 </span>
-                                <span className="inactive-check">
+                                <span className="revenue-check" hidden={!hasOrders || !showRevenueControls}>
                                     <FormCheck checked={currentReportSelection?.hideRevenue} onChange={handleHideRevenue} /> Hide Revenue Items?
                                 </span>
-                                <span className="inactive-check">
+                                <span className="service-fees-check" hidden={!hasOrders || !showServiceFees}>
                                     <FormCheck checked={currentReportSelection?.hideServiceFees} onChange={handleHideServiceFees} /> Hide Service Fees?
                                 </span>
                             </Col>
                         </Row>
                         <Row hidden={isLoading}>
                             <table className="vipTable">
-                                <thead>
+                                <thead hidden={isMobile}>
                                     <tr>
                                         <th>Purchaser Name</th>
                                         <th>Attendee Name</th>
@@ -263,8 +291,8 @@ export default function EventDetail(props: any) {
                                         <th>Event Name</th>
                                         <th>Ticket Type</th>
                                         <th># of tickets</th>
-                                        <th hidden={hideRev}>Revenue</th>
-                                        <th className="no-print" hidden={hideServiceFees || !isAdmin}>Service Fees</th>
+                                        <th hidden={hideRevItem}>Revenue</th>
+                                        <th className="no-print" hidden={hideServiceFees || !showServiceFees}>Service Fees</th>
                                         <th>Email</th>
                                         {(hasPhoneData) ? <th>Phone #</th> : ''}
                                         {(hasShirtData) ? <th>Shirt Sizes</th> : ''}

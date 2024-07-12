@@ -6,9 +6,10 @@ export type LoginResponse = {
 }
 
 export enum UserRole {
-  Admin = 1,
-  AccountManager = 2,
-  MerchPerson = 3
+  SystemAdmin = 1,
+  AccountAdmin = 2,
+  AccountManager = 3,
+  MerchPerson = 4
 };
 
 export type User = {
@@ -22,14 +23,20 @@ export type User = {
   isAuthenticated?: boolean;
   token?: string;
   isActive: boolean;  
-  showInactiveEvents: boolean;
   sellers?: UserSeller[];
   selectedSellerId?: number;
+};
+
+export enum UserSellerType {
+  Artist = 1,
+  Venue = 2,
+  Promoter = 3
 };
 
 export type UserSeller = {
     sellerId: number;
     sellerName: string;
+    sellerType: UserSellerType;
 }
 
 export type UserReportSelection = {

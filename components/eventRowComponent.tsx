@@ -7,9 +7,7 @@ import { useSetEventInactive } from "@/hooks/useSetEventInactive";
 import { useSetEventDeleted } from "@/hooks/useSetEventDeleted";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import router from "next/router";
-import { RootState } from "@/lib/store";
 import { eventService } from "@/services";
-import { userAgent } from "next/server";
 
 export default function EventRow(props: any) {
     const dispatch = useDispatch(); 
@@ -20,7 +18,6 @@ export default function EventRow(props: any) {
     const { setEventInactive } = useSetEventInactive();
     const { setEventDeleted } = useSetEventDeleted();
     const { getLocation } = useGetLocation();
-    const currentReportSelection = useSelector((state: RootState) => state.reportSelection);   
     const eUrl: string = eventService.getEventUrl(); 
 
     const setDetailEvent = () => {
@@ -100,7 +97,7 @@ export default function EventRow(props: any) {
             <td>{venueName}</td>
             <td>{location}</td>
             <td className="pull-right">{vipEvent.totalTickets}</td>
-            <td className="pull-right" hidden={hideRevItem || !isAdmin}>{revenue}</td>
+            <td className="pull-right" hidden={hideRevItem}>{revenue}</td>
             <td className="pull-right no-print" hidden={hideServiceFees}>{serviceFees}</td>
             { isAdmin ? <td className="no-print"><a onClick={activateDeactivateEvent}>{inactiveLabel}</a></td> : ''}
             { isAdmin ? <td className="no-print"><a onClick={deleteUndeleteEvent}>{deletedLabel}</a></td> : ''}

@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const { user } = useCurrentUser();
-  const isAdmin = (user.role == UserRole.Admin);
+  const isAdmin = (user.role == UserRole.SystemAdmin);
   const [activeKey, setActiveKey] = useState("1");
 
   useEffect(() => {

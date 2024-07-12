@@ -19,7 +19,8 @@ export default function SelectSeller() {
         }
         return seller || {
             sellerId: 0,
-            sellerName: ''
+            sellerName: '',
+            sellerType: 1
         };
     }, [user]);    
 

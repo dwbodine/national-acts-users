@@ -1,13 +1,14 @@
 import { useSetOrderDeleted } from '@/hooks/useSetOrderDeleted';
 import { useSetOrderInactive } from '@/hooks/useSetOrderInadtive';
-import { setReloadEvents } from '@/lib/reportSelectionSlice';
+import { setEvents, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { Order } from '@/types/event';
 import moment from 'moment';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import router from 'next/router';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 
-export default function OrderRow(props: any) {
+export default function OrderMobileRow(props: any) {
     const dispatch = useDispatch();
     const eventDate = props.EventDate as string;
     const eventName = props.EventName as string;
@@ -138,21 +139,63 @@ export default function OrderRow(props: any) {
     const deletedLabel = order.isDeleted ? "Undelete" : "Delete";
 
     return (
-        <tr className={statusClass}>
-            <td>{purchaserName}</td>
-            <td>{attendeeNameRows}</td>
-            <td className="no-print">{purchaseDate}</td>
-            <td>{moment(eventDate).format('MM/DD/YYYY')}</td>
-            <td>{eventName}</td>
-            <td>{ticketTypeRows}</td>
-            <td>{order.numTickets}</td>
-            <td className="pull-right" hidden={hideRev}>{revenue}</td>
-            <td className="pull-right no-print" hidden={hideServiceFees || !isAdmin}>{serviceFees}</td>            
-            <td>{order.email}</td>
-            { hasPhoneData ? <td>{order.phone}</td> : ''}
-            { hasShirtData ? <td>{shirtSizeRows}</td> : ''}
-            { isAdmin ? <td className="no-print"><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
-            { isAdmin ? <td className="no-print"><a onClick={deleteUndeleteOrder}>{deletedLabel}</a></td> : ''}
+        <tr className={'mobile-event-card-container ' + statusClass}>
+            <td>
+               <Container className="mobile-event-card">
+                    <Row>
+                        <Col>Purchaser Name:</Col>
+                        <Col>{purchaserName}</Col>
+                    </Row>
+                    <Row>
+                        <Col>Attendee Names:</Col>
+                        <Col>{attendeeNameRows}</Col>
+                    </Row>
+                    <Row className="no-print">
+                        <Col>Purchase Date:</Col>
+                        <Col>{purchaseDate}</Col>
+                    </Row>
+                    <Row>
+                        <Col>Event Date:</Col>
+                        <Col>{moment(eventDate).format('MM/DD/YYYY')}</Col>
+                    </Row>
+                    <Row>
+                        <Col>Event Name:</Col>
+                        <Col>{eventName}</Col>
+                    </Row>
+                    <Row>
+                        <Col>Ticket types sold:</Col>
+                        <Col>
+                            {ticketTypeRows}
+                        </Col>
+                    </Row>
+                    <Row hidden={hideRev}>
+                        <Col>Revenue (USD):</Col>
+                        <Col>${revenue}</Col>
+                    </Row>
+                    <Row hidden={hideServiceFees || !isAdmin} className="no-print">
+                        <Col>Service Fees:</Col>
+                        <Col>${serviceFees}</Col>
+                    </Row>
+                    <Row>
+                        <Col>Email:</Col>
+                        <Col>{order.email}</Col>
+                    </Row>
+                    <Row hidden={!hasPhoneData}>
+                        <Col>Phone:</Col>
+                        <Col>{order.phone}</Col>
+                    </Row>
+                    <Row hidden={!hasShirtData}>
+                        <Col>Shirts:</Col>
+                        <Col>{shirtSizeRows}</Col>
+                    </Row>
+                    <Row className="no-print" hidden={!isAdmin}>
+                        <Col>
+                            <Button onClick={activateDeactivateOrder}>{inactiveLabel}</Button>
+                            <Button onClick={deleteUndeleteOrder}>{deletedLabel}</Button>
+                        </Col>
+                    </Row>
+               </Container>
+            </td>
         </tr>
     );
 }
