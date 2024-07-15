@@ -98,10 +98,12 @@ export const userReportSelectionSlice = createSlice({
         },
         setHideRevenue: (state, action: PayloadAction<boolean>) => {
             state.hideRevenue = action.payload;
+            state.reloadEvents = false;
             return state;
         },
         setHideServiceFees: (state, action: PayloadAction<boolean>) => {
             state.hideServiceFees = action.payload;
+            state.reloadEvents = false;
             return state;
         },
         setEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {

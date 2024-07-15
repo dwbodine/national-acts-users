@@ -519,13 +519,53 @@ div hidden {
     text-align: unset;
   }
 
+  .admin-seller-row .col {
+    padding: 0;
+  }
+
+  .admin-seller-row .seller-title {
+    margin: 0 5px;
+  }
+
+  .admin-check-row .col-sm-12 {
+    padding: 0 5px;
+  }
+
+  .admin-button-row {
+    margin: 0;
+  }
+
+  .admin-button-row .col-sm-12 {
+    padding: 0 5px;
+  }
+
+  .admin-button-row button {
+    font-size: 0.8rem;
+    margin-left: 0;
+  }
+
+  .stat-block-container {
+    padding-left: 5px;
+  }
+
+  .results-container {
+    padding-left: 5px;
+  }
+
   .results-col {
     padding: 0;
   }
 
-  .resultsTable,
+  .vipTable-container {
+    padding: 0 5px;
+  }
+
+  .resultsTable {
+      margin: 0;
+  }
+
   .vipTable {
-    margin: 0;
+    margin: 0 5px;
   }
 
   .inactive-check,
@@ -546,20 +586,12 @@ div hidden {
     border: unset
   }
 
-  .vipTable {
-    margin-top: 0;
-  }
-
   .resultsTable th,
   .resultsTable td,
   .vipTable th,
   .vipTable td {
     padding: 5px 0;
-  }
-
-  .admin-button-row button {
-    font-size: 0.8rem;
-  }
+  }  
 }
 
 /* custom mobile width */

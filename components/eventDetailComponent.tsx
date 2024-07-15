@@ -35,6 +35,7 @@ export default function EventDetail(props: any) {
     const { getEventDetails } = useGetEventDetails();
     const dispatch = useDispatch(); 
     const [hideRevItem, setHideRevItem] = useState(true);
+    const [hideServiceFeeDisplay, setHideServiceFeeDisplay] = useState(true);
     
     const [vipEvent, setVipEvent] = useState<VipEvent | undefined>(undefined);
     const id: number | undefined = props.Id as number;
@@ -51,12 +52,9 @@ export default function EventDetail(props: any) {
     const showExports = (user.role == UserRole.SystemAdmin);
     const showPrint = (user.role == UserRole.SystemAdmin);
 
-    const hideServiceFees: boolean = currentReportSelection?.hideServiceFees ?? false;
-
     useEffect(() => {     
         async function fetchEvent() {
-            if (id && currentReportSelection && currentReportSelection.reloadEvents) {
-                setIsLoading(true);
+            if (id && currentReportSelection) {
                 if (alwaysShowRevenue) {
                     setHideRevItem(false);
                 } else if (user.role == UserRole.MerchPerson) {
@@ -64,28 +62,38 @@ export default function EventDetail(props: any) {
                 } else {
                     setHideRevItem(currentReportSelection.hideRevenue ?? true);
                 }
-                let reportSelection: UserReportSelection = { ...currentReportSelection };
-                if (!isAdmin) {
-                    reportSelection.showInactiveOrders = false;
-                }
-                const results = await getEventDetails(id, reportSelection);
-                if (results && results.events && results.events.length > 0) {
-                    setVipEvent(results.events[0]);
-                    if (currentReportSelection.currentEvents && results.events[0] != undefined) {
-                        const newEvent: VipEvent = results.events[0];
-                        document.title = newEvent.title;
-                        currentReportSelection.currentEvents.map((evt) => {
-                            return evt.ticketSocketEventId == newEvent.ticketSocketEventId ? newEvent : evt;
-                        });
+
+                if (user.role == UserRole.SystemAdmin) {
+                    setHideServiceFeeDisplay(currentReportSelection.hideServiceFees ?? true);
+                } else {
+                    setHideServiceFeeDisplay(true);
+                }      
+                
+                if (currentReportSelection.reloadEvents) {
+                    setIsLoading(true);
+                    let reportSelection: UserReportSelection = { ...currentReportSelection };
+                    if (!isAdmin) {
+                        reportSelection.showInactiveOrders = false;
+                    }
+                    const results = await getEventDetails(id, reportSelection);
+                    if (results && results.events && results.events.length > 0) {
+                        setVipEvent(results.events[0]);
+                        if (currentReportSelection.currentEvents && results.events[0] != undefined) {
+                            const newEvent: VipEvent = results.events[0];
+                            document.title = newEvent.title;
+                            currentReportSelection.currentEvents.map((evt) => {
+                                return evt.ticketSocketEventId == newEvent.ticketSocketEventId ? newEvent : evt;
+                            });
+                            dispatch (
+                                setEvents(currentReportSelection.currentEvents)
+                            );
+                        } 
                         dispatch (
-                            setEvents(currentReportSelection.currentEvents)
-                        );
-                    } 
-                    dispatch (
-                        setReloadEvents(false)
-                    )
-                }                
-                setIsLoading(false);
+                            setReloadEvents(false)
+                        )
+                    }   
+                    setIsLoading(false);   
+                }                          
             }
         }   
         fetchEvent();
@@ -162,9 +170,9 @@ export default function EventDetail(props: any) {
             const showOrder = (!order.isDeleted && order.isActive) || (order.isDeleted && currentReportSelection?.showDeletedOrders) || (!order.isActive && currentReportSelection?.showInactiveOrders);
             if (showOrder) {
                 if (isMobile) { 
-                    orderRows.push(<OrderMobileRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);
+                    orderRows.push(<OrderMobileRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} />);
                 } else {
-                    orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);
+                    orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} IsAdmin={isAdmin} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} />);
                 }                
             }            
             i++;
@@ -236,7 +244,7 @@ export default function EventDetail(props: any) {
                                         <td className="vipLabel">Total Revenue:</td>
                                         <td>${vipEvent.totalRevenue?.toFixed(2)}</td>
                                     </tr>
-                                    <tr hidden={hideServiceFees || !isAdmin}>
+                                    <tr hidden={hideServiceFeeDisplay || !showServiceFees }>
                                         <td className="vipLabel">Total Service Fees:</td>
                                         <td>${vipEvent.totalServiceFees?.toFixed(2)}</td>
                                     </tr>
@@ -280,7 +288,7 @@ export default function EventDetail(props: any) {
                                 </span>
                             </Col>
                         </Row>
-                        <Row hidden={isLoading}>
+                        <Row hidden={isLoading} className="vipTable-container">
                             <table className="vipTable">
                                 <thead hidden={isMobile}>
                                     <tr>
@@ -292,7 +300,7 @@ export default function EventDetail(props: any) {
                                         <th>Ticket Type</th>
                                         <th># of tickets</th>
                                         <th hidden={hideRevItem}>Revenue</th>
-                                        <th className="no-print" hidden={hideServiceFees || !showServiceFees}>Service Fees</th>
+                                        <th className="no-print" hidden={hideServiceFeeDisplay || !showServiceFees}>Service Fees</th>
                                         <th>Email</th>
                                         {(hasPhoneData) ? <th>Phone #</th> : ''}
                                         {(hasShirtData) ? <th>Shirt Sizes</th> : ''}

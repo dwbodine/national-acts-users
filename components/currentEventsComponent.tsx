@@ -87,7 +87,11 @@ export default function CurrentEvents() {
                 setHideRevItem(currentReportSelection.hideRevenue ?? true);
             }
             
-            setHideServiceFees(currentReportSelection.hideServiceFees ?? true);
+            if (user.role == UserRole.SystemAdmin) {
+                setHideServiceFees(currentReportSelection.hideServiceFees ?? true);
+            } else {
+                setHideServiceFees(true);
+            }            
 
             if (currentReportSelection.reloadEvents) {
                 setIsLoading(true);
@@ -165,7 +169,7 @@ export default function CurrentEvents() {
         <>
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
                 ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} 
-                TicketsRefunded={ticketsRefunded} TotalServiceFees={totalServiceFees} HideServiceFees={hideServiceFees || !isAdmin} />
+                TicketsRefunded={ticketsRefunded} TotalServiceFees={totalServiceFees} HideServiceFees={hideServiceFees} />
             <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} HideRevenue={hideRevItem} HideMobile={hideTicketChart} />
             <Row className="results-container">
                 <Col className="spinner-container" hidden={!isLoading}>
@@ -182,7 +186,7 @@ export default function CurrentEvents() {
                                     <th>Location</th>
                                     <th>Tickets Sold</th>
                                     <th hidden={hideRevItem}>Revenue (USD)</th>
-                                    <th className="no-print" hidden={hideServiceFees || !isAdmin}>Service Fees</th>
+                                    <th className="no-print" hidden={hideServiceFees}>Service Fees</th>
                                     { isAdmin ? <th colSpan={2} className="center no-print">Admin Commands</th> : ''}            
                                 </tr>
                             </thead>
@@ -194,7 +198,7 @@ export default function CurrentEvents() {
                                     <td colSpan={4}>Total</td> 
                                     <td className="pull-right">{totalTickets}</td>
                                     <td className="pull-right" hidden={hideRevItem}>{totalRevenue.toFixed(2)}</td>
-                                    <td className="pull-right" hidden={hideServiceFees || !isAdmin}>{totalServiceFees.toFixed(2)}</td>
+                                    <td className="pull-right" hidden={hideServiceFees}>{totalServiceFees.toFixed(2)}</td>
                                     { isAdmin ? <td colSpan={2} className="no-print"></td> : ''}            
                                 </tr>
                             </tfoot>
