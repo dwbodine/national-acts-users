@@ -55,7 +55,6 @@ export default function Home() {
           </>
           :
           <>
-          <div style={{"height": "5px"}}>&nbsp;</div>
           <AdminBar />   
           <CurrentEvents />
           </>
