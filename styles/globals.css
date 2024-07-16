@@ -258,6 +258,11 @@ div hidden {
   margin: 15px 0 0 5px;
 }
 
+.resultsTable th {
+  background-color: lightgray;
+  font-weight: bold;
+}
+
 .resultsTable th,
 .resultsTable td {
   border: 1px solid black;
@@ -275,6 +280,16 @@ div hidden {
 
 .resultsTable div.pull-right {
   text-align: right;
+}
+
+.resultsTable tr:nth-child(even), 
+.vipTable tr:nth-child(even) {
+  background-color: #EFEFEF;
+}
+
+.resultsTable tr:hover, 
+.vipTable tr:hover {
+  background-color: lightgray;
 }
 
 .resultsTable tr.event-inactive {
@@ -324,8 +339,8 @@ div hidden {
 }
 
 .vipDetailsTable {
-  max-width: 360px;
-  margin-bottom: 10px;
+  max-width: 576px;
+  margin: 10px 0 10px 15px;
 }
 
 .vipDetailsTable tr {
@@ -352,8 +367,11 @@ div hidden {
   text-align: center;
 }
 
+.vipTable-container {
+  padding: 15px;
+}
+
 .vipTable {
-  margin: 25px 5px;
   width: 100%;
   border-collapse: collapse;
   border: 1px solid black;
@@ -361,6 +379,10 @@ div hidden {
 
 .vipTable tr {
   vertical-align: top;
+}
+
+.vipTable tr:nth-child(even) {
+  background-color: #EFEFEF;
 }
 
 .vipTable th,
@@ -433,6 +455,15 @@ div hidden {
   margin: 5px 25px 5px 0;
 }
 
+.mobile-bold {
+  font-weight: bold;
+}
+
+.attendee {
+  font-weight: bold;
+  text-shadow: 1px 0 1px yellowgreen;
+}
+
 /* MOBILE QUERIES */
 
 /* Bootstrap xl */
@@ -498,7 +529,12 @@ div hidden {
   }
 
   .vipContainer {
-    padding: 5px;
+    padding: 10px;
+  }
+
+  .vipDetailsTable {
+    max-width: 100%;
+    margin: 10px 0;
   }
 
   .results-container {
@@ -569,7 +605,7 @@ div hidden {
   }
 
   .vipTable-container {
-    padding: 0 5px;
+    padding: 0 15px 0 5px;
   }
 
   .resultsTable {
@@ -604,6 +640,36 @@ div hidden {
   .vipTable td {
     padding: 5px 0;
   }
+
+  .resultsTable tr:nth-child(even), 
+  .vipTable tr:nth-child(even) {
+    background-color: unset;
+  }
+
+  .mobile-event-card {
+    padding: 5px;
+  }
+
+  .resultsTable tr:hover, 
+  .vipTable tr:hover {
+    background-color: unset;
+  }
+
+  .resultsTable .mobile-event-card-container:nth-child(even), 
+  .vipTable .mobile-event-card-container:nth-child(even)
+   {
+    .mobile-event-card {
+      background-color: #EFEFEF !important;
+    }    
+  }
+
+  .vipDetailsTable td {
+    white-space: unset;
+  }
+
+  .vipDetailsTable .vipLabel {
+    white-space: nowrap;
+  }
 }
 
 /* custom mobile width */
@@ -623,10 +689,17 @@ div hidden {
 
 
 @media print {
-
   .no-print,
   .rs-nav-item,
   .rs-nav-bar {
     display: none !important;
+  }
+
+  .vipContainer {
+    padding: 5px;
+  }
+
+  .vipDetailsTable {
+    margin: 10px 5px;
   }
 }

@@ -140,7 +140,7 @@ export default function OrderRow(props: any) {
     return (
         <tr className={statusClass}>
             <td>{purchaserName}</td>
-            <td>{attendeeNameRows}</td>
+            <td className="attendee">{attendeeNameRows}</td>
             <td className="no-print">{purchaseDate}</td>
             <td>{moment(eventDate).format('MM/DD/YYYY')}</td>
             <td>{eventName}</td>

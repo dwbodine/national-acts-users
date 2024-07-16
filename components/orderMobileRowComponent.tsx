@@ -143,49 +143,49 @@ export default function OrderMobileRow(props: any) {
             <td>
                <Container className="mobile-event-card">
                     <Row>
-                        <Col>Purchaser Name:</Col>
+                        <Col className="mobile-bold">Purchaser Name:</Col>
                         <Col>{purchaserName}</Col>
                     </Row>
                     <Row>
-                        <Col>Attendee Names:</Col>
-                        <Col>{attendeeNameRows}</Col>
+                        <Col className="mobile-bold">Attendee Names:</Col>
+                        <Col className="attendee">{attendeeNameRows}</Col>
                     </Row>
                     <Row className="no-print">
-                        <Col>Purchase Date:</Col>
+                        <Col className="mobile-bold">Purchase Date:</Col>
                         <Col>{purchaseDate}</Col>
                     </Row>
                     <Row>
-                        <Col>Event Date:</Col>
+                        <Col className="mobile-bold">Event Date:</Col>
                         <Col>{moment(eventDate).format('MM/DD/YYYY')}</Col>
                     </Row>
                     <Row>
-                        <Col>Event Name:</Col>
+                        <Col className="mobile-bold">Event Name:</Col>
                         <Col>{eventName}</Col>
                     </Row>
                     <Row>
-                        <Col>Ticket types sold:</Col>
+                        <Col className="mobile-bold">Ticket types sold:</Col>
                         <Col>
                             {ticketTypeRows}
                         </Col>
                     </Row>
                     <Row hidden={hideRev}>
-                        <Col>Revenue (USD):</Col>
+                        <Col className="mobile-bold">Revenue (USD):</Col>
                         <Col>${revenue}</Col>
                     </Row>
                     <Row hidden={hideServiceFees || !isAdmin} className="no-print">
-                        <Col>Service Fees:</Col>
+                        <Col className="mobile-bold">Service Fees:</Col>
                         <Col>${serviceFees}</Col>
                     </Row>
                     <Row>
-                        <Col>Email:</Col>
+                        <Col className="mobile-bold">Email:</Col>
                         <Col>{order.email}</Col>
                     </Row>
                     <Row hidden={!hasPhoneData}>
-                        <Col>Phone:</Col>
+                        <Col className="mobile-bold">Phone:</Col>
                         <Col>{order.phone}</Col>
                     </Row>
                     <Row hidden={!hasShirtData}>
-                        <Col>Shirts:</Col>
+                        <Col className="mobile-bold">Shirts:</Col>
                         <Col>{shirtSizeRows}</Col>
                     </Row>
                     <Row className="no-print" hidden={!isAdmin}>
