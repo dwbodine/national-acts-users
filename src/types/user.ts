@@ -12,9 +12,35 @@ export enum UserRole {
   MerchPerson = 4
 };
 
+export enum UserSellerType {
+  Artist = 1,
+  Venue = 2,
+  Promoter = 3
+};
+
+export type UserSeller = {
+  sellerId: number;
+  sellerName: string;
+  sellerType: UserSellerType;
+  permissions?: number[];
+}
+
+export enum Permission {
+  ViewInactiveEvents = 1,
+  ViewDeletedEvents = 2,
+  ViewRevenueData = 3,
+  ViewServiceFees = 4,
+  ViewRevenueControls = 5,
+  ExportData = 6,
+  ViewPrintButton = 7,
+  CheckInUsers = 8,
+  ChangeEventStatus = 9,
+  ChangeOrderStatus = 10
+}
+
 export type User = {
   userId: number;
-  role: UserRole;
+  isAdmin: boolean;
   username: string;
   firstName?: string;
   lastName?: string;
@@ -26,18 +52,6 @@ export type User = {
   sellers?: UserSeller[];
   selectedSellerId?: number;
 };
-
-export enum UserSellerType {
-  Artist = 1,
-  Venue = 2,
-  Promoter = 3
-};
-
-export type UserSeller = {
-    sellerId: number;
-    sellerName: string;
-    sellerType: UserSellerType;
-}
 
 export type UserReportSelection = {
   seller: UserSeller;

@@ -2,10 +2,10 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from '../src/lib/store';
 import { useGetEvents } from '@/hooks/useGetEvents';
 import { setEvents, setDateRange } from '@/lib/reportSelectionSlice';
-import { IOrderKeys, IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
+import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
 import { useEffect, useState } from "react";
 import moment from "moment";
-import { UserReportSelection, UserRole } from "@/types/user";
+import { Permission, UserReportSelection, UserRole } from "@/types/user";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';
@@ -20,12 +20,12 @@ import { getPurchaseDataFromEvents } from "@/utils/getPurchaseData";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import isMobileWidth from "@/utils/mobileUtil";
 import EventMobileRow from "./eventMobileRowComponent";
-import { Container } from "react-bootstrap";
+import { useHasPermission } from "@/hooks/useHasPermission";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const { user } = useCurrentUser();
-    const isAdmin = (user.role == UserRole.SystemAdmin);
+    const { userHasPermission } = useHasPermission();
     const { getEvents } = useGetEvents();
     const dispatch = useDispatch(); 
     const [isLoading, setIsLoading] = useState(false);
@@ -36,23 +36,18 @@ export default function CurrentEvents() {
     const isMobile = isMobileWidth(windowSize);
     const hideTicketChart = windowSize.width < 1200;
 
-    const alwaysShowRevenue = (user.role == UserRole.AccountAdmin || user.role == UserRole.AccountManager);
+    const viewRevenueControls = userHasPermission(user, Permission.ViewRevenueControls);
+    const viewRevenueData = userHasPermission(user, Permission.ViewRevenueData);
+    const viewServiceFees = userHasPermission(user, Permission.ViewServiceFees);
+    const changeEventStatus = userHasPermission(user, Permission.ChangeEventStatus);
+
+    const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
     let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;    
     let ticketSalesData: ITicketSalesData[] | undefined = undefined;
     
-    const getOrderData = (): IOrderKeys[] | undefined => {
-        if (!vipEvents || vipEvents.length == 0) {
-            return undefined;
-        }
-        return vipEvents.map<IOrderKeys>((vipEvent) => ({
-            EventDate: moment(vipEvent.eventDate).format('MM/DD/YYYY'),
-            Orders: vipEvent.orders?.length || 0
-        }));
-    };
-
     const getTicketData = (): ITicketData | undefined => {
         if (!vipEvents || vipEvents.length == 0) {
             return undefined;
@@ -81,13 +76,13 @@ export default function CurrentEvents() {
         if (currentReportSelection.seller.sellerId > 0) {
             if (alwaysShowRevenue) {
                 setHideRevItem(false);
-            } else if (user.role == UserRole.MerchPerson) {
+            } else if (!viewRevenueData) {
                 setHideRevItem(true);
             } else {
                 setHideRevItem(currentReportSelection.hideRevenue ?? true);
             }
             
-            if (user.role == UserRole.SystemAdmin) {
+            if (viewServiceFees) {
                 setHideServiceFees(currentReportSelection.hideServiceFees ?? true);
             } else {
                 setHideServiceFees(true);
@@ -127,7 +122,7 @@ export default function CurrentEvents() {
             }
         }        
         
-    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, user.role]);     
+    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user]);     
     
     const rows = [];
     let totalEvents = 0;
@@ -148,9 +143,9 @@ export default function CurrentEvents() {
         for (const evt of vipEvents) {
             const key = `ev${i}`;
             if (isMobile) {
-                rows.push(<EventMobileRow key={key} VipEvent={evt} IsAdmin={isAdmin} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);    
+                rows.push(<EventMobileRow key={key} VipEvent={evt} ChangeEventStatus={changeEventStatus} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);    
             } else {
-                rows.push(<EventRow key={key} VipEvent={evt} IsAdmin={isAdmin} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);    
+                rows.push(<EventRow key={key} VipEvent={evt} ChangeEventStatus={changeEventStatus} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);    
             }
 
             if (!evt.isDeleted) {
@@ -187,7 +182,7 @@ export default function CurrentEvents() {
                                     <th>Tickets Sold</th>
                                     <th hidden={hideRevItem}>Revenue (USD)</th>
                                     <th className="no-print" hidden={hideServiceFees}>Service Fees</th>
-                                    { isAdmin ? <th colSpan={2} className="center no-print">Admin Commands</th> : ''}            
+                                    { changeEventStatus ? <th colSpan={2} className="center no-print">Commands</th> : ''}            
                                 </tr>
                             </thead>
                             <tbody>
@@ -199,7 +194,7 @@ export default function CurrentEvents() {
                                     <td className="pull-right">{totalTickets}</td>
                                     <td className="pull-right" hidden={hideRevItem}>{totalRevenue.toFixed(2)}</td>
                                     <td className="pull-right" hidden={hideServiceFees}>{totalServiceFees.toFixed(2)}</td>
-                                    { isAdmin ? <td colSpan={2} className="no-print"></td> : ''}            
+                                    { changeEventStatus ? <td colSpan={2} className="no-print"></td> : ''}            
                                 </tr>
                             </tfoot>
                         </table>

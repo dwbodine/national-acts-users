@@ -2,7 +2,6 @@ import Cookies from 'js-cookie';
 import { authRoutes, protectedRoutes, publicRoutes } from "../src/router/routes";
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import { PathnameContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
 
 export default function CheckAuth() {
   const router = useRouter();

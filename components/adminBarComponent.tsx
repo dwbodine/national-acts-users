@@ -16,16 +16,17 @@ import downloadFile from "@/utils/downloadFile";
 import PrintButton from "./printButtonComponent";
 import RevenueCheck from "./revenueCheckComponent";
 import { setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
-import { UserRole } from "@/types/user";
+import { Permission, UserRole } from "@/types/user";
 import ServiceFeesCheck from "./serviceFeesCheckComponent";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import isMobileWidth from "@/utils/mobileUtil";
 import { useEffect, useState } from "react";
+import { useHasPermission } from "@/hooks/useHasPermission";
 
 export default function AdminBar() {    
     const dispatch = useDispatch(); 
     const { user } = useCurrentUser();
-    
+    const { userHasPermission } = useHasPermission();
     const { exportEventsToCsv, exportCustomerDataToCsv } = useGetExport();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const hasEvents = (currentReportSelection?.currentEvents?.length ?? 0 > 0);
@@ -33,17 +34,16 @@ export default function AdminBar() {
     const windowSize = useWindowSize();
     const [isMobile, setIsMobile] = useState(false);
 
-    const isAdmin = (user.role == UserRole.SystemAdmin);
-    const showInactiveEvents = (user.role == UserRole.SystemAdmin || user.role == UserRole.AccountAdmin);
-    const showDeletedEvents = (user.role ==  UserRole.SystemAdmin);
-    const showServiceFees = (user.role == UserRole.SystemAdmin);
-    const showRevenueControls = (user.role == UserRole.SystemAdmin);
-    const showExports = (user.role == UserRole.SystemAdmin);
-    const showPrint = (user.role == UserRole.SystemAdmin);
+    const viewInactiveEvents = userHasPermission(user, Permission.ViewInactiveEvents);
+    const viewDeletedEvents = userHasPermission(user, Permission.ViewDeletedEvents);
+    const viewServiceFees = userHasPermission(user, Permission.ViewServiceFees);
+    const viewRevenueControls = userHasPermission(user, Permission.ViewRevenueControls);
+    const canExportData = userHasPermission(user, Permission.ExportData);
+    const viewPrintButton = userHasPermission(user, Permission.ViewPrintButton);
 
     const exportEventData = () => {
         if (currentReportSelection && currentReportSelection.currentEvents) {
-            const csvData = exportEventsToCsv(currentReportSelection.currentEvents, isAdmin);
+            const csvData = exportEventsToCsv(currentReportSelection.currentEvents, viewServiceFees);
             const fileName = getFileNameFromReportSelection(currentReportSelection);
             downloadFile(fileName, csvData);
         }        
@@ -65,7 +65,7 @@ export default function AdminBar() {
                 }
             }
             
-            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, isAdmin, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, viewServiceFees, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
             const fileName = getFileNameFromReportSelection(currentReportSelection, 'customer');
             downloadFile(fileName, csvData);
         } 
@@ -106,18 +106,18 @@ export default function AdminBar() {
             </Row>
             <Row className="admin-check-row">
                 <Col md={10} sm={12}>
-                    {showInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
-                    {showDeletedEvents && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
-                    {showRevenueControls && currentReportSelection.seller.sellerId > 0 && hasEvents ? <RevenueCheck /> : ''}    
-                    {showServiceFees && currentReportSelection.seller.sellerId > 0 && hasEvents ? <ServiceFeesCheck /> : ''} 
+                    {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
+                    {viewDeletedEvents && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
+                    {viewRevenueControls && currentReportSelection.seller.sellerId > 0 && hasEvents ? <RevenueCheck /> : ''}    
+                    {viewServiceFees && currentReportSelection.seller.sellerId > 0 && hasEvents ? <ServiceFeesCheck /> : ''} 
                 </Col>
             </Row>            
             <Row className="no-print admin-button-row" hidden={currentReportSelection.seller.sellerId <= 0}>
                 <Col md={10} sm={12}>
                     {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
-                    {(!isMobile && showPrint && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}                    
-                    {(!isMobile && showExports && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
-                    {(!isMobile && showExports && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}                    
+                    {(!isMobile && viewPrintButton && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}                    
+                    {(!isMobile && canExportData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
+                    {(!isMobile && canExportData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}                    
                 </Col>
             </Row>
         </>           

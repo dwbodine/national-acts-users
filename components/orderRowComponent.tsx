@@ -12,7 +12,7 @@ export default function OrderRow(props: any) {
     const eventDate = props.EventDate as string;
     const eventName = props.EventName as string;
     const order = props.Order as Order;
-    const isAdmin = props.IsAdmin as boolean;
+    const changeOrderStatus = props.ChangeOrderStatus as boolean;
     const hasPhoneData = props.HasPhoneData as boolean;
     const hasShirtData = props.HasShirtData as boolean;
     const hideRev = props.HideRevenue as boolean;
@@ -151,8 +151,8 @@ export default function OrderRow(props: any) {
             <td>{order.email}</td>
             { hasPhoneData ? <td>{order.phone}</td> : ''}
             { hasShirtData ? <td>{shirtSizeRows}</td> : ''}
-            { isAdmin ? <td className="no-print"><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
-            { isAdmin ? <td className="no-print"><a onClick={deleteUndeleteOrder}>{deletedLabel}</a></td> : ''}
+            { changeOrderStatus ? <td className="no-print"><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
+            { changeOrderStatus ? <td className="no-print"><a onClick={deleteUndeleteOrder}>{deletedLabel}</a></td> : ''}
         </tr>
     );
 }

@@ -16,7 +16,7 @@ import { getTicketDataFromEvents } from "@/utils/getTicketData";
 export default function EventMobileRow(props: any) {
     const dispatch = useDispatch(); 
     const vipEvent = props.VipEvent as VipEvent;
-    const isAdmin = props.IsAdmin as boolean;
+    const changEventStatus = props.ChangeEventStatus as boolean;
     const hideRevItem = props.HideRevenue as boolean;
     const hideServiceFees = props.HideServiceFees as boolean;
     const { setEventInactive } = useSetEventInactive();
@@ -157,7 +157,7 @@ export default function EventMobileRow(props: any) {
                         <Col>Revenue (USD):</Col>
                         <Col>{revenue}</Col>
                     </Row>
-                    <Row hidden={hideServiceFees || !isAdmin} className="no-print">
+                    <Row hidden={hideServiceFees} className="no-print">
                         <Col>Service Fees:</Col>
                         <Col>{serviceFees}</Col>
                     </Row>
@@ -166,7 +166,7 @@ export default function EventMobileRow(props: any) {
                             <Button onClick={setDetailEvent}>{buttonText}</Button>
                         </Col>
                     </Row>
-                    <Row className="no-print" hidden={!isAdmin}>
+                    <Row className="no-print" hidden={!changEventStatus}>
                         <Col>
                             <Button onClick={activateDeactivateEvent}>{inactiveLabel}</Button>
                             <Button onClick={deleteUndeleteEvent}>{deletedLabel}</Button>

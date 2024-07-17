@@ -13,7 +13,7 @@ export default function OrderMobileRow(props: any) {
     const eventDate = props.EventDate as string;
     const eventName = props.EventName as string;
     const order = props.Order as Order;
-    const isAdmin = props.IsAdmin as boolean;
+    const changeOrderStatus = props.ChangeOrderStatus as boolean;
     const hasPhoneData = props.HasPhoneData as boolean;
     const hasShirtData = props.HasShirtData as boolean;
     const hideRev = props.HideRevenue as boolean;
@@ -172,7 +172,7 @@ export default function OrderMobileRow(props: any) {
                         <Col className="mobile-bold">Revenue (USD):</Col>
                         <Col>${revenue}</Col>
                     </Row>
-                    <Row hidden={hideServiceFees || !isAdmin} className="no-print">
+                    <Row hidden={hideServiceFees} className="no-print">
                         <Col className="mobile-bold">Service Fees:</Col>
                         <Col>${serviceFees}</Col>
                     </Row>
@@ -188,7 +188,7 @@ export default function OrderMobileRow(props: any) {
                         <Col className="mobile-bold">Shirts:</Col>
                         <Col>{shirtSizeRows}</Col>
                     </Row>
-                    <Row className="no-print" hidden={!isAdmin}>
+                    <Row className="no-print" hidden={!changeOrderStatus}>
                         <Col>
                             <Button onClick={activateDeactivateOrder}>{inactiveLabel}</Button>
                             <Button onClick={deleteUndeleteOrder}>{deletedLabel}</Button>

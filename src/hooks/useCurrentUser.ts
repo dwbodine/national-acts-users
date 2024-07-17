@@ -4,7 +4,7 @@ import { User, UserRole } from "../types/user";
 export const useCurrentUser = () => {
   const [user, setUser] = useState<User>({
     userId: 0,
-    role: UserRole.AccountManager,
+    isAdmin: false,
     username: '',
     isActive: false
   });
@@ -17,7 +17,7 @@ export const useCurrentUser = () => {
     } else {
       setUser({
         userId: 0,
-        role: UserRole.AccountManager,
+        isAdmin: false,
         username: '',
         isActive: false
       });
