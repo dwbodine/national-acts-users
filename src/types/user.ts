@@ -5,13 +5,6 @@ export type LoginResponse = {
   loginError?: string;
 }
 
-export enum UserRole {
-  SystemAdmin = 1,
-  AccountAdmin = 2,
-  AccountManager = 3,
-  MerchPerson = 4
-};
-
 export enum UserSellerType {
   Artist = 1,
   Venue = 2,

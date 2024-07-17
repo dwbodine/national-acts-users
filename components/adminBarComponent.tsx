@@ -16,7 +16,7 @@ import downloadFile from "@/utils/downloadFile";
 import PrintButton from "./printButtonComponent";
 import RevenueCheck from "./revenueCheckComponent";
 import { setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
-import { Permission, UserRole } from "@/types/user";
+import { Permission } from "@/types/user";
 import ServiceFeesCheck from "./serviceFeesCheckComponent";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import isMobileWidth from "@/utils/mobileUtil";

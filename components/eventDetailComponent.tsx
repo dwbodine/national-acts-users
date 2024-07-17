@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees } from "@/lib/reportSelectionSlice";
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
-import { Permission, UserReportSelection, UserRole } from "@/types/user";
+import { Permission, UserReportSelection } from "@/types/user";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import isMobileWidth from "@/utils/mobileUtil";
 import OrderMobileRow from "./orderMobileRowComponent";

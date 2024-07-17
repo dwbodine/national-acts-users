@@ -5,7 +5,7 @@ import { setEvents, setDateRange } from '@/lib/reportSelectionSlice';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
 import { useEffect, useState } from "react";
 import moment from "moment";
-import { Permission, UserReportSelection, UserRole } from "@/types/user";
+import { Permission, UserReportSelection } from "@/types/user";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';

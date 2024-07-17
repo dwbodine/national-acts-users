@@ -6,7 +6,6 @@ import { Col, Row, Button } from "react-bootstrap";
 import CheckAuth from "../components/checkAuthComponent";
 import { useDispatch } from "react-redux";
 import { resetAll, setShowInactiveOrders } from "@/lib/reportSelectionSlice";
-import { UserRole } from "@/types/user";
 import Image from 'next/image';
 
 export default function Login() {
@@ -47,7 +46,7 @@ export default function Login() {
         .then((response) => {
           if (response) {
             if (response.user && response.user.isAuthenticated) {
-              if (response.user.role != UserRole.SystemAdmin) {
+              if (!response.user.isAdmin) {
                 dispatch(
                   setShowInactiveOrders(false)
                 );
