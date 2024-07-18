@@ -459,9 +459,28 @@ div hidden {
   font-weight: bold;
 }
 
-.attendee {
+.attendee, .attendee-check {
   font-weight: bold;
   text-shadow: 1px 0 1px yellowgreen;
+  margin: 0 0 5px 0;
+}
+
+.attendee-check {
+  cursor: pointer;
+}
+
+.check-out-show {
+  display: inline-block;
+  color: lightgreen;
+}
+
+.check-in-show {
+  display: inline-block;
+  color: red;
+}
+
+.check-out-hide, .check-in-hide {
+  display: none;
 }
 
 /* MOBILE QUERIES */
@@ -701,5 +720,10 @@ div hidden {
 
   .vipDetailsTable {
     margin: 10px 5px;
+  }
+
+  .attendee, .attendee-check {
+    text-shadow: unset;
+    cursor: unset;
   }
 }

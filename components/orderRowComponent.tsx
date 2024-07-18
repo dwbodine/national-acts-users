@@ -6,6 +6,7 @@ import moment from 'moment';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import router from 'next/router';
+import AttendeeRow from './attendeeRowComponent';
 
 export default function OrderRow(props: any) {
     const dispatch = useDispatch();
@@ -17,6 +18,7 @@ export default function OrderRow(props: any) {
     const hasShirtData = props.HasShirtData as boolean;
     const hideRev = props.HideRevenue as boolean;
     const hideServiceFees = props.HideServiceFees as boolean;
+    const canCheckInTickets = props.CanCheckInTickets as boolean;
 
     const { setOrderInactive } = useSetOrderInactive();
     const { setOrderDeleted } = useSetOrderDeleted();
@@ -76,11 +78,11 @@ export default function OrderRow(props: any) {
     }
 
     const attendeeNameRows: any[] = [];
-    if (order.attendeeNames && order.attendeeNames.length > 0) {
+    if (order.tickets && order.tickets.length > 0) {
         let i = 0;
-        order.attendeeNames.forEach((name) => {
+        order.tickets.forEach((ticket) => {
             const key = `anr${i}`;
-            attendeeNameRows.push(<div key={key}>{name}</div>);
+            attendeeNameRows.push(<AttendeeRow key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />);
             i++;
         });
     }
@@ -133,14 +135,13 @@ export default function OrderRow(props: any) {
             });
     };
 
-
     const inactiveLabel = order.isActive ? "Deactivate" : "Activate";
     const deletedLabel = order.isDeleted ? "Undelete" : "Delete";
 
     return (
         <tr className={statusClass}>
             <td>{purchaserName}</td>
-            <td className="attendee">{attendeeNameRows}</td>
+            <td>{attendeeNameRows}</td>
             <td className="no-print">{purchaseDate}</td>
             <td>{moment(eventDate).format('MM/DD/YYYY')}</td>
             <td>{eventName}</td>

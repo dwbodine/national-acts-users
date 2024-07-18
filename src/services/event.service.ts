@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType } from "../types/event";
+import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse } from "../types/event";
 import { UserReportSelection } from "@/types/user";
 import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
 import { getTicketDataFromEvents } from "@/utils/getTicketData";
@@ -275,6 +275,47 @@ export class EventService {
           errorMessage = "Unknown error while modifying order - please contact your administrator";
         }
         modifyResponse.orderError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setTicketCheckedIn = async(ticketId: number, isCheckedIn: boolean): Promise<ModifyTicketResponse> => {
+    const url = "/user/setTicketCheckinSecured";
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyTicketResponse = {
+      success: false,
+      ticketError: undefined,
+      statusCode: 200
+    };
+
+    const data = {
+      'ticketId': ticketId,
+      'isCheckedIn': isCheckedIn ? 1 : 0
+    };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      }).then((res) => {
+        modifyResponse.success = res.data as boolean;
+        if (!modifyResponse.success) {
+          modifyResponse.ticketError = "Unexpected error occurred while modifying ticket - please contact your administrator";
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while modifying ticket - please contact your administrator";
+        }
+        modifyResponse.ticketError = errorMessage;
         return modifyResponse;
       });
   };

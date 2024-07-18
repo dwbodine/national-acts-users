@@ -1,12 +1,13 @@
 import { useSetOrderDeleted } from '@/hooks/useSetOrderDeleted';
 import { useSetOrderInactive } from '@/hooks/useSetOrderInadtive';
-import { setEvents, setReloadEvents } from '@/lib/reportSelectionSlice';
+import { setReloadEvents } from '@/lib/reportSelectionSlice';
 import { Order } from '@/types/event';
 import moment from 'moment';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import router from 'next/router';
 import { Button, Col, Container, Row } from 'react-bootstrap';
+import AttendeeRow from './attendeeRowComponent';
 
 export default function OrderMobileRow(props: any) {
     const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export default function OrderMobileRow(props: any) {
     const hasShirtData = props.HasShirtData as boolean;
     const hideRev = props.HideRevenue as boolean;
     const hideServiceFees = props.HideServiceFees as boolean;
+    const canCheckInTickets = props.CanCheckInTickets as boolean;
 
     const { setOrderInactive } = useSetOrderInactive();
     const { setOrderDeleted } = useSetOrderDeleted();
@@ -77,11 +79,11 @@ export default function OrderMobileRow(props: any) {
     }
 
     const attendeeNameRows: any[] = [];
-    if (order.attendeeNames && order.attendeeNames.length > 0) {
+    if (order.tickets && order.tickets.length > 0) {
         let i = 0;
-        order.attendeeNames.forEach((name) => {
+        order.tickets.forEach((ticket) => {
             const key = `anr${i}`;
-            attendeeNameRows.push(<div key={key}>{name}</div>);
+            attendeeNameRows.push(<AttendeeRow key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />);
             i++;
         });
     }
@@ -148,7 +150,7 @@ export default function OrderMobileRow(props: any) {
                     </Row>
                     <Row>
                         <Col className="mobile-bold">Attendee Names:</Col>
-                        <Col className="attendee">{attendeeNameRows}</Col>
+                        <Col>{attendeeNameRows}</Col>
                     </Row>
                     <Row className="no-print">
                         <Col className="mobile-bold">Purchase Date:</Col>

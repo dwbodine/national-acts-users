@@ -52,6 +52,7 @@ export default function EventDetail(props: any) {
     const canExportData = userHasPermission(user, Permission.ExportData);
     const viewPrintButton = userHasPermission(user, Permission.ViewPrintButton);
     const changeOrderStatus = userHasPermission(user, Permission.ChangeOrderStatus);
+    const canCheckInTickets = userHasPermission(user, Permission.CheckInUsers);
 
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
 
@@ -173,9 +174,9 @@ export default function EventDetail(props: any) {
             const showOrder = (!order.isDeleted && order.isActive) || (order.isDeleted && currentReportSelection?.showDeletedOrders) || (!order.isActive && currentReportSelection?.showInactiveOrders);
             if (showOrder) {
                 if (isMobile) { 
-                    orderRows.push(<OrderMobileRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} />);
+                    orderRows.push(<OrderMobileRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
                 } else {
-                    orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} />);
+                    orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
                 }                
             }            
             i++;
@@ -242,6 +243,10 @@ export default function EventDetail(props: any) {
                                     <tr>
                                         <td className="vipLabel">Total Tickets:</td>
                                         <td>{vipEvent.totalTickets}</td>
+                                    </tr>
+                                    <tr hidden={!canCheckInTickets}>
+                                        <td className="vipLabel">Checked In:</td>
+                                        <td>{vipEvent.totalCheckedIn} / {vipEvent.totalTickets}</td>
                                     </tr>
                                     <tr hidden={hideRevItem}>
                                         <td className="vipLabel">Total Revenue:</td>

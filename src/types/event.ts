@@ -11,10 +11,13 @@ export interface ShirtSales {
 }
 
 export interface Ticket {
+  ticketSocketOrderTicketId: number;
   price?: number;
   isActive?: boolean;
   ticketType: string;
   serviceFee?: number;
+  attendeeName?: string;
+  isCheckedIn?: boolean;
 }
 
 export interface Order {
@@ -75,6 +78,7 @@ export interface VipEvent {
   totalRevenue: number;
   totalServiceFees: number;
   totalTickets: number;
+  totalCheckedIn: number;
   totalShirts: number;
   shirtSales?: ShirtSales[];
   isActive: boolean;
@@ -115,6 +119,12 @@ export interface ModifyOrderResponse {
   success: boolean;
   statusCode?: number;
   orderError?: string;
+}
+
+export interface ModifyTicketResponse {
+  success: boolean;
+  statusCode?: number;
+  ticketError?: string;
 }
 
 export interface GetSellersResponse {
