@@ -12,7 +12,12 @@ export default function AttendeeRow(props: any) {
     const ticketId = ticket.ticketSocketOrderTicketId;
     const attendeeName = ticket.attendeeName;
     const currentCheckIn = ticket.isCheckedIn;
-    const className = canCheckInTickets ? 'attendee-check' : 'attendee';
+    let className = '';
+    if (canCheckInTickets) {
+        className = currentCheckIn ? 'attendee-check-highlight' : 'attendee-check';
+    } else {
+        className = currentCheckIn ? 'attendee-highlight' : 'attendee';
+    }
     const { setTicketCheckedIn } = useSetTicketCheckedIn();
     let titleText: string = '';
 
@@ -57,7 +62,7 @@ export default function AttendeeRow(props: any) {
     
     return (
         <div onClick={handleClick} className={className} title={titleText}>
-            <span> {attendeeName} </span><FaCheck className={checkOutClass} /><FaX className={checkInClass} />
+            <FaCheck className={checkOutClass} /><FaX className={checkInClass} /><span>{attendeeName}</span>
         </div>
     );        
  

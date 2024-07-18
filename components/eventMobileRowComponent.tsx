@@ -19,6 +19,7 @@ export default function EventMobileRow(props: any) {
     const changEventStatus = props.ChangeEventStatus as boolean;
     const hideRevItem = props.HideRevenue as boolean;
     const hideServiceFees = props.HideServiceFees as boolean;
+    const canCheckInTickets = props.CanCheckInTickets as boolean;
     const { setEventInactive } = useSetEventInactive();
     const { setEventDeleted } = useSetEventDeleted();
     const { getLocation } = useGetLocation();
@@ -146,6 +147,10 @@ export default function EventMobileRow(props: any) {
                     <Row>
                         <Col>Tickets sold:</Col>
                         <Col>{vipEvent.totalTickets}</Col>
+                    </Row>
+                    <Row hidden={!canCheckInTickets}>
+                        <Col>Checked in:</Col>
+                        <Col>{vipEvent.totalCheckedIn} / {vipEvent.totalTickets}</Col>
                     </Row>
                     <Row>
                         <Col>Ticket types sold:</Col>

@@ -40,7 +40,7 @@ export default function CurrentEvents() {
     const viewRevenueData = userHasPermission(user, Permission.ViewRevenueData);
     const viewServiceFees = userHasPermission(user, Permission.ViewServiceFees);
     const changeEventStatus = userHasPermission(user, Permission.ChangeEventStatus);
-
+    const canCheckInTickets = userHasPermission(user, Permission.CheckInUsers);
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
 
     let ticketData: ITicketData | undefined = undefined;
@@ -143,7 +143,7 @@ export default function CurrentEvents() {
         for (const evt of vipEvents) {
             const key = `ev${i}`;
             if (isMobile) {
-                rows.push(<EventMobileRow key={key} VipEvent={evt} ChangeEventStatus={changeEventStatus} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);    
+                rows.push(<EventMobileRow key={key} VipEvent={evt} ChangeEventStatus={changeEventStatus} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} CanCheckInTickets={canCheckInTickets} />);    
             } else {
                 rows.push(<EventRow key={key} VipEvent={evt} ChangeEventStatus={changeEventStatus} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);    
             }

@@ -282,12 +282,12 @@ div hidden {
   text-align: right;
 }
 
-.resultsTable tr:nth-child(even), 
+.resultsTable tr:nth-child(even),
 .vipTable tr:nth-child(even) {
   background-color: #EFEFEF;
 }
 
-.resultsTable tr:hover, 
+.resultsTable tr:hover,
 .vipTable tr:hover {
   background-color: lightgray;
 }
@@ -459,27 +459,47 @@ div hidden {
   font-weight: bold;
 }
 
-.attendee, .attendee-check {
+.attendee,
+.attendee-check,
+.attendee-check-highlight,
+.attendee-highlight {
   font-weight: bold;
-  text-shadow: 1px 0 1px yellowgreen;
+}
+
+.attendee,
+.attendee-highlight {
   margin: 0 0 5px 0;
 }
 
-.attendee-check {
+.attendee-check,
+.attendee-check-highlight {
+  margin: 0 0 10px 0;
+}
+
+.attendee-check-highlight,
+.attendee-highlight {
+  text-shadow: 1px 0 1px yellowgreen;
+}
+
+.attendee-check,
+.attendee-check-highlight {
   cursor: pointer;
 }
 
 .check-out-show {
   display: inline-block;
-  color: lightgreen;
+  color: rgb(20, 166, 20);
+  margin: 0 5px 0 0;
 }
 
 .check-in-show {
   display: inline-block;
   color: red;
+  margin: 0 5px 0 0;
 }
 
-.check-out-hide, .check-in-hide {
+.check-out-hide,
+.check-in-hide {
   display: none;
 }
 
@@ -660,7 +680,7 @@ div hidden {
     padding: 5px 0;
   }
 
-  .resultsTable tr:nth-child(even), 
+  .resultsTable tr:nth-child(even),
   .vipTable tr:nth-child(even) {
     background-color: unset;
   }
@@ -669,17 +689,16 @@ div hidden {
     padding: 5px;
   }
 
-  .resultsTable tr:hover, 
+  .resultsTable tr:hover,
   .vipTable tr:hover {
     background-color: unset;
   }
 
-  .resultsTable .mobile-event-card-container:nth-child(even), 
-  .vipTable .mobile-event-card-container:nth-child(even)
-   {
+  .resultsTable .mobile-event-card-container:nth-child(even),
+  .vipTable .mobile-event-card-container:nth-child(even) {
     .mobile-event-card {
       background-color: #EFEFEF !important;
-    }    
+    }
   }
 
   .vipDetailsTable td {
@@ -708,6 +727,7 @@ div hidden {
 
 
 @media print {
+
   .no-print,
   .rs-nav-item,
   .rs-nav-bar {
@@ -722,7 +742,8 @@ div hidden {
     margin: 10px 5px;
   }
 
-  .attendee, .attendee-check {
+  .attendee,
+  .attendee-check {
     text-shadow: unset;
     cursor: unset;
   }
