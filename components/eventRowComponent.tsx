@@ -1,8 +1,8 @@
 import { VipEvent } from "@/types/event";
 import React from 'react';
 import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
-import { setEvents, setFocusControl } from '@/lib/reportSelectionSlice';
+import { useDispatch } from "react-redux";
+import { setEvents } from '@/lib/reportSelectionSlice';
 import { useSetEventInactive } from "@/hooks/useSetEventInactive";
 import { useSetEventDeleted } from "@/hooks/useSetEventDeleted";
 import { useGetLocation } from "@/hooks/useGetLocation";
@@ -42,9 +42,6 @@ export default function EventRow(props: any) {
                     dispatch(
                         setEvents()
                     );
-                    dispatch(
-                        setFocusControl(id)
-                    );
                 }
             })
             .catch((e) => {
@@ -67,9 +64,6 @@ export default function EventRow(props: any) {
                 } else {
                     dispatch(
                         setEvents()
-                    );
-                    dispatch(
-                        setFocusControl(id)
                     );
                 }
             })

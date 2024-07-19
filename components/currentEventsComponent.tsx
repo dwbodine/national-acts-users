@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from '../src/lib/store';
 import { useGetEvents } from '@/hooks/useGetEvents';
-import { setEvents, setDateRange, setFocusControl } from '@/lib/reportSelectionSlice';
+import { setEvents, setDateRange, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
 import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
@@ -22,7 +22,6 @@ import isMobileWidth from "@/utils/mobileUtil";
 import EventMobileRow from "./eventMobileRowComponent";
 import { useHasPermission } from "@/hooks/useHasPermission";
 import debouce from "lodash.debounce";
-import setFocusToControl from "@/utils/setFocusToControl";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -99,6 +98,9 @@ export default function CurrentEvents() {
             if (currentReportSelection.reloadEvents) {
                 setIsLoading(true);
                 setChartsHidden(true);
+                dispatch(
+                    setReloadEvents(false)
+                );
                 getEvents(currentReportSelection).then((response) => {
                     if (!response.eventError && response.events) {
                         if (response.events.length > 0) {
@@ -126,12 +128,6 @@ export default function CurrentEvents() {
                         );
                     }
                     setIsLoading(false);
-                    if (currentReportSelection.focusControl && currentReportSelection.focusControl != '') {
-                        setFocusToControl(currentReportSelection.focusControl);
-                        dispatch (
-                            setFocusControl('')
-                        );
-                    }
                 });
             }
         }        

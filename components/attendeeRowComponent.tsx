@@ -34,10 +34,10 @@ export default function AttendeeRow(props: any) {
                     return;
                 } else {
                     dispatch(
-                        setReloadEvents(true)
+                        setFocusControl(id)
                     );
                     dispatch(
-                        setFocusControl(id)
+                        setReloadEvents(true)
                     );
                 }
             })
@@ -65,7 +65,7 @@ export default function AttendeeRow(props: any) {
     }    
 
     return (
-        <div onClick={handleClick} className={className} title={titleText} id={id}>
+        <div onClick={handleClick} className={className} title={titleText} id={id} tabIndex={0}>
             <FaCheck className={checkOutClass} /><FaX className={checkInClass} /><span>{attendeeName}</span>
         </div>
     );        

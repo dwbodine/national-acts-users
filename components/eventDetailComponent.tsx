@@ -81,6 +81,9 @@ export default function EventDetail(props: any) {
                 
                 if (currentReportSelection.reloadEvents) {
                     setIsLoading(true);
+                    dispatch (
+                        setReloadEvents(false)
+                    );
                     let reportSelection: UserReportSelection = { ...currentReportSelection };
                     if (!viewInactiveEvents) {
                         reportSelection.showInactiveOrders = false;
@@ -98,13 +101,13 @@ export default function EventDetail(props: any) {
                                 setEvents(currentReportSelection.currentEvents)
                             );
                         } 
-                        dispatch (
-                            setReloadEvents(false)
-                        )
                     }   
                     setIsLoading(false);   
                     if (currentReportSelection.focusControl && currentReportSelection.focusControl != '') {
-                        setFocusToControl(currentReportSelection.focusControl);
+                        const focusControl: string = currentReportSelection.focusControl;
+                        setTimeout(() => {
+                            setFocusToControl(focusControl);
+                        }, 300);                        
                         dispatch (
                             setFocusControl('')
                         );

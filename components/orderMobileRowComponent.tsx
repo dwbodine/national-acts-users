@@ -1,6 +1,6 @@
 import { useSetOrderDeleted } from '@/hooks/useSetOrderDeleted';
 import { useSetOrderInactive } from '@/hooks/useSetOrderInadtive';
-import { setFocusControl, setReloadEvents } from '@/lib/reportSelectionSlice';
+import { setReloadEvents } from '@/lib/reportSelectionSlice';
 import { Order } from '@/types/event';
 import moment from 'moment';
 import React from 'react';
@@ -104,9 +104,6 @@ export default function OrderMobileRow(props: any) {
                     dispatch(
                         setReloadEvents(true)
                     );
-                    dispatch(
-                        setFocusControl(id)
-                    );
                     window.opener.location.reload(true);
                 }
             })
@@ -130,9 +127,6 @@ export default function OrderMobileRow(props: any) {
                 } else {
                     dispatch(
                         setReloadEvents(true)
-                    );
-                    dispatch(
-                        setFocusControl(id)
                     );
                     window.opener.location.reload(true);
                 }
