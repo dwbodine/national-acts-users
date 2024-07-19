@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { setReloadEvents } from '@/lib/reportSelectionSlice';
+import { setReloadEvents, setFocusControl } from '@/lib/reportSelectionSlice';
 import { Ticket } from '@/types/event';
 import { useSetTicketCheckedIn } from '@/hooks/useSetTicketCheckedIn';
 import router from 'next/router';
@@ -12,6 +12,7 @@ export default function AttendeeRow(props: any) {
     const ticketId = ticket.ticketSocketOrderTicketId;
     const attendeeName = ticket.attendeeName;
     const currentCheckIn = ticket.isCheckedIn;
+    const id = `ticket_${ticket.ticketSocketOrderTicketId}`;
     let className = '';
     if (canCheckInTickets) {
         className = currentCheckIn ? 'attendee-check-highlight' : 'attendee-check';
@@ -34,6 +35,9 @@ export default function AttendeeRow(props: any) {
                 } else {
                     dispatch(
                         setReloadEvents(true)
+                    );
+                    dispatch(
+                        setFocusControl(id)
                     );
                 }
             })
@@ -59,9 +63,9 @@ export default function AttendeeRow(props: any) {
         checkOutClass = currentCheckIn ? 'check-out-show': 'check-out-hide';    
         checkInClass = !currentCheckIn ? 'check-in-show': 'check-in-hide';
     }    
-    
+
     return (
-        <div onClick={handleClick} className={className} title={titleText}>
+        <div onClick={handleClick} className={className} title={titleText} id={id}>
             <FaCheck className={checkOutClass} /><FaX className={checkInClass} /><span>{attendeeName}</span>
         </div>
     );        

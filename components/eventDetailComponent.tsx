@@ -1,5 +1,5 @@
-import { IShirtData, IShirtSizeData, ITicketData, ITicketTypeData, TicketType, VipEvent } from "@/types/event";
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { IShirtData, IShirtSizeData, ITicketData, ITicketTypeData, Order, TicketType, VipEvent } from "@/types/event";
+import React, { ChangeEvent, useEffect, useMemo, useState, KeyboardEvent } from 'react';
 import moment from "moment";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -17,13 +17,15 @@ import PrintButton from "./printButtonComponent";
 import { useGetEventDetails } from "@/hooks/useGetEventDetails";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees } from "@/lib/reportSelectionSlice";
+import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees, setFocusControl } from "@/lib/reportSelectionSlice";
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
 import { Permission, UserReportSelection } from "@/types/user";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import isMobileWidth from "@/utils/mobileUtil";
 import OrderMobileRow from "./orderMobileRowComponent";
 import { useHasPermission } from "@/hooks/useHasPermission";
+import debouce from "lodash.debounce";
+import setFocusToControl from "@/utils/setFocusToControl";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
@@ -37,7 +39,7 @@ export default function EventDetail(props: any) {
     const dispatch = useDispatch(); 
     const [hideRevItem, setHideRevItem] = useState(true);
     const [hideServiceFeeDisplay, setHideServiceFeeDisplay] = useState(true);
-    
+    const [searchTerm, setSearchTerm] = useState('');
     const [vipEvent, setVipEvent] = useState<VipEvent | undefined>(undefined);
     const id: number | undefined = props.Id as number;
     const windowSize = useWindowSize();
@@ -55,6 +57,10 @@ export default function EventDetail(props: any) {
     const canCheckInTickets = userHasPermission(user, Permission.CheckInUsers);
 
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
+
+    const debouncedResults = useMemo(() => {
+        return debouce(setSearchTerm, 300);
+    }, []);
 
     useEffect(() => {     
         async function fetchEvent() {
@@ -97,12 +103,21 @@ export default function EventDetail(props: any) {
                         )
                     }   
                     setIsLoading(false);   
+                    if (currentReportSelection.focusControl && currentReportSelection.focusControl != '') {
+                        setFocusToControl(currentReportSelection.focusControl);
+                        dispatch (
+                            setFocusControl('')
+                        );
+                    }
                 }                          
             }
         }   
         fetchEvent();
+        return () => {
+            debouncedResults.cancel();
+        }
         
-    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, alwaysShowRevenue, viewInactiveEvents, viewRevenueData, viewServiceFees]);
+    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, alwaysShowRevenue, viewInactiveEvents, viewRevenueData, viewServiceFees, debouncedResults]);   
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -124,6 +139,19 @@ export default function EventDetail(props: any) {
             const fileName = getFileNameFromEvent(vipEvent, `orders`);
             downloadFile(fileName, csvData);
         }
+    };
+
+    const filterOrders = (orders: Order[] | undefined) => {
+        let filteredOrders: Order[] | undefined = orders;
+        if (searchTerm && searchTerm.length >= 2 && orders && orders.length > 0) {
+            const srch = searchTerm.toLowerCase();
+            filteredOrders = orders.filter((order) => {
+                return order.attendeeNames?.find(x => x.toLowerCase().includes(srch)) || 
+                    order.purchaserFirstName.toLowerCase().includes(srch) ||
+                    order.purchaserLastName.toLowerCase().includes(srch);
+            })
+        }
+        return filteredOrders;
     };
 
     if (vipEvent != undefined) {
@@ -166,9 +194,11 @@ export default function EventDetail(props: any) {
                 });
             });
         }      
-        
+
+        const filteredOrders = filterOrders(vipEvent.orders);
+
         let i = 0;
-        vipEvent.orders?.forEach((order) => {
+        filteredOrders?.forEach((order) => {
             hasOrders = true;
             const key = `or${i}`;
             const showOrder = (!order.isDeleted && order.isActive) || (order.isDeleted && currentReportSelection?.showDeletedOrders) || (!order.isActive && currentReportSelection?.showInactiveOrders);
@@ -294,6 +324,14 @@ export default function EventDetail(props: any) {
                                 <span className="service-fees-check" hidden={!hasOrders || !viewServiceFees}>
                                     <FormCheck checked={currentReportSelection?.hideServiceFees} onChange={handleHideServiceFees} /> Hide Service Fees?
                                 </span>
+                            </Col>
+                            <Col md={10} sm={12}>
+                                <input
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="form-control search-text-input"
+                                    placeholder="Search for orders..."
+                                />
                             </Col>
                         </Row>
                         <Row hidden={isLoading} className="vipTable-container">

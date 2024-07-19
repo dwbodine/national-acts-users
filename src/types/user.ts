@@ -59,6 +59,7 @@ export type UserReportSelection = {
   reloadEvents?: boolean;
   retainDateSelection?: boolean;
   currentEvents?: VipEvent[];
+  focusControl?: string;
 }
 
 export type AdminDashboardSelection = {

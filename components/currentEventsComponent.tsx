@@ -1,9 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from '../src/lib/store';
 import { useGetEvents } from '@/hooks/useGetEvents';
-import { setEvents, setDateRange } from '@/lib/reportSelectionSlice';
+import { setEvents, setDateRange, setFocusControl } from '@/lib/reportSelectionSlice';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import { Permission, UserReportSelection } from "@/types/user";
 import Row from 'react-bootstrap/Row';
@@ -21,6 +21,8 @@ import { useWindowSize } from "@/hooks/useWindowSize";
 import isMobileWidth from "@/utils/mobileUtil";
 import EventMobileRow from "./eventMobileRowComponent";
 import { useHasPermission } from "@/hooks/useHasPermission";
+import debouce from "lodash.debounce";
+import setFocusToControl from "@/utils/setFocusToControl";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -35,6 +37,7 @@ export default function CurrentEvents() {
     const windowSize = useWindowSize();
     const isMobile = isMobileWidth(windowSize);
     const hideTicketChart = windowSize.width < 1200;
+    const [searchTerm, setSearchTerm] = useState('');
 
     const viewRevenueControls = userHasPermission(user, Permission.ViewRevenueControls);
     const viewRevenueData = userHasPermission(user, Permission.ViewRevenueData);
@@ -47,29 +50,34 @@ export default function CurrentEvents() {
     let shirtData: IShirtData | undefined = undefined;
     let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;    
     let ticketSalesData: ITicketSalesData[] | undefined = undefined;
+
+    const debouncedResults = useMemo(() => {
+        return debouce(setSearchTerm, 300);
+    }, []);
+
     
-    const getTicketData = (): ITicketData | undefined => {
-        if (!vipEvents || vipEvents.length == 0) {
+    const getTicketData = (events: VipEvent[]): ITicketData | undefined => {
+        if (!events || events.length == 0) {
             return undefined;
         }
 
-        return getTicketDataFromEvents(vipEvents);
+        return getTicketDataFromEvents(events);
     };
 
-    const getTicketSalesData = (): ITicketSalesData[] | undefined => {
-        if (!vipEvents || vipEvents.length == 0) {
+    const getTicketSalesData = (events: VipEvent[]): ITicketSalesData[] | undefined => {
+        if (!events || events.length == 0) {
             return undefined;
         }
 
-        return getPurchaseDataFromEvents(vipEvents);
+        return getPurchaseDataFromEvents(events);
     };
 
-    const getShirtData = (): IShirtData | undefined => {
-        if (!vipEvents || vipEvents.length == 0) {
+    const getShirtData = (events: VipEvent[]): IShirtData | undefined => {
+        if (!events || events.length == 0) {
             return undefined;
         }
 
-        return getShirtDataFromEvents(vipEvents);
+        return getShirtDataFromEvents(events);
     }
 
     useEffect(() => {
@@ -118,29 +126,55 @@ export default function CurrentEvents() {
                         );
                     }
                     setIsLoading(false);
+                    if (currentReportSelection.focusControl && currentReportSelection.focusControl != '') {
+                        setFocusToControl(currentReportSelection.focusControl);
+                        dispatch (
+                            setFocusControl('')
+                        );
+                    }
                 });
             }
         }        
-        
-    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user]);     
+        return () => {
+            debouncedResults.cancel();
+        }
+    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user, debouncedResults]);    
+    
+    const filterEvents = (events: VipEvent[]) => {
+        let filteredEvents: VipEvent[] = events;
+        if (searchTerm && searchTerm.length >= 2 && events && events.length > 0) {
+            const srch = searchTerm.toLowerCase();
+            filteredEvents = events.filter((event) => {
+                return event.title.toLowerCase().includes(srch) || 
+                    event.venue?.name?.toLowerCase().includes(srch) || 
+                    event.venue?.city?.toLowerCase().includes(srch) || 
+                    event.venue?.state?.toLowerCase().includes(srch) || 
+                    event.venue?.country?.toLowerCase().includes(srch);
+            })
+        }
+        return filteredEvents;
+    };
     
     const rows = [];
     let totalEvents = 0;
     let totalTickets = 0;
     let totalRevenue = 0.0;
     let totalShirts = 0;
-    let totalOrders = 0;
+    let totalOrders = 0; 
     let ticketsRefunded = 0;
     let totalServiceFees = 0;
 
     if (vipEvents && vipEvents.length > 0) {
-        totalEvents = vipEvents.length;
-        ticketData = getTicketData();
-        shirtData = getShirtData();
-        ticketSalesData = getTicketSalesData();
+
+        const filteredEvents = filterEvents(vipEvents);
+
+        totalEvents = filteredEvents.length;
+        ticketData = getTicketData(filteredEvents);
+        shirtData = getShirtData(filteredEvents);
+        ticketSalesData = getTicketSalesData(filteredEvents);
 
         let i = 0;
-        for (const evt of vipEvents) {
+        for (const evt of filteredEvents) {
             const key = `ev${i}`;
             if (isMobile) {
                 rows.push(<EventMobileRow key={key} VipEvent={evt} ChangeEventStatus={changeEventStatus} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} CanCheckInTickets={canCheckInTickets} />);    
@@ -162,6 +196,12 @@ export default function CurrentEvents() {
 
     return (
         <>
+            <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="form-control search-text-input"
+                placeholder="Search for events..."
+            />
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
                 ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} 
                 TicketsRefunded={ticketsRefunded} TotalServiceFees={totalServiceFees} HideServiceFees={hideServiceFees} />

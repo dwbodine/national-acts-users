@@ -459,6 +459,11 @@ div hidden {
   font-weight: bold;
 }
 
+.search-text-input {
+  max-width: 360px;
+  margin: 15px 0 0 0;
+}
+
 .attendee,
 .attendee-check,
 .attendee-check-highlight,

@@ -18,7 +18,8 @@ const initialState: UserReportSelection = {
     reloadEvents: true,
     hideRevenue: true,
     hideServiceFees: true,
-    currentEvents: []
+    currentEvents: [],
+    focusControl: ''
 };
 
 export const userReportSelectionSlice = createSlice({
@@ -121,6 +122,10 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = action.payload;
             return state;
         },
+        setFocusControl: (state, action: PayloadAction<string>) => {
+            state.focusControl = action.payload;
+            return state;
+        },
         resetSelection: (state) => {
             state.start = 0;
             state.end = 0;
@@ -160,7 +165,8 @@ export const { setSeller,
                setHideRevenue, 
                setHideServiceFees,
                setShowInactiveOrders,
-               setShowDeletedOrders
+               setShowDeletedOrders, 
+               setFocusControl
              } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer

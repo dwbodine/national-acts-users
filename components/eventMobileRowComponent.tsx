@@ -2,7 +2,7 @@ import { ITicketTypeData, TicketType, VipEvent } from "@/types/event";
 import React from 'react';
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { setEvents } from '@/lib/reportSelectionSlice';
+import { setEvents, setFocusControl } from '@/lib/reportSelectionSlice';
 import { useSetEventInactive } from "@/hooks/useSetEventInactive";
 import { useSetEventDeleted } from "@/hooks/useSetEventDeleted";
 import { useGetLocation } from "@/hooks/useGetLocation";
@@ -26,6 +26,7 @@ export default function EventMobileRow(props: any) {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);   
     const eUrl: string = eventService.getEventUrl(); 
     const currentSellerType = currentReportSelection.seller.sellerType;
+    const id = `event_${vipEvent.ticketSocketEventId}`;
 
     const setDetailEvent = () => {
         const url = `/${eUrl}?id=${vipEvent.ticketSocketEventId}`;
@@ -47,7 +48,10 @@ export default function EventMobileRow(props: any) {
                 } else {
                     dispatch(
                         setEvents()
-                    )
+                    );
+                    dispatch(
+                        setFocusControl(id)
+                    );
                 }
             })
             .catch((e) => {
@@ -70,7 +74,10 @@ export default function EventMobileRow(props: any) {
                 } else {
                     dispatch(
                         setEvents()
-                    )
+                    );
+                    dispatch(
+                        setFocusControl(id)
+                    );
                 }
             })
             .catch((e) => {
@@ -127,7 +134,7 @@ export default function EventMobileRow(props: any) {
     return (
         <tr className={'mobile-event-card-container ' + statusClass}>
             <td>
-               <Container className="mobile-event-card">
+               <Container className="mobile-event-card" id={id}>
                     <Row>
                         <Col>Date:</Col>
                         <Col>{eventDate}</Col>

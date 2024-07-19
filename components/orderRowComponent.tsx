@@ -1,6 +1,6 @@
 import { useSetOrderDeleted } from '@/hooks/useSetOrderDeleted';
 import { useSetOrderInactive } from '@/hooks/useSetOrderInadtive';
-import { setReloadEvents } from '@/lib/reportSelectionSlice';
+import { setFocusControl, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { Order } from '@/types/event';
 import moment from 'moment';
 import React from 'react';
@@ -32,7 +32,7 @@ export default function OrderRow(props: any) {
         statusClass += 'refunded';
     }
 
-   
+    const id = `order_${order.ticketSocketOrderId}`;
     const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
     const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
     const revenue = new Number(order.revenueUsd).toFixed(2);
@@ -103,6 +103,9 @@ export default function OrderRow(props: any) {
                     dispatch(
                         setReloadEvents(true)
                     );
+                    dispatch(
+                        setFocusControl(id)
+                    );
                     window.opener.location.reload(true);
                 }
             })
@@ -126,6 +129,9 @@ export default function OrderRow(props: any) {
                 } else {
                     dispatch(
                         setReloadEvents(true)
+                    );
+                    dispatch(
+                        setFocusControl(id)
                     );
                     window.opener.location.reload(true);
                 }
