@@ -244,7 +244,7 @@ export default function EventDetail(props: any) {
                                         <td className="vipLabel">Total Tickets:</td>
                                         <td>{vipEvent.totalTickets}</td>
                                     </tr>
-                                    <tr hidden={!canCheckInTickets}>
+                                    <tr hidden={!canCheckInTickets} className="no-print">
                                         <td className="vipLabel">Checked In:</td>
                                         <td>{vipEvent.totalCheckedIn} / {vipEvent.totalTickets}</td>
                                     </tr>

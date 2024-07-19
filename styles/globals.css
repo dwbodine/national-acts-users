@@ -743,8 +743,22 @@ div hidden {
   }
 
   .attendee,
-  .attendee-check {
+  .attendee-check,
+  .attendee-check-highlight,
+  .attendee-highlight {
+    font-weight: normal;
+  }
+
+  .attendee-highlight,
+  .attendee-check-highlight {
     text-shadow: unset;
     cursor: unset;
+    margin: 0 0 5px 0;
   }
+
+  .check-out-show,
+  .check-in-show {
+    display: none
+  }
+
 }

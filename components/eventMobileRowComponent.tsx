@@ -148,7 +148,7 @@ export default function EventMobileRow(props: any) {
                         <Col>Tickets sold:</Col>
                         <Col>{vipEvent.totalTickets}</Col>
                     </Row>
-                    <Row hidden={!canCheckInTickets}>
+                    <Row hidden={!canCheckInTickets} className="no-print">
                         <Col>Checked in:</Col>
                         <Col>{vipEvent.totalCheckedIn} / {vipEvent.totalTickets}</Col>
                     </Row>
