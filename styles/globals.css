@@ -536,6 +536,10 @@ div hidden {
     width: 150px;
     margin-top: 0;
   }
+
+  .vipTable .email {
+    word-break: break-all;
+  }
 }
 
 /* custom desktop/tablet width */

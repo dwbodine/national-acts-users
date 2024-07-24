@@ -149,7 +149,7 @@ export default function OrderRow(props: any) {
             <td>{order.numTickets}</td>
             <td className="pull-right" hidden={hideRev}>{revenue}</td>
             <td className="pull-right no-print" hidden={hideServiceFees}>{serviceFees}</td>            
-            <td>{order.email}</td>
+            <td className="email">{order.email}</td>
             { hasPhoneData ? <td>{order.phone}</td> : ''}
             { hasShirtData ? <td>{shirtSizeRows}</td> : ''}
             { changeOrderStatus ? <td className="no-print"><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
