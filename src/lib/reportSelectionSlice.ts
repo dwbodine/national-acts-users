@@ -14,7 +14,7 @@ const initialState: UserReportSelection = {
     showDeleted: false,
     showDeletedOrders: false,
     showInactive: false,
-    showInactiveOrders: true,
+    showInactiveOrders: false,
     reloadEvents: true,
     hideRevenue: true,
     hideServiceFees: true,

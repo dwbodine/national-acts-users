@@ -134,7 +134,7 @@ export default function CurrentEvents() {
         return () => {
             debouncedResults.cancel();
         }
-    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user, debouncedResults]);    
+    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user, debouncedResults, windowSize.width]);    
     
     const filterEvents = (events: VipEvent[]) => {
         let filteredEvents: VipEvent[] = events;
@@ -196,7 +196,8 @@ export default function CurrentEvents() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="form-control search-text-input"
-                placeholder="Search for events..."
+                placeholder="Search for events..." 
+                hidden={(isLoading || !vipEvents || vipEvents.length == 0)}
             />
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
                 ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} 

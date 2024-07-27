@@ -5,7 +5,7 @@ import { useSetTicketCheckedIn } from '@/hooks/useSetTicketCheckedIn';
 import router from 'next/router';
 import { FaCheck, FaX } from 'react-icons/fa6';
 
-export default function AttendeeRow(props: any) {
+export default function AttendeeRowMobile(props: any) {
     const dispatch = useDispatch(); 
     const canCheckInTickets = props.CanCheckInTickets as boolean;
     const ticket = props.Ticket as Ticket;
@@ -65,16 +65,9 @@ export default function AttendeeRow(props: any) {
     }    
 
     return (
-        <>
-            <td hidden={!canCheckInTickets} className="attendee-row-action">
-                <div onClick={handleClick} title={titleText} id={id} tabIndex={0}>
-                    <FaCheck className={checkOutClass} /><FaX className={checkInClass} />
-                </div>
-            </td>
-            <td className={className}>
-                <span onClick={handleClick}>{attendeeName}</span>
-            </td>
-        </>
+        <div onClick={handleClick} className={className} title={titleText} id={id} tabIndex={0}>
+            <FaCheck className={checkOutClass} /><FaX className={checkInClass} /><span>{attendeeName}</span>
+        </div>
     );        
  
 }

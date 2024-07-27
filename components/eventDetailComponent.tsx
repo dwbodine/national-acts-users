@@ -120,7 +120,7 @@ export default function EventDetail(props: any) {
             debouncedResults.cancel();
         }
         
-    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, alwaysShowRevenue, viewInactiveEvents, viewRevenueData, viewServiceFees, debouncedResults]);   
+    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, alwaysShowRevenue, viewInactiveEvents, viewRevenueData, viewServiceFees, debouncedResults, windowSize.width]);   
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -209,7 +209,7 @@ export default function EventDetail(props: any) {
                 if (isMobile) { 
                     orderRows.push(<OrderMobileRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
                 } else {
-                    orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
+                    orderRows.push(<OrderRow key={key} Ordinal={i} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
                 }                
             }            
             i++;
@@ -251,6 +251,8 @@ export default function EventDetail(props: any) {
             setCheckChanged(!checkChanged);
         }
     };  
+
+    const attendeeColSpan = canCheckInTickets ? 2 : 1;
 
     return (
         <>
@@ -333,7 +335,8 @@ export default function EventDetail(props: any) {
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     className="form-control search-text-input"
-                                    placeholder="Search for orders..."
+                                    placeholder="Search for orders..." 
+                                    hidden={(isLoading || !orderRows || orderRows.length == 0)}
                                 />
                             </Col>
                         </Row>
@@ -342,7 +345,7 @@ export default function EventDetail(props: any) {
                                 <thead hidden={isMobile}>
                                     <tr>
                                         <th>Purchaser Name</th>
-                                        <th>Attendee Name</th>
+                                        <th className="attendee-row-action-header" colSpan={attendeeColSpan}>Attendee Name</th>
                                         <th className="no-print">Purchase Date</th>
                                         <th>Event Date</th>
                                         <th>Event Name</th>

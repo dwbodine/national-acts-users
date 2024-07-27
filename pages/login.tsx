@@ -46,11 +46,6 @@ export default function Login() {
         .then((response) => {
           if (response) {
             if (response.user && response.user.isAuthenticated) {
-              if (!response.user.isAdmin) {
-                dispatch(
-                  setShowInactiveOrders(false)
-                );
-              }
               router.push("/")
             } else if (response.loginError) {
               setLoginError(response.loginError);

@@ -282,13 +282,15 @@ div hidden {
   text-align: right;
 }
 
-.resultsTable tr:nth-child(even),
-.vipTable tr:nth-child(even) {
+.resultsTable tr:nth-child(even) {
   background-color: #EFEFEF;
 }
 
-.resultsTable tr:hover,
-.vipTable tr:hover {
+.order-row {
+  background-color: #EFEFEF;
+}
+
+.resultsTable tr:hover {
   background-color: lightgray;
 }
 
@@ -381,10 +383,6 @@ div hidden {
   vertical-align: top;
 }
 
-.vipTable tr:nth-child(even) {
-  background-color: #EFEFEF;
-}
-
 .vipTable th,
 .vipTable td {
   border: 1px solid black;
@@ -420,6 +418,22 @@ div hidden {
 .custom-tooltip .label {
   color: black;
   font-weight: bold;
+}
+
+.attendee-row-action {
+  min-width: 25px;
+  max-width: 35px;
+  text-align: center;
+  padding: 0 !important;
+  cursor: pointer;
+}
+
+.attendee-row-action div {
+  margin: 0 auto;
+}
+
+.attendee-row-action-header {
+  text-align: center;
 }
 
 /* MOBILE CSS */
@@ -494,13 +508,13 @@ div hidden {
 .check-out-show {
   display: inline-block;
   color: rgb(20, 166, 20);
-  margin: 0 5px 0 0;
+  margin: 5px 0 0 0;
 }
 
 .check-in-show {
   display: inline-block;
   color: red;
-  margin: 0 5px 0 0;
+  margin: 5px 0 0 0;
 }
 
 .check-out-hide,
@@ -627,6 +641,10 @@ div hidden {
     padding: 0 5px;
   }
 
+  .check-out-show, .check-in-show {
+    margin: 0 5px 0 0;
+  }
+
   .admin-button-row {
     margin: 0;
   }
@@ -698,8 +716,7 @@ div hidden {
     padding: 5px;
   }
 
-  .resultsTable tr:hover,
-  .vipTable tr:hover {
+  .resultsTable tr:hover{
     background-color: unset;
   }
 
