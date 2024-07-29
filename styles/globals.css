@@ -406,6 +406,10 @@ div hidden {
   font-weight: bold;
 }
 
+.purchase-date {
+  display: table-cell;
+}
+
 .custom-tooltip {
   border-radius: 5px;
   border: 2px solid red;
@@ -552,6 +556,11 @@ div hidden {
   .vipTable .email {
     word-break: break-all;
   }
+
+  .purchase-date {
+    display: none;
+  }
+  
 }
 
 /* custom desktop/tablet width */

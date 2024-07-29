@@ -142,7 +142,7 @@ export default function OrderRow(props: any) {
         <tr className={statusClass}>
             <td>{purchaserName}</td>
             <td>{attendeeNameRows}</td>
-            <td className="no-print">{purchaseDate}</td>
+            <td className="purchase-date no-print">{purchaseDate}</td>
             <td>{moment(eventDate).format('MM/DD/YYYY')}</td>
             <td>{eventName}</td>
             <td>{ticketTypeRows}</td>

@@ -344,7 +344,7 @@ export default function EventDetail(props: any) {
                                     <tr>
                                         <th>Purchaser Name</th>
                                         <th>Attendee Name</th>
-                                        <th className="no-print">Purchase Date</th>
+                                        <th className="purchase-date no-print">Purchase Date</th>
                                         <th>Event Date</th>
                                         <th>Event Name</th>
                                         <th>Ticket Type</th>
