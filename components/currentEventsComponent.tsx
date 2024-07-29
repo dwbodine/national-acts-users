@@ -44,6 +44,7 @@ export default function CurrentEvents() {
     const changeEventStatus = userHasPermission(user, Permission.ChangeEventStatus);
     const canCheckInTickets = userHasPermission(user, Permission.CheckInUsers);
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
+    const windowWidth: number = windowSize?.width ?? 0;
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -134,7 +135,7 @@ export default function CurrentEvents() {
         return () => {
             debouncedResults.cancel();
         }
-    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user, debouncedResults, windowSize.width]);    
+    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user, debouncedResults, windowWidth]);    
     
     const filterEvents = (events: VipEvent[]) => {
         let filteredEvents: VipEvent[] = events;

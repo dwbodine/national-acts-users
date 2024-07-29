@@ -7,7 +7,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import router from 'next/router';
 import { Button, Col, Container, Row } from 'react-bootstrap';
-import AttendeeRowMobile from './attendeeRowMobileComponent';
+import AttendeeRow from './attendeeRowComponent';
 
 export default function OrderMobileRow(props: any) {
     const dispatch = useDispatch();
@@ -83,7 +83,7 @@ export default function OrderMobileRow(props: any) {
         let i = 0;
         order.tickets.forEach((ticket) => {
             const key = `anr${i}`;
-            attendeeNameRows.push(<AttendeeRowMobile key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />);
+            attendeeNameRows.push(<AttendeeRow key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />);
             i++;
         });
     }

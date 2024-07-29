@@ -64,16 +64,14 @@ export default function AttendeeRow(props: any) {
         checkInClass = !currentCheckIn ? 'check-in-show': 'check-in-hide';
     }    
 
+    checkInClass += ' no-print';
+    checkOutClass += ' no-print';
+
     return (
         <>
-            <td hidden={!canCheckInTickets} className="attendee-row-action">
-                <div onClick={handleClick} title={titleText} id={id} tabIndex={0}>
-                    <FaCheck className={checkOutClass} /><FaX className={checkInClass} />
-                </div>
-            </td>
-            <td className={className}>
-                <span onClick={handleClick}>{attendeeName}</span>
-            </td>
+            <div onClick={handleClick} className={className} title={titleText} id={id} tabIndex={0}>
+                <FaCheck className={checkOutClass} /><FaX className={checkInClass} /><span>{attendeeName}</span>
+            </div>
         </>
     );        
  

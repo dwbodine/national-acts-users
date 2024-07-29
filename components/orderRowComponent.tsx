@@ -19,12 +19,11 @@ export default function OrderRow(props: any) {
     const hideRev = props.HideRevenue as boolean;
     const hideServiceFees = props.HideServiceFees as boolean;
     const canCheckInTickets = props.CanCheckInTickets as boolean;
-    const ordinal = props.Ordinal as number;
 
     const { setOrderInactive } = useSetOrderInactive();
     const { setOrderDeleted } = useSetOrderDeleted();
         
-    let statusClass = (ordinal % 2 != 0) ? 'order-row ' : '';
+    let statusClass = '';
     if (order.isDeleted) {
         statusClass += 'deleted';
     }  else if (!order.isActive) {
@@ -138,35 +137,23 @@ export default function OrderRow(props: any) {
 
     const inactiveLabel = order.isActive ? "Deactivate" : "Activate";
     const deletedLabel = order.isDeleted ? "Undelete" : "Delete";
-    const rowSpan = attendeeNameRows?.length ?? 0;
 
     return (
-        attendeeNameRows.map((row, i) => {
-            const key = `arr${i}`;
-            if (i == 0) {
-                return (<tr className={statusClass} key={key}>
-                    <td rowSpan={rowSpan}>{purchaserName}</td>
-                    {row}
-                    <td rowSpan={rowSpan} className="no-print">{purchaseDate}</td>
-                    <td rowSpan={rowSpan}>{moment(eventDate).format('MM/DD/YYYY')}</td>
-                    <td rowSpan={rowSpan}>{eventName}</td>
-                    <td rowSpan={rowSpan}>{ticketTypeRows}</td>
-                    <td rowSpan={rowSpan}>{order.numTickets}</td>
-                    <td rowSpan={rowSpan} className="pull-right" hidden={hideRev}>{revenue}</td>
-                    <td rowSpan={rowSpan} className="pull-right no-print" hidden={hideServiceFees}>{serviceFees}</td>            
-                    <td rowSpan={rowSpan} className="email">{order.email}</td>
-                    { hasPhoneData ? <td rowSpan={rowSpan}>{order.phone}</td> : ''}
-                    { hasShirtData ? <td rowSpan={rowSpan}>{shirtSizeRows}</td> : ''}
-                    { changeOrderStatus ? <td rowSpan={rowSpan} className="no-print"><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
-                    { changeOrderStatus ? <td rowSpan={rowSpan} className="no-print"><a onClick={deleteUndeleteOrder}>{deletedLabel}</a></td> : ''}
-                </tr>);
-            } else {
-                return (
-                    <tr className={statusClass} key={key}>
-                        {row}
-                    </tr>
-                );
-                
-            }
-        }));
+        <tr className={statusClass}>
+            <td>{purchaserName}</td>
+            <td>{attendeeNameRows}</td>
+            <td className="no-print">{purchaseDate}</td>
+            <td>{moment(eventDate).format('MM/DD/YYYY')}</td>
+            <td>{eventName}</td>
+            <td>{ticketTypeRows}</td>
+            <td>{order.numTickets}</td>
+            <td className="pull-right" hidden={hideRev}>{revenue}</td>
+            <td className="pull-right no-print" hidden={hideServiceFees}>{serviceFees}</td>            
+            <td className="email">{order.email}</td>
+            { hasPhoneData ? <td>{order.phone}</td> : ''}
+            { hasShirtData ? <td>{shirtSizeRows}</td> : ''}
+            { changeOrderStatus ? <td className="no-print"><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
+            { changeOrderStatus ? <td className="no-print"><a onClick={deleteUndeleteOrder}>{deletedLabel}</a></td> : ''}
+        </tr>
+    );
 }
