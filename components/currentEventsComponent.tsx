@@ -22,6 +22,7 @@ import isMobileWidth from "@/utils/mobileUtil";
 import EventMobileRow from "./eventMobileRowComponent";
 import { useHasPermission } from "@/hooks/useHasPermission";
 import debouce from "lodash.debounce";
+import useScreenOrientation from "@/hooks/useScreenOrientation";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -44,7 +45,7 @@ export default function CurrentEvents() {
     const changeEventStatus = userHasPermission(user, Permission.ChangeEventStatus);
     const canCheckInTickets = userHasPermission(user, Permission.CheckInUsers);
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
-    const windowWidth: number = windowSize?.width ?? 0;
+    const screenOrientation = useScreenOrientation();
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -135,7 +136,7 @@ export default function CurrentEvents() {
         return () => {
             debouncedResults.cancel();
         }
-    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user, debouncedResults, windowWidth]);    
+    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user, debouncedResults, screenOrientation]);    
     
     const filterEvents = (events: VipEvent[]) => {
         let filteredEvents: VipEvent[] = events;

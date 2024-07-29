@@ -26,6 +26,7 @@ import OrderMobileRow from "./orderMobileRowComponent";
 import { useHasPermission } from "@/hooks/useHasPermission";
 import debouce from "lodash.debounce";
 import setFocusToControl from "@/utils/setFocusToControl";
+import useScreenOrientation from "@/hooks/useScreenOrientation";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
@@ -45,6 +46,7 @@ export default function EventDetail(props: any) {
     const windowSize = useWindowSize();
     const isMobile = isMobileWidth(windowSize);
     let hasOrders = false;
+    const screenOrientation = useScreenOrientation();
 
     const viewInactiveEvents = userHasPermission(user, Permission.ViewInactiveEvents);
     const viewDeletedEvents = userHasPermission(user, Permission.ViewDeletedEvents);
@@ -56,7 +58,6 @@ export default function EventDetail(props: any) {
     const changeOrderStatus = userHasPermission(user, Permission.ChangeOrderStatus);
     const canCheckInTickets = userHasPermission(user, Permission.CheckInUsers);
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
-    const windowWidth: number = windowSize?.width ?? 0;
 
     const debouncedResults = useMemo(() => {
         return debouce(setSearchTerm, 300);
@@ -120,7 +121,7 @@ export default function EventDetail(props: any) {
             debouncedResults.cancel();
         }
         
-    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, alwaysShowRevenue, viewInactiveEvents, viewRevenueData, viewServiceFees, debouncedResults, windowWidth]);   
+    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, alwaysShowRevenue, viewInactiveEvents, viewRevenueData, viewServiceFees, debouncedResults, screenOrientation]);   
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
