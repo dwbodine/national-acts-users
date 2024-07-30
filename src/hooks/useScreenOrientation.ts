@@ -1,30 +1,19 @@
-import {useState, useEffect} from 'react'
-
-const getOrientation = () =>
-  window.screen?.orientation?.type
+import { useState, useEffect } from 'react';
 
 const useScreenOrientation = () => {
-  const [orientation, setOrientation] =
-    useState(getOrientation())
-
-  const updateOrientation = () => {
-    setOrientation(getOrientation())
-  }
+  const [orientation, setOrientation] = useState('');  
 
   useEffect(() => {
-    window.addEventListener(
-      'orientationchange',
-      updateOrientation
-    )
+    const updateOrientation = () => {
+      const currentOrientation = (window && window.screen && window.screen.orientation) ? window.screen.orientation.type.toString() : '';
+      setOrientation(currentOrientation);
+    };
+    screen.orientation.addEventListener("change", updateOrientation);
     return () => {
-      window.removeEventListener(
-        'orientationchange',
-        updateOrientation
-      )
-    }
-  }, [])
+      screen.orientation.removeEventListener('change', updateOrientation);
+    };
+  }, [orientation]);
+  return orientation;
+};
 
-  return orientation
-}
-
-export default useScreenOrientation
+export default useScreenOrientation;

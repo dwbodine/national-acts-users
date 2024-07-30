@@ -30,6 +30,8 @@ export default function CurrentEvents() {
     const { userHasPermission } = useHasPermission();
     const { getEvents } = useGetEvents();
     const dispatch = useDispatch(); 
+    const screenOrientation = useScreenOrientation();
+
     const [isLoading, setIsLoading] = useState(false);
     const [chartsHidden, setChartsHidden] = useState(true);
     const [hideRevItem, setHideRevItem] = useState(true);
@@ -45,7 +47,7 @@ export default function CurrentEvents() {
     const changeEventStatus = userHasPermission(user, Permission.ChangeEventStatus);
     const canCheckInTickets = userHasPermission(user, Permission.CheckInUsers);
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
-    const screenOrientation = useScreenOrientation();
+    
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
