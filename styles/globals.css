@@ -540,7 +540,6 @@ div hidden {
 
 /* Bootstrap lg */
 @media (max-width: 992px) {
-
   .command-column {
     display: none;
   }
@@ -564,7 +563,7 @@ div hidden {
   .purchase-date {
     display: none;
   }
-  
+
 }
 
 /* custom desktop/tablet width */
