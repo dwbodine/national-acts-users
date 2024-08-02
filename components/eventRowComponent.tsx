@@ -100,8 +100,8 @@ export default function EventRow(props: any) {
             <td className="pull-right">{vipEvent.totalTickets}</td>
             <td className="pull-right" hidden={hideRevItem}>{revenue}</td>
             <td className="pull-right no-print" hidden={hideServiceFees}>{serviceFees}</td>
-            { changEventStatus ? <td className="no-print"><a onClick={activateDeactivateEvent}>{inactiveLabel}</a></td> : ''}
-            { changEventStatus ? <td className="no-print"><a onClick={deleteUndeleteEvent}>{deletedLabel}</a></td> : ''}
+            { changEventStatus ? <td className="command-column no-print"><a onClick={activateDeactivateEvent}>{inactiveLabel}</a></td> : ''}
+            { changEventStatus ? <td className="command-column no-print"><a onClick={deleteUndeleteEvent}>{deletedLabel}</a></td> : ''}
         </tr>
     );
 }

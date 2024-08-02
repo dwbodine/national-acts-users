@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const useScreenOrientation = () => {
-  const [orientation, setOrientation] = useState('');  
+  const [orientation, setOrientation] = useState<string | undefined>(undefined);  
 
   useEffect(() => {
     const updateOrientation = () => {
@@ -9,6 +9,9 @@ const useScreenOrientation = () => {
       setOrientation(currentOrientation);
     };
     screen.orientation.addEventListener("change", updateOrientation);
+    if (!orientation) {
+      updateOrientation();
+    }
     return () => {
       screen.orientation.removeEventListener('change', updateOrientation);
     };

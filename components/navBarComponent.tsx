@@ -12,7 +12,7 @@ export default function NavBar() {
     const { user } = useCurrentUser();
     const windowSize = useWindowSize();
     const orientation = useScreenOrientation();
-    const isDennis = (user.isAdmin && user.username == 'dwbodine@gmail.com');
+    const isDennis = (user.username == 'dwbodine@gmail.com' || user.username == "dwbodine@hotmail.com");
 
     return (
         <>

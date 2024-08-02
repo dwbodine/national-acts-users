@@ -152,8 +152,8 @@ export default function OrderRow(props: any) {
             <td className="email">{order.email}</td>
             { hasPhoneData ? <td>{order.phone}</td> : ''}
             { hasShirtData ? <td>{shirtSizeRows}</td> : ''}
-            { changeOrderStatus ? <td className="no-print"><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
-            { changeOrderStatus ? <td className="no-print"><a onClick={deleteUndeleteOrder}>{deletedLabel}</a></td> : ''}
+            { changeOrderStatus ? <td className="command-column no-print"><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
+            { changeOrderStatus ? <td className="command-column no-print"><a onClick={deleteUndeleteOrder}>{deletedLabel}</a></td> : ''}
         </tr>
     );
 }

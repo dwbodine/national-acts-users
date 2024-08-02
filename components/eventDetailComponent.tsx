@@ -30,6 +30,7 @@ import useScreenOrientation from "@/hooks/useScreenOrientation";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
+    const isDennis = (user.username == 'dwbodine@gmail.com' || user.username == "dwbodine@hotmail.com");
     const { userHasPermission } = useHasPermission();
     const { getLocation } = useGetLocation();
     const { exportEventCustomerDataToCsv } = useGetExport();
@@ -44,7 +45,7 @@ export default function EventDetail(props: any) {
     const [vipEvent, setVipEvent] = useState<VipEvent | undefined>(undefined);
     const id: number | undefined = props.Id as number;
     const windowSize = useWindowSize();
-    const isMobile = isMobileWidth(windowSize);
+    const [isMobile, setIsMobile] = useState(false);
     let hasOrders = false;
     const screenOrientation = useScreenOrientation();
 
@@ -65,6 +66,7 @@ export default function EventDetail(props: any) {
 
     useEffect(() => {     
         async function fetchEvent() {
+            setIsMobile(isMobileWidth(windowSize));
             if (id && currentReportSelection) {
                 if (alwaysShowRevenue) {
                     setHideRevItem(false);
@@ -121,7 +123,7 @@ export default function EventDetail(props: any) {
             debouncedResults.cancel();
         }
         
-    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, alwaysShowRevenue, viewInactiveEvents, viewRevenueData, viewServiceFees, debouncedResults, screenOrientation]);   
+    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, alwaysShowRevenue, viewInactiveEvents, viewRevenueData, viewServiceFees, debouncedResults, screenOrientation, windowSize]);   
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -257,7 +259,12 @@ export default function EventDetail(props: any) {
         <>
             {(vipEvent != undefined) ? 
             <Container fluid className="vipContainer">  
-                <Row>
+                <Row hidden={!isDennis}>
+                    <Col>
+                        {windowSize.width} x {windowSize.height} / {screenOrientation}
+                    </Col>
+                </Row>
+                <Row>                    
                     <Col>
                         <Row>
                             <table className="vipDetailsTable">
@@ -355,7 +362,7 @@ export default function EventDetail(props: any) {
                                         <th>Email</th>
                                         {(hasPhoneData) ? <th>Phone #</th> : ''}
                                         {(hasShirtData) ? <th>Shirt Sizes</th> : ''}
-                                        {(changeOrderStatus) ? <th colSpan={2} className="no-print">Commands</th> : ''}
+                                        {(changeOrderStatus) ? <th colSpan={2} className="command-column no-print">Commands</th> : ''}
                                     </tr>
                                 </thead>
                                 <tbody>

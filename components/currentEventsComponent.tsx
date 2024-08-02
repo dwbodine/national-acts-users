@@ -37,7 +37,7 @@ export default function CurrentEvents() {
     const [hideRevItem, setHideRevItem] = useState(true);
     const [hideServiceFees, setHideServiceFees] = useState(true);
     const windowSize = useWindowSize();
-    const isMobile = isMobileWidth(windowSize);
+    const [isMobile, setIsMobile] = useState(false);
     const hideTicketChart = windowSize.width < 1200;
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -84,6 +84,7 @@ export default function CurrentEvents() {
     }
 
     useEffect(() => {
+        setIsMobile(isMobileWidth(windowSize));
         if (currentReportSelection.seller.sellerId > 0) {
             if (alwaysShowRevenue) {
                 setHideRevItem(false);
@@ -138,7 +139,7 @@ export default function CurrentEvents() {
         return () => {
             debouncedResults.cancel();
         }
-    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user, debouncedResults, screenOrientation]);    
+    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user, debouncedResults, screenOrientation, windowSize]);    
     
     const filterEvents = (events: VipEvent[]) => {
         let filteredEvents: VipEvent[] = events;
@@ -223,7 +224,7 @@ export default function CurrentEvents() {
                                     <th>Tickets Sold</th>
                                     <th hidden={hideRevItem}>Revenue (USD)</th>
                                     <th className="no-print" hidden={hideServiceFees}>Service Fees</th>
-                                    { changeEventStatus ? <th colSpan={2} className="center no-print">Commands</th> : ''}            
+                                    { changeEventStatus ? <th colSpan={2} className="center command-column no-print">Commands</th> : ''}            
                                 </tr>
                             </thead>
                             <tbody>
@@ -235,7 +236,7 @@ export default function CurrentEvents() {
                                     <td className="pull-right">{totalTickets}</td>
                                     <td className="pull-right" hidden={hideRevItem}>{totalRevenue.toFixed(2)}</td>
                                     <td className="pull-right" hidden={hideServiceFees}>{totalServiceFees.toFixed(2)}</td>
-                                    { changeEventStatus ? <td colSpan={2} className="no-print"></td> : ''}            
+                                    { changeEventStatus ? <td colSpan={2} className="command-column no-print"></td> : ''}            
                                 </tr>
                             </tfoot>
                         </table>
