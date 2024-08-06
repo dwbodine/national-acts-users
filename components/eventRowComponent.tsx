@@ -90,11 +90,12 @@ export default function EventRow(props: any) {
     const serviceFees = new Number(vipEvent.totalServiceFees).toFixed(2);
     const inactiveLabel = vipEvent.isActive ? "Deactivate" : "Activate";
     const deletedLabel = vipEvent.isDeleted ? "Undelete" : "Delete";
+    const url = `/${eUrl}?id=${vipEvent.ticketSocketEventId}`;
         
     return (
         <tr className={statusClass} id={id}>
             <td>{eventDate}</td>
-            <td><a onClick={setDetailEvent}>{vipEvent.title}</a></td>
+            <td><a href={url} target="_blank">{vipEvent.title}</a></td>
             <td>{venueName}</td>
             <td>{location}</td>
             <td className="pull-right">{vipEvent.totalTickets}</td>

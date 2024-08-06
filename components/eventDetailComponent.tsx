@@ -1,5 +1,5 @@
 import { IShirtData, IShirtSizeData, ITicketData, ITicketTypeData, Order, TicketType, VipEvent } from "@/types/event";
-import React, { ChangeEvent, useEffect, useMemo, useState, KeyboardEvent } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import moment from "moment";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -21,12 +21,10 @@ import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setSh
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
 import { Permission, UserReportSelection } from "@/types/user";
 import { useWindowSize } from "@/hooks/useWindowSize";
-import isMobileWidth from "@/utils/mobileUtil";
 import OrderMobileRow from "./orderMobileRowComponent";
 import { useHasPermission } from "@/hooks/useHasPermission";
 import debouce from "lodash.debounce";
 import setFocusToControl from "@/utils/setFocusToControl";
-import useScreenOrientation from "@/hooks/useScreenOrientation";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
@@ -44,10 +42,9 @@ export default function EventDetail(props: any) {
     const [searchTerm, setSearchTerm] = useState('');
     const [vipEvent, setVipEvent] = useState<VipEvent | undefined>(undefined);
     const id: number | undefined = props.Id as number;
+
     const windowSize = useWindowSize();
-    const [isMobile, setIsMobile] = useState(false);
-    let hasOrders = false;
-    const screenOrientation = useScreenOrientation();
+    const windowSizeJson = JSON.stringify(windowSize);
 
     const viewInactiveEvents = userHasPermission(user, Permission.ViewInactiveEvents);
     const viewDeletedEvents = userHasPermission(user, Permission.ViewDeletedEvents);
@@ -64,9 +61,22 @@ export default function EventDetail(props: any) {
         return debouce(setSearchTerm, 300);
     }, []);
 
+    let ticketData: ITicketData | undefined = undefined;
+    let shirtData: IShirtData | undefined = undefined;
+    let location = '';    
+    const hasPhoneData = vipEvent?.hasPhoneData ?? false;
+    let hasTicketData: boolean = false;
+    let hasShirtData: boolean = false;
+    const hasNonUsaOrders: boolean = vipEvent?.hasNonUSAOrders ?? false;
+    const currencySymbol: string | undefined = vipEvent?.nonUsaCurrencySymbol;
+    const currencyAbbrev: string | undefined = vipEvent?.nonUsaCurrencyAbbrev;
+    const ticketBreakdownRows: any[] = [];
+    const shirtSizeBreakdownRows: any[] = [];
+    let orderRows: any[] = [];
+    let hasOrders = false;
+
     useEffect(() => {     
-        async function fetchEvent() {
-            setIsMobile(isMobileWidth(windowSize));
+        const fetchEvent = async() => {            
             if (id && currentReportSelection) {
                 if (alwaysShowRevenue) {
                     setHideRevItem(false);
@@ -117,27 +127,25 @@ export default function EventDetail(props: any) {
                     }
                 }                          
             }
-        }   
+        };
         fetchEvent();
         return () => {
             debouncedResults.cancel();
         }
         
-    }, [checkChanged, id, currentReportSelection, dispatch, getEventDetails, alwaysShowRevenue, viewInactiveEvents, viewRevenueData, viewServiceFees, debouncedResults, screenOrientation, windowSize]);   
-
-    let ticketData: ITicketData | undefined = undefined;
-    let shirtData: IShirtData | undefined = undefined;
-
-    let location = '';    
-    const hasPhoneData = vipEvent?.hasPhoneData ?? false;
-    let hasTicketData: boolean = false;
-    let hasShirtData: boolean = false;
-    const hasNonUsaOrders: boolean = vipEvent?.hasNonUSAOrders ?? false;
-    const currencySymbol: string | undefined = vipEvent?.nonUsaCurrencySymbol;
-    const currencyAbbrev: string | undefined = vipEvent?.nonUsaCurrencyAbbrev;
-    const ticketBreakdownRows: any[] = [];
-    const shirtSizeBreakdownRows: any[] = [];
-    const orderRows: any[] = [];
+    }, [
+        checkChanged, 
+        id, 
+        currentReportSelection, 
+        dispatch, 
+        getEventDetails, 
+        alwaysShowRevenue, 
+        viewInactiveEvents, 
+        viewRevenueData, 
+        viewServiceFees, 
+        debouncedResults, 
+        windowSizeJson
+    ]);
 
     const exportOrdersToCsv = () => {
         if (vipEvent != undefined) {
@@ -202,20 +210,17 @@ export default function EventDetail(props: any) {
         }      
 
         const filteredOrders = filterOrders(vipEvent.orders);
-
-        let i = 0;
-        filteredOrders?.forEach((order) => {
+        filteredOrders?.forEach((order, i) => { 
             hasOrders = true;
             const key = `or${i}`;
             const showOrder = (!order.isDeleted && order.isActive) || (order.isDeleted && currentReportSelection?.showDeletedOrders) || (!order.isActive && currentReportSelection?.showInactiveOrders);
             if (showOrder) {
-                if (isMobile) { 
+                if (windowSize.isMobile) { 
                     orderRows.push(<OrderMobileRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
                 } else {
                     orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
                 }                
             }            
-            i++;
         });    
     }
 
@@ -261,7 +266,7 @@ export default function EventDetail(props: any) {
             <Container fluid className="vipContainer">  
                 <Row hidden={!isDennis}>
                     <Col>
-                        {windowSize.width} x {windowSize.height} / {screenOrientation}
+                        {windowSize.width} x {windowSize.height} / {windowSize.orientation} / {windowSize.isMobile.toString()}
                     </Col>
                 </Row>
                 <Row>                    
@@ -314,7 +319,7 @@ export default function EventDetail(props: any) {
                             </Col>
                         </Row>
                         <Row hidden={isLoading} className="no-print">
-                            <Col md={10} sm={12} hidden={isMobile}>
+                            <Col md={10} sm={12} hidden={windowSize.isMobile}>
                                 <div className="admin-button-row">
                                     <span className="admin-button" hidden={!canExportData}>
                                         <Button onClick={exportOrdersToCsv}>Export to Csv</Button>
@@ -348,7 +353,7 @@ export default function EventDetail(props: any) {
                         </Row>
                         <Row hidden={isLoading} className="vipTable-container">
                             <table className="vipTable">
-                                <thead hidden={isMobile}>
+                                <thead hidden={windowSize.isMobile}>
                                     <tr>
                                         <th>Purchaser Name</th>
                                         <th>Attendee Name</th>

@@ -18,21 +18,20 @@ import RevenueCheck from "./revenueCheckComponent";
 import { setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
 import { Permission } from "@/types/user";
 import ServiceFeesCheck from "./serviceFeesCheckComponent";
-import { useWindowSize } from "@/hooks/useWindowSize";
-import isMobileWidth from "@/utils/mobileUtil";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useHasPermission } from "@/hooks/useHasPermission";
+import { useWindowSize } from '@/hooks/useWindowSize';
 
 export default function AdminBar() {    
     const dispatch = useDispatch(); 
     const { user } = useCurrentUser();
+    const windowSize = useWindowSize();
+    const windowSizeJson = JSON.stringify(windowSize);
     const { userHasPermission } = useHasPermission();
     const { exportEventsToCsv, exportCustomerDataToCsv } = useGetExport();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const hasEvents = (currentReportSelection?.currentEvents?.length ?? 0 > 0);
     const dateRangeTitle = "Event date range";
-    const windowSize = useWindowSize();
-    const [isMobile, setIsMobile] = useState(false);
 
     const viewInactiveEvents = userHasPermission(user, Permission.ViewInactiveEvents);
     const viewDeletedEvents = userHasPermission(user, Permission.ViewDeletedEvents);
@@ -84,11 +83,10 @@ export default function AdminBar() {
         dispatch(setDateRange(reportSelection));
         dispatch(setReloadEvents(true));
     }
-
+    
     useEffect(() => {
-        setIsMobile(isMobileWidth(windowSize));
-    }, [windowSize])
-
+        // blank
+    }, [windowSizeJson])
     return (
         <>
             <Row className="page-header">
@@ -115,9 +113,9 @@ export default function AdminBar() {
             <Row className="no-print admin-button-row" hidden={currentReportSelection.seller.sellerId <= 0}>
                 <Col md={10} sm={12}>
                     {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
-                    {(!isMobile && viewPrintButton && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}                    
-                    {(!isMobile && canExportData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
-                    {(!isMobile && canExportData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}                    
+                    {(!windowSize.isMobile && viewPrintButton && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}                    
+                    {(!windowSize.isMobile && canExportData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
+                    {(!windowSize.isMobile && canExportData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}                    
                 </Col>
             </Row>
         </>           

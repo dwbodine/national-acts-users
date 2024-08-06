@@ -18,11 +18,9 @@ import WidgetBar from "./widgetBarComponent";
 import TicketSalesChart from "./ticketSalesChartComponent";
 import { getPurchaseDataFromEvents } from "@/utils/getPurchaseData";
 import { useWindowSize } from "@/hooks/useWindowSize";
-import isMobileWidth from "@/utils/mobileUtil";
 import EventMobileRow from "./eventMobileRowComponent";
 import { useHasPermission } from "@/hooks/useHasPermission";
 import debouce from "lodash.debounce";
-import useScreenOrientation from "@/hooks/useScreenOrientation";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -30,14 +28,13 @@ export default function CurrentEvents() {
     const { userHasPermission } = useHasPermission();
     const { getEvents } = useGetEvents();
     const dispatch = useDispatch(); 
-    const screenOrientation = useScreenOrientation();
 
     const [isLoading, setIsLoading] = useState(false);
     const [chartsHidden, setChartsHidden] = useState(true);
     const [hideRevItem, setHideRevItem] = useState(true);
     const [hideServiceFees, setHideServiceFees] = useState(true);
     const windowSize = useWindowSize();
-    const [isMobile, setIsMobile] = useState(false);
+    const windowSizeJson = JSON.stringify(windowSize);
     const hideTicketChart = windowSize.width < 1200;
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -84,7 +81,6 @@ export default function CurrentEvents() {
     }
 
     useEffect(() => {
-        setIsMobile(isMobileWidth(windowSize));
         if (currentReportSelection.seller.sellerId > 0) {
             if (alwaysShowRevenue) {
                 setHideRevItem(false);
@@ -139,7 +135,17 @@ export default function CurrentEvents() {
         return () => {
             debouncedResults.cancel();
         }
-    }, [currentReportSelection, dispatch, getEvents, isMobile, alwaysShowRevenue, viewRevenueData, viewServiceFees, user, debouncedResults, screenOrientation, windowSize]);    
+    }, [
+        currentReportSelection, 
+        dispatch, 
+        getEvents, 
+        alwaysShowRevenue, 
+        viewRevenueData, 
+        viewServiceFees, 
+        user, 
+        debouncedResults, 
+        windowSizeJson
+    ]);    
     
     const filterEvents = (events: VipEvent[]) => {
         let filteredEvents: VipEvent[] = events;
@@ -177,7 +183,7 @@ export default function CurrentEvents() {
         let i = 0;
         for (const evt of filteredEvents) {
             const key = `ev${i}`;
-            if (isMobile) {
+            if (windowSize.isMobile) {
                 rows.push(<EventMobileRow key={key} VipEvent={evt} ChangeEventStatus={changeEventStatus} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} CanCheckInTickets={canCheckInTickets} />);    
             } else {
                 rows.push(<EventRow key={key} VipEvent={evt} ChangeEventStatus={changeEventStatus} HideRevenue={hideRevItem} HideServiceFees={hideServiceFees} />);    
@@ -215,7 +221,7 @@ export default function CurrentEvents() {
                 <Col hidden={isLoading} className="results-col">
                     {(vipEvents && vipEvents.length > 0) ?
                         <table className="resultsTable">
-                            <thead hidden={isMobile}>
+                            <thead hidden={windowSize.isMobile}>
                                 <tr>
                                     <th>Date</th>
                                     <th>Title</th>
@@ -230,7 +236,7 @@ export default function CurrentEvents() {
                             <tbody>
                                 { rows }
                             </tbody>
-                            <tfoot hidden={isMobile}>
+                            <tfoot hidden={windowSize.isMobile}>
                                 <tr>
                                     <td colSpan={4}>Total</td> 
                                     <td className="pull-right">{totalTickets}</td>
