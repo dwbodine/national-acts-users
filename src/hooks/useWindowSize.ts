@@ -18,19 +18,22 @@ export const useWindowSize = (): WindowSize => {
         return;
       }
       const currentOrientation = window.screen.orientation.type.toString();
-      const currentAngle = window.screen.orientation.angle;
+      const isLandscape = currentOrientation?.toLowerCase().includes('landscape');
+      const currentAngle = Math.abs(window.screen.orientation.angle);
       let windowWidth = window.outerWidth;
       let windowHeight = window.outerHeight;
-      if (Math.abs(currentAngle) == 90 || Math.abs(currentAngle) == 270) {
-        if (windowHeight >= windowWidth) {
+      if (isLandscape) {
+        if (currentAngle == 90 || currentAngle == 270 && (windowHeight >= windowWidth)) {
           let temp = windowWidth;
           windowWidth = windowHeight;
           windowHeight = temp;
         }        
-      } else if (windowWidth >= windowHeight) {
-        let temp = windowWidth;
-        windowWidth = windowHeight;
-        windowHeight = temp;
+      } else  {
+        if (windowWidth >= windowHeight) {
+          let temp = windowWidth;
+          windowWidth = windowHeight;
+          windowHeight = temp;
+        }        
       }
       const isMobileWidth = (windowWidth < MOBILE_WIDTH_BREAKPOINT);
       setWindowSize({width: windowWidth, height: windowHeight, orientation: currentOrientation, isMobile: isMobileWidth, angle: currentAngle});  
