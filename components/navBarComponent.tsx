@@ -25,7 +25,7 @@ export default function NavBar() {
                     <Image className="nav-bar-icon-image" src="/images/logo-icon.jpg" height={50} width={50} alt="National Acts" />
                 </Col>
                 <Col hidden={!isDennis}>
-                    {windowSize.width} x {windowSize.height} / {windowSize.orientation} / {windowSize.isMobile.toString()}
+                    {windowSize.width} x {windowSize.height} / {windowSize.orientation} / {windowSize.isMobile.toString()} / {windowSize.angle}
                 </Col>
                 <Col className="nav-header control-container no-print">
                     <LogoutButton />

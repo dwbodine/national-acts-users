@@ -28,7 +28,6 @@ import setFocusToControl from "@/utils/setFocusToControl";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
-    const isDennis = (user.username == 'dwbodine@gmail.com' || user.username == "dwbodine@hotmail.com");
     const { userHasPermission } = useHasPermission();
     const { getLocation } = useGetLocation();
     const { exportEventCustomerDataToCsv } = useGetExport();
@@ -264,11 +263,6 @@ export default function EventDetail(props: any) {
         <>
             {(vipEvent != undefined) ? 
             <Container fluid className="vipContainer">  
-                <Row hidden={!isDennis}>
-                    <Col>
-                        {windowSize.width} x {windowSize.height} / {windowSize.orientation} / {windowSize.isMobile.toString()}
-                    </Col>
-                </Row>
                 <Row>                    
                     <Col>
                         <Row>

@@ -6,7 +6,8 @@ export const useWindowSize = (): WindowSize => {
     width: 0,
     height: 0,
     orientation: undefined,
-    isMobile: false
+    isMobile: false,
+    angle: 0
   });
 
   const windowSizeJson = JSON.stringify(windowSize);
@@ -20,7 +21,7 @@ export const useWindowSize = (): WindowSize => {
       const currentAngle = window.screen.orientation.angle;
       let windowWidth = window.outerWidth;
       let windowHeight = window.outerHeight;
-      if (Math.abs(currentAngle) == 90) {
+      if (Math.abs(currentAngle) == 90 || Math.abs(currentAngle) == 270) {
         if (windowHeight >= windowWidth) {
           let temp = windowWidth;
           windowWidth = windowHeight;
@@ -31,8 +32,8 @@ export const useWindowSize = (): WindowSize => {
         windowWidth = windowHeight;
         windowHeight = temp;
       }
-      const IsMobileWidth = (windowWidth < MOBILE_WIDTH_BREAKPOINT);
-      setWindowSize({width: windowWidth, height: windowHeight, orientation: currentOrientation, isMobile: IsMobileWidth});  
+      const isMobileWidth = (windowWidth < MOBILE_WIDTH_BREAKPOINT);
+      setWindowSize({width: windowWidth, height: windowHeight, orientation: currentOrientation, isMobile: isMobileWidth, angle: currentAngle});  
     };
     screen.orientation.addEventListener("change", windowSizeHandler);
     window.addEventListener("resize", windowSizeHandler);

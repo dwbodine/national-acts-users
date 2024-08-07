@@ -3,4 +3,5 @@ export type WindowSize = {
     height: number;
     orientation: string | undefined;
     isMobile: boolean;
+    angle: number;
 }
