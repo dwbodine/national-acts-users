@@ -22,6 +22,9 @@ export default function Home() {
       case "3": 
         document.title = "Client Portal - Admin";
         break;
+      case "4":
+        document.title = "Client Portal - Reports";
+        break;
       default:
         document.title = "Client Portal - Home";
         break;
@@ -49,6 +52,9 @@ export default function Home() {
             </Tabs.Tab>
             <Tabs.Tab eventKey="3" title="ADMIN">
               Admin functions will go here - only admins can see this
+            </Tabs.Tab>
+            <Tabs.Tab eventKey="4" title="REPORTS">
+              Reports will go here - only admins can see this
             </Tabs.Tab>
           </Tabs>
           </>
