@@ -36,8 +36,8 @@ export default function OrderMobileRow(props: any) {
     const id = `order_${order.ticketSocketOrderId}`;
     const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
     const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
-    const revenue = new Number(order.revenueUsd).toFixed(2);
-    const serviceFees = new Number(order.serviceFeesUsd).toFixed(2);
+    const revenue = `$${new Number(order.revenueUsd).toFixed(2)}`;
+    const serviceFees = `$${new Number(order.serviceFeesUsd).toFixed(2)}`;
 
     const ticketTypeRows: any[] = [];
     if (order.tickets && order.tickets.length > 0) {
@@ -172,12 +172,12 @@ export default function OrderMobileRow(props: any) {
                         </Col>
                     </Row>
                     <Row hidden={hideRev}>
-                        <Col className="mobile-bold">Revenue (USD):</Col>
-                        <Col>${revenue}</Col>
+                        <Col className="mobile-bold">Revenue:</Col>
+                        <Col>{revenue}</Col>
                     </Row>
                     <Row hidden={hideServiceFees} className="no-print">
                         <Col className="mobile-bold">Service Fees:</Col>
-                        <Col>${serviceFees}</Col>
+                        <Col>{serviceFees}</Col>
                     </Row>
                     <Row>
                         <Col className="mobile-bold">Email:</Col>

@@ -119,8 +119,8 @@ export default function EventMobileRow(props: any) {
 
     
     const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
-    const revenue = new Number(vipEvent.totalRevenue).toFixed(2);
-    const serviceFees = new Number(vipEvent.totalServiceFees).toFixed(2);
+    const revenue = `$${new Number(vipEvent.totalRevenue).toFixed(2)}`;
+    const serviceFees = `$${new Number(vipEvent.totalServiceFees).toFixed(2)}`;
     const inactiveLabel = vipEvent.isActive ? "Deactivate" : "Activate";
     const deletedLabel = vipEvent.isDeleted ? "Undelete" : "Delete";
     const buttonText = currentSellerType == UserSellerType.Venue ? "Customer List" : "VIP List";
@@ -160,7 +160,7 @@ export default function EventMobileRow(props: any) {
                         </Col>
                     </Row>
                     <Row hidden={hideRevItem}>
-                        <Col>Revenue (USD):</Col>
+                        <Col>Revenue:</Col>
                         <Col>{revenue}</Col>
                     </Row>
                     <Row hidden={hideServiceFees} className="no-print">
