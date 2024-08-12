@@ -8,7 +8,12 @@ export const useHasPermission = () => {
     if (user.isAdmin) {
         return true;
     } else {
-        const seller = currentReportSelection.seller;
+        let seller = undefined;
+        if (currentReportSelection && currentReportSelection.seller && currentReportSelection.seller.sellerId > 0) {
+            seller = currentReportSelection.seller;
+        } else if (user.selectedSellerId && user.selectedSellerId > 0) {
+            seller = user.sellers?.find(x => x.sellerId == user.selectedSellerId);
+        }
         if (seller) {
             return (seller.permissions?.find(x => x == permission) != undefined);
         } else {

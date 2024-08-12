@@ -28,7 +28,8 @@ export enum Permission {
   ViewPrintButton = 7,
   CheckInUsers = 8,
   ChangeEventStatus = 9,
-  ChangeOrderStatus = 10
+  ChangeOrderStatus = 10,
+  ExportCustomerData = 11
 }
 
 export type User = {

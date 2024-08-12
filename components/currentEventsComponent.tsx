@@ -50,6 +50,7 @@ export default function CurrentEvents() {
     let shirtData: IShirtData | undefined = undefined;
     let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;    
     let ticketSalesData: ITicketSalesData[] | undefined = undefined;
+    let searchBarHidden = true;
 
     const debouncedResults = useMemo(() => {
         return debouce(setSearchTerm, 300);
@@ -172,7 +173,9 @@ export default function CurrentEvents() {
     let totalServiceFees = 0;
 
     if (vipEvents && vipEvents.length > 0) {
-
+        if (windowSize.isMobile || vipEvents.length > 10) {
+            searchBarHidden = false;
+        }
         const filteredEvents = filterEvents(vipEvents);
 
         totalEvents = filteredEvents.length;
@@ -206,9 +209,9 @@ export default function CurrentEvents() {
             <input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="form-control search-text-input"
+                className="form-control search-text-input no-print"
                 placeholder="Search for events..." 
-                hidden={(isLoading || !vipEvents || vipEvents.length == 0)}
+                hidden={(searchBarHidden || isLoading || !vipEvents || vipEvents.length == 0)}
             />
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
                 ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} 

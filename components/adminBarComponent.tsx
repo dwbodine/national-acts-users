@@ -38,6 +38,7 @@ export default function AdminBar() {
     const viewServiceFees = userHasPermission(user, Permission.ViewServiceFees);
     const viewRevenueControls = userHasPermission(user, Permission.ViewRevenueControls);
     const canExportData = userHasPermission(user, Permission.ExportData);
+    const canExportCustomerData = userHasPermission(user, Permission.ExportCustomerData);
     const viewPrintButton = userHasPermission(user, Permission.ViewPrintButton);
     const viewRevenueData = userHasPermission(user, Permission.ViewRevenueData);
 
@@ -119,7 +120,7 @@ export default function AdminBar() {
                     {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
                     {(!windowSize.isMobile && viewPrintButton && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}                    
                     {(!windowSize.isMobile && canExportData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
-                    {(!windowSize.isMobile && canExportData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}                    
+                    {(!windowSize.isMobile && canExportCustomerData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}                    
                 </Col>
             </Row>
         </>           

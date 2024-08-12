@@ -50,7 +50,7 @@ export default function EventDetail(props: any) {
     const viewServiceFees = userHasPermission(user, Permission.ViewServiceFees);
     const viewRevenueData = userHasPermission(user, Permission.ViewRevenueData);
     const viewRevenueControls = userHasPermission(user, Permission.ViewRevenueControls);    
-    const canExportData = userHasPermission(user, Permission.ExportData);
+    const canExportCustomerData = userHasPermission(user, Permission.ExportCustomerData);
     const viewPrintButton = userHasPermission(user, Permission.ViewPrintButton);
     const changeOrderStatus = userHasPermission(user, Permission.ChangeOrderStatus);
     const canCheckInTickets = userHasPermission(user, Permission.CheckInUsers);
@@ -73,6 +73,7 @@ export default function EventDetail(props: any) {
     const shirtSizeBreakdownRows: any[] = [];
     let orderRows: any[] = [];
     let hasOrders = false;
+    let searchBarHidden = true;
 
     useEffect(() => {     
         const fetchEvent = async() => {            
@@ -170,6 +171,9 @@ export default function EventDetail(props: any) {
     };
 
     if (vipEvent != undefined) {
+        if (windowSize.isMobile || (vipEvent.orders && vipEvent.orders.length > 10)) {
+            searchBarHidden = false;
+        }
         if (vipEvent.venue) {
             location = getLocation(vipEvent.venue);
         }    
@@ -317,7 +321,7 @@ export default function EventDetail(props: any) {
                         <Row hidden={isLoading} className="no-print">
                             <Col md={10} sm={12} hidden={windowSize.isMobile}>
                                 <div className="admin-button-row">
-                                    <span className="admin-button" hidden={!canExportData}>
+                                    <span className="admin-button" hidden={!canExportCustomerData}>
                                         <Button onClick={exportOrdersToCsv}>Export to Csv</Button>
                                     </span>
                                     <PrintButton ShowPrint={viewPrintButton} />
@@ -337,7 +341,7 @@ export default function EventDetail(props: any) {
                                     <FormCheck checked={currentReportSelection?.hideServiceFees} onChange={handleHideServiceFees} /> Hide Service Fees?
                                 </span>
                             </Col>
-                            <Col md={10} sm={12}>
+                            <Col md={10} sm={12} className="no-print" hidden={searchBarHidden}>
                                 <input
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
