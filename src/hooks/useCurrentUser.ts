@@ -6,11 +6,14 @@ export const useCurrentUser = () => {
     userId: 0,
     isAdmin: false,
     username: '',
-    isActive: false
+    isActive: false,
+    selectedSellerId: 0,
+    selectedHideRevenue: false,
+    selectedHideServiceFees: false
   });
 
   useEffect(() => {
-    const currentUserStr = localStorage.getItem('currentUser') || '';
+    const currentUserStr = localStorage.getItem('currentUser') || undefined;
     if (currentUserStr) {
       const currentUser = JSON.parse(currentUserStr) as User;
       setUser(currentUser);
@@ -19,7 +22,10 @@ export const useCurrentUser = () => {
         userId: 0,
         isAdmin: false,
         username: '',
-        isActive: false
+        isActive: false,
+        selectedSellerId: 0,
+        selectedHideRevenue: false,
+        selectedHideServiceFees: false
       });
     }
   }, [setUser]);

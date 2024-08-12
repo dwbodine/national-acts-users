@@ -17,7 +17,7 @@ import PrintButton from "./printButtonComponent";
 import { useGetEventDetails } from "@/hooks/useGetEventDetails";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees, setFocusControl } from "@/lib/reportSelectionSlice";
+import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees, setFocusControl, setEventSeller } from "@/lib/reportSelectionSlice";
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
 import { Permission, UserReportSelection } from "@/types/user";
 import { useWindowSize } from "@/hooks/useWindowSize";
@@ -76,8 +76,8 @@ export default function EventDetail(props: any) {
     let searchBarHidden = true;
 
     useEffect(() => {     
-        const fetchEvent = async() => {            
-            if (id && currentReportSelection) {
+        const fetchEvent = async() => {    
+            if (id && currentReportSelection && currentReportSelection.seller && currentReportSelection.seller.sellerId > 0) {
                 if (alwaysShowRevenue) {
                     setHideRevItem(false);
                 } else if (!viewRevenueData) {
@@ -126,6 +126,18 @@ export default function EventDetail(props: any) {
                         );
                     }
                 }                          
+            } else if (user && user.userId > 0 && user.sellers && user.selectedSellerId > 0) {
+                // use cached user to transfer detail to redux in new window
+                let reportSelection = {...currentReportSelection};
+                const seller = user.sellers.find(x => x.sellerId == user.selectedSellerId);
+                if (seller) {
+                    reportSelection.seller = seller;
+                    reportSelection.hideRevenue = user.selectedHideRevenue;
+                    reportSelection.hideServiceFees = user.selectedHideServiceFees;
+                    dispatch(
+                        setEventSeller(reportSelection)
+                    );
+                }
             }
         };
         fetchEvent();
@@ -144,7 +156,8 @@ export default function EventDetail(props: any) {
         viewRevenueData, 
         viewServiceFees, 
         debouncedResults, 
-        windowSizeJson
+        windowSizeJson,
+        user
     ]);
 
     const exportOrdersToCsv = () => {

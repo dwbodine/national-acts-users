@@ -44,7 +44,9 @@ export type User = {
   token?: string;
   isActive: boolean;  
   sellers?: UserSeller[];
-  selectedSellerId?: number;
+  selectedSellerId: number;
+  selectedHideRevenue: boolean;
+  selectedHideServiceFees: boolean;
 };
 
 export type UserReportSelection = {

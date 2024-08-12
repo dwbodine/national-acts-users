@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { UserReportSelection, UserSeller, UserSellerType } from "../types/user";
+import { User, UserReportSelection, UserSeller, UserSellerType } from "../types/user";
 import { VipEvent } from "@/types/event";
 
 const initialState: UserReportSelection = {
@@ -32,6 +32,12 @@ export const userReportSelectionSlice = createSlice({
             if (previousSellerId != newSellerId) {
                 state.seller = action.payload;
                 state.reloadEvents = true;
+                const currentUserStr = localStorage.getItem('currentUser') || undefined;
+                if (currentUserStr) {
+                    let currentUser = JSON.parse(currentUserStr) as User;
+                    currentUser.selectedSellerId = action.payload.sellerId;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                }
             } else {
                 state.reloadEvents = false;
             }
@@ -46,6 +52,12 @@ export const userReportSelectionSlice = createSlice({
             if (state.reloadEvents) {
                 state.currentEvents = [];
             }
+            return state;
+        },
+        setEventSeller: (state, action: PayloadAction<UserReportSelection>) => {
+            state.seller = action.payload.seller;
+            state.hideRevenue = action.payload.hideRevenue;
+            state.hideServiceFees = action.payload.hideServiceFees;
             return state;
         },
         setDateRange: (state, action: PayloadAction<UserReportSelection>) => {
@@ -100,11 +112,23 @@ export const userReportSelectionSlice = createSlice({
         setHideRevenue: (state, action: PayloadAction<boolean>) => {
             state.hideRevenue = action.payload;
             state.reloadEvents = false;
+            const currentUserStr = localStorage.getItem('currentUser') || undefined;
+            if (currentUserStr) {
+                let currentUser = JSON.parse(currentUserStr) as User;
+                currentUser.selectedHideRevenue = action.payload;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
             return state;
         },
         setHideServiceFees: (state, action: PayloadAction<boolean>) => {
             state.hideServiceFees = action.payload;
             state.reloadEvents = false;
+            const currentUserStr = localStorage.getItem('currentUser') || undefined;
+            if (currentUserStr) {
+                let currentUser = JSON.parse(currentUserStr) as User;
+                currentUser.selectedHideServiceFees = action.payload;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
             return state;
         },
         setEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
@@ -166,7 +190,8 @@ export const { setSeller,
                setHideServiceFees,
                setShowInactiveOrders,
                setShowDeletedOrders, 
-               setFocusControl
+               setFocusControl, 
+               setEventSeller
              } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer
