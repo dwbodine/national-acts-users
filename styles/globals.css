@@ -26,6 +26,13 @@ div hidden {
   font-weight: bold;
 }
 
+.message {
+  color: green;
+  font-weight: bold;
+  text-align: center;
+  margin: 0 0 15px 0;
+}
+
 .wrapper {
   width: 720px;
   padding: 20px;

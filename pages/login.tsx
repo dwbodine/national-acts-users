@@ -12,11 +12,18 @@ export default function Login() {
   const [name, setName] = useState("");
   const [loginError, setLoginError] = useState("");
   const [password, setPassword] = useState("");
+  const [showWelcome, setShowWelcome] = useState(false);
   const { login } = useLogin();
   const router = useRouter();
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const curDate = new Date().getTime();
+    const begin = new Date('2024-08-11').getTime();
+    const end = new Date('2024-08-18').getTime();
+    if (curDate <= end && curDate >= begin) {
+      setShowWelcome(true);
+    }
     document.title = "Client Portal - Login";
   }, [name, password, loginError, login]);  
 
@@ -67,6 +74,14 @@ export default function Login() {
     <>
       <CheckAuth />
       <Container className="wrapper">
+        <Row hidden={!showWelcome}>
+          <Col className="message">
+              Welcome to the new Client Portal for national-acts.com!<br />
+              Among the many other enhancements, we have upgraded our security algorithm.<br />
+              For that reason, all users will have to reset their password - if you have not done so, please click on the link next to &quot;Forgot Password&quot; below to start the process.<br />
+              If you have any issues, please contact us as <a href="mailto:info@national-acts.com">info@national-acts.com</a>
+          </Col>
+        </Row>
         <Row>
           <Col className="login-logo-container">
             <Image className="login-logo" src="/images/logo-new.png" alt="National Acts Client Portal" title="National Acts Client Portal" width={300} height={231} />
