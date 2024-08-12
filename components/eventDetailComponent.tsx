@@ -147,8 +147,10 @@ export default function EventDetail(props: any) {
     ]);
 
     const exportOrdersToCsv = () => {
-        if (vipEvent != undefined) {
-            const csvData = exportEventCustomerDataToCsv(vipEvent, viewServiceFees, hasPhoneData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+        if (vipEvent != undefined && currentReportSelection) {
+            const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
+            const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
+            const csvData = exportEventCustomerDataToCsv(vipEvent, showServiceFees, showRevenueData, hasPhoneData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
             const fileName = getFileNameFromEvent(vipEvent, `orders`);
             downloadFile(fileName, csvData);
         }

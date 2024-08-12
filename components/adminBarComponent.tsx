@@ -39,10 +39,13 @@ export default function AdminBar() {
     const viewRevenueControls = userHasPermission(user, Permission.ViewRevenueControls);
     const canExportData = userHasPermission(user, Permission.ExportData);
     const viewPrintButton = userHasPermission(user, Permission.ViewPrintButton);
+    const viewRevenueData = userHasPermission(user, Permission.ViewRevenueData);
 
     const exportEventData = () => {
         if (currentReportSelection && currentReportSelection.currentEvents) {
-            const csvData = exportEventsToCsv(currentReportSelection.currentEvents, viewServiceFees);
+            const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
+            const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
+            const csvData = exportEventsToCsv(currentReportSelection.currentEvents, showServiceFees, showRevenueData);
             const fileName = getFileNameFromReportSelection(currentReportSelection);
             downloadFile(fileName, csvData);
         }        
@@ -63,8 +66,9 @@ export default function AdminBar() {
                     currencyAbbrev = symbolOrder.nonUsaCurrencyAbbrev;
                 }
             }
-            
-            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, viewServiceFees, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+            const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
+            const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
+            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, showServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
             const fileName = getFileNameFromReportSelection(currentReportSelection, 'customer');
             downloadFile(fileName, csvData);
         } 
