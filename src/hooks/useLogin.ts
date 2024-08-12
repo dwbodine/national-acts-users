@@ -12,7 +12,9 @@ export const useLogin = () => {
       user.selectedHideServiceFees = true;
       localStorage.clear();
       localStorage.setItem('currentUser', JSON.stringify(user));
-      Cookies.set('authToken', user.token || '');
+      const now = new Date().getTime();
+      const expires = new Date(now + (30 * 60 * 1000));
+      Cookies.set('authToken', user.token || '', { expires: expires });
     }
     return response;
   };

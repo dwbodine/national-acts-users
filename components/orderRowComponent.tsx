@@ -93,7 +93,7 @@ export default function OrderRow(props: any) {
         setOrderInactive(orderId, isActive)
             .then((response) => {
                 if (!response.success) {
-                    if (response.statusCode == 401) {
+                    if (response.statusCode == 401 || response.statusCode == 422) {
                         router.push('/logout');
                     } else {
                         console.log(response.orderError);
@@ -117,7 +117,7 @@ export default function OrderRow(props: any) {
         setOrderDeleted(orderId, isDeleted)
             .then((response) => {
                 if (!response.success) {
-                    if (response.statusCode == 401) {
+                    if (response.statusCode == 401 || response.statusCode == 422) {
                         router.push('/logout');
                     } else {
                         console.log(response.orderError);

@@ -32,7 +32,7 @@ export default function EventRow(props: any) {
         setEventInactive(eventId, isActive)
             .then((response) => {
                 if (!response.success) {
-                    if (response.statusCode == 401) {
+                    if (response.statusCode == 401 || response.statusCode == 422) {
                         router.push('/logout');
                     } else {
                         console.log(response.eventError);
@@ -55,7 +55,7 @@ export default function EventRow(props: any) {
         setEventDeleted(eventId, isDeleted)
             .then((response) => {
                 if (!response.success) {
-                    if (response.statusCode == 401) {
+                    if (response.statusCode == 401 || response.statusCode == 422) {
                         router.push('/logout');
                     } else {
                         console.log(response.eventError);

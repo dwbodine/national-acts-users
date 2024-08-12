@@ -122,7 +122,7 @@ export default function CurrentEvents() {
                         dispatch(
                             setEvents(response.events)
                         );
-                    } else if (response.statusCode == 401) {
+                    } else if (response.statusCode == 401 || response.statusCode == 422) {
                         router.push('/logout');
                     } else {
                         dispatch(
