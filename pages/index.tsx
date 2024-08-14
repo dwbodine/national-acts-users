@@ -8,6 +8,8 @@ import 'rsuite/Tabs/styles/index.css';
 import NavBar from "../components/navBarComponent";
 import Dashboard from "../components/dashboardComponent";
 import { useEffect, useState } from "react";
+import AdminIndex from "../components/admin/adminIndexComponent";
+import ReportsIndex from "../components/reports/reportsIndexComponent";
 
 export default function Home() {
   const { user } = useCurrentUser();
@@ -51,10 +53,10 @@ export default function Home() {
               <CurrentEvents />
             </Tabs.Tab>
             <Tabs.Tab eventKey="3" title="ADMIN">
-              Admin functions will go here - only admins can see this
+              <AdminIndex />
             </Tabs.Tab>
             <Tabs.Tab eventKey="4" title="REPORTS">
-              Reports will go here - only admins can see this
+              <ReportsIndex />
             </Tabs.Tab>
           </Tabs>
           </>

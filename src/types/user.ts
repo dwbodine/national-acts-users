@@ -15,10 +15,22 @@ export type UserSeller = {
   sellerId: number;
   sellerName: string;
   sellerType: UserSellerType;
+  roleId?: number;
   permissions?: number[];
 }
 
-export enum Permission {
+export type Role = {
+  roleId: number;
+  roleName: string;
+  permissions?: number[];
+}
+
+export type Permission = {
+  permissionId: number;
+  permissionName: string;
+}
+
+export enum EnumPermission {
   ViewInactiveEvents = 1,
   ViewDeletedEvents = 2,
   ViewRevenueData = 3,
@@ -42,6 +54,7 @@ export type User = {
   createdAt?: string;
   isAuthenticated?: boolean;
   token?: string;
+  category?: string;
   isActive: boolean;  
   sellers?: UserSeller[];
   selectedSellerId: number;
@@ -71,6 +84,16 @@ export type AdminDashboardSelection = {
   reloadEvents?: boolean;
   retainDateSelection?: boolean;
   currentEvents?: VipEvent[];
+}
+
+export enum ActiveAdminComponent {
+  Index = 1,
+  Roles = 2,
+  Users = 3
+}
+
+export type AdminSelection = {
+  activeComponent?: ActiveAdminComponent
 }
 
 export type UserLoginResponse = {

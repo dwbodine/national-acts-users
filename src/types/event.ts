@@ -101,6 +101,7 @@ export interface VipEvent {
   numTicketsRefunded?: number;
   ticketTypes?: TicketType[];
   hasTicketTypeData?: boolean;
+  isAddedToBandsInTown?: boolean;
 }
 
 export interface GetEventsResponse {

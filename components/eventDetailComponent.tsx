@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees, setFocusControl, setEventSeller } from "@/lib/reportSelectionSlice";
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
-import { Permission, UserReportSelection } from "@/types/user";
+import { EnumPermission, UserReportSelection } from "@/types/user";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import OrderMobileRow from "./orderMobileRowComponent";
 import { useHasPermission } from "@/hooks/useHasPermission";
@@ -45,15 +45,15 @@ export default function EventDetail(props: any) {
     const windowSize = useWindowSize();
     const windowSizeJson = JSON.stringify(windowSize);
 
-    const viewInactiveEvents = userHasPermission(user, Permission.ViewInactiveEvents);
-    const viewDeletedEvents = userHasPermission(user, Permission.ViewDeletedEvents);
-    const viewServiceFees = userHasPermission(user, Permission.ViewServiceFees);
-    const viewRevenueData = userHasPermission(user, Permission.ViewRevenueData);
-    const viewRevenueControls = userHasPermission(user, Permission.ViewRevenueControls);    
-    const canExportCustomerData = userHasPermission(user, Permission.ExportCustomerData);
-    const viewPrintButton = userHasPermission(user, Permission.ViewPrintButton);
-    const changeOrderStatus = userHasPermission(user, Permission.ChangeOrderStatus);
-    const canCheckInTickets = userHasPermission(user, Permission.CheckInUsers);
+    const viewInactiveEvents = userHasPermission(user, EnumPermission.ViewInactiveEvents);
+    const viewDeletedEvents = userHasPermission(user, EnumPermission.ViewDeletedEvents);
+    const viewServiceFees = userHasPermission(user, EnumPermission.ViewServiceFees);
+    const viewRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
+    const viewRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);    
+    const canExportCustomerData = userHasPermission(user, EnumPermission.ExportCustomerData);
+    const viewPrintButton = userHasPermission(user, EnumPermission.ViewPrintButton);
+    const changeOrderStatus = userHasPermission(user, EnumPermission.ChangeOrderStatus);
+    const canCheckInTickets = userHasPermission(user, EnumPermission.CheckInUsers);
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
 
     const debouncedResults = useMemo(() => {

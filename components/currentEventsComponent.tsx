@@ -5,7 +5,7 @@ import { setEvents, setDateRange, setReloadEvents } from '@/lib/reportSelectionS
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
 import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
-import { Permission, UserReportSelection } from "@/types/user";
+import { EnumPermission, UserReportSelection } from "@/types/user";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';
@@ -38,11 +38,11 @@ export default function CurrentEvents() {
     const hideTicketChart = windowSize.width < 1200;
     const [searchTerm, setSearchTerm] = useState('');
 
-    const viewRevenueControls = userHasPermission(user, Permission.ViewRevenueControls);
-    const viewRevenueData = userHasPermission(user, Permission.ViewRevenueData);
-    const viewServiceFees = userHasPermission(user, Permission.ViewServiceFees);
-    const changeEventStatus = userHasPermission(user, Permission.ChangeEventStatus);
-    const canCheckInTickets = userHasPermission(user, Permission.CheckInUsers);
+    const viewRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);
+    const viewRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
+    const viewServiceFees = userHasPermission(user, EnumPermission.ViewServiceFees);
+    const changeEventStatus = userHasPermission(user, EnumPermission.ChangeEventStatus);
+    const canCheckInTickets = userHasPermission(user, EnumPermission.CheckInUsers);
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
     
 

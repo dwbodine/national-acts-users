@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReportSelectionReducer from './reportSelectionSlice';
 import adminDashboardSelectionReducer from './dashboardSelectionSlice';
+import adminSelectionReducer from './adminSelectionSlice';
 
 export const store = configureStore({
   reducer: {
     reportSelection: userReportSelectionReducer,
-    dashboardSelecton: adminDashboardSelectionReducer
+    dashboardSelecton: adminDashboardSelectionReducer,
+    adminSelection: adminSelectionReducer
   },
 })
 

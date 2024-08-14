@@ -16,7 +16,7 @@ import downloadFile from "@/utils/downloadFile";
 import PrintButton from "./printButtonComponent";
 import RevenueCheck from "./revenueCheckComponent";
 import { setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
-import { Permission } from "@/types/user";
+import { EnumPermission } from "@/types/user";
 import ServiceFeesCheck from "./serviceFeesCheckComponent";
 import { useEffect } from "react";
 import { useHasPermission } from "@/hooks/useHasPermission";
@@ -33,14 +33,14 @@ export default function AdminBar() {
     const hasEvents = (currentReportSelection?.currentEvents?.length ?? 0 > 0);
     const dateRangeTitle = "Event date range";
 
-    const viewInactiveEvents = userHasPermission(user, Permission.ViewInactiveEvents);
-    const viewDeletedEvents = userHasPermission(user, Permission.ViewDeletedEvents);
-    const viewServiceFees = userHasPermission(user, Permission.ViewServiceFees);
-    const viewRevenueControls = userHasPermission(user, Permission.ViewRevenueControls);
-    const canExportData = userHasPermission(user, Permission.ExportData);
-    const canExportCustomerData = userHasPermission(user, Permission.ExportCustomerData);
-    const viewPrintButton = userHasPermission(user, Permission.ViewPrintButton);
-    const viewRevenueData = userHasPermission(user, Permission.ViewRevenueData);
+    const viewInactiveEvents = userHasPermission(user, EnumPermission.ViewInactiveEvents);
+    const viewDeletedEvents = userHasPermission(user, EnumPermission.ViewDeletedEvents);
+    const viewServiceFees = userHasPermission(user, EnumPermission.ViewServiceFees);
+    const viewRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);
+    const canExportData = userHasPermission(user, EnumPermission.ExportData);
+    const canExportCustomerData = userHasPermission(user, EnumPermission.ExportCustomerData);
+    const viewPrintButton = userHasPermission(user, EnumPermission.ViewPrintButton);
+    const viewRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
 
     const exportEventData = () => {
         if (currentReportSelection && currentReportSelection.currentEvents) {
