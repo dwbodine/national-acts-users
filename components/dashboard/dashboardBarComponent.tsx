@@ -1,4 +1,4 @@
-import DateRangeSelector from "./dateRangeSelectorComponent";
+import DateRangeSelector from "../common/dateRangeSelectorComponent";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useCurrentUser } from "@/hooks/useCurrentUser";

@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from '../src/lib/store';
+import type { RootState } from '../../../src/lib/store';
 import { useGetEvents } from '@/hooks/useGetEvents';
 import { setEvents, setDateRange, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
@@ -14,8 +14,8 @@ import { getTicketDataFromEvents } from "@/utils/getTicketData";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import EventRow from "./eventRowComponent";
 import router from "next/router";
-import WidgetBar from "./widgetBarComponent";
-import TicketSalesChart from "./ticketSalesChartComponent";
+import WidgetBar from "../widgets/widgetBarComponent";
+import TicketSalesChart from "../charts/ticketSalesChartComponent";
 import { getPurchaseDataFromEvents } from "@/utils/getPurchaseData";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import EventMobileRow from "./eventMobileRowComponent";

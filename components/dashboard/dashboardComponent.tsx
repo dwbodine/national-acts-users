@@ -1,10 +1,10 @@
 import { Col, Container, Row } from "react-bootstrap";
-import ReportsIndexBar from "./reportsIndexBarComponent";
+import DashboardBar from "./dashboardBarComponent"
 
-export default function ReportsIndex() { 
+export default function Dashboard() {
     return (
         <>
-            <ReportsIndexBar />
+            <DashboardBar />
             <Container fluid>
                 <Row>
                     <Col>

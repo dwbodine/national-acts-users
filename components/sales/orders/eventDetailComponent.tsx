@@ -13,7 +13,7 @@ import { useGetExport } from "@/hooks/useGetExport";
 import downloadFile from "@/utils/downloadFile";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { CirclesWithBar } from "react-loader-spinner";
-import PrintButton from "./printButtonComponent";
+import PrintButton from "../../common/printButtonComponent";
 import { useGetEventDetails } from "@/hooks/useGetEventDetails";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";

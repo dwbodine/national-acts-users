@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import CheckAuth from "../components/checkAuthComponent";
+import CheckAuth from "../components/common/checkAuthComponent";
 
 
 export default function ResetPassword() {

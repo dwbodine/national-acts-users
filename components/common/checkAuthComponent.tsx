@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { authRoutes, protectedRoutes, publicRoutes } from "../src/router/routes";
+import { authRoutes, protectedRoutes, publicRoutes } from "../../src/router/routes";
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 

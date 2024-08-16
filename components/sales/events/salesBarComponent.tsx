@@ -1,19 +1,19 @@
 
-import SelectSeller from "../components/selectSellerComponent";
-import DateRangeSelector from "../components/dateRangeSelectorComponent";
-import InactiveCheck from "../components/inactiveCheckComponent";
-import DeletedCheck from "../components/deletedCheckComponent";
+import SelectSeller from "./selectSellerComponent";
+import DateRangeSelector from "../../common/dateRangeSelectorComponent";
+import InactiveCheck from "./inactiveCheckComponent";
+import DeletedCheck from "./deletedCheckComponent";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from '../src/lib/store';
+import type { RootState } from '../../../src/lib/store';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ResetButton from "./resetButtonComponent";
+import ResetButton from "../../common/resetButtonComponent";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Button } from "react-bootstrap";
 import { useGetExport } from "@/hooks/useGetExport";
 import getFileNameFromReportSelection from "@/utils/getFileNameFromReportSelection";
 import downloadFile from "@/utils/downloadFile";
-import PrintButton from "./printButtonComponent";
+import PrintButton from "../../common/printButtonComponent";
 import RevenueCheck from "./revenueCheckComponent";
 import { setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
 import { EnumPermission } from "@/types/user";
@@ -22,7 +22,7 @@ import { useEffect } from "react";
 import { useHasPermission } from "@/hooks/useHasPermission";
 import { useWindowSize } from '@/hooks/useWindowSize';
 
-export default function AdminBar() {    
+export default function SalesBar() {    
     const dispatch = useDispatch(); 
     const { user } = useCurrentUser();
     const windowSize = useWindowSize();

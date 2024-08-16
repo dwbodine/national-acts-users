@@ -1,4 +1,4 @@
-import EventDetail from "../components/eventDetailComponent";
+import EventDetail from "../components/sales/orders/eventDetailComponent";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from 'js-cookie';

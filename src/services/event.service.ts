@@ -560,8 +560,11 @@ export class EventService {
   };
 
   getLocationInfoFromVenue = (venue: Venue): string => {
-    let location = `${venue.city}, ${venue.state}`;
-    if (venue.country && venue.country != "United States" && venue.country != "USA" && venue.country != venue.state) {
+    let location = `${venue.city}`; 
+    if (venue.state && venue.state.trim() != '') {
+      location += `, ${venue.state}`;
+    }    
+    if (venue.country && venue.country != "United States" && venue.country != "USA" && (venue.state && venue.country.trim() != venue.state.trim())) {
         location += ", " + venue.country;
     }
     return location;

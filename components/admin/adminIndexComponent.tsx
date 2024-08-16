@@ -32,7 +32,7 @@ export default function AdminIndex() {
             <Container fluid>
                 <Row>
                     <Col>
-                        {activeListComponent}
+                        coming soon...
                     </Col>
                 </Row>
             </Container>

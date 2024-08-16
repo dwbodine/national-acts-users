@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from '../src/lib/store';
+import type { RootState } from '../../src/lib/store';
 import { Button } from 'react-bootstrap';
 import { resetSelection } from '@/lib/reportSelectionSlice';
 

@@ -22,7 +22,7 @@ export type UserSeller = {
 export type Role = {
   roleId: number;
   roleName: string;
-  permissions?: number[];
+  permissions?: Permission[];
 }
 
 export type Permission = {
@@ -93,7 +93,11 @@ export enum ActiveAdminComponent {
 }
 
 export type AdminSelection = {
-  activeComponent?: ActiveAdminComponent
+  activeComponent: ActiveAdminComponent,
+  reloadUsers: boolean,
+  reloadRoles: boolean,
+  selectedUserId: number,
+  selectedRoleId: number
 }
 
 export type UserLoginResponse = {
@@ -111,3 +115,15 @@ export enum ForgotPasswordMode {
   ValidateResetCode,
   ResetPassword
 };
+
+export interface GetUsersResponse {
+  users?: User[];
+  statusCode?: number;
+  userError?: string;
+}
+
+export interface GetRolesResponse {
+  roles?: Role[];
+  statusCode?: number;
+  roleError?: string;
+}

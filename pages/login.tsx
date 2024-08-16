@@ -3,7 +3,7 @@ import { useState, KeyboardEvent, useEffect } from "react";
 import { useLogin } from "../src/hooks/useLogin";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
-import CheckAuth from "../components/checkAuthComponent";
+import CheckAuth from "../components/common/checkAuthComponent";
 import { useDispatch } from "react-redux";
 import { resetAll, setShowInactiveOrders } from "@/lib/reportSelectionSlice";
 import Image from 'next/image';

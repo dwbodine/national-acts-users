@@ -1,12 +1,12 @@
-import CurrentEvents from "../components/currentEventsComponent";
-import AdminBar from "../components/adminBarComponent";
+import CurrentEvents from "../components/sales/events/currentEventsComponent";
+import AdminBar from "../components/sales/events/salesBarComponent";
 import Container from 'react-bootstrap/Container';
-import CheckAuth from "../components/checkAuthComponent";
+import CheckAuth from "../components/common/checkAuthComponent";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Tabs } from "rsuite";
 import 'rsuite/Tabs/styles/index.css';
-import NavBar from "../components/navBarComponent";
-import Dashboard from "../components/dashboardComponent";
+import NavBar from "../components/common/navBarComponent";
+import Dashboard from "../components/dashboard/dashboardComponent";
 import { useEffect, useState } from "react";
 import AdminIndex from "../components/admin/adminIndexComponent";
 import ReportsIndex from "../components/reports/reportsIndexComponent";

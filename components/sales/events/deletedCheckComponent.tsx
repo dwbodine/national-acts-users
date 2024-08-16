@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from '../src/lib/store';
+import type { RootState } from '../../../src/lib/store';
 import { FormCheck } from 'react-bootstrap';
 import { setShowDeleted } from '@/lib/reportSelectionSlice';
 
