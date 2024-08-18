@@ -22,13 +22,13 @@ export const useWindowSize = (): WindowSize => {
       const currentAngle = Math.abs(window.screen.orientation.angle);
       let windowWidth = window.outerWidth;
       let windowHeight = window.outerHeight;
-      if (isLandscape) {
-        if (currentAngle == 90 || currentAngle == 270 && (windowHeight >= windowWidth)) {
+      if (isLandscape && currentAngle > 0) {
+        if (windowHeight >= windowWidth) {
           let temp = windowWidth;
           windowWidth = windowHeight;
           windowHeight = temp;
         }        
-      } else  {
+      } else if (currentAngle == 0)  {
         if (windowWidth >= windowHeight) {
           let temp = windowWidth;
           windowWidth = windowHeight;
