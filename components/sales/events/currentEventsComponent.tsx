@@ -21,6 +21,7 @@ import { useWindowSize } from "@/hooks/useWindowSize";
 import EventMobileRow from "./eventMobileRowComponent";
 import { useHasPermission } from "@/hooks/useHasPermission";
 import debouce from "lodash.debounce";
+import { FULL_PAGE_CHART_BREAKPOINT } from "@/constants";
 
 export default function CurrentEvents() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
@@ -35,7 +36,7 @@ export default function CurrentEvents() {
     const [hideServiceFees, setHideServiceFees] = useState(true);
     const windowSize = useWindowSize();
     const windowSizeJson = JSON.stringify(windowSize);
-    const hideTicketChart = windowSize.width < 1200;
+    const hideTicketChart = windowSize.width < FULL_PAGE_CHART_BREAKPOINT;
     const [searchTerm, setSearchTerm] = useState('');
 
     const viewRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);

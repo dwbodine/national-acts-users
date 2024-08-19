@@ -28,14 +28,14 @@ export const useWindowSize = (): WindowSize => {
           windowWidth = windowHeight;
           windowHeight = temp;
         }        
-      } else if (currentAngle == 0)  {
+      } else if (!isLandscape && currentAngle == 0)  {
         if (windowWidth >= windowHeight) {
           let temp = windowWidth;
           windowWidth = windowHeight;
           windowHeight = temp;
         }        
       }
-      const isMobileWidth = (windowWidth < MOBILE_WIDTH_BREAKPOINT);
+      const isMobileWidth: boolean = (windowWidth < MOBILE_WIDTH_BREAKPOINT);
       setWindowSize({width: windowWidth, height: windowHeight, orientation: currentOrientation, isMobile: isMobileWidth, angle: currentAngle});  
     };
     screen.orientation.addEventListener("change", windowSizeHandler);

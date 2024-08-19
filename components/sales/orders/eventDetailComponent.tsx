@@ -25,6 +25,7 @@ import OrderMobileRow from "./orderMobileRowComponent";
 import { useHasPermission } from "@/hooks/useHasPermission";
 import debouce from "lodash.debounce";
 import setFocusToControl from "@/utils/setFocusToControl";
+import DebugBar from "../../common/debugBarComponent";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
@@ -278,17 +279,11 @@ export default function EventDetail(props: any) {
         }
     };  
 
-    const isDennis = (user.username == 'dwbodine@gmail.com' || user.username == 'dwbodine@hotmail.com');
-
     return (
         <>
             {(vipEvent != undefined) ? 
             <Container fluid className="vipContainer">  
-                <Row hidden={!isDennis}>
-                    <Col>
-                        <div style={{padding: '15px'}}>{windowSize.width} X {windowSize.height} / {windowSize.angle} / {windowSize.orientation} / {windowSize.isMobile}</div>
-                    </Col>
-                </Row>
+                <DebugBar />
                 <Row>                    
                     <Col>
                         <Row>
