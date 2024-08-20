@@ -15,7 +15,7 @@ import getFileNameFromReportSelection from "@/utils/getFileNameFromReportSelecti
 import downloadFile from "@/utils/downloadFile";
 import PrintButton from "../../common/printButtonComponent";
 import RevenueCheck from "./revenueCheckComponent";
-import { setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
+import { resetSelection, setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
 import { EnumPermission } from "@/types/user";
 import ServiceFeesCheck from "./serviceFeesCheckComponent";
 import { useEffect } from "react";
@@ -88,6 +88,12 @@ export default function SalesBar() {
         dispatch(setDateRange(reportSelection));
         dispatch(setReloadEvents(true));
     }
+
+    const onResetClick = () => {
+        dispatch(
+            resetSelection()
+        );
+    }
     
     useEffect(() => {
         // blank
@@ -117,7 +123,7 @@ export default function SalesBar() {
             </Row>            
             <Row className="no-print admin-button-row" hidden={currentReportSelection.seller.sellerId <= 0}>
                 <Col md={10} sm={12}>
-                    {currentReportSelection.seller.sellerId > 0 ? <ResetButton /> : ''}
+                    {currentReportSelection.seller.sellerId > 0 ? <ResetButton IsDisabled={(currentReportSelection.seller.sellerId <= 0)} OnResetClick={onResetClick} /> : ''}
                     {(!windowSize.isMobile && viewPrintButton && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <PrintButton /> : ''}                    
                     {(!windowSize.isMobile && canExportData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportEventData}>Export Summary</Button></span> : ''}
                     {(!windowSize.isMobile && canExportCustomerData && currentReportSelection.seller.sellerId > 0 && hasEvents) ? <span className="admin-button"><Button onClick={exportCustomerData}>Export Customer Data</Button></span> : ''}                    

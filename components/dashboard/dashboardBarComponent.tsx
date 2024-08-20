@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import { setDateRange, setReloadEvents } from "@/lib/dashboardSelectionSlice";
+import { setDashboardDateRange, setReloadActivities } from "@/lib/dashboardSelectionSlice";
 
 export default function DashboardBar() {    
     const dispatch = useDispatch(); 
@@ -19,8 +19,8 @@ export default function DashboardBar() {
         dashboardSelection.start = selectedStart;
         dashboardSelection.end = selectedEnd;
         dashboardSelection.retainDateSelection = true;
-        dispatch(setDateRange(dashboardSelection));
-        dispatch(setReloadEvents(true));
+        dispatch(setDashboardDateRange(dashboardSelection));
+        dispatch(setReloadActivities(true));
     }
 
     return (

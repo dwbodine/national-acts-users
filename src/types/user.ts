@@ -79,17 +79,51 @@ export type UserReportSelection = {
 }
 
 export type AdminDashboardSelection = {
-  start?: number;
-  end?: number;
-  reloadEvents?: boolean;
+  start: number;
+  end: number;
+  reloadActivities: boolean;
   retainDateSelection?: boolean;
-  currentEvents?: VipEvent[];
 }
 
 export enum ActiveAdminComponent {
   Index = 1,
   Roles = 2,
   Users = 3
+}
+
+export enum UserActivityType {
+  Login = 1,
+  Logout = 2,
+  AccessSalesOverView = 3,
+  AccessDashboard = 4,
+  AccessAdmin = 5,
+  AccessReports = 6,
+  AccessEventDetail = 7,
+  ChangeSeller = 8,
+  ChangeSalesOverviewDateRange = 9,
+  ResetPassword = 10,
+  StartedForgotPassword = 11,
+  FinishedForgotPassword = 12,
+  ExportedEventSummary = 14,
+  ExportedCustomerData = 15,
+  ExportedEventData = 16,
+  ShowInactiveEvents = 17, 
+  ShowDeletedEvents = 18,
+  ShowRevenue = 19, 
+  ShowServiceFees = 20,
+  ShowInactiveOrders = 21,
+  ShowDeletedOrders = 22,
+  PrintButtonClicked = 23,
+  ResetButtonClicked = 24
+}
+
+export type UserActivity = {
+  activityType: UserActivityType;
+  activityName?: string;
+  userId?: number;
+  username?: string;
+  activityData?: string;
+  timestamp: string;
 }
 
 export type AdminSelection = {
@@ -126,4 +160,15 @@ export interface GetRolesResponse {
   roles?: Role[];
   statusCode?: number;
   roleError?: string;
+}
+
+export interface LogActivityResponse {
+  statusCode?: number;
+  logActivityError?: string;
+}
+
+export interface GetActivityResponse {
+  activities?: UserActivity[];
+  statusCode?: number;
+  logActivityError?: string;
 }

@@ -1,26 +1,34 @@
 import { useLogout } from "@/hooks/useLogout";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { resetAll } from "@/lib/reportSelectionSlice";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useLogActivityData } from "@/hooks/useLogActivityData";
+import { UserActivityType } from "@/types/user";
 
 export default function Logout() {
     const { logout } = useLogout();
     const dispatch = useDispatch();
     const router = useRouter();
-    const { user } = useCurrentUser();
+    const { logActivityData } = useLogActivityData();
 
     useEffect(() => {
-        dispatch(
-            resetAll()
-        );
+        const timeoutId = setTimeout(() => {
+            logActivityData(UserActivityType.Logout).then(() => {
+                dispatch(
+                    resetAll()
+                );
+                logout()
+                    .then((success) => {
+                        router.push('/login');
+                    });
+            });    
+        }, 200);
+        return () => {
+            clearTimeout(timeoutId);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])        
 
-        logout()
-            .then((success) => {
-                router.push('/login');
-            });
-    }, [user, dispatch, logout, router]);
-
-    return (<></>);
+    return ("");
 }

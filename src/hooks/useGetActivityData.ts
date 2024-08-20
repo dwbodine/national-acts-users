@@ -1,0 +1,17 @@
+import { userService } from "@/services";
+import { GetActivityResponse, UserActivityType } from "@/types/user";
+
+export const useGetActivityData = () => {
+  const getActivityData = async (start: number, end: number, userId: number | undefined = undefined, activityType: UserActivityType | undefined = undefined) => {
+    let response: GetActivityResponse = {
+      statusCode: 200
+    };
+    if (start <= 0 || end <= 0 || (start > end)) {
+        return response;
+    }
+    response = await userService.getUserActivity(start, end, userId, activityType)
+    return response;
+  };
+
+  return { getActivityData };
+};

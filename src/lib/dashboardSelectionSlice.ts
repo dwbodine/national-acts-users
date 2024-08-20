@@ -1,62 +1,47 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { AdminDashboardSelection } from "../types/user";
-import { VipEvent } from "@/types/event";
 import moment from "moment";
 
 const initialState: AdminDashboardSelection = {
-    start: moment().unix() - (30 * 24 * 60 * 60),
-    end: moment().unix(),
-    reloadEvents: true,
-    currentEvents: []
+    start: moment().unix(),
+    end: moment().unix() + (24 * 60 * 60) - 1,
+    reloadActivities: true
 };
 
 export const adminDashboardSelectionSlice = createSlice({
     name: 'adminDashboardSelection',
     initialState,
     reducers: {
-        setDateRange: (state, action: PayloadAction<AdminDashboardSelection>) => {
+        setDashboardDateRange: (state, action: PayloadAction<AdminDashboardSelection>) => {
             state.start = action.payload.start;
             state.end = action.payload.end;
+            state.reloadActivities = true;
             return state;
         },
-        setEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
-            if (action.payload) {
-                state.currentEvents = action.payload;
-                state.reloadEvents = false;
-            } else {
-                state.currentEvents = [];
-                state.reloadEvents = true;
-            }
-            
-            return state;
-        },
-        setReloadEvents: (state, action: PayloadAction<boolean>) => {
-            state.reloadEvents = action.payload;
+        setReloadActivities: (state, action: PayloadAction<boolean>) => {
+            state.reloadActivities = action.payload;
             return state;
         },
         resetSelection: (state) => {
             state.start = 0;
             state.end = 0;
-            state.reloadEvents = true;
+            state.reloadActivities = true;
             state.retainDateSelection = false;
-            state.currentEvents = [];
             return state;
         },
         resetAll: (state) => {
             state.start = 0;
             state.end = 0;
-            state.reloadEvents = true;
+            state.reloadActivities = true;
             state.retainDateSelection = false;
-            state.currentEvents = [];
             return state;
         }
     }
 })
 
-export const { setDateRange, 
-               setEvents, 
-               setReloadEvents, 
+export const { setDashboardDateRange, 
+               setReloadActivities, 
                resetSelection,
                resetAll
              } = adminDashboardSelectionSlice.actions

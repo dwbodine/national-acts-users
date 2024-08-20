@@ -1,5 +1,6 @@
 import { Col, Container, Row } from "react-bootstrap";
 import DashboardBar from "./dashboardBarComponent"
+import UserActivityTable from "./userActivityBarComponent";
 
 export default function Dashboard() {
     return (
@@ -8,7 +9,7 @@ export default function Dashboard() {
             <Container fluid>
                 <Row>
                     <Col>
-                        coming soon...
+                        <UserActivityTable />
                     </Col>
                 </Row>
             </Container>

@@ -3,7 +3,6 @@ import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
 import moment from 'moment';
 import { FaCalendar } from 'react-icons/fa';
-import 'rsuite/DateRangePicker/styles/index.css';
 
 export default function DateRangeSelector(props: any) {
     

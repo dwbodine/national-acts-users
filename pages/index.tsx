@@ -4,7 +4,6 @@ import Container from 'react-bootstrap/Container';
 import CheckAuth from "../components/common/checkAuthComponent";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Tabs } from "rsuite";
-import 'rsuite/Tabs/styles/index.css';
 import NavBar from "../components/common/navBarComponent";
 import Dashboard from "../components/dashboard/dashboardComponent";
 import { useEffect, useState } from "react";
