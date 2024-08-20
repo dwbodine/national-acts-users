@@ -1,6 +1,6 @@
 import { Col, Container, Row } from "react-bootstrap";
 import DashboardBar from "./dashboardBarComponent"
-import UserActivityTable from "./userActivityBarComponent";
+import UserActivityTable from "./userActivityTableComponent";
 
 export default function Dashboard() {
     return (

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Table } from "rsuite";
 import ResetButton from "../common/resetButtonComponent";
+import moment from "moment";
 
 export default function UserActivityTable() {
     const { getActivityData } = useGetActivityData();
@@ -41,7 +42,7 @@ export default function UserActivityTable() {
             <Table height={420} data={activities} bordered cellBordered>
                 <Column flexGrow={4}>
                     <HeaderCell>Time</HeaderCell>
-                    <Cell dataKey="activityTime"></Cell>
+                    <Cell>{rowData => moment(rowData.activityTime).format('MM/DD/YYYY hh:mm:ss A') }</Cell>
                 </Column>
                 <Column flexGrow={4}>
                     <HeaderCell>User</HeaderCell>
