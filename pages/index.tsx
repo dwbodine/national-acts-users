@@ -11,16 +11,20 @@ import AdminIndex from "../components/admin/adminIndexComponent";
 import ReportsIndex from "../components/reports/reportsIndexComponent";
 import { UserActivityType } from "@/types/user";
 import { useLogActivityData } from "@/hooks/useLogActivityData";
+import { useDispatch } from "react-redux";
+import { setReloadActivities } from "@/lib/dashboardSelectionSlice";
 
 export default function Home() {
   const { user } = useCurrentUser();
   const isAdmin = user.isAdmin;
   const [activeKey, setActiveKey] = useState("1");
   const { logActivityData } = useLogActivityData();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (user && user.isAuthenticated) {
       let activityType: UserActivityType;
+      let refreshActivites: boolean = false;
       switch (activeKey) {
         case "2":
           activityType = UserActivityType.AccessSalesOverView;
@@ -37,11 +41,18 @@ export default function Home() {
         default:
           activityType = UserActivityType.AccessDashboard;
           document.title = "Client Portal - Home";
+          refreshActivites = true;
           break;
       }
-      logActivityData(activityType);
+      logActivityData(activityType).then(() => {
+        if (refreshActivites) {
+          dispatch (
+            setReloadActivities(true)
+          );
+        }
+      });
     }    
-  }, [activeKey, user, logActivityData]);
+  }, [activeKey, user, logActivityData, dispatch]);
 
   const onSelectTab = (eventKey: string | undefined) => {
     const key = eventKey || "1";

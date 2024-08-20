@@ -6,7 +6,8 @@ import moment from "moment";
 const initialState: AdminDashboardSelection = {
     start: moment().unix(),
     end: moment().unix() + (24 * 60 * 60) - 1,
-    reloadActivities: true
+    reloadActivities: true,
+    filterAdmins: true
 };
 
 export const adminDashboardSelectionSlice = createSlice({
@@ -30,6 +31,11 @@ export const adminDashboardSelectionSlice = createSlice({
             state.retainDateSelection = false;
             return state;
         },
+        setFilterAdmins: (state, action: PayloadAction<boolean>) => {
+            state.filterAdmins = action.payload;
+            state.reloadActivities = true;
+            return state;
+        },
         resetAll: (state) => {
             state.start = 0;
             state.end = 0;
@@ -43,7 +49,8 @@ export const adminDashboardSelectionSlice = createSlice({
 export const { setDashboardDateRange, 
                setReloadActivities, 
                resetSelection,
-               resetAll
+               resetAll, 
+               setFilterAdmins
              } = adminDashboardSelectionSlice.actions
 
 export default adminDashboardSelectionSlice.reducer

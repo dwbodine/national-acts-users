@@ -128,7 +128,7 @@ export class UserService {
       });
     };
 
-    getUserActivity = async(start: number, end: number, userId: number | undefined = undefined, activityType: UserActivityType | undefined = undefined): Promise<GetActivityResponse> => {
+    getUserActivity = async(start: number, end: number, userId: number | undefined = undefined, activityType: UserActivityType | undefined = undefined, filterAdmins: boolean = false): Promise<GetActivityResponse> => {
       let url = '/dashboard/getUserActivity';
 
       let activityResponse: GetActivityResponse = {
@@ -142,7 +142,8 @@ export class UserService {
         "start": start,
         "end": end,
         "userId": userId,
-        "activityType": activityType
+        "activityType": activityType,
+        "filterAdmins": filterAdmins ? "1" : undefined
       };
     
       return this.instance

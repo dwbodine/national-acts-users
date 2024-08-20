@@ -1,12 +1,13 @@
 import { useGetActivityData } from "@/hooks/useGetActivityData";
-import { setReloadActivities } from "@/lib/dashboardSelectionSlice";
+import { setFilterAdmins, setReloadActivities } from "@/lib/dashboardSelectionSlice";
 import { RootState } from "@/lib/store";
 import { GetActivityResponse, UserActivity } from "@/types/user";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Table } from "rsuite";
 import ResetButton from "../common/resetButtonComponent";
 import moment from "moment";
+import { Col, FormCheck, Row } from "react-bootstrap";
 
 export default function UserActivityTable() {
     const { getActivityData } = useGetActivityData();
@@ -17,13 +18,17 @@ export default function UserActivityTable() {
 
     const onResetClick = () => {
         dispatch(
-            setReloadActivities(true)
+            setFilterAdmins(false)
         );
     };
 
+    const onFilterClick = (event: ChangeEvent<HTMLInputElement>) => {
+        dispatch(setFilterAdmins(event.target.checked));
+    }
+
     useEffect(() => {
         if (currentDashboardSelection.reloadActivities) {
-            getActivityData(currentDashboardSelection.start, currentDashboardSelection.end)
+            getActivityData(currentDashboardSelection.start, currentDashboardSelection.end, undefined, undefined, currentDashboardSelection.filterAdmins)
                 .then((response: GetActivityResponse) => {
                     if (!response.logActivityError && response.activities) {
                         setActivities(response.activities);
@@ -37,22 +42,39 @@ export default function UserActivityTable() {
 
     return (       
         <>
-            <h2>Current user activity</h2>
-            <ResetButton IsDisabled={false} OnResetClick={onResetClick} />
-            <Table height={420} data={activities} bordered cellBordered>
-                <Column flexGrow={4}>
-                    <HeaderCell>Time</HeaderCell>
-                    <Cell>{rowData => moment(rowData.activityTime).format('MM/DD/YYYY hh:mm:ss A') }</Cell>
-                </Column>
-                <Column flexGrow={4}>
-                    <HeaderCell>User</HeaderCell>
-                    <Cell dataKey="username"></Cell>
-                </Column>
-                <Column flexGrow={4}>
-                    <HeaderCell>Activity</HeaderCell>
-                    <Cell dataKey="activityName"></Cell>
-                </Column>
-            </Table>                
+            <Row>
+                <Col>
+                    <h2>Current user activity</h2>
+                </Col>
+            </Row>
+            <Row className="admin-filter-row">
+                <Col className="col-1">
+                    <ResetButton IsDisabled={false} OnResetClick={onResetClick} />
+                </Col>
+                <Col>
+                    <span className="admin-filter-check">
+                        <FormCheck checked={currentDashboardSelection.filterAdmins} onChange={onFilterClick} /> Filter out admins?
+                    </span>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Table height={420} data={activities} bordered cellBordered>
+                        <Column flexGrow={4}>
+                            <HeaderCell>Time</HeaderCell>
+                            <Cell>{rowData => moment(rowData.activityTime).format('MM/DD/YYYY hh:mm:ss A') }</Cell>
+                        </Column>
+                        <Column flexGrow={4}>
+                            <HeaderCell>User</HeaderCell>
+                            <Cell dataKey="username"></Cell>
+                        </Column>
+                        <Column flexGrow={4}>
+                            <HeaderCell>Activity</HeaderCell>
+                            <Cell dataKey="activityName"></Cell>
+                        </Column>
+                    </Table>         
+                </Col>
+            </Row>       
         </> 
     );
     

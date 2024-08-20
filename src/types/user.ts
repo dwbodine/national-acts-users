@@ -83,6 +83,7 @@ export type AdminDashboardSelection = {
   end: number;
   reloadActivities: boolean;
   retainDateSelection?: boolean;
+  filterAdmins: boolean;
 }
 
 export enum ActiveAdminComponent {

@@ -173,10 +173,15 @@ div hidden {
   margin: 0 15px;
 }
 
+.admin-filter-row {
+  margin: 15px 0;
+}
+
 .inactive-check,
 .deleted-check,
 .revenue-check,
-.service-fees-check {
+.service-fees-check, 
+.admin-filter-check {
   margin: 0 0 0 20px;
   float: left;
   width: 160px;
@@ -186,14 +191,16 @@ div hidden {
 .inactive-check div,
 .deleted-check div,
 .revenue-check div,
-.service-fees-check div {
+.service-fees-check div, 
+.admin-filter-check div {
   float: left;
 }
 
 .inactive-check .form-check-input,
 .deleted-check .form-check-input,
 .revenue-check .form-check-input,
-.service-fees-check .form-check-input {
+.service-fees-check .form-check-input, 
+.admin-filter-check .form-check-input {
   margin-right: 10px;
 }
 
@@ -554,6 +561,7 @@ div hidden {
     cursor: pointer;
   }
 }
+
 
 
 /* MOBILE QUERIES */
