@@ -35,7 +35,7 @@ export const adminSelectionSlice = createSlice({
             state.selectedRoleId = action.payload;
             return state;
         },
-        reset: (state) => {
+        resetAdmin: (state) => {
             state.activeComponent = ActiveAdminComponent.Index;
             state.reloadUsers = false;
             state.selectedUserId = 0;
@@ -51,7 +51,7 @@ export const { setActiveComponent,
                setSelectedUserId,
                setReloadRoles,
                setSelectedRoleId,
-               reset
+               resetAdmin
              } = adminSelectionSlice.actions
 
 export default adminSelectionSlice.reducer

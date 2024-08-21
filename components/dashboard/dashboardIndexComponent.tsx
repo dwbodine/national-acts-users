@@ -2,7 +2,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import DashboardBar from "./dashboardBarComponent"
 import UserActivityTable from "./userActivityTableComponent";
 
-export default function Dashboard() {
+export default function DashboardIndex() {
     return (
         <>
             <DashboardBar />

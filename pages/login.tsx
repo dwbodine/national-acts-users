@@ -4,9 +4,9 @@ import { useLogin } from "../src/hooks/useLogin";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
 import CheckAuth from "../components/common/checkAuthComponent";
-import { useDispatch } from "react-redux";
-import { resetAll, setShowInactiveOrders } from "@/lib/reportSelectionSlice";
 import Image from 'next/image';
+import { useResetStores } from "@/hooks/useResetStores";
+
 
 export default function Login() {
   const [name, setName] = useState("");
@@ -15,7 +15,7 @@ export default function Login() {
   const [showWelcome, setShowWelcome] = useState(false);
   const { login } = useLogin();
   const router = useRouter();
-  const dispatch = useDispatch();
+  const { resetStores } = useResetStores();
 
   useEffect(() => {
     const curDate = new Date().getTime();
@@ -42,9 +42,7 @@ export default function Login() {
   };
 
   const onSubmit = () => {
-    dispatch(
-      resetAll()
-    );
+    resetStores();
     
     if (!name || !password) {
       setLoginError("Please enter username and password");
@@ -53,7 +51,11 @@ export default function Login() {
         .then((response) => {
           if (response) {
             if (response.user && response.user.isAuthenticated) {
-              router.push("/")
+              if (response.user.isAdmin) {
+                router.push("/dashboard/")
+              } else {
+                router.push("/")
+              }              
             } else if (response.loginError) {
               setLoginError(response.loginError);
             } else {

@@ -82,7 +82,6 @@ export type AdminDashboardSelection = {
   start: number;
   end: number;
   reloadActivities: boolean;
-  retainDateSelection?: boolean;
   filterAdmins: boolean;
 }
 

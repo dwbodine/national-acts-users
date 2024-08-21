@@ -1,23 +1,20 @@
 import { useLogout } from "@/hooks/useLogout";
-import { useDispatch } from "react-redux";
-import { resetAll } from "@/lib/reportSelectionSlice";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useLogActivityData } from "@/hooks/useLogActivityData";
 import { UserActivityType } from "@/types/user";
+import { useResetStores } from "@/hooks/useResetStores";
 
 export default function Logout() {
     const { logout } = useLogout();
-    const dispatch = useDispatch();
     const router = useRouter();
     const { logActivityData } = useLogActivityData();
+    const { resetStores } = useResetStores();
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             logActivityData(UserActivityType.Logout).then(() => {
-                dispatch(
-                    resetAll()
-                );
+                resetStores();
                 logout()
                     .then((success) => {
                         router.push('/login');
