@@ -18,7 +18,6 @@ export default function DashboardBar() {
         let dashboardSelection = { ...currentDashboardSelection};
         dashboardSelection.start = selectedStart;
         dashboardSelection.end = selectedEnd;
-        dashboardSelection.retainDateSelection = true;
         dispatch(setDashboardDateRange(dashboardSelection));
         dispatch(setReloadActivities(true));
     }

@@ -30,7 +30,7 @@ export default function Dashboard() {
         );
       });
     }    
-  }, [user, logActivityData]);
+  }, [user, logActivityData, dispatch]);
 
   const onSelectTab = (eventKey: string | undefined) => {
     const key: ActivePageKey = eventKey ? parseInt(eventKey) : activeKey;
