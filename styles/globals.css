@@ -562,7 +562,9 @@ div hidden {
   }
 }
 
-
+.admin-click-cell {
+  cursor: pointer;
+}
 
 /* MOBILE QUERIES */
 
