@@ -1,56 +1,70 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { ActiveAdminComponent, AdminSelection } from "../types/user";
-import moment from "moment";
+import { AdminSelection, Role, User } from "../types/user";
 
 const initialState: AdminSelection = {
-    activeComponent: ActiveAdminComponent.Index,
-    reloadUsers: false,
-    selectedUserId: 0,
-    reloadRoles: false,
-    selectedRoleId: 0
+    reloadUsers: true,
+    selectedUser: undefined,
+    reloadRoles: true,
+    selectedRole: undefined
 };
 
 export const adminSelectionSlice = createSlice({
     name: 'adminSelection',
     initialState,
     reducers: {
-        setActiveComponent: (state, action: PayloadAction<ActiveAdminComponent>) => {
-            state.activeComponent = action.payload;
-            return state;
-        },
         setReloadUsers: (state, action: PayloadAction<boolean>) =>{
             state.reloadUsers = action.payload;
+            if (state.reloadUsers) {
+                state.selectedUser = undefined;
+                state.users = undefined;
+            }
             return state;
         },
-        setSelectedUserId: (state, action: PayloadAction<number>) => {
-            state.selectedUserId = action.payload;
+        setSelectedUser: (state, action: PayloadAction<User>) => {
+            state.selectedUser = action.payload;
+            return state;
+        },
+        setUsers: (state, action: PayloadAction<User[]>) => {
+            state.users = action.payload;
+            state.reloadUsers = false;
             return state;
         },
         setReloadRoles: (state, action: PayloadAction<boolean>) =>{
             state.reloadRoles = action.payload;
+            if (state.reloadRoles) {
+                state.selectedRole = undefined;
+                state.roles = undefined;
+            }
             return state;
         },
-        setSelectedRoleId: (state, action: PayloadAction<number>) => {
-            state.selectedRoleId = action.payload;
+        setSelectedRole: (state, action: PayloadAction<Role>) => {
+            state.selectedRole = action.payload;
+            return state;
+        },
+        setRoles: (state, action: PayloadAction<Role[]>) => {
+            state.roles = action.payload;
+            state.reloadRoles = false;
             return state;
         },
         resetAdmin: (state) => {
-            state.activeComponent = ActiveAdminComponent.Index;
-            state.reloadUsers = false;
-            state.selectedUserId = 0;
-            state.reloadRoles = false;
-            state.selectedRoleId = 0;
+            state.reloadUsers = true;
+            state.selectedUser = undefined;
+            state.reloadRoles = true;
+            state.selectedRole = undefined;
+            state.roles = undefined;
+            state.users = undefined;
             return state;
         }
     }
 })
 
-export const { setActiveComponent, 
-               setReloadUsers,
-               setSelectedUserId,
+export const { setReloadUsers,
+               setSelectedUser,
+               setUsers,
                setReloadRoles,
-               setSelectedRoleId,
+               setSelectedRole,
+               setRoles,
                resetAdmin
              } = adminSelectionSlice.actions
 

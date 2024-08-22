@@ -1,8 +1,15 @@
+export enum SellerType {
+  Artist = 1,
+  Venue = 2,
+  Promoter = 3
+};
+
 export interface Seller {
   sellerId: number;
   name: string;
   hideInList?: boolean;
   isActive?: boolean;
+  sellerType: SellerType;
 }
 
 export interface ShirtSales {

@@ -560,6 +560,26 @@ div hidden {
     text-decoration: underline;
     cursor: pointer;
   }
+
+  .form-check {
+    margin: 10px 0;
+  }
+
+  button {
+    margin-right: 5px;
+  }
+
+  .admin-inactive {
+    color: red;
+  }
+
+  .admin-select {
+    margin: 5px 0;
+  }
+
+  .admin-select select {
+    margin: 10px;
+  }
 }
 
 .admin-click-cell {

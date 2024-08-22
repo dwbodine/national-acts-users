@@ -1,17 +1,9 @@
-import { setActiveComponent } from "@/lib/adminSelectionSlice";
-import { ActiveAdminComponent } from "@/types/user";
-import { MouseEventHandler } from "react";
 import { Button } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import router from 'next/router';
 
 export default function AdminListHomeButton() {
-    const dispatch = useDispatch();
-
-    const goHome = () : MouseEventHandler<HTMLLIElement> | undefined => {
-        dispatch (
-            setActiveComponent(ActiveAdminComponent.Index)
-        );
-        return undefined;
+    const goHome = () => {
+        router.push('/admin/')
     };
     return (
         <Button onClick={goHome}>Back</Button>

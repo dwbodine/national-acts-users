@@ -1,20 +1,14 @@
-import { VipEvent } from "./event";
+import { SellerType, VipEvent } from "./event";
 
 export type LoginResponse = {
   user?: User;
   loginError?: string;
 }
 
-export enum UserSellerType {
-  Artist = 1,
-  Venue = 2,
-  Promoter = 3
-};
-
 export type UserSeller = {
   sellerId: number;
   sellerName: string;
-  sellerType: UserSellerType;
+  sellerType: SellerType;
   roleId?: number;
   permissions?: number[];
 }
@@ -50,6 +44,7 @@ export type User = {
   username: string;
   firstName?: string;
   lastName?: string;
+  mobile?: string;
   notes?: string;
   createdAt?: string;
   isAuthenticated?: boolean;
@@ -57,9 +52,13 @@ export type User = {
   category?: string;
   isActive: boolean;  
   sellers?: UserSeller[];
-  selectedSellerId: number;
-  selectedHideRevenue: boolean;
-  selectedHideServiceFees: boolean;
+  selectedSellerId?: number;
+  selectedHideRevenue?: boolean;
+  selectedHideServiceFees?: boolean;
+  requireResetPassword?: boolean;
+  sendEmailReset?: boolean;
+  sendTextReset?: boolean;
+  lastUpdate?: string;
 };
 
 export type UserReportSelection = {
@@ -83,12 +82,6 @@ export type AdminDashboardSelection = {
   end: number;
   reloadActivities: boolean;
   filterAdmins: boolean;
-}
-
-export enum ActiveAdminComponent {
-  Index = 1,
-  Roles = 2,
-  Users = 3
 }
 
 export enum UserActivityType {
@@ -127,11 +120,12 @@ export type UserActivity = {
 }
 
 export type AdminSelection = {
-  activeComponent: ActiveAdminComponent,
   reloadUsers: boolean,
   reloadRoles: boolean,
-  selectedUserId: number,
-  selectedRoleId: number
+  selectedUser: User | undefined,
+  selectedRole: Role | undefined,
+  roles?: Role[] | undefined,
+  users?: User[] | undefined
 }
 
 export type UserLoginResponse = {
@@ -160,6 +154,24 @@ export interface GetRolesResponse {
   roles?: Role[];
   statusCode?: number;
   roleError?: string;
+}
+
+export interface UpdateRoleResponse {
+  success: boolean;
+  statusCode?: number;
+  roleError?: string;
+}
+
+export interface UpdateUserResponse {
+  success: boolean;
+  statusCode?: number;
+  userError?: string;
+}
+
+export interface GetPermissionsResponse {
+  permissions?: Permission[];
+  statusCode?: number;
+  permissionError?: string;
 }
 
 export interface LogActivityResponse {

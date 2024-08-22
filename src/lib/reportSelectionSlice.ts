@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { User, UserReportSelection, UserSeller, UserSellerType } from "../types/user";
-import { VipEvent } from "@/types/event";
+import { User, UserReportSelection, UserSeller } from "../types/user";
+import { SellerType, VipEvent } from "@/types/event";
 
 const initialState: UserReportSelection = {
     seller: {
         sellerId: 0,
         sellerName: '',
-        sellerType: UserSellerType.Artist
+        sellerType: SellerType.Artist
     },
     start: 0,
     end: 0,
@@ -164,7 +164,7 @@ export const userReportSelectionSlice = createSlice({
             state.seller = {
                 sellerId: 0,
                 sellerName: '',
-                sellerType: UserSellerType.Artist
+                sellerType: SellerType.Artist
             };
             state.start = 0;
             state.end = 0;

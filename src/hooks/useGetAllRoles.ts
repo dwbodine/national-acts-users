@@ -1,4 +1,4 @@
-import { GetRolesResponse, GetUsersResponse } from "@/types/user";
+import { GetRolesResponse } from "@/types/user";
 import { userService } from "../services";
 
 export const useGetAllRoles = () => {

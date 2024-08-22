@@ -1,4 +1,4 @@
-import { GetActivityResponse, GetRolesResponse, GetUsersResponse, LogActivityResponse, Role, User, UserActivity, UserActivityType } from "@/types/user";
+import { GetActivityResponse, GetPermissionsResponse, GetRolesResponse, GetUsersResponse, LogActivityResponse, Permission, Role, UpdateRoleResponse, UpdateUserResponse, User, UserActivity, UserActivityType } from "@/types/user";
 import { getAuthorizationHeader } from "@/utils/getAuthorizationHeader";
 import axios, { AxiosInstance } from "axios";
 
@@ -78,11 +78,158 @@ export class UserService {
             if (err?.response?.data?.msg) {
               errorMessage = err.response.data.msg;
             } else {
-              errorMessage = "Unknown error while fetching users";
+              errorMessage = "Unknown error while fetching roles";
             }
             rolesResponse.roleError = errorMessage;
             return rolesResponse;
         });
+    }
+
+    getPermissions = async (): Promise<GetPermissionsResponse> => {
+      let url = `/admin/permissions`;
+  
+      let permResponse: GetPermissionsResponse = {
+        permissions: undefined,
+        permissionError: undefined,
+        statusCode: 200
+      };
+  
+      const headers = getAuthorizationHeader();
+  
+      return this.instance
+        .get(url, {
+          headers: headers
+        })
+        .then((res) => {
+          const permissions = res.data;
+          permResponse.permissions = permissions.length ? permissions as Permission[] : [];
+          return permResponse;
+        })
+        .catch((err) => {
+          console.log(err);
+          var errorMessage = "";
+          if (err?.response?.status) {
+            permResponse.statusCode = parseInt(err.response.status);
+          }
+          if (err?.response?.data?.msg) {
+            errorMessage = err.response.data.msg;
+          } else {
+            errorMessage = "Unknown error while fetching users";
+          }
+          permResponse.permissionError = errorMessage;
+          return permResponse;
+      });
+    }
+    
+    updateRole = async (roleToUpdate: Role): Promise<UpdateRoleResponse> => {
+      let url = `/admin/updateRole`;
+
+      let rolesResponse: UpdateRoleResponse = {
+        success: false,
+        roleError: undefined,
+        statusCode: 200
+      };
+
+      const data = JSON.stringify(roleToUpdate);
+
+      const headers = getAuthorizationHeader();
+
+      return this.instance
+        .post(url, data, {
+          headers: headers
+        })
+        .then((res) => {
+          rolesResponse.success = res.data;
+          return rolesResponse;
+        })
+        .catch((err) => {
+          console.log(err);
+          var errorMessage = "";
+          if (err?.response?.status) {
+              rolesResponse.statusCode = parseInt(err.response.status);
+          }
+          if (err?.response?.data?.msg) {
+            errorMessage = err.response.data.msg;
+          } else {
+            errorMessage = "Unknown error while updating role";
+          }
+          rolesResponse.roleError = errorMessage;
+          return rolesResponse;
+      });
+    }
+
+    deleteRoles = async (roleIds: number[]): Promise<UpdateRoleResponse> => {
+      let url = `/admin/deleteRoles`;
+
+      let rolesResponse: UpdateRoleResponse = {
+        success: false,
+        roleError: undefined,
+        statusCode: 200
+      };
+
+      const data = JSON.stringify(roleIds);
+
+      const headers = getAuthorizationHeader();
+
+      return this.instance
+        .post(url, data, {
+          headers: headers
+        })
+        .then((res) => {
+          rolesResponse.success = res.data;
+          return rolesResponse;
+        })
+        .catch((err) => {
+          console.log(err);
+          var errorMessage = "";
+          if (err?.response?.status) {
+              rolesResponse.statusCode = parseInt(err.response.status);
+          }
+          if (err?.response?.data?.msg) {
+            errorMessage = err.response.data.msg;
+          } else {
+            errorMessage = "Unknown error while deleting roles";
+          }
+          rolesResponse.roleError = errorMessage;
+          return rolesResponse;
+      });
+    }
+
+    updateUser = async (userToUpdate: User): Promise<UpdateUserResponse> => {
+      let url = `/admin/updateUser`;
+
+      let rolesResponse: UpdateUserResponse = {
+        success: false,
+        userError: undefined,
+        statusCode: 200
+      };
+
+      const data = JSON.stringify(userToUpdate);
+
+      const headers = getAuthorizationHeader();
+
+      return this.instance
+        .post(url, data, {
+          headers: headers
+        })
+        .then((res) => {
+          rolesResponse.success = res.data;
+          return rolesResponse;
+        })
+        .catch((err) => {
+          console.log(err);
+          var errorMessage = "";
+          if (err?.response?.status) {
+              rolesResponse.statusCode = parseInt(err.response.status);
+          }
+          if (err?.response?.data?.msg) {
+            errorMessage = err.response.data.msg;
+          } else {
+            errorMessage = "Unknown error while updating user";
+          }
+          rolesResponse.userError = errorMessage;
+          return rolesResponse;
+      });
     }
 
     logUserActivity = async(activityType: UserActivityType, activityData: string | undefined = undefined, token: string | undefined = undefined): Promise<LogActivityResponse> => {
