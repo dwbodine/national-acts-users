@@ -3,71 +3,37 @@ import AdminBar from "../components/sales/events/salesBarComponent";
 import Container from 'react-bootstrap/Container';
 import CheckAuth from "../components/common/checkAuthComponent";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { Tabs } from "rsuite";
 import NavBar from "../components/common/navBarComponent";
 import { useEffect } from "react";
 import { UserActivityType } from "@/types/user";
 import { useLogActivityData } from "@/hooks/useLogActivityData";
 import router from "next/router";
-import { ActivePageKey } from "@/constants";
 
 export default function Home() {
   const { user } = useCurrentUser();
-  const isAdmin = user.isAdmin;
-  const activeKey: ActivePageKey = ActivePageKey.SalesOverview;
   const { logActivityData } = useLogActivityData();
 
   useEffect(() => {
     if (user && user.isAuthenticated) {
-      document.title = "Client Portal - Sales Overview";
-      logActivityData(UserActivityType.AccessSalesOverView);
+      if (user.isAdmin) {
+        router.push('/sellers/');
+      } else {
+        document.title = "Client Portal - Sales Overview";
+        logActivityData(UserActivityType.AccessSalesOverView);
+      }      
     }    
   }, [user, logActivityData]);
 
-  const onSelectTab = (eventKey: string | undefined) => {
-    const key: ActivePageKey = eventKey ? parseInt(eventKey) : activeKey;
-    switch (key) {
-      case ActivePageKey.Reports:
-        router.push('/reports/');
-        break;
-      case ActivePageKey.Admin:
-        router.push('/admin/');
-        break;
-      case ActivePageKey.Dashboard:
-        router.push('/dashboard/');
-        break;
-      default:
-        break;
-    }
-  };
-
   return (
+    (user && !user.isAdmin) ?
     <>
       <CheckAuth />
       <NavBar />
       <Container fluid hidden={!user.isAuthenticated} className="vipContainer">
-        { isAdmin ? 
-          <>
-          <Tabs defaultActiveKey={activeKey.toString()} onSelect={onSelectTab} className="admin-tabs">
-            <Tabs.Tab eventKey={ActivePageKey.Dashboard.toString()} title="HOME">
-            </Tabs.Tab>
-            <Tabs.Tab eventKey={ActivePageKey.SalesOverview.toString()} title="SALES OVERVIEW">
-              <AdminBar />   
-              <CurrentEvents />
-            </Tabs.Tab>
-            <Tabs.Tab eventKey={ActivePageKey.Admin.toString()} title="ADMIN">
-            </Tabs.Tab>
-            <Tabs.Tab eventKey={ActivePageKey.Reports.toString()} title="REPORTS">
-            </Tabs.Tab>
-          </Tabs>
-          </>
-          :
-          <>
           <AdminBar />   
           <CurrentEvents />
-          </>
-        }
       </Container>
     </>
+    : ''
   );
 }

@@ -1,5 +1,5 @@
 import { useGetActivityData } from "@/hooks/useGetActivityData";
-import { setFilterAdmins, setReloadActivities } from "@/lib/dashboardSelectionSlice";
+import { resetDashboard, setFilterAdmins, setReloadActivities } from "@/lib/dashboardSelectionSlice";
 import { RootState } from "@/lib/store";
 import { GetActivityResponse, UserActivity } from "@/types/user";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -18,7 +18,7 @@ export default function UserActivityTable() {
 
     const onResetClick = () => {
         dispatch(
-            setFilterAdmins(false)
+            resetDashboard()
         );
     };
 
@@ -48,13 +48,11 @@ export default function UserActivityTable() {
                 </Col>
             </Row>
             <Row className="admin-filter-row">
-                <Col className="col-1">
+                <Col xs={3} sm={3} md={2} lg={1}>
                     <ResetButton IsDisabled={false} OnResetClick={onResetClick} />
                 </Col>
-                <Col>
-                    <span className="admin-filter-check">
-                        <FormCheck checked={currentDashboardSelection.filterAdmins} onChange={onFilterClick} /> Filter out admins?
-                    </span>
+                <Col xs={9} sm={9} md={10} lg={11}>
+                    <FormCheck checked={currentDashboardSelection.filterAdmins} onChange={onFilterClick} label="Filter out admins?" /> 
                 </Col>
             </Row>
             <Row>

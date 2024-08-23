@@ -18,10 +18,11 @@ export default function AdminRoles() {
   useEffect(() => {
     if (user && user.isAuthenticated) {
       if (!user.isAdmin) {
-        router.push('/');
-      }
-      document.title = "Client Portal - Admin";
-      logActivityData(UserActivityType.AccessAdmin);
+        router.push('/logout');
+      } else {
+        document.title = "Client Portal - Admin";
+        logActivityData(UserActivityType.AccessAdmin);
+      }      
     }    
   }, [user, logActivityData]);
 
@@ -32,7 +33,7 @@ export default function AdminRoles() {
         router.push('/reports/');
         break;
       case ActivePageKey.SalesOverview:
-        router.push('/');
+        router.push('/sellers/');
         break;
       case ActivePageKey.Dashboard:
         router.push('/dashboard/');
@@ -44,6 +45,7 @@ export default function AdminRoles() {
 
 
   return (
+    (user && user.isAdmin) ?
     <>
       <CheckAuth />
       <NavBar />
@@ -61,5 +63,6 @@ export default function AdminRoles() {
           </Tabs>
       </Container>
     </>
+    : ''
   );
 }

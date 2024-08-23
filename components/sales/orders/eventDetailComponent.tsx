@@ -127,7 +127,7 @@ export default function EventDetail(props: any) {
                         );
                     }
                 }                          
-            } else if (user && user.userId > 0 && user.sellers && user.selectedSellerId > 0) {
+            } else if (user && user.userId > 0 && user.sellers && (user.selectedSellerId ?? 0) > 0) {
                 // use cached user to transfer detail to redux in new window
                 let reportSelection = {...currentReportSelection};
                 const seller = user.sellers.find(x => x.sellerId == user.selectedSellerId);
@@ -344,16 +344,16 @@ export default function EventDetail(props: any) {
                             </Col>
                             <Col md={10} sm={12}>
                                 <span className="inactive-check" hidden={!viewInactiveEvents}>
-                                    <FormCheck checked={currentReportSelection?.showInactiveOrders} onChange={handleShowInactive} disabled={currentReportSelection?.showDeletedOrders} /> Show Inactive Orders?
+                                    <FormCheck checked={currentReportSelection?.showInactiveOrders} onChange={handleShowInactive} disabled={currentReportSelection?.showDeletedOrders} label="Show Inactive Orders?" /> 
                                 </span>
                                 <span className="deleted-check" hidden={!viewDeletedEvents}>
-                                    <FormCheck checked={currentReportSelection?.showDeletedOrders} onChange={handleShowDeleted} /> Show Deleted Orders?
+                                    <FormCheck checked={currentReportSelection?.showDeletedOrders} onChange={handleShowDeleted} label="Show Deleted Orders?" /> 
                                 </span>
                                 <span className="revenue-check" hidden={!hasOrders || !viewRevenueControls}>
-                                    <FormCheck checked={currentReportSelection?.hideRevenue} onChange={handleHideRevenue} /> Hide Revenue Items?
+                                    <FormCheck checked={currentReportSelection?.hideRevenue} onChange={handleHideRevenue} label="Hide Revenue Items?" /> 
                                 </span>
                                 <span className="service-fees-check" hidden={!hasOrders || !viewServiceFees}>
-                                    <FormCheck checked={currentReportSelection?.hideServiceFees} onChange={handleHideServiceFees} /> Hide Service Fees?
+                                    <FormCheck checked={currentReportSelection?.hideServiceFees} onChange={handleHideServiceFees} label="Hide Service Fees?" /> 
                                 </span>
                             </Col>
                             <Col md={10} sm={12} className="no-print" hidden={searchBarHidden}>

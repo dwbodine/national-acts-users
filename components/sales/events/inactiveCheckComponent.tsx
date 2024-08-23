@@ -14,7 +14,7 @@ export default function InactiveCheck() {
     
     return (
         <span className="inactive-check">
-            <FormCheck checked={currentReportSelection.showInactive} onChange={handleChange} disabled={currentReportSelection.showDeleted || (currentReportSelection.seller.sellerId <= 0)} /> Show inactive events?
+            <FormCheck checked={currentReportSelection.showInactive} onChange={handleChange} disabled={currentReportSelection.showDeleted || (currentReportSelection.seller.sellerId <= 0)} label="Show inactive events?" />
         </span>
     );        
  

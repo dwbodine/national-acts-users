@@ -14,7 +14,7 @@ export default function DeletedCheck() {
     
     return (
         <span className="deleted-check">
-            <FormCheck checked={currentReportSelection.showDeleted} onChange={handleChange} disabled={(currentReportSelection.seller.sellerId <= 0)}/> Show deleted events?
+            <FormCheck checked={currentReportSelection.showDeleted} onChange={handleChange} disabled={(currentReportSelection.seller.sellerId <= 0)} label="Show deleted events?" />
         </span>
     );        
  

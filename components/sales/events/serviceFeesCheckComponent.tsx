@@ -14,7 +14,7 @@ export default function ServiceFeesCheck() {
     
     return (
         <span className="service-fees-check">
-            <FormCheck checked={currentReportSelection.hideServiceFees} onChange={handleChange} disabled={(currentReportSelection.seller.sellerId <= 0)}/> Hide service fees?
+            <FormCheck checked={currentReportSelection.hideServiceFees} onChange={handleChange} disabled={(currentReportSelection.seller.sellerId <= 0)} label="Hide service fees?" /> 
         </span>
     );        
  

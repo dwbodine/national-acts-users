@@ -14,7 +14,7 @@ export default function RevenueCheck() {
     
     return (
         <span className="revenue-check">
-            <FormCheck checked={currentReportSelection.hideRevenue} onChange={handleChange} disabled={(currentReportSelection.seller.sellerId <= 0)}/> Hide revenue items?
+            <FormCheck checked={currentReportSelection.hideRevenue} onChange={handleChange} disabled={(currentReportSelection.seller.sellerId <= 0)} label="Hide revenue items?" /> 
         </span>
     );        
  

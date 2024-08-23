@@ -26,7 +26,6 @@ export default function AdminUserEdit() {
     const [mobile, setMobile] = useState<string | undefined>(undefined);
     const [notes, setNotes] = useState<string | undefined>(undefined);
     const [isActive, setIsActive] = useState<boolean>(false);
-    const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [requireResetPassword, setRequireResetPassword] = useState<boolean>(false);
     const [sendEmailReset, setSendEmailReset] = useState<boolean>(false);
     const [sendTextReset, setSendTextReset] = useState<boolean>(false);
@@ -42,14 +41,14 @@ export default function AdminUserEdit() {
             setMobile(currentAdminSelection.selectedUser.mobile);
             setNotes(currentAdminSelection.selectedUser.notes);
             setIsActive(currentAdminSelection.selectedUser.isActive);
-            setIsAdmin(currentAdminSelection.selectedUser.isAdmin);
             setRequireResetPassword(currentAdminSelection.selectedUser.requireResetPassword ?? false);
             setSendEmailReset(currentAdminSelection.selectedUser.sendEmailReset ?? false);
             setSendTextReset(currentAdminSelection.selectedUser.sendTextReset ?? false);
             getSellers().then((response: GetSellersResponse) => {
                 setAllSellers(response.sellers);
                 getAllRoles().then((resp: GetRolesResponse) => {
-                    setAllRoles(resp.roles);
+                    const roles = resp.roles?.filter(x => x.roleId != 1);
+                    setAllRoles(roles);
                 });
             });
         }
@@ -161,7 +160,6 @@ export default function AdminUserEdit() {
             mobile: mobile || '',
             notes: notes || '',
             isActive: isActive || false,
-            isAdmin: isAdmin || false,
             requireResetPassword: requireResetPassword || false,
             sendEmailReset: sendEmailReset || false,
             sendTextReset: sendTextReset || false
@@ -186,7 +184,12 @@ export default function AdminUserEdit() {
     }
 
     let sellerRows: any[] = [];
-    if (allSellers != undefined && allRoles != undefined && currentAdminSelection.selectedUser && currentAdminSelection.selectedUser.sellers && currentAdminSelection.selectedUser.sellers.length > 0) {
+    if (allSellers != undefined && 
+        allRoles != undefined && 
+        currentAdminSelection.selectedUser && 
+        !currentAdminSelection.selectedUser.isAdmin && 
+        currentAdminSelection.selectedUser.sellers && 
+        currentAdminSelection.selectedUser.sellers.length > 0) {
         currentAdminSelection.selectedUser.sellers.map((item, index) => {
             sellerRows.push(<AdminSellerSelect id={item.sellerId} 
                                                Number={index + 1} 
@@ -202,7 +205,7 @@ export default function AdminUserEdit() {
     }
 
     return (
-        (sellerRows.length > 0 && currentAdminSelection.selectedUser) ? 
+        (currentAdminSelection.selectedUser && (sellerRows.length > 0 || currentAdminSelection.selectedUser.isAdmin)) ? 
         <div className="admin-container">
             <h1>Edit User</h1>
             <div className="form-group">
@@ -245,11 +248,6 @@ export default function AdminUserEdit() {
                 label="Is Active?"                
               />
               <FormCheck
-                checked={isAdmin}
-                onChange={(e) => setIsAdmin(e.target.checked)}
-                label="Is Admin?"                
-              />
-              <FormCheck
                 checked={requireResetPassword}
                 onChange={(e) => setRequireResetPassword(e.target.checked)}
                 label="Require Reset Password?"                
@@ -265,7 +263,7 @@ export default function AdminUserEdit() {
                 label="Send Password Reset by Text?"                
               />
             </div>
-            <div className="form-group">
+            <div className="form-group" hidden={currentAdminSelection.selectedUser.isAdmin}>
                 <label className="mt-4">Sellers:</label>
                 { sellerRows }
             </div>

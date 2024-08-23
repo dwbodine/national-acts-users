@@ -1,4 +1,4 @@
-import { ITicketTypeData, TicketType, VipEvent } from "@/types/event";
+import { ITicketTypeData, SellerType, TicketType, VipEvent } from "@/types/event";
 import React from 'react';
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,6 @@ import router from "next/router";
 import { RootState } from "@/lib/store";
 import { eventService } from "@/services";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import { UserSellerType } from "@/types/user";
 import { getTicketDataFromEvents } from "@/utils/getTicketData";
 
 export default function EventMobileRow(props: any) {
@@ -123,7 +122,7 @@ export default function EventMobileRow(props: any) {
     const serviceFees = `$${new Number(vipEvent.totalServiceFees).toFixed(2)}`;
     const inactiveLabel = vipEvent.isActive ? "Deactivate" : "Activate";
     const deletedLabel = vipEvent.isDeleted ? "Undelete" : "Delete";
-    const buttonText = currentSellerType == UserSellerType.Venue ? "Customer List" : "VIP List";
+    const buttonText = currentSellerType == SellerType.Venue ? "Customer List" : "VIP List";
         
     return (
         <tr className={'mobile-event-card-container ' + statusClass}>

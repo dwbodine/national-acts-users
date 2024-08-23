@@ -21,14 +21,15 @@ export default function Dashboard() {
   useEffect(() => {
     if (user && user.isAuthenticated) {
       if (!user.isAdmin) {
-        router.push('/');
-      }
-      document.title = "Client Portal - Home";
-      logActivityData(UserActivityType.AccessDashboard).then(() => {
-        dispatch (
-          setReloadActivities(true)
-        );
-      });
+        router.push('/logout');
+      } else {
+        document.title = "Client Portal - Home";
+        logActivityData(UserActivityType.AccessDashboard).then(() => {
+          dispatch (
+            setReloadActivities(true)
+          );
+        });
+      }      
     }    
   }, [user, logActivityData, dispatch]);
 
@@ -42,7 +43,7 @@ export default function Dashboard() {
         router.push('/admin/');
         break;
       case ActivePageKey.SalesOverview:
-        router.push('/');
+        router.push('/sellers/');
         break;
       default:
         break;
@@ -50,6 +51,7 @@ export default function Dashboard() {
   };
 
   return (
+    (user && user.isAdmin) ?
     <>
       <CheckAuth />
       <NavBar />
@@ -67,5 +69,6 @@ export default function Dashboard() {
           </Tabs>
       </Container>
     </>
+    : ''
   );
 }
