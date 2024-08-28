@@ -49,6 +49,10 @@ export interface Order {
   email: string;
   purchaserLastName: string;
   purchaserFirstName: string;
+  purchaserCity?: string;
+  purchaserState?: string;
+  purchaserZipCode?: string;
+  purchaserCountry?: string;
   revenue: number;
   serviceFees?: number;
   attendeeNames?: string[];
