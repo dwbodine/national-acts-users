@@ -580,6 +580,10 @@ div hidden {
   .admin-select select {
     margin: 10px;
   }
+
+  .admin-button-group {
+    margin: 10px 0;
+  }
 }
 
 .admin-click-cell {

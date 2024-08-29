@@ -198,7 +198,7 @@ export class UserService {
     updateUser = async (userToUpdate: User): Promise<UpdateUserResponse> => {
       let url = `/admin/updateUser`;
 
-      let rolesResponse: UpdateUserResponse = {
+      let userResponse: UpdateUserResponse = {
         success: false,
         userError: undefined,
         statusCode: 200
@@ -213,22 +213,61 @@ export class UserService {
           headers: headers
         })
         .then((res) => {
-          rolesResponse.success = res.data;
-          return rolesResponse;
+          userResponse.success = res.data;
+          return userResponse;
         })
         .catch((err) => {
           console.log(err);
           var errorMessage = "";
           if (err?.response?.status) {
-              rolesResponse.statusCode = parseInt(err.response.status);
+            userResponse.statusCode = parseInt(err.response.status);
           }
           if (err?.response?.data?.msg) {
             errorMessage = err.response.data.msg;
           } else {
             errorMessage = "Unknown error while updating user";
           }
-          rolesResponse.userError = errorMessage;
-          return rolesResponse;
+          userResponse.userError = errorMessage;
+          return userResponse;
+      });
+    }
+
+    deleteUser = async (userId: number): Promise<UpdateUserResponse> => {
+      let url = `/admin/deleteUser`;
+
+      let userResponse: UpdateUserResponse = {
+        success: false,
+        userError: undefined,
+        statusCode: 200
+      };
+
+      const data = JSON.stringify({
+        'userId': userId
+      });
+
+      const headers = getAuthorizationHeader();
+
+      return this.instance
+        .post(url, data, {
+          headers: headers
+        })
+        .then((res) => {
+          userResponse.success = res.data;
+          return userResponse;
+        })
+        .catch((err) => {
+          console.log(err);
+          var errorMessage = "";
+          if (err?.response?.status) {
+            userResponse.statusCode = parseInt(err.response.status);
+          }
+          if (err?.response?.data?.msg) {
+            errorMessage = err.response.data.msg;
+          } else {
+            errorMessage = "Unknown error while deleting user";
+          }
+          userResponse.userError = errorMessage;
+          return userResponse;
       });
     }
 

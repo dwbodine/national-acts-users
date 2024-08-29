@@ -11,6 +11,7 @@ import { useUpdateUser } from "@/hooks/useUpdateUser";
 import AdminSellerSelect from "../common/adminSellerSelectComponent";
 import { FaPlus } from "react-icons/fa";
 import { useGetAllRoles } from "@/hooks/useGetAllRoles";
+import { useDeleteUser } from "@/hooks/useDeleteUser";
 
 export default function AdminUserEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -18,6 +19,7 @@ export default function AdminUserEdit() {
     const { getSellers } = useGetSellers();
     const { getAllRoles } = useGetAllRoles();
     const { updateUser } = useUpdateUser();
+    const { deleteUser } = useDeleteUser();
     const [allSellers, setAllSellers] = useState<Seller[] | undefined>(undefined);
     const [allRoles, setAllRoles] = useState<Role[] | undefined>(undefined);
     const [username, setUsername] = useState<string | undefined>(undefined);
@@ -148,6 +150,31 @@ export default function AdminUserEdit() {
         }
     };
 
+    const deleteCurrentUser = () => {
+        setErrorMessage(undefined);
+        if (!currentAdminSelection.selectedUser) {
+            return false;
+        
+        }
+
+        let userId = currentAdminSelection.selectedUser.userId;
+
+        var result = confirm('Are you sure you want to delete this user?');
+
+        if (result) {
+            deleteUser(userId).then((response: UpdateUserResponse) => {
+                if (response.success) {
+                    dispatch(
+                        setReloadUsers(true)
+                    )
+                    router.push('/admin/users/');
+                } else {
+                    setErrorMessage(response.userError);
+                }
+            });
+        }
+    }
+
     const onSubmit = () => {
         setErrorMessage(undefined);
         if (!currentAdminSelection.selectedUser) {
@@ -205,7 +232,7 @@ export default function AdminUserEdit() {
     }
 
     return (
-        (currentAdminSelection.selectedUser && (sellerRows.length > 0 || currentAdminSelection.selectedUser.isAdmin)) ? 
+        (currentAdminSelection.selectedUser && (sellerRows != null || currentAdminSelection.selectedUser.isAdmin)) ? 
         <div className="admin-container">
             <h1>Edit User</h1>
             <div className="form-group">
@@ -271,7 +298,12 @@ export default function AdminUserEdit() {
                 <label className="mt-4">Notes:</label>
                 <textarea onChange={(e) => setNotes(e.target.value)} value={notes} />
             </div>
-            <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+            <div className="admin-button-group">
+                <Button onClick={onSubmit}>Submit</Button> <Button onClick={deleteCurrentUser}>Delete User</Button>
+            </div>
+            <div className="admin-button-group">
+                <Button onClick={goBack}>Back</Button>
+            </div>
             { errorMessage ? 
             <div className="danger">{errorMessage}</div>
             : ''}
