@@ -267,7 +267,7 @@ export default function EventDetail(props: any) {
             dispatch(
                 setShowHiddenOrders(event.target.checked)
             );
-            setVipEvent(undefined);            
+            setVipEvent(undefined);   
         }
     };
 
@@ -359,7 +359,7 @@ export default function EventDetail(props: any) {
                                 <span className="deleted-check" hidden={!viewDeletedEvents}>
                                     <FormCheck checked={currentReportSelection?.showDeletedOrders} onChange={handleShowDeleted} label="Show Deleted Orders?" /> 
                                 </span>
-                                <span className="deleted-check" hidden={!viewHiddenEvents}>
+                                <span className="hidden-check" hidden={!viewHiddenEvents}>
                                     <FormCheck checked={currentReportSelection?.showHiddenOrders} onChange={handleShowHidden} label="Show Hidden Orders?" /> 
                                 </span>
                                 <span className="revenue-check" hidden={!hasOrders || !viewRevenueControls}>
@@ -395,7 +395,7 @@ export default function EventDetail(props: any) {
                                         <th>Email</th>
                                         {(hasPhoneData) ? <th>Phone #</th> : ''}
                                         {(hasShirtData) ? <th>Shirt Sizes</th> : ''}
-                                        {(changeOrderStatus) ? <th colSpan={2} className="command-column no-print">Commands</th> : ''}
+                                        {(changeOrderStatus) ? <th colSpan={3} className="command-column no-print">Commands</th> : ''}
                                     </tr>
                                 </thead>
                                 <tbody>

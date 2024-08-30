@@ -44,8 +44,7 @@ export default function CurrentEvents() {
     const viewServiceFees = userHasPermission(user, EnumPermission.ViewServiceFees);
     const changeEventStatus = userHasPermission(user, EnumPermission.ChangeEventStatus);
     const canCheckInTickets = userHasPermission(user, EnumPermission.CheckInUsers);
-    const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
-    
+    const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);    
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
@@ -234,7 +233,7 @@ export default function CurrentEvents() {
                                     <th>Tickets Sold</th>
                                     <th hidden={hideRevItem}>Revenue (USD)</th>
                                     <th className="no-print" hidden={hideServiceFees}>Service Fees</th>
-                                    { changeEventStatus ? <th colSpan={2} className="center command-column no-print">Commands</th> : ''}            
+                                    { changeEventStatus ? <th colSpan={3} className="center command-column no-print">Commands</th> : ''}            
                                 </tr>
                             </thead>
                             <tbody>

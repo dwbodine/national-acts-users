@@ -179,9 +179,9 @@ div hidden {
 
 .inactive-check,
 .deleted-check,
-.hidden-check, 
+.hidden-check,
 .revenue-check,
-.service-fees-check, 
+.service-fees-check,
 .admin-filter-check {
   margin: 0 0 0 20px;
   float: left;
@@ -191,9 +191,9 @@ div hidden {
 
 .inactive-check div,
 .deleted-check div,
-.hidden-check div, 
+.hidden-check div,
 .revenue-check div,
-.service-fees-check div, 
+.service-fees-check div,
 .admin-filter-check div {
   float: left;
 }
@@ -202,7 +202,7 @@ div hidden {
 .deleted-check .form-check-input,
 .hidden-check .form-check-input,
 .revenue-check .form-check-input,
-.service-fees-check .form-check-input, 
+.service-fees-check .form-check-input,
 .admin-filter-check .form-check-input {
   margin-right: 10px;
 }
@@ -313,7 +313,8 @@ div hidden {
   color: red;
 }
 
-.resultsTable tr.event-hidden {
+.resultsTable tr.event-hidden,
+.resultsTable tr.event-hidden a {
   color: lawngreen;
 }
 
@@ -552,55 +553,62 @@ div hidden {
 .admin-container {
   padding: 0;
   width: 100%;
-  h1, h2, h3 {
-    font-family: 'Impact', 'Carrois Gothic SC', sans-serif;
-    margin: 0;
-    padding: 0;
-    text-transform: uppercase;
-    color: #d90617;
-  }
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
-  li {
-    margin: 15px 0;
-  }
-  .admin-link {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .form-check {
-    margin: 10px 0;
-  }
-
-  button {
-    margin-right: 5px;
-  }
-
-  .admin-inactive {
-    color: red;
-  }
-
-  .admin-select {
-    margin: 5px 0;
-  }
-
-  .admin-select select {
-    margin: 10px;
-  }
-
-  .admin-button-group {
-    margin: 10px 0;
-  }
-
-  .admin-report-datepicker-label {
-    width: 100px;
-    margin: 15px 0;
-  }
 }
+
+.admin-container h1,
+.admin-container h2,
+.admin-container h3 {
+  font-family: 'Impact', 'Carrois Gothic SC', sans-serif;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+  color: #d90617;
+}
+
+.admin-container ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-container li {
+  margin: 15px 0;
+}
+
+.admin-container .admin-link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.admin-container .form-check {
+  margin: 10px 0;
+}
+
+.admin-container button {
+  margin-right: 5px;
+}
+
+.admin-container .admin-inactive {
+  color: red;
+}
+
+.admin-container .admin-select {
+  margin: 5px 0;
+}
+
+.admin-container .admin-select select {
+  margin: 10px;
+}
+
+.admin-container .admin-button-group {
+  margin: 10px 0;
+}
+
+.admin-report-datepicker-label {
+  width: 100px;
+  margin: 15px 0;
+}
+
 
 .admin-click-cell {
   cursor: pointer;
@@ -628,7 +636,7 @@ div hidden {
 
   .inactive-check,
   .deleted-check,
-  .hidden-check, 
+  .hidden-check,
   .revenue-check,
   .service-fees-check {
     margin-bottom: 15px;

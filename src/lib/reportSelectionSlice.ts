@@ -134,7 +134,7 @@ export const userReportSelectionSlice = createSlice({
             return state;
         },
         setShowHiddenOrders: (state, action: PayloadAction<boolean>) => {
-            const previousHidden = state.showHidden;
+            const previousHidden = state.showHiddenOrders;
             const newHidden = action.payload;
             state.showHiddenOrders = newHidden;
             state.showInactiveOrders = false;
