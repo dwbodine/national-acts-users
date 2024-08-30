@@ -5,6 +5,7 @@ import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
 import { getTicketDataFromEvents } from "@/utils/getTicketData";
 import moment from "moment";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
+import { MINIMUM_UNIX_TIMESTAMP } from "@/constants";
 
 export class EventService {
   protected readonly instance: AxiosInstance;
@@ -37,6 +38,50 @@ export class EventService {
     if (reportSelection.showDeleted) {
       url += '&deleted=1';
     }
+
+    let eventResponse: GetEventsResponse = {
+      events: undefined,
+      eventError: undefined,
+      statusCode: 200
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers
+      })
+      .then((res) => {
+        const events = res.data;
+        eventResponse.events = events.length ? events as VipEvent[] : [];
+        return eventResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          eventResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while fetching events - please contact your administrator";
+        }
+        eventResponse.eventError = errorMessage;
+        return eventResponse;
+      });
+  };
+
+  getAllEvents = async (start: number, end: number): Promise<GetEventsResponse> => {
+    if (start < MINIMUM_UNIX_TIMESTAMP) {
+      start = MINIMUM_UNIX_TIMESTAMP;
+    }
+
+    if (end <= start) {
+      end = start + 86400;
+    }
+
+    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&start=${start}&end=${end}`;
 
     let eventResponse: GetEventsResponse = {
       events: undefined,
@@ -351,7 +396,7 @@ export class EventService {
       }
     }
 
-    exportStr += '"Date","Title","Venue","Location","Tickets sold",';
+    exportStr += '"Seller Name","Date","Title","Venue","Location","Tickets sold",';
     if (showRevenueData) {
       exportStr += '"Revenue (USD)",';
     }    
@@ -366,6 +411,7 @@ export class EventService {
     let totalServiceFees = 0.0;
 
     events.forEach((vipEvent: VipEvent) => {
+      const sellerName = vipEvent.sellerName;
       const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
       const title = vipEvent.title;
       let venue = '';
@@ -379,7 +425,7 @@ export class EventService {
       const revenue = vipEvent.totalRevenue;
       const serviceFees = vipEvent.totalServiceFees;
       totalRevenue += revenue;
-      exportStr += `"${eventDate}","${title}","${venue}","${location}","${ticketsSold}",`;
+      exportStr += `"${sellerName}","${eventDate}","${title}","${venue}","${location}","${ticketsSold}",`;
       if (showRevenueData) {
         exportStr += `"${revenue.toFixed(2)}",`;
       }      
@@ -390,7 +436,7 @@ export class EventService {
       }
     });
 
-    exportStr += `"Total","","","","${totalTcketsSold}",`;
+    exportStr += `"Total","","","","","${totalTcketsSold}",`;
     if (showRevenueData) {
       exportStr += `"${totalRevenue.toFixed(2)}",`;
     }    
@@ -404,7 +450,7 @@ export class EventService {
   };
 
   getOrderExportTableHeader = (viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean, currencyAbbrev?: string): string => {
-    let exportStr = '"Purchaser Name","Purchaser Zip","Attendee Name(s)","Purchase Date","Event Date","Event Name","Ticket Type","Number of tickets"';
+    let exportStr = '"Seller Name","Purchaser Name","Purchaser Zip","Attendee Name(s)","Purchase Date","Event Date","Event Name","Ticket Type","Number of tickets"';
     if (hasNonUsaOrders) {
       if (showRevenueData) {
         exportStr += `,"Original Price (${currencyAbbrev})","Exchange Rate (${currencyAbbrev} to USD)"`;
@@ -433,6 +479,7 @@ export class EventService {
   getOrderExportTableFromEvent = (vipEvent: VipEvent, viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean, currencySymbol?: string) : string => {
     let exportStr = '';
     if (vipEvent.orders && vipEvent.orders.length > 0) {
+        const sellerName = vipEvent.sellerName;
         vipEvent.orders.forEach((order: Order) => {
           const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
           const purchaserZip = order.purchaserZipCode ?? '';
@@ -472,7 +519,7 @@ export class EventService {
             });
           } 
           
-          exportStr += `"${purchaserName}","${purchaserZip}","${attendeeNames}","${purchaseDate}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
+          exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${attendeeNames}","${purchaseDate}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
           if (hasNonUsaOrders) {
             if (showRevenueData) {
               exportStr += `,"${originalPrice} ${currencySymbol}","${exchangeRate}"`;

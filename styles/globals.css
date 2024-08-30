@@ -584,6 +584,11 @@ div hidden {
   .admin-button-group {
     margin: 10px 0;
   }
+
+  .admin-report-datepicker-label {
+    width: 100px;
+    margin: 15px 0;
+  }
 }
 
 .admin-click-cell {

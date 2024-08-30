@@ -113,6 +113,7 @@ export interface VipEvent {
   ticketTypes?: TicketType[];
   hasTicketTypeData?: boolean;
   isAddedToBandsInTown?: boolean;
+  sellerName?: string;
 }
 
 export interface GetEventsResponse {

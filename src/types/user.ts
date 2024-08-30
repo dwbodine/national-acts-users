@@ -128,6 +128,12 @@ export type AdminSelection = {
   users?: User[] | undefined
 }
 
+export type AdminReportsSelection = {
+  start?: number,
+  end?: number,
+  reloadData?: boolean
+}
+
 export type UserLoginResponse = {
   user?: User;
   loginError?: string;

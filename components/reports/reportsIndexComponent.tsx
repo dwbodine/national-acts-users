@@ -1,5 +1,6 @@
 import { Col, Container, Row } from "react-bootstrap";
 import ReportsIndexBar from "./reportsIndexBarComponent";
+import ReportsList from "./reportsListComponent";
 
 export default function ReportsIndex() { 
     return (
@@ -8,7 +9,7 @@ export default function ReportsIndex() {
             <Container fluid>
                 <Row>
                     <Col>
-                        coming soon...
+                        <ReportsList />
                     </Col>
                 </Row>
             </Container>
