@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import router from 'next/router';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import AttendeeRow from './attendeeRowComponent';
+import { useSetOrderHidden } from '@/hooks/useSetOrderHidden';
 
 export default function OrderMobileRow(props: any) {
     const dispatch = useDispatch();
@@ -23,6 +24,7 @@ export default function OrderMobileRow(props: any) {
 
     const { setOrderInactive } = useSetOrderInactive();
     const { setOrderDeleted } = useSetOrderDeleted();
+    const { setOrderHidden } = useSetOrderHidden();
         
     let statusClass = '';
     if (order.isDeleted) {
@@ -31,6 +33,8 @@ export default function OrderMobileRow(props: any) {
         statusClass += 'inactive';
     } else if (order.isRefunded) {
         statusClass += 'refunded';
+    } else if (order.isHidden) {
+        statusClass += 'hidden';
     }
 
     const id = `order_${order.ticketSocketOrderId}`;
@@ -136,10 +140,34 @@ export default function OrderMobileRow(props: any) {
             });
     };
 
+    const hideUnhideOrder = () => {
+        const orderId = order.ticketSocketOrderId;
+        const isHidden = order.isHidden ?? false;
+        setOrderHidden(orderId, isHidden)
+            .then((response) => {
+                if (!response.success) {
+                    if (response.statusCode == 401 || response.statusCode == 422) {
+                        router.push('/logout');
+                    } else {
+                        console.log(response.orderError);
+                    }
+                    return;
+                } else {
+                    dispatch(
+                        setReloadEvents(true)
+                    );
+                    window.opener.location.reload(true);
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
 
     const inactiveLabel = order.isActive ? "Deactivate" : "Activate";
     const deletedLabel = order.isDeleted ? "Undelete" : "Delete";
-    
+    const hiddenLabel = order.isHidden ? "Unhide" : "Hide";
 
     return (
         <tr className={'mobile-event-card-container ' + statusClass}>
@@ -195,6 +223,7 @@ export default function OrderMobileRow(props: any) {
                         <Col>
                             <Button onClick={activateDeactivateOrder}>{inactiveLabel}</Button>
                             <Button onClick={deleteUndeleteOrder}>{deletedLabel}</Button>
+                            <Button onClick={hideUnhideOrder}>{hiddenLabel}</Button>
                         </Col>
                     </Row>
                </Container>

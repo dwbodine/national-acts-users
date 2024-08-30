@@ -10,8 +10,10 @@ import { MINIMUM_UNIX_TIMESTAMP } from "@/constants";
 export class EventService {
   protected readonly instance: AxiosInstance;
   protected readonly eventUrl: string;
+  protected readonly baseUrl: string;
   
   public constructor(url: string, eUrl: string) {
+    this.baseUrl = url;
     this.instance = axios.create({
       baseURL: url,
       timeout: 30000,
@@ -37,6 +39,10 @@ export class EventService {
 
     if (reportSelection.showDeleted) {
       url += '&deleted=1';
+    }
+
+    if (reportSelection.showHidden) {
+      url += '&hidden=1';
     }
 
     let eventResponse: GetEventsResponse = {
@@ -81,7 +87,7 @@ export class EventService {
       end = start + 86400;
     }
 
-    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&start=${start}&end=${end}`;
+    const url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&start=${start}&end=${end}`;
 
     let eventResponse: GetEventsResponse = {
       events: undefined,
@@ -91,7 +97,11 @@ export class EventService {
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
+    const apiInstance = axios.create({
+      baseURL: this.baseUrl
+    });
+
+    return apiInstance
       .get(url, {
         headers: headers
       })
@@ -127,6 +137,10 @@ export class EventService {
       url += '&deleted=1';
     }
 
+    if (reportSelection.showHiddenOrders) {
+      url += '&hidden=1';
+    }
+
     let eventResponse: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
@@ -159,6 +173,80 @@ export class EventService {
         return eventResponse;
       });
   };
+
+  updateEvent = async (eventToUpdate: VipEvent): Promise<ModifyEventResponse> => {
+    let url = `/admin/updateEvent`;
+
+    let eventResponse: ModifyEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200
+    };
+
+    const data = JSON.stringify(eventToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      })
+      .then((res) => {
+        eventResponse.success = res.data;
+        return eventResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          eventResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while updating event";
+        }
+        eventResponse.eventError = errorMessage;
+        return eventResponse;
+    });
+  }
+
+  updateOrder = async (orderToUpdate: Order): Promise<ModifyOrderResponse> => {
+    let url = `/admin/updateOrder`;
+
+    let orderResponse: ModifyOrderResponse = {
+      success: false,
+      orderError: undefined,
+      statusCode: 200
+    };
+
+    const data = JSON.stringify(orderToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      })
+      .then((res) => {
+        orderResponse.success = res.data;
+        return orderResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          orderResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while updating event";
+        }
+        orderResponse.orderError = errorMessage;
+        return orderResponse;
+    });
+  }
 
   setEventInactive = async(eventId: number, isActive: boolean): Promise<ModifyEventResponse> => {
     const url = "/user/setEventInactiveSecured";
@@ -201,6 +289,47 @@ export class EventService {
       });
   };
 
+  setEventListInactive = async(eventIdList: number[], isActive: boolean): Promise<ModifyEventResponse> => {
+    const url = "/user/setEventInactiveSecured";
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200
+    };
+
+    const data = JSON.stringify({
+      'eventIdList': eventIdList,
+      'isActive': isActive ? 0 : 1
+    });
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      }).then((res) => {
+        modifyResponse.success = res.data as boolean;
+        if (!modifyResponse.success) {
+          modifyResponse.eventError = "Unexpected error occurred while modifying events - please contact your administrator";
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while modifying events - please contact your administrator";
+        }
+        modifyResponse.eventError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
   setEventDeleted = async(eventId: number, isDeleted: boolean): Promise<ModifyEventResponse> => {
     const url = "/user/setEventDeletedSecured";
     const headers = getAuthorizationHeader();
@@ -215,6 +344,129 @@ export class EventService {
       'eventId': eventId,
       'isDeleted': isDeleted ? 0 : 1
     };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      }).then((res) => {
+        modifyResponse.success = res.data as boolean;
+        if (!modifyResponse.success) {
+          modifyResponse.eventError = "Unexpected error occurred while modifying event - please contact your administrator";
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while modifying event - please contact your administrator";
+        }
+        modifyResponse.eventError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setEventListDeleted = async(eventIdList: number[], isDeleted: boolean): Promise<ModifyEventResponse> => {
+    const url = "/user/setEventDeletedSecured";
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200
+    };
+
+    const data = JSON.stringify({
+      'eventIdList': eventIdList,
+      'isDeleted': isDeleted ? 0 : 1
+    });
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      }).then((res) => {
+        modifyResponse.success = res.data as boolean;
+        if (!modifyResponse.success) {
+          modifyResponse.eventError = "Unexpected error occurred while modifying events - please contact your administrator";
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while modifying events - please contact your administrator";
+        }
+        modifyResponse.eventError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setEventHidden = async(eventId: number, isHidden: boolean): Promise<ModifyEventResponse> => {
+    const url = "/user/setEventHiddenSecured";
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200
+    };
+
+    const data = {
+      'eventId': eventId,
+      'isHidden': isHidden ? 0 : 1
+    };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      }).then((res) => {
+        modifyResponse.success = res.data as boolean;
+        if (!modifyResponse.success) {
+          modifyResponse.eventError = "Unexpected error occurred while modifying event - please contact your administrator";
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while modifying event - please contact your administrator";
+        }
+        modifyResponse.eventError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setEventListHidden = async(eventIdList: number[], isHidden: boolean): Promise<ModifyEventResponse> => {
+    const url = "/user/setEventHiddenSecured";
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200
+    };
+
+    const data = JSON.stringify({
+      'eventIdList': eventIdList,
+      'isHidden': isHidden ? 0 : 1
+    });
 
     return this.instance
       .post(url, data, {
@@ -283,6 +535,47 @@ export class EventService {
       });
   };
 
+  setOrderListInactive = async(orderIdList: number[], isActive: boolean): Promise<ModifyOrderResponse> => {
+    const url = "/user/setOrderInactiveSecured";
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyOrderResponse = {
+      success: false,
+      orderError: undefined,
+      statusCode: 200
+    };
+
+    const data = JSON.stringify({
+      'orderIdList': orderIdList,
+      'isActive': isActive ? 0 : 1
+    });
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      }).then((res) => {
+        modifyResponse.success = res.data as boolean;
+        if (!modifyResponse.success) {
+          modifyResponse.orderError = "Unexpected error occurred while modifying orders - please contact your administrator";
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while modifying orders - please contact your administrator";
+        }
+        modifyResponse.orderError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
   setOrderDeleted = async(orderId: number, isDeleted: boolean): Promise<ModifyOrderResponse> => {
     const url = "/user/setOrderDeletedSecured";
     const headers = getAuthorizationHeader();
@@ -324,6 +617,129 @@ export class EventService {
       });
   };
 
+  setOrderListDeleted = async(orderIdList: number[], isDeleted: boolean): Promise<ModifyOrderResponse> => {
+    const url = "/user/setOrderDeletedSecured";
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyOrderResponse = {
+      success: false,
+      orderError: undefined,
+      statusCode: 200
+    };
+
+    const data = JSON.stringify({
+      'orderIdList': orderIdList,
+      'isDeleted': isDeleted ? 0 : 1
+    });
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      }).then((res) => {
+        modifyResponse.success = res.data as boolean;
+        if (!modifyResponse.success) {
+          modifyResponse.orderError = "Unexpected error occurred while modifying orders - please contact your administrator";
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while modifying orders - please contact your administrator";
+        }
+        modifyResponse.orderError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setOrderHidden = async(orderId: number, isHidden: boolean): Promise<ModifyOrderResponse> => {
+    const url = "/user/setOrderHiddenSecured";
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyOrderResponse = {
+      success: false,
+      orderError: undefined,
+      statusCode: 200
+    };
+
+    const data = {
+      'orderId': orderId,
+      'isHidden': isHidden ? 0 : 1
+    };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      }).then((res) => {
+        modifyResponse.success = res.data as boolean;
+        if (!modifyResponse.success) {
+          modifyResponse.orderError = "Unexpected error occurred while modifying order - please contact your administrator";
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while modifying order - please contact your administrator";
+        }
+        modifyResponse.orderError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setOrderListHidden = async(orderIdList: number[], isHidden: boolean): Promise<ModifyOrderResponse> => {
+    const url = "/user/setOrderHiddenSecured";
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyOrderResponse = {
+      success: false,
+      orderError: undefined,
+      statusCode: 200
+    };
+
+    const data = JSON.stringify({
+      'orderIdList': orderIdList,
+      'isHidden': isHidden ? 0 : 1
+    });
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      }).then((res) => {
+        modifyResponse.success = res.data as boolean;
+        if (!modifyResponse.success) {
+          modifyResponse.orderError = "Unexpected error occurred while modifying orders - please contact your administrator";
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while modifying orders - please contact your administrator";
+        }
+        modifyResponse.orderError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
   setTicketCheckedIn = async(ticketId: number, isCheckedIn: boolean): Promise<ModifyTicketResponse> => {
     const url = "/user/setTicketCheckinSecured";
     const headers = getAuthorizationHeader();
@@ -359,6 +775,47 @@ export class EventService {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage = "Unknown error while modifying ticket - please contact your administrator";
+        }
+        modifyResponse.ticketError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setTicketListCheckedIn = async(ticketIdList: number[], isCheckedIn: boolean): Promise<ModifyTicketResponse> => {
+    const url = "/user/setTicketCheckinSecured";
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyTicketResponse = {
+      success: false,
+      ticketError: undefined,
+      statusCode: 200
+    };
+
+    const data = JSON.stringify({
+      'ticketIdList': ticketIdList,
+      'isCheckedIn': isCheckedIn ? 1 : 0
+    });
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      }).then((res) => {
+        modifyResponse.success = res.data as boolean;
+        if (!modifyResponse.success) {
+          modifyResponse.ticketError = "Unexpected error occurred while modifying tickets - please contact your administrator";
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while modifying tickets - please contact your administrator";
         }
         modifyResponse.ticketError = errorMessage;
         return modifyResponse;

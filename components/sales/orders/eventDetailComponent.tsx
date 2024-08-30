@@ -17,7 +17,7 @@ import PrintButton from "../../common/printButtonComponent";
 import { useGetEventDetails } from "@/hooks/useGetEventDetails";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees, setFocusControl, setEventSeller } from "@/lib/reportSelectionSlice";
+import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees, setFocusControl, setEventSeller, setShowHiddenOrders } from "@/lib/reportSelectionSlice";
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
 import { EnumPermission, UserReportSelection } from "@/types/user";
 import { useWindowSize } from "@/hooks/useWindowSize";
@@ -48,6 +48,7 @@ export default function EventDetail(props: any) {
 
     const viewInactiveEvents = userHasPermission(user, EnumPermission.ViewInactiveEvents);
     const viewDeletedEvents = userHasPermission(user, EnumPermission.ViewDeletedEvents);
+    const viewHiddenEvents = userHasPermission(user, EnumPermission.ViewHiddenEvents);
     const viewServiceFees = userHasPermission(user, EnumPermission.ViewServiceFees);
     const viewRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
     const viewRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);    
@@ -91,7 +92,7 @@ export default function EventDetail(props: any) {
                     setHideServiceFeeDisplay(currentReportSelection.hideServiceFees ?? true);
                 } else {
                     setHideServiceFeeDisplay(true);
-                }      
+                }
                 
                 if (currentReportSelection.reloadEvents) {
                     setIsLoading(true);
@@ -261,6 +262,15 @@ export default function EventDetail(props: any) {
         }
     };
 
+    const handleShowHidden = async (event: ChangeEvent<HTMLInputElement>) => {
+        if (currentReportSelection) {
+            dispatch(
+                setShowHiddenOrders(event.target.checked)
+            );
+            setVipEvent(undefined);            
+        }
+    };
+
     const handleHideRevenue = async(event: ChangeEvent<HTMLInputElement>) => {
         if (currentReportSelection) {
             dispatch (
@@ -348,6 +358,9 @@ export default function EventDetail(props: any) {
                                 </span>
                                 <span className="deleted-check" hidden={!viewDeletedEvents}>
                                     <FormCheck checked={currentReportSelection?.showDeletedOrders} onChange={handleShowDeleted} label="Show Deleted Orders?" /> 
+                                </span>
+                                <span className="deleted-check" hidden={!viewHiddenEvents}>
+                                    <FormCheck checked={currentReportSelection?.showHiddenOrders} onChange={handleShowHidden} label="Show Hidden Orders?" /> 
                                 </span>
                                 <span className="revenue-check" hidden={!hasOrders || !viewRevenueControls}>
                                     <FormCheck checked={currentReportSelection?.hideRevenue} onChange={handleHideRevenue} label="Hide Revenue Items?" /> 

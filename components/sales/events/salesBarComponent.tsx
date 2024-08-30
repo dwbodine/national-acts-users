@@ -21,6 +21,7 @@ import ServiceFeesCheck from "./serviceFeesCheckComponent";
 import { useEffect } from "react";
 import { useHasPermission } from "@/hooks/useHasPermission";
 import { useWindowSize } from '@/hooks/useWindowSize';
+import HiddenCheck from "./hiddenCheckComponent";
 
 export default function SalesBar() {    
     const dispatch = useDispatch(); 
@@ -41,6 +42,7 @@ export default function SalesBar() {
     const canExportCustomerData = userHasPermission(user, EnumPermission.ExportCustomerData);
     const viewPrintButton = userHasPermission(user, EnumPermission.ViewPrintButton);
     const viewRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
+    const viewHiddenEvents = userHasPermission(user, EnumPermission.ViewHiddenEvents);
 
     const exportEventData = () => {
         if (currentReportSelection && currentReportSelection.currentEvents) {
@@ -117,6 +119,7 @@ export default function SalesBar() {
                 <Col md={10} sm={12}>
                     {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 ? <InactiveCheck /> : ''}
                     {viewDeletedEvents && currentReportSelection.seller.sellerId > 0 ? <DeletedCheck /> : ''}    
+                    {viewHiddenEvents && currentReportSelection.seller.sellerId > 0 ? <HiddenCheck /> : ''}    
                     {viewRevenueControls && currentReportSelection.seller.sellerId > 0 && hasEvents ? <RevenueCheck /> : ''}    
                     {viewServiceFees && currentReportSelection.seller.sellerId > 0 && hasEvents ? <ServiceFeesCheck /> : ''} 
                 </Col>

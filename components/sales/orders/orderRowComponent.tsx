@@ -7,6 +7,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import router from 'next/router';
 import AttendeeRow from './attendeeRowComponent';
+import { useSetOrderHidden } from '@/hooks/useSetOrderHidden';
 
 export default function OrderRow(props: any) {
     const dispatch = useDispatch();
@@ -22,6 +23,7 @@ export default function OrderRow(props: any) {
 
     const { setOrderInactive } = useSetOrderInactive();
     const { setOrderDeleted } = useSetOrderDeleted();
+    const { setOrderHidden } = useSetOrderHidden();
         
     let statusClass = '';
     if (order.isDeleted) {
@@ -30,6 +32,8 @@ export default function OrderRow(props: any) {
         statusClass += 'inactive';
     } else if (order.isRefunded) {
         statusClass += 'refunded';
+    } else if (order.isHidden) {
+        statusClass += 'hidden';
     }
 
     const id = `order_${order.ticketSocketOrderId}`;
@@ -135,8 +139,33 @@ export default function OrderRow(props: any) {
             });
     };
 
+    const hideUnhideOrder = () => {
+        const orderId = order.ticketSocketOrderId;
+        const isHidden = order.isHidden ?? false;
+        setOrderHidden(orderId, isHidden)
+            .then((response) => {
+                if (!response.success) {
+                    if (response.statusCode == 401 || response.statusCode == 422) {
+                        router.push('/logout');
+                    } else {
+                        console.log(response.orderError);
+                    }
+                    return;
+                } else {
+                    dispatch(
+                        setReloadEvents(true)
+                    );
+                    window.opener.location.reload(true);
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
     const inactiveLabel = order.isActive ? "Deactivate" : "Activate";
     const deletedLabel = order.isDeleted ? "Undelete" : "Delete";
+    const hiddenLabel = order.isHidden ? "Unhide" : "Hide";
 
     return (
         <tr className={statusClass}>
@@ -154,6 +183,7 @@ export default function OrderRow(props: any) {
             { hasShirtData ? <td>{shirtSizeRows}</td> : ''}
             { changeOrderStatus ? <td className="command-column no-print"><a onClick={activateDeactivateOrder}>{inactiveLabel}</a></td> : ''}
             { changeOrderStatus ? <td className="command-column no-print"><a onClick={deleteUndeleteOrder}>{deletedLabel}</a></td> : ''}
+            { changeOrderStatus ? <td className="command-column no-print"><a onClick={hideUnhideOrder}>{hiddenLabel}</a></td> : ''}
         </tr>
     );
 }

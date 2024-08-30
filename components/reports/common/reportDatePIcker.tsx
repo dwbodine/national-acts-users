@@ -13,47 +13,41 @@ export default function ReportDatePicker(props: any) {
         if (!date) {
             return;
         }
-        const newStart = moment(date).unix();
+        const startDate = moment(date).startOf('day');
+        const newStart = startDate.unix();
         let changed: boolean = false;
         if (newStart > end) {
             setStart(end);
             setEnd(newStart);        
-            changed = true;
+            onChange(end, newStart);
         } else if (newStart == end) {
             setStart(newStart);
             setEnd(newStart + 86400);
-            changed = true;
+            onChange(newStart, newStart + 86400);
         } else {
             setStart(newStart);
-            changed = true;
+            onChange(newStart, end);
         }
-
-        if (changed) {
-            onChange(start, end);
-        }       
     };
 
     const onEndChange = (date: Date | null) => {
         if (!date) {
             return;
         }
-        const newEnd = moment(date).unix();
+        const endDate = moment(date).startOf('day');
+        const newEnd = endDate.unix();
         let changed: boolean = false;
         if (newEnd < start) {
             setEnd(start);
             setStart(newEnd);                
-            changed = true;
+            onChange(newEnd, start);
         } else if (newEnd == start) {
             setEnd(newEnd + 86400);
-            changed = true;
+            onChange(start, newEnd + 86400);
         } else {
             setEnd(newEnd);
-            changed = true;
+            onChange(start, newEnd);
         }
-
-        if (changed) {
-            onChange(start, end);
-        } 
     };
 
     const startDate = moment.unix(start).toDate();

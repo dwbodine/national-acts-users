@@ -8,6 +8,7 @@ import { useSetEventDeleted } from "@/hooks/useSetEventDeleted";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import router from "next/router";
 import { eventService } from "@/services";
+import { useSetEventHidden } from "@/hooks/useSetEventHidden";
 
 export default function EventRow(props: any) {
     const dispatch = useDispatch(); 
@@ -17,6 +18,7 @@ export default function EventRow(props: any) {
     const hideServiceFees = props.HideServiceFees as boolean;
     const { setEventInactive } = useSetEventInactive();
     const { setEventDeleted } = useSetEventDeleted();
+    const { setEventHidden } = useSetEventHidden();
     const { getLocation } = useGetLocation();
     const eUrl: string = eventService.getEventUrl(); 
     const id = `event_${vipEvent.ticketSocketEventId}`;
@@ -72,11 +74,36 @@ export default function EventRow(props: any) {
             });
     };
 
+    const hideUnhideEvent = () => {
+        const eventId = vipEvent.ticketSocketEventId;
+        const isHidden = vipEvent.isHidden ?? false;
+        setEventHidden(eventId, isHidden)
+            .then((response) => {
+                if (!response.success) {
+                    if (response.statusCode == 401 || response.statusCode == 422) {
+                        router.push('/logout');
+                    } else {
+                        console.log(response.eventError);
+                    }
+                    return;
+                } else {
+                    dispatch(
+                        setEvents()
+                    );
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
     let statusClass = '';
     if (props.VipEvent.isDeleted) {
         statusClass += 'event-deleted';
     } else if (!props.VipEvent.isActive) {
         statusClass += 'event-inactive';
+    } else if (props.VipEvent.isHidden) {
+        statusClass += 'event-hidden';
     }
 
     const venueName = vipEvent.venue?.name;
@@ -90,6 +117,7 @@ export default function EventRow(props: any) {
     const serviceFees = new Number(vipEvent.totalServiceFees).toFixed(2);
     const inactiveLabel = vipEvent.isActive ? "Deactivate" : "Activate";
     const deletedLabel = vipEvent.isDeleted ? "Undelete" : "Delete";
+    const hiddenLabel = vipEvent.isHidden ? "Unhide" : "Hide";
     const url = `/${eUrl}?id=${vipEvent.ticketSocketEventId}`;
         
     return (
@@ -103,6 +131,7 @@ export default function EventRow(props: any) {
             <td className="pull-right no-print" hidden={hideServiceFees}>{serviceFees}</td>
             { changEventStatus ? <td className="command-column no-print"><a onClick={activateDeactivateEvent}>{inactiveLabel}</a></td> : ''}
             { changEventStatus ? <td className="command-column no-print"><a onClick={deleteUndeleteEvent}>{deletedLabel}</a></td> : ''}
+            { changEventStatus ? <td className="command-column no-print"><a onClick={hideUnhideEvent}>{hiddenLabel}</a></td> : ''}
         </tr>
     );
 }

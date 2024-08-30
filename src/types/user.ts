@@ -35,7 +35,8 @@ export enum EnumPermission {
   CheckInUsers = 8,
   ChangeEventStatus = 9,
   ChangeOrderStatus = 10,
-  ExportCustomerData = 11
+  ExportCustomerData = 11, 
+  ViewHiddenEvents = 12 
 }
 
 export type User = {
@@ -75,6 +76,8 @@ export type UserReportSelection = {
   retainDateSelection?: boolean;
   currentEvents?: VipEvent[];
   focusControl?: string;
+  showHidden?: boolean;
+  showHiddenOrders?: boolean;
 }
 
 export type AdminDashboardSelection = {

@@ -57,6 +57,7 @@ export interface Order {
   serviceFees?: number;
   attendeeNames?: string[];
   shirts?: string[];
+  isHidden?: boolean;
 }
 
 export interface Venue {
@@ -114,6 +115,7 @@ export interface VipEvent {
   hasTicketTypeData?: boolean;
   isAddedToBandsInTown?: boolean;
   sellerName?: string;
+  isHidden?: boolean;
 }
 
 export interface GetEventsResponse {

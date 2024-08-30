@@ -11,6 +11,7 @@ import { RootState } from "@/lib/store";
 import { eventService } from "@/services";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { getTicketDataFromEvents } from "@/utils/getTicketData";
+import { useSetEventHidden } from "@/hooks/useSetEventHidden";
 
 export default function EventMobileRow(props: any) {
     const dispatch = useDispatch(); 
@@ -21,6 +22,7 @@ export default function EventMobileRow(props: any) {
     const canCheckInTickets = props.CanCheckInTickets as boolean;
     const { setEventInactive } = useSetEventInactive();
     const { setEventDeleted } = useSetEventDeleted();
+    const { setEventHidden } = useSetEventHidden();
     const { getLocation } = useGetLocation();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);   
     const eUrl: string = eventService.getEventUrl(); 
@@ -78,11 +80,36 @@ export default function EventMobileRow(props: any) {
             });
     };
 
+    const hideUnhideEvent = () => {
+        const eventId = vipEvent.ticketSocketEventId;
+        const isHidden = vipEvent.isHidden ?? false;
+        setEventHidden(eventId, isHidden)
+            .then((response) => {
+                if (!response.success) {
+                    if (response.statusCode == 401 || response.statusCode == 422) {
+                        router.push('/logout');
+                    } else {
+                        console.log(response.eventError);
+                    }
+                    return;
+                } else {
+                    dispatch(
+                        setEvents()
+                    );
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
     let statusClass = '';
     if (props.VipEvent.isDeleted) {
         statusClass += 'event-deleted';
     } else if (!props.VipEvent.isActive) {
         statusClass += 'event-inactive';
+    } else if (props.VipEvent.isHidden) {
+        statusClass += 'event-hidden';
     }
 
     const venueName = vipEvent.venue?.name;
@@ -122,6 +149,7 @@ export default function EventMobileRow(props: any) {
     const serviceFees = `$${new Number(vipEvent.totalServiceFees).toFixed(2)}`;
     const inactiveLabel = vipEvent.isActive ? "Deactivate" : "Activate";
     const deletedLabel = vipEvent.isDeleted ? "Undelete" : "Delete";
+    const hiddenLabel = vipEvent.isHidden ? "Unhide" : "Hide";
     const buttonText = currentSellerType == SellerType.Venue ? "Customer List" : "VIP List";
         
     return (
@@ -175,6 +203,7 @@ export default function EventMobileRow(props: any) {
                         <Col>
                             <Button onClick={activateDeactivateEvent}>{inactiveLabel}</Button>
                             <Button onClick={deleteUndeleteEvent}>{deletedLabel}</Button>
+                            <Button onClick={hideUnhideEvent}>{hiddenLabel}</Button>
                         </Col>
                     </Row>
                </Container>

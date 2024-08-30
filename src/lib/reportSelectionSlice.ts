@@ -19,7 +19,9 @@ const initialState: UserReportSelection = {
     hideRevenue: true,
     hideServiceFees: true,
     currentEvents: [],
-    focusControl: ''
+    focusControl: '',
+    showHidden: false,
+    showHiddenOrders: false
 };
 
 export const userReportSelectionSlice = createSlice({
@@ -47,6 +49,8 @@ export const userReportSelectionSlice = createSlice({
             state.showDeleted = false;
             state.showDeletedOrders = false;
             state.showInactive = false;
+            state.showHidden = false;
+            state.showHiddenOrders = false;
             state.showInactiveOrders = true;
             state.retainDateSelection = false;
             if (state.reloadEvents) {
@@ -68,6 +72,7 @@ export const userReportSelectionSlice = createSlice({
         setShowInactive: (state, action: PayloadAction<boolean>) => {
             const previousInactive = state.showInactive;
             const newInactive = action.payload;
+            state.showHidden = false;
             state.showInactive = newInactive;
             state.reloadEvents = (previousInactive != newInactive);
             if (!state.retainDateSelection) {
@@ -82,6 +87,7 @@ export const userReportSelectionSlice = createSlice({
         setShowInactiveOrders: (state, action: PayloadAction<boolean>) => {
             const previousInactive = state.showInactiveOrders;
             const newInactive = action.payload;
+            state.showHiddenOrders = false;
             state.showInactiveOrders = newInactive;
             state.reloadEvents = (previousInactive != newInactive);
             return state;
@@ -91,6 +97,7 @@ export const userReportSelectionSlice = createSlice({
             const newDeleted = action.payload;
             state.showDeleted = newDeleted;
             state.showInactive = state.showDeleted;
+            state.showHidden = false;
             state.reloadEvents = (previousDeleted != newDeleted);
             if (!state.retainDateSelection) {
                 state.start = 0;
@@ -106,7 +113,33 @@ export const userReportSelectionSlice = createSlice({
             const newDeleted = action.payload;
             state.showDeletedOrders = newDeleted;
             state.showInactiveOrders = state.showDeletedOrders;
+            state.showHiddenOrders = false;
             state.reloadEvents = (previousDeleted != newDeleted);
+            return state;
+        },
+        setShowHidden: (state, action: PayloadAction<boolean>) => {
+            const previousHidden = state.showHidden;
+            const newHidden = action.payload;
+            state.showHidden = newHidden;
+            state.showInactive = false;
+            state.showDeleted = false;
+            state.reloadEvents = (previousHidden != newHidden);
+            if (!state.retainDateSelection) {
+                state.start = 0;
+                state.end = 0;
+            }
+            if (state.reloadEvents) {
+                state.currentEvents = [];
+            }
+            return state;
+        },
+        setShowHiddenOrders: (state, action: PayloadAction<boolean>) => {
+            const previousHidden = state.showHidden;
+            const newHidden = action.payload;
+            state.showHiddenOrders = newHidden;
+            state.showInactiveOrders = false;
+            state.showDeletedOrders = false;
+            state.reloadEvents = (previousHidden != newHidden);
             return state;
         },
         setHideRevenue: (state, action: PayloadAction<boolean>) => {
@@ -173,6 +206,8 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = true;
             state.retainDateSelection = false;
             state.currentEvents = [];
+            state.showHidden = false;
+            state.showHiddenOrders = false;
             return state;
         }
     }
@@ -191,7 +226,9 @@ export const { setSeller,
                setShowInactiveOrders,
                setShowDeletedOrders, 
                setFocusControl, 
-               setEventSeller
+               setEventSeller, 
+               setShowHidden, 
+               setShowHiddenOrders
              } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer
