@@ -80,6 +80,14 @@ export type UserReportSelection = {
   showHiddenOrders?: boolean;
 }
 
+export interface IDashboardData {
+  ticketSalesData?: ITicketSalesData[];
+  tickets?: number;
+  revenue?: number;
+  shirts?: number;
+  orders?: Order[];
+}
+
 export type AdminDashboardSelection = {
   start: number;
   end: number;
@@ -90,9 +98,8 @@ export type AdminDashboardSelection = {
   reloadActivities: boolean;
   reloadOrders: boolean;
   filterAdmins: boolean;
-  currentOrders?: Order[];
   currentLogins?: number;
-  currentTicketSalesData?: ITicketSalesData[];
+  currentDashboardData?: IDashboardData;
 }
 
 export enum UserActivityType {

@@ -1,11 +1,25 @@
 import { ITicketEventSalesData, ITicketSalesData, Order } from "@/types/event";
+import { IDashboardData } from "@/types/user";
 import moment from "moment";
 
 
-export function getPurchaseDataFromOrders(orders: Order[]): ITicketSalesData[] {
+export function getDashboardDataFromOrders(orders: Order[]): IDashboardData {
+    let totalTickets: number = 0;
+    let totalRevenue: number = 0;
+    let totalShirts: number | undefined = undefined;
+
     let map = new Map<string, ITicketSalesData>();
     
     orders.forEach((order) => {
+        totalTickets += order.numTickets;
+        totalRevenue += order.revenueUsd;
+        if (order.totalShirts) {
+            if (!totalShirts) {
+                totalShirts = 0;
+            }
+            totalShirts += order.totalShirts;
+        }         
+
         const key = moment(order.purchaseDate).format('YYYY-MM-DD');
         const esd: ITicketEventSalesData = {
             EventId: order.ticketSocketEventId,
@@ -42,16 +56,15 @@ export function getPurchaseDataFromOrders(orders: Order[]): ITicketSalesData[] {
             }            
             map.set(key, salesData);
         }
-    });
-    
+    });    
 
     let ticketSalesData: ITicketSalesData[] = [];
     if (map.size > 0) {
         var keys = Array.from(map.keys()).sort();
         var start = moment(keys[0]);
         var end = moment(keys[keys.length-1]);
-        while (start.unix() <= end.unix()) {
-            const key = start.format('YYYY-MM-DD');
+        while (end.unix() >= start.unix()) {
+            const key = end.format('YYYY-MM-DD');
             let salesData = map.get(key);
             if (!salesData) {
                 const data: ITicketSalesData = {
@@ -64,9 +77,17 @@ export function getPurchaseDataFromOrders(orders: Order[]): ITicketSalesData[] {
             } else {
                 ticketSalesData.push(salesData);
             }
-            start = start.add(1, 'days');
+            end = end.add(-1, 'days');
         }
     }
+    
+    const dashboardData: IDashboardData = {
+        ticketSalesData: ticketSalesData,
+        tickets: totalTickets,
+        revenue: totalRevenue,
+        shirts: totalShirts,
+        orders: orders
+    };
 
-    return ticketSalesData;
+    return dashboardData; 
 };

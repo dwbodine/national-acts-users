@@ -1,7 +1,7 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import DashboardBar from "./dashboardBarComponent"
 import TicketSalesChart from "../common/ticketSalesChartComponent";
-import { GetOrdersResponse, ITicketSalesData, VipEvent } from "@/types/event";
+import { GetOrdersResponse } from "@/types/event";
 import { useEffect, useState } from "react";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import { FULL_PAGE_CHART_BREAKPOINT } from "@/constants";
@@ -9,15 +9,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import UserActivityWidget from "./userActivityWidgetComponent";
 import moment from "moment";
-import { setReloadDashboardOrders, setCurrentDashboardOrders, setCurrentDashboardTicketSalesData } from "@/lib/dashboardSelectionSlice";
+import { setReloadDashboardOrders, setCurrentDashboardData } from "@/lib/dashboardSelectionSlice";
 import { CirclesWithBar } from "react-loader-spinner";
 import { Table } from "rsuite";
 import { useGetOrders } from "@/hooks/useGetOrders";
-import { getPurchaseDataFromOrders } from "@/utils/getPurchaseDataFromOrders";
 import { useGetExport } from "@/hooks/useGetExport";
 import getFileNameFromDashboardReportSelection from "@/utils/getFileNameFromDashboardReportSelection";
 import downloadFile from "@/utils/downloadFile";
-
+import { getDashboardDataFromOrders } from "@/utils/getDashboardDataFromOrders";
+import { FaMoneyBillAlt, FaShirtsinbulk, FaTicketAlt } from "react-icons/fa";
 export default function DashboardIndex() {
 
     const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
@@ -42,31 +42,32 @@ export default function DashboardIndex() {
             getOrders(currentDashboardSelection)
                 .then((response: GetOrdersResponse) => {
                     if (response.orders && response.orders.length > 0 && !response.orderError) {
-                        dispatch(
-                            setCurrentDashboardOrders(response.orders)
-                        );
-                        const tsData = getPurchaseDataFromOrders(response.orders);
+                        const dashData = getDashboardDataFromOrders(response.orders);
                         dispatch (
-                            setCurrentDashboardTicketSalesData(tsData)
+                            setCurrentDashboardData(dashData)
                         );
                     } else {
-                        dispatch(
-                            setCurrentDashboardOrders([])
-                        );
                         dispatch (
-                            setCurrentDashboardTicketSalesData([])
+                            setCurrentDashboardData({
+                                orders: [],
+                                revenue: 0,
+                                tickets: 0,
+                                ticketSalesData: []
+                            })
                         );
                     }
                     setIsLoading(false);
                     setChartsHidden(false);
                 });
-        } else if (chartsHidden) {
-            setChartsHidden(false);
+        } else {
+            if (chartsHidden) {
+                setChartsHidden(false);
+            }
         }
     }, [currentDashboardSelection, dispatch, getOrders, windowSizeJson, chartsHidden]);
 
     const exportDashboardData = () => {
-        if (!currentDashboardSelection.currentOrders || currentDashboardSelection.currentOrders.length == 0) {
+        if (!currentDashboardSelection.currentDashboardData || !currentDashboardSelection.currentDashboardData.orders || currentDashboardSelection.currentDashboardData.orders.length == 0) {
             return;
         }
         
@@ -77,6 +78,11 @@ export default function DashboardIndex() {
 
     const startDate = moment.unix(currentDashboardSelection.start).format('M/D/YYYY');
     const endDate = moment.unix(currentDashboardSelection.end).format('M/D/YYYY');
+
+    const totalTickets = currentDashboardSelection.currentDashboardData?.tickets ?? 0;
+    const totalRevenue = currentDashboardSelection.currentDashboardData?.revenue ?? 0;
+    const totalShirts = currentDashboardSelection.currentDashboardData?.shirts ?? 0;
+    const ticketSalesData = currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined;
 
     return (
         <>
@@ -97,19 +103,40 @@ export default function DashboardIndex() {
                         <Button onClick={exportDashboardData}>Export</Button>
                     </Col>
                 </Row>
-                <Row>
-                    <Col className="dashboard-widget-table">
+                <Row className="dashboard-widget-table">
+                    <Col className="col-lg-3 col-md-6 stat-block-container">
                         <UserActivityWidget />          
+                    </Col>
+                    <Col className="col-lg-3 col-md-6 stat-block-container">
+                        <div className="stat-block">
+                            <FaTicketAlt size="2em" />
+                            <div>Total tickets sold:</div>
+                            <span>{totalTickets}</span>
+                        </div>
+                    </Col>
+                    <Col className="col-lg-3 col-md-6 stat-block-container">
+                        <div className="stat-block">
+                            <FaMoneyBillAlt size="2em" />
+                            <div>Total revenue:</div>
+                            <span>${totalRevenue.toFixed(2)}</span>
+                        </div>
+                    </Col>
+                    <Col className="col-lg-3 col-md-6 stat-block-container">
+                        <div className="stat-block">
+                            <FaShirtsinbulk size="2em" />
+                            <div>Total shirts sold:</div>
+                            <span>{totalShirts ? totalShirts : 'n/a'}</span>
+                        </div>
                     </Col>
                 </Row>                
                 <Row>
                     <Col>
-                        <TicketSalesChart TicketSalesData={currentDashboardSelection.currentTicketSalesData} ChartsHidden={chartsHidden} HideRevenue={false} HideMobile={hideTicketChart} />
+                        <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} HideRevenue={false} HideMobile={hideTicketChart} />
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Table height={550} bordered cellBordered isTree rowKey="PurchaseDate" data={currentDashboardSelection.currentTicketSalesData} shouldUpdateScroll={false}>
+                        <Table height={550} bordered cellBordered isTree rowKey="PurchaseDate" data={ticketSalesData} shouldUpdateScroll={false}>
                             <Column flexGrow={4}>
                                 <HeaderCell>Purchase Date</HeaderCell>
                                 <Cell dataKey="PurchaseDate"></Cell>

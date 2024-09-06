@@ -2,9 +2,9 @@ import { useGetActivityData } from "@/hooks/useGetActivityData";
 import { setCurrentLogins, setReloadActivities } from "@/lib/dashboardSelectionSlice";
 import { RootState } from "@/lib/store";
 import { GetActivityResponse, UserActivity, UserActivityType } from "@/types/user";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Col, Row } from "react-bootstrap";
+import { FaUser } from "react-icons/fa6";
 
 export default function UserActivityWidget() {
     const { getActivityData } = useGetActivityData();
@@ -28,7 +28,7 @@ export default function UserActivityWidget() {
                             return result;
                         }, []);
                         dispatch(
-                            setCurrentLogins(uniqueLogins.length)
+                            setCurrentLogins(uniqueLogins.length ?? 0)
                         );
                     }                    
                 });
@@ -36,7 +36,11 @@ export default function UserActivityWidget() {
     }, [currentDashboardSelection, getActivityData, dispatch]);
 
     return (       
-        <div> Unique user logins: {currentDashboardSelection.currentLogins ?? 0} </div>
+        <div className="stat-block">
+            <FaUser size="2em" />
+            <div>Non-admin user portal logins:</div>
+            <span>{currentDashboardSelection?.currentLogins ?? 0}</span>
+        </div>
     );
     
 }

@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { AdminDashboardSelection } from "../types/user";
+import { AdminDashboardSelection, IDashboardData } from "../types/user";
 import moment from "moment";
-import { ITicketSalesData, Order } from "@/types/event";
 
 const initialState: AdminDashboardSelection = {
     start: moment().unix() - (7 * 24 * 60 * 60),
@@ -10,8 +9,7 @@ const initialState: AdminDashboardSelection = {
     reloadActivities: true,
     reloadOrders: true,
     filterAdmins: true,
-    currentOrders: [],
-    currentTicketSalesData: [],
+    currentDashboardData: undefined, 
     currentLogins: 0
 };
 
@@ -24,8 +22,8 @@ export const adminDashboardSelectionSlice = createSlice({
             state.end = action.payload.end;
             state.reloadActivities = true;
             state.reloadOrders = true;
-            state.currentOrders = [];
-            state.currentTicketSalesData = [];
+            state.currentDashboardData = undefined;
+            state.currentLogins = 0;
             return state;
         },
         setReloadActivities: (state, action: PayloadAction<boolean>) => {
@@ -40,12 +38,8 @@ export const adminDashboardSelectionSlice = createSlice({
             state.reloadOrders = action.payload;
             return state;
         },
-        setCurrentDashboardOrders: (state, action: PayloadAction<Order[]>) => {
-            state.currentOrders = action.payload;
-            return state;
-        },
-        setCurrentDashboardTicketSalesData: (state, action: PayloadAction<ITicketSalesData[]>) => {
-            state.currentTicketSalesData = action.payload;
+        setCurrentDashboardData: (state, action: PayloadAction<IDashboardData>) => {
+            state.currentDashboardData = action.payload;
             return state;
         },
         setFilterAdmins: (state, action: PayloadAction<boolean>) => {
@@ -59,8 +53,7 @@ export const adminDashboardSelectionSlice = createSlice({
             state.reloadActivities = true;
             state.filterAdmins = true;
             state.reloadOrders = true;
-            state.currentOrders = [];
-            state.currentTicketSalesData = [];
+            state.currentDashboardData = undefined;
             state.currentLogins = 0;
             return state;
         }
@@ -70,11 +63,10 @@ export const adminDashboardSelectionSlice = createSlice({
 export const { setDashboardDateRange, 
                setReloadActivities, 
                setReloadDashboardOrders,
-               setCurrentDashboardOrders,
                setCurrentLogins,
                resetDashboard, 
                setFilterAdmins, 
-               setCurrentDashboardTicketSalesData
+               setCurrentDashboardData
              } = adminDashboardSelectionSlice.actions
 
 export default adminDashboardSelectionSlice.reducer
