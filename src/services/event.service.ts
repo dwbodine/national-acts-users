@@ -1132,11 +1132,11 @@ export class EventService {
   };
 
   exportDashboardOrdersToCsv = (currentDashboardSelection: AdminDashboardSelection): string => {
-    if (!currentDashboardSelection.currentOrders || currentDashboardSelection.currentOrders.length == 0) {
+    if (!currentDashboardSelection.currentDashboardData || !currentDashboardSelection.currentDashboardData.orders || currentDashboardSelection.currentDashboardData.orders.length == 0) {
       return '';
     }
 
-    const orders = currentDashboardSelection.currentOrders;
+    const orders = currentDashboardSelection.currentDashboardData.orders;
     const startDate = moment.unix(currentDashboardSelection.start).format('M/D/YYYY');
     const endDate = moment.unix(currentDashboardSelection.end).format('M/D/YYYY');
 
