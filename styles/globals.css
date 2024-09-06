@@ -617,6 +617,14 @@ div hidden {
   margin: 15px 0;
 }
 
+.title-date-range {
+  margin: 0 15px;
+}
+
+.dashboard-export-button {
+  margin-left: 15px;
+}
+
 .align-right {
   text-align: right !important;
 }

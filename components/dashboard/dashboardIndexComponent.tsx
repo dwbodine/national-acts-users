@@ -1,4 +1,4 @@
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import DashboardBar from "./dashboardBarComponent"
 import TicketSalesChart from "../common/ticketSalesChartComponent";
 import { GetOrdersResponse } from "@/types/event";
@@ -8,14 +8,10 @@ import { FULL_PAGE_CHART_BREAKPOINT } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import UserActivityWidget from "./userActivityWidgetComponent";
-import moment from "moment";
 import { setReloadDashboardOrders, setCurrentDashboardData } from "@/lib/dashboardSelectionSlice";
 import { CirclesWithBar } from "react-loader-spinner";
 import { Table } from "rsuite";
 import { useGetOrders } from "@/hooks/useGetOrders";
-import { useGetExport } from "@/hooks/useGetExport";
-import getFileNameFromDashboardReportSelection from "@/utils/getFileNameFromDashboardReportSelection";
-import downloadFile from "@/utils/downloadFile";
 import { getDashboardDataFromOrders } from "@/utils/getDashboardDataFromOrders";
 import { FaMoneyBillAlt, FaShirtsinbulk, FaTicketAlt } from "react-icons/fa";
 export default function DashboardIndex() {
@@ -28,7 +24,6 @@ export default function DashboardIndex() {
     const dispatch = useDispatch();
     const windowSize = useWindowSize();
     const { getOrders } = useGetOrders();
-    const { exportDashboardOrdersToCsv } = useGetExport();
     const windowSizeJson = JSON.stringify(windowSize);
     const hideTicketChart = windowSize.width < FULL_PAGE_CHART_BREAKPOINT;
 
@@ -66,19 +61,6 @@ export default function DashboardIndex() {
         }
     }, [currentDashboardSelection, dispatch, getOrders, windowSizeJson, chartsHidden]);
 
-    const exportDashboardData = () => {
-        if (!currentDashboardSelection.currentDashboardData || !currentDashboardSelection.currentDashboardData.orders || currentDashboardSelection.currentDashboardData.orders.length == 0) {
-            return;
-        }
-        
-        const csvData = exportDashboardOrdersToCsv(currentDashboardSelection);
-        const fileName = getFileNameFromDashboardReportSelection('dashboard-orders', currentDashboardSelection);
-        downloadFile(fileName, csvData);        
-    };
-
-    const startDate = moment.unix(currentDashboardSelection.start).format('M/D/YYYY');
-    const endDate = moment.unix(currentDashboardSelection.end).format('M/D/YYYY');
-
     const totalTickets = currentDashboardSelection.currentDashboardData?.tickets ?? 0;
     const totalRevenue = currentDashboardSelection.currentDashboardData?.revenue ?? 0;
     const totalShirts = currentDashboardSelection.currentDashboardData?.shirts ?? 0;
@@ -95,14 +77,6 @@ export default function DashboardIndex() {
                 </Row>
             </Container>
             <Container fluid hidden={isLoading}>
-                <Row>
-                    <Col>
-                        <h5>Admin dashboard - orders from {startDate} to {endDate}</h5>
-                    </Col>
-                    <Col className="align-right">
-                        <Button onClick={exportDashboardData}>Export</Button>
-                    </Col>
-                </Row>
                 <Row className="dashboard-widget-table">
                     <Col className="col-lg-3 col-md-6 stat-block-container">
                         <UserActivityWidget />          
