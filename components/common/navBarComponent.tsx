@@ -9,15 +9,18 @@ import { useEffect } from 'react';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import DebugBar from './debugBarComponent';
 
-export default function NavBar() {    
+export default function NavBar(props: any) {    
     const windowSize = useWindowSize();
     const windowSizeJson = JSON.stringify(windowSize);
+
+    const navBarHidden = props.hidden ?? false as boolean;
 
     useEffect(() => {
         // blank
     }, [windowSizeJson]);
 
     return (
+        !navBarHidden ? 
         <>
             <DebugBar />
             <Row className="no-print nav-bar">
@@ -30,5 +33,6 @@ export default function NavBar() {
                 </Col>
             </Row>
         </>           
+        : ''
     );
 }

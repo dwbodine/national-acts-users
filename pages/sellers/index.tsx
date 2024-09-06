@@ -20,7 +20,7 @@ export default function Home() {
   useEffect(() => {
     if (user && user.isAuthenticated) {
       if (!user.isAdmin) {
-        router.push('/logout');
+        router.push('/logout/');
       } else {
         document.title = "Client Portal - Sales Overview";
         logActivityData(UserActivityType.AccessSalesOverView);
@@ -45,12 +45,13 @@ export default function Home() {
     }
   };
 
+  const notAdmin = !user || !user.isAuthenticated || !user.isAdmin;
+
   return (
-    (user && user.isAdmin) ?
     <>
       <CheckAuth />
-      <NavBar />
-      <Container fluid hidden={!user.isAuthenticated} className="vipContainer">
+      <NavBar hidden={notAdmin} />
+      <Container fluid hidden={notAdmin} className="vipContainer">
           <Tabs defaultActiveKey={activeKey.toString()} onSelect={onSelectTab} className="admin-tabs">
             <Tabs.Tab eventKey={ActivePageKey.Dashboard.toString()} title="HOME">
             </Tabs.Tab>
@@ -65,6 +66,5 @@ export default function Home() {
           </Tabs>
       </Container>
     </>
-    : '' 
   );
 }

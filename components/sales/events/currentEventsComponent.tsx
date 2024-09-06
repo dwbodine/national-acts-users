@@ -15,7 +15,7 @@ import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import EventRow from "./eventRowComponent";
 import router from "next/router";
 import WidgetBar from "../widgets/widgetBarComponent";
-import TicketSalesChart from "../charts/ticketSalesChartComponent";
+import TicketSalesChart from "../../common/ticketSalesChartComponent";
 import { getPurchaseDataFromEvents } from "@/utils/getPurchaseData";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import EventMobileRow from "./eventMobileRowComponent";
@@ -123,7 +123,7 @@ export default function CurrentEvents() {
                             setEvents(response.events)
                         );
                     } else if (response.statusCode == 401 || response.statusCode == 422) {
-                        router.push('/logout');
+                        router.push('/logout/');
                     } else {
                         dispatch(
                             setEvents([])

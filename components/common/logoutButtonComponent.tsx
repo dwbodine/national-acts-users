@@ -3,7 +3,7 @@ import router from 'next/router';
 
 export default function LogoutButton() {    
     const handleClick = () => {
-        router.push("/logout");
+        router.push("/logout/");
     };
     
     return (

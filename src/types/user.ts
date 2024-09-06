@@ -1,4 +1,4 @@
-import { SellerType, VipEvent } from "./event";
+import { ITicketSalesData, Order, SellerType, VipEvent } from "./event";
 
 export type LoginResponse = {
   user?: User;
@@ -83,8 +83,16 @@ export type UserReportSelection = {
 export type AdminDashboardSelection = {
   start: number;
   end: number;
+  sellerId?: number;
+  showInactive?: boolean;
+  showDeleted?: boolean;
+  showHidden?: boolean;
   reloadActivities: boolean;
+  reloadOrders: boolean;
   filterAdmins: boolean;
+  currentOrders?: Order[];
+  currentLogins?: number;
+  currentTicketSalesData?: ITicketSalesData[];
 }
 
 export enum UserActivityType {

@@ -25,12 +25,11 @@ export default function EventMobileRow(props: any) {
     const { setEventHidden } = useSetEventHidden();
     const { getLocation } = useGetLocation();
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);   
-    const eUrl: string = eventService.getEventUrl(); 
     const currentSellerType = currentReportSelection.seller.sellerType;
     const id = `event_${vipEvent.ticketSocketEventId}`;
 
     const setDetailEvent = () => {
-        const url = `/${eUrl}?id=${vipEvent.ticketSocketEventId}`;
+        const url = `/event/?id=${vipEvent.ticketSocketEventId}`;
         window.open(url, "_blank");
     };
 
@@ -41,7 +40,7 @@ export default function EventMobileRow(props: any) {
             .then((response) => {
                 if (!response.success) {
                     if (response.statusCode == 401 || response.statusCode == 422) {
-                        router.push('/logout');
+                        router.push('/logout/');
                     } else {
                         console.log(response.eventError);
                     }                    
@@ -64,7 +63,7 @@ export default function EventMobileRow(props: any) {
             .then((response) => {
                 if (!response.success) {
                     if (response.statusCode == 401 || response.statusCode == 422) {
-                        router.push('/logout');
+                        router.push('/logout/');
                     } else {
                         console.log(response.eventError);
                     }
@@ -87,7 +86,7 @@ export default function EventMobileRow(props: any) {
             .then((response) => {
                 if (!response.success) {
                     if (response.statusCode == 401 || response.statusCode == 422) {
-                        router.push('/logout');
+                        router.push('/logout/');
                     } else {
                         console.log(response.eventError);
                     }

@@ -11,6 +11,8 @@ import { useGetExport } from "@/hooks/useGetExport";
 import getFileNameFromReportAdminSelection from "@/utils/getFileNameFromAdminReportSelection";
 import downloadFile from "@/utils/downloadFile";
 import { CirclesWithBar } from "react-loader-spinner";
+import { MINIMUM_UNIX_TIMESTAMP } from "@/constants";
+import moment from "moment";
 
 export default function ReportsCustomerExport() {
 
@@ -35,7 +37,20 @@ export default function ReportsCustomerExport() {
     const onSubmit = () => {
         if (currentAdminReportSelection && currentAdminReportSelection.start && currentAdminReportSelection.end) {
             setErrorMessage('');
+
+            if (currentAdminReportSelection.start >= currentAdminReportSelection.end) {
+                setErrorMessage("Start date must be before end date");
+                return false;
+            }
+
+            if (currentAdminReportSelection.start < MINIMUM_UNIX_TIMESTAMP) {
+                const minDate = moment.unix(MINIMUM_UNIX_TIMESTAMP).format('MM/DD/YYYY');
+                setErrorMessage(`Start date must be on or before ${minDate}`);
+                return false;
+            }
+
             setIsLoading(true);
+
             getAllEvents(currentAdminReportSelection.start, currentAdminReportSelection.end)
                 .then((response: GetEventsResponse) => {
                     if (response && !response.eventError) {
@@ -66,7 +81,7 @@ export default function ReportsCustomerExport() {
             }
             const showServiceFees = false;
             const showRevenueData = true;
-            const csvData = exportCustomerDataToCsv(vipEvents, showServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+            const csvData = exportCustomerDataToCsv(vipEvents, showServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol);
             const fileName = getFileNameFromReportAdminSelection('customer_export', currentAdminReportSelection);
             downloadFile(fileName, csvData);
         } else {

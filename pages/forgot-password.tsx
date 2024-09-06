@@ -100,7 +100,7 @@ export default function ForgotPassword() {
                 } else {
                     setResetSuccess('Password changed successfully, redirecting to login...');
                     setTimeout(() => {
-                        router.push('/login');
+                        router.push('/login/');
                     }, 2000);
                 }
             })
@@ -116,7 +116,7 @@ export default function ForgotPassword() {
         } else if (mode == ForgotPasswordMode.ResetPassword) {
             setMode(ForgotPasswordMode.ValidateResetCode);
         } else {
-            router.push('/login');
+            router.push('/login/');
         }
     }
     

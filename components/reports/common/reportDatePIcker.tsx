@@ -1,3 +1,4 @@
+import { MINIMUM_UNIX_TIMESTAMP } from "@/constants";
 import moment from "moment";
 import { useState } from "react";
 import { Col, Row } from "react-bootstrap";
@@ -9,25 +10,20 @@ export default function ReportDatePicker(props: any) {
     const [start, setStart] = useState<number>(props.start);
     const [end, setEnd] = useState<number>(props.end);
 
+    const minStart = MINIMUM_UNIX_TIMESTAMP;
+
     const onStartChange = (date: Date | null) => {
         if (!date) {
             return;
         }
         const startDate = moment(date).startOf('day');
-        const newStart = startDate.unix();
-        let changed: boolean = false;
-        if (newStart > end) {
-            setStart(end);
-            setEnd(newStart);        
-            onChange(end, newStart);
-        } else if (newStart == end) {
-            setStart(newStart);
-            setEnd(newStart + 86400);
-            onChange(newStart, newStart + 86400);
-        } else {
-            setStart(newStart);
-            onChange(newStart, end);
+        let newStart = startDate.unix();
+        if (newStart < minStart) {
+            newStart = minStart;
         }
+        
+        setStart(newStart);
+        onChange(newStart, end);
     };
 
     const onEndChange = (date: Date | null) => {
@@ -35,19 +31,12 @@ export default function ReportDatePicker(props: any) {
             return;
         }
         const endDate = moment(date).startOf('day');
-        const newEnd = endDate.unix();
-        let changed: boolean = false;
-        if (newEnd < start) {
-            setEnd(start);
-            setStart(newEnd);                
-            onChange(newEnd, start);
-        } else if (newEnd == start) {
-            setEnd(newEnd + 86400);
-            onChange(start, newEnd + 86400);
-        } else {
-            setEnd(newEnd);
-            onChange(start, newEnd);
+        let newEnd = endDate.unix();
+        if (newEnd < minStart) {
+            newEnd = minStart;
         }
+        setEnd(newEnd);
+        onChange(start, newEnd);
     };
 
     const startDate = moment.unix(start).toDate();

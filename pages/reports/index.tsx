@@ -18,7 +18,7 @@ export default function Reports() {
   useEffect(() => {
     if (user && user.isAuthenticated) {
       if (!user.isAdmin) {
-        router.push('/logout');
+        router.push('/logout/');
       } else {
         document.title = "Client Portal - Reports";
         logActivityData(UserActivityType.AccessReports);
@@ -43,12 +43,13 @@ export default function Reports() {
     }
   };
 
+  const notAdmin = !user || !user.isAuthenticated || !user.isAdmin;
+
   return (
-    (user && user.isAdmin) ?
     <>
       <CheckAuth />
-      <NavBar />
-      <Container fluid hidden={!user.isAuthenticated} className="vipContainer">
+      <NavBar hidden={notAdmin} />
+      <Container fluid hidden={notAdmin} className="vipContainer">
           <Tabs defaultActiveKey={activeKey.toString()} onSelect={onSelectTab} className="admin-tabs">
             <Tabs.Tab eventKey={ActivePageKey.Dashboard.toString()} title="HOME">
             </Tabs.Tab>
@@ -62,6 +63,5 @@ export default function Reports() {
           </Tabs>
       </Container>
     </>
-    : ''
   );
 }

@@ -27,7 +27,7 @@ export default function AttendeeRow(props: any) {
             .then((response) => {
                 if (!response.success) {
                     if (response.statusCode == 401 || response.statusCode == 422) {
-                        router.push('/logout');
+                        router.push('/logout/');
                     } else {
                         console.log(response.ticketError);
                     }

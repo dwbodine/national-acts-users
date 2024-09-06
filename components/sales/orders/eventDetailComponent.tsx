@@ -166,7 +166,7 @@ export default function EventDetail(props: any) {
         if (vipEvent != undefined && currentReportSelection) {
             const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
             const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
-            const csvData = exportEventCustomerDataToCsv(vipEvent, showServiceFees, showRevenueData, hasPhoneData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+            const csvData = exportEventCustomerDataToCsv(vipEvent, showServiceFees, showRevenueData, hasPhoneData, hasNonUsaOrders, currencySymbol);
             const fileName = getFileNameFromEvent(vipEvent, `orders`);
             downloadFile(fileName, csvData);
         }

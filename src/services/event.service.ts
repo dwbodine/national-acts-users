@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
-import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse } from "../types/event";
-import { UserReportSelection } from "@/types/user";
+import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse, GetOrdersResponse } from "../types/event";
+import { AdminDashboardSelection, UserReportSelection } from "@/types/user";
 import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
 import { getTicketDataFromEvents } from "@/utils/getTicketData";
 import moment from "moment";
@@ -9,17 +9,15 @@ import { MINIMUM_UNIX_TIMESTAMP } from "@/constants";
 
 export class EventService {
   protected readonly instance: AxiosInstance;
-  protected readonly eventUrl: string;
   protected readonly baseUrl: string;
   
-  public constructor(url: string, eUrl: string) {
+  public constructor(url: string) {
     this.baseUrl = url;
     this.instance = axios.create({
       baseURL: url,
       timeout: 30000,
       timeoutErrorMessage: "Time out!",
     });
-    this.eventUrl = eUrl;
   }
 
   getEvents = async (reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
@@ -78,6 +76,54 @@ export class EventService {
       });
   };
 
+  getOrders = async (reportSelection: AdminDashboardSelection): Promise<GetOrdersResponse> => {
+    let url = `/user/ordersSecured?start=${reportSelection.start}&end=${reportSelection.end}`;
+
+    if (reportSelection.showInactive) {
+      url += '&inactive=1';
+    }
+
+    if (reportSelection.showDeleted) {
+      url += '&deleted=1';
+    }
+
+    if (reportSelection.showHidden) {
+      url += '&hidden=1';
+    }
+
+    let ordersResponse: GetOrdersResponse = {
+      orders: undefined,
+      orderError: undefined,
+      statusCode: 200
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers
+      })
+      .then((res) => {
+        const orders = res.data;
+        ordersResponse.orders = orders.length ? orders as Order[] : [];
+        return ordersResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          ordersResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while fetching orders - please contact your administrator";
+        }
+        ordersResponse.orderError = errorMessage;
+        return ordersResponse;
+      });
+  };
+
   getAllEvents = async (start: number, end: number): Promise<GetEventsResponse> => {
     if (start < MINIMUM_UNIX_TIMESTAMP) {
       start = MINIMUM_UNIX_TIMESTAMP;
@@ -87,7 +133,7 @@ export class EventService {
       end = start + 86400;
     }
 
-    const url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&start=${start}&end=${end}`;
+    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&start=${start}&end=${end}&ignoreFlags=1`;
 
     let eventResponse: GetEventsResponse = {
       events: undefined,
@@ -125,6 +171,7 @@ export class EventService {
         return eventResponse;
       });
   };
+  
 
   getEventDetail = async (eventId: number, reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
     let url = `/user/eventsAndOrdersSecured?excludeExternal=1&tsEventId=${eventId}`;
@@ -173,6 +220,8 @@ export class EventService {
         return eventResponse;
       });
   };
+
+  
 
   updateEvent = async (eventToUpdate: VipEvent): Promise<ModifyEventResponse> => {
     let url = `/admin/updateEvent`;
@@ -822,10 +871,6 @@ export class EventService {
       });
   };
 
-  getEventUrl = (): string => {
-    return this.eventUrl;
-  }
-
   exportEventsToCsv = (events: VipEvent[], viewServiceFees: boolean, showRevenueData: boolean): string => {
     if (!events || events.length == 0) {
       return '';
@@ -906,22 +951,30 @@ export class EventService {
     return exportStr;
   };
 
-  getOrderExportTableHeader = (viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean, currencyAbbrev?: string): string => {
+  getOrderExportTableHeader = (viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean, currencyAbbrev?: string, hideCurrencyInHeaders: boolean = false): string => {
     let exportStr = '"Seller Name","Purchaser Name","Purchaser Zip","Attendee Name(s)","Purchase Date","Event Date","Event Name","Ticket Type","Number of tickets"';
     if (hasNonUsaOrders) {
       if (showRevenueData) {
-        exportStr += `,"Original Price (${currencyAbbrev})","Exchange Rate (${currencyAbbrev} to USD)"`;
+        if (hideCurrencyInHeaders) {
+          exportStr += `,"Original Price","Exchange Rate"`;
+        } else {
+          exportStr += `,"Original Price (${currencyAbbrev})","Exchange Rate (${currencyAbbrev} to USD)"`;
+        }        
       }      
       if (viewServiceFees) {
-        exportStr += `,"Original Service Fees (${currencyAbbrev})"`;
+        if (hideCurrencyInHeaders) {
+          exportStr += `,"Original Service Fees"`;
+        } else {
+          exportStr += `,"Original Service Fees (${currencyAbbrev})"`;
+        }        
       }
     }
-    if (showRevenueData) {
-      exportStr += ',"Revenue (USD)"';
-    }    
     if (viewServiceFees) {
       exportStr += ',"Service Fees (USD)"';
     }
+    if (showRevenueData) {
+      exportStr += ',"Revenue (USD)"';
+    }   
     exportStr += ',"Email"';
     if (hasPhoneData) {
       exportStr += ',"Phone"';
@@ -933,78 +986,92 @@ export class EventService {
     return exportStr;
   }
 
-  getOrderExportTableFromEvent = (vipEvent: VipEvent, viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean, currencySymbol?: string) : string => {
+  getOrderExportTableFromEvent = (vipEvent: VipEvent, viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean) : string => {
     let exportStr = '';
     if (vipEvent.orders && vipEvent.orders.length > 0) {
-        const sellerName = vipEvent.sellerName;
         vipEvent.orders.forEach((order: Order) => {
-          const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
-          const purchaserZip = order.purchaserZipCode ?? '';
-          const attendeeNames = order.attendeeNames?.join(" / ");
-          const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
-          const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
-          const eventName = vipEvent.title;          
-          const numTickets = order.numTickets;
-          const originalPrice = order.revenue?.toFixed(2) ?? 0;
-          const originalServiceFees = order.serviceFees?.toFixed(2) ?? 0;
-          const exchangeRate = order.exchangeRate;
-          const revenue = order.revenueUsd?.toFixed(2) ?? 0;
-          const serviceFees = order.serviceFeesUsd?.toFixed(2) ?? 0;
-          const email = order.email;
-          let phone = '';
-          if (order.phone) {
-            phone = order.phone;
-          }
-          const shirts = order.shirts?.join(' / ') ?? '';
-          let ticketTypeStr = '';
-          if (numTickets > 0) {
-            
-            const ticketMap = new Map<string, number>();
-            order.tickets?.forEach((ticket) => {
-                const item = ticketMap.get(ticket.ticketType);
-                let num: number = 1;
-                if (item && item > 0) {
-                    num = item + 1;
-                } 
-                ticketMap.set(ticket.ticketType, num);                  
-            });
-            ticketMap.forEach((value: Number, key: string) => {
-              if (ticketTypeStr.length > 0) {                
-                ticketTypeStr += " / ";
-              }
-              ticketTypeStr += `${key} (${value})`;
-            });
-          } 
-          
-          exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${attendeeNames}","${purchaseDate}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
-          if (hasNonUsaOrders) {
-            if (showRevenueData) {
-              exportStr += `,"${originalPrice} ${currencySymbol}","${exchangeRate}"`;
-            }            
-            if (viewServiceFees) {
-              exportStr += `,"${originalServiceFees} ${currencySymbol}"`;
-            }
-          }
-          if (showRevenueData) {
-            exportStr += `,"${revenue}"`;
-          }          
-          if (viewServiceFees) {
-            exportStr += `,"${serviceFees}"`;
-          }
-          exportStr += `,"${email}"`;
-          if (hasPhoneData) {
-            exportStr += `,"${phone}"`;
-          }
-          if (hasShirtData) {
-            exportStr += `,"${shirts}"`;
-          }
-          exportStr += '\n';
+          exportStr += this.getOrderExportRow(order, viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders);
         });
     }
     return exportStr;
   }
 
-  exportCustomerDataToCsv = (events: VipEvent[], viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean, currencySymbol?: string, currencyAbbrev?: string): string => {
+  getOrderExportRow = (order: Order, viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean): string  => {
+    let exportStr = '';
+    const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
+    const purchaserZip = order.purchaserZipCode ?? '';
+    const attendeeNames = order.attendeeNames?.join(" / ");
+    const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
+    const eventDate = moment(order.eventDate).format('MM/DD/YYYY');
+    const eventName = order.eventTitle;          
+    const sellerName = order.sellerName;
+    const numTickets = order.numTickets;
+    const originalPrice = order.revenue?.toFixed(2) ?? 0;
+    const originalServiceFees = order.serviceFees?.toFixed(2) ?? 0;
+    const exchangeRate = order.exchangeRate;
+    const revenue = order.revenueUsd?.toFixed(2) ?? 0;
+    const serviceFees = order.serviceFeesUsd?.toFixed(2) ?? 0;
+    const email = order.email;
+    let phone = '';
+    if (order.phone) {
+      phone = order.phone;
+    }
+    const shirts = order.shirts?.join(' / ') ?? '';
+    let ticketTypeStr = '';
+    if (numTickets > 0) {
+      
+      const ticketMap = new Map<string, number>();
+      order.tickets?.forEach((ticket) => {
+          const item = ticketMap.get(ticket.ticketType);
+          let num: number = 1;
+          if (item && item > 0) {
+              num = item + 1;
+          } 
+          ticketMap.set(ticket.ticketType, num);                  
+      });
+      ticketMap.forEach((value: Number, key: string) => {
+        if (ticketTypeStr.length > 0) {                
+          ticketTypeStr += " / ";
+        }
+        ticketTypeStr += `${key} (${value})`;
+      });
+    } 
+    
+    exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${attendeeNames}","${purchaseDate}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
+    if (hasNonUsaOrders) {
+      if (showRevenueData) {
+        if (order.currencyAbbrev != "USD" && order.currencySymbol != "$") {
+          exportStr += `,"${originalPrice} ${order.currencySymbol}","${exchangeRate}"`;
+        } else {
+          exportStr += `,"${originalPrice}","${exchangeRate}"`;
+        }        
+      }            
+      if (viewServiceFees) {
+        if (order.currencyAbbrev != "USD" && order.currencySymbol != "$") {
+          exportStr += `,"${originalServiceFees} ${order.currencySymbol}"`;
+        } else {
+          exportStr += `,"${originalServiceFees}"`;
+        }        
+      }
+    }
+    if (viewServiceFees) {
+      exportStr += `,"${serviceFees}"`;
+    }
+    if (showRevenueData) {
+      exportStr += `,"${revenue}"`;
+    }    
+    exportStr += `,"${email}"`;
+    if (hasPhoneData) {
+      exportStr += `,"${phone}"`;
+    }
+    if (hasShirtData) {
+      exportStr += `,"${shirts}"`;
+    }
+    exportStr += '\n';
+    return exportStr;
+  };
+
+  exportCustomerDataToCsv = (events: VipEvent[], viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean, currencyAbbrev?: string): string => {
     if (!events || events.length == 0) {
       return '';
     }
@@ -1012,13 +1079,13 @@ export class EventService {
     let exportStr = this.getOrderExportTableHeader(viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencyAbbrev);
 
     events.forEach((vipEvent: VipEvent) => {
-      exportStr += this.getOrderExportTableFromEvent(vipEvent, viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol);
+      exportStr += this.getOrderExportTableFromEvent(vipEvent, viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders);
     });
 
     return exportStr;
   };
 
-  exportEventCustomerDataToCsv = (vipEvent: VipEvent, viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasNonUsaOrders: boolean, currencySymbol?: string, currencyAbbrev?: string): string => {
+  exportEventCustomerDataToCsv = (vipEvent: VipEvent, viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasNonUsaOrders: boolean, currencyAbbrev?: string): string => {
     if (!vipEvent || !vipEvent?.orders || vipEvent.orders.length == 0) {
       return '';
     }
@@ -1059,7 +1126,47 @@ export class EventService {
     }      
 
     exportStr += this.getOrderExportTableHeader(viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencyAbbrev);
-    exportStr += this.getOrderExportTableFromEvent(vipEvent, viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol);
+    exportStr += this.getOrderExportTableFromEvent(vipEvent, viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders);
+
+    return exportStr;
+  };
+
+  exportDashboardOrdersToCsv = (currentDashboardSelection: AdminDashboardSelection): string => {
+    if (!currentDashboardSelection.currentOrders || currentDashboardSelection.currentOrders.length == 0) {
+      return '';
+    }
+
+    const orders = currentDashboardSelection.currentOrders;
+    const startDate = moment.unix(currentDashboardSelection.start).format('M/D/YYYY');
+    const endDate = moment.unix(currentDashboardSelection.end).format('M/D/YYYY');
+
+    let exportStr = `"Admin dashboard - orders from ${startDate} to ${endDate}"\n\n`;
+
+    exportStr += `"Unique user Logins: ${currentDashboardSelection.currentLogins}"\n\n`;
+
+    let hasShirtData = false;
+    let hasPhoneData = false;
+    let hasNonUsaOrders = false;
+    for (const order of orders) {
+      if (order.phone && order.phone != '') {
+        hasPhoneData = true;
+      }
+      if (order.shirts && order.shirts.length > 0) {
+        hasShirtData = true;
+      }
+      if (order.currencyAbbrev != "USD") {
+        hasNonUsaOrders = true;
+      }
+      if (hasPhoneData && hasShirtData && hasNonUsaOrders) {
+        break;
+      }
+    }
+
+    exportStr += this.getOrderExportTableHeader(true, true, hasPhoneData, hasShirtData, hasNonUsaOrders, '', true);
+
+    orders.forEach((order: Order) => {
+      exportStr += this.getOrderExportRow(order, true, true, hasPhoneData, hasShirtData, hasNonUsaOrders);
+    });
 
     return exportStr;
   };

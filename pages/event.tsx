@@ -2,6 +2,7 @@ import EventDetail from "../components/sales/orders/eventDetailComponent";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from 'js-cookie';
+import CheckAuth from "../components/common/checkAuthComponent";
 
 export default function EventPage() {
     const [detailHidden, setDetailHidden] = useState(true);
@@ -11,7 +12,7 @@ export default function EventPage() {
     useEffect(() => {
         const authTokenCookie = Cookies.get("authToken");
         if (!authTokenCookie) {
-            router.push('/login');
+            router.push('/login/');
         }
         setDetailHidden(true);
         const searchParams = new URLSearchParams(window.location.search);
@@ -30,6 +31,7 @@ export default function EventPage() {
 
     return (
         <>
+            <CheckAuth />
             <EventDetail hidden={detailHidden} Id={id} />
         </>        
     );

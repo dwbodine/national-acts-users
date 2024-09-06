@@ -17,7 +17,7 @@ export default function Logout() {
                 resetStores();
                 logout()
                     .then((success) => {
-                        router.push('/login');
+                        router.push('/login/');
                     });
             });    
         }, 200);
@@ -27,5 +27,5 @@ export default function Logout() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])        
 
-    return ("");
+    return ('');
 }

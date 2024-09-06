@@ -20,11 +20,10 @@ export default function EventRow(props: any) {
     const { setEventDeleted } = useSetEventDeleted();
     const { setEventHidden } = useSetEventHidden();
     const { getLocation } = useGetLocation();
-    const eUrl: string = eventService.getEventUrl(); 
     const id = `event_${vipEvent.ticketSocketEventId}`;
 
     const setDetailEvent = () => {
-        const url = `/${eUrl}?id=${vipEvent.ticketSocketEventId}`;
+        const url = `/event/?id=${vipEvent.ticketSocketEventId}`;
         window.open(url, "_blank");
     };
 
@@ -35,7 +34,7 @@ export default function EventRow(props: any) {
             .then((response) => {
                 if (!response.success) {
                     if (response.statusCode == 401 || response.statusCode == 422) {
-                        router.push('/logout');
+                        router.push('/logout/');
                     } else {
                         console.log(response.eventError);
                     }                    
@@ -58,7 +57,7 @@ export default function EventRow(props: any) {
             .then((response) => {
                 if (!response.success) {
                     if (response.statusCode == 401 || response.statusCode == 422) {
-                        router.push('/logout');
+                        router.push('/logout/');
                     } else {
                         console.log(response.eventError);
                     }
@@ -81,7 +80,7 @@ export default function EventRow(props: any) {
             .then((response) => {
                 if (!response.success) {
                     if (response.statusCode == 401 || response.statusCode == 422) {
-                        router.push('/logout');
+                        router.push('/logout/');
                     } else {
                         console.log(response.eventError);
                     }
@@ -118,7 +117,7 @@ export default function EventRow(props: any) {
     const inactiveLabel = vipEvent.isActive ? "Deactivate" : "Activate";
     const deletedLabel = vipEvent.isDeleted ? "Undelete" : "Delete";
     const hiddenLabel = vipEvent.isHidden ? "Unhide" : "Hide";
-    const url = `/${eUrl}?id=${vipEvent.ticketSocketEventId}`;
+    const url = `/event/?id=${vipEvent.ticketSocketEventId}`;
         
     return (
         <tr className={statusClass} id={id}>

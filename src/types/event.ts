@@ -29,6 +29,9 @@ export interface Ticket {
 
 export interface Order {
   eventId: number;
+  eventTitle?: string;
+  eventDate?: string;
+  sellerName?: string;
   ticketSocketEventId: number;
   ticketSocketOrderId: number;
   numTickets: number;
@@ -124,6 +127,12 @@ export interface GetEventsResponse {
   eventError?: string;
 }
 
+export interface GetOrdersResponse {
+  orders?: Order[];
+  statusCode?: number;
+  orderError?: string;
+}
+
 export interface ModifyEventResponse {
   success: boolean;
   statusCode?: number;
@@ -166,10 +175,18 @@ export interface ITicketTypeData {
   Number: number;
 }
 
+export interface ITicketEventSalesData {
+  EventId: number;
+  PurchaseDate?: string;
+  Tickets: number;
+  Revenue: number;
+}
+
 export interface ITicketSalesData {
   PurchaseDate: string;
   Tickets: number;
   Revenue: number;
+  children?: ITicketEventSalesData[]
 }
 
 export interface IShirtData {

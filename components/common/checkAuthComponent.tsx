@@ -13,7 +13,8 @@ export default function CheckAuth() {
       
       if (protectedRoutes.includes(pathName) && !authTokenCookie) {
           Cookies.remove("authToken");
-          router.push('/login');
+          console.log(`Redirecting to login from ${pathName}`);
+          router.push('/login/');
           Cookies.remove("authToken");
       } else if (authRoutes.includes(pathName) || publicRoutes.includes(pathName)) {
         router.push(pathName);

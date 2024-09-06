@@ -24,16 +24,17 @@ export default function Home() {
     }    
   }, [user, logActivityData]);
 
+  const notLoggedIn = (!user || !user.isAuthenticated);
+  const adminUser = user && user.isAuthenticated && user.isAdmin;
+
   return (
-    (user && !user.isAdmin) ?
     <>
-      <CheckAuth />
-      <NavBar />
-      <Container fluid hidden={!user.isAuthenticated} className="vipContainer">
+      <CheckAuth />    
+      <NavBar hidden={notLoggedIn || adminUser} />
+      <Container fluid hidden={notLoggedIn || adminUser} className="vipContainer">
           <AdminBar />   
           <CurrentEvents />
       </Container>
     </>
-    : ''
   );
 }

@@ -315,7 +315,7 @@ div hidden {
 
 .resultsTable tr.event-hidden,
 .resultsTable tr.event-hidden a {
-  color: lawngreen;
+  color: darkgreen;
 }
 
 .resultsTable tr.event-deleted {
@@ -419,7 +419,7 @@ div hidden {
 }
 
 .vipTable .hidden {
-  color: lawngreen;
+  color: darkgreen;
 }
 
 .vipTable .deleted {
@@ -609,9 +609,16 @@ div hidden {
   margin: 15px 0;
 }
 
-
 .admin-click-cell {
   cursor: pointer;
+}
+
+.dashboard-widget-table {
+  margin: 15px 0;
+}
+
+.align-right {
+  text-align: right !important;
 }
 
 /* MOBILE QUERIES */

@@ -71,7 +71,7 @@ export default function SalesBar() {
             }
             const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
             const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
-            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, showServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol, currencyAbbrev);
+            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, showServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol);
             const fileName = getFileNameFromReportSelection(currentReportSelection, 'customer');
             downloadFile(fileName, csvData);
         } 

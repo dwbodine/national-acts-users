@@ -1,4 +1,4 @@
-import { SyntheticEvent } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
 import moment from 'moment';
@@ -12,13 +12,20 @@ export default function DateRangeSelector(props: any) {
     const selectedEnd = props.selectedEnd;
     const disabled = props.disabled;
 
-    let start = new Date();
-    let end = new Date();
+    const [dateValues, setDateValues] = useState<DateRange | undefined>(undefined);
 
-    if (selectedStart && selectedEnd && selectedStart > 0 && selectedEnd > 0) {
-        start = new Date(selectedStart * 1000);
-        end = new Date(selectedEnd * 1000);
-    }
+    useEffect(() => {
+        let start = new Date();
+        let end = new Date();
+
+        if (selectedStart && selectedEnd && selectedStart > 0 && selectedEnd > 0) {
+            start = new Date(selectedStart * 1000);
+            end = new Date(selectedEnd * 1000);
+        }
+
+        const dValues: DateRange = [start, end];
+        setDateValues(dValues);
+    }, [selectedEnd, selectedStart]);    
 
     const handleChange = (value: DateRange | null, event: SyntheticEvent<Element, Event>) => {
         const selectedStart = value ? moment(value[0]).unix() : 0;
@@ -26,9 +33,7 @@ export default function DateRangeSelector(props: any) {
         if (onDateChange) {
             onDateChange(selectedStart, selectedEnd);
         }
-    };
-
-    const dateValues: DateRange = [start, end];
+    };    
     
     return (
         <>
