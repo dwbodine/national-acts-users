@@ -1182,4 +1182,15 @@ export class EventService {
     return location;
   }
 
+  getLocationInfoFromOrder = (order: Order): string => {
+    let location = `${order.eventCity}`; 
+    if (order.eventState && order.eventState.trim() != '') {
+      location += `, ${order.eventState}`;
+    }    
+    if (order.eventCountry && order.eventCountry != "United States" && order.eventCountry != "USA" && (order.eventState && order.eventCountry.trim() != order.eventState.trim())) {
+        location += ", " + order.eventCountry;
+    }
+    return location;
+  }
+
 }

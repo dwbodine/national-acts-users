@@ -4,8 +4,8 @@ import { AdminDashboardSelection, IDashboardData } from "../types/user";
 import moment from "moment";
 
 const initialState: AdminDashboardSelection = {
-    start: moment().unix() - (7 * 24 * 60 * 60),
-    end: moment().unix(),
+    start: moment().endOf('day').unix() - (7 * 24 * 60 * 60),
+    end: moment().endOf('day').unix(),
     reloadActivities: true,
     reloadOrders: true,
     filterAdmins: true,
@@ -48,8 +48,8 @@ export const adminDashboardSelectionSlice = createSlice({
             return state;
         },
         resetDashboard: (state) => {
-            state.start = moment().unix() - (7 * 24 * 60 * 60);
-            state.end = moment().unix();
+            state.start = moment().endOf('day').unix() - (7 * 24 * 60 * 60);
+            state.end = moment().endOf('day').unix();
             state.reloadActivities = true;
             state.filterAdmins = true;
             state.reloadOrders = true;

@@ -84,7 +84,9 @@ export interface IDashboardData {
   ticketSalesData?: ITicketSalesData[];
   tickets?: number;
   revenue?: number;
-  shirts?: number;
+  serviceFees?: number;
+  purchases?: number;
+  totalRevenue?: number;
   orders?: Order[];
 }
 

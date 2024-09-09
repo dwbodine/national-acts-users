@@ -12,12 +12,18 @@ export function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[
                 const data: ITicketSalesData = {
                     PurchaseDate: moment(key).format('MM/DD/YYYY'),
                     Tickets: order.numTickets,
-                    Revenue: order.revenueUsd
+                    Purchases: 1, 
+                    Revenue: order.revenueUsd,
+                    ServiceFees: order.serviceFees ?? 0, 
+                    TotalRevenue: (order.revenueUsd + (order.serviceFeesUsd ?? 0))
                 };
                 map.set(key, data);
             } else {
+                salesData.Purchases += 1;
                 salesData.Tickets += order.numTickets;
                 salesData.Revenue += order.revenueUsd;
+                salesData.ServiceFees += order.serviceFees ?? 0;
+                salesData.TotalRevenue += (order.revenueUsd + (order.serviceFeesUsd ?? 0)),
                 map.set(key, salesData);
             }
         });
@@ -35,7 +41,10 @@ export function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[
                 const data: ITicketSalesData = {
                     PurchaseDate: moment(key).format('MM/DD/YYYY'),
                     Tickets: 0,
-                    Revenue: 0
+                    Purchases: 0,
+                    Revenue: 0,
+                    ServiceFees: 0,
+                    TotalRevenue: 0
                 };
                 ticketSalesData.push(data);
             } else {

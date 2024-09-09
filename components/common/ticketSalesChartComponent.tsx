@@ -29,7 +29,7 @@ export default function TicketSalesChart(props: any) {
             <div className="custom-tooltip">
                 <p className="label">{`Purchase Date: ${label}`}</p>
                 <p className="label">{`Ticket Sales: ${payload[0].value}`}</p>
-                {!hideRev ? <p className="label">{`Revenue: $${parseFloat(payload[1].value).toFixed(2)}`}</p> : ''}
+                {!hideRev ? <p className="label">{`Ticket Revenue: $${parseFloat(payload[1].value).toFixed(2)}`}</p> : ''}
             </div>
             );
         }

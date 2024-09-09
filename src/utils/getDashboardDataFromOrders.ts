@@ -1,31 +1,41 @@
-import { ITicketEventSalesData, ITicketSalesData, Order } from "@/types/event";
+import { ITicketEventSalesData, ITicketSalesData, ITicketSellerSalesData, Order } from "@/types/event";
 import { IDashboardData } from "@/types/user";
+import { eventService } from "../services";
 import moment from "moment";
 
 
 export function getDashboardDataFromOrders(orders: Order[]): IDashboardData {
     let totalTickets: number = 0;
+    let totalTicketRevenue: number = 0;
     let totalRevenue: number = 0;
-    let totalShirts: number | undefined = undefined;
+    let totalServiceFees: number = 0;
+    let totalPurchases: number = orders.length;
 
     let map = new Map<string, ITicketSalesData>();
     
     orders.forEach((order) => {
         totalTickets += order.numTickets;
-        totalRevenue += order.revenueUsd;
-        if (order.totalShirts) {
-            if (!totalShirts) {
-                totalShirts = 0;
-            }
-            totalShirts += order.totalShirts;
-        }         
+        totalTicketRevenue += order.revenueUsd;
+        totalServiceFees += order.serviceFeesUsd ?? 0;
+        totalRevenue += (order.revenueUsd + (order.serviceFeesUsd ?? 0));
 
         const key = moment(order.purchaseDate).format('YYYY-MM-DD');
+        const sellerName = `${order.sellerName}`;
+        let location = eventService.getLocationInfoFromOrder(order);
+        if (location && location.trim() != '') {
+            location += ' ';
+        }
+        const purchaseDate = `${order.eventTitle} (${moment(order.eventDate).format('M/D/YYYY')})`;
+
         const esd: ITicketEventSalesData = {
             EventId: order.ticketSocketEventId,
-            PurchaseDate: `${moment(order.eventDate).format('M/D/YYYY')} - ${order.eventTitle}`,
+            SellerName: sellerName,
+            PurchaseDate: purchaseDate,
+            Purchases: 1,
             Tickets: order.numTickets,
-            Revenue: order.revenueUsd
+            Revenue: order.revenueUsd,
+            ServiceFees: order.serviceFeesUsd ?? 0,
+            TotalRevenue: (order.revenueUsd + (order.serviceFeesUsd ?? 0))
         };
 
         let salesData = map.get(key);
@@ -33,27 +43,84 @@ export function getDashboardDataFromOrders(orders: Order[]): IDashboardData {
             const data: ITicketSalesData = {
                 PurchaseDate: moment(key).format('M/D/YYYY'),
                 Tickets: order.numTickets,
+                Purchases: 1,
                 Revenue: order.revenueUsd,
-                children: [esd]  
+                ServiceFees: order.serviceFeesUsd ?? 0,
+                TotalRevenue: (order.revenueUsd + (order.serviceFeesUsd ?? 0)),
+                children: [{
+                    SellerName: sellerName,
+                    PurchaseDate: `${sellerName} (${moment(order.purchaseDate).format('M/D/YYYY')})`,
+                    Purchases: 1,
+                    Tickets: order.numTickets,
+                    Revenue: order.revenueUsd,
+                    ServiceFees: order.serviceFeesUsd ?? 0,
+                    TotalRevenue: (order.revenueUsd + (order.serviceFeesUsd ?? 0)),
+                    children: [esd]
+                }]  
             };
             map.set(key, data);
         } else {
             salesData.Tickets += order.numTickets;
             salesData.Revenue += order.revenueUsd;
+            salesData.ServiceFees += order.serviceFeesUsd ?? 0;
+            salesData.Purchases += 1;
+            salesData.TotalRevenue += (order.revenueUsd + (order.serviceFeesUsd ?? 0));
             if (salesData.children) {
-                if (salesData.children.find(x => x.EventId == esd.EventId)) {
-                    let eventSalesData = salesData.children.map((item) => {
-                        if (item.EventId == esd.EventId) {
-                            item.Tickets += order.numTickets;
-                            item.Revenue += order.revenueUsd;
+                if (salesData.children.find(x => x.SellerName == esd.SellerName)) {
+                    let sellerSalesData = salesData.children.map((seller) => {
+                        if (seller.SellerName == esd.SellerName) {
+                            seller.Tickets += order.numTickets;
+                            seller.Revenue += order.revenueUsd;
+                            seller.ServiceFees += order.serviceFees ?? 0;
+                            seller.Purchases += 1;
+                            seller.TotalRevenue += (order.revenueUsd + (order.serviceFeesUsd ?? 0));
+                            if (seller.children) {
+                                if (seller.children.find(x => x.EventId == order.ticketSocketEventId && x.SellerName == sellerName)) {
+                                    let eventSalesData = seller.children.map((evt) => {
+                                        if (evt.SellerName == esd.SellerName && evt.EventId == esd.EventId) {
+                                            evt.Tickets += order.numTickets;
+                                            evt.Revenue += order.revenueUsd;
+                                            evt.ServiceFees += order.serviceFees ?? 0;
+                                            evt.Purchases += 1;
+                                            evt.TotalRevenue += (order.revenueUsd + (order.serviceFeesUsd ?? 0));
+                                        }
+                                        return evt;
+                                    });
+                                    seller.children = eventSalesData;
+                                } else {
+                                    seller.children.push(esd);
+                                }
+                            } else {
+                                seller.children = [esd];
+                            }
                         }
-                        return item;
+                        return seller;
                     });
-                    salesData.children = eventSalesData;
+                    salesData.children = sellerSalesData;
                 } else {
-                    salesData.children.push(esd);
+                    salesData.children.push({
+                        SellerName: sellerName,
+                        PurchaseDate: `${sellerName} (${moment(order.purchaseDate).format('M/D/YYYY')})`,
+                        Purchases: 1,
+                        Tickets: order.numTickets,
+                        Revenue: order.revenueUsd,
+                        ServiceFees: order.serviceFeesUsd ?? 0,
+                        TotalRevenue: (order.revenueUsd + (order.serviceFeesUsd ?? 0)),
+                        children: [esd]
+                    });
                 }
-            }            
+            } else {
+                salesData.children = [{
+                    SellerName: sellerName,
+                    PurchaseDate: `${sellerName} (${moment(order.purchaseDate).format('M/D/YYYY')})`,
+                    Purchases: 1, 
+                    Tickets: order.numTickets,
+                    Revenue: order.revenueUsd,
+                    ServiceFees: order.serviceFeesUsd ?? 0,
+                    TotalRevenue: (order.revenueUsd + (order.serviceFeesUsd ?? 0)),
+                    children: [esd]
+                }];
+            }
             map.set(key, salesData);
         }
     });    
@@ -69,12 +136,18 @@ export function getDashboardDataFromOrders(orders: Order[]): IDashboardData {
             if (!salesData) {
                 const data: ITicketSalesData = {
                     PurchaseDate: moment(key).format('MM/DD/YYYY'),
+                    Purchases: 0,
                     Tickets: 0,
                     Revenue: 0,
+                    ServiceFees: 0,
+                    TotalRevenue: 0,
                     children: []
                 };
                 ticketSalesData.push(data);
             } else {
+                if (salesData.children && salesData.children.length > 0) {
+                    salesData.children.sort((a,b) => (a.SellerName > b.SellerName) ? 1 : ((b.SellerName > a.SellerName) ? -1 : 0));
+                }
                 ticketSalesData.push(salesData);
             }
             end = end.add(-1, 'days');
@@ -84,8 +157,10 @@ export function getDashboardDataFromOrders(orders: Order[]): IDashboardData {
     const dashboardData: IDashboardData = {
         ticketSalesData: ticketSalesData,
         tickets: totalTickets,
-        revenue: totalRevenue,
-        shirts: totalShirts,
+        revenue: totalTicketRevenue,
+        serviceFees: totalServiceFees,
+        purchases: totalPurchases,
+        totalRevenue: totalRevenue,
         orders: orders
     };
 

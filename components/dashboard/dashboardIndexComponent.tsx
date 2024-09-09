@@ -1,7 +1,7 @@
 import { Col, Container, Row } from "react-bootstrap";
 import DashboardBar from "./dashboardBarComponent"
 import TicketSalesChart from "../common/ticketSalesChartComponent";
-import { GetOrdersResponse } from "@/types/event";
+import { GetOrdersResponse, ITicketSalesData } from "@/types/event";
 import { useEffect, useState } from "react";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import { FULL_PAGE_CHART_BREAKPOINT } from "@/constants";
@@ -13,7 +13,7 @@ import { CirclesWithBar } from "react-loader-spinner";
 import { Table } from "rsuite";
 import { useGetOrders } from "@/hooks/useGetOrders";
 import { getDashboardDataFromOrders } from "@/utils/getDashboardDataFromOrders";
-import { FaMoneyBillAlt, FaShirtsinbulk, FaTicketAlt } from "react-icons/fa";
+import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from "react-icons/fa";
 export default function DashboardIndex() {
 
     const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
@@ -46,7 +46,7 @@ export default function DashboardIndex() {
                             setCurrentDashboardData({
                                 orders: [],
                                 revenue: 0,
-                                tickets: 0,
+                                purchases: 0,
                                 ticketSalesData: []
                             })
                         );
@@ -63,8 +63,17 @@ export default function DashboardIndex() {
 
     const totalTickets = currentDashboardSelection.currentDashboardData?.tickets ?? 0;
     const totalRevenue = currentDashboardSelection.currentDashboardData?.revenue ?? 0;
-    const totalShirts = currentDashboardSelection.currentDashboardData?.shirts ?? 0;
+    const totalServiceFees = currentDashboardSelection.currentDashboardData?.serviceFees ?? 0;
+    const totalPurchases = currentDashboardSelection.currentDashboardData?.purchases ?? 0;
     const ticketSalesData = currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined;
+    let chartSalesData: ITicketSalesData[] = [];
+    if (ticketSalesData) {
+        let j = 0;
+        for (let i = ticketSalesData.length-1; i >= 0; i--) {
+            chartSalesData[j] = ticketSalesData[i];
+            j++;
+        }
+    }
 
     return (
         <>
@@ -79,7 +88,11 @@ export default function DashboardIndex() {
             <Container fluid hidden={isLoading}>
                 <Row className="dashboard-widget-table">
                     <Col className="col-lg-3 col-md-6 stat-block-container">
-                        <UserActivityWidget />          
+                        <div className="stat-block">
+                            <FaDollarSign size="2em" />
+                            <div>Total purchases:</div>
+                            <span>{totalPurchases}</span>
+                        </div>
                     </Col>
                     <Col className="col-lg-3 col-md-6 stat-block-container">
                         <div className="stat-block">
@@ -93,35 +106,47 @@ export default function DashboardIndex() {
                             <FaMoneyBillAlt size="2em" />
                             <div>Total revenue:</div>
                             <span>${totalRevenue.toFixed(2)}</span>
+                            <div className="second">
+                                <div>Service Fees:</div>
+                                <span>${totalServiceFees.toFixed(2)}</span>
+                            </div>
                         </div>
                     </Col>
                     <Col className="col-lg-3 col-md-6 stat-block-container">
-                        <div className="stat-block">
-                            <FaShirtsinbulk size="2em" />
-                            <div>Total shirts sold:</div>
-                            <span>{totalShirts ? totalShirts : 'n/a'}</span>
-                        </div>
+                        <UserActivityWidget />          
                     </Col>
                 </Row>                
                 <Row>
                     <Col>
-                        <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} HideRevenue={false} HideMobile={hideTicketChart} />
+                        <TicketSalesChart TicketSalesData={chartSalesData} ChartsHidden={chartsHidden} HideRevenue={false} HideMobile={hideTicketChart} />
                     </Col>
                 </Row>
                 <Row>
                     <Col>
                         <Table height={550} bordered cellBordered isTree rowKey="PurchaseDate" data={ticketSalesData} shouldUpdateScroll={false}>
-                            <Column flexGrow={4}>
-                                <HeaderCell>Purchase Date</HeaderCell>
+                            <Column flexGrow={2}>
+                                <HeaderCell>Date</HeaderCell>
                                 <Cell dataKey="PurchaseDate"></Cell>
                             </Column>
-                            <Column flexGrow={4}>
+                            <Column flexGrow={1}>
+                                <HeaderCell>Purchases</HeaderCell>
+                                <Cell dataKey="Purchases"></Cell>
+                            </Column>
+                            <Column flexGrow={1}>
                                 <HeaderCell>Tickets Sold</HeaderCell>
                                 <Cell dataKey="Tickets"></Cell>
                             </Column>
-                            <Column flexGrow={4}>
-                                <HeaderCell>Revenue (USD)</HeaderCell>
+                            <Column flexGrow={1}>
+                                <HeaderCell>Ticket Revenue (USD)</HeaderCell>
                                 <Cell>{ rowData => `$${parseFloat(rowData.Revenue).toFixed(2)}` }</Cell>
+                            </Column>
+                            <Column flexGrow={1}>
+                                <HeaderCell>Service Fees (USD)</HeaderCell>
+                                <Cell>{ rowData => `$${parseFloat(rowData.ServiceFees).toFixed(2)}` }</Cell>
+                            </Column>
+                            <Column flexGrow={1}>
+                                <HeaderCell>Total Revenue (USD)</HeaderCell>
+                                <Cell>{ rowData => `$${parseFloat(rowData.TotalRevenue).toFixed(2)}` }</Cell>
                             </Column>
                         </Table>         
                     </Col>

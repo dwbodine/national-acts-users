@@ -19,7 +19,6 @@ export default function AdminList() {
 
     return (
         <div className="admin-container">
-            <h1>National Acts Admin Menu</h1>
             <ul>
                 <li><a id="manage-roles" className="admin-link" onClick={goToAdminPage}>Manage Roles</a></li>
                 <li><a id="manage-users" className="admin-link" onClick={goToAdminPage}>Manage Users</a></li>

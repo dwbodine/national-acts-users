@@ -32,6 +32,9 @@ export interface Order {
   eventTitle?: string;
   eventDate?: string;
   sellerName?: string;
+  eventCity?: string;
+  eventState?: string;
+  eventCountry?: string;
   ticketSocketEventId: number;
   ticketSocketOrderId: number;
   numTickets: number;
@@ -177,16 +180,34 @@ export interface ITicketTypeData {
 
 export interface ITicketEventSalesData {
   EventId: number;
+  SellerName: string;
   PurchaseDate?: string;
+  Purchases: number;
   Tickets: number;
   Revenue: number;
+  ServiceFees: number;
+  TotalRevenue: number;  
+}
+
+export interface ITicketSellerSalesData {
+  SellerName: string;
+  PurchaseDate?: string;
+  Purchases: number;
+  Tickets: number;
+  Revenue: number;
+  ServiceFees: number;
+  TotalRevenue: number;
+  children?: ITicketEventSalesData[];
 }
 
 export interface ITicketSalesData {
   PurchaseDate: string;
+  Purchases: number;
   Tickets: number;
   Revenue: number;
-  children?: ITicketEventSalesData[]
+  ServiceFees: number;
+  TotalRevenue: number;
+  children?: ITicketSellerSalesData[]
 }
 
 export interface IShirtData {
