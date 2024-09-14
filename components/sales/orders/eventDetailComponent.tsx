@@ -17,7 +17,7 @@ import PrintButton from "../../common/printButtonComponent";
 import { useGetEventDetails } from "@/hooks/useGetEventDetails";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees, setFocusControl, setEventSeller, setShowHiddenOrders } from "@/lib/reportSelectionSlice";
+import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees, setFocusControl, setEventSeller, setShowHiddenOrders, setCurrentDetailEvent } from "@/lib/reportSelectionSlice";
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
 import { EnumPermission, UserReportSelection } from "@/types/user";
 import { useWindowSize } from "@/hooks/useWindowSize";
@@ -26,6 +26,8 @@ import { useHasPermission } from "@/hooks/useHasPermission";
 import debouce from "lodash.debounce";
 import setFocusToControl from "@/utils/setFocusToControl";
 import DebugBar from "../../common/debugBarComponent";
+import { getTicketDataFromOrders } from "@/utils/getTicketDataFromOrders";
+import { getShirtDataFromOrders } from "@/utils/getShirtDataFromOrders";
 
 export default function EventDetail(props: any) {
     const { user } = useCurrentUser();
@@ -40,7 +42,6 @@ export default function EventDetail(props: any) {
     const [hideRevItem, setHideRevItem] = useState(true);
     const [hideServiceFeeDisplay, setHideServiceFeeDisplay] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [vipEvent, setVipEvent] = useState<VipEvent | undefined>(undefined);
     const id: number | undefined = props.Id as number;
 
     const windowSize = useWindowSize();
@@ -55,7 +56,7 @@ export default function EventDetail(props: any) {
     const canExportCustomerData = userHasPermission(user, EnumPermission.ExportCustomerData);
     const viewPrintButton = userHasPermission(user, EnumPermission.ViewPrintButton);
     const changeOrderStatus = userHasPermission(user, EnumPermission.ChangeOrderStatus);
-    const canCheckInTickets = userHasPermission(user, EnumPermission.CheckInUsers);
+    const canCheckInTickets = !user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers);
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
 
     const debouncedResults = useMemo(() => {
@@ -65,12 +66,12 @@ export default function EventDetail(props: any) {
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
     let location = '';    
-    const hasPhoneData = vipEvent?.hasPhoneData ?? false;
+    const hasPhoneData = currentReportSelection.currentDetailEvent?.hasPhoneData ?? false;
     let hasTicketData: boolean = false;
     let hasShirtData: boolean = false;
-    const hasNonUsaOrders: boolean = vipEvent?.hasNonUSAOrders ?? false;
-    const currencySymbol: string | undefined = vipEvent?.nonUsaCurrencySymbol;
-    const currencyAbbrev: string | undefined = vipEvent?.nonUsaCurrencyAbbrev;
+    const hasNonUsaOrders: boolean = currentReportSelection.currentDetailEvent?.hasNonUSAOrders ?? false;
+    const currencySymbol: string | undefined = currentReportSelection.currentDetailEvent?.nonUsaCurrencySymbol;
+    const currencyAbbrev: string | undefined = currentReportSelection.currentDetailEvent?.nonUsaCurrencyAbbrev;
     const ticketBreakdownRows: any[] = [];
     const shirtSizeBreakdownRows: any[] = [];
     let orderRows: any[] = [];
@@ -103,19 +104,23 @@ export default function EventDetail(props: any) {
                     if (!viewInactiveEvents) {
                         reportSelection.showInactiveOrders = false;
                     }
-                    const results = await getEventDetails(id, reportSelection);
+                    const results = await getEventDetails(id);
                     if (results && results.events && results.events.length > 0) {
-                        setVipEvent(results.events[0]);
-                        if (currentReportSelection.currentEvents && results.events[0] != undefined) {
-                            const newEvent: VipEvent = results.events[0];
-                            document.title = newEvent.title;
-                            currentReportSelection.currentEvents.map((evt) => {
-                                return evt.ticketSocketEventId == newEvent.ticketSocketEventId ? newEvent : evt;
-                            });
-                            dispatch (
-                                setEvents(currentReportSelection.currentEvents)
-                            );
-                        } 
+                        const newEvent: VipEvent = results.events[0];
+                        if (newEvent) {
+                            dispatch(
+                                setCurrentDetailEvent(newEvent)
+                            );                            
+                            if (currentReportSelection.currentEvents) {                                
+                                document.title = newEvent.title;
+                                currentReportSelection.currentEvents.map((evt) => {
+                                    return evt.ticketSocketEventId == newEvent.ticketSocketEventId ? newEvent : evt;
+                                });
+                                dispatch (
+                                    setEvents(currentReportSelection.currentEvents)
+                                );
+                            } 
+                        }
                     }   
                     setIsLoading(false);   
                     if (currentReportSelection.focusControl && currentReportSelection.focusControl != '') {
@@ -128,7 +133,7 @@ export default function EventDetail(props: any) {
                         );
                     }
                 }                          
-            } else if (user && user.userId > 0 && user.sellers && (user.selectedSellerId ?? 0) > 0) {
+            } else if ((currentReportSelection && (!currentReportSelection.seller || currentReportSelection.seller.sellerId <= 0)) && (user && user.userId > 0 && user.sellers && (user.selectedSellerId ?? 0) > 0)) {
                 // use cached user to transfer detail to redux in new window
                 let reportSelection = {...currentReportSelection};
                 const seller = user.sellers.find(x => x.sellerId == user.selectedSellerId);
@@ -163,20 +168,30 @@ export default function EventDetail(props: any) {
     ]);
 
     const exportOrdersToCsv = () => {
-        if (vipEvent != undefined && currentReportSelection) {
+        if (currentReportSelection && currentReportSelection.currentDetailEvent) {
             const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
             const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
-            const csvData = exportEventCustomerDataToCsv(vipEvent, showServiceFees, showRevenueData, hasPhoneData, hasNonUsaOrders, currencySymbol);
-            const fileName = getFileNameFromEvent(vipEvent, `orders`);
+            const csvData = exportEventCustomerDataToCsv(currentReportSelection.currentDetailEvent, showServiceFees, showRevenueData, hasPhoneData, hasNonUsaOrders, currencySymbol);
+            const fileName = getFileNameFromEvent(currentReportSelection.currentDetailEvent, `orders`);
             downloadFile(fileName, csvData);
         }
     };
 
     const filterOrders = (orders: Order[] | undefined) => {
-        let filteredOrders: Order[] | undefined = orders;
-        if (searchTerm && searchTerm.length >= 2 && orders && orders.length > 0) {
-            const srch = searchTerm.toLowerCase();
+        let filteredOrders: Order[] = [];
+
+        if (orders && orders.length > 0) {
             filteredOrders = orders.filter((order) => {
+                return (currentReportSelection.showDeletedOrders && order.isDeleted) ||
+                       (currentReportSelection.showInactiveOrders && !order.isActive && !order.isDeleted) ||
+                       (currentReportSelection.showHiddenOrders && order.isHidden) ||
+                       (!order.isHidden && !order.isDeleted && order.isActive);
+            });
+        }
+
+        if (searchTerm && searchTerm.length >= 2 && filteredOrders.length > 0) {
+            const srch = searchTerm.toLowerCase();
+            filteredOrders = filteredOrders.filter((order) => {
                 return order.attendeeNames?.find(x => x.toLowerCase().includes(srch)) || 
                     order.purchaserFirstName.toLowerCase().includes(srch) ||
                     order.purchaserLastName.toLowerCase().includes(srch);
@@ -185,15 +200,31 @@ export default function EventDetail(props: any) {
         return filteredOrders;
     };
 
-    if (vipEvent != undefined) {
-        if (windowSize.isMobile || (vipEvent.orders && vipEvent.orders.length > 10)) {
+    let filteredOrders: Order[] | undefined = undefined;
+    let totalTickets = 0;
+    if (currentReportSelection.currentDetailEvent != undefined) {
+        if (windowSize.isMobile || (currentReportSelection.currentDetailEvent.orders && currentReportSelection.currentDetailEvent.orders.length > 10)) {
             searchBarHidden = false;
         }
-        if (vipEvent.venue) {
-            location = getLocation(vipEvent.venue);
-        }    
+        if (currentReportSelection.currentDetailEvent.venue) {
+            location = getLocation(currentReportSelection.currentDetailEvent.venue);
+        }   
         
-        ticketData = getTicketDataFromEvents([vipEvent]);
+        filteredOrders = filterOrders(currentReportSelection.currentDetailEvent.orders);
+        filteredOrders?.forEach((order, i) => { 
+            if (order.isActive && !order.isDeleted && !order.isHidden) {
+                totalTickets += order.numTickets;
+            }            
+            hasOrders = true;
+            const key = `or${i}`;
+            if (windowSize.isMobile) { 
+                orderRows.push(<OrderMobileRow key={key} EventDate={currentReportSelection.currentDetailEvent?.eventDate} EventName={currentReportSelection.currentDetailEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
+            } else {
+                orderRows.push(<OrderRow key={key} EventDate={currentReportSelection.currentDetailEvent?.eventDate} EventName={currentReportSelection.currentDetailEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
+            }                
+        });
+        
+        ticketData = getTicketDataFromOrders(filteredOrders);
         const ticketTypes = ticketData?.TicketTypes;
         if (ticketTypes?.length > 0) {
             hasTicketData = true;
@@ -215,7 +246,7 @@ export default function EventDetail(props: any) {
                 });
             });
         }
-        shirtData = getShirtDataFromEvents([vipEvent]);
+        shirtData = getShirtDataFromOrders(filteredOrders);
         const shirtSizes = shirtData?.ShirtSizes ?? [];
         if (shirtSizes.length > 0) {            
             hasShirtData = true;
@@ -227,29 +258,14 @@ export default function EventDetail(props: any) {
                     i++;
                 });
             });
-        }      
-
-        const filteredOrders = filterOrders(vipEvent.orders);
-        filteredOrders?.forEach((order, i) => { 
-            hasOrders = true;
-            const key = `or${i}`;
-            const showOrder = (!order.isDeleted && order.isActive) || (order.isDeleted && currentReportSelection?.showDeletedOrders) || (!order.isActive && currentReportSelection?.showInactiveOrders);
-            if (showOrder) {
-                if (windowSize.isMobile) { 
-                    orderRows.push(<OrderMobileRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
-                } else {
-                    orderRows.push(<OrderRow key={key} EventDate={vipEvent?.eventDate} EventName={vipEvent?.title} Order={order} ChangeOrderStatus={changeOrderStatus} HasPhoneData={hasPhoneData} HasShirtData={hasShirtData} HideRevenue={hideRevItem} HideServiceFees={hideServiceFeeDisplay} CanCheckInTickets={canCheckInTickets} />);
-                }                
-            }            
-        });    
+        }            
     }
 
     const handleShowInactive = async (event: ChangeEvent<HTMLInputElement>) => {
         if (currentReportSelection) {
             dispatch(
                 setShowInactiveOrders(event.target.checked)
-            );
-            setVipEvent(undefined);            
+            )
         }
     };
 
@@ -258,7 +274,6 @@ export default function EventDetail(props: any) {
             dispatch(
                 setShowDeletedOrders(event.target.checked)
             );
-            setVipEvent(undefined);            
         }
     };
 
@@ -267,7 +282,6 @@ export default function EventDetail(props: any) {
             dispatch(
                 setShowHiddenOrders(event.target.checked)
             );
-            setVipEvent(undefined);   
         }
     };
 
@@ -291,7 +305,7 @@ export default function EventDetail(props: any) {
 
     return (
         <>
-            {(vipEvent != undefined) ? 
+            {(currentReportSelection.currentDetailEvent != undefined) ? 
             <Container fluid className="vipContainer">  
                 <DebugBar />
                 <Row>                    
@@ -301,31 +315,31 @@ export default function EventDetail(props: any) {
                                 <tbody>
                                     <tr>
                                         <td className="vipLabel">Event:</td>
-                                        <td className="vipTitle">{vipEvent.title}</td>
+                                        <td className="vipTitle">{currentReportSelection.currentDetailEvent.title}</td>
                                     </tr>
                                     <tr>
                                         <td className="vipLabel">Venue:</td>
-                                        <td>{vipEvent.venue?.name} in {location}</td>
+                                        <td>{currentReportSelection.currentDetailEvent.venue?.name} in {location}</td>
                                     </tr>
                                     <tr>
                                         <td className="vipLabel">Date:</td>
-                                        <td>{moment(vipEvent.eventDate).format('MM/DD/YYYY')}</td>
+                                        <td>{moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY')}</td>
                                     </tr>
                                     <tr>
                                         <td className="vipLabel">Total Tickets:</td>
-                                        <td>{vipEvent.totalTickets}</td>
+                                        <td>{totalTickets}</td>
                                     </tr>
                                     <tr hidden={!canCheckInTickets} className="no-print">
                                         <td className="vipLabel">Checked In:</td>
-                                        <td>{vipEvent.totalCheckedIn} / {vipEvent.totalTickets}</td>
+                                        <td>{currentReportSelection.currentDetailEvent.totalCheckedIn} / {totalTickets}</td>
                                     </tr>
                                     <tr hidden={hideRevItem}>
                                         <td className="vipLabel">Total Revenue:</td>
-                                        <td>${vipEvent.totalRevenue?.toFixed(2)}</td>
+                                        <td>${currentReportSelection.currentDetailEvent.totalRevenue?.toFixed(2)}</td>
                                     </tr>
                                     <tr hidden={hideServiceFeeDisplay || !viewServiceFees }>
                                         <td className="vipLabel">Total Service Fees:</td>
-                                        <td>${vipEvent.totalServiceFees?.toFixed(2)}</td>
+                                        <td>${currentReportSelection.currentDetailEvent.totalServiceFees?.toFixed(2)}</td>
                                     </tr>
                                     <tr hidden={!hasTicketData}>
                                         <td className="vipLabel">Ticket Breakdown:</td>

@@ -90,7 +90,7 @@ export default function DashboardIndex() {
                     <Col className="col-lg-3 col-md-6 stat-block-container">
                         <div className="stat-block">
                             <FaDollarSign size="2em" />
-                            <div>Total purchases:</div>
+                            <div>Total transactions:</div>
                             <span>{totalPurchases}</span>
                         </div>
                     </Col>
@@ -129,7 +129,7 @@ export default function DashboardIndex() {
                                 <Cell dataKey="PurchaseDate"></Cell>
                             </Column>
                             <Column flexGrow={1}>
-                                <HeaderCell>Purchases</HeaderCell>
+                                <HeaderCell>Transactions</HeaderCell>
                                 <Cell dataKey="Purchases"></Cell>
                             </Column>
                             <Column flexGrow={1}>

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import router from 'next/router';
 import { GetRolesResponse, Role, UpdateUserResponse, User } from "@/types/user";
-import { Button, FormCheck } from "react-bootstrap";
+import { Button, Col, Container, FormCheck, Row } from "react-bootstrap";
 import { setReloadUsers, setSelectedUser } from "@/lib/adminSelectionSlice";
 import { useGetSellers } from "@/hooks/useGetSellers";
 import { GetSellersResponse, Seller, SellerType } from "@/types/event";
@@ -12,6 +12,8 @@ import AdminSellerSelect from "../common/adminSellerSelectComponent";
 import { FaPlus } from "react-icons/fa";
 import { useGetAllRoles } from "@/hooks/useGetAllRoles";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
+import { current } from "@reduxjs/toolkit";
+import { CirclesWithBar } from "react-loader-spinner";
 
 export default function AdminUserEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -31,12 +33,15 @@ export default function AdminUserEdit() {
     const [requireResetPassword, setRequireResetPassword] = useState<boolean>(false);
     const [sendEmailReset, setSendEmailReset] = useState<boolean>(false);
     const [sendTextReset, setSendTextReset] = useState<boolean>(false);
+    const [disableCheckIn, setDisableCheckIn] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (currentAdminSelection.selectedUser == undefined) {
             goBack();
         } else if (username == undefined || allSellers == undefined || allRoles == undefined) {
+            setIsLoading(true);
             setUsername(currentAdminSelection.selectedUser.username);
             setFirstName(currentAdminSelection.selectedUser.firstName);
             setLastName(currentAdminSelection.selectedUser.lastName);
@@ -46,11 +51,13 @@ export default function AdminUserEdit() {
             setRequireResetPassword(currentAdminSelection.selectedUser.requireResetPassword ?? false);
             setSendEmailReset(currentAdminSelection.selectedUser.sendEmailReset ?? false);
             setSendTextReset(currentAdminSelection.selectedUser.sendTextReset ?? false);
+            setDisableCheckIn(currentAdminSelection.selectedUser.disableCheckIn ?? false);
             getSellers().then((response: GetSellersResponse) => {
                 setAllSellers(response.sellers);
                 getAllRoles().then((resp: GetRolesResponse) => {
                     const roles = resp.roles?.filter(x => x.roleId != 1);
                     setAllRoles(roles);
+                    setIsLoading(false);
                 });
             });
         }
@@ -177,6 +184,7 @@ export default function AdminUserEdit() {
 
     const onSubmit = () => {
         setErrorMessage(undefined);
+        setIsLoading(true);
         if (!currentAdminSelection.selectedUser) {
             return false;
         }
@@ -189,7 +197,8 @@ export default function AdminUserEdit() {
             isActive: isActive || false,
             requireResetPassword: requireResetPassword || false,
             sendEmailReset: sendEmailReset || false,
-            sendTextReset: sendTextReset || false
+            sendTextReset: sendTextReset || false,
+            disableCheckIn: disableCheckIn || false
         };
 
         const sellersInvalid = userToUpdate.sellers == undefined || userToUpdate.sellers.length == 0 || (userToUpdate.sellers.find(x => x.sellerId == 0) != undefined);
@@ -205,8 +214,9 @@ export default function AdminUserEdit() {
                 )
                 router.push('/admin/users/');
             } else {
-                setErrorMessage(response.userError);
+                setErrorMessage(response.userError ?? "Error occurred while saving user");
             }
+            setIsLoading(false);
         });
     }
 
@@ -233,7 +243,15 @@ export default function AdminUserEdit() {
 
     return (
         (currentAdminSelection.selectedUser && (sellerRows != null || currentAdminSelection.selectedUser.isAdmin)) ? 
-        <div className="admin-container">
+        <>
+        <Container fluid hidden={!isLoading}>
+            <Row>
+                <Col className="spinner-container" hidden={!isLoading}>
+                    <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
+                </Col>
+            </Row>
+        </Container>
+        <div className="admin-container" hidden={isLoading}>
             <h1>Edit User</h1>
             <div className="form-group">
               <label className="mt-4">Username: {username}</label>
@@ -289,6 +307,11 @@ export default function AdminUserEdit() {
                 onChange={(e) => setSendTextReset(e.target.checked)}
                 label="Send Password Reset by Text?"                
               />
+              <FormCheck
+                checked={disableCheckIn}
+                onChange={(e) => setDisableCheckIn(e.target.checked)}
+                label="Disable check-in permission?"                
+              />
             </div>
             <div className="form-group" hidden={currentAdminSelection.selectedUser.isAdmin}>
                 <label className="mt-4">Sellers:</label>
@@ -308,6 +331,7 @@ export default function AdminUserEdit() {
             <div className="danger">{errorMessage}</div>
             : ''}
         </div> 
+        </>
         : ''
     );
 }

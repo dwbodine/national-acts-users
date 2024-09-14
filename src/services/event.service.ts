@@ -21,7 +21,7 @@ export class EventService {
   }
 
   getEvents = async (reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
-    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&sellerId=${reportSelection.seller.sellerId}`;
+    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&sellerId=${reportSelection.seller.sellerId}`;
 
     if (reportSelection.start) {
       url += `&start=${reportSelection.start}`;
@@ -29,18 +29,6 @@ export class EventService {
 
     if (reportSelection.end) {
       url += `&end=${reportSelection.end}`;
-    }
-
-    if (reportSelection.showInactive) {
-      url += '&inactive=1';
-    }
-
-    if (reportSelection.showDeleted) {
-      url += '&deleted=1';
-    }
-
-    if (reportSelection.showHidden) {
-      url += '&hidden=1';
     }
 
     let eventResponse: GetEventsResponse = {
@@ -124,16 +112,20 @@ export class EventService {
       });
   };
 
-  getAllEvents = async (start: number, end: number): Promise<GetEventsResponse> => {
+  getAllEvents = async (start: number, end: number, sellerId: number = 0): Promise<GetEventsResponse> => {
     if (start < MINIMUM_UNIX_TIMESTAMP) {
       start = MINIMUM_UNIX_TIMESTAMP;
     }
 
     if (end <= start) {
-      end = start + 86400;
+      end = start + (7 * 24 * 60 * 60);
     }
 
     let url = `/user/eventsAndOrdersSecured?excludeExternal=1&start=${start}&end=${end}&ignoreFlags=1`;
+
+    if (sellerId > 0) {
+      url += `&sellerId=${sellerId}`;
+    }
 
     let eventResponse: GetEventsResponse = {
       events: undefined,
@@ -173,20 +165,8 @@ export class EventService {
   };
   
 
-  getEventDetail = async (eventId: number, reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
-    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&tsEventId=${eventId}`;
-
-    if (reportSelection.showInactiveOrders) {
-      url += '&inactive=1';
-    }
-
-    if (reportSelection.showDeletedOrders) {
-      url += '&deleted=1';
-    }
-
-    if (reportSelection.showHiddenOrders) {
-      url += '&hidden=1';
-    }
+  getEventDetail = async (eventId: number): Promise<GetEventsResponse> => {
+    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&tsEventId=${eventId}`;
 
     let eventResponse: GetEventsResponse = {
       events: undefined,

@@ -59,6 +59,7 @@ export type User = {
   requireResetPassword?: boolean;
   sendEmailReset?: boolean;
   sendTextReset?: boolean;
+  disableCheckIn?: boolean;
   lastUpdate?: string;
 };
 
@@ -75,6 +76,7 @@ export type UserReportSelection = {
   reloadEvents?: boolean;
   retainDateSelection?: boolean;
   currentEvents?: VipEvent[];
+  currentDetailEvent?: VipEvent;
   focusControl?: string;
   showHidden?: boolean;
   showHiddenOrders?: boolean;

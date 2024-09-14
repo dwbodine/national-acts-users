@@ -43,7 +43,7 @@ export default function CurrentEvents() {
     const viewRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
     const viewServiceFees = userHasPermission(user, EnumPermission.ViewServiceFees);
     const changeEventStatus = userHasPermission(user, EnumPermission.ChangeEventStatus);
-    const canCheckInTickets = userHasPermission(user, EnumPermission.CheckInUsers);
+    const canCheckInTickets = !user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers);
     const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);    
 
     let ticketData: ITicketData | undefined = undefined;
@@ -149,15 +149,25 @@ export default function CurrentEvents() {
     ]);    
     
     const filterEvents = (events: VipEvent[]) => {
-        let filteredEvents: VipEvent[] = events;
-        if (searchTerm && searchTerm.length >= 2 && events && events.length > 0) {
+        let filteredEvents: VipEvent[] = [];
+        
+        if (events && events.length > 0) {
+            filteredEvents = events.filter((evt) => {
+                return (currentReportSelection.showDeleted && evt.isDeleted) ||
+                       (currentReportSelection.showInactive && !evt.isActive && !evt.isDeleted) ||
+                       (currentReportSelection.showHidden && evt.isHidden) ||
+                       (!evt.isHidden && (!currentReportSelection.showDeleted && !evt.isDeleted) && (!currentReportSelection.showInactive && evt.isActive));
+            });
+        }
+        
+        if (searchTerm && searchTerm.length >= 2 && filteredEvents.length > 0) {
             const srch = searchTerm.toLowerCase();
-            filteredEvents = events.filter((event) => {
-                return event.title.toLowerCase().includes(srch) || 
-                    event.venue?.name?.toLowerCase().includes(srch) || 
-                    event.venue?.city?.toLowerCase().includes(srch) || 
-                    event.venue?.state?.toLowerCase().includes(srch) || 
-                    event.venue?.country?.toLowerCase().includes(srch);
+            filteredEvents = filteredEvents.filter((evt) => {
+                return evt.title.toLowerCase().includes(srch) || 
+                    evt.venue?.name?.toLowerCase().includes(srch) || 
+                    evt.venue?.city?.toLowerCase().includes(srch) || 
+                    evt.venue?.state?.toLowerCase().includes(srch) || 
+                    evt.venue?.country?.toLowerCase().includes(srch);
             })
         }
         return filteredEvents;

@@ -84,7 +84,7 @@ export default function AdminRoleEdit() {
                 )
                 router.push('/admin/roles/');
             } else {
-                setErrorMessage(response.roleError);
+                setErrorMessage(response.roleError ?? "Error occurred while saving role");
             }
         });
     }

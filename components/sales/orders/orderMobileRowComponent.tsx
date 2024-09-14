@@ -141,6 +141,9 @@ export default function OrderMobileRow(props: any) {
     };
 
     const hideUnhideOrder = () => {
+        if (!order.isActive || order.isDeleted) {
+            return false;
+        }
         const orderId = order.ticketSocketOrderId;
         const isHidden = order.isHidden ?? false;
         setOrderHidden(orderId, isHidden)

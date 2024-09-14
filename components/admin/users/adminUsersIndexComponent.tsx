@@ -8,6 +8,8 @@ import { setSelectedUser, setUsers } from "@/lib/adminSelectionSlice";
 import router from 'next/router';
 import { useGetAllUsers } from "@/hooks/useGetAllUsers";
 import debouce from "lodash.debounce";
+import { Col, Container, Row } from "react-bootstrap";
+import { CirclesWithBar } from "react-loader-spinner";
 
 export default function AdminUsersIndex() {
 
@@ -16,6 +18,7 @@ export default function AdminUsersIndex() {
     const { getAllUsers } = useGetAllUsers();
     const { Column, HeaderCell, Cell } = Table;
     const [searchTerm, setSearchTerm] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const debouncedResults = useMemo(() => {
         return debouce(setSearchTerm, 300);
@@ -23,12 +26,14 @@ export default function AdminUsersIndex() {
 
     useEffect(() => {
         if (!currentAdminSelection.users || currentAdminSelection.reloadUsers) {
+            setIsLoading(true);
             getAllUsers().then((response: GetUsersResponse) => {
                 if (!response.userError && response.users) {
                     dispatch(
                         setUsers(response.users)
                     );
                 }
+                setIsLoading(false);
             });
         }  
         return () => {
@@ -64,7 +69,15 @@ export default function AdminUsersIndex() {
     const filteredUsers =  filterUsers(currentAdminSelection.users);
     
     return (
-        <div className="admin-container">
+        <>
+        <Container fluid hidden={!isLoading}>
+            <Row>
+                <Col className="spinner-container" hidden={!isLoading}>
+                    <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
+                </Col>
+            </Row>
+        </Container>
+        <div className="admin-container" hidden={isLoading}>
             <h1>Users Admin</h1>
             <input
                 value={searchTerm}
@@ -108,5 +121,6 @@ export default function AdminUsersIndex() {
             </Table>
             <AdminListHomeButton />
         </div>
+        </>
     );
 }

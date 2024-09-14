@@ -19,6 +19,7 @@ const initialState: UserReportSelection = {
     hideRevenue: true,
     hideServiceFees: true,
     currentEvents: [],
+    currentDetailEvent: undefined,
     focusControl: '',
     showHidden: false,
     showHiddenOrders: false
@@ -54,6 +55,7 @@ export const userReportSelectionSlice = createSlice({
             state.showInactiveOrders = true;
             state.retainDateSelection = false;
             if (state.reloadEvents) {
+                state.currentDetailEvent = undefined;
                 state.currentEvents = [];
             }
             return state;
@@ -70,76 +72,29 @@ export const userReportSelectionSlice = createSlice({
             return state;
         },
         setShowInactive: (state, action: PayloadAction<boolean>) => {
-            const previousInactive = state.showInactive;
-            const newInactive = action.payload;
-            state.showHidden = false;
-            state.showInactive = newInactive;
-            state.reloadEvents = (previousInactive != newInactive);
-            if (!state.retainDateSelection) {
-                state.start = 0;
-                state.end = 0;
-            }
-            if (state.reloadEvents) {
-                state.currentEvents = [];
-            }
+            state.showInactive = action.payload;
             return state;
         },
         setShowInactiveOrders: (state, action: PayloadAction<boolean>) => {
-            const previousInactive = state.showInactiveOrders;
-            const newInactive = action.payload;
-            state.showHiddenOrders = false;
-            state.showInactiveOrders = newInactive;
-            state.reloadEvents = (previousInactive != newInactive);
+            state.showInactiveOrders = action.payload;
             return state;
         },
         setShowDeleted: (state, action: PayloadAction<boolean>) => {
-            const previousDeleted = state.showDeleted;
-            const newDeleted = action.payload;
-            state.showDeleted = newDeleted;
+            state.showDeleted = action.payload;
             state.showInactive = state.showDeleted;
-            state.showHidden = false;
-            state.reloadEvents = (previousDeleted != newDeleted);
-            if (!state.retainDateSelection) {
-                state.start = 0;
-                state.end = 0;
-            }
-            if (state.reloadEvents) {
-                state.currentEvents = [];
-            }
             return state;
         },
         setShowDeletedOrders: (state, action: PayloadAction<boolean>) => {
-            const previousDeleted = state.showDeletedOrders;
-            const newDeleted = action.payload;
-            state.showDeletedOrders = newDeleted;
+            state.showDeletedOrders = action.payload;
             state.showInactiveOrders = state.showDeletedOrders;
-            state.showHiddenOrders = false;
-            state.reloadEvents = (previousDeleted != newDeleted);
             return state;
         },
         setShowHidden: (state, action: PayloadAction<boolean>) => {
-            const previousHidden = state.showHidden;
-            const newHidden = action.payload;
-            state.showHidden = newHidden;
-            state.showInactive = false;
-            state.showDeleted = false;
-            state.reloadEvents = (previousHidden != newHidden);
-            if (!state.retainDateSelection) {
-                state.start = 0;
-                state.end = 0;
-            }
-            if (state.reloadEvents) {
-                state.currentEvents = [];
-            }
+            state.showHidden = action.payload;
             return state;
         },
         setShowHiddenOrders: (state, action: PayloadAction<boolean>) => {
-            const previousHidden = state.showHiddenOrders;
-            const newHidden = action.payload;
-            state.showHiddenOrders = newHidden;
-            state.showInactiveOrders = false;
-            state.showDeletedOrders = false;
-            state.reloadEvents = (previousHidden != newHidden);
+            state.showHiddenOrders = action.payload;
             return state;
         },
         setHideRevenue: (state, action: PayloadAction<boolean>) => {
@@ -175,6 +130,16 @@ export const userReportSelectionSlice = createSlice({
             
             return state;
         },
+        setCurrentDetailEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
+            if (action.payload) {
+                state.currentDetailEvent = action.payload;
+                state.reloadEvents = false;
+            } else {
+                state.currentDetailEvent = undefined;
+                state.reloadEvents = true;
+            }
+            return state;
+        },
         setReloadEvents: (state, action: PayloadAction<boolean>) => {
             state.reloadEvents = action.payload;
             return state;
@@ -191,6 +156,7 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = true;
             state.retainDateSelection = false;
             state.currentEvents = [];
+            state.currentDetailEvent = undefined;
             return state;
         },
         resetAll: (state) => {
@@ -206,6 +172,7 @@ export const userReportSelectionSlice = createSlice({
             state.reloadEvents = true;
             state.retainDateSelection = false;
             state.currentEvents = [];
+            state.currentDetailEvent = undefined;
             state.showHidden = false;
             state.showHiddenOrders = false;
             return state;
@@ -228,7 +195,8 @@ export const { setSeller,
                setFocusControl, 
                setEventSeller, 
                setShowHidden, 
-               setShowHiddenOrders
+               setShowHiddenOrders, 
+               setCurrentDetailEvent
              } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer
