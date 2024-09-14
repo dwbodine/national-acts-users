@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Button, FormCheck } from "react-bootstrap";
-import { getTicketDataFromEvents } from "@/utils/getTicketData";
+import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import OrderRow from "./orderRowComponent";
 import { useGetLocation } from "@/hooks/useGetLocation";
@@ -77,6 +77,7 @@ export default function EventDetail(props: any) {
     let orderRows: any[] = [];
     let hasOrders = false;
     let searchBarHidden = true;
+    let visibleOrders: Order[] = [];
 
     useEffect(() => {     
         const fetchEvent = async() => {    
@@ -179,9 +180,10 @@ export default function EventDetail(props: any) {
 
     const filterOrders = (orders: Order[] | undefined) => {
         let filteredOrders: Order[] = [];
+        visibleOrders = [];
 
         if (orders && orders.length > 0) {
-            filteredOrders = orders.filter((order) => {
+            visibleOrders = orders.filter((order) => {
                 return (currentReportSelection.showDeletedOrders && order.isDeleted) ||
                        (currentReportSelection.showInactiveOrders && !order.isActive && !order.isDeleted) ||
                        (currentReportSelection.showHiddenOrders && order.isHidden) ||
@@ -189,13 +191,15 @@ export default function EventDetail(props: any) {
             });
         }
 
-        if (searchTerm && searchTerm.length >= 2 && filteredOrders.length > 0) {
+        if (visibleOrders.length > 0 && searchTerm && searchTerm.length >= 2) {
             const srch = searchTerm.toLowerCase();
-            filteredOrders = filteredOrders.filter((order) => {
+            filteredOrders = visibleOrders.filter((order) => {
                 return order.attendeeNames?.find(x => x.toLowerCase().includes(srch)) || 
                     order.purchaserFirstName.toLowerCase().includes(srch) ||
                     order.purchaserLastName.toLowerCase().includes(srch);
             })
+        } else {
+            filteredOrders = visibleOrders;
         }
         return filteredOrders;
     };
@@ -224,7 +228,7 @@ export default function EventDetail(props: any) {
             }                
         });
         
-        ticketData = getTicketDataFromOrders(filteredOrders);
+        ticketData = getTicketDataFromOrders(filteredOrders, currentReportSelection.currentDetailEvent);
         const ticketTypes = ticketData?.TicketTypes;
         if (ticketTypes?.length > 0) {
             hasTicketData = true;

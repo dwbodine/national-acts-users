@@ -2,16 +2,31 @@ import { ITicketData, ITicketTypeData, Order, TicketType, VipEvent } from "@/typ
 import moment from "moment";
 
 
-export function getTicketDataFromOrders(orders: Order[]): ITicketData {
+export function getTicketDataFromOrders(orders: Order[], evt: VipEvent | undefined): ITicketData {
     const map = new Map<string, ITicketTypeData[]>();
     let ticketTypes: TicketType[] = [];
+
+    if (!evt) {
+        return {
+            TicketTypes: ticketTypes,
+            TicketData: map
+        }
+    }    
+    const key = moment(evt.eventDate).format('MM/DD/YYYY');
+    let eventHasTicketTypes: boolean = evt.hasTicketTypeData ?? false;
+    if (eventHasTicketTypes) {
+        evt.ticketTypes?.forEach((ticketType) => {
+            if (!ticketTypes.find(x => x.ticketTypeName.toLowerCase() == ticketType.ticketTypeName.toLowerCase())) {
+                ticketTypes.push(ticketType);
+            }                
+        });
+    }
     orders.forEach((order) => {
-        const key = moment(order.purchaseDate).format('MM/DD/YYYY');
         order.tickets?.forEach((ticket) => {
             if (ticket.isActive) {
-                if (!ticketTypes.find(x => x.ticketTypeName == ticket.ticketType)) {
+                if (!eventHasTicketTypes && !ticketTypes.find(x => x.ticketTypeName == ticket.ticketType)) {
                     ticketTypes.push({
-                        eventId: order.ticketSocketEventId,
+                        eventId: evt.ticketSocketEventId,
                         ticketTypeId: 0,
                         ticketTypeName: ticket.ticketType,
                         totalAvailable: 0,
@@ -38,8 +53,7 @@ export function getTicketDataFromOrders(orders: Order[]): ITicketData {
                         });
                     }
                 }
-            }
-            
+            }            
         })
     })
     ticketTypes.sort();

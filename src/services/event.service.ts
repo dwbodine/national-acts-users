@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse, GetOrdersResponse } from "../types/event";
 import { AdminDashboardSelection, UserReportSelection } from "@/types/user";
 import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
-import { getTicketDataFromEvents } from "@/utils/getTicketData";
+import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
 import moment from "moment";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import { MINIMUM_UNIX_TIMESTAMP } from "@/constants";

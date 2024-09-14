@@ -10,7 +10,7 @@ import router from "next/router";
 import { RootState } from "@/lib/store";
 import { eventService } from "@/services";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import { getTicketDataFromEvents } from "@/utils/getTicketData";
+import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
 import { useSetEventHidden } from "@/hooks/useSetEventHidden";
 
 export default function EventMobileRow(props: any) {

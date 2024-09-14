@@ -6,25 +6,27 @@ export function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[
     let map = new Map<string, ITicketSalesData>();
     events?.forEach((evt) => {
         evt.orders?.forEach((order) => {
-            const key = moment(order.purchaseDate).format('YYYY-MM-DD');
-            let salesData = map.get(key);
-            if (!salesData) {
-                const data: ITicketSalesData = {
-                    PurchaseDate: moment(key).format('MM/DD/YYYY'),
-                    Tickets: order.numTickets,
-                    Purchases: 1, 
-                    Revenue: order.revenueUsd,
-                    ServiceFees: order.serviceFees ?? 0, 
-                    TotalRevenue: (order.revenueUsd + (order.serviceFeesUsd ?? 0))
-                };
-                map.set(key, data);
-            } else {
-                salesData.Purchases += 1;
-                salesData.Tickets += order.numTickets;
-                salesData.Revenue += order.revenueUsd;
-                salesData.ServiceFees += order.serviceFees ?? 0;
-                salesData.TotalRevenue += (order.revenueUsd + (order.serviceFeesUsd ?? 0)),
-                map.set(key, salesData);
+            if (order.isActive && !order.isDeleted) {
+                const key = moment(order.purchaseDate).format('YYYY-MM-DD');
+                let salesData = map.get(key);
+                if (!salesData) {
+                    const data: ITicketSalesData = {
+                        PurchaseDate: moment(key).format('MM/DD/YYYY'),
+                        Tickets: order.numTickets,
+                        Purchases: 1, 
+                        Revenue: order.revenueUsd,
+                        ServiceFees: order.serviceFees ?? 0, 
+                        TotalRevenue: (order.revenueUsd + (order.serviceFeesUsd ?? 0))
+                    };
+                    map.set(key, data);
+                } else {
+                    salesData.Purchases += 1;
+                    salesData.Tickets += order.numTickets;
+                    salesData.Revenue += order.revenueUsd;
+                    salesData.ServiceFees += order.serviceFees ?? 0;
+                    salesData.TotalRevenue += (order.revenueUsd + (order.serviceFeesUsd ?? 0)),
+                    map.set(key, salesData);
+                }
             }
         });
     });

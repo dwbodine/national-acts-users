@@ -10,7 +10,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { getTicketDataFromEvents } from "@/utils/getTicketData";
+import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import EventRow from "./eventRowComponent";
 import router from "next/router";
@@ -48,7 +48,8 @@ export default function CurrentEvents() {
 
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
-    let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;    
+    let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents; 
+    let visibleEvents: VipEvent[] = [];   
     let ticketSalesData: ITicketSalesData[] | undefined = undefined;
     let searchBarHidden = true;
 
@@ -150,9 +151,10 @@ export default function CurrentEvents() {
     
     const filterEvents = (events: VipEvent[]) => {
         let filteredEvents: VipEvent[] = [];
+        visibleEvents = [];
         
         if (events && events.length > 0) {
-            filteredEvents = events.filter((evt) => {
+            visibleEvents = events.filter((evt) => {
                 return (currentReportSelection.showDeleted && evt.isDeleted) ||
                        (currentReportSelection.showInactive && !evt.isActive && !evt.isDeleted) ||
                        (currentReportSelection.showHidden && evt.isHidden) ||
@@ -160,15 +162,17 @@ export default function CurrentEvents() {
             });
         }
         
-        if (searchTerm && searchTerm.length >= 2 && filteredEvents.length > 0) {
+        if (visibleEvents.length > 0 && searchTerm && searchTerm.length >= 2) {
             const srch = searchTerm.toLowerCase();
-            filteredEvents = filteredEvents.filter((evt) => {
+            filteredEvents = visibleEvents.filter((evt) => {
                 return evt.title.toLowerCase().includes(srch) || 
                     evt.venue?.name?.toLowerCase().includes(srch) || 
                     evt.venue?.city?.toLowerCase().includes(srch) || 
                     evt.venue?.state?.toLowerCase().includes(srch) || 
                     evt.venue?.country?.toLowerCase().includes(srch);
             })
+        } else {
+            filteredEvents = visibleEvents;
         }
         return filteredEvents;
     };
@@ -221,7 +225,7 @@ export default function CurrentEvents() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="form-control search-text-input no-print"
                 placeholder="Search for events..." 
-                hidden={(searchBarHidden || isLoading || !vipEvents || vipEvents.length == 0)}
+                hidden={(searchBarHidden || isLoading || !visibleEvents || visibleEvents.length == 0)}
             />
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
                 ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} 
@@ -232,7 +236,7 @@ export default function CurrentEvents() {
                     <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
                 </Col>
                 <Col hidden={isLoading} className="results-col">
-                    {(vipEvents && vipEvents.length > 0) ?
+                    {(visibleEvents && visibleEvents.length > 0) ?
                         <table className="resultsTable">
                             <thead hidden={windowSize.isMobile}>
                                 <tr>
@@ -260,7 +264,7 @@ export default function CurrentEvents() {
                             </tfoot>
                         </table>
                     : ''} 
-                    {((!vipEvents || vipEvents.length == 0) && currentReportSelection.seller.sellerId > 0) ? 
+                    {((!visibleEvents || visibleEvents.length == 0) && currentReportSelection.seller.sellerId > 0) ? 
                     <Col className="no-events">
                         No events found
                     </Col>
