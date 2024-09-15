@@ -7,8 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setReloadRoles, setRoles, setSelectedRole } from "@/lib/adminSelectionSlice";
 import router from 'next/router';
-import { Button, FormCheck } from "react-bootstrap";
+import { Button, Col, Container, FormCheck, Row } from "react-bootstrap";
 import { useDeleteRoles } from "@/hooks/useDeleteRoles";
+import { CirclesWithBar } from "react-loader-spinner";
 
 export default function AdminRolesIndex() {
 
@@ -19,9 +20,11 @@ export default function AdminRolesIndex() {
     const { Column, HeaderCell, Cell } = Table;
     const [ selectedRoles, setSelectedRoles ] = useState<number[]>([]);
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (!currentAdminSelection.roles || currentAdminSelection.reloadRoles) {
+            setIsLoading(true);
             setSelectedRoles([]);
             getAllRoles().then((response: GetRolesResponse) => {
                 if (!response.roleError && response.roles) {
@@ -29,6 +32,7 @@ export default function AdminRolesIndex() {
                         setRoles(response.roles)
                     );
                 }
+                setIsLoading(false);
             });
         }            
     },[getAllRoles, dispatch, currentAdminSelection]);    
@@ -90,7 +94,15 @@ export default function AdminRolesIndex() {
     };
 
     return (
-        <div className="admin-container">
+        <>
+        <Container fluid hidden={!isLoading}>
+            <Row>
+                <Col className="spinner-container" hidden={!isLoading}>
+                    <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
+                </Col>
+            </Row>
+        </Container>
+        <div className="admin-container" hidden={isLoading}>
             <h1>Roles Admin</h1>
             <Table height={420} data={currentAdminSelection.roles} bordered cellBordered>
                 <Column width={50} align="center">
@@ -107,5 +119,6 @@ export default function AdminRolesIndex() {
             <div className="danger">{errorMessage}</div>
             : ''}
         </div>
+        </>
     );
 }
