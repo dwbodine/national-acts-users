@@ -1,5 +1,5 @@
 import { UpdateUserResponse, User } from "@/types/user";
-import { userService } from "../services";
+import { userService } from "../../services";
 
 export const useDeleteUser = () => {
   const deleteUser = async (userId: number): Promise<UpdateUserResponse> => {

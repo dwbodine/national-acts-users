@@ -1,5 +1,5 @@
 import { AdminDashboardSelection } from "@/types/user";
-import { eventService } from "../services";
+import { eventService } from "../../services";
 import { Order, VipEvent } from "@/types/event";
 
 export const useGetExport = () => {

@@ -1,9 +1,9 @@
-import { useLogout } from "@/hooks/useLogout";
+import { useLogout } from "@/hooks/user/useLogout";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useLogActivityData } from "@/hooks/useLogActivityData";
+import { useLogActivityData } from "@/hooks/common/useLogActivityData";
 import { UserActivityType } from "@/types/user";
-import { useResetStores } from "@/hooks/useResetStores";
+import { useResetStores } from "@/hooks/common/useResetStores";
 
 export default function Logout() {
     const { logout } = useLogout();

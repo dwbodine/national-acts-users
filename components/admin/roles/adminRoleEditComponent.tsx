@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import router from 'next/router';
 import { GetPermissionsResponse, Permission, Role, UpdateRoleResponse } from "@/types/user";
 import { Button, Col, Container, FormCheck, FormText, Row } from "react-bootstrap";
-import { useGetAllPermissions } from "@/hooks/useGetAllPermissions";
+import { useGetAllPermissions } from "@/hooks/user/useGetAllPermissions";
 import { setReloadRoles, setSelectedRole } from "@/lib/adminSelectionSlice";
-import { useUpdateRole } from "@/hooks/useUpdateRole";
+import { useUpdateRole } from "@/hooks/admin/useUpdateRole";
 import { CirclesWithBar } from "react-loader-spinner";
 
 export default function AdminRoleEdit() {

@@ -1,4 +1,4 @@
-import { publicService } from "../services";
+import { publicService } from "../../services";
 import { GetSellersResponse } from "@/types/event";
 
 export const useGetSellers = () => {

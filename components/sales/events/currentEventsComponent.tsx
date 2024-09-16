@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from '../../../src/lib/store';
-import { useGetEvents } from '@/hooks/useGetEvents';
+import { useGetEvents } from '@/hooks/event/useGetEvents';
 import { setEvents, setDateRange, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
 import { useEffect, useMemo, useState } from "react";
@@ -9,7 +9,7 @@ import { EnumPermission, UserReportSelection } from "@/types/user";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';
-import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentUser } from "@/hooks/user/useCurrentUser";
 import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
 import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import EventRow from "./eventRowComponent";
@@ -17,9 +17,9 @@ import router from "next/router";
 import WidgetBar from "../widgets/widgetBarComponent";
 import TicketSalesChart from "../../common/ticketSalesChartComponent";
 import { getPurchaseDataFromEvents } from "@/utils/getPurchaseData";
-import { useWindowSize } from "@/hooks/useWindowSize";
+import { useWindowSize } from "@/hooks/common/useWindowSize";
 import EventMobileRow from "./eventMobileRowComponent";
-import { useHasPermission } from "@/hooks/useHasPermission";
+import { useHasPermission } from "@/hooks/user/useHasPermission";
 import debouce from "lodash.debounce";
 import { FULL_PAGE_CHART_BREAKPOINT } from "@/constants";
 

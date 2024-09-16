@@ -3,12 +3,12 @@ import React from 'react';
 import moment from "moment";
 import { useDispatch } from "react-redux";
 import { setEvents } from '@/lib/reportSelectionSlice';
-import { useSetEventInactive } from "@/hooks/useSetEventInactive";
-import { useSetEventDeleted } from "@/hooks/useSetEventDeleted";
-import { useGetLocation } from "@/hooks/useGetLocation";
+import { useSetEventInactive } from "@/hooks/event/useSetEventInactive";
+import { useSetEventDeleted } from "@/hooks/event/useSetEventDeleted";
+import { useGetLocation } from "@/hooks/common/useGetLocation";
 import router from "next/router";
 import { eventService } from "@/services";
-import { useSetEventHidden } from "@/hooks/useSetEventHidden";
+import { useSetEventHidden } from "@/hooks/event/useSetEventHidden";
 
 export default function EventRow(props: any) {
     const dispatch = useDispatch(); 

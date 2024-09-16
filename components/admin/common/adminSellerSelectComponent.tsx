@@ -1,4 +1,4 @@
-import { useGetSellers } from "@/hooks/useGetSellers";
+import { useGetSellers } from "@/hooks/common/useGetSellers";
 import { Seller } from "@/types/event";
 import { Role } from "@/types/user";
 import { useEffect, useState } from "react";

@@ -1,5 +1,5 @@
 import { UpdateUserResponse, User } from "@/types/user";
-import { userService } from "../services";
+import { userService } from "../../services";
 
 export const useUpdateUser = () => {
   const updateUser = async (userToUpdate: User): Promise<UpdateUserResponse> => {

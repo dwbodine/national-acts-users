@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { useState, KeyboardEvent, useEffect } from "react";
-import { useLogin } from "../src/hooks/useLogin";
+import { useLogin } from "../src/hooks/user/useLogin";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
 import CheckAuth from "../components/common/checkAuthComponent";
 import Image from 'next/image';
-import { useResetStores } from "@/hooks/useResetStores";
+import { useResetStores } from "@/hooks/common/useResetStores";
 
 
 export default function Login() {

@@ -1,4 +1,4 @@
-import { useGetActivityData } from "@/hooks/useGetActivityData";
+import { useGetActivityData } from "@/hooks/dashboard/useGetActivityData";
 import { setCurrentLogins, setReloadActivities } from "@/lib/dashboardSelectionSlice";
 import { RootState } from "@/lib/store";
 import { GetActivityResponse, UserActivity, UserActivityType } from "@/types/user";

@@ -8,9 +8,9 @@ import type { RootState } from '../../../src/lib/store';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ResetButton from "../../common/resetButtonComponent";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentUser } from "@/hooks/user/useCurrentUser";
 import { Button } from "react-bootstrap";
-import { useGetExport } from "@/hooks/useGetExport";
+import { useGetExport } from "@/hooks/common/useGetExport";
 import getFileNameFromReportSelection from "@/utils/getFileNameFromReportSelection";
 import downloadFile from "@/utils/downloadFile";
 import PrintButton from "../../common/printButtonComponent";
@@ -19,10 +19,10 @@ import { resetSelection, setDateRange, setReloadEvents } from "@/lib/reportSelec
 import { EnumPermission } from "@/types/user";
 import ServiceFeesCheck from "./serviceFeesCheckComponent";
 import { useEffect } from "react";
-import { useHasPermission } from "@/hooks/useHasPermission";
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { useHasPermission } from "@/hooks/user/useHasPermission";
+import { useWindowSize } from '@/hooks/common/useWindowSize';
 import HiddenCheck from "./hiddenCheckComponent";
-import { useGetAllEvents } from "@/hooks/useGetAllEvents";
+import { useGetAllEvents } from "@/hooks/event/useGetAllEvents";
 import { GetEventsResponse } from "@/types/event";
 
 export default function SalesBar() {    

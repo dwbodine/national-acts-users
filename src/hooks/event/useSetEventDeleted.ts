@@ -1,4 +1,4 @@
-import { eventService } from "../services";
+import { eventService } from "../../services";
 import { ModifyEventResponse } from "@/types/event";
 
 export const useSetEventDeleted = () => {

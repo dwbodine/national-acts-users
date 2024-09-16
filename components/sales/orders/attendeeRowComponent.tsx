@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { setReloadEvents, setFocusControl } from '@/lib/reportSelectionSlice';
 import { Ticket } from '@/types/event';
-import { useSetTicketCheckedIn } from '@/hooks/useSetTicketCheckedIn';
+import { useSetTicketCheckedIn } from '@/hooks/order/useSetTicketCheckedIn';
 import router from 'next/router';
 import { FaCheck, FaX } from 'react-icons/fa6';
 

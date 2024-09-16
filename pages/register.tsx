@@ -1,10 +1,10 @@
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
 import { ChangeEvent, useEffect, useState } from 'react';
-import { useGetSellers } from '@/hooks/useGetSellers';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { Seller } from '@/types/event';
 import { useRouter } from 'next/router';
-import { useRegister } from '@/hooks/useRegister';
+import { useRegister } from '@/hooks/user/useRegister';
 
 export default function Register() {
     const router = useRouter();

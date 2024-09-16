@@ -3,15 +3,15 @@ import React from 'react';
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { setEvents } from '@/lib/reportSelectionSlice';
-import { useSetEventInactive } from "@/hooks/useSetEventInactive";
-import { useSetEventDeleted } from "@/hooks/useSetEventDeleted";
-import { useGetLocation } from "@/hooks/useGetLocation";
+import { useSetEventInactive } from "@/hooks/event/useSetEventInactive";
+import { useSetEventDeleted } from "@/hooks/event/useSetEventDeleted";
+import { useGetLocation } from "@/hooks/common/useGetLocation";
 import router from "next/router";
 import { RootState } from "@/lib/store";
 import { eventService } from "@/services";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
-import { useSetEventHidden } from "@/hooks/useSetEventHidden";
+import { useSetEventHidden } from "@/hooks/event/useSetEventHidden";
 
 export default function EventMobileRow(props: any) {
     const dispatch = useDispatch(); 

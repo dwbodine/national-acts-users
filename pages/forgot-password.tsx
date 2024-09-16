@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
 import { useRouter } from "next/router";
-import { useForgotPassword } from "@/hooks/useForgotPassword";
-import { useValidateResetCode } from "@/hooks/useValidateResetCode";
-import { useResetPassword } from "@/hooks/useResetPassword";
+import { useForgotPassword } from "@/hooks/user/useForgotPassword";
+import { useValidateResetCode } from "@/hooks/user/useValidateResetCode";
+import { useResetPassword } from "@/hooks/user/useResetPassword";
 
 export default function ForgotPassword() {
     const [mode, setMode] = useState(ForgotPasswordMode.SendPasswordReset);

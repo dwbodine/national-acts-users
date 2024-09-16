@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
-import { useResetPasswordSecure } from '../src/hooks/useResetPasswordSecure';
+import { useResetPasswordSecure } from '../src/hooks/user/useResetPasswordSecure';
 import { useEffect, useState } from "react";
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentUser } from "@/hooks/user/useCurrentUser";
 import CheckAuth from "../components/common/checkAuthComponent";
 
 

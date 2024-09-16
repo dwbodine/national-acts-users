@@ -1,5 +1,5 @@
 import { GetUsersResponse } from "@/types/user";
-import { userService } from "../services";
+import { userService } from "../../services";
 
 export const useGetAllUsers = () => {
   const getAllUsers = async (): Promise<GetUsersResponse> => {

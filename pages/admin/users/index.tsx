@@ -1,11 +1,11 @@
 import Container from 'react-bootstrap/Container';
 import CheckAuth from "../../../components/common/checkAuthComponent";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentUser } from "@/hooks/user/useCurrentUser";
 import { Tabs } from "rsuite";
 import NavBar from "../../../components/common/navBarComponent";
 import { useEffect } from "react";
 import { UserActivityType } from "@/types/user";
-import { useLogActivityData } from "@/hooks/useLogActivityData";
+import { useLogActivityData } from "@/hooks/common/useLogActivityData";
 import router from 'next/router';
 import { ActivePageKey } from '@/constants';
 import AdminUsersIndex from '../../../components/admin/users/adminUsersIndexComponent';

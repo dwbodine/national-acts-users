@@ -1,4 +1,4 @@
-import { eventService } from "../services";
+import { eventService } from "../../services";
 import { ModifyOrderResponse } from "@/types/event";
 
 export const useSetOrderHidden = () => {

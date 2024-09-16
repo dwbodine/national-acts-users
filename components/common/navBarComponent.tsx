@@ -4,9 +4,8 @@ import Col from 'react-bootstrap/Col';
 import ResetPasswordButton from "./resetPasswordComponent";
 import LogoutButton from "./logoutButtonComponent";
 import Image from 'next/image';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
 import { useEffect } from 'react';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
 import DebugBar from './debugBarComponent';
 
 export default function NavBar(props: any) {    

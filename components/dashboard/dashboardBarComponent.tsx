@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setDashboardDateRange, setReloadActivities } from "@/lib/dashboardSelectionSlice";
 import { Button } from "react-bootstrap";
-import { useGetExport } from "@/hooks/useGetExport";
+import { useGetExport } from "@/hooks/common/useGetExport";
 import getFileNameFromDashboardReportSelection from "@/utils/getFileNameFromDashboardReportSelection";
 import downloadFile from "@/utils/downloadFile";
 

@@ -32,6 +32,7 @@ export interface Order {
   eventTitle?: string;
   eventDate?: string;
   sellerName?: string;
+  sellerId?: number;
   eventCity?: string;
   eventState?: string;
   eventCountry?: string;

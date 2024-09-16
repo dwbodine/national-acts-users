@@ -1,5 +1,5 @@
 import { UserReportSelection } from "@/types/user";
-import { eventService } from "../services";
+import { eventService } from "../../services";
 import { GetEventsResponse } from "@/types/event";
 
 export const useGetEvents = () => {

@@ -1,6 +1,6 @@
 import { SyntheticEvent, useEffect, useMemo, useState } from "react";
 import AdminListHomeButton from "../adminListHomeButton";
-import { useGetAllRoles } from "@/hooks/useGetAllRoles";
+import { useGetAllRoles } from "@/hooks/admin/useGetAllRoles";
 import { GetRolesResponse, Role, User } from "@/types/user";
 import { Table } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import { RootState } from "@/lib/store";
 import { setReloadRoles, setRoles, setSelectedRole } from "@/lib/adminSelectionSlice";
 import router from 'next/router';
 import { Button, Col, Container, FormCheck, Row } from "react-bootstrap";
-import { useDeleteRoles } from "@/hooks/useDeleteRoles";
+import { useDeleteRoles } from "@/hooks/admin/useDeleteRoles";
 import { CirclesWithBar } from "react-loader-spinner";
 
 export default function AdminRolesIndex() {

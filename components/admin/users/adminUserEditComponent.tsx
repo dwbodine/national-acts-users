@@ -5,13 +5,13 @@ import router from 'next/router';
 import { GetRolesResponse, Role, UpdateUserResponse, User } from "@/types/user";
 import { Button, Col, Container, FormCheck, Row } from "react-bootstrap";
 import { setReloadUsers, setSelectedUser } from "@/lib/adminSelectionSlice";
-import { useGetSellers } from "@/hooks/useGetSellers";
+import { useGetSellers } from "@/hooks/common/useGetSellers";
 import { GetSellersResponse, Seller, SellerType } from "@/types/event";
-import { useUpdateUser } from "@/hooks/useUpdateUser";
+import { useUpdateUser } from "@/hooks/admin/useUpdateUser";
 import AdminSellerSelect from "../common/adminSellerSelectComponent";
 import { FaPlus } from "react-icons/fa";
-import { useGetAllRoles } from "@/hooks/useGetAllRoles";
-import { useDeleteUser } from "@/hooks/useDeleteUser";
+import { useGetAllRoles } from "@/hooks/admin/useGetAllRoles";
+import { useDeleteUser } from "@/hooks/admin/useDeleteUser";
 import { current } from "@reduxjs/toolkit";
 import { CirclesWithBar } from "react-loader-spinner";
 

@@ -1,8 +1,8 @@
 import { User, UserActivityType } from "@/types/user";
-import { authService } from "../services";
+import { authService } from "../../services";
 
 import Cookies from "js-cookie";
-import { useLogActivityData } from "./useLogActivityData";
+import { useLogActivityData } from "../common/useLogActivityData";
 
 
 export const useLogin = () => {

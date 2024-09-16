@@ -1,4 +1,4 @@
-import { authService } from "../services";
+import { authService } from "../../services";
 
 export const useResetPasswordSecure = () => {
   const resetPasswordSecure = async (username: string, password: string, confirmPassword: string) => {

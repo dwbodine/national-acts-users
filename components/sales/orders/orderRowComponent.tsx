@@ -1,5 +1,5 @@
-import { useSetOrderDeleted } from '@/hooks/useSetOrderDeleted';
-import { useSetOrderInactive } from '@/hooks/useSetOrderInadtive';
+import { useSetOrderDeleted } from '@/hooks/order/useSetOrderDeleted';
+import { useSetOrderInactive } from '@/hooks/order/useSetOrderInactive';
 import { setReloadEvents } from '@/lib/reportSelectionSlice';
 import { Order } from '@/types/event';
 import moment from 'moment';
@@ -7,7 +7,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import router from 'next/router';
 import AttendeeRow from './attendeeRowComponent';
-import { useSetOrderHidden } from '@/hooks/useSetOrderHidden';
+import { useSetOrderHidden } from '@/hooks/order/useSetOrderHidden';
 
 export default function OrderRow(props: any) {
     const dispatch = useDispatch();

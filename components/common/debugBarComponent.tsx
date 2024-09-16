@@ -1,5 +1,5 @@
-import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { useWindowSize } from "@/hooks/useWindowSize";
+import { useCurrentUser } from "@/hooks/user/useCurrentUser";
+import { useWindowSize } from "@/hooks/common/useWindowSize";
 import { Col, Row } from "react-bootstrap";
 
 

@@ -3,7 +3,7 @@ import DashboardBar from "./dashboardBarComponent"
 import TicketSalesChart from "../common/ticketSalesChartComponent";
 import { GetOrdersResponse, ITicketSalesData } from "@/types/event";
 import { useEffect, useState } from "react";
-import { useWindowSize } from "@/hooks/useWindowSize";
+import { useWindowSize } from "@/hooks/common/useWindowSize";
 import { FULL_PAGE_CHART_BREAKPOINT } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
@@ -11,7 +11,7 @@ import UserActivityWidget from "./userActivityWidgetComponent";
 import { setReloadDashboardOrders, setCurrentDashboardData } from "@/lib/dashboardSelectionSlice";
 import { CirclesWithBar } from "react-loader-spinner";
 import { Table } from "rsuite";
-import { useGetOrders } from "@/hooks/useGetOrders";
+import { useGetOrders } from "@/hooks/order/useGetOrders";
 import { getDashboardDataFromOrders } from "@/utils/getDashboardDataFromOrders";
 import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from "react-icons/fa";
 export default function DashboardIndex() {

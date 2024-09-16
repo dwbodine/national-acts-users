@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setSelectedUser, setUsers } from "@/lib/adminSelectionSlice";
 import router from 'next/router';
-import { useGetAllUsers } from "@/hooks/useGetAllUsers";
+import { useGetAllUsers } from "@/hooks/admin/useGetAllUsers";
 import debouce from "lodash.debounce";
 import { Col, Container, Row } from "react-bootstrap";
 import { CirclesWithBar } from "react-loader-spinner";
