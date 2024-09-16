@@ -21,7 +21,19 @@ export class EventService {
   }
 
   getEvents = async (reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
-    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&sellerId=${reportSelection.seller.sellerId}`;
+    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&sellerId=${reportSelection.seller.sellerId}`;
+
+    if (reportSelection.showInactive) {
+      url += '&inactive=1';
+    }
+
+    if (reportSelection.showDeleted) {
+      url += '&deleted=1';
+    }
+
+    if (reportSelection.showHidden) {
+      url += '&hidden=1';
+    }
 
     if (reportSelection.start) {
       url += `&start=${reportSelection.start}`;
@@ -112,16 +124,24 @@ export class EventService {
       });
   };
 
-  getAllEvents = async (start: number, end: number, sellerId: number = 0): Promise<GetEventsResponse> => {
-    if (start < MINIMUM_UNIX_TIMESTAMP) {
+  getAllEvents = async (start: number = 0, end: number = 0, sellerId: number = 0): Promise<GetEventsResponse> => {
+    if (start > 0 && start < MINIMUM_UNIX_TIMESTAMP) {
       start = MINIMUM_UNIX_TIMESTAMP;
     }
 
-    if (end <= start) {
+    if (start > 0 && end > 0 && end <= start) {
       end = start + (7 * 24 * 60 * 60);
     }
 
-    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&start=${start}&end=${end}&ignoreFlags=1`;
+    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1`;
+    
+    if (start > 0) {
+      url += `&start=${start}`;
+    }
+
+    if (end > 0) {
+      url += `&end=${end}`;
+    }
 
     if (sellerId > 0) {
       url += `&sellerId=${sellerId}`;

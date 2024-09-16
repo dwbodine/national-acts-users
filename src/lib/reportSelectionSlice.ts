@@ -73,6 +73,11 @@ export const userReportSelectionSlice = createSlice({
         },
         setShowInactive: (state, action: PayloadAction<boolean>) => {
             state.showInactive = action.payload;
+            if (!state.retainDateSelection) {
+                state.start = 0;
+                state.end = 0;
+            }
+            state.reloadEvents = true;
             return state;
         },
         setShowInactiveOrders: (state, action: PayloadAction<boolean>) => {
@@ -82,6 +87,11 @@ export const userReportSelectionSlice = createSlice({
         setShowDeleted: (state, action: PayloadAction<boolean>) => {
             state.showDeleted = action.payload;
             state.showInactive = state.showDeleted;
+            if (!state.retainDateSelection) {
+                state.start = 0;
+                state.end = 0;
+            }            
+            state.reloadEvents = true;
             return state;
         },
         setShowDeletedOrders: (state, action: PayloadAction<boolean>) => {
@@ -91,6 +101,11 @@ export const userReportSelectionSlice = createSlice({
         },
         setShowHidden: (state, action: PayloadAction<boolean>) => {
             state.showHidden = action.payload;
+            if (!state.retainDateSelection) {
+                state.start = 0;
+                state.end = 0;
+            }
+            state.reloadEvents = true;
             return state;
         },
         setShowHiddenOrders: (state, action: PayloadAction<boolean>) => {

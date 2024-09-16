@@ -22,6 +22,8 @@ import { useEffect } from "react";
 import { useHasPermission } from "@/hooks/useHasPermission";
 import { useWindowSize } from '@/hooks/useWindowSize';
 import HiddenCheck from "./hiddenCheckComponent";
+import { useGetAllEvents } from "@/hooks/useGetAllEvents";
+import { GetEventsResponse } from "@/types/event";
 
 export default function SalesBar() {    
     const dispatch = useDispatch(); 
@@ -33,6 +35,7 @@ export default function SalesBar() {
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const hasEvents = (currentReportSelection?.currentEvents?.length ?? 0 > 0);
     const dateRangeTitle = "Event date range";
+    const { getAllEvents } = useGetAllEvents();
 
     const viewInactiveEvents = userHasPermission(user, EnumPermission.ViewInactiveEvents);
     const viewDeletedEvents = userHasPermission(user, EnumPermission.ViewDeletedEvents);
@@ -45,36 +48,46 @@ export default function SalesBar() {
     const viewHiddenEvents = userHasPermission(user, EnumPermission.ViewHiddenEvents);
 
     const exportEventData = () => {
-        if (currentReportSelection && currentReportSelection.currentEvents) {
-            const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
-            const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
-            const csvData = exportEventsToCsv(currentReportSelection.currentEvents, showServiceFees, showRevenueData);
-            const fileName = getFileNameFromReportSelection(currentReportSelection);
-            downloadFile(fileName, csvData);
-        }        
+        if (currentReportSelection && currentReportSelection.start && currentReportSelection.end && currentReportSelection.seller && currentReportSelection.seller.sellerId > 0) {
+            getAllEvents(0, 0, currentReportSelection.seller.sellerId)
+                .then((response: GetEventsResponse) => {
+                    if (response && !response.eventError && response.events != undefined) {
+                        const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
+                        const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
+                        const csvData = exportEventsToCsv(response.events, showServiceFees, showRevenueData);
+                        const fileName = getFileNameFromReportSelection(currentReportSelection);
+                        downloadFile(fileName, csvData);
+                    }    
+                });            
+        }
     };
 
     const exportCustomerData = () => {
-        if (currentReportSelection && currentReportSelection.currentEvents) {
-            const vipEvents = currentReportSelection.currentEvents;
-            const hasPhoneData = (vipEvents.find(x => x.hasPhoneData == true) != undefined);
-            const hasShirtData = (vipEvents.find(x => x.hasShirtData == true) != undefined);
-            const hasNonUsaOrders = (vipEvents.find(x => x.hasNonUSAOrders == true) != undefined);
-            let currencySymbol: string | undefined = undefined;
-            let currencyAbbrev: string | undefined = undefined;
-            if (hasNonUsaOrders) {
-                const symbolOrder = vipEvents.find(x => x.hasNonUSAOrders == true);
-                if (symbolOrder != undefined) {
-                    currencySymbol = symbolOrder.nonUsaCurrencySymbol;
-                    currencyAbbrev = symbolOrder.nonUsaCurrencyAbbrev;
-                }
-            }
-            const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
-            const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
-            const csvData = exportCustomerDataToCsv(currentReportSelection.currentEvents, showServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol);
-            const fileName = getFileNameFromReportSelection(currentReportSelection, 'customer');
-            downloadFile(fileName, csvData);
-        } 
+        if (currentReportSelection && currentReportSelection.start && currentReportSelection.end && currentReportSelection.seller && currentReportSelection.seller.sellerId > 0) {
+            getAllEvents(0, 0, currentReportSelection.seller.sellerId)
+                .then((response: GetEventsResponse) => {
+                    if (response && !response.eventError && response.events != undefined) {
+                        const vipEvents = response.events;
+                        const hasPhoneData = (vipEvents.find(x => x.hasPhoneData == true) != undefined);
+                        const hasShirtData = (vipEvents.find(x => x.hasShirtData == true) != undefined);
+                        const hasNonUsaOrders = (vipEvents.find(x => x.hasNonUSAOrders == true) != undefined);
+                        let currencySymbol: string | undefined = undefined;
+                        let currencyAbbrev: string | undefined = undefined;
+                        if (hasNonUsaOrders) {
+                            const symbolOrder = vipEvents.find(x => x.hasNonUSAOrders == true);
+                            if (symbolOrder != undefined) {
+                                currencySymbol = symbolOrder.nonUsaCurrencySymbol;
+                                currencyAbbrev = symbolOrder.nonUsaCurrencyAbbrev;
+                            }
+                        }
+                        const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
+                        const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
+                        const csvData = exportCustomerDataToCsv(response.events, showServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencySymbol);
+                        const fileName = getFileNameFromReportSelection(currentReportSelection, 'customer');
+                        downloadFile(fileName, csvData);
+                    } 
+                });            
+        }
     };
 
     let pageTitle: string = "Sales Overview";
