@@ -22,7 +22,8 @@ const initialState: UserReportSelection = {
     currentDetailEvent: undefined,
     focusControl: '',
     showHidden: false,
-    showHiddenOrders: false
+    showHiddenOrders: false,
+    isForAdmin: false
 };
 
 export const userReportSelectionSlice = createSlice({
@@ -50,8 +51,8 @@ export const userReportSelectionSlice = createSlice({
             state.showDeleted = false;
             state.showDeletedOrders = false;
             state.showInactive = false;
-            state.showHidden = false;
-            state.showHiddenOrders = false;
+            state.showHidden = state.isForAdmin;
+            state.showHiddenOrders = state.isForAdmin;
             state.showInactiveOrders = true;
             state.retainDateSelection = false;
             if (state.reloadEvents) {
@@ -163,6 +164,12 @@ export const userReportSelectionSlice = createSlice({
             state.focusControl = action.payload;
             return state;
         },
+        setForAdmin: (state, action: PayloadAction<boolean>) => {
+            state.isForAdmin = action.payload;
+            state.showHidden = action.payload;
+            state.showHiddenOrders = action.payload;
+            return state;
+        },
         resetSelection: (state) => {
             state.start = 0;
             state.end = 0;
@@ -172,6 +179,8 @@ export const userReportSelectionSlice = createSlice({
             state.retainDateSelection = false;
             state.currentEvents = [];
             state.currentDetailEvent = undefined;
+            state.showHidden = state.isForAdmin;
+            state.showHiddenOrders = state.isForAdmin;
             return state;
         },
         resetAll: (state) => {
@@ -188,8 +197,8 @@ export const userReportSelectionSlice = createSlice({
             state.retainDateSelection = false;
             state.currentEvents = [];
             state.currentDetailEvent = undefined;
-            state.showHidden = false;
-            state.showHiddenOrders = false;
+            state.showHidden = state.isForAdmin;
+            state.showHiddenOrders = state.isForAdmin;
             return state;
         }
     }
@@ -211,7 +220,8 @@ export const { setSeller,
                setEventSeller, 
                setShowHidden, 
                setShowHiddenOrders, 
-               setCurrentDetailEvent
+               setCurrentDetailEvent,
+               setForAdmin
              } = userReportSelectionSlice.actions
 
 export default userReportSelectionSlice.reducer

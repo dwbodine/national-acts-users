@@ -80,16 +80,66 @@ export type UserReportSelection = {
   focusControl?: string;
   showHidden?: boolean;
   showHiddenOrders?: boolean;
+  isForAdmin?: boolean;
+}
+
+export interface ITopSeller {
+  sellerId: number;
+  sellerName: string;
+  revenueUsd: number;
+}
+
+export interface IDailyOrderData {
+  sellerId: number;
+  sellerName: string;
+  purchaseDate: string;
+  ticketSocketEventId: number;
+  eventTitle: string;
+  eventDate: string;
+  city: string;
+  state?: string;
+  country?: string;
+  orders: number;
+  tickets: number;
+  ticketRevenueUsd: number;
+  serviceFeesRevenueUsd: number;
+  totalRevenueUsd: number;
+  ticketsRefunded: number;
+}
+
+export interface IDashboardTotals {
+  year: number;
+  month: number;
+  day: number;
+  daysInMonth: number;
+  dayOfYear: number;
+  totalDaysInYear: number;
+  tickets: number;
+  ticketsRefunded: number;
+  orders: number;
+  ticketRevenueUsd: number;
+  serviceFeesRevenueUsd: number;
+  totalRevenueUsd: number;
+  yearlyRevenueGoal: number;
+  monthlyRevenueGoal: number;
+  dailyOrderData?: IDailyOrderData[];
 }
 
 export interface IDashboardData {
   ticketSalesData?: ITicketSalesData[];
   tickets?: number;
+  ticketsRefunded?: number;
   revenue?: number;
   serviceFees?: number;
   purchases?: number;
   totalRevenue?: number;
   orders?: Order[];
+  totals?: IDashboardTotals;
+  topSellers?: ITopSeller[];
+  percentMonthlyGoal?: number;
+  percentYearlyGoal?: number;
+  projectedYearTotalRevenue?: number;
+  projectedMonthTotalRevenue?: number;
 }
 
 export type AdminDashboardSelection = {
@@ -101,9 +151,11 @@ export type AdminDashboardSelection = {
   showHidden?: boolean;
   reloadActivities: boolean;
   reloadOrders: boolean;
+  getYearToDateTotals: boolean;
   filterAdmins: boolean;
   currentLogins?: number;
   currentDashboardData?: IDashboardData;
+  dashboardTotals?: IDashboardTotals;
 }
 
 export enum UserActivityType {

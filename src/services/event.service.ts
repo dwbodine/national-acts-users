@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
-import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse, GetOrdersResponse } from "../types/event";
-import { AdminDashboardSelection, UserReportSelection } from "@/types/user";
+import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse, GetOrdersResponse, GetDashboardOrdersResponse } from "../types/event";
+import { AdminDashboardSelection, IDailyOrderData, IDashboardTotals, UserReportSelection } from "@/types/user";
 import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
 import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
 import moment from "moment";
@@ -104,8 +104,7 @@ export class EventService {
         headers: headers
       })
       .then((res) => {
-        const orders = res.data;
-        ordersResponse.orders = orders.length ? orders as Order[] : [];
+        ordersResponse.orders = res.data ? res.data as Order[] : undefined;
         return ordersResponse;
       })
       .catch((err) => {
@@ -121,6 +120,41 @@ export class EventService {
         }
         ordersResponse.orderError = errorMessage;
         return ordersResponse;
+      });
+  };
+
+  getDashboardOrderData = async (): Promise<GetDashboardOrdersResponse> => {
+    let url = `/dashboard/getDashboardDataSecured`;
+
+    let dashResponse: GetDashboardOrdersResponse = {
+      totals: undefined,
+      dashError: undefined,
+      statusCode: 200
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers
+      })
+      .then((res) => {
+        dashResponse.totals = res.data ? res.data as IDashboardTotals : undefined;
+        return dashResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          dashResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while fetching dashboard data - please contact your administrator";
+        }
+        dashResponse.dashError = errorMessage;
+        return dashResponse;
       });
   };
 
@@ -1182,13 +1216,13 @@ export class EventService {
     return location;
   }
 
-  getLocationInfoFromOrder = (order: Order): string => {
-    let location = `${order.eventCity}`; 
-    if (order.eventState && order.eventState.trim() != '') {
-      location += `, ${order.eventState}`;
+  getLocationInfoFromDailyOrderData = (order: IDailyOrderData): string => {
+    let location = `${order.city}`; 
+    if (order.state && order.state.trim() != '') {
+      location += `, ${order.state}`;
     }    
-    if (order.eventCountry && order.eventCountry != "United States" && order.eventCountry != "USA" && (order.eventState && order.eventCountry.trim() != order.eventState.trim())) {
-        location += ", " + order.eventCountry;
+    if (order.country && order.country != "United States" && order.country != "USA" && (order.state && order.country.trim() != order.state.trim())) {
+        location += ", " + order.country;
     }
     return location;
   }

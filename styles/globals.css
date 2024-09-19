@@ -614,7 +614,7 @@ div hidden {
 }
 
 .dashboard-widget-table {
-  margin: 15px 0;
+  margin: 0 0 15px 0;
 }
 
 .title-date-range {
@@ -627,6 +627,40 @@ div hidden {
 
 .align-right {
   text-align: right !important;
+}
+
+.dashboard-sales-table {
+  margin: 15px 0 25px 0;
+}
+
+.sales-stat-block {
+  width: fit-content;
+  min-height: 365px;
+  min-width: 250px;
+  border: 2px solid black;
+  border-radius: 6px;
+  padding: 5px;
+  line-height: 2em;
+}
+
+.sales-stat-block-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.sales-stat-block-name {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sales-stat-block-value {
+  text-align: right;
+}
+
+.revenue-widget-progress {
+  width: 120px;
+  text-align: 'center';
+  margin-top: 25px;
 }
 
 /* MOBILE QUERIES */

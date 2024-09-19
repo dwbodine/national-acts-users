@@ -8,6 +8,7 @@ const initialState: AdminDashboardSelection = {
     end: moment().endOf('day').unix(),
     reloadActivities: true,
     reloadOrders: true,
+    getYearToDateTotals: true,
     filterAdmins: true,
     currentDashboardData: undefined, 
     currentLogins: 0
@@ -22,6 +23,7 @@ export const adminDashboardSelectionSlice = createSlice({
             state.end = action.payload.end;
             state.reloadActivities = true;
             state.reloadOrders = true;
+            state.getYearToDateTotals = true;
             state.currentDashboardData = undefined;
             state.currentLogins = 0;
             return state;
@@ -36,6 +38,7 @@ export const adminDashboardSelectionSlice = createSlice({
         },
         setReloadDashboardOrders: (state, action: PayloadAction<boolean>) => {
             state.reloadOrders = action.payload;
+            state.getYearToDateTotals = false;
             return state;
         },
         setCurrentDashboardData: (state, action: PayloadAction<IDashboardData>) => {
@@ -51,6 +54,7 @@ export const adminDashboardSelectionSlice = createSlice({
             state.start = moment().startOf('month').unix();
             state.end = moment().endOf('day').unix();
             state.reloadActivities = true;
+            state.getYearToDateTotals = true;
             state.filterAdmins = true;
             state.reloadOrders = true;
             state.currentDashboardData = undefined;

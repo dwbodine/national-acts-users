@@ -6,6 +6,8 @@ import { Col, Row, Button } from "react-bootstrap";
 import CheckAuth from "../components/common/checkAuthComponent";
 import Image from 'next/image';
 import { useResetStores } from "@/hooks/common/useResetStores";
+import { useDispatch } from "react-redux";
+import { setForAdmin, setShowHidden, setShowHiddenOrders } from "@/lib/reportSelectionSlice";
 
 
 export default function Login() {
@@ -16,6 +18,7 @@ export default function Login() {
   const { login } = useLogin();
   const router = useRouter();
   const { resetStores } = useResetStores();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const curDate = new Date().getTime();
@@ -51,7 +54,10 @@ export default function Login() {
         .then((response) => {
           if (response) {
             if (response.user && response.user.isAuthenticated) {
-              if (response.user.isAdmin) {
+              dispatch(
+                setForAdmin(response.user.isAdmin)
+              );
+              if (response.user.isAdmin){
                 router.push("/dashboard/")
               } else {
                 router.push("/")

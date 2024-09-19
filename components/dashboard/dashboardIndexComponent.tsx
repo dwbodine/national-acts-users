@@ -1,19 +1,22 @@
 import { Col, Container, Row } from "react-bootstrap";
 import DashboardBar from "./dashboardBarComponent"
 import TicketSalesChart from "../common/ticketSalesChartComponent";
-import { GetOrdersResponse, ITicketSalesData } from "@/types/event";
+import { GetDashboardOrdersResponse, GetOrdersResponse, ITicketSalesData } from "@/types/event";
 import { useEffect, useState } from "react";
 import { useWindowSize } from "@/hooks/common/useWindowSize";
 import { FULL_PAGE_CHART_BREAKPOINT } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import UserActivityWidget from "./userActivityWidgetComponent";
+import UserActivityWidget from "./widgets/userActivityWidgetComponent";
 import { setReloadDashboardOrders, setCurrentDashboardData } from "@/lib/dashboardSelectionSlice";
 import { CirclesWithBar } from "react-loader-spinner";
 import { Table } from "rsuite";
-import { useGetOrders } from "@/hooks/order/useGetOrders";
 import { getDashboardDataFromOrders } from "@/utils/getDashboardDataFromOrders";
 import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from "react-icons/fa";
+import { useGetDashboardData } from "@/hooks/dashboard/useGetDashboardData";
+import TopFiveSellersWidget from "./widgets/topfiveSellersWidgetComponent";
+import YearToDateWidget from "./widgets/yearToDateWidgetComponent";
+import RevenueGoalsWidget from "./widgets/revenueGoalsWidgetComponent";
 export default function DashboardIndex() {
 
     const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
@@ -23,49 +26,48 @@ export default function DashboardIndex() {
 
     const dispatch = useDispatch();
     const windowSize = useWindowSize();
-    const { getOrders } = useGetOrders();
+    const { getDashboardData } = useGetDashboardData();
     const windowSizeJson = JSON.stringify(windowSize);
     const hideTicketChart = windowSize.width < FULL_PAGE_CHART_BREAKPOINT;
 
     useEffect(() => {
-        if (currentDashboardSelection.reloadOrders) {
-            dispatch (
-                setReloadDashboardOrders(false)
-            );
-            setIsLoading(true);
-            setChartsHidden(true);
-            getOrders(currentDashboardSelection)
-                .then((response: GetOrdersResponse) => {
-                    if (response.orders && response.orders.length > 0 && !response.orderError) {
-                        const dashData = getDashboardDataFromOrders(response.orders);
-                        dispatch (
-                            setCurrentDashboardData(dashData)
-                        );
-                    } else {
-                        dispatch (
-                            setCurrentDashboardData({
-                                orders: [],
-                                revenue: 0,
-                                purchases: 0,
-                                ticketSalesData: []
-                            })
-                        );
-                    }
-                    setIsLoading(false);
+        const timeoutId = setTimeout(() => {
+            if (currentDashboardSelection.reloadOrders) {
+                dispatch (
+                    setReloadDashboardOrders(false)
+                );
+                setIsLoading(true);
+                setChartsHidden(true);
+                getDashboardData()
+                    .then((response: GetDashboardOrdersResponse) => {
+                        if (response.totals && !response.dashError) {
+                            const dashData = getDashboardDataFromOrders(currentDashboardSelection, response.totals);
+                            dispatch (
+                                setCurrentDashboardData(dashData)
+                            );
+                        }
+                        
+                        setIsLoading(false);
+                        setChartsHidden(false);
+                    });
+            } else {
+                if (chartsHidden) {
                     setChartsHidden(false);
-                });
-        } else {
-            if (chartsHidden) {
-                setChartsHidden(false);
+                }
             }
-        }
-    }, [currentDashboardSelection, dispatch, getOrders, windowSizeJson, chartsHidden]);
+        }, 200);
+        return () => {
+            clearTimeout(timeoutId);
+        };
+    }, [currentDashboardSelection, dispatch, getDashboardData, windowSizeJson, chartsHidden]);
 
     const totalTickets = currentDashboardSelection.currentDashboardData?.tickets ?? 0;
     const totalRevenue = currentDashboardSelection.currentDashboardData?.revenue ?? 0;
     const totalServiceFees = currentDashboardSelection.currentDashboardData?.serviceFees ?? 0;
     const totalPurchases = currentDashboardSelection.currentDashboardData?.purchases ?? 0;
     const ticketSalesData = currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined;
+    const topFiveSellers = currentDashboardSelection.currentDashboardData?.topSellers ?? undefined;
+
     let chartSalesData: ITicketSalesData[] = [];
     if (ticketSalesData) {
         let j = 0;
@@ -86,6 +88,9 @@ export default function DashboardIndex() {
                 </Row>
             </Container>
             <Container fluid hidden={isLoading}>
+                <Row>
+                    <Col><h5>Current Period</h5></Col>
+                </Row>
                 <Row className="dashboard-widget-table">
                     <Col className="col-lg-3 col-md-6 stat-block-container">
                         <div className="stat-block">
@@ -115,7 +120,18 @@ export default function DashboardIndex() {
                     <Col className="col-lg-3 col-md-6 stat-block-container">
                         <UserActivityWidget />          
                     </Col>
-                </Row>                
+                </Row>        
+                <Row>
+                    <Col><h5>Sales Stats</h5></Col>
+                </Row>  
+                <Row className="dashboard-sales-table">
+                    <Col xs={2}><TopFiveSellersWidget topFiveSellers={topFiveSellers} /></Col>
+                    <Col xs={2}><YearToDateWidget totals={currentDashboardSelection.currentDashboardData?.totals} 
+                                           projectedMonthTotalRevenue={currentDashboardSelection.currentDashboardData?.projectedMonthTotalRevenue} 
+                                           projectedYearTotalRevenue={currentDashboardSelection.currentDashboardData?.projectedYearTotalRevenue} /></Col>
+                    <Col xs={2}><RevenueGoalsWidget percentTitle="Monthly Goal" percentGoal={currentDashboardSelection.currentDashboardData?.percentMonthlyGoal} /></Col>
+                    <Col xs={2}><RevenueGoalsWidget percentTitle="Yearly Goal" percentGoal={currentDashboardSelection.currentDashboardData?.percentYearlyGoal} /></Col>
+                </Row>
                 <Row>
                     <Col>
                         <TicketSalesChart TicketSalesData={chartSalesData} ChartsHidden={chartsHidden} HideRevenue={false} HideMobile={hideTicketChart} />

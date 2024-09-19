@@ -1,3 +1,5 @@
+import { IDashboardTotals } from "./user";
+
 export enum SellerType {
   Artist = 1,
   Venue = 2,
@@ -131,6 +133,12 @@ export interface GetEventsResponse {
   eventError?: string;
 }
 
+export interface GetDashboardOrdersResponse {
+  totals?: IDashboardTotals;
+  statusCode?: number;
+  dashError?: string;
+}
+
 export interface GetOrdersResponse {
   orders?: Order[];
   statusCode?: number;
@@ -208,6 +216,7 @@ export interface ITicketSalesData {
   Revenue: number;
   ServiceFees: number;
   TotalRevenue: number;
+  TicketsRefunded?: number;
   children?: ITicketSellerSalesData[]
 }
 
