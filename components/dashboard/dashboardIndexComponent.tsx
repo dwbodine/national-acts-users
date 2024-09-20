@@ -38,7 +38,7 @@ export default function DashboardIndex() {
                 );
                 setIsLoading(true);
                 setChartsHidden(true);
-                getDashboardData()
+                getDashboardData(currentDashboardSelection)
                     .then((response: GetDashboardOrdersResponse) => {
                         if (response.totals && !response.dashError) {
                             const dashData = getDashboardDataFromOrders(currentDashboardSelection, response.totals);

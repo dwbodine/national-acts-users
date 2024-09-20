@@ -123,8 +123,16 @@ export class EventService {
       });
   };
 
-  getDashboardOrderData = async (): Promise<GetDashboardOrdersResponse> => {
-    let url = `/dashboard/getDashboardDataSecured`;
+  getDashboardOrderData = async (currentDashboardSelection: AdminDashboardSelection): Promise<GetDashboardOrdersResponse> => {
+
+    let year = "0"
+    let selectedYear = moment.unix(currentDashboardSelection.start).year();
+    const currentYear = moment().year();
+    if (selectedYear != currentYear && selectedYear >= 2022 && selectedYear < currentYear) {
+      year = currentYear.toString();
+    }
+
+    let url = `/dashboard/getDashboardDataSecured/${year}`;
 
     let dashResponse: GetDashboardOrdersResponse = {
       totals: undefined,
