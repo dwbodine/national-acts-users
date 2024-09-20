@@ -17,6 +17,7 @@ import { useGetDashboardData } from "@/hooks/dashboard/useGetDashboardData";
 import TopFiveSellersWidget from "./widgets/topfiveSellersWidgetComponent";
 import YearToDateWidget from "./widgets/yearToDateWidgetComponent";
 import RevenueGoalsWidget from "./widgets/revenueGoalsWidgetComponent";
+import MonthToDateWidget from "./widgets/monthToDateWidgetComponent";
 export default function DashboardIndex() {
 
     const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
@@ -62,7 +63,9 @@ export default function DashboardIndex() {
     }, [currentDashboardSelection, dispatch, getDashboardData, windowSizeJson, chartsHidden]);
 
     const totalTickets = currentDashboardSelection.currentDashboardData?.tickets ?? 0;
-    const totalRevenue = currentDashboardSelection.currentDashboardData?.revenue ?? 0;
+    const totalTicketsRefunded = currentDashboardSelection.currentDashboardData?.ticketsRefunded ?? 0;
+    const totalTicketRevenue = currentDashboardSelection.currentDashboardData?.revenue ?? 0;
+    const totalRevenue = currentDashboardSelection.currentDashboardData?.totalRevenue ?? 0;
     const totalServiceFees = currentDashboardSelection.currentDashboardData?.serviceFees ?? 0;
     const totalPurchases = currentDashboardSelection.currentDashboardData?.purchases ?? 0;
     const ticketSalesData = currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined;
@@ -92,21 +95,29 @@ export default function DashboardIndex() {
                     <Col><h5>Current Period</h5></Col>
                 </Row>
                 <Row className="dashboard-widget-table">
-                    <Col className="col-lg-3 col-md-6 stat-block-container">
+                    <Col className="col-lg-4 col-md-6 stat-block-container">
                         <div className="stat-block">
                             <FaDollarSign size="2em" />
-                            <div>Total transactions:</div>
+                            <div>Transactions:</div>
                             <span>{totalPurchases}</span>
+                            <div className="second">
+                                <div>Ticket revenue:</div>
+                                <span>${totalTicketRevenue.toFixed(2)}</span>
+                            </div>
                         </div>
                     </Col>
-                    <Col className="col-lg-3 col-md-6 stat-block-container">
+                    <Col className="col-lg-4 col-md-6 stat-block-container">
                         <div className="stat-block">
                             <FaTicketAlt size="2em" />
-                            <div>Total tickets sold:</div>
+                            <div>Tickets sold:</div>
                             <span>{totalTickets}</span>
+                            <div className="second">
+                                <div>Tickets refunded:</div>
+                                <span>{totalTicketsRefunded}</span>
+                            </div>
                         </div>
                     </Col>
-                    <Col className="col-lg-3 col-md-6 stat-block-container">
+                    <Col className="col-lg-4 col-md-6 stat-block-container">
                         <div className="stat-block">
                             <FaMoneyBillAlt size="2em" />
                             <div>Total revenue:</div>
@@ -117,20 +128,27 @@ export default function DashboardIndex() {
                             </div>
                         </div>
                     </Col>
-                    <Col className="col-lg-3 col-md-6 stat-block-container">
-                        <UserActivityWidget />          
-                    </Col>
                 </Row>        
                 <Row>
                     <Col><h5>Sales Stats</h5></Col>
                 </Row>  
                 <Row className="dashboard-sales-table">
-                    <Col xs={2}><TopFiveSellersWidget topFiveSellers={topFiveSellers} /></Col>
-                    <Col xs={2}><YearToDateWidget totals={currentDashboardSelection.currentDashboardData?.totals} 
-                                           projectedMonthTotalRevenue={currentDashboardSelection.currentDashboardData?.projectedMonthTotalRevenue} 
-                                           projectedYearTotalRevenue={currentDashboardSelection.currentDashboardData?.projectedYearTotalRevenue} /></Col>
-                    <Col xs={2}><RevenueGoalsWidget percentTitle="Monthly Goal" percentGoal={currentDashboardSelection.currentDashboardData?.percentMonthlyGoal} /></Col>
-                    <Col xs={2}><RevenueGoalsWidget percentTitle="Yearly Goal" percentGoal={currentDashboardSelection.currentDashboardData?.percentYearlyGoal} /></Col>
+                    <Col className="stat-block-container">
+                        <TopFiveSellersWidget topFiveSellers={topFiveSellers} />
+                    </Col>
+                    <Col className="stat-block-container">
+                        <MonthToDateWidget DashBoardData={currentDashboardSelection.currentDashboardData} />
+                    </Col>
+                    <Col className="stat-block-container">
+                        <RevenueGoalsWidget percentTitle="Monthly Goal" percentGoal={currentDashboardSelection.currentDashboardData?.percentMonthlyGoal} />
+                    </Col>
+                    <Col className="stat-block-container">
+                        <YearToDateWidget totals={currentDashboardSelection.currentDashboardData?.totals} 
+                            projectedYearTotalRevenue={currentDashboardSelection.currentDashboardData?.projectedYearTotalRevenue} />
+                    </Col>
+                    <Col className="stat-block-container">
+                        <RevenueGoalsWidget percentTitle="Yearly Goal" percentGoal={currentDashboardSelection.currentDashboardData?.percentYearlyGoal} />
+                    </Col>
                 </Row>
                 <Row>
                     <Col>

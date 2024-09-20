@@ -9,7 +9,12 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
     let totalTicketRevenue: number = 0;
     let totalTicketsRefunded: number = 0;
     let totalRevenue: number = 0;
-    let monthlyRevenue: number = 0;
+    let monthlyPurchases: number = 0;
+    let monthlyTickets: number = 0;
+    let monthlyTicketsRefunded: number = 0;
+    let monthlyTicketRevenue: number = 0;
+    let monthlyServiceFeeRevenue: number = 0;
+    let monthlyTotalRevenue: number = 0;
     let totalServiceFees: number = 0;
     let totalPurchases: number = 0;
     let topSellersMap = new Map<number, ITopSeller>();
@@ -27,11 +32,16 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
             const purchaseDate = moment(dailyOrderData.purchaseDate);
 
             if (purchaseDate >= startOfMonth && purchaseDate <= endOfMonth) {
-                monthlyRevenue += dailyOrderData.totalRevenueUsd;
+                monthlyPurchases += dailyOrderData.orders;
+                monthlyTickets += dailyOrderData.tickets;
+                monthlyTicketsRefunded += dailyOrderData.ticketsRefunded;
+                monthlyTicketRevenue += dailyOrderData.ticketRevenueUsd;
+                monthlyServiceFeeRevenue += dailyOrderData.serviceFeesRevenueUsd;
+                monthlyTotalRevenue += dailyOrderData.totalRevenueUsd;
             }
             
             if (purchaseDate >= startDate && purchaseDate <= endEnd) {
-                totalPurchases += 1;
+                totalPurchases += dailyOrderData.orders;
                 totalTickets += dailyOrderData.tickets;
                 totalTicketRevenue += dailyOrderData.ticketRevenueUsd;
                 totalServiceFees += dailyOrderData.serviceFeesRevenueUsd;
@@ -199,11 +209,11 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
     //const perDiemServiceFees = totals.serviceFeesRevenueUsd / totalDays;
     const perDiemTotalRevenue = totals.totalRevenueUsd / totalDays;
 
-    const percentMonthlyGoal = monthlyRevenue / totals.monthlyRevenueGoal;
+    const percentMonthlyGoal = monthlyTotalRevenue / totals.monthlyRevenueGoal;
     const percentYearlyGoal = totals.totalRevenueUsd / totals.yearlyRevenueGoal;
 
     const remainingDaysInMonth = totals.daysInMonth - totals.day;
-    const projectedMonthTotalRevenue = monthlyRevenue + (perDiemTotalRevenue * remainingDaysInMonth);
+    const projectedMonthTotalRevenue = monthlyTotalRevenue + (perDiemTotalRevenue * remainingDaysInMonth);
 
     const remainingDaysInYear = totals.totalDaysInYear - totals.dayOfYear;
     const projectedYearTotalRevenue = totals.totalRevenueUsd + (perDiemTotalRevenue * remainingDaysInYear);
@@ -221,7 +231,13 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
         percentYearlyGoal: percentYearlyGoal,
         projectedMonthTotalRevenue: projectedMonthTotalRevenue,
         projectedYearTotalRevenue: projectedYearTotalRevenue,
-        totals: totals
+        totals: totals,
+        monthToDatePurchases: monthlyPurchases,
+        monthToDateTickets: monthlyTickets,
+        monthToDateRevenue: monthlyTicketRevenue,
+        monthToDateTicketsRefunded: monthlyTicketsRefunded,
+        monthToDateServiceFees: monthlyServiceFeeRevenue,
+        monthToDateTotalRevenue: monthlyTotalRevenue
     };
 
     return dashboardData; 

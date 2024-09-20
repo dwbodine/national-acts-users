@@ -630,17 +630,17 @@ div hidden {
 }
 
 .dashboard-sales-table {
-  margin: 15px 0 25px 0;
+  margin: 15px 0 25px 10px;
 }
 
 .sales-stat-block {
-  width: fit-content;
-  min-height: 365px;
-  min-width: 250px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   border: 2px solid black;
   border-radius: 6px;
-  padding: 5px;
+  padding: 15px;
   line-height: 2em;
+  display: inline-block;
 }
 
 .sales-stat-block-title {
@@ -658,12 +658,21 @@ div hidden {
 }
 
 .revenue-widget-progress {
-  width: 120px;
-  text-align: 'center';
-  margin-top: 25px;
+  max-width: 75%;
+  margin: 25px auto;
 }
 
 /* MOBILE QUERIES */
+/* Bootstrap xxl */
+@media (max-width: 1400px) {
+  .sales-stat-block {
+    width: 275px;
+    height: 275px;
+    aspect-ratio: unset;
+    font-size: 12px;
+    padding: 10px;
+  }
+}
 
 /* Bootstrap xl */
 @media (max-width: 1200px) {
@@ -674,6 +683,12 @@ div hidden {
 
   .stat-block {
     font-size: 13px;
+  }
+
+  .sales-stat-block {
+    width: unset;
+    height: unset;
+    font-size: 12px;
   }
 }
 
@@ -704,6 +719,10 @@ div hidden {
     display: none;
   }
 
+  .sales-stat-block {
+    padding: 5px;
+    font-size: 10px;
+  }
 }
 
 /* custom desktop/tablet width */

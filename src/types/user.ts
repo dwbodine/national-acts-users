@@ -128,11 +128,17 @@ export interface IDashboardTotals {
 export interface IDashboardData {
   ticketSalesData?: ITicketSalesData[];
   tickets?: number;
+  monthToDateTickets?: number;
   ticketsRefunded?: number;
+  monthToDateTicketsRefunded?: number;
   revenue?: number;
+  monthToDateRevenue?: number;
   serviceFees?: number;
+  monthToDateServiceFees?: number;
   purchases?: number;
+  monthToDatePurchases?: number;
   totalRevenue?: number;
+  monthToDateTotalRevenue?: number;
   orders?: Order[];
   totals?: IDashboardTotals;
   topSellers?: ITopSeller[];

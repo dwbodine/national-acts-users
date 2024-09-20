@@ -22,6 +22,10 @@ export default function YearToDateWidget(props: any) {
                     <Col className="sales-stat-block-value">{totals?.tickets ?? 'n/a'}</Col>
                 </Row>
                 <Row>
+                    <Col className="sales-stat-block-name">Tickets refunded:</Col>
+                    <Col className="sales-stat-block-value">{totals?.ticketsRefunded ?? 'n/a'}</Col>
+                </Row>
+                <Row>
                     <Col className="sales-stat-block-name">Ticket Revenue:</Col>
                     <Col className="sales-stat-block-value">${totals?.ticketRevenueUsd?.toFixed(2) ?? 'n/a'}</Col>
                 </Row>
@@ -34,11 +38,7 @@ export default function YearToDateWidget(props: any) {
                     <Col className="sales-stat-block-value">${totals?.totalRevenueUsd?.toFixed(2) ?? 'n/a'}</Col>
                 </Row>
                 <Row>
-                    <Col className="sales-stat-block-name">Projected Monthly Revenue:</Col>
-                    <Col className="sales-stat-block-value">${projectedMonthTotalRevenue?.toFixed(2) ?? 'n/a'}</Col>
-                </Row>
-                <Row>
-                    <Col className="sales-stat-block-name">Projected Yearly Revenue:</Col>
+                    <Col className="sales-stat-block-name">Proj. Yearly Revenue:</Col>
                     <Col className="sales-stat-block-value">${projectedYearTotalRevenue?.toFixed(2) ?? 'n/a'}</Col>
                 </Row>
             </Col>
