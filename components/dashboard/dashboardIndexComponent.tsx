@@ -14,7 +14,7 @@ import { Table } from "rsuite";
 import { getDashboardDataFromOrders } from "@/utils/getDashboardDataFromOrders";
 import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from "react-icons/fa";
 import { useGetDashboardData } from "@/hooks/dashboard/useGetDashboardData";
-import TopFiveSellersWidget from "./widgets/topfiveSellersWidgetComponent";
+import TopFiveSellersWidget from "./widgets/topSellersWidgetComponent";
 import YearToDateWidget from "./widgets/yearToDateWidgetComponent";
 import RevenueGoalsWidget from "./widgets/revenueGoalsWidgetComponent";
 import MonthToDateWidget from "./widgets/monthToDateWidgetComponent";
@@ -22,6 +22,8 @@ import SalesPerMonthWidget from "./widgets/salesPerMonthWidgetComponent";
 import SalesPerDayOfWeekWidget from "./widgets/salesPerDayOfWeekWidgetComponent";
 import { eventService } from "@/services";
 import SalesByAccountWidget from "./widgets/salesByAccountWidgetComponent";
+import TopSellersWidget from "./widgets/topSellersWidgetComponent";
+import TopSellingLocationsWidget from "./widgets/topSellingLocationsWidgetComponent";
 export default function DashboardIndex() {
 
     const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
@@ -73,7 +75,8 @@ export default function DashboardIndex() {
     const totalServiceFees = currentDashboardSelection.currentDashboardData?.serviceFees ?? 0;
     const totalPurchases = currentDashboardSelection.currentDashboardData?.purchases ?? 0;
     const ticketSalesData = currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined;
-    const topFiveSellers = currentDashboardSelection.currentDashboardData?.topSellers ?? undefined;
+    const topSellers = currentDashboardSelection.currentDashboardData?.topSellers ?? undefined;
+    const topLocations = currentDashboardSelection.currentDashboardData?.topLocations ?? undefined;
 
     let chartSalesData: ITicketSalesData[] = [];
     if (ticketSalesData) {
@@ -153,7 +156,10 @@ export default function DashboardIndex() {
                 </Row>  
                 <Row className="dashboard-sales-table">
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
-                        <TopFiveSellersWidget topFiveSellers={topFiveSellers} />
+                        <TopSellersWidget topSellers={topSellers} />
+                    </Col>
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
+                        <TopSellingLocationsWidget topSellers={topLocations} />
                     </Col>
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
                         <MonthToDateWidget DashBoardData={currentDashboardSelection.currentDashboardData} />
@@ -172,11 +178,11 @@ export default function DashboardIndex() {
                             totalGoal={currentDashboardSelection.currentDashboardData?.totals?.yearlyRevenueGoal}
                             percentGoal={currentDashboardSelection.currentDashboardData?.percentYearlyGoal} />
                     </Col>
-                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
-                        <SalesPerMonthWidget salesPerMonth={currentDashboardSelection.currentDashboardData?.salesPerMonth} />
-                    </Col>
                 </Row>
                 <Row className="dashboard-sales-table">
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
+                        <SalesPerMonthWidget salesPerMonth={currentDashboardSelection.currentDashboardData?.salesPerMonth} />
+                    </Col>                    
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
                         <SalesPerDayOfWeekWidget salesPerDayMonth={currentDashboardSelection.currentDashboardData?.salesPerDayMonth} 
                             salesPerDayYear={currentDashboardSelection.currentDashboardData?.salesPerDayYear} />

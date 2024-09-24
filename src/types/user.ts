@@ -143,6 +143,7 @@ export interface IDashboardData {
   orders?: Order[];
   totals?: IDashboardTotals;
   topSellers?: ITopSeller[];
+  topLocations?: ITopSeller[];
   percentMonthlyGoal?: number;
   percentYearlyGoal?: number;
   projectedYearTotalRevenue?: number;

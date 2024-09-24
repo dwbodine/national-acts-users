@@ -18,6 +18,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
     let totalServiceFees: number = 0;
     let totalPurchases: number = 0;
     let topSellersMap = new Map<number, ITopSeller>();
+    let topSellingLocationsMap = new Map<string, ITopSeller>();
 
     const startDate = moment.unix(currentDashboardSelection.start);
     const endEnd = moment.unix(currentDashboardSelection.end);
@@ -115,9 +116,19 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
         
                 const key = moment(dailyOrderData.purchaseDate).format('YYYY-MM-DD');
                 const sellerName = `${dailyOrderData.sellerName}`;
-                let location = eventService.getLocationInfoFromDailyOrderData(dailyOrderData);
-                if (location && location.trim() != '') {
-                    location += ' ';
+                let location = eventService.getLocationInfoFromDailyOrderData(dailyOrderData)?.trim();
+                if (location) {
+                    var topLocation = topSellingLocationsMap.get(location);
+                    if (topLocation) {
+                        topLocation.revenueUsd += dailyOrderData.totalRevenueUsd;
+                    } else {
+                        topLocation = {
+                            sellerId: 0,
+                            sellerName: location,
+                            revenueUsd: dailyOrderData.totalRevenueUsd
+                        };
+                    }
+                    topSellingLocationsMap.set(location, topLocation);
                 }
                 const purchaseDate = `${dailyOrderData.eventTitle} (${moment(dailyOrderData.eventDate).format('M/D/YYYY')})`;
         
@@ -253,11 +264,13 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
 
     let topSellerValuesArray: ITopSeller[] = Array.from(topSellersMap.values())
     topSellerValuesArray.sort((a, b) => a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0)
-    const topSellers = (topSellerValuesArray.length > 5) ? topSellerValuesArray.slice(0, 10) : topSellerValuesArray;
+    const topSellers = (topSellerValuesArray.length > 10) ? topSellerValuesArray.slice(0, 10) : topSellerValuesArray;
+
+    let topLocationValuesArray: ITopSeller[] = Array.from(topSellingLocationsMap.values())
+    topLocationValuesArray.sort((a, b) => a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0)
+    const topLocations = (topLocationValuesArray.length > 10) ? topLocationValuesArray.slice(0, 10) : topLocationValuesArray;
 
     const totalDays = totals.dayOfYear;
-    //const perDiemTicketSales = totals.ticketRevenueUsd / totalDays;
-    //const perDiemServiceFees = totals.serviceFeesRevenueUsd / totalDays;
     const perDiemTotalRevenue = totals.totalRevenueUsd / totalDays;
 
     const percentMonthlyGoal = monthlyTotalRevenue / totals.monthlyRevenueGoal;
@@ -278,6 +291,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
         purchases: totalPurchases,
         totalRevenue: totalRevenue,
         topSellers: topSellers, 
+        topLocations: topLocations,
         percentMonthlyGoal: percentMonthlyGoal,
         percentYearlyGoal: percentYearlyGoal,
         projectedMonthTotalRevenue: projectedMonthTotalRevenue,
