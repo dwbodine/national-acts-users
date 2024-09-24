@@ -1235,4 +1235,23 @@ export class EventService {
     return location;
   }
 
+  getAccountNameFromTicketSocketId = (ticketSocketId: number): string => {
+    let accountName = '';
+    switch (ticketSocketId) {
+      case 2:
+        accountName = "European VIP Tickets";
+        break;
+      case 3:
+        accountName = "Australian VIP tickets";
+        break;
+      case 4:
+        accountName = "USA Concert tickets";
+        break;
+      default:
+        accountName = "USA VIP Tickets";
+        break;
+    }
+    return accountName;
+  }
+
 }

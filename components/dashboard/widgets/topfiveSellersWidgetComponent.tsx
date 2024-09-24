@@ -15,7 +15,7 @@ export default function TopFiveSellersWidget(props: any) {
         <Row className="sales-stat-block">
             <Col>
                 <Row>
-                    <Col className="sales-stat-block-title">Top Five Sellers:</Col>
+                    <Col className="sales-stat-block-title">Top Ten Sellers:</Col>
                 </Row>
                 {sellerRows}
             </Col>

@@ -26,12 +26,63 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
     const endOfMonth = moment().endOf('month').endOf('day');
 
     let orderMap = new Map<string, ITicketSalesData>();
+    let totalsByAccountMap = new Map<number, ITicketSalesData>();
+    let salesPerMonthMap = new Map<number, number>();
+    let salesPerDayMonthMap = new Map<number, number>();
+    let salesPerDayYearMap = new Map<number, number>();
 
     if (totals.dailyOrderData && totals.dailyOrderData.length > 0) {
         totals.dailyOrderData.forEach((dailyOrderData: IDailyOrderData) => {
             const purchaseDate = moment(dailyOrderData.purchaseDate);
 
+            let accountOrderData: ITicketSalesData | undefined = totalsByAccountMap.get(dailyOrderData.ticketSocketId);
+            if (!accountOrderData) {
+                accountOrderData = {
+                    PurchaseDate: '',
+                    Purchases: dailyOrderData.orders,
+                    Tickets: dailyOrderData.tickets,
+                    TicketsRefunded: dailyOrderData.ticketsRefunded,
+                    Revenue: dailyOrderData.ticketRevenueUsd,
+                    ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
+                    TotalRevenue: dailyOrderData.totalRevenueUsd
+                };
+            } else {
+                accountOrderData.Purchases += dailyOrderData.orders;
+                accountOrderData.Tickets += dailyOrderData.tickets;
+                accountOrderData.TicketsRefunded = (accountOrderData.TicketsRefunded ?? 0) + dailyOrderData.ticketsRefunded ?? 0;
+                accountOrderData.Revenue += dailyOrderData.ticketRevenueUsd;
+                accountOrderData.ServiceFees += dailyOrderData.serviceFeesRevenueUsd;
+                accountOrderData.TotalRevenue += dailyOrderData.totalRevenueUsd;
+            }
+            totalsByAccountMap.set(dailyOrderData.ticketSocketId, accountOrderData);
+            
+            const purchaseMonth = parseInt(purchaseDate.format('M'));
+            let salesPerMonth = salesPerMonthMap.get(purchaseMonth);
+            if (!salesPerMonth) {
+                salesPerMonthMap.set(purchaseMonth, dailyOrderData.totalRevenueUsd);
+            } else {
+                salesPerMonth += dailyOrderData.totalRevenueUsd;
+                salesPerMonthMap.set(purchaseMonth, salesPerMonth);
+            }
+
+            const purchaseDayOfWeek = parseInt(purchaseDate.format('d'));
+            let salesPerDayYear = salesPerDayYearMap.get(purchaseDayOfWeek);
+            if (salesPerDayYear == undefined) {
+                salesPerDayYearMap.set(purchaseDayOfWeek, dailyOrderData.totalRevenueUsd);
+            } else {
+                salesPerDayYear += dailyOrderData.totalRevenueUsd;
+                salesPerDayYearMap.set(purchaseDayOfWeek, salesPerDayYear);
+            }
+
             if (purchaseDate >= startOfMonth && purchaseDate <= endOfMonth) {
+                let salesPerDayMonth = salesPerDayMonthMap.get(purchaseDayOfWeek);
+                if (salesPerDayMonth == undefined) {
+                    salesPerDayMonthMap.set(purchaseDayOfWeek, dailyOrderData.totalRevenueUsd);
+                } else {
+                    salesPerDayMonth += dailyOrderData.totalRevenueUsd;
+                    salesPerDayMonthMap.set(purchaseDayOfWeek, salesPerDayMonth);
+                }
+                
                 monthlyPurchases += dailyOrderData.orders;
                 monthlyTickets += dailyOrderData.tickets;
                 monthlyTicketsRefunded += dailyOrderData.ticketsRefunded;
@@ -74,7 +125,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
                     EventId: dailyOrderData.ticketSocketEventId,
                     SellerName: sellerName,
                     PurchaseDate: purchaseDate,
-                    Purchases: 1,
+                    Purchases: dailyOrderData.orders,
                     Tickets: dailyOrderData.tickets,
                     Revenue: dailyOrderData.ticketRevenueUsd,
                     ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
@@ -93,7 +144,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
                         children: [{
                             SellerName: sellerName,
                             PurchaseDate: `${sellerName} (${moment(dailyOrderData.purchaseDate).format('M/D/YYYY')})`,
-                            Purchases: 1,
+                            Purchases: dailyOrderData.orders,
                             Tickets: dailyOrderData.tickets,
                             Revenue: dailyOrderData.ticketRevenueUsd,
                             ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
@@ -106,7 +157,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
                     salesData.Tickets += dailyOrderData.tickets;
                     salesData.Revenue += dailyOrderData.ticketRevenueUsd;
                     salesData.ServiceFees += dailyOrderData.serviceFeesRevenueUsd;
-                    salesData.Purchases += 1;
+                    salesData.Purchases += dailyOrderData.orders;
                     salesData.TotalRevenue += dailyOrderData.totalRevenueUsd;
                     if (salesData.children) {
                         if (salesData.children.find(x => x.SellerName == esd.SellerName)) {
@@ -144,7 +195,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
                             salesData.children.push({
                                 SellerName: sellerName,
                                 PurchaseDate: `${sellerName} (${moment(dailyOrderData.purchaseDate).format('M/D/YYYY')})`,
-                                Purchases: 1,
+                                Purchases: dailyOrderData.orders,
                                 Tickets: dailyOrderData.tickets,
                                 Revenue: dailyOrderData.ticketRevenueUsd,
                                 ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
@@ -156,7 +207,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
                         salesData.children = [{
                             SellerName: sellerName,
                             PurchaseDate: `${sellerName} (${moment(dailyOrderData.purchaseDate).format('M/D/YYYY')})`,
-                            Purchases: 1, 
+                            Purchases: dailyOrderData.orders, 
                             Tickets: dailyOrderData.tickets,
                             Revenue: dailyOrderData.ticketRevenueUsd,
                             ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
@@ -172,9 +223,9 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
 
     let ticketSalesData: ITicketSalesData[] = [];
     if (orderMap.size > 0) {
-        var keys = Array.from(orderMap.keys()).sort();
-        var start = moment(keys[0]);
-        var end = moment(keys[keys.length-1]);
+        const keys = Array.from(orderMap.keys()).sort();
+        const start = moment(keys[0]);
+        let end = moment(keys[keys.length-1]);
         while (end.unix() >= start.unix()) {
             const key = end.format('YYYY-MM-DD');
             let salesData = orderMap.get(key);
@@ -202,7 +253,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
 
     let topSellerValuesArray: ITopSeller[] = Array.from(topSellersMap.values())
     topSellerValuesArray.sort((a, b) => a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0)
-    const topSellers = (topSellerValuesArray.length > 5) ? topSellerValuesArray.slice(0, 5) : topSellerValuesArray;
+    const topSellers = (topSellerValuesArray.length > 5) ? topSellerValuesArray.slice(0, 10) : topSellerValuesArray;
 
     const totalDays = totals.dayOfYear;
     //const perDiemTicketSales = totals.ticketRevenueUsd / totalDays;
@@ -237,7 +288,11 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
         monthToDateRevenue: monthlyTicketRevenue,
         monthToDateTicketsRefunded: monthlyTicketsRefunded,
         monthToDateServiceFees: monthlyServiceFeeRevenue,
-        monthToDateTotalRevenue: monthlyTotalRevenue
+        monthToDateTotalRevenue: monthlyTotalRevenue,
+        salesPerMonth: salesPerMonthMap,
+        salesPerDayMonth: salesPerDayMonthMap,
+        salesPerDayYear: salesPerDayYearMap, 
+        totalsByAccount: totalsByAccountMap
     };
 
     return dashboardData; 

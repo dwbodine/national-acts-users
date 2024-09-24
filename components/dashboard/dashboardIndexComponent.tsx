@@ -18,6 +18,10 @@ import TopFiveSellersWidget from "./widgets/topfiveSellersWidgetComponent";
 import YearToDateWidget from "./widgets/yearToDateWidgetComponent";
 import RevenueGoalsWidget from "./widgets/revenueGoalsWidgetComponent";
 import MonthToDateWidget from "./widgets/monthToDateWidgetComponent";
+import SalesPerMonthWidget from "./widgets/salesPerMonthWidgetComponent";
+import SalesPerDayOfWeekWidget from "./widgets/salesPerDayOfWeekWidgetComponent";
+import { eventService } from "@/services";
+import SalesByAccountWidget from "./widgets/salesByAccountWidgetComponent";
 export default function DashboardIndex() {
 
     const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
@@ -80,6 +84,21 @@ export default function DashboardIndex() {
         }
     }
 
+    let accountTotalWidgets: any[] = [];
+    const accountTotalsMap = currentDashboardSelection.currentDashboardData?.totalsByAccount;
+    if (accountTotalsMap && accountTotalsMap.size > 0) {
+        const accountIds = Array.from(accountTotalsMap.keys()).sort();
+        accountIds.forEach((ticketSocketId) => {
+            const accountTotals = accountTotalsMap.get(ticketSocketId);
+            const accountName = eventService.getAccountNameFromTicketSocketId(ticketSocketId);
+            accountTotalWidgets.push(
+                <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
+                    <SalesByAccountWidget accountName={accountName} accountTotals={accountTotals} />
+                </Col>
+            );
+        })
+    }
+
     return (
         <>
             <DashboardBar />
@@ -101,18 +120,18 @@ export default function DashboardIndex() {
                             <div>Transactions:</div>
                             <span>{totalPurchases}</span>
                             <div className="second">
-                                <div>Ticket revenue:</div>
-                                <span>${totalTicketRevenue.toFixed(2)}</span>
+                                <div>Total revenue:</div>
+                                <span>${totalRevenue.toFixed(2)}</span>
                             </div>
                         </div>
                     </Col>
                     <Col className="col-lg-4 col-md-6 stat-block-container">
                         <div className="stat-block">
                             <FaTicketAlt size="2em" />
-                            <div>Tickets sold:</div>
+                            <div>Tickets:</div>
                             <span>{totalTickets}</span>
                             <div className="second">
-                                <div>Tickets refunded:</div>
+                                <div>Refunds:</div>
                                 <span>{totalTicketsRefunded}</span>
                             </div>
                         </div>
@@ -120,8 +139,8 @@ export default function DashboardIndex() {
                     <Col className="col-lg-4 col-md-6 stat-block-container">
                         <div className="stat-block">
                             <FaMoneyBillAlt size="2em" />
-                            <div>Total revenue:</div>
-                            <span>${totalRevenue.toFixed(2)}</span>
+                            <div>Revenue:</div>
+                            <span>${totalTicketRevenue.toFixed(2)}</span>
                             <div className="second">
                                 <div>Service Fees:</div>
                                 <span>${totalServiceFees.toFixed(2)}</span>
@@ -133,22 +152,36 @@ export default function DashboardIndex() {
                     <Col><h5>Sales Stats</h5></Col>
                 </Row>  
                 <Row className="dashboard-sales-table">
-                    <Col className="stat-block-container">
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
                         <TopFiveSellersWidget topFiveSellers={topFiveSellers} />
                     </Col>
-                    <Col className="stat-block-container">
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
                         <MonthToDateWidget DashBoardData={currentDashboardSelection.currentDashboardData} />
                     </Col>
-                    <Col className="stat-block-container">
-                        <RevenueGoalsWidget percentTitle="Monthly Goal" percentGoal={currentDashboardSelection.currentDashboardData?.percentMonthlyGoal} />
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
+                        <RevenueGoalsWidget percentTitle="Monthly Goal" amount={currentDashboardSelection.currentDashboardData?.monthToDateTotalRevenue} 
+                            totalGoal={currentDashboardSelection.currentDashboardData?.totals?.monthlyRevenueGoal}
+                            percentGoal={currentDashboardSelection.currentDashboardData?.percentMonthlyGoal} />
                     </Col>
-                    <Col className="stat-block-container">
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
                         <YearToDateWidget totals={currentDashboardSelection.currentDashboardData?.totals} 
                             projectedYearTotalRevenue={currentDashboardSelection.currentDashboardData?.projectedYearTotalRevenue} />
                     </Col>
-                    <Col className="stat-block-container">
-                        <RevenueGoalsWidget percentTitle="Yearly Goal" percentGoal={currentDashboardSelection.currentDashboardData?.percentYearlyGoal} />
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
+                        <RevenueGoalsWidget percentTitle="Yearly Goal" amount={currentDashboardSelection.currentDashboardData?.totals?.totalRevenueUsd} 
+                            totalGoal={currentDashboardSelection.currentDashboardData?.totals?.yearlyRevenueGoal}
+                            percentGoal={currentDashboardSelection.currentDashboardData?.percentYearlyGoal} />
                     </Col>
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
+                        <SalesPerMonthWidget salesPerMonth={currentDashboardSelection.currentDashboardData?.salesPerMonth} />
+                    </Col>
+                </Row>
+                <Row className="dashboard-sales-table">
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
+                        <SalesPerDayOfWeekWidget salesPerDayMonth={currentDashboardSelection.currentDashboardData?.salesPerDayMonth} 
+                            salesPerDayYear={currentDashboardSelection.currentDashboardData?.salesPerDayYear} />
+                    </Col>
+                    {accountTotalWidgets}
                 </Row>
                 <Row>
                     <Col>

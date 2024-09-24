@@ -105,6 +105,7 @@ export interface IDailyOrderData {
   serviceFeesRevenueUsd: number;
   totalRevenueUsd: number;
   ticketsRefunded: number;
+  ticketSocketId: number;
 }
 
 export interface IDashboardTotals {
@@ -146,6 +147,10 @@ export interface IDashboardData {
   percentYearlyGoal?: number;
   projectedYearTotalRevenue?: number;
   projectedMonthTotalRevenue?: number;
+  salesPerMonth?: Map<number, number>;
+  salesPerDayMonth?: Map<number, number>;
+  salesPerDayYear?: Map<number, number>;
+  totalsByAccount?: Map<number, ITicketSalesData>;
 }
 
 export type AdminDashboardSelection = {
