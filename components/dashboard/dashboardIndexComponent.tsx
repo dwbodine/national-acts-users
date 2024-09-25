@@ -77,6 +77,7 @@ export default function DashboardIndex() {
     const ticketSalesData = currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined;
     const topSellers = currentDashboardSelection.currentDashboardData?.topSellers ?? undefined;
     const topLocations = currentDashboardSelection.currentDashboardData?.topLocations ?? undefined;
+    const topVenues = currentDashboardSelection.currentDashboardData?.topVenues ?? undefined;
 
     let chartSalesData: ITicketSalesData[] = [];
     if (ticketSalesData) {
@@ -88,14 +89,14 @@ export default function DashboardIndex() {
     }
 
     let accountTotalWidgets: any[] = [];
-    const accountTotalsMap = currentDashboardSelection.currentDashboardData?.totalsByAccount;
-    if (accountTotalsMap && accountTotalsMap.size > 0) {
-        const accountIds = Array.from(accountTotalsMap.keys()).sort();
-        accountIds.forEach((ticketSocketId) => {
-            const accountTotals = accountTotalsMap.get(ticketSocketId);
-            const accountName = eventService.getAccountNameFromTicketSocketId(ticketSocketId);
+    const accountTotals = currentDashboardSelection.currentDashboardData?.totalsByAccount;
+    if (accountTotals && accountTotals.length > 0) {
+        accountTotals.forEach((accountTotal, i) => {
+            const accountTotals = accountTotal.totals;
+            const accountName = eventService.getAccountNameFromTicketSocketId(accountTotal.ticketSocketId);
+            const key = `accountTotal${i}`;
             accountTotalWidgets.push(
-                <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
+                <Col key={key} xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
                     <SalesByAccountWidget accountName={accountName} accountTotals={accountTotals} />
                 </Col>
             );
@@ -159,7 +160,10 @@ export default function DashboardIndex() {
                         <TopSellersWidget topSellers={topSellers} />
                     </Col>
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
-                        <TopSellingLocationsWidget topSellers={topLocations} />
+                        <TopSellingLocationsWidget topSellers={topLocations} title="Locations" />
+                    </Col>
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
+                        <TopSellingLocationsWidget topSellers={topVenues} title="Venues" />
                     </Col>
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
                         <MonthToDateWidget DashBoardData={currentDashboardSelection.currentDashboardData} />
@@ -178,8 +182,6 @@ export default function DashboardIndex() {
                             totalGoal={currentDashboardSelection.currentDashboardData?.totals?.yearlyRevenueGoal}
                             percentGoal={currentDashboardSelection.currentDashboardData?.percentYearlyGoal} />
                     </Col>
-                </Row>
-                <Row className="dashboard-sales-table">
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
                         <SalesPerMonthWidget salesPerMonth={currentDashboardSelection.currentDashboardData?.salesPerMonth} />
                     </Col>                    

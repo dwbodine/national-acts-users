@@ -7,7 +7,8 @@ export default function TopSellersWidget(props: any) {
     let sellerRows: any[] = [];
     if (topSellers && topSellers.length > 0) {
         topSellers.forEach((seller, i) => {
-            sellerRows.push(<Row><Col className="sales-stat-block-name">{i+1}. {seller.sellerName}</Col><Col className="sales-stat-block-value">${seller.revenueUsd.toFixed(2)}</Col></Row>);
+            const key = `topSeller${i}`;
+            sellerRows.push(<Row key={key}><Col className="sales-stat-block-name">{i+1}. {seller.sellerName}</Col><Col className="sales-stat-block-value">${seller.revenueUsd.toFixed(2)}</Col></Row>);
         })
     }
 

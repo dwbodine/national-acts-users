@@ -17,23 +17,23 @@ export default function AdminSellerSelect(props: any) {
     const onDelete = props.OnDelete;
 
     let sellerOptions: any[] = [];
-    sellerOptions.push(<option value={0}> -- Select one --</option>)
-    sellers.map((item) => {
-        const selected: boolean = (sellerId > 0) && sellerId == item.sellerId;
-        sellerOptions.push(<option value={item.sellerId} selected={selected}>{item.name}</option>)
+    sellerOptions.push(<option key="s" value={0}> -- Select one --</option>)
+    sellers.map((item, i) => {
+        const key = `s${i}`;
+        sellerOptions.push(<option key={key} value={item.sellerId}>{item.name}</option>)
     });
 
     let roleOptions: any[] = [];
-    roleOptions.push(<option value={0}> -- Select one --</option>)
-    roles.map((item) => {
-        const selected: boolean = (roleId > 0) && roleId == item.roleId;
-        roleOptions.push(<option value={item.roleId} selected={selected}>{item.roleName}</option>)
+    roleOptions.push(<option key="r" value={0}> -- Select one --</option>)
+    roles.map((item, i) => {
+        const key = `r${i}`;
+        roleOptions.push(<option key={key} value={item.roleId}>{item.roleName}</option>)
     });
 
     return (<div className="admin-select">
             Seller # {number}: 
-            <select id={`${id}_seller`} onChange={onSellerChange}> { sellerOptions } </select>
-            <select id={`${id}_role`} onChange={onRoleChange}> { roleOptions } </select>
+            <select id={`${id}_seller`} onChange={onSellerChange} value={sellerId}> { sellerOptions } </select>
+            <select id={`${id}_role`} onChange={onRoleChange} value={roleId}> { roleOptions } </select>
             <FaMinus title="Remove seller" className="admin-click-cell" id={`${id}_remove`} onClick={onDelete}></FaMinus>
         </div>);
 }

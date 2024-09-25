@@ -89,6 +89,12 @@ export interface ITopSeller {
   revenueUsd: number;
 }
 
+export interface ITopSellingLocation {
+  location: string;
+  tooltip: string;
+  revenueUsd: number;
+}
+
 export interface IDailyOrderData {
   sellerId: number;
   sellerName: string;
@@ -96,8 +102,10 @@ export interface IDailyOrderData {
   ticketSocketEventId: number;
   eventTitle: string;
   eventDate: string;
+  venue?: string;
   city: string;
   state?: string;
+  zip?: string;
   country?: string;
   orders: number;
   tickets: number;
@@ -126,6 +134,16 @@ export interface IDashboardTotals {
   dailyOrderData?: IDailyOrderData[];
 }
 
+export interface ISalesData {
+  key: number;
+  value: number;
+}
+
+export interface ITotalsByAccount {
+  ticketSocketId: number;
+  totals?: ITicketSalesData;
+}
+
 export interface IDashboardData {
   ticketSalesData?: ITicketSalesData[];
   tickets?: number;
@@ -143,15 +161,16 @@ export interface IDashboardData {
   orders?: Order[];
   totals?: IDashboardTotals;
   topSellers?: ITopSeller[];
-  topLocations?: ITopSeller[];
+  topLocations?: ITopSellingLocation[];
+  topVenues?: ITopSellingLocation[];
   percentMonthlyGoal?: number;
   percentYearlyGoal?: number;
   projectedYearTotalRevenue?: number;
   projectedMonthTotalRevenue?: number;
-  salesPerMonth?: Map<number, number>;
-  salesPerDayMonth?: Map<number, number>;
-  salesPerDayYear?: Map<number, number>;
-  totalsByAccount?: Map<number, ITicketSalesData>;
+  salesPerMonth?: ISalesData[];
+  salesPerDayMonth?: ISalesData[];
+  salesPerDayYear?: ISalesData[];
+  totalsByAccount?: ITotalsByAccount[];
 }
 
 export type AdminDashboardSelection = {

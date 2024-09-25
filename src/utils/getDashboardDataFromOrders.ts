@@ -1,5 +1,5 @@
 import { ITicketEventSalesData, ITicketSalesData, ITicketSellerSalesData, Order } from "@/types/event";
-import { AdminDashboardSelection, IDailyOrderData, IDashboardData, IDashboardTotals, ITopSeller } from "@/types/user";
+import { AdminDashboardSelection, IDailyOrderData, IDashboardData, IDashboardTotals, ISalesData, ITopSeller, ITopSellingLocation, ITotalsByAccount } from "@/types/user";
 import { eventService } from "../services";
 import moment from "moment";
 
@@ -18,7 +18,8 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
     let totalServiceFees: number = 0;
     let totalPurchases: number = 0;
     let topSellersMap = new Map<number, ITopSeller>();
-    let topSellingLocationsMap = new Map<string, ITopSeller>();
+    let topSellingLocationsMap = new Map<string, ITopSellingLocation>();
+    let topSellingVenuesMap = new Map<string, ITopSellingLocation>();
 
     const startDate = moment.unix(currentDashboardSelection.start);
     const endEnd = moment.unix(currentDashboardSelection.end);
@@ -116,21 +117,36 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
         
                 const key = moment(dailyOrderData.purchaseDate).format('YYYY-MM-DD');
                 const sellerName = `${dailyOrderData.sellerName}`;
+                const purchaseDate = `${dailyOrderData.eventTitle} (${moment(dailyOrderData.eventDate).format('M/D/YYYY')})`;
                 let location = eventService.getLocationInfoFromDailyOrderData(dailyOrderData)?.trim();
-                if (location) {
-                    var topLocation = topSellingLocationsMap.get(location);
-                    if (topLocation) {
-                        topLocation.revenueUsd += dailyOrderData.totalRevenueUsd;
+                
+                if (location && dailyOrderData.zip && dailyOrderData.venue) {
+                    var topVenue = topSellingVenuesMap.get(dailyOrderData.zip);
+                    if (topVenue) {
+                        topVenue.revenueUsd += dailyOrderData.totalRevenueUsd;
                     } else {
-                        topLocation = {
-                            sellerId: 0,
-                            sellerName: location,
+                        topVenue = {
+                            tooltip: `${dailyOrderData.venue} (${location} ${dailyOrderData.zip})`,
+                            location: dailyOrderData.venue,
                             revenueUsd: dailyOrderData.totalRevenueUsd
                         };
                     }
-                    topSellingLocationsMap.set(location, topLocation);
-                }
-                const purchaseDate = `${dailyOrderData.eventTitle} (${moment(dailyOrderData.eventDate).format('M/D/YYYY')})`;
+                    topSellingVenuesMap.set(dailyOrderData.zip, topVenue);
+                }                
+                 
+                if (location) {
+                    var topCity = topSellingLocationsMap.get(location);
+                    if (topCity) {
+                        topCity.revenueUsd += dailyOrderData.totalRevenueUsd;
+                    } else {
+                        topCity = {
+                            tooltip: '',
+                            location: location,
+                            revenueUsd: dailyOrderData.totalRevenueUsd
+                        };
+                    }
+                    topSellingLocationsMap.set(location, topCity);
+                }                
         
                 const esd: ITicketEventSalesData = {
                     EventId: dailyOrderData.ticketSocketEventId,
@@ -262,13 +278,61 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
         }
     }
 
+    let salesByMonth: ISalesData[] = [];
+    if (salesPerMonthMap.size > 0) {
+        const keys = Array.from(salesPerMonthMap.keys()).sort();
+        keys.forEach((key) => {
+            salesByMonth.push({
+                key: key, 
+                value: salesPerMonthMap.get(key) ?? 0
+            });
+        })
+    }
+
+    let salesPerDayMonth: ISalesData[] = [];
+    if (salesPerDayMonthMap.size > 0) {
+        const keys = Array.from(salesPerDayMonthMap.keys()).sort();
+        keys.forEach((key) => {
+            salesPerDayMonth.push({
+                key: key, 
+                value: salesPerDayMonthMap.get(key) ?? 0
+            });
+        })
+    }
+
+    let salesPerDayYear: ISalesData[] = [];
+    if (salesPerDayYearMap.size > 0) {
+        const keys = Array.from(salesPerDayYearMap.keys()).sort();
+        keys.forEach((key) => {
+            salesPerDayYear.push({
+                key: key, 
+                value: salesPerDayYearMap.get(key) ?? 0
+            });
+        })
+    }
+
+    let totalsByAccount: ITotalsByAccount[] = [];
+    if (totalsByAccountMap.size > 0) {
+        const keys = Array.from(totalsByAccountMap.keys()).sort();
+        keys.forEach((key) => {
+            totalsByAccount.push({
+                ticketSocketId: key,                
+                totals: totalsByAccountMap.get(key)
+            });
+        })
+    }
+
     let topSellerValuesArray: ITopSeller[] = Array.from(topSellersMap.values())
     topSellerValuesArray.sort((a, b) => a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0)
     const topSellers = (topSellerValuesArray.length > 10) ? topSellerValuesArray.slice(0, 10) : topSellerValuesArray;
 
-    let topLocationValuesArray: ITopSeller[] = Array.from(topSellingLocationsMap.values())
+    let topLocationValuesArray: ITopSellingLocation[] = Array.from(topSellingLocationsMap.values())
     topLocationValuesArray.sort((a, b) => a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0)
     const topLocations = (topLocationValuesArray.length > 10) ? topLocationValuesArray.slice(0, 10) : topLocationValuesArray;
+
+    let topVenueValuesArray: ITopSellingLocation[] = Array.from(topSellingVenuesMap.values())
+    topVenueValuesArray.sort((a, b) => a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0)
+    const topVenues = (topVenueValuesArray.length > 10) ? topVenueValuesArray.slice(0, 10) : topVenueValuesArray;
 
     const totalDays = totals.dayOfYear;
     const perDiemTotalRevenue = totals.totalRevenueUsd / totalDays;
@@ -292,6 +356,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
         totalRevenue: totalRevenue,
         topSellers: topSellers, 
         topLocations: topLocations,
+        topVenues: topVenues,
         percentMonthlyGoal: percentMonthlyGoal,
         percentYearlyGoal: percentYearlyGoal,
         projectedMonthTotalRevenue: projectedMonthTotalRevenue,
@@ -303,10 +368,10 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
         monthToDateTicketsRefunded: monthlyTicketsRefunded,
         monthToDateServiceFees: monthlyServiceFeeRevenue,
         monthToDateTotalRevenue: monthlyTotalRevenue,
-        salesPerMonth: salesPerMonthMap,
-        salesPerDayMonth: salesPerDayMonthMap,
-        salesPerDayYear: salesPerDayYearMap, 
-        totalsByAccount: totalsByAccountMap
+        salesPerMonth: salesByMonth,
+        salesPerDayMonth: salesPerDayMonth,
+        salesPerDayYear: salesPerDayYear, 
+        totalsByAccount: totalsByAccount
     };
 
     return dashboardData; 

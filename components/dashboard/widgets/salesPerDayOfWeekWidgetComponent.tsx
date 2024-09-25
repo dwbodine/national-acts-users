@@ -1,10 +1,11 @@
+import { ISalesData } from "@/types/user";
 import moment from "moment";
 import { Col, Row } from "react-bootstrap";
 
 export default function SalesPerDayOfWeekWidget(props: any) {
     
-    const salesPerDayMonthMap = props.salesPerDayMonth as Map<number, number> | undefined;
-    const salesPerDayYearMap = props.salesPerDayYear as Map<number, number> | undefined;
+    const salesPerDayMonth = props.salesPerDayMonth as ISalesData[] | undefined;
+    const salesPerDayYear = props.salesPerDayYear as ISalesData[] | undefined;
 
     const today = moment();
     const currentYear = today.year();
@@ -15,7 +16,7 @@ export default function SalesPerDayOfWeekWidget(props: any) {
     const firstDayOfYear = moment([currentYear, 1, 1]).day();
     
     let salesRows: any[] = [];
-    if (salesPerDayMonthMap && salesPerDayYearMap) {
+    if (salesPerDayMonth?.length && salesPerDayYear?.length) {
         for (let i=1; i <= 7; i++) {
             const dayName = moment().day(i).format('ddd');
             const dayNumber = i % 7;
@@ -27,9 +28,12 @@ export default function SalesPerDayOfWeekWidget(props: any) {
             if (dayNumber >= firstDayOfMonth && dayNumber <= currentDay) {
                 numberOfDaysInMonth += 1;
             }
-            let monthVal = (salesPerDayMonthMap.get(dayNumber) ?? 0) / numberOfDaysInMonth;
-            let yearVal = (salesPerDayYearMap.get(dayNumber) ?? 0) / numberOfDaysInYear;
-            salesRows.push(<Row><Col>{dayName} ${monthVal.toFixed(2)}</Col><Col>{dayName} ${yearVal.toFixed(2)}</Col></Row>);
+            let monthVal = (i < salesPerDayMonth.length) ? (salesPerDayMonth[i].value ?? 0) : 0;
+            let yearVal = (i < salesPerDayYear.length) ? (salesPerDayYear[i].value ?? 0) : 0;
+            monthVal = monthVal / numberOfDaysInMonth;
+            yearVal = yearVal / numberOfDaysInYear;
+            const key = `salePerDay${i}`;
+            salesRows.push(<Row key={key}><Col>{dayName} ${monthVal.toFixed(2)}</Col><Col>{dayName} ${yearVal.toFixed(2)}</Col></Row>);
         }
     }
 

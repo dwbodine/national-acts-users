@@ -99,7 +99,8 @@ export default function AdminRoleEdit() {
     if (allPermissions && allPermissions.length > 0) {
         allPermissions.map((item, index) => {
             const checked: boolean = hasPermission(item.permissionId);
-            permissionRows.push(<FormCheck key={index} id={item.permissionId.toString()} onChange={updateRolePermissions} checked={checked} label={item.permissionName} />);
+            const key = `perm${index}`;
+            permissionRows.push(<FormCheck key={key} id={item.permissionId.toString()} onChange={updateRolePermissions} checked={checked} label={item.permissionName} />);
         });
     }
 
@@ -114,7 +115,7 @@ export default function AdminRoleEdit() {
                 </Col>
             </Row>
         </Container>
-        <div className="admin-container" hidden={isLoading || (permissionRows.length > 0 && currentAdminSelection.selectedRole != undefined)}>
+        <div className="admin-container" hidden={isLoading || !(permissionRows.length > 0 && currentAdminSelection.selectedRole != undefined)}>
             <h1>{pageHeader}</h1>
             <div className="form-group">
               <label className="mt-4">Role Name</label>

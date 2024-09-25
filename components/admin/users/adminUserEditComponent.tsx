@@ -229,6 +229,7 @@ export default function AdminUserEdit() {
         currentAdminSelection.selectedUser.sellers.length > 0) {
         currentAdminSelection.selectedUser.sellers.map((item, index) => {
             sellerRows.push(<AdminSellerSelect id={item.sellerId} 
+                                               key={item.sellerId} 
                                                Number={index + 1} 
                                                Sellers={allSellers} 
                                                Roles={allRoles} 
@@ -238,7 +239,7 @@ export default function AdminUserEdit() {
                                                OnRoleChange={updateRole} 
                                                OnDelete={removeSeller} />);
         });
-        sellerRows.push(<div title="Add Seller" className="admin-click-cell" onClick={addSeller}><FaPlus></FaPlus> Add Seller</div>)
+        sellerRows.push(<div title="Add Seller" key="addSeller" className="admin-click-cell" onClick={addSeller}><FaPlus></FaPlus> Add Seller</div>)
     }
 
     return (

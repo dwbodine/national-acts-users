@@ -994,7 +994,7 @@ export class EventService {
   };
 
   getOrderExportTableHeader = (viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean, currencyAbbrev?: string, hideCurrencyInHeaders: boolean = false): string => {
-    let exportStr = '"Seller Name","Purchaser Name","Purchaser Zip","Attendee Name(s)","Purchase Date","Event Date","Event Name","Ticket Type","Number of tickets"';
+    let exportStr = '"Seller Name","Purchaser Name","Purchaser Zip","Purchaser IP Address","Attendee Name(s)","Purchase Date","Event Date","Event Name","Ticket Type","Number of tickets"';
     if (hasNonUsaOrders) {
       if (showRevenueData) {
         if (hideCurrencyInHeaders) {
@@ -1042,6 +1042,7 @@ export class EventService {
     let exportStr = '';
     const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
     const purchaserZip = order.purchaserZipCode ?? '';
+    const purchaserIpAddress = order.purchaserIpAddress ?? '';
     const attendeeNames = order.attendeeNames?.join(" / ");
     const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
     const eventDate = moment(order.eventDate).format('MM/DD/YYYY');
@@ -1079,7 +1080,7 @@ export class EventService {
       });
     } 
     
-    exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${attendeeNames}","${purchaseDate}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
+    exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${purchaserIpAddress}","${attendeeNames}","${purchaseDate}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
     if (hasNonUsaOrders) {
       if (showRevenueData) {
         if (order.currencyAbbrev != "USD" && order.currencySymbol != "$") {

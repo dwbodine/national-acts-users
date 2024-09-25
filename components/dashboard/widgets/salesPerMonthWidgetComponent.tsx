@@ -1,17 +1,19 @@
+import { ISalesData } from "@/types/user";
 import moment from "moment";
 import { Col, Row } from "react-bootstrap";
 
 export default function SalesPerMonthWidget(props: any) {
     
-    const salesPerMonthMap = props.salesPerMonth as Map<number, number> | undefined;
+    const salesPerMonth = props.salesPerMonth as ISalesData[] | undefined;
 
     let salesRows: any[] = [];
     const currentYear = moment().year();
-    if (salesPerMonthMap && salesPerMonthMap.size > 0) {
+    if (salesPerMonth && salesPerMonth.length > 0) {
         for (let i=0; i < 12; i++) {
             const monthName = moment([currentYear, i, 1]).format('MMMM');
-            const monthVal = salesPerMonthMap.get(i+1) ?? 0;
-            salesRows.push(<Row><Col className="sales-stat-block-name">{monthName}</Col><Col className="sales-stat-block-value">${monthVal.toFixed(2)}</Col></Row>);
+            const monthVal = (i < salesPerMonth.length) ? (salesPerMonth[i].value ?? 0) : 0;
+            const key = `salePerMonth${i}`;
+            salesRows.push(<Row key={key}><Col className="sales-stat-block-name">{monthName}</Col><Col className="sales-stat-block-value">${monthVal.toFixed(2)}</Col></Row>);
         }
     }
 

@@ -648,6 +648,7 @@ div hidden {
 .sales-stat-block-title {
   font-size: 18px;
   font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .sales-stat-block-subtitle {
@@ -656,9 +657,13 @@ div hidden {
   margin: 10px 0 0 0;
 }
 
-.sales-stat-block-name {
+.sales-stat-block-name, .sales-stat-block-name-tooltip {
   text-align: left;
   white-space: nowrap;
+}
+
+.sales-stat-block-name-tooltip {
+  cursor: pointer;
 }
 
 .sales-stat-block-value {

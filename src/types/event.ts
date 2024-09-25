@@ -62,6 +62,7 @@ export interface Order {
   purchaserState?: string;
   purchaserZipCode?: string;
   purchaserCountry?: string;
+  purchaserIpAddress?: string;
   revenue: number;
   serviceFees?: number;
   attendeeNames?: string[];
