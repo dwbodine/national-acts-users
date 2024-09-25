@@ -17,7 +17,7 @@ export default function RevenueGoalsWidget(props: any) {
         <Row className="sales-stat-block">
             <Col>
                 <Row>
-                    <Col className="sales-stat-block-title">{title}:</Col>
+                    <Col className="sales-stat-block-title">{title}</Col>
                 </Row>
                 <Row>
                     <Col className="revenue-widget-progress">

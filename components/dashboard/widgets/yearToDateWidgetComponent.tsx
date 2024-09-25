@@ -17,7 +17,7 @@ export default function YearToDateWidget(props: any) {
         <Row className="sales-stat-block">
             <Col>
                 <Row>
-                    <Col className="sales-stat-block-title">Year-to-Date stats:</Col>
+                    <Col className="sales-stat-block-title">Year-to-Date stats</Col>
                 </Row>
                 <Row>
                     <Col className="sales-stat-block-name">Transactions:</Col>

@@ -651,11 +651,24 @@ div hidden {
   margin-bottom: 10px;
 }
 
+.sales-stat-block-title-no-margin {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
 .sales-stat-block-subtitle {
   font-size: 14px;
   font-weight: bold;
   margin: 10px 0 0 0;
 }
+
+.sales-stat-block-subtitle-no-margin {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+
 
 .sales-stat-block-name, .sales-stat-block-name-tooltip {
   text-align: left;

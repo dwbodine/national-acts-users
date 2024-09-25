@@ -41,7 +41,7 @@ export default function SalesPerDayOfWeekWidget(props: any) {
         <Row className="sales-stat-block">
             <Col>
                 <Row>
-                    <Col className="sales-stat-block-title">Average Sales by Day of Week:</Col>
+                    <Col className="sales-stat-block-title">Average Sales by Day of Week</Col>
                 </Row>
                 <Row>
                     <Col className="sales-stat-block-subtitle">Current Month</Col><Col className="sales-stat-block-subtitle">Average For Year</Col>

@@ -24,6 +24,7 @@ import { eventService } from "@/services";
 import SalesByAccountWidget from "./widgets/salesByAccountWidgetComponent";
 import TopSellersWidget from "./widgets/topSellersWidgetComponent";
 import TopSellingLocationsWidget from "./widgets/topSellingLocationsWidgetComponent";
+import moment from "moment";
 export default function DashboardIndex() {
 
     const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
@@ -78,6 +79,7 @@ export default function DashboardIndex() {
     const topSellers = currentDashboardSelection.currentDashboardData?.topSellers ?? undefined;
     const topLocations = currentDashboardSelection.currentDashboardData?.topLocations ?? undefined;
     const topVenues = currentDashboardSelection.currentDashboardData?.topVenues ?? undefined;
+    const dateRange = `${moment.unix(currentDashboardSelection.start).format('MM/DD/YYYY')} - ${moment.unix(currentDashboardSelection.end).format('MM/DD/YYYY')}`;
 
     let chartSalesData: ITicketSalesData[] = [];
     if (ticketSalesData) {
@@ -157,13 +159,13 @@ export default function DashboardIndex() {
                 </Row>  
                 <Row className="dashboard-sales-table">
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
-                        <TopSellersWidget topSellers={topSellers} />
+                        <TopSellersWidget topSellers={topSellers} dateRange={dateRange} />
                     </Col>
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
-                        <TopSellingLocationsWidget topSellers={topLocations} title="Locations" />
+                        <TopSellingLocationsWidget topSellers={topLocations} title="Locations" dateRange={dateRange} />
                     </Col>
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
-                        <TopSellingLocationsWidget topSellers={topVenues} title="Venues" />
+                        <TopSellingLocationsWidget topSellers={topVenues} title="Venues" dateRange={dateRange} />
                     </Col>
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
                         <MonthToDateWidget DashBoardData={currentDashboardSelection.currentDashboardData} />

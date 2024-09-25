@@ -21,7 +21,7 @@ export default function SalesPerMonthWidget(props: any) {
         <Row className="sales-stat-block">
             <Col>
                 <Row>
-                    <Col className="sales-stat-block-title">Sales Per Month {currentYear}:</Col>
+                    <Col className="sales-stat-block-title">Sales Per Month {currentYear}</Col>
                 </Row>
                 {salesRows}
             </Col>

@@ -4,6 +4,8 @@ import { Col, Row } from "react-bootstrap";
 export default function TopSellersWidget(props: any) {
     
     const topSellers = props.topSellers as ITopSeller[] | undefined;
+    const dateRange = props.dateRange as string | undefined;
+
     let sellerRows: any[] = [];
     if (topSellers && topSellers.length > 0) {
         topSellers.forEach((seller, i) => {
@@ -16,7 +18,10 @@ export default function TopSellersWidget(props: any) {
         <Row className="sales-stat-block">
             <Col>
                 <Row>
-                    <Col className="sales-stat-block-title">Top {topSellers?.length} Sellers:</Col>
+                    <Col className="sales-stat-block-title-no-margin">Top {topSellers?.length} Sellers</Col>
+                </Row>
+                <Row hidden={!dateRange}>
+                    <Col className="sales-stat-block-subtitle-no-margin">({dateRange})</Col>
                 </Row>
                 {sellerRows}
             </Col>
