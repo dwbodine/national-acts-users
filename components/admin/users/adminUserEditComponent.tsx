@@ -14,6 +14,7 @@ import { useGetAllRoles } from "@/hooks/admin/useGetAllRoles";
 import { useDeleteUser } from "@/hooks/admin/useDeleteUser";
 import { current } from "@reduxjs/toolkit";
 import { CirclesWithBar } from "react-loader-spinner";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
 
 export default function AdminUserEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -35,13 +36,14 @@ export default function AdminUserEdit() {
     const [sendTextReset, setSendTextReset] = useState<boolean>(false);
     const [disableCheckIn, setDisableCheckIn] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (currentAdminSelection.selectedUser == undefined) {
             goBack();
         } else if (username == undefined || allSellers == undefined || allRoles == undefined) {
-            setIsLoading(true);
+            dispatch(
+                setIsLoading(true)
+            );
             setUsername(currentAdminSelection.selectedUser.username);
             setFirstName(currentAdminSelection.selectedUser.firstName);
             setLastName(currentAdminSelection.selectedUser.lastName);
@@ -57,11 +59,13 @@ export default function AdminUserEdit() {
                 getAllRoles().then((resp: GetRolesResponse) => {
                     const roles = resp.roles?.filter(x => x.roleId != 1);
                     setAllRoles(roles);
-                    setIsLoading(false);
+                    dispatch(
+                        setIsLoading(false)
+                    );
                 });
             });
         }
-    }, [currentAdminSelection, username, allSellers, getSellers, allRoles, getAllRoles]);
+    }, [currentAdminSelection, username, allSellers, getSellers, allRoles, getAllRoles, dispatch]);
 
     const goBack = () => {
         router.push('/admin/users/');
@@ -184,7 +188,9 @@ export default function AdminUserEdit() {
 
     const onSubmit = () => {
         setErrorMessage(undefined);
-        setIsLoading(true);
+        dispatch(
+            setIsLoading(true)
+        );
         if (!currentAdminSelection.selectedUser) {
             return false;
         }
@@ -216,7 +222,9 @@ export default function AdminUserEdit() {
             } else {
                 setErrorMessage(response.userError ?? "Error occurred while saving user");
             }
-            setIsLoading(false);
+            dispatch(
+                setIsLoading(false)
+            );
         });
     }
 
@@ -244,15 +252,7 @@ export default function AdminUserEdit() {
 
     return (
         (currentAdminSelection.selectedUser && (sellerRows != null || currentAdminSelection.selectedUser.isAdmin)) ? 
-        <>
-        <Container fluid hidden={!isLoading}>
-            <Row>
-                <Col className="spinner-container" hidden={!isLoading}>
-                    <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
-                </Col>
-            </Row>
-        </Container>
-        <div className="admin-container" hidden={isLoading}>
+        <div className="admin-container">
             <h1>Edit User</h1>
             <div className="form-group">
               <label className="mt-4">Username: {username}</label>
@@ -332,7 +332,6 @@ export default function AdminUserEdit() {
             <div className="danger">{errorMessage}</div>
             : ''}
         </div> 
-        </>
         : ''
     );
 }

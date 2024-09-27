@@ -28,8 +28,8 @@ export default function SalesPerDayOfWeekWidget(props: any) {
             if (dayNumber >= firstDayOfMonth && dayNumber <= currentDay) {
                 numberOfDaysInMonth += 1;
             }
-            let monthVal = (i < salesPerDayMonth.length) ? (salesPerDayMonth[i].value ?? 0) : 0;
-            let yearVal = (i < salesPerDayYear.length) ? (salesPerDayYear[i].value ?? 0) : 0;
+            let monthVal = (i <= salesPerDayMonth.length) ? (salesPerDayMonth[i-1].value ?? 0) : 0;
+            let yearVal = (i <= salesPerDayYear.length) ? (salesPerDayYear[i-1].value ?? 0) : 0;
             monthVal = monthVal / numberOfDaysInMonth;
             yearVal = yearVal / numberOfDaysInYear;
             const key = `salePerDay${i}`;

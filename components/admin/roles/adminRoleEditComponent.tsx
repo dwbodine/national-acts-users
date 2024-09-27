@@ -3,11 +3,11 @@ import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import router from 'next/router';
 import { GetPermissionsResponse, Permission, Role, UpdateRoleResponse } from "@/types/user";
-import { Button, Col, Container, FormCheck, FormText, Row } from "react-bootstrap";
+import { Button, FormCheck } from "react-bootstrap";
 import { useGetAllPermissions } from "@/hooks/user/useGetAllPermissions";
 import { setReloadRoles, setSelectedRole } from "@/lib/adminSelectionSlice";
 import { useUpdateRole } from "@/hooks/admin/useUpdateRole";
-import { CirclesWithBar } from "react-loader-spinner";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
 
 export default function AdminRoleEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -17,20 +17,23 @@ export default function AdminRoleEdit() {
     const [allPermissions, setAllPermissions] = useState<Permission[] | undefined>(undefined);
     const [roleName, setRoleName] = useState<string | undefined>(undefined);
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (currentAdminSelection.selectedRole == undefined) {
             goBack();
         } else if (allPermissions == undefined && roleName == undefined) {
-            setIsLoading(true);
+            dispatch(
+                setIsLoading(true)
+            );
             setRoleName(currentAdminSelection.selectedRole.roleName);
             getAllPermissions().then((response: GetPermissionsResponse) => {
                 setAllPermissions(response.permissions);                
-                setIsLoading(false);
+                dispatch(
+                    setIsLoading(false)
+                );
             }); 
         }
-    }, [currentAdminSelection, roleName, allPermissions, getAllPermissions]);
+    }, [currentAdminSelection, roleName, allPermissions, getAllPermissions, dispatch]);
 
     const goBack = () => {
         router.push('/admin/roles/');
@@ -79,7 +82,9 @@ export default function AdminRoleEdit() {
         if (!currentAdminSelection.selectedRole) {
             return false;
         }
-        setIsLoading(true);
+        dispatch(
+            setIsLoading(true)
+        );
         const newRoleName: string = (roleName ? roleName : '');
         let roleToUpdate: Role = {...currentAdminSelection.selectedRole, roleName: newRoleName};
         updateRole(roleToUpdate).then((response: UpdateRoleResponse) => {
@@ -91,7 +96,9 @@ export default function AdminRoleEdit() {
             } else {
                 setErrorMessage(response.roleError ?? "Error occurred while saving role");
             }
-            setIsLoading(false);
+            dispatch(
+                setIsLoading(false)
+            );
         });
     }
 
@@ -107,15 +114,7 @@ export default function AdminRoleEdit() {
     const pageHeader = (currentAdminSelection.selectedRole?.roleId ?? 0 > 0) ? "Edit role" : "Add role";
 
     return (
-        <>
-        <Container fluid hidden={!isLoading}>
-            <Row>
-                <Col className="spinner-container" hidden={!isLoading}>
-                    <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
-                </Col>
-            </Row>
-        </Container>
-        <div className="admin-container" hidden={isLoading || !(permissionRows.length > 0 && currentAdminSelection.selectedRole != undefined)}>
+        <div className="admin-container" hidden={!(permissionRows.length > 0 && currentAdminSelection.selectedRole != undefined)}>
             <h1>{pageHeader}</h1>
             <div className="form-group">
               <label className="mt-4">Role Name</label>
@@ -133,6 +132,5 @@ export default function AdminRoleEdit() {
             <div className="danger">{errorMessage}</div>
             : ''}
         </div> 
-        </>
     );
 }

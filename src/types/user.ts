@@ -176,17 +176,22 @@ export interface IDashboardData {
 export type AdminDashboardSelection = {
   start: number;
   end: number;
-  sellerId?: number;
-  showInactive?: boolean;
-  showDeleted?: boolean;
-  showHidden?: boolean;
-  reloadActivities: boolean;
   reloadOrders: boolean;
-  getYearToDateTotals: boolean;
-  filterAdmins: boolean;
-  currentLogins?: number;
   currentDashboardData?: IDashboardData;
   dashboardTotals?: IDashboardTotals;
+}
+
+export type UserActivitySelection = {
+  start: number;
+  end: number;
+  reloadActivities: boolean;
+  filterAdmins: boolean;
+  currentLogins?: number;
+  currentActivities?: UserActivity[];
+}
+
+export type GlobalSelection = {
+  isLoading: boolean;
 }
 
 export enum UserActivityType {
@@ -212,7 +217,9 @@ export enum UserActivityType {
   ShowInactiveOrders = 21,
   ShowDeletedOrders = 22,
   PrintButtonClicked = 23,
-  ResetButtonClicked = 24
+  ResetButtonClicked = 24, 
+  CustomerExportReport = 25,
+  UserActivityReport = 26
 }
 
 export type UserActivity = {

@@ -22,15 +22,16 @@ import EventMobileRow from "./eventMobileRowComponent";
 import { useHasPermission } from "@/hooks/user/useHasPermission";
 import debouce from "lodash.debounce";
 import { FULL_PAGE_CHART_BREAKPOINT } from "@/constants";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
 
 export default function CurrentEvents() {
+    const globalSelection = useSelector((state: RootState) => state.globalSelection);
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const { user } = useCurrentUser();
     const { userHasPermission } = useHasPermission();
     const { getEvents } = useGetEvents();
     const dispatch = useDispatch(); 
 
-    const [isLoading, setIsLoading] = useState(false);
     const [chartsHidden, setChartsHidden] = useState(true);
     const [hideRevItem, setHideRevItem] = useState(true);
     const [hideServiceFees, setHideServiceFees] = useState(true);
@@ -99,7 +100,9 @@ export default function CurrentEvents() {
             }            
 
             if (currentReportSelection.reloadEvents) {
-                setIsLoading(true);
+                dispatch(
+                    setIsLoading(true)
+                );
                 setChartsHidden(true);
                 dispatch(
                     setReloadEvents(false)
@@ -130,10 +133,20 @@ export default function CurrentEvents() {
                             setEvents([])
                         );
                     }
-                    setIsLoading(false);
+                    dispatch(
+                        setIsLoading(false)
+                    );
                 });
+            } else if (globalSelection.isLoading) {
+                dispatch(
+                    setIsLoading(false)
+                );
             }
-        }        
+        } else if (globalSelection.isLoading) {
+            dispatch(
+                setIsLoading(false)
+            );
+        }       
         return () => {
             debouncedResults.cancel();
         }
@@ -146,7 +159,8 @@ export default function CurrentEvents() {
         viewServiceFees, 
         user, 
         debouncedResults, 
-        windowSizeJson
+        windowSizeJson, 
+        globalSelection.isLoading
     ]);    
     
     const filterEvents = (events: VipEvent[]) => {
@@ -225,17 +239,14 @@ export default function CurrentEvents() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="form-control search-text-input no-print"
                 placeholder="Search for events..." 
-                hidden={(searchBarHidden || isLoading || !visibleEvents || visibleEvents.length == 0)}
+                hidden={(searchBarHidden || !visibleEvents || visibleEvents.length == 0)}
             />
             <WidgetBar TotalShows={totalEvents} TicketData={ticketData} TotalTickets={totalTickets} 
                 ShirtData={shirtData} TotalShirts={totalShirts} TotalRevenue={totalRevenue} HideRevenue={hideRevItem} 
                 TicketsRefunded={ticketsRefunded} TotalServiceFees={totalServiceFees} HideServiceFees={hideServiceFees} />
             <TicketSalesChart TicketSalesData={ticketSalesData} ChartsHidden={chartsHidden} HideRevenue={hideRevItem} HideMobile={hideTicketChart} />
             <Row className="results-container">
-                <Col className="spinner-container" hidden={!isLoading}>
-                    <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
-                </Col>
-                <Col hidden={isLoading} className="results-col">
+                <Col className="results-col">
                     {(visibleEvents && visibleEvents.length > 0) ?
                         <table className="resultsTable">
                             <thead hidden={windowSize.isMobile}>

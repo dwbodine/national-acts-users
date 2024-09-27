@@ -76,20 +76,8 @@ export class EventService {
       });
   };
 
-  getOrders = async (reportSelection: AdminDashboardSelection): Promise<GetOrdersResponse> => {
-    let url = `/user/ordersSecured?start=${reportSelection.start}&end=${reportSelection.end}`;
-
-    if (reportSelection.showInactive) {
-      url += '&inactive=1';
-    }
-
-    if (reportSelection.showDeleted) {
-      url += '&deleted=1';
-    }
-
-    if (reportSelection.showHidden) {
-      url += '&hidden=1';
-    }
+  getAllOrders = async (start: number, end: number): Promise<GetOrdersResponse> => {
+    let url = `/user/ordersSecured?start=${start}&end=${end}&ignoreFlags=1`;
 
     let ordersResponse: GetOrdersResponse = {
       orders: undefined,
@@ -1024,7 +1012,7 @@ export class EventService {
     if (hasShirtData) {
       exportStr += ',"Shirt Sizes"';
     }
-    exportStr += "\n";
+    exportStr += ',"Venue","Event Address","Event City","Event State","Event Zip","Event Country"\n'
     return exportStr;
   }
 
@@ -1110,7 +1098,7 @@ export class EventService {
     if (hasShirtData) {
       exportStr += `,"${shirts}"`;
     }
-    exportStr += '\n';
+    exportStr += `,${order.venue},${order.eventAddress},${order.eventCity},${order.eventState},${order.eventZip},${order.eventCountry}\n`
     return exportStr;
   };
 
@@ -1184,8 +1172,6 @@ export class EventService {
     const endDate = moment.unix(currentDashboardSelection.end).format('M/D/YYYY');
 
     let exportStr = `"Admin dashboard - orders from ${startDate} to ${endDate}"\n\n`;
-
-    exportStr += `"Unique user Logins: ${currentDashboardSelection.currentLogins}"\n\n`;
 
     let hasShirtData = false;
     let hasPhoneData = false;

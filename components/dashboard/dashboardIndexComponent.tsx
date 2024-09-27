@@ -7,14 +7,11 @@ import { useWindowSize } from "@/hooks/common/useWindowSize";
 import { FULL_PAGE_CHART_BREAKPOINT } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import UserActivityWidget from "./widgets/userActivityWidgetComponent";
 import { setReloadDashboardOrders, setCurrentDashboardData } from "@/lib/dashboardSelectionSlice";
-import { CirclesWithBar } from "react-loader-spinner";
 import { Table } from "rsuite";
 import { getDashboardDataFromOrders } from "@/utils/getDashboardDataFromOrders";
 import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from "react-icons/fa";
 import { useGetDashboardData } from "@/hooks/dashboard/useGetDashboardData";
-import TopFiveSellersWidget from "./widgets/topSellersWidgetComponent";
 import YearToDateWidget from "./widgets/yearToDateWidgetComponent";
 import RevenueGoalsWidget from "./widgets/revenueGoalsWidgetComponent";
 import MonthToDateWidget from "./widgets/monthToDateWidgetComponent";
@@ -25,10 +22,11 @@ import SalesByAccountWidget from "./widgets/salesByAccountWidgetComponent";
 import TopSellersWidget from "./widgets/topSellersWidgetComponent";
 import TopSellingLocationsWidget from "./widgets/topSellingLocationsWidgetComponent";
 import moment from "moment";
-export default function DashboardIndex() {
+import { setIsLoading } from "@/lib/globalSelectionSlice";
 
+export default function DashboardIndex() {
+    const globalSelection = useSelector((state: RootState) => state.globalSelection);
     const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
-    const [isLoading, setIsLoading] = useState(false);
     const [chartsHidden, setChartsHidden] = useState(true);
     const { Column, HeaderCell, Cell } = Table;
 
@@ -44,7 +42,9 @@ export default function DashboardIndex() {
                 dispatch (
                     setReloadDashboardOrders(false)
                 );
-                setIsLoading(true);
+                dispatch(
+                    setIsLoading(true)
+                );
                 setChartsHidden(true);
                 getDashboardData(currentDashboardSelection)
                     .then((response: GetDashboardOrdersResponse) => {
@@ -53,9 +53,10 @@ export default function DashboardIndex() {
                             dispatch (
                                 setCurrentDashboardData(dashData)
                             );
-                        }
-                        
-                        setIsLoading(false);
+                        }                        
+                        dispatch(
+                            setIsLoading(false)
+                        );
                         setChartsHidden(false);
                     });
             } else {
@@ -108,14 +109,7 @@ export default function DashboardIndex() {
     return (
         <>
             <DashboardBar />
-            <Container fluid hidden={!isLoading}>
-                <Row>
-                    <Col className="spinner-container" hidden={!isLoading}>
-                        <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
-                    </Col>
-                </Row>
-            </Container>
-            <Container fluid hidden={isLoading}>
+            <Container fluid hidden={globalSelection.isLoading}>
                 <Row>
                     <Col><h5>Current Period</h5></Col>
                 </Row>

@@ -94,6 +94,10 @@ div hidden {
   text-align: center;
 }
 
+.tab-container {
+  padding: 0;
+}
+
 .page-header {
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;

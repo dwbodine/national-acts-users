@@ -10,6 +10,7 @@ import { useGetAllUsers } from "@/hooks/admin/useGetAllUsers";
 import debouce from "lodash.debounce";
 import { Col, Container, Row } from "react-bootstrap";
 import { CirclesWithBar } from "react-loader-spinner";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
 
 export default function AdminUsersIndex() {
 
@@ -18,7 +19,6 @@ export default function AdminUsersIndex() {
     const { getAllUsers } = useGetAllUsers();
     const { Column, HeaderCell, Cell } = Table;
     const [searchTerm, setSearchTerm] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
 
     const debouncedResults = useMemo(() => {
         return debouce(setSearchTerm, 300);
@@ -26,14 +26,18 @@ export default function AdminUsersIndex() {
 
     useEffect(() => {
         if (!currentAdminSelection.users || currentAdminSelection.reloadUsers) {
-            setIsLoading(true);
+            dispatch(
+                setIsLoading(true)
+            );
             getAllUsers().then((response: GetUsersResponse) => {
                 if (!response.userError && response.users) {
                     dispatch(
                         setUsers(response.users)
                     );
                 }
-                setIsLoading(false);
+                dispatch(
+                    setIsLoading(false)
+                );
             });
         }  
         return () => {
@@ -69,16 +73,8 @@ export default function AdminUsersIndex() {
     const filteredUsers =  filterUsers(currentAdminSelection.users);
     
     return (
-        <>
-        <Container fluid hidden={!isLoading}>
-            <Row>
-                <Col className="spinner-container" hidden={!isLoading}>
-                    <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
-                </Col>
-            </Row>
-        </Container>
-        <div className="admin-container" hidden={isLoading}>
-            <h1>Users Admin</h1>
+        <div className="admin-container">
+            <h3>Users Admin</h3>
             <input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -121,6 +117,5 @@ export default function AdminUsersIndex() {
             </Table>
             <AdminListHomeButton />
         </div>
-        </>
     );
 }

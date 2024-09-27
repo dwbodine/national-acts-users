@@ -32,11 +32,14 @@ export interface Ticket {
 export interface Order {
   eventId: number;
   eventTitle?: string;
+  venue?: string;
   eventDate?: string;
   sellerName?: string;
   sellerId?: number;
+  eventAddress?: string;
   eventCity?: string;
   eventState?: string;
+  eventZip?: string;
   eventCountry?: string;
   ticketSocketEventId: number;
   ticketSocketOrderId: number;

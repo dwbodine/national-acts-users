@@ -6,5 +6,6 @@ export enum ActivePageKey {
     Dashboard = 1,
     SalesOverview = 2,
     Admin = 3,
-    Reports = 4
+    Reports = 4,
+    Users = 5
 };

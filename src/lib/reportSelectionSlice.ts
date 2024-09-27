@@ -45,7 +45,6 @@ export const userReportSelectionSlice = createSlice({
             } else {
                 state.reloadEvents = false;
             }
-            state.seller = action.payload;
             state.start = 0;
             state.end = 0;
             state.showDeleted = false;

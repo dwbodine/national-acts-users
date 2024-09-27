@@ -13,17 +13,20 @@ import downloadFile from "@/utils/downloadFile";
 import { CirclesWithBar } from "react-loader-spinner";
 import { MINIMUM_UNIX_TIMESTAMP } from "@/constants";
 import moment from "moment";
+import { useLogActivityData } from "@/hooks/common/useLogActivityData";
+import { UserActivityType } from "@/types/user";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
 
 export default function ReportsCustomerExport() {
-
+    const globalSelection = useSelector((state: RootState) => state.globalSelection);
     const currentAdminReportSelection = useSelector((state: RootState) => state.adminReportSelection);
     const dispatch = useDispatch();
     const { getAllEvents } = useGetAllEvents();
+    const { logActivityData } = useLogActivityData();
     const [errorMessage, setErrorMessage] = useState('');
     const { exportCustomerDataToCsv } = useGetExport();
-    const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => { },[currentAdminReportSelection, isLoading]);
+    useEffect(() => { },[currentAdminReportSelection, globalSelection.isLoading]);
 
     const onDateChange = (newStart: number, newEnd: number) => {
         let reportSelection = { ...currentAdminReportSelection };
@@ -38,28 +41,37 @@ export default function ReportsCustomerExport() {
         if (currentAdminReportSelection && currentAdminReportSelection.start && currentAdminReportSelection.end) {
             setErrorMessage('');
 
-            if (currentAdminReportSelection.start >= currentAdminReportSelection.end) {
+            const start = currentAdminReportSelection.start;
+            const end = currentAdminReportSelection.end;
+
+            if (start >= end) {
                 setErrorMessage("Start date must be before end date");
                 return false;
             }
 
-            if (currentAdminReportSelection.start < MINIMUM_UNIX_TIMESTAMP) {
+            if (start < MINIMUM_UNIX_TIMESTAMP) {
                 const minDate = moment.unix(MINIMUM_UNIX_TIMESTAMP).format('MM/DD/YYYY');
                 setErrorMessage(`Start date must be on or before ${minDate}`);
                 return false;
             }
 
-            setIsLoading(true);
-
-            getAllEvents(currentAdminReportSelection.start, currentAdminReportSelection.end)
-                .then((response: GetEventsResponse) => {
-                    if (response && !response.eventError) {
-                        exportCustomerData(response.events);
-                    } else {
-                        setErrorMessage(response.eventError ?? 'Unknown error occurred');
-                        setIsLoading(false);
-                    }                    
+            dispatch(
+                setIsLoading(true)
+            );
+            logActivityData(UserActivityType.CustomerExportReport).then(() => {
+                getAllEvents(start, end)
+                    .then((response: GetEventsResponse) => {
+                        if (response && !response.eventError) {
+                            exportCustomerData(response.events);
+                        } else {
+                            setErrorMessage(response.eventError ?? 'Unknown error occurred');
+                        }                    
+                        dispatch(
+                            setIsLoading(false)
+                        );
                 });
+            });
+            
         } else {
             setErrorMessage('No dates selected');
         }
@@ -87,12 +99,10 @@ export default function ReportsCustomerExport() {
         } else {
             setErrorMessage('No events found');
         }
-        setIsLoading(false);
     };
     
     return (
-        <>
-        <div className="admin-container" hidden={isLoading}>
+        <div className="admin-container">
             <h3>Export Customer Data</h3>
             <ReportDatePicker onChange={onDateChange} start={currentAdminReportSelection.start} end={currentAdminReportSelection.end} />            
             <Button onClick={onSubmit}>Submit</Button><ReportsListHomeButton />
@@ -100,9 +110,5 @@ export default function ReportsCustomerExport() {
             <div className="danger">{errorMessage}</div>
             : ''}
         </div>
-        <div className="spinner-container" hidden={!isLoading}>
-            <CirclesWithBar height="100" width="100" color="#d12610" visible={isLoading} />
-        </div>
-        </>
     );
 }

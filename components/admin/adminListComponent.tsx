@@ -1,7 +1,10 @@
-import { SyntheticEvent } from "react";
+import { SyntheticEvent, useEffect } from "react";
 import router from 'next/router';
+import { useDispatch } from "react-redux";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
 
 export default function AdminList() {
+    const dispatch = useDispatch();
     const goToAdminPage = (e: SyntheticEvent) => {
         e.preventDefault();
         const id = e.currentTarget.id;
@@ -16,6 +19,12 @@ export default function AdminList() {
                 break;
         }
     };
+
+    useEffect(() => {
+        dispatch(
+            setIsLoading(false)
+        );
+    }, [dispatch]);
 
     return (
         <div className="admin-container">
