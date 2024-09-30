@@ -57,7 +57,11 @@ export default function Login() {
               dispatch(
                 setForAdmin(response.user.isAdmin)
               );
-              if (response.user.isAdmin){
+              const searchParams = new URLSearchParams(window.location.search);
+              const returnPath = searchParams.get('returnPath');
+              if (returnPath) {
+                router.push(returnPath);
+              } else if (response.user.isAdmin){
                 router.push("/dashboard/")
               } else {
                 router.push("/")

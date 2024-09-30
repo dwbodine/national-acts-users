@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { User, UserActivityType } from "@/types/user";
 import { useLogActivityData } from "@/hooks/common/useLogActivityData";
 import router from "next/router";
-import { getuid } from "process";
 
 export default function Home() {
   const { getUser } = useCurrentUser();

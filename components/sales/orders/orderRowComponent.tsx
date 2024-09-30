@@ -83,11 +83,9 @@ export default function OrderRow(props: any) {
 
     const attendeeNameRows: any[] = [];
     if (order.tickets && order.tickets.length > 0) {
-        let i = 0;
-        order.tickets.forEach((ticket) => {
+        order.tickets.forEach((ticket, i) => {
             const key = `anr${i}`;
             attendeeNameRows.push(<AttendeeRow key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />);
-            i++;
         });
     }
 

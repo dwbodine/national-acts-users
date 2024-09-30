@@ -74,6 +74,7 @@ div hidden {
 .nav-bar .logo-col {
   margin: 0;
   padding: 0;
+  cursor: pointer;
 }
 
 .login-logo-container {

@@ -14,7 +14,24 @@ export default function CheckAuth() {
       if (protectedRoutes.includes(pathName) && !authTokenCookie) {
           Cookies.remove("authToken");
           console.log(`Redirecting to login from ${pathName}`);
-          router.push('/login/');
+          if (pathName != "/") {
+            let returnPath = `${pathName}`;
+            const searchParams = new URLSearchParams(window.location.search);
+            if (searchParams && searchParams.size > 0) {
+              returnPath += "?";
+              const keys = Array.from(searchParams.keys());
+              keys.forEach((key, index) => {
+                if (index > 0) {
+                  returnPath += "&";
+                }
+                returnPath += `${key}=${searchParams.get(key)}`;
+              });
+            }
+            router.push(`/login/?returnPath=${encodeURI(returnPath)}`);
+          } else {
+            router.push('/login/');
+          }
+          
           Cookies.remove("authToken");
       } else if (authRoutes.includes(pathName) || publicRoutes.includes(pathName)) {
         router.push(pathName);
