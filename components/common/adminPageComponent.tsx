@@ -1,13 +1,13 @@
 import { ActivePageKey } from "@/constants";
 import { useCurrentUser } from "@/hooks/user/useCurrentUser";
 import router from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Tabs } from "rsuite";
 import CheckAuth from "./checkAuthComponent";
 import NavBar from "./navBarComponent";
 import { Col, Container, Row } from "react-bootstrap";
 import { useLogActivityData } from "@/hooks/common/useLogActivityData";
-import { UserActivityType } from "@/types/user";
+import { User, UserActivityType } from "@/types/user";
 import { CirclesWithBar } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
@@ -16,7 +16,8 @@ import { setReloadEvents } from "@/lib/reportSelectionSlice";
 
 
 export default function AdminPage(props: any) {
-  const { user } = useCurrentUser();
+  const { getUser } = useCurrentUser();
+  const [notAdmin, setNotAdmin] = useState(true);
   const dispatch = useDispatch();
   const { logActivityData } = useLogActivityData();
   const activeKey = props.activeKey as ActivePageKey;
@@ -27,8 +28,10 @@ export default function AdminPage(props: any) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (user && user.isAuthenticated) {
-        if (!user.isAdmin) {
+      const currentUser = getUser();      
+      if (currentUser && currentUser.isAuthenticated) {
+        setNotAdmin(!currentUser.isAdmin);
+        if (!currentUser.isAdmin) {
           router.push('/logout/');
         } else {
           document.title = title;
@@ -41,7 +44,7 @@ export default function AdminPage(props: any) {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [user, title, logActivityData, userActivity, isLoading]);
+  }, [title, logActivityData, userActivity, isLoading, getUser]);
 
   const onSelectTab = (eventKey: string | undefined) => {
     const key: ActivePageKey = eventKey ? parseInt(eventKey) : activeKey;
@@ -71,8 +74,6 @@ export default function AdminPage(props: any) {
         break;
     }
   };
-
-  const notAdmin = !user || !user.isAuthenticated || !user.isAdmin;
 
   return (
     <>

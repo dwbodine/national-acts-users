@@ -1,18 +1,21 @@
-import { ChangeEvent, useEffect, useCallback } from 'react';
+import { ChangeEvent, useEffect, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from '../../../src/lib/store';
 import { setSeller } from '@/lib/reportSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { User } from '@/types/user';
 
 export default function SelectSeller() {
     const dispatch = useDispatch(); 
-    const { user } = useCurrentUser();
+    const { getUser } = useCurrentUser();
+    const [user, setUser] = useState<User | undefined>(undefined);
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
     const selectedSellerId = currentReportSelection.seller.sellerId;
 
     const getSelectedSeller = useCallback((sellerId: number) => {
-        const seller = user.sellers?.find(x => x.sellerId == sellerId);
+        const currentUser = getUser();
+        const seller = currentUser?.sellers?.find(x => x.sellerId == sellerId);
         if (seller) {
             document.title = `Client Portal - ${seller.sellerName}`;
         } else {
@@ -24,17 +27,23 @@ export default function SelectSeller() {
             sellerName: '',
             sellerType: 1
         };
-    }, [user]);    
+    }, [getUser]);    
 
 
     useEffect(() => {
+        
+        if (!user) {
+            const currentUser = getUser();
+            setUser(currentUser);
+        }
+        
         if (selectedSellerId <= 0 && user && user.selectedSellerId && user.selectedSellerId > 0) {
             const seller = getSelectedSeller(user.selectedSellerId);
             dispatch(
                 setSeller(seller)
             )
         }
-    }, [selectedSellerId, dispatch, user, getSelectedSeller]);
+    }, [selectedSellerId, dispatch, user, getSelectedSeller, getUser]);
 
 
     const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {

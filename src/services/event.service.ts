@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
-import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse, GetOrdersResponse, GetDashboardOrdersResponse } from "../types/event";
-import { AdminDashboardSelection, IDailyOrderData, IDashboardTotals, UserReportSelection } from "@/types/user";
+import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse, GetOrdersResponse, GetDashboardOrdersResponse, GetSellersResponse, Seller } from "../types/event";
+import { AdminDashboardSelection, IDailyOrderData, IDashboardTotals, UserReportSelection, UserSeller } from "@/types/user";
 import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
 import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
 import moment from "moment";

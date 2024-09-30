@@ -22,7 +22,7 @@ export default function NavBar(props: any) {
         <>
             <Row className="no-print nav-bar">
                 <Col className="logo-col">
-                    <Image className="nav-bar-icon-image" src="/images/logo-icon.jpg" height={50} width={50} alt="National Acts" />
+                    <Image className="nav-bar-icon-image" src="/images/logo-icon.jpg" height={50} width={50} alt="National Acts"></Image>
                 </Col>
                 <Col className="nav-header control-container no-print">
                     <LogoutButton />

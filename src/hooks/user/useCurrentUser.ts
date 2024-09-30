@@ -1,34 +1,20 @@
-import { useEffect, useState } from "react";
 import { User } from "@/types/user";
 
-export const useCurrentUser = () => {
-  const [user, setUser] = useState<User>({
-    userId: 0,
-    isAdmin: false,
-    username: '',
-    isActive: false,
-    selectedSellerId: 0,
-    selectedHideRevenue: false,
-    selectedHideServiceFees: false
-  });
+export const useCurrentUser = () => { 
 
-  useEffect(() => {
-    const currentUserStr = localStorage.getItem('currentUser') || undefined;
+  const getUser = () => {
+    let user: User | undefined = undefined;
+    let currentUserStr: string | undefined = undefined;
+    try {
+      currentUserStr = localStorage.getItem('currentUser') || undefined;
+    } catch(e) {
+      currentUserStr = undefined;
+    }   
     if (currentUserStr) {
-      const currentUser = JSON.parse(currentUserStr) as User;
-      setUser(currentUser);
-    } else {
-      setUser({
-        userId: 0,
-        isAdmin: false,
-        username: '',
-        isActive: false,
-        selectedSellerId: 0,
-        selectedHideRevenue: false,
-        selectedHideServiceFees: false
-      });
+      user = JSON.parse(currentUserStr) as User;
     }
-  }, [setUser]);
+    return user;
+  }
 
-  return { user };
+  return { getUser };
 };

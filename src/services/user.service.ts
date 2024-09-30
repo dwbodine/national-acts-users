@@ -1,4 +1,4 @@
-import { GetActivityResponse, GetPermissionsResponse, GetRolesResponse, GetUsersResponse, LogActivityResponse, Permission, Role, UpdateRoleResponse, UpdateUserResponse, User, UserActivity, UserActivityType } from "@/types/user";
+import { GetActivityResponse, GetPermissionsResponse, GetRolesResponse, GetUsersResponse, LogActivityResponse, Permission, Role, UpdateRoleResponse, UpdateUserResponse, User, UserActivity, UserActivityType, UserSeller, UserSellerResponse } from "@/types/user";
 import { getAuthorizationHeader } from "@/utils/getAuthorizationHeader";
 import axios, { AxiosInstance } from "axios";
 
@@ -119,7 +119,42 @@ export class UserService {
           permResponse.permissionError = errorMessage;
           return permResponse;
       });
-    }
+    };
+
+    getUserSellerFromEventId = async(eventId: number, userId: number): Promise<UserSellerResponse> => {
+      let url = `/user/getUserSellerFromEventId/${userId}/${eventId}`;
+  
+      let sellerResponse: UserSellerResponse = {
+        userSeller: undefined,
+        userSellerError: undefined,
+        statusCode: 200
+      };
+  
+      const headers = getAuthorizationHeader();
+  
+      return this.instance
+        .get(url, {
+          headers: headers
+        })
+        .then((res) => {
+          sellerResponse.userSeller = res.data ? res.data as UserSeller : undefined;
+          return sellerResponse;
+        })
+        .catch((err) => {
+          console.log(err);
+          var errorMessage = "";
+          if (err?.response?.status) {
+            sellerResponse.statusCode = parseInt(err.response.status);
+          }
+          if (err?.response?.data?.msg) {
+            errorMessage = err.response.data.msg;
+          } else {
+            errorMessage = "Unknown error while fetching user seller - please contact your administrator";
+          }
+          sellerResponse.userSellerError = errorMessage;
+          return sellerResponse;
+        });
+    };
     
     updateRole = async (roleToUpdate: Role): Promise<UpdateRoleResponse> => {
       let url = `/admin/updateRole`;

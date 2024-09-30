@@ -5,7 +5,7 @@ import { setEvents, setDateRange, setReloadEvents } from '@/lib/reportSelectionS
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from "@/types/event";
 import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
-import { EnumPermission, UserReportSelection } from "@/types/user";
+import { EnumPermission, User, UserReportSelection } from "@/types/user";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';
@@ -28,7 +28,8 @@ import { Container } from "react-bootstrap";
 export default function CurrentEvents() {
     const globalSelection = useSelector((state: RootState) => state.globalSelection);
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
-    const { user } = useCurrentUser();
+    const { getUser } = useCurrentUser();
+    const [user, setUser] = useState<User | undefined>(undefined);
     const { userHasPermission } = useHasPermission();
     const { getEvents } = useGetEvents();
     const dispatch = useDispatch(); 
@@ -40,14 +41,13 @@ export default function CurrentEvents() {
     const windowSizeJson = JSON.stringify(windowSize);
     const hideTicketChart = windowSize.width < FULL_PAGE_CHART_BREAKPOINT;
     const [searchTerm, setSearchTerm] = useState('');
-
-    const viewRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);
-    const viewRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
-    const viewServiceFees = userHasPermission(user, EnumPermission.ViewServiceFees);
-    const changeEventStatus = userHasPermission(user, EnumPermission.ChangeEventStatus);
-    const canCheckInTickets = !user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers);
-    const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);    
-
+    const [viewRevenueControls, setViewRevenueControls] = useState(false);
+    const [viewRevenueData, setViewRevenueData] = useState(false);
+    const [viewServiceFees, setViewServiceFees] = useState(false);
+    const [changeEventStatus, setChangeEventStatus] = useState(false);
+    const [canCheckInTickets, setCanCheckInTickets] = useState(false);
+    const [alwaysShowRevenue, setAlwaysShowRevenue] = useState(false);
+    
     let ticketData: ITicketData | undefined = undefined;
     let shirtData: IShirtData | undefined = undefined;
     let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents; 
@@ -85,6 +85,19 @@ export default function CurrentEvents() {
     }
 
     useEffect(() => {
+        if (user == undefined) {
+            const currentUser = getUser();
+            if (currentUser != undefined) {
+                setUser(currentUser);
+                setViewRevenueControls(userHasPermission(currentUser, EnumPermission.ViewRevenueControls));
+                setViewRevenueData(userHasPermission(currentUser, EnumPermission.ViewRevenueData));
+                setViewServiceFees(userHasPermission(currentUser, EnumPermission.ViewServiceFees));
+                setChangeEventStatus(userHasPermission(currentUser, EnumPermission.ChangeEventStatus));
+                setCanCheckInTickets(!currentUser.disableCheckIn && userHasPermission(currentUser, EnumPermission.CheckInUsers));
+                setAlwaysShowRevenue(viewRevenueData && !viewRevenueControls);
+            }            
+        }
+        
         if (currentReportSelection.seller.sellerId > 0) {
             if (alwaysShowRevenue) {
                 setHideRevItem(false);
@@ -157,7 +170,10 @@ export default function CurrentEvents() {
         user, 
         debouncedResults, 
         windowSizeJson, 
-        globalSelection.isLoading
+        globalSelection.isLoading,
+        getUser,
+        userHasPermission,
+        viewRevenueControls
     ]);    
     
     const filterEvents = (events: VipEvent[]) => {
@@ -231,7 +247,7 @@ export default function CurrentEvents() {
 
     return (
         <>
-        <Container fluid hidden={!globalSelection.isLoading || user.isAdmin}>
+        <Container fluid hidden={!globalSelection.isLoading || !user || user.isAdmin}>
             <Row>
                 <Col className="spinner-container">
                     <CirclesWithBar height="100" width="100" color="#d12610" />

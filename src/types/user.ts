@@ -24,6 +24,12 @@ export type Permission = {
   permissionName: string;
 }
 
+export type UserSellerResponse = {
+  userSeller?: UserSeller;
+  userSellerError?: string;
+  statusCode?: number;
+}
+
 export enum EnumPermission {
   ViewInactiveEvents = 1,
   ViewDeletedEvents = 2,

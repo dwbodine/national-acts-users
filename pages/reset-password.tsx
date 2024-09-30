@@ -5,12 +5,13 @@ import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from "react-bootstrap";
 import { useCurrentUser } from "@/hooks/user/useCurrentUser";
 import CheckAuth from "../components/common/checkAuthComponent";
+import { User } from "@/types/user";
 
 
 export default function ResetPassword() {
   const { resetPasswordSecure } = useResetPasswordSecure();
   const router = useRouter();
-  const { user } = useCurrentUser();
+  const { getUser } = useCurrentUser();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -22,6 +23,10 @@ export default function ResetPassword() {
   
 
   const handleSubmit = (event: any) => {
+    const user = getUser();
+    if (!user) {
+        return;
+    }
     const username = user.username;
     setPasswordError('');
     setPasswordSuccess('');

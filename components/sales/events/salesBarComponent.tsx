@@ -18,7 +18,7 @@ import RevenueCheck from "./revenueCheckComponent";
 import { resetSelection, setDateRange, setReloadEvents } from "@/lib/reportSelectionSlice";
 import { EnumPermission } from "@/types/user";
 import ServiceFeesCheck from "./serviceFeesCheckComponent";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useHasPermission } from "@/hooks/user/useHasPermission";
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 import HiddenCheck from "./hiddenCheckComponent";
@@ -27,7 +27,7 @@ import { GetEventsResponse } from "@/types/event";
 
 export default function SalesBar() {    
     const dispatch = useDispatch(); 
-    const { user } = useCurrentUser();
+    const { getUser } = useCurrentUser();
     const windowSize = useWindowSize();
     const windowSizeJson = JSON.stringify(windowSize);
     const { userHasPermission } = useHasPermission();
@@ -37,16 +37,16 @@ export default function SalesBar() {
     const dateRangeTitle = "Event date range";
     const { getAllEvents } = useGetAllEvents();
 
-    const viewInactiveEvents = userHasPermission(user, EnumPermission.ViewInactiveEvents);
-    const viewDeletedEvents = userHasPermission(user, EnumPermission.ViewDeletedEvents);
-    const viewServiceFees = userHasPermission(user, EnumPermission.ViewServiceFees);
-    const viewRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);
-    const canExportData = userHasPermission(user, EnumPermission.ExportData);
-    const canExportCustomerData = userHasPermission(user, EnumPermission.ExportCustomerData);
-    const viewPrintButton = userHasPermission(user, EnumPermission.ViewPrintButton);
-    const viewRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
-    const viewHiddenEvents = userHasPermission(user, EnumPermission.ViewHiddenEvents);
-
+    const [viewInactiveEvents, setViewInactiveEvents] = useState(false);
+    const [viewDeletedEvents, setViewDeletedEvents] = useState(false);
+    const [viewServiceFees, setViewServiceFees] = useState(false);
+    const [viewRevenueControls, setViewRevenueControls] = useState(false);
+    const [canExportData, setCanExportData] = useState(false);
+    const [canExportCustomerData, setCanExportCustomerData] = useState(false);
+    const [viewPrintButton, setViewPrintButton] = useState(false);
+    const [viewRevenueData, setViewRevenueData] = useState(false);
+    const [viewHiddenEvents, setViewHiddenEvents] = useState(false);
+    
     const exportEventData = () => {
         if (currentReportSelection && currentReportSelection.start && currentReportSelection.end && currentReportSelection.seller && currentReportSelection.seller.sellerId > 0) {
             getAllEvents(0, 0, currentReportSelection.seller.sellerId)
@@ -111,8 +111,19 @@ export default function SalesBar() {
     }
     
     useEffect(() => {
-        // blank
-    }, [windowSizeJson])
+        const user = getUser();
+        if (user) {
+            setViewInactiveEvents(userHasPermission(user, EnumPermission.ViewInactiveEvents));
+            setViewDeletedEvents(userHasPermission(user, EnumPermission.ViewDeletedEvents));
+            setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
+            setViewRevenueControls(userHasPermission(user, EnumPermission.ViewRevenueControls));
+            setCanExportData(userHasPermission(user, EnumPermission.ExportData));
+            setCanExportCustomerData(userHasPermission(user, EnumPermission.ExportCustomerData));
+            setViewPrintButton(userHasPermission(user, EnumPermission.ViewPrintButton));
+            setViewRevenueData(userHasPermission(user, EnumPermission.ViewRevenueData));
+            setViewHiddenEvents(userHasPermission(user, EnumPermission.ViewHiddenEvents));
+        }
+    }, [windowSizeJson, getUser, userHasPermission])
     return (
         <>
             <Row className="page-header">

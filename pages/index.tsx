@@ -4,16 +4,22 @@ import Container from 'react-bootstrap/Container';
 import CheckAuth from "../components/common/checkAuthComponent";
 import { useCurrentUser } from "@/hooks/user/useCurrentUser";
 import NavBar from "../components/common/navBarComponent";
-import { useEffect } from "react";
-import { UserActivityType } from "@/types/user";
+import { useEffect, useState } from "react";
+import { User, UserActivityType } from "@/types/user";
 import { useLogActivityData } from "@/hooks/common/useLogActivityData";
 import router from "next/router";
+import { getuid } from "process";
 
 export default function Home() {
-  const { user } = useCurrentUser();
+  const { getUser } = useCurrentUser();
+  const [user, setUser] = useState<User | undefined>(undefined);
   const { logActivityData } = useLogActivityData();
 
   useEffect(() => {
+    if (!user) {
+      const currentUser = getUser();
+      setUser(currentUser);
+    }
     if (user && user.isAuthenticated) {
       if (user.isAdmin) {
         router.push('/sellers/');
@@ -22,7 +28,7 @@ export default function Home() {
         logActivityData(UserActivityType.AccessSalesOverView);
       }      
     }    
-  }, [user, logActivityData]);
+  }, [user, logActivityData, getUser]);
 
   const notLoggedIn = (!user || !user.isAuthenticated);
   const adminUser = user && user.isAuthenticated && user.isAdmin;

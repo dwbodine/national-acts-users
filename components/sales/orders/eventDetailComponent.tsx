@@ -5,8 +5,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Button, FormCheck } from "react-bootstrap";
-import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
-import { getShirtDataFromEvents } from "@/utils/getShirtData";
 import OrderRow from "./orderRowComponent";
 import { useGetLocation } from "@/hooks/common/useGetLocation";
 import { useGetExport } from "@/hooks/common/useGetExport";
@@ -19,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setEvents, setHideRevenue, setReloadEvents, setShowDeletedOrders, setShowInactiveOrders, setHideServiceFees, setFocusControl, setEventSeller, setShowHiddenOrders, setCurrentDetailEvent } from "@/lib/reportSelectionSlice";
 import getFileNameFromEvent from "@/utils/getFileNameFromEvent";
-import { EnumPermission, UserReportSelection } from "@/types/user";
+import { EnumPermission, User, UserReportSelection, UserSeller } from "@/types/user";
 import { useWindowSize } from "@/hooks/common/useWindowSize";
 import OrderMobileRow from "./orderMobileRowComponent";
 import { useHasPermission } from "@/hooks/user/useHasPermission";
@@ -27,9 +25,12 @@ import debouce from "lodash.debounce";
 import setFocusToControl from "@/utils/setFocusToControl";
 import { getTicketDataFromOrders } from "@/utils/getTicketDataFromOrders";
 import { getShirtDataFromOrders } from "@/utils/getShirtDataFromOrders";
+import { useGetUserSeller } from "@/hooks/order/useGetUserSeller";
+import router from "next/router";
 
 export default function EventDetail(props: any) {
-    const { user } = useCurrentUser();
+    const { getUser } = useCurrentUser();
+    const [user, setUser] = useState<User | undefined>(undefined);
     const { userHasPermission } = useHasPermission();
     const { getLocation } = useGetLocation();
     const { exportEventCustomerDataToCsv } = useGetExport();
@@ -37,6 +38,7 @@ export default function EventDetail(props: any) {
     const [checkChanged, setCheckChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { getEventDetails } = useGetEventDetails();
+    const { getUserSellerFromEventId } = useGetUserSeller();
     const dispatch = useDispatch(); 
     const [hideRevItem, setHideRevItem] = useState(true);
     const [hideServiceFeeDisplay, setHideServiceFeeDisplay] = useState(true);
@@ -46,17 +48,17 @@ export default function EventDetail(props: any) {
     const windowSize = useWindowSize();
     const windowSizeJson = JSON.stringify(windowSize);
 
-    const viewInactiveEvents = userHasPermission(user, EnumPermission.ViewInactiveEvents);
-    const viewDeletedEvents = userHasPermission(user, EnumPermission.ViewDeletedEvents);
-    const viewHiddenEvents = userHasPermission(user, EnumPermission.ViewHiddenEvents);
-    const viewServiceFees = userHasPermission(user, EnumPermission.ViewServiceFees);
-    const viewRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
-    const viewRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);    
-    const canExportCustomerData = userHasPermission(user, EnumPermission.ExportCustomerData);
-    const viewPrintButton = userHasPermission(user, EnumPermission.ViewPrintButton);
-    const changeOrderStatus = userHasPermission(user, EnumPermission.ChangeOrderStatus);
-    const canCheckInTickets = !user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers);
-    const alwaysShowRevenue = (viewRevenueData && !viewRevenueControls);
+    const [viewInactiveEvents, setViewInactiveEvents] = useState(false);
+    const [viewDeletedEvents, setViewDeletedEvents] = useState(false);
+    const [viewHiddenEvents, setViewHiddenEvents] = useState(false);
+    const [viewServiceFees, setViewServiceFees] = useState(false);
+    const [viewRevenueData, setViewRevenueData] = useState(false);
+    const [viewRevenueControls, setViewRevenueControls] = useState(false);
+    const [canExportCustomerData, setCanExportCustomerData] = useState(false);
+    const [viewPrintButton, setViewPrintButton] = useState(false);
+    const [changeOrderStatus, setChangeOrderStatus] = useState(false);
+    const [canCheckInTickets, setCanCheckInTickets] = useState(false);
+    const [alwaysShowRevenue, setAlwaysShowRevenue] = useState(false);
 
     const debouncedResults = useMemo(() => {
         return debouce(setSearchTerm, 300);
@@ -70,7 +72,6 @@ export default function EventDetail(props: any) {
     let hasShirtData: boolean = false;
     const hasNonUsaOrders: boolean = currentReportSelection.currentDetailEvent?.hasNonUSAOrders ?? false;
     const currencySymbol: string | undefined = currentReportSelection.currentDetailEvent?.nonUsaCurrencySymbol;
-    const currencyAbbrev: string | undefined = currentReportSelection.currentDetailEvent?.nonUsaCurrencyAbbrev;
     const ticketBreakdownRows: any[] = [];
     const shirtSizeBreakdownRows: any[] = [];
     let orderRows: any[] = [];
@@ -79,8 +80,62 @@ export default function EventDetail(props: any) {
     let visibleOrders: Order[] = [];
 
     useEffect(() => {     
-        const fetchEvent = async() => {    
-            if (id && currentReportSelection && currentReportSelection.seller && currentReportSelection.seller.sellerId > 0) {
+        const fetchEvent = async() => {  
+            if (!user) {
+                const currentUser = getUser();
+                setUser(currentUser);
+            }
+            
+            if (!id || !user || user.userId <= 0 || !user.sellers || !currentReportSelection)  {
+                return;
+            }
+
+            setViewInactiveEvents(userHasPermission(user, EnumPermission.ViewInactiveEvents));
+            setViewDeletedEvents(userHasPermission(user, EnumPermission.ViewDeletedEvents));
+            setViewHiddenEvents(userHasPermission(user, EnumPermission.ViewHiddenEvents));
+            setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
+            setViewRevenueData(userHasPermission(user, EnumPermission.ViewRevenueData));
+            setViewRevenueControls(userHasPermission(user, EnumPermission.ViewRevenueControls));    
+            setCanExportCustomerData(userHasPermission(user, EnumPermission.ExportCustomerData));
+            setViewPrintButton(userHasPermission(user, EnumPermission.ViewPrintButton));
+            setChangeOrderStatus(userHasPermission(user, EnumPermission.ChangeOrderStatus));
+            setCanCheckInTickets(!user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers));
+            setAlwaysShowRevenue(viewRevenueData && !viewRevenueControls);
+
+            if (!currentReportSelection.seller || currentReportSelection.seller.sellerId <= 0) {
+                let reportSelection = {...currentReportSelection};
+                if (user?.selectedSellerId ?? 0 > 0) {
+                    // use cached user to transfer detail to redux in new window                    
+                    const seller = user.sellers.find(x => x.sellerId == user.selectedSellerId);
+                    if (seller) {
+                        reportSelection.seller = seller;
+                        reportSelection.hideRevenue = user.selectedHideRevenue;
+                        reportSelection.hideServiceFees = user.selectedHideServiceFees;
+                        dispatch(
+                            setEventSeller(reportSelection)
+                        );
+                    } else {
+                        // not found, log out
+                        router.push('/logout');
+                        return;
+                    }
+                } else {
+                    // user is logged in without selected seller, check for permission to load
+                    const sellerResult = await getUserSellerFromEventId(id, user.userId);
+                    if (sellerResult && sellerResult.userSeller) {
+                        reportSelection.seller = sellerResult.userSeller;
+                        reportSelection.hideRevenue = user.selectedHideRevenue;
+                        reportSelection.hideServiceFees = user.selectedHideServiceFees;
+                        dispatch(
+                            setEventSeller(reportSelection)
+                        );
+                    } else {
+                        // not found or no permission, log out
+                        router.push('/logout');
+                        return;
+                    }
+                }                
+            } else if (currentReportSelection?.seller?.sellerId > 0) {
                 if (alwaysShowRevenue) {
                     setHideRevItem(false);
                 } else if (!viewRevenueData) {
@@ -133,18 +188,6 @@ export default function EventDetail(props: any) {
                         );
                     }
                 }                          
-            } else if ((currentReportSelection && (!currentReportSelection.seller || currentReportSelection.seller.sellerId <= 0)) && (user && user.userId > 0 && user.sellers && (user.selectedSellerId ?? 0) > 0)) {
-                // use cached user to transfer detail to redux in new window
-                let reportSelection = {...currentReportSelection};
-                const seller = user.sellers.find(x => x.sellerId == user.selectedSellerId);
-                if (seller) {
-                    reportSelection.seller = seller;
-                    reportSelection.hideRevenue = user.selectedHideRevenue;
-                    reportSelection.hideServiceFees = user.selectedHideServiceFees;
-                    dispatch(
-                        setEventSeller(reportSelection)
-                    );
-                }
             }
         };
         fetchEvent();
@@ -164,7 +207,10 @@ export default function EventDetail(props: any) {
         viewServiceFees, 
         debouncedResults, 
         windowSizeJson,
-        user
+        user,
+        getUserSellerFromEventId,
+        userHasPermission,
+        viewRevenueControls
     ]);
 
     const exportOrdersToCsv = () => {
