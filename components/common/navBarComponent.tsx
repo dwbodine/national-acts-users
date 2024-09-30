@@ -6,7 +6,6 @@ import LogoutButton from "./logoutButtonComponent";
 import Image from 'next/image';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 import { useEffect } from 'react';
-import DebugBar from './debugBarComponent';
 
 export default function NavBar(props: any) {    
     const windowSize = useWindowSize();
@@ -21,7 +20,6 @@ export default function NavBar(props: any) {
     return (
         !navBarHidden ? 
         <>
-            <DebugBar />
             <Row className="no-print nav-bar">
                 <Col className="logo-col">
                     <Image className="nav-bar-icon-image" src="/images/logo-icon.jpg" height={50} width={50} alt="National Acts" />

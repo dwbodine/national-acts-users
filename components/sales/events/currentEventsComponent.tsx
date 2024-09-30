@@ -23,6 +23,7 @@ import { useHasPermission } from "@/hooks/user/useHasPermission";
 import debouce from "lodash.debounce";
 import { FULL_PAGE_CHART_BREAKPOINT } from "@/constants";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
+import { Container } from "react-bootstrap";
 
 export default function CurrentEvents() {
     const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -100,9 +101,6 @@ export default function CurrentEvents() {
             }            
 
             if (currentReportSelection.reloadEvents) {
-                dispatch(
-                    setIsLoading(true)
-                );
                 setChartsHidden(true);
                 dispatch(
                     setReloadEvents(false)
@@ -126,27 +124,26 @@ export default function CurrentEvents() {
                         dispatch(
                             setEvents(response.events)
                         );
+                        dispatch(
+                            setIsLoading(false)
+                        );
                     } else if (response.statusCode == 401 || response.statusCode == 422) {
                         router.push('/logout/');
                     } else {
                         dispatch(
                             setEvents([])
                         );
+                        dispatch(
+                            setIsLoading(false)
+                        );
                     }
-                    dispatch(
-                        setIsLoading(false)
-                    );
                 });
-            } else if (globalSelection.isLoading) {
-                dispatch(
-                    setIsLoading(false)
-                );
             }
-        } else if (globalSelection.isLoading) {
+        } else {
             dispatch(
                 setIsLoading(false)
             );
-        }       
+        }    
         return () => {
             debouncedResults.cancel();
         }
@@ -234,6 +231,14 @@ export default function CurrentEvents() {
 
     return (
         <>
+        <Container fluid hidden={!globalSelection.isLoading || user.isAdmin}>
+            <Row>
+                <Col className="spinner-container">
+                    <CirclesWithBar height="100" width="100" color="#d12610" />
+                </Col>
+            </Row>
+        </Container>
+        <div hidden={globalSelection.isLoading}>
             <input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -282,6 +287,7 @@ export default function CurrentEvents() {
                     : ''}
                 </Col>
             </Row>
+        </div>
         </>
     );        
  

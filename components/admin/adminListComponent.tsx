@@ -10,10 +10,13 @@ export default function AdminList() {
         const id = e.currentTarget.id;
         switch (id) {
             case "manage-roles":
-                router.push('/admin/roles/')
+                router.push('/admin/roles/');
                 break;
             case "manage-users":
-                router.push('/admin/users/')
+                router.push('/admin/users/');
+                break;
+            case "manage-refresh-data":
+                router.push('/admin/refresh-data/');
                 break;
             default:
                 break;
@@ -31,6 +34,7 @@ export default function AdminList() {
             <ul>
                 <li><a id="manage-roles" className="admin-link" onClick={goToAdminPage}>Manage Roles</a></li>
                 <li><a id="manage-users" className="admin-link" onClick={goToAdminPage}>Manage Users</a></li>
+                <li><a id="manage-refresh-data" className="admin-link" onClick={goToAdminPage}>Refresh Data From TicketSocket</a></li>
             </ul>
         </div>
     );

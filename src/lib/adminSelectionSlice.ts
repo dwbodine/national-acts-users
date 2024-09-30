@@ -1,8 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { AdminSelection, Role, User } from "../types/user";
+import moment from "moment";
 
 const initialState: AdminSelection = {
+    sellerId: undefined,
+    start: undefined,
+    end: undefined,
     reloadUsers: true,
     selectedUser: undefined,
     reloadRoles: true,
@@ -13,6 +17,15 @@ export const adminSelectionSlice = createSlice({
     name: 'adminSelection',
     initialState,
     reducers: {
+        setAdminDates: (state, action: PayloadAction<AdminSelection>) =>{
+            state.start = action.payload.start;
+            state.end = action.payload.end;
+            return state;
+        },
+        setAdminSellerId: (state, action: PayloadAction<number | undefined>) => {
+            state.sellerId = action.payload;
+            return state;
+        },
         setReloadUsers: (state, action: PayloadAction<boolean>) =>{
             state.reloadUsers = action.payload;
             if (state.reloadUsers) {
@@ -48,6 +61,9 @@ export const adminSelectionSlice = createSlice({
             return state;
         },
         resetAdmin: (state) => {
+            state.sellerId = undefined;
+            state.start = undefined;
+            state.end = undefined;
             state.reloadUsers = true;
             state.selectedUser = undefined;
             state.reloadRoles = true;
@@ -59,7 +75,9 @@ export const adminSelectionSlice = createSlice({
     }
 })
 
-export const { setReloadUsers,
+export const { setAdminDates,
+               setAdminSellerId, 
+               setReloadUsers,
                setSelectedUser,
                setUsers,
                setReloadRoles,

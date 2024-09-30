@@ -25,7 +25,6 @@ import OrderMobileRow from "./orderMobileRowComponent";
 import { useHasPermission } from "@/hooks/user/useHasPermission";
 import debouce from "lodash.debounce";
 import setFocusToControl from "@/utils/setFocusToControl";
-import DebugBar from "../../common/debugBarComponent";
 import { getTicketDataFromOrders } from "@/utils/getTicketDataFromOrders";
 import { getShirtDataFromOrders } from "@/utils/getShirtDataFromOrders";
 
@@ -311,7 +310,6 @@ export default function EventDetail(props: any) {
         <>
             {(currentReportSelection.currentDetailEvent != undefined) ? 
             <Container fluid className="vipContainer">  
-                <DebugBar />
                 <Row>                    
                     <Col>
                         <Row>

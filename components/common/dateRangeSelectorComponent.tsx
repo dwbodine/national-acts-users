@@ -3,9 +3,11 @@ import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
 import moment from 'moment';
 import { FaCalendar } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 
 export default function DateRangeSelector(props: any) {
-    
+    const dispatch = useDispatch();
     const title = props.dateRangeTitle;
     const onDateChange = props.onDateChange;
     const selectedStart = props.selectedStart;
@@ -30,6 +32,9 @@ export default function DateRangeSelector(props: any) {
     const handleChange = (value: DateRange | null, event: SyntheticEvent<Element, Event>) => {
         const selectedStart = value ? moment(value[0]).unix() : 0;
         const selectedEnd = value ? moment(value[1]).unix() : 0;
+        dispatch(
+            setIsLoading(true)
+        );
         if (onDateChange) {
             onDateChange(selectedStart, selectedEnd);
         }

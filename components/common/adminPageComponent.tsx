@@ -12,6 +12,7 @@ import { CirclesWithBar } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
+import { setReloadEvents } from "@/lib/reportSelectionSlice";
 
 
 export default function AdminPage(props: any) {
@@ -55,6 +56,9 @@ export default function AdminPage(props: any) {
         router.push('/admin/');
         break;
       case ActivePageKey.SalesOverview:
+        dispatch (
+          setReloadEvents(true)
+        );
         router.push('/sellers/');
         break;
       case ActivePageKey.Reports:

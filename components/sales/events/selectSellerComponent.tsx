@@ -41,11 +41,11 @@ export default function SelectSeller() {
         const sellerId = parseInt(event.currentTarget.value);
         const seller = getSelectedSeller(sellerId);
         dispatch(
-            setSeller(seller)
-        )   
-        dispatch(
             setIsLoading(true)
-        );     
+        );
+        dispatch(
+            setSeller(seller)
+        );   
     };
 
     if (user && user.sellers && user.sellers.length > 0) {

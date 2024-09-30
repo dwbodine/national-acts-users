@@ -232,6 +232,9 @@ export type UserActivity = {
 }
 
 export type AdminSelection = {
+  sellerId?: number,
+  start?: number,
+  end?: number,
   reloadUsers: boolean,
   reloadRoles: boolean,
   selectedUser: User | undefined,
