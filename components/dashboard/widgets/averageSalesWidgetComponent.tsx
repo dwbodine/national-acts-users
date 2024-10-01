@@ -8,7 +8,7 @@ export default function AverageSalesWidget(props: any) {
     return (
         (monthlyAverages && yearlyAverages) ? 
         <div className="sales-stat-block-table">
-            <div className="sales-stat-block-title">Average Sales Data</div>
+            <div className="sales-stat-block-title">Average Daily Sales</div>
             <table className="average-sales-data-table">
                 <thead>
                     <th>&nbsp;</th>
