@@ -210,7 +210,8 @@ export default function EventDetail(props: any) {
         user,
         getUserSellerFromEventId,
         userHasPermission,
-        viewRevenueControls
+        viewRevenueControls, 
+        getUser
     ]);
 
     const exportOrdersToCsv = () => {

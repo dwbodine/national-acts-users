@@ -16,29 +16,32 @@ export default function SalesPerDayOfWeekWidget(props: any) {
     const firstDayOfYear = moment([currentYear, 1, 1]).day();
     
     let salesRows: any[] = [];
-    if (salesPerDayMonth?.length == 7 && salesPerDayYear?.length == 7) {
-        for (let i=1; i <= 7; i++) {
-            const dayNumber = i % 7;
-            const dayName = moment().day(dayNumber).format('ddd');            
-            
-            let numberOfDaysInYear = today.week();
-            if (dayNumber >= firstDayOfYear && dayNumber <= currentDay) {
-                numberOfDaysInYear += 1;
-            }
-            
-            let numberOfDaysInMonth = (today.week() - firstWeekOfMonth);
-            if (dayNumber >= firstDayOfMonth && dayNumber <= currentDay) {
-                numberOfDaysInMonth += 1;
-            }
-
-            let monthVal = salesPerDayMonth.find(x => x.key == dayNumber)?.value ?? 0;
-            let yearVal = salesPerDayYear.find(x => x.key == dayNumber)?.value ?? 0;
-            monthVal = monthVal / numberOfDaysInMonth;
-            yearVal = yearVal / numberOfDaysInYear;
-
-            const key = `salePerDay${i}`;
-            salesRows.push(<Row key={key}><Col>{dayName} ${monthVal.toFixed(2)}</Col><Col>{dayName} ${yearVal.toFixed(2)}</Col></Row>);
+    
+    for (let i=1; i <= 7; i++) {
+        const dayNumber = i % 7;
+        const dayName = moment().day(dayNumber).format('ddd');            
+        
+        let numberOfDaysInYear = today.week();
+        if (dayNumber >= firstDayOfYear && dayNumber <= currentDay) {
+            numberOfDaysInYear += 1;
         }
+        
+        let numberOfDaysInMonth = (today.week() - firstWeekOfMonth);
+        if (dayNumber >= firstDayOfMonth && dayNumber <= currentDay) {
+            numberOfDaysInMonth += 1;
+        }
+
+        let monthVal = salesPerDayMonth?.find(x => x.key == dayNumber)?.value ?? 0;
+        if (monthVal > 0 && numberOfDaysInMonth > 0) {
+            monthVal = monthVal / numberOfDaysInMonth;
+        }
+        let yearVal = salesPerDayYear?.find(x => x.key == dayNumber)?.value ?? 0;
+        if (yearVal > 0 && numberOfDaysInYear) {
+            yearVal = yearVal / numberOfDaysInYear;
+        }        
+
+        const key = `salePerDay${i}`;
+        salesRows.push(<Row key={key}><Col>{dayName} ${monthVal.toFixed(2)}</Col><Col>{dayName} ${yearVal.toFixed(2)}</Col></Row>);
     }
 
     return (       

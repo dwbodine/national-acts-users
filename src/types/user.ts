@@ -140,6 +140,15 @@ export interface IDashboardTotals {
   dailyOrderData?: IDailyOrderData[];
 }
 
+export interface IAverageDailyData {
+  ticketRevenue?: number;
+  serviceFees?: number;
+  totalRevenue?: number;
+  transactions?: number;
+  tickets?: number;
+  refunds?: number;
+}
+
 export interface ISalesData {
   key: number;
   value: number;
@@ -177,6 +186,8 @@ export interface IDashboardData {
   salesPerDayMonth?: ISalesData[];
   salesPerDayYear?: ISalesData[];
   totalsByAccount?: ITotalsByAccount[];
+  monthlyAverages?: IAverageDailyData;
+  yearlyAverages?: IAverageDailyData;
 }
 
 export type AdminDashboardSelection = {

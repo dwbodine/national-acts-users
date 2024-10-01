@@ -1,5 +1,5 @@
 import { ITicketEventSalesData, ITicketSalesData, ITicketSellerSalesData, Order } from "@/types/event";
-import { AdminDashboardSelection, IDailyOrderData, IDashboardData, IDashboardTotals, ISalesData, ITopSeller, ITopSellingLocation, ITotalsByAccount } from "@/types/user";
+import { AdminDashboardSelection, IAverageDailyData, IDailyOrderData, IDashboardData, IDashboardTotals, ISalesData, ITopSeller, ITopSellingLocation, ITotalsByAccount } from "@/types/user";
 import { eventService } from "../services";
 import moment from "moment";
 
@@ -24,8 +24,10 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
     const startDate = moment.unix(currentDashboardSelection.start);
     const endEnd = moment.unix(currentDashboardSelection.end);
 
-    const startOfMonth = moment().startOf('month').startOf('day');
-    const endOfMonth = moment().endOf('month').endOf('day');
+    const currentDateMomentstr = undefined;
+
+    const startOfMonth = moment(currentDateMomentstr).startOf('month').startOf('day');
+    const endOfMonth = moment(currentDateMomentstr).endOf('month').endOf('day');
 
     let orderMap = new Map<string, ITicketSalesData>();
     let totalsByAccountMap = new Map<number, ITicketSalesData>();
@@ -76,7 +78,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
                 salesPerDayYearMap.set(purchaseDayOfWeek, salesPerDayYear);
             }
 
-            if (purchaseDate >= startOfMonth && purchaseDate <= endOfMonth) {
+            if (purchaseDate.valueOf() >= startOfMonth.valueOf() && purchaseDate.valueOf() <= endOfMonth.valueOf()) {
                 let salesPerDayMonth = salesPerDayMonthMap.get(purchaseDayOfWeek);
                 if (salesPerDayMonth == undefined) {
                     salesPerDayMonthMap.set(purchaseDayOfWeek, dailyOrderData.totalRevenueUsd);
@@ -93,7 +95,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
                 monthlyTotalRevenue += dailyOrderData.totalRevenueUsd;
             }
             
-            if (purchaseDate >= startDate && purchaseDate <= endEnd) {
+            if (purchaseDate.valueOf() >= startDate.valueOf() && purchaseDate.valueOf() <= endEnd.valueOf()) {
                 totalPurchases += dailyOrderData.orders;
                 totalTickets += dailyOrderData.tickets;
                 totalTicketRevenue += dailyOrderData.ticketRevenueUsd;
@@ -334,17 +336,47 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
     topVenueValuesArray.sort((a, b) => a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0)
     const topVenues = (topVenueValuesArray.length > 10) ? topVenueValuesArray.slice(0, 10) : topVenueValuesArray;
 
-    const totalDays = totals.dayOfYear;
-    const perDiemTotalRevenue = totals.totalRevenueUsd / totalDays;
+    
+    const averageDailyTransactionsPerMonth = monthlyPurchases / totals.day;
+    const averageDailyTicketsPerMonth = monthlyTickets / totals.day;
+    const averageDailyTicketRevenuePerMonth = monthlyTicketRevenue / totals.day;
+    const averageDailyServiceFeesPerMonth = monthlyServiceFeeRevenue / totals.day;
+    const averageDailyTotalRevenuePerMonth = monthlyTotalRevenue / totals.day;
+    const averageDailyRefundsPerMonth = monthlyTicketsRefunded / totals.day;
+
+    const monthlyAverages: IAverageDailyData = {
+        transactions: averageDailyTransactionsPerMonth,
+        tickets: averageDailyTicketsPerMonth,
+        ticketRevenue: averageDailyTicketRevenuePerMonth,
+        serviceFees: averageDailyServiceFeesPerMonth,
+        totalRevenue: averageDailyTotalRevenuePerMonth,
+        refunds: averageDailyRefundsPerMonth
+    };
+
+    const averageDailyTransactionsPerYear = totals.orders / totals.dayOfYear;
+    const averageDailyTicketsPerYear = totals.tickets / totals.dayOfYear;
+    const averageDailyTicketRevenuePerYear = totals.ticketRevenueUsd / totals.dayOfYear;
+    const averageDailyServiceFeesPerYear = totals.serviceFeesRevenueUsd / totals.dayOfYear;
+    const averageDailyTotalRevenuePerYear = totals.totalRevenueUsd / totals.dayOfYear;    
+    const averageDailyRefundsPerYear = totals.ticketsRefunded / totals.dayOfYear;
+
+    const yearlyAverages: IAverageDailyData = {
+        transactions: averageDailyTransactionsPerYear,
+        tickets: averageDailyTicketsPerYear,
+        ticketRevenue: averageDailyTicketRevenuePerYear,
+        serviceFees: averageDailyServiceFeesPerYear,
+        totalRevenue: averageDailyTotalRevenuePerYear,
+        refunds: averageDailyRefundsPerYear
+    };
 
     const percentMonthlyGoal = monthlyTotalRevenue / totals.monthlyRevenueGoal;
     const percentYearlyGoal = totals.totalRevenueUsd / totals.yearlyRevenueGoal;
 
     const remainingDaysInMonth = totals.daysInMonth - totals.day;
-    const projectedMonthTotalRevenue = monthlyTotalRevenue + (perDiemTotalRevenue * remainingDaysInMonth);
+    const projectedMonthTotalRevenue = monthlyTotalRevenue + (averageDailyTotalRevenuePerMonth * remainingDaysInMonth);
 
     const remainingDaysInYear = totals.totalDaysInYear - totals.dayOfYear;
-    const projectedYearTotalRevenue = totals.totalRevenueUsd + (perDiemTotalRevenue * remainingDaysInYear);
+    const projectedYearTotalRevenue = totals.totalRevenueUsd + (averageDailyTotalRevenuePerYear * remainingDaysInYear);
     
     const dashboardData: IDashboardData = {
         ticketSalesData: ticketSalesData,
@@ -371,7 +403,9 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
         salesPerMonth: salesByMonth,
         salesPerDayMonth: salesPerDayMonth,
         salesPerDayYear: salesPerDayYear, 
-        totalsByAccount: totalsByAccount
+        totalsByAccount: totalsByAccount, 
+        monthlyAverages: monthlyAverages,
+        yearlyAverages: yearlyAverages
     };
 
     return dashboardData; 

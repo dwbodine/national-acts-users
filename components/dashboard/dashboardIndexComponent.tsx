@@ -23,6 +23,7 @@ import TopSellersWidget from "./widgets/topSellersWidgetComponent";
 import TopSellingLocationsWidget from "./widgets/topSellingLocationsWidgetComponent";
 import moment from "moment";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
+import AverageSalesWidget from "./widgets/averageSalesWidgetComponent";
 
 export default function DashboardIndex() {
     const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -184,6 +185,10 @@ export default function DashboardIndex() {
                     <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
                         <SalesPerDayOfWeekWidget salesPerDayMonth={currentDashboardSelection.currentDashboardData?.salesPerDayMonth} 
                             salesPerDayYear={currentDashboardSelection.currentDashboardData?.salesPerDayYear} />
+                    </Col>
+                    <Col xxl={2} xl={3} lg={4} md={6} className="stat-block-container">
+                        <AverageSalesWidget monthlyAverages={currentDashboardSelection.currentDashboardData?.monthlyAverages} 
+                            yearlyAverages={currentDashboardSelection.currentDashboardData?.yearlyAverages} />
                     </Col>
                     {accountTotalWidgets}
                 </Row>
