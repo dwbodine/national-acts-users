@@ -131,6 +131,40 @@ export interface VipEvent {
   isHidden?: boolean;
 }
 
+export interface TicketSocketRefreshHistory {
+  serviceEventsSkipped?: number[];
+  eventsFailed?: number[];
+  ordersFailed?: number[];
+  ticketsFailed?: number[];
+  ticketTypesFailed?: number[];
+  totalEventsFromService?: number;
+  eventsUpdated?: number;
+  eventsInserted?: number;
+  ordersInserted?: number;
+  ordersUpdated?: number;
+  ordersDeactivated?: number;
+  ordersDeleted?: number;
+  ticketsUpdated?: number;
+  ticketsInserted?: number;
+  ticketsDeactivated?: number;
+  ticketTypesUpdated?: number;
+  ticketTypesInserted?: number;
+  ticketTypesDeactivated?: number;
+  userId?: number;
+  sellerId?: number;
+  sellerName?: string;
+  start?: number;
+  end?: number;
+  startTimer?: number;
+  endTimer?: number;
+  duration?: number;
+  succeeded?: boolean;
+  errorMessage?: string;
+  userName?: string;
+  ticketSocketRefreshHistoryId?: number;
+  orderDataUpdateSucceeded?: boolean;
+}
+
 export interface GetEventsResponse {
   events?: VipEvent[];
   statusCode?: number;
@@ -153,6 +187,18 @@ export interface ModifyEventResponse {
   success: boolean;
   statusCode?: number;
   eventError?: string;
+}
+
+export interface RefreshHistoryResponse {
+   results?: TicketSocketRefreshHistory;
+   statusCode?: number;
+   refreshError?: string;
+}
+
+export interface GetRefreshHistoryResponse {
+  history?: TicketSocketRefreshHistory[];
+  statusCode?: number;
+  refreshError?: string;
 }
 
 export interface ModifyOrderResponse {

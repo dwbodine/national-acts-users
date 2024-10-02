@@ -157,7 +157,7 @@ export class UserService {
     };
     
     updateRole = async (roleToUpdate: Role): Promise<UpdateRoleResponse> => {
-      let url = `/admin/updateRole`;
+      let url = `/admin/roles/update`;
 
       let rolesResponse: UpdateRoleResponse = {
         success: false,
@@ -194,7 +194,7 @@ export class UserService {
     }
 
     deleteRoles = async (roleIds: number[]): Promise<UpdateRoleResponse> => {
-      let url = `/admin/deleteRoles`;
+      let url = `/admin/roles/delete`;
 
       let rolesResponse: UpdateRoleResponse = {
         success: false,
@@ -231,7 +231,7 @@ export class UserService {
     }
 
     updateUser = async (userToUpdate: User): Promise<UpdateUserResponse> => {
-      let url = `/admin/updateUser`;
+      let url = `/admin/users/update`;
 
       let userResponse: UpdateUserResponse = {
         success: false,
@@ -268,7 +268,7 @@ export class UserService {
     }
 
     deleteUser = async (userId: number): Promise<UpdateUserResponse> => {
-      let url = `/admin/deleteUser`;
+      let url = `/admin/users/delete`;
 
       let userResponse: UpdateUserResponse = {
         success: false,

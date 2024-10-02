@@ -1,0 +1,171 @@
+import { TicketSocketRefreshHistory } from "@/types/event"
+import moment from "moment";
+import { Col, Row } from "react-bootstrap";
+
+
+export default function RefreshTicketSocketDataResults(props: any) { 
+
+    const results = props.updateResults as TicketSocketRefreshHistory | undefined;
+
+    let succeeded = '';
+    let errorMessage = '';
+    let userName = '';
+    let sellerName = '';
+    let startTimerStr = '';
+    let endTimerStr = '';
+    let startRefreshStr = '';
+    let endRefreshStr = '';
+    let duration = '';
+    let totalEventsFromService = '';
+    let serviceEventsSkipped = '';
+    let eventsFailed = '';
+    let ordersFailed = '';
+    let ticketsFailed = '';
+    let ticketTypesFailed = '';
+    let eventsUpdated = '';
+    let eventsInserted = '';
+    let ordersUpdated = '';
+    let ordersInserted = '';
+    let ordersDeactivated = '';
+    let ordersDeleted = '';
+    let ticketsUpdated = '';
+    let ticketsInserted = '';
+    let ticketsDeactivated = '';
+    let ticketTypesUpdated = '';
+    let ticketTypesInserted = '';
+    let ticketTypesDeactivated = '';
+    let orderDataUpdateSucceeded = '';
+
+    if (results) {
+        succeeded = results.succeeded ? "true" : "false";
+        orderDataUpdateSucceeded = results.orderDataUpdateSucceeded ? "true" : "false";
+        errorMessage = results.succeeded ? '' : (results.errorMessage ?? 'unknown');
+        userName = results.userName ? results.userName : (results.userId?.toString() ?? 'n/a');
+        sellerName = results.sellerName ? results.sellerName : (results.sellerId?.toString() ?? 'n/a');
+        startRefreshStr = results.start ? moment.unix(results.start).format("MM/DD/YYYYY") : 'n/a';
+        endRefreshStr = results.end ? moment.unix(results.end).format("MM/DD/YYYYY") : 'n/a';
+        startTimerStr = results.startTimer ? moment.unix(results.startTimer).format("hh:mm:ss A") : 'n/a';
+        endTimerStr = results.endTimer ? moment.unix(results.endTimer).format("hh:mm:ss A") : 'n/a';
+        duration = results.duration ? results.duration.toFixed(2) : "0.00";
+        totalEventsFromService = results.totalEventsFromService ? results.totalEventsFromService.toString() : "0";
+        serviceEventsSkipped = (results.serviceEventsSkipped && results.serviceEventsSkipped.length > 0) ? results.serviceEventsSkipped.join(", ") : "None";
+        eventsFailed = (results.eventsFailed && results.eventsFailed.length > 0) ? results.eventsFailed.join(", ") : "None";
+        ordersFailed = (results.ordersFailed && results.ordersFailed.length > 0) ? results.ordersFailed.join(", ") : "None";
+        ticketsFailed = (results.ticketsFailed && results.ticketsFailed.length > 0) ? results.ticketsFailed.join(", ") : "None";
+        ticketTypesFailed = (results.ticketTypesFailed && results.ticketTypesFailed.length > 0) ? results.ticketTypesFailed.join(", ") : "None";
+        eventsUpdated = results.eventsUpdated ? results.eventsUpdated.toString() : "0";
+        eventsInserted = results.eventsInserted ? results.eventsInserted.toString() : "0";
+        ordersUpdated = results.ordersUpdated ? results.ordersUpdated.toString() : "0";
+        ordersInserted = results.ordersInserted ? results.ordersInserted.toString() : "0";
+        ordersDeactivated = results.ordersDeactivated ? results.ordersDeactivated.toString() : "0";
+        ordersDeleted = results.ordersDeleted ? results.ordersDeleted.toString() : "0";
+        ticketsUpdated = results.ticketsUpdated ? results.ticketsUpdated.toString() : "0";
+        ticketsInserted = results.ticketsInserted ? results.ticketsInserted.toString() : "0";
+        ticketsDeactivated = results.ticketsDeactivated ? results.ticketsDeactivated.toString() : "0";
+        ticketTypesUpdated = results.ticketTypesUpdated ? results.ticketTypesUpdated.toString() : "0";
+        ticketTypesInserted = results.ticketTypesInserted ? results.ticketTypesInserted.toString() : "0";
+        ticketTypesDeactivated = results.ticketTypesDeactivated ? results.ticketTypesDeactivated.toString() : "0";
+    }
+
+    return(
+        (results != undefined) ? 
+    <>
+        <Row>
+            <Col><h3>Refresh Events Results</h3></Col>
+        </Row>
+        <Row>
+            <Col>
+                <Row>
+                    <Col>Update succeeded: {succeeded}</Col>
+                </Row>
+                <Row hidden={!errorMessage}>
+                    <Col>Error message: {errorMessage}</Col>
+                </Row>
+                <Row>
+                    <Col>Order data update succeeded: {orderDataUpdateSucceeded}</Col>
+                </Row>
+                <Row>
+                    <Col>User: {userName}</Col>
+                </Row>
+                <Row>
+                    <Col>Seller: {sellerName}</Col>
+                </Row>
+                <Row>
+                    <Col>Refresh started: {startTimerStr}</Col>
+                </Row>
+                <Row>
+                    <Col>Refresh ended: {endTimerStr}</Col>
+                </Row>
+                <Row>
+                    <Col>Start: {startRefreshStr}</Col>
+                </Row>
+                <Row>
+                    <Col>End: {endRefreshStr}</Col>
+                </Row>
+                <Row>
+                    <Col>Duration: {duration} seconds</Col>
+                </Row>
+            </Col>
+            <Col>
+                <Row>
+                    <Col>Total events from service: {totalEventsFromService}</Col>
+                </Row>
+                <Row>
+                    <Col>Service events skipped: {serviceEventsSkipped}</Col>
+                </Row>
+                <Row>
+                    <Col>Events failed: {eventsFailed}</Col>
+                </Row>
+                <Row>
+                    <Col>Orders failed: {ordersFailed}</Col>
+                </Row>
+                <Row>
+                    <Col>Tickets failed: {ticketsFailed}</Col>
+                </Row>
+                <Row>
+                    <Col>Ticket types failed: {ticketTypesFailed}</Col>
+                </Row>
+                <Row>
+                    <Col>Events updated: {eventsUpdated}</Col>
+                </Row>
+                <Row>
+                    <Col>Events inserted: {eventsInserted}</Col>
+                </Row>
+                <Row>
+                    <Col>Orders updated: {ordersUpdated}</Col>
+                </Row>
+            </Col>
+            <Col>               
+                <Row>
+                    <Col>Orders inserted: {ordersInserted}</Col>
+                </Row>
+                <Row>
+                    <Col>Orders deactivated: {ordersDeactivated}</Col>
+                </Row>
+                <Row>
+                    <Col>Orders deleted: {ordersDeleted}</Col>
+                </Row>
+                <Row>
+                    <Col>Tickets updated: {ticketsUpdated}</Col>
+                </Row>
+                <Row>
+                    <Col>Tickets inserted: {ticketsInserted}</Col>
+                </Row>
+                <Row>
+                    <Col>Ticket deactivated: {ticketsDeactivated}</Col>
+                </Row>
+                <Row>
+                    <Col>Ticket types updated: {ticketTypesUpdated}</Col>
+                </Row>
+                <Row>
+                    <Col>Ticket types inserted: {ticketTypesInserted}</Col>
+                </Row>
+                <Row>
+                    <Col>Ticket types  deactivated: {ticketTypesDeactivated}</Col>
+                </Row>
+            </Col>
+        </Row>
+    </>
+    : ''
+    )
+}

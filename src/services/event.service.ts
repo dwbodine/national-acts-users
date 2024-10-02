@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
-import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse, GetOrdersResponse, GetDashboardOrdersResponse, GetSellersResponse, Seller } from "../types/event";
-import { AdminDashboardSelection, IDailyOrderData, IDashboardTotals, UserReportSelection, UserSeller } from "@/types/user";
+import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse, GetOrdersResponse, GetDashboardOrdersResponse, GetSellersResponse, Seller, RefreshHistoryResponse, TicketSocketRefreshHistory, GetRefreshHistoryResponse } from "../types/event";
+import { AdminDashboardSelection, IDailyOrderData, IDashboardTotals, UserReportSelection } from "@/types/user";
 import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
 import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
 import moment from "moment";
@@ -15,7 +15,7 @@ export class EventService {
     this.baseUrl = url;
     this.instance = axios.create({
       baseURL: url,
-      timeout: 30000,
+      timeout: 300000,
       timeoutErrorMessage: "Time out!",
     });
   }
@@ -254,7 +254,7 @@ export class EventService {
   
 
   updateEvent = async (eventToUpdate: VipEvent): Promise<ModifyEventResponse> => {
-    let url = `/admin/updateEvent`;
+    let url = `/admin/events/update`;
 
     let eventResponse: ModifyEventResponse = {
       success: false,
@@ -291,7 +291,7 @@ export class EventService {
   }
 
   updateOrder = async (orderToUpdate: Order): Promise<ModifyOrderResponse> => {
-    let url = `/admin/updateOrder`;
+    let url = `/admin/orders/update`;
 
     let orderResponse: ModifyOrderResponse = {
       success: false,
@@ -326,6 +326,84 @@ export class EventService {
         return orderResponse;
     });
   }
+
+  refreshEventsFromService = async(sellerId: number, start?: number, end?: number): Promise<RefreshHistoryResponse> => {
+    let url = `/internal/refreshEventsFromService/${sellerId}`;
+
+    if (start && end) {
+      url += `?start=${start}&end=${end}`;
+    } else if (start) {
+      url += `?start=${start}`;
+    }  else if (end) {
+      url += `?start=${end}`;
+    }
+
+    let refreshResponse: RefreshHistoryResponse = {
+      results: undefined,
+      refreshError: undefined,
+      statusCode: 200
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers
+      })
+      .then((res) => {
+        refreshResponse.results = res.data ? res.data as TicketSocketRefreshHistory : undefined;
+        return refreshResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          refreshResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while refreshing events from TicketSocket - please contact your administrator";
+        }
+        refreshResponse.refreshError = errorMessage;
+        return refreshResponse;
+      });    
+  };
+
+  getTicketSocketRefreshHistory = async(): Promise<GetRefreshHistoryResponse> => {
+    let url = `/internal/getUpdateHistory`;
+
+    let refreshResponse: GetRefreshHistoryResponse = {
+      history: undefined,
+      refreshError: undefined,
+      statusCode: 200
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers
+      })
+      .then((res) => {
+        refreshResponse.history = res.data ? res.data as TicketSocketRefreshHistory[] : undefined;
+        return refreshResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          refreshResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while fetching event refresh history from TicketSocket - please contact your administrator";
+        }
+        refreshResponse.refreshError = errorMessage;
+        return refreshResponse;
+      });
+  };
 
   setEventInactive = async(eventId: number, isActive: boolean): Promise<ModifyEventResponse> => {
     const url = "/user/setEventInactiveSecured";

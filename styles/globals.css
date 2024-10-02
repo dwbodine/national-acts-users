@@ -715,6 +715,14 @@ div hidden {
   text-align: center;
 }
 
+.refresh-results-header {
+  margin: 25px 0 25px 15px;
+}
+
+.refresh-results-header-col {
+  margin: 0;
+}
+
 /* MOBILE QUERIES */
 /* Bootstrap xxl */
 @media (max-width: 1400px) {
@@ -738,6 +746,10 @@ div hidden {
     width: 100%;
     height: 350px;
     font-size: 12px;
+  }
+
+  .refresh-results-header-col {
+    margin-bottom: 25px;
   }
 }
 
@@ -809,6 +821,10 @@ div hidden {
   .sales-stat-block {
     height: fit-content;
     min-height: unset;
+  }
+
+  .refresh-results-header {
+    font-size: 12px;
   }
 }
 
@@ -959,6 +975,10 @@ div hidden {
 
   .vipDetailsTable .vipLabel {
     white-space: nowrap;
+  }
+
+  .refresh-results-header {
+    font-size: 10px;
   }
 }
 
