@@ -12,33 +12,41 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
     return(
         (results != undefined) ?
         <Table height={420} data={results} bordered cellBordered>
-            <Column>
+            <Column resizable>
                 <HeaderCell>User</HeaderCell>
                 <Cell>{rowData => rowData.userName ? rowData.userName : (rowData.userId?.toString() ?? 'n/a')}</Cell>
             </Column>
-            <Column>
+            <Column resizable>
                 <HeaderCell>Seller</HeaderCell>
                 <Cell>{rowData => rowData.sellerName ? rowData.sellerName : (rowData.sellerId?.toString() ?? 'n/a') }</Cell>
             </Column>
-            <Column>
+            <Column resizable>
                 <HeaderCell>Start Query</HeaderCell>
                 <Cell>{rowData => rowData.start ? moment.unix(rowData.start).format("l") : 'n/a' }</Cell>
             </Column>
-            <Column>
+            <Column resizable>
                 <HeaderCell>End Query</HeaderCell>
                 <Cell>{rowData => rowData.end ? moment.unix(rowData.end).format("l") : 'n/a' }</Cell>
             </Column>
-            <Column>
+            <Column resizable>
                 <HeaderCell>Start Timer</HeaderCell>
                 <Cell>{rowData => rowData.startTimer ? moment.unix(rowData.startTimer).format("l LTS") : 'n/a' }</Cell>
             </Column>
-            <Column>
+            <Column resizable>
                 <HeaderCell>End Timer</HeaderCell>
                 <Cell>{rowData => rowData.endTimer ? moment.unix(rowData.endTimer).format("l LTS") : 'n/a' }</Cell>
             </Column>
             <Column>
-                <HeaderCell>Duration</HeaderCell>
-                <Cell>{rowData => rowData.duration ? rowData.duration.toFixed(2) : '0.00' }</Cell>
+                <HeaderCell>Event update duration</HeaderCell>
+                <Cell>{rowData => rowData.duration ? rowData.duration.toFixed(1) : '0.0' }</Cell>
+            </Column>
+            <Column>
+                <HeaderCell>Order update duration</HeaderCell>
+                <Cell>{rowData => rowData.orderDataUpdateDuration ? rowData.orderDataUpdateDuration.toFixed(1) : '0.0' }</Cell>
+            </Column>
+            <Column>
+                <HeaderCell>Total duration</HeaderCell>
+                <Cell>{rowData => rowData.totalDuration ? rowData.totalDuration.toFixed(1) : '0.0' }</Cell>
             </Column>
             <Column>
                 <HeaderCell>Success</HeaderCell>
@@ -48,7 +56,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
                 <HeaderCell>Order Data Update</HeaderCell>
                 <Cell>{rowData => rowData.orderDataUpdateSucceeded ? 'suceeded' : 'failed'}</Cell>
             </Column>
-            <Column>
+            <Column resizable>
                 <HeaderCell>Error</HeaderCell>
                 <Cell>{rowData => rowData.errorMessage ? rowData.errorMessage : 'n/a'}</Cell>
             </Column>

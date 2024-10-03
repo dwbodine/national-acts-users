@@ -35,6 +35,8 @@ export default function RefreshTicketSocketDataResults(props: any) {
     let ticketTypesInserted = '';
     let ticketTypesDeactivated = '';
     let orderDataUpdateSucceeded = '';
+    let orderDataUpdateDuration = '';
+    let totalDuration = '';
 
     if (results) {
         succeeded = results.succeeded ? "true" : "false";
@@ -46,7 +48,9 @@ export default function RefreshTicketSocketDataResults(props: any) {
         endRefreshStr = results.end ? moment.unix(results.end).format("MM/DD/YYYYY") : 'n/a';
         startTimerStr = results.startTimer ? moment.unix(results.startTimer).format("hh:mm:ss A") : 'n/a';
         endTimerStr = results.endTimer ? moment.unix(results.endTimer).format("hh:mm:ss A") : 'n/a';
-        duration = results.duration ? results.duration.toFixed(2) : "0.00";
+        duration = results.duration ? results.duration.toFixed(1) : "0.0";
+        orderDataUpdateDuration = results.orderDataUpdateDuration ? results.orderDataUpdateDuration.toFixed(1) : "0.0";
+        totalDuration = results.totalDuration ? results.totalDuration.toFixed(1) : "0.0";
         totalEventsFromService = results.totalEventsFromService ? results.totalEventsFromService.toString() : "0";
         serviceEventsSkipped = (results.serviceEventsSkipped && results.serviceEventsSkipped.length > 0) ? results.serviceEventsSkipped.join(", ") : "None";
         eventsFailed = (results.eventsFailed && results.eventsFailed.length > 0) ? results.eventsFailed.join(", ") : "None";
@@ -103,7 +107,13 @@ export default function RefreshTicketSocketDataResults(props: any) {
                     <Col>End: {endRefreshStr}</Col>
                 </Row>
                 <Row>
-                    <Col>Duration: {duration} seconds</Col>
+                    <Col>Event update uration: {duration} seconds</Col>
+                </Row>
+                <Row>
+                    <Col>Order update duration: {orderDataUpdateDuration} seconds</Col>
+                </Row>
+                <Row>
+                    <Col>Total duration: {totalDuration} seconds</Col>
                 </Row>
             </Col>
             <Col>

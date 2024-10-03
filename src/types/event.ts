@@ -163,6 +163,8 @@ export interface TicketSocketRefreshHistory {
   userName?: string;
   ticketSocketRefreshHistoryId?: number;
   orderDataUpdateSucceeded?: boolean;
+  orderDataUpdateDuration?: number;
+  totalDuration?: number;
 }
 
 export interface GetEventsResponse {
