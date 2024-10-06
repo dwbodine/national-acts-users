@@ -94,13 +94,15 @@ export default function EventDetail(props: any) {
             setViewDeletedEvents(userHasPermission(user, EnumPermission.ViewDeletedEvents));
             setViewHiddenEvents(userHasPermission(user, EnumPermission.ViewHiddenEvents));
             setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
-            setViewRevenueData(userHasPermission(user, EnumPermission.ViewRevenueData));
-            setViewRevenueControls(userHasPermission(user, EnumPermission.ViewRevenueControls));    
+            const vRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);
+            const vRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
+            setViewRevenueControls(vRevenueControls);
+            setViewRevenueData(vRevenueData); 
             setCanExportCustomerData(userHasPermission(user, EnumPermission.ExportCustomerData));
             setViewPrintButton(userHasPermission(user, EnumPermission.ViewPrintButton));
             setChangeOrderStatus(userHasPermission(user, EnumPermission.ChangeOrderStatus));
             setCanCheckInTickets(!user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers));
-            setAlwaysShowRevenue(viewRevenueData && !viewRevenueControls);
+            setAlwaysShowRevenue(vRevenueData && !vRevenueControls);
 
             if (!currentReportSelection.seller || currentReportSelection.seller.sellerId <= 0) {
                 let reportSelection = {...currentReportSelection};
