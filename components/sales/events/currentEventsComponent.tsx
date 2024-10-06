@@ -89,14 +89,17 @@ export default function CurrentEvents() {
             const currentUser = getUser();
             if (currentUser != undefined) {
                 setUser(currentUser);
-                setViewRevenueControls(userHasPermission(currentUser, EnumPermission.ViewRevenueControls));
-                setViewRevenueData(userHasPermission(currentUser, EnumPermission.ViewRevenueData));
-                setViewServiceFees(userHasPermission(currentUser, EnumPermission.ViewServiceFees));
-                setChangeEventStatus(userHasPermission(currentUser, EnumPermission.ChangeEventStatus));
-                setCanCheckInTickets(!currentUser.disableCheckIn && userHasPermission(currentUser, EnumPermission.CheckInUsers));
-                setAlwaysShowRevenue(viewRevenueData && !viewRevenueControls);
             }            
-        }
+        } else {
+            const vRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);
+            const vRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
+            setViewRevenueControls(vRevenueControls);
+            setViewRevenueData(vRevenueData);
+            setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
+            setChangeEventStatus(userHasPermission(user, EnumPermission.ChangeEventStatus));
+            setCanCheckInTickets(!user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers));
+            setAlwaysShowRevenue(vRevenueData && !vRevenueControls);
+        }        
         
         if (currentReportSelection.seller.sellerId > 0) {
             if (alwaysShowRevenue) {
