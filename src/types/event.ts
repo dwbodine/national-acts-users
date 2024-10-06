@@ -48,6 +48,12 @@ export interface Order {
   isActive: boolean;
   isDeleted: boolean;
   isRefunded: boolean;
+  isChargedBack: boolean;
+  refundDate?: string;
+  chargebackDate?: string;
+  numTicketsRefunded?: number;
+  revenueRefunded?: number;
+  serviceFeeRevenueRefunded?: number;
   totalShirts?: number;
   revenueUsd: number;
   serviceFeesUsd?: number;
