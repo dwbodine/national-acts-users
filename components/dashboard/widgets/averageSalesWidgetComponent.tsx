@@ -11,9 +11,11 @@ export default function AverageSalesWidget(props: any) {
             <div className="sales-stat-block-title">Average Daily Sales</div>
             <table className="average-sales-data-table">
                 <thead>
-                    <th>&nbsp;</th>
-                    <th className="sales-stat-block-subtitle sales-stat-block-value">Month</th>
-                    <th className="sales-stat-block-subtitle sales-stat-block-value">Year</th>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th className="sales-stat-block-subtitle sales-stat-block-value">Month</th>
+                        <th className="sales-stat-block-subtitle sales-stat-block-value">Year</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr>

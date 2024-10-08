@@ -29,7 +29,7 @@ export default function YearToDateWidget(props: any) {
                 </Row>
                 <Row>
                     <Col className="sales-stat-block-name">Refunds:</Col>
-                    <Col className="sales-stat-block-value">{totals?.ticketsRefunded ?? 'n/a'}</Col>
+                    <Col className="sales-stat-block-value">{totals?.numTicketsRefunded ?? 'n/a'}</Col>
                 </Row>
                 <Row>
                     <Col className="sales-stat-block-name">Revenue:</Col>

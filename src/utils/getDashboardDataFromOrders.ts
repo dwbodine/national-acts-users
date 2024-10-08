@@ -45,7 +45,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
                     PurchaseDate: '',
                     Purchases: dailyOrderData.orders,
                     Tickets: dailyOrderData.tickets,
-                    TicketsRefunded: dailyOrderData.ticketsRefunded,
+                    TicketsRefunded: dailyOrderData.numTicketsRefunded ?? 0,
                     Revenue: dailyOrderData.ticketRevenueUsd,
                     ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
                     TotalRevenue: dailyOrderData.totalRevenueUsd
@@ -53,7 +53,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
             } else {
                 accountOrderData.Purchases += dailyOrderData.orders;
                 accountOrderData.Tickets += dailyOrderData.tickets;
-                accountOrderData.TicketsRefunded = (accountOrderData.TicketsRefunded ?? 0) + dailyOrderData.ticketsRefunded ?? 0;
+                accountOrderData.TicketsRefunded = (accountOrderData.TicketsRefunded ?? 0) + (dailyOrderData.numTicketsRefunded ?? 0);
                 accountOrderData.Revenue += dailyOrderData.ticketRevenueUsd;
                 accountOrderData.ServiceFees += dailyOrderData.serviceFeesRevenueUsd;
                 accountOrderData.TotalRevenue += dailyOrderData.totalRevenueUsd;
@@ -89,7 +89,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
                 
                 monthlyPurchases += dailyOrderData.orders;
                 monthlyTickets += dailyOrderData.tickets;
-                monthlyTicketsRefunded += dailyOrderData.ticketsRefunded;
+                monthlyTicketsRefunded += dailyOrderData.numTicketsRefunded ?? 0;
                 monthlyTicketRevenue += dailyOrderData.ticketRevenueUsd;
                 monthlyServiceFeeRevenue += dailyOrderData.serviceFeesRevenueUsd;
                 monthlyTotalRevenue += dailyOrderData.totalRevenueUsd;
@@ -101,7 +101,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
                 totalTicketRevenue += dailyOrderData.ticketRevenueUsd;
                 totalServiceFees += dailyOrderData.serviceFeesRevenueUsd;
                 totalRevenue += dailyOrderData.totalRevenueUsd;
-                totalTicketsRefunded += dailyOrderData.ticketsRefunded;
+                totalTicketsRefunded += dailyOrderData.numTicketsRefunded ?? 0;
         
                 if (dailyOrderData.sellerId) {
                     var topSeller = topSellersMap.get(dailyOrderData.sellerId);
@@ -358,7 +358,7 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
     const averageDailyTicketRevenuePerYear = totals.ticketRevenueUsd / totals.dayOfYear;
     const averageDailyServiceFeesPerYear = totals.serviceFeesRevenueUsd / totals.dayOfYear;
     const averageDailyTotalRevenuePerYear = totals.totalRevenueUsd / totals.dayOfYear;    
-    const averageDailyRefundsPerYear = totals.ticketsRefunded / totals.dayOfYear;
+    const averageDailyRefundsPerYear = (totals.numTicketsRefunded ?? 0) / totals.dayOfYear;
 
     const yearlyAverages: IAverageDailyData = {
         transactions: averageDailyTransactionsPerYear,
