@@ -170,6 +170,10 @@ export interface TicketSocketRefreshHistory {
   ticketSocketRefreshHistoryId?: number;
   orderDataUpdateSucceeded?: boolean;
   orderDataUpdateDuration?: number;
+  orderDataRowsTotal?: number;
+  orderDataRowsRemoved?: number;
+  orderDataRowsInserted?: number;
+  orderDataRowsUpdated?: number;
   totalDuration?: number;
 }
 

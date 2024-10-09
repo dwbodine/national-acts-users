@@ -36,6 +36,10 @@ export default function RefreshTicketSocketDataResults(props: any) {
     let ticketTypesDeactivated = '';
     let orderDataUpdateSucceeded = '';
     let orderDataUpdateDuration = '';
+    let orderDataRowsTotal = '';
+    let orderDataRowsRemoved = '';
+    let orderDataRowsInserted = '';
+    let orderDataRowsUpdated = '';
     let totalDuration = '';
 
     if (results) {
@@ -69,6 +73,10 @@ export default function RefreshTicketSocketDataResults(props: any) {
         ticketTypesUpdated = results.ticketTypesUpdated ? results.ticketTypesUpdated.toString() : "0";
         ticketTypesInserted = results.ticketTypesInserted ? results.ticketTypesInserted.toString() : "0";
         ticketTypesDeactivated = results.ticketTypesDeactivated ? results.ticketTypesDeactivated.toString() : "0";
+        orderDataRowsTotal = results.orderDataRowsTotal ? results.orderDataRowsTotal.toString() : "0";
+        orderDataRowsRemoved = results.orderDataRowsRemoved ? results.orderDataRowsRemoved.toString() : "0";
+        orderDataRowsUpdated = results.orderDataRowsUpdated ? results.orderDataRowsUpdated.toString() : "0";
+        orderDataRowsInserted = results.orderDataRowsInserted ? results.orderDataRowsInserted.toString() : "0";
     }
 
     return(
@@ -144,14 +152,14 @@ export default function RefreshTicketSocketDataResults(props: any) {
                 <Row>
                     <Col>Orders updated: {ordersUpdated}</Col>
                 </Row>
-            </Col>
-            <Col>               
                 <Row>
                     <Col>Orders inserted: {ordersInserted}</Col>
                 </Row>
                 <Row>
                     <Col>Orders deactivated: {ordersDeactivated}</Col>
                 </Row>
+            </Col>
+            <Col>                
                 <Row>
                     <Col>Orders deleted: {ordersDeleted}</Col>
                 </Row>
@@ -171,7 +179,19 @@ export default function RefreshTicketSocketDataResults(props: any) {
                     <Col>Ticket types inserted: {ticketTypesInserted}</Col>
                 </Row>
                 <Row>
-                    <Col>Ticket types  deactivated: {ticketTypesDeactivated}</Col>
+                    <Col>Ticket types deactivated: {ticketTypesDeactivated}</Col>
+                </Row>
+                <Row>
+                    <Col>Order data rows total: {orderDataRowsTotal}</Col>
+                </Row>
+                <Row>
+                    <Col>Order data rows removed: {orderDataRowsRemoved}</Col>
+                </Row>
+                <Row>
+                    <Col>Order data rows updated: {orderDataRowsUpdated}</Col>
+                </Row>
+                <Row>
+                    <Col>Order data rows inserted: {orderDataRowsInserted}</Col>
                 </Row>
             </Col>
         </Row>

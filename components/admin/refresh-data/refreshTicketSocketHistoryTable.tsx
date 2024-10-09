@@ -132,6 +132,22 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
                 <HeaderCell>Ticket types Deactivated</HeaderCell>
                 <Cell>{rowData => rowData.ticketTypesDeactivated ? rowData.ticketTypesDeactivated.toString() : "0"}</Cell>
             </Column>
+            <Column>
+                <HeaderCell>Order data rows total</HeaderCell>
+                <Cell>{rowData => rowData.orderDataRowsTotal ? rowData.orderDataRowsTotal.toString() : "0"}</Cell>
+            </Column>
+            <Column>
+                <HeaderCell>Order data rows removed</HeaderCell>
+                <Cell>{rowData => rowData.orderDataRowsRemoved ? rowData.orderDataRowsRemoved.toString() : "0"}</Cell>
+            </Column>
+            <Column>
+                <HeaderCell>Order data rows updated</HeaderCell>
+                <Cell>{rowData => rowData.orderDataRowsUpdated ? rowData.orderDataRowsUpdated.toString() : "0"}</Cell>
+            </Column>
+            <Column>
+                <HeaderCell>Order data rows inserted</HeaderCell>
+                <Cell>{rowData => rowData.orderDataRowsInserted ? rowData.orderDataRowsInserted.toString() : "0"}</Cell>
+            </Column>
         </Table>
         : ''
     )
