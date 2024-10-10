@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse, GetOrdersResponse, GetDashboardOrdersResponse, GetSellersResponse, Seller, RefreshHistoryResponse, TicketSocketRefreshHistory, GetRefreshHistoryResponse } from "../types/event";
-import { AdminDashboardSelection, IDailyOrderData, IDashboardTotals, UserReportSelection } from "@/types/user";
+import { AdminDashboardSelection, AdminSelection, IDailyOrderData, IDashboardTotals, UserReportSelection } from "@/types/user";
 import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
 import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
 import moment from "moment";
@@ -34,6 +34,50 @@ export class EventService {
     if (reportSelection.showHidden) {
       url += '&hidden=1';
     }
+
+    if (reportSelection.start) {
+      url += `&start=${reportSelection.start}`;
+    }
+
+    if (reportSelection.end) {
+      url += `&end=${reportSelection.end}`;
+    }
+
+    let eventResponse: GetEventsResponse = {
+      events: undefined,
+      eventError: undefined,
+      statusCode: 200
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers
+      })
+      .then((res) => {
+        const events = res.data;
+        eventResponse.events = events.length ? events as VipEvent[] : [];
+        return eventResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          eventResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while fetching events - please contact your administrator";
+        }
+        eventResponse.eventError = errorMessage;
+        return eventResponse;
+      });
+  };
+
+  getAdminEvents = async (reportSelection: AdminSelection): Promise<GetEventsResponse> => {
+    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
 
     if (reportSelection.start) {
       url += `&start=${reportSelection.start}`;

@@ -1,12 +1,12 @@
 import { TicketSocketRefreshHistory } from "@/types/event";
 import moment from "moment";
+import { useState } from "react";
 import { Table } from "rsuite";
 
 
 export default function RefreshTicketSocketHistoryTable(props: any) { 
 
     const results = props.history as TicketSocketRefreshHistory[] | undefined;
-
     const { Column, HeaderCell, Cell } = Table;
 
     return(

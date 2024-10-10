@@ -18,6 +18,9 @@ export default function AdminList() {
             case "manage-refresh-data":
                 router.push('/admin/refresh-data/');
                 break;
+            case "manage-events":
+                router.push('/admin/events/');
+                break;
             default:
                 break;
         }
@@ -35,6 +38,7 @@ export default function AdminList() {
                 <li><a id="manage-roles" className="admin-link" onClick={goToAdminPage}>Manage Roles</a></li>
                 <li><a id="manage-users" className="admin-link" onClick={goToAdminPage}>Manage Users</a></li>
                 <li><a id="manage-refresh-data" className="admin-link" onClick={goToAdminPage}>Refresh Data From TicketSocket</a></li>
+                <li><a id="manage-events" className="admin-link" onClick={goToAdminPage}>Manage Events/Orders</a></li>
             </ul>
         </div>
     );

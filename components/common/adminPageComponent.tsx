@@ -82,18 +82,21 @@ export default function AdminPage(props: any) {
       <Container fluid hidden={notAdmin} className="vipContainer">
         <Tabs hidden={notAdmin} defaultActiveKey={activeKey.toString()} onSelect={onSelectTab} className="admin-tabs">
           <Tabs.Tab eventKey={ActivePageKey.Dashboard.toString()} title="HOME">
-            <Container fluid hidden={!isLoading || !props.dashboardComponent}>
-              <Row>
-                <Col className="spinner-container">
-                  <CirclesWithBar height="100" width="100" color="#d12610" />
-                </Col>
-              </Row>
-            </Container>
-            <Container className="tab-container" fluid hidden={isLoading || !props.dashboardComponent}>
-              {props.dashboardComponent}
-            </Container>
+            {activeKey == ActivePageKey.Dashboard && <>
+              <Container fluid hidden={!isLoading || !props.dashboardComponent}>
+                <Row>
+                  <Col className="spinner-container">
+                    <CirclesWithBar height="100" width="100" color="#d12610" />
+                  </Col>
+                </Row>
+              </Container>
+              <Container className="tab-container" fluid hidden={isLoading || !props.dashboardComponent}>
+                {props.dashboardComponent}
+              </Container>
+            </>}
           </Tabs.Tab>
           <Tabs.Tab eventKey={ActivePageKey.SalesOverview.toString()} title="SALES OVERVIEW">
+          {activeKey == ActivePageKey.SalesOverview && <>
             <Container fluid hidden={!isLoading || !props.salesComponent}>
               <Row>
                 <Col className="spinner-container">
@@ -104,8 +107,10 @@ export default function AdminPage(props: any) {
             <Container className="tab-container" fluid hidden={isLoading || !props.salesComponent}>
               {props.salesComponent}
             </Container>
+            </>}
           </Tabs.Tab>
           <Tabs.Tab eventKey={ActivePageKey.Admin.toString()} title="ADMIN">
+          {activeKey == ActivePageKey.Admin && <>
             <Container fluid hidden={!isLoading || !props.adminComponent}>
               <Row>
                 <Col className="spinner-container">
@@ -116,8 +121,10 @@ export default function AdminPage(props: any) {
             <Container className="tab-container" fluid hidden={isLoading || !props.adminComponent}>
               {props.adminComponent}
             </Container>
+            </>}
           </Tabs.Tab>
           <Tabs.Tab eventKey={ActivePageKey.Reports.toString()} title="REPORTS">
+          {activeKey == ActivePageKey.Reports && <>
             <Container fluid hidden={!isLoading || !props.reportComponent}>
               <Row>
                 <Col className="spinner-container">
@@ -128,8 +135,10 @@ export default function AdminPage(props: any) {
             <Container className="tab-container" fluid hidden={isLoading || !props.reportComponent}>
               {props.reportComponent}
             </Container>
+            </>}
           </Tabs.Tab>
           <Tabs.Tab eventKey={ActivePageKey.Users.toString()} title="USERS">
+          {activeKey == ActivePageKey.Users && <>
             <Container fluid hidden={!isLoading || !props.usersComponent}>
               <Row>
                 <Col className="spinner-container">
@@ -140,6 +149,7 @@ export default function AdminPage(props: any) {
             <Container className="tab-container" fluid hidden={isLoading || !props.usersComponent}>
               {props.usersComponent}
             </Container>
+            </>}
           </Tabs.Tab>
         </Tabs>
       </Container>

@@ -19,6 +19,7 @@ export default function AdminUsersIndex() {
     const { getAllUsers } = useGetAllUsers();
     const { Column, HeaderCell, Cell } = Table;
     const [searchTerm, setSearchTerm] = useState('');
+    const [tableLoading, setTableLoading] = useState(true);
 
     const debouncedResults = useMemo(() => {
         return debouce(setSearchTerm, 300);
@@ -26,6 +27,7 @@ export default function AdminUsersIndex() {
 
     useEffect(() => {
         if (!currentAdminSelection.users || currentAdminSelection.reloadUsers) {
+            setTableLoading(true);
             dispatch(
                 setIsLoading(true)
             );
@@ -38,11 +40,16 @@ export default function AdminUsersIndex() {
                 dispatch(
                     setIsLoading(false)
                 );
+                setTableLoading(false);
             });
-        }  
+        } else if (tableLoading) {
+            setTimeout(() => {
+                setTableLoading(false);
+            }, 300)
+        }
         return () => {
             debouncedResults.cancel();
-        }         
+        }       
     },[getAllUsers, dispatch, currentAdminSelection, debouncedResults]);
 
     const editUser = (e: SyntheticEvent) => {
@@ -52,6 +59,7 @@ export default function AdminUsersIndex() {
             dispatch(
                 setSelectedUser(user)
             );
+            setTableLoading(true);
             router.push('/admin/users/edit');
         }        
     };
@@ -82,7 +90,7 @@ export default function AdminUsersIndex() {
                 placeholder="Search for users..." 
                 hidden={currentAdminSelection.users == undefined}
             />
-            <Table height={420} data={filteredUsers} bordered cellBordered>
+            <Table height={420} data={filteredUsers} bordered cellBordered loading={tableLoading}>
                 <Column flexGrow={4} >
                     <HeaderCell>User</HeaderCell>
                     <Cell className="admin-click-cell">

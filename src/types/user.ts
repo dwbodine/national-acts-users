@@ -1,4 +1,4 @@
-import { ITicketSalesData, Order, SellerType, VipEvent } from "./event";
+import { ITicketSalesData, Order, Seller, SellerType, VipEvent } from "./event";
 
 export type LoginResponse = {
   user?: User;
@@ -256,15 +256,20 @@ export type UserActivity = {
 }
 
 export type AdminSelection = {
-  sellerId?: number,
-  start?: number,
-  end?: number,
-  reloadUsers: boolean,
-  reloadRoles: boolean,
-  selectedUser: User | undefined,
-  selectedRole: Role | undefined,
-  roles?: Role[] | undefined,
-  users?: User[] | undefined
+  sellerId?: number;
+  start?: number;
+  end?: number;
+  reloadUsers?: boolean;
+  reloadRoles?: boolean;
+  reloadEvents?: boolean;
+  selectedUser?: User | undefined;
+  selectedRole?: Role | undefined;
+  selectedEvent?: VipEvent | undefined;
+  selectedOrder?: Order | undefined;
+  allSellers?: Seller[] | undefined;
+  roles?: Role[] | undefined;
+  users?: User[] | undefined;
+  events?: VipEvent[] | undefined;
 }
 
 export type AdminReportsSelection = {

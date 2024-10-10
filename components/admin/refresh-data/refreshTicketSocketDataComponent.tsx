@@ -8,11 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import ReportDatePicker from "../../common/reportDatePIcker";
 import { RootState } from "@/lib/store";
-import { setAdminDates, setAdminSellerId } from "@/lib/adminSelectionSlice";
+import { setAdminDates, setAdminSellerId, setAllSellers } from "@/lib/adminSelectionSlice";
 import RefreshTicketSocketDataResults from "./refreshTicketSocketDataResults";
 import RefreshTicketSocketHistoryTable from "./refreshTicketSocketHistoryTable";
 import { useGetRefreshHistory } from "@/hooks/admin/useGetRefreshHistory";
 import { useRefreshEventsFromTicketSocket } from "@/hooks/admin/useRefreshEventsFromTicketSocket";
+import { AdminSelection } from "@/types/user";
+import { DiPerl } from "react-icons/di";
 
 export default function RefreshTicketSocketData() { 
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -21,17 +23,21 @@ export default function RefreshTicketSocketData() {
     const { refreshEventsFromTicketSocket } = useRefreshEventsFromTicketSocket();
     const dispatch = useDispatch();
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-    const [allSellers, setAllSellers] = useState<Seller[] | undefined>(undefined);
     const [updateResults, setUpdateResults] = useState<TicketSocketRefreshHistory | undefined>(undefined);
     const [history, setHistory] = useState<TicketSocketRefreshHistory[] | undefined>(undefined);
 
     useEffect(() => {
-        if (allSellers == undefined) {
+        if (currentAdminSelection.allSellers == undefined) {
             dispatch(
                 setIsLoading(true)
-            );
+            );            
+            dispatch(
+                setAdminSellerId(undefined)
+            );            
             getSellers().then((response: GetSellersResponse) => {
-                setAllSellers(response.sellers);
+                dispatch (
+                    setAllSellers(response.sellers)
+                );                
                 dispatch(
                     setIsLoading(false)
                 );
@@ -47,7 +53,7 @@ export default function RefreshTicketSocketData() {
                 );
             });   
         }
-    },[allSellers, dispatch, getSellers, getRefreshHistory, updateResults, history]);    
+    },[dispatch, getSellers, getRefreshHistory, updateResults, history, currentAdminSelection]);    
 
     const updateSeller = (e: any) => {
         const sellerId = parseInt(e.currentTarget.value);
@@ -90,7 +96,7 @@ export default function RefreshTicketSocketData() {
             <Row className="refresh-results-header">
                 <Col xl={4} lg={12} className="refresh-results-header-col">
                     <h3>Refresh TicketSocket Data</h3>
-                    <AdminSellerSelect id="refresh" Sellers={allSellers} SellerId={currentAdminSelection.sellerId} OnSellerChange={updateSeller} />
+                    <AdminSellerSelect id="refresh" Sellers={currentAdminSelection.allSellers} SellerId={currentAdminSelection.sellerId} OnSellerChange={updateSeller} />
                     <ReportDatePicker onChange={onDateChange} start={currentAdminSelection.start} end={currentAdminSelection.end} />   
                     <Button onClick={submitReset}>Reset</Button> <AdminListHomeButton />
                     { errorMessage ? 

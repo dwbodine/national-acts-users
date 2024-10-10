@@ -1,16 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { AdminSelection, Role, User } from "../types/user";
+import { Order, Seller, VipEvent } from "@/types/event";
 import moment from "moment";
 
 const initialState: AdminSelection = {
     sellerId: undefined,
-    start: undefined,
+    start: moment().startOf('day').unix(),
     end: undefined,
     reloadUsers: true,
-    selectedUser: undefined,
+    reloadEvents: true,
     reloadRoles: true,
-    selectedRole: undefined
+    selectedEvent: undefined,
+    selectedOrder: undefined,
+    selectedUser: undefined,    
+    selectedRole: undefined,
+    allSellers: undefined,
+    roles: undefined,
+    users: undefined,
+    events: undefined
 };
 
 export const adminSelectionSlice = createSlice({
@@ -24,6 +32,18 @@ export const adminSelectionSlice = createSlice({
         },
         setAdminSellerId: (state, action: PayloadAction<number | undefined>) => {
             state.sellerId = action.payload;
+            return state;
+        },
+        setAllSellers: (state, action: PayloadAction<Seller[] | undefined>) => {
+            state.allSellers = action.payload;
+            return state;
+        },
+        setAdminEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
+            state.selectedEvent = action.payload;
+            return state;
+        },
+        setAdminOrder: (state, action: PayloadAction<Order | undefined>) => {
+            state.selectedOrder = action.payload;
             return state;
         },
         setReloadUsers: (state, action: PayloadAction<boolean>) =>{
@@ -51,6 +71,20 @@ export const adminSelectionSlice = createSlice({
             }
             return state;
         },
+        setAdminEvents: (state, action: PayloadAction<VipEvent[]>) => {
+            state.events = action.payload;
+            state.reloadEvents = false;
+            return state;
+        },
+        setReloadEvents: (state, action: PayloadAction<boolean>) =>{
+            state.reloadEvents = action.payload;
+            if (state.reloadEvents) {
+                state.selectedEvent = undefined;
+                state.selectedOrder = undefined;
+                state.events = undefined;
+            }
+            return state;
+        },
         setSelectedRole: (state, action: PayloadAction<Role>) => {
             state.selectedRole = action.payload;
             return state;
@@ -65,15 +99,19 @@ export const adminSelectionSlice = createSlice({
             state.start = undefined;
             state.end = undefined;
             state.reloadUsers = true;
-            state.selectedUser = undefined;
             state.reloadRoles = true;
+            state.reloadEvents = true;
+            state.selectedUser = undefined;
             state.selectedRole = undefined;
+            state.selectedEvent = undefined;
+            state.selectedOrder = undefined;
             state.roles = undefined;
             state.users = undefined;
+            state.events = undefined;
             return state;
         }
     }
-})
+});
 
 export const { setAdminDates,
                setAdminSellerId, 
@@ -83,7 +121,12 @@ export const { setAdminDates,
                setReloadRoles,
                setSelectedRole,
                setRoles,
-               resetAdmin
+               resetAdmin, 
+               setAdminEvent, 
+               setAdminOrder,
+               setReloadEvents,
+               setAllSellers,
+               setAdminEvents
              } = adminSelectionSlice.actions
 
 export default adminSelectionSlice.reducer

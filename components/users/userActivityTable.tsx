@@ -15,6 +15,7 @@ export default function UserActivityTable() {
     const dispatch = useDispatch();
     const currentUserActivitySelection = useSelector((state: RootState) => state.userActivitySelection);
     const { Column, HeaderCell, Cell } = Table;
+    const [tableLoading, setTableLoading] = useState(true);
 
     const onFilterClick = (event: ChangeEvent<HTMLInputElement>) => {
         dispatch(setFilterAdmins(event.target.checked));
@@ -22,6 +23,7 @@ export default function UserActivityTable() {
 
     useEffect(() => {
         if (currentUserActivitySelection.reloadActivities) {
+            setTableLoading(true);
             dispatch(
                 setIsLoading(true)
             );
@@ -38,13 +40,17 @@ export default function UserActivityTable() {
                     dispatch(
                         setIsLoading(false)
                     );
+                    setTableLoading(false);
                 });
-        } else {
+        } else if (tableLoading) {
             dispatch(
                 setIsLoading(false)
             );
+            setTimeout(() => {
+                setTableLoading(false);
+            }, 300);
         }
-    }, [currentUserActivitySelection, getActivityData, dispatch]);
+    }, [currentUserActivitySelection, getActivityData, dispatch, tableLoading]);
 
     return (     
         <div className="admin-container">
@@ -61,7 +67,7 @@ export default function UserActivityTable() {
                 </Row>
                 <Row>
                     <Col>
-                        <Table height={500} data={currentUserActivitySelection.currentActivities} bordered cellBordered>
+                        <Table height={500} data={currentUserActivitySelection.currentActivities} bordered cellBordered loading={tableLoading}>
                             <Column flexGrow={4}>
                                 <HeaderCell>Time</HeaderCell>
                                 <Cell>{rowData => moment(rowData.activityTime).format('MM/DD/YYYY hh:mm:ss A') }</Cell>

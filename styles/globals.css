@@ -723,6 +723,10 @@ div hidden {
   margin: 0;
 }
 
+.admin-event-info {
+  margin: 10px 0;
+}
+
 /* MOBILE QUERIES */
 /* Bootstrap xxl */
 @media (max-width: 1400px) {

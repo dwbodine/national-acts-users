@@ -13,7 +13,6 @@ import { CirclesWithBar } from "react-loader-spinner";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 
 export default function AdminRolesIndex() {
-
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
     const dispatch = useDispatch();
     const { getAllRoles } = useGetAllRoles();
@@ -21,9 +20,11 @@ export default function AdminRolesIndex() {
     const { Column, HeaderCell, Cell } = Table;
     const [ selectedRoles, setSelectedRoles ] = useState<number[]>([]);
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+    const [tableLoading, setTableLoading] = useState(true);
 
     useEffect(() => {
         if (!currentAdminSelection.roles || currentAdminSelection.reloadRoles) {
+            setTableLoading(true);
             dispatch(
                 setIsLoading(true)
             );
@@ -37,9 +38,14 @@ export default function AdminRolesIndex() {
                 dispatch(
                     setIsLoading(false)
                 );
+                setTableLoading(false);
             });
-        }            
-    },[getAllRoles, dispatch, currentAdminSelection]);    
+        } else if (tableLoading) {
+            setTimeout(() => {
+                setTableLoading(false);
+            }, 300);
+        }      
+    },[getAllRoles, dispatch, currentAdminSelection, tableLoading]);    
 
     const editRole = (e: SyntheticEvent) => {
         const roleId = parseInt(e.currentTarget.id);
@@ -48,6 +54,7 @@ export default function AdminRolesIndex() {
             dispatch(
                 setSelectedRole(role)
             );
+            setTableLoading(true);
             router.push('/admin/roles/edit');
         }        
     };
@@ -61,6 +68,7 @@ export default function AdminRolesIndex() {
         dispatch(
             setSelectedRole(role)
         );
+        setTableLoading(true);
         router.push('/admin/roles/edit');
     }
 
@@ -100,7 +108,7 @@ export default function AdminRolesIndex() {
     return (
         <div className="admin-container">
             <h3>Roles Admin</h3>
-            <Table height={420} data={currentAdminSelection.roles} bordered cellBordered>
+            <Table height={420} data={currentAdminSelection.roles} bordered cellBordered loading={tableLoading}>
                 <Column width={50} align="center">
                     <HeaderCell> </HeaderCell>
                     <Cell>{rowData => rowData.roleId > 4 ? <FormCheck id={rowData.roleId} checked={selectedRoles.includes(rowData.roleId)} onChange={updateSelectedRoles} /> : ''}</Cell>
