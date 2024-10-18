@@ -9,8 +9,15 @@ export default function SalesByAccountWidget(props: any) {
 
     let ticketsPerTransaction = 0;
     let averagePurchaseAmount = 0;
+    let pricePerTicket = 0;
+    let serviceFeePerTicket = 0;
+    let tickets = (accountTotals?.Tickets ?? 0);
+    if (tickets > 0) {
+        pricePerTicket = (accountTotals?.Revenue ?? 0) / tickets;
+        serviceFeePerTicket = (accountTotals?.ServiceFees ?? 0) / tickets;
+    }
     if (accountTotals?.Purchases) {
-        ticketsPerTransaction = (accountTotals?.Tickets ?? 0) / accountTotals.Purchases;
+        ticketsPerTransaction = tickets / accountTotals.Purchases;
         averagePurchaseAmount = (accountTotals?.TotalRevenue ?? 0) / accountTotals.Purchases;
     }
  
@@ -54,6 +61,14 @@ export default function SalesByAccountWidget(props: any) {
                 <Row>
                     <Col className="sales-stat-block-name">Avg. Purchase:</Col>
                     <Col className="sales-stat-block-value">${averagePurchaseAmount.toFixed(2) ?? 'n/a'}</Col>
+                </Row>
+                <Row>
+                    <Col className="sales-stat-block-name">Avg. Price Per Ticket:</Col>
+                    <Col className="sales-stat-block-value">${pricePerTicket.toFixed(2) ?? 'n/a'}</Col>
+                </Row>
+                <Row>
+                    <Col className="sales-stat-block-name">Avg. Service Fee Per Ticket:</Col>
+                    <Col className="sales-stat-block-value">${serviceFeePerTicket.toFixed(2) ?? 'n/a'}</Col>
                 </Row>
             </Col>
         </Row>

@@ -50,7 +50,7 @@ export default function AdminUsersIndex() {
         return () => {
             debouncedResults.cancel();
         }       
-    },[getAllUsers, dispatch, currentAdminSelection, debouncedResults]);
+    },[getAllUsers, dispatch, currentAdminSelection, debouncedResults, tableLoading]);
 
     const editUser = (e: SyntheticEvent) => {
         const userId = parseInt(e.currentTarget.id);

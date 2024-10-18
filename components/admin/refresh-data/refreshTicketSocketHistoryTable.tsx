@@ -101,10 +101,6 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
                 <Cell>{rowData => rowData.ordersUpdated ? rowData.ordersUpdated.toString() : "0"}</Cell>
             </Column>
             <Column>
-                <HeaderCell>Orders Deactivated</HeaderCell>
-                <Cell>{rowData => rowData.ordersDeactivated ? rowData.ordersDeactivated.toString() : "0"}</Cell>
-            </Column>
-            <Column>
                 <HeaderCell>Orders Deleted</HeaderCell>
                 <Cell>{rowData => rowData.ordersDeleted ? rowData.ordersDeleted.toString() : "0"}</Cell>
             </Column>
@@ -117,20 +113,12 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
                 <Cell>{rowData => rowData.ticketsUpdated ? rowData.ticketsUpdated.toString() : "0"}</Cell>
             </Column>
             <Column>
-                <HeaderCell>Tickets Deactivated</HeaderCell>
-                <Cell>{rowData => rowData.ticketsDeactivated ? rowData.ticketsDeactivated.toString() : "0"}</Cell>
-            </Column>
-            <Column>
                 <HeaderCell>Ticket types Inserted</HeaderCell>
                 <Cell>{rowData => rowData.ticketTypesInserted ? rowData.ticketTypesInserted.toString() : "0"}</Cell>
             </Column>
             <Column>
                 <HeaderCell>Ticket types Updated</HeaderCell>
                 <Cell>{rowData => rowData.ticketTypesUpdated ? rowData.ticketTypesUpdated.toString() : "0"}</Cell>
-            </Column>
-            <Column>
-                <HeaderCell>Ticket types Deactivated</HeaderCell>
-                <Cell>{rowData => rowData.ticketTypesDeactivated ? rowData.ticketTypesDeactivated.toString() : "0"}</Cell>
             </Column>
             <Column>
                 <HeaderCell>Order data rows total</HeaderCell>

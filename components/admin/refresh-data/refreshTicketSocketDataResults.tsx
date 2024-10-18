@@ -26,14 +26,11 @@ export default function RefreshTicketSocketDataResults(props: any) {
     let eventsInserted = '';
     let ordersUpdated = '';
     let ordersInserted = '';
-    let ordersDeactivated = '';
     let ordersDeleted = '';
     let ticketsUpdated = '';
     let ticketsInserted = '';
-    let ticketsDeactivated = '';
     let ticketTypesUpdated = '';
     let ticketTypesInserted = '';
-    let ticketTypesDeactivated = '';
     let orderDataUpdateSucceeded = '';
     let orderDataUpdateDuration = '';
     let orderDataRowsTotal = '';
@@ -65,14 +62,11 @@ export default function RefreshTicketSocketDataResults(props: any) {
         eventsInserted = results.eventsInserted ? results.eventsInserted.toString() : "0";
         ordersUpdated = results.ordersUpdated ? results.ordersUpdated.toString() : "0";
         ordersInserted = results.ordersInserted ? results.ordersInserted.toString() : "0";
-        ordersDeactivated = results.ordersDeactivated ? results.ordersDeactivated.toString() : "0";
         ordersDeleted = results.ordersDeleted ? results.ordersDeleted.toString() : "0";
         ticketsUpdated = results.ticketsUpdated ? results.ticketsUpdated.toString() : "0";
         ticketsInserted = results.ticketsInserted ? results.ticketsInserted.toString() : "0";
-        ticketsDeactivated = results.ticketsDeactivated ? results.ticketsDeactivated.toString() : "0";
         ticketTypesUpdated = results.ticketTypesUpdated ? results.ticketTypesUpdated.toString() : "0";
         ticketTypesInserted = results.ticketTypesInserted ? results.ticketTypesInserted.toString() : "0";
-        ticketTypesDeactivated = results.ticketTypesDeactivated ? results.ticketTypesDeactivated.toString() : "0";
         orderDataRowsTotal = results.orderDataRowsTotal ? results.orderDataRowsTotal.toString() : "0";
         orderDataRowsRemoved = results.orderDataRowsRemoved ? results.orderDataRowsRemoved.toString() : "0";
         orderDataRowsUpdated = results.orderDataRowsUpdated ? results.orderDataRowsUpdated.toString() : "0";
@@ -156,13 +150,10 @@ export default function RefreshTicketSocketDataResults(props: any) {
                     <Col>Orders inserted: {ordersInserted}</Col>
                 </Row>
                 <Row>
-                    <Col>Orders deactivated: {ordersDeactivated}</Col>
+                    <Col>Orders deleted: {ordersDeleted}</Col>
                 </Row>
             </Col>
             <Col>                
-                <Row>
-                    <Col>Orders deleted: {ordersDeleted}</Col>
-                </Row>
                 <Row>
                     <Col>Tickets updated: {ticketsUpdated}</Col>
                 </Row>
@@ -170,16 +161,10 @@ export default function RefreshTicketSocketDataResults(props: any) {
                     <Col>Tickets inserted: {ticketsInserted}</Col>
                 </Row>
                 <Row>
-                    <Col>Ticket deactivated: {ticketsDeactivated}</Col>
-                </Row>
-                <Row>
                     <Col>Ticket types updated: {ticketTypesUpdated}</Col>
                 </Row>
                 <Row>
                     <Col>Ticket types inserted: {ticketTypesInserted}</Col>
-                </Row>
-                <Row>
-                    <Col>Ticket types deactivated: {ticketTypesDeactivated}</Col>
                 </Row>
                 <Row>
                     <Col>Order data rows total: {orderDataRowsTotal}</Col>

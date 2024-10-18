@@ -343,6 +343,8 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
     const averageDailyServiceFeesPerMonth = monthlyServiceFeeRevenue / totals.day;
     const averageDailyTotalRevenuePerMonth = monthlyTotalRevenue / totals.day;
     const averageDailyRefundsPerMonth = monthlyTicketsRefunded / totals.day;
+    const monthToDatePricePerTicket = monthlyTicketRevenue / monthlyTickets;
+    const monthToDateServiceFeePerTicket = monthlyServiceFeeRevenue / monthlyTickets;
 
     const monthlyAverages: IAverageDailyData = {
         transactions: averageDailyTransactionsPerMonth,
@@ -405,7 +407,9 @@ export function getDashboardDataFromOrders(currentDashboardSelection: AdminDashb
         salesPerDayYear: salesPerDayYear, 
         totalsByAccount: totalsByAccount, 
         monthlyAverages: monthlyAverages,
-        yearlyAverages: yearlyAverages
+        yearlyAverages: yearlyAverages,
+        monthToDatePricePerTicket: monthToDatePricePerTicket,
+        monthToDateServiceFeePerTicket: monthToDateServiceFeePerTicket
     };
 
     return dashboardData; 

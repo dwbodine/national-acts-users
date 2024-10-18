@@ -144,6 +144,8 @@ export interface IDashboardTotals {
   totalRevenueUsd: number;
   yearlyRevenueGoal: number;
   monthlyRevenueGoal: number;
+  pricePerTicket?: number;
+  serviceFeePerTicket?: number;
   dailyOrderData?: IDailyOrderData[];
 }
 
@@ -195,6 +197,8 @@ export interface IDashboardData {
   totalsByAccount?: ITotalsByAccount[];
   monthlyAverages?: IAverageDailyData;
   yearlyAverages?: IAverageDailyData;
+  monthToDatePricePerTicket?: number;
+  monthToDateServiceFeePerTicket?: number;
 }
 
 export type AdminDashboardSelection = {

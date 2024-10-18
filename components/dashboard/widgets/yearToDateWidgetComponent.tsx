@@ -52,6 +52,14 @@ export default function YearToDateWidget(props: any) {
                     <Col className="sales-stat-block-value">${averagePurchaseAmount.toFixed(2) ?? 'n/a'}</Col>
                 </Row>
                 <Row>
+                    <Col className="sales-stat-block-name">Avg. Price Per Ticket:</Col>
+                    <Col className="sales-stat-block-value">${totals?.pricePerTicket?.toFixed(2) ?? 'n/a'}</Col>
+                </Row>
+                <Row>
+                    <Col className="sales-stat-block-name">Avg. Service Fee Per Ticket:</Col>
+                    <Col className="sales-stat-block-value">${totals?.serviceFeePerTicket?.toFixed(2) ?? 'n/a'}</Col>
+                </Row>
+                <Row>
                     <Col className="sales-stat-block-name">Yearly Proj.:</Col>
                     <Col className="sales-stat-block-value">${projectedYearTotalRevenue?.toFixed(2) ?? 'n/a'}</Col>
                 </Row>

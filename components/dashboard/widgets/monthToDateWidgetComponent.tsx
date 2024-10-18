@@ -53,6 +53,14 @@ export default function MonthToDateWidget(props: any) {
                     <Col className="sales-stat-block-value">${averagePurchaseAmount.toFixed(2) ?? 'n/a'}</Col>
                 </Row>
                 <Row>
+                    <Col className="sales-stat-block-name">Avg. Price Per Ticket:</Col>
+                    <Col className="sales-stat-block-value">${dashBoardData?.monthToDatePricePerTicket?.toFixed(2) ?? 'n/a'}</Col>
+                </Row>
+                <Row>
+                    <Col className="sales-stat-block-name">Avg. Service Fee Per Ticket:</Col>
+                    <Col className="sales-stat-block-value">${dashBoardData?.monthToDateServiceFeePerTicket?.toFixed(2) ?? 'n/a'}</Col>
+                </Row>
+                <Row>
                     <Col className="sales-stat-block-name">Monthly Proj.:</Col>
                     <Col className="sales-stat-block-value">${dashBoardData?.projectedMonthTotalRevenue?.toFixed(2) ?? 'n/a'}</Col>
                 </Row>

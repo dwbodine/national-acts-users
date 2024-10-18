@@ -148,14 +148,11 @@ export interface TicketSocketRefreshHistory {
   eventsInserted?: number;
   ordersInserted?: number;
   ordersUpdated?: number;
-  ordersDeactivated?: number;
   ordersDeleted?: number;
   ticketsUpdated?: number;
   ticketsInserted?: number;
-  ticketsDeactivated?: number;
   ticketTypesUpdated?: number;
   ticketTypesInserted?: number;
-  ticketTypesDeactivated?: number;
   userId?: number;
   sellerId?: number;
   sellerName?: string;
