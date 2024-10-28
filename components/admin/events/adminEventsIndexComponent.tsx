@@ -69,8 +69,24 @@ export default function AdminEventsIndex() {
         );
     };
 
+    const editEvent = (e: any) => {
+        const ticketSocketEventId = parseInt(e.currentTarget.id.replace('_event', ''));
+        if (!ticketSocketEventId || !currentAdminSelection.events || currentAdminSelection.events.length == 0) {
+            return;
+        }
+        const vipEvent = currentAdminSelection.events.find(x => x.ticketSocketEventId == ticketSocketEventId);
+        if (!vipEvent) {
+            return;
+        }
+        dispatch (
+            setAdminEvent(vipEvent)
+        );
+        setTableLoading(true);
+        router.push('/admin/events/edit/');
+    };
+
     const viewOrders = (e: any) => {
-        const ticketSocketEventId = parseInt(e.currentTarget.id);
+        const ticketSocketEventId = parseInt(e.currentTarget.id.replace('_orders', ''));
         if (!ticketSocketEventId || !currentAdminSelection.events || currentAdminSelection.events.length == 0) {
             return;
         }
@@ -144,11 +160,11 @@ export default function AdminEventsIndex() {
                         </Column>
                         <Column flexGrow={1}>
                             <HeaderCell>&nbsp;</HeaderCell>
-                            <Cell>Edit</Cell>
+                            <Cell>{rowData => rowData.ticketSocketEventId ? <a href="#" id={`${rowData.ticketSocketEventId}_event`} onClick={editEvent}>Edit</a> : ''}</Cell>
                         </Column>
                         <Column flexGrow={1}>
                             <HeaderCell>&nbsp;</HeaderCell>
-                            <Cell>{rowData => rowData.ticketSocketEventId ? <a href="#" id={rowData.ticketSocketEventId} onClick={viewOrders}>Manage Orders</a> : ''}</Cell>
+                            <Cell>{rowData => rowData.ticketSocketEventId ? <a href="#" id={`${rowData.ticketSocketEventId}_orders`} onClick={viewOrders}>Manage Orders</a> : ''}</Cell>
                         </Column>
                     </Table>
                 </Col>

@@ -3,6 +3,7 @@ import { store } from '../src/lib/store';
 import { Provider } from 'react-redux';
 import Head from 'next/head';
 import 'rsuite/dist/rsuite.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 import '../styles/globals.css';
 
 export default function App({ Component, pageProps }: AppProps) {

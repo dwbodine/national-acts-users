@@ -242,8 +242,7 @@ export default function EventDetail(props: any) {
         if (visibleOrders.length > 0 && searchTerm && searchTerm.length >= 2) {
             const srch = searchTerm.toLowerCase();
             filteredOrders = visibleOrders.filter((order) => {
-                return order.attendeeNames?.find(x => x.toLowerCase().includes(srch)) || 
-                    order.purchaserFirstName.toLowerCase().includes(srch) ||
+                return order.purchaserFirstName.toLowerCase().includes(srch) ||
                     order.purchaserLastName.toLowerCase().includes(srch);
             })
         } else {

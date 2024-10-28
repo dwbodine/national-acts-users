@@ -25,8 +25,9 @@ export interface Ticket {
   isActive?: boolean;
   ticketType: string;
   serviceFee?: number;
-  attendeeName?: string;
   isCheckedIn?: boolean;
+  attendeeFirstName?: string;
+  attendeeLastName?: string;
 }
 
 export interface Order {
@@ -74,7 +75,6 @@ export interface Order {
   purchaserIpAddress?: string;
   revenue: number;
   serviceFees?: number;
-  attendeeNames?: string[];
   shirts?: string[];
   isHidden?: boolean;
 }
@@ -135,6 +135,8 @@ export interface VipEvent {
   isAddedToBandsInTown?: boolean;
   sellerName?: string;
   isHidden?: boolean;
+  isCancelled?: boolean;
+  cancelledDate?: string;
 }
 
 export interface TicketSocketRefreshHistory {

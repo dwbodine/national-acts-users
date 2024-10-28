@@ -2,89 +2,103 @@ import { RootState } from "@/lib/store";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import router from 'next/router';
-import { GetPermissionsResponse, Permission, Role, UpdateRoleResponse } from "@/types/user";
 import { Button, FormCheck } from "react-bootstrap";
-import { useGetAllPermissions } from "@/hooks/user/useGetAllPermissions";
-import { setReloadRoles, setSelectedRole } from "@/lib/adminSelectionSlice";
-import { useUpdateRole } from "@/hooks/admin/useUpdateRole";
+import { toast } from 'react-toastify';
 import { setIsLoading } from "@/lib/globalSelectionSlice";
+import { useGetLocation } from "@/hooks/common/useGetLocation";
+import moment from "moment";
+import ConfirmationDialog from "../../common/confirmationDialogComponent";
+import { useRefundEvent } from "@/hooks/admin/useRefundEvent";
+import { ModifyEventResponse } from "@/types/event";
+import { setAdminEvent } from "@/lib/adminSelectionSlice";
 
 export default function AdminEventEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
     const dispatch = useDispatch();
-    const { getAllPermissions } = useGetAllPermissions();
-    const { updateRole } = useUpdateRole();
-    const [allPermissions, setAllPermissions] = useState<Permission[] | undefined>(undefined);
-    const [roleName, setRoleName] = useState<string | undefined>(undefined);
+    const { getLocation } = useGetLocation();
+    const { refundEvent } = useRefundEvent();
+    const [isActive, setIsActive] = useState<boolean>(false);
+    const [isHidden, setIsHidden] = useState<boolean>(false);
+    const [isDeleted, setIsDeleted] = useState<boolean>(false);
+    const [markCancelled, setMarkCancelled] = useState<boolean>(false);
+    const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
+    const [isAddedToBandsInTown, setIsAddedToBandsInTown] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
     useEffect(() => {
-        if (currentAdminSelection.selectedRole == undefined) {
+        if (currentAdminSelection.selectedEvent == undefined) {
             goBack();
-        } else if (allPermissions == undefined && roleName == undefined) {
-            dispatch(
-                setIsLoading(true)
-            );
-            setRoleName(currentAdminSelection.selectedRole.roleName);
-            getAllPermissions().then((response: GetPermissionsResponse) => {
-                setAllPermissions(response.permissions);                
-                dispatch(
-                    setIsLoading(false)
-                );
-            }); 
+        } else {
+            setIsActive(currentAdminSelection.selectedEvent.isActive);
         }
-    }, [currentAdminSelection, roleName, allPermissions, getAllPermissions, dispatch]);
+    }, [currentAdminSelection, dispatch]);
 
     const goBack = () => {
-        router.push('/admin/roles/');
+        router.push('/admin/events/');
     }
 
-    const hasPermission = (permissionId: number) => {
-        if (!currentAdminSelection.selectedRole || !currentAdminSelection.selectedRole.permissions) {
-            return false;
-        }
-        return (currentAdminSelection.selectedRole.permissions.find(x => x.permissionId == permissionId) != undefined);
+    const setTicketTypeStatus = (e: any) => {
+
     };
 
-    const updateRolePermissions = (e: any) => {
-        if (!allPermissions|| !currentAdminSelection.selectedRole) {
-            return;
+    const confirmDoRefund = () => {
+        let message: string = 'By continuing, ';
+        if (markCancelled) {
+            message += 'this event will be marked as cancelled and ';
         }
-        const permissionId = parseInt(e.currentTarget.id);
-        if (isNaN(permissionId) || permissionId <= 0) {
-            return;
+        message += 'all transactions in this event will be marked as refunded in full';
+        if (refundServiceFees) {
+            message += ', including all service fees';
         }
-        const checked = e.currentTarget.checked;
-        const hasPerm = hasPermission(permissionId);
-        let roleToUpdate: Role = {...currentAdminSelection.selectedRole};
-        let currentPermissions: Permission[] = roleToUpdate.permissions ? [...roleToUpdate.permissions] : [];
-        let changed = false;
-        if (checked && !hasPerm) {            
-            const permissionToAdd = allPermissions.find(x => x.permissionId == permissionId);
-            if (permissionToAdd) {                
-                currentPermissions.push(permissionToAdd);
-                changed = true;
-            }            
-        } else if (!checked && hasPerm) {
-            currentPermissions = currentPermissions.filter(x => x.permissionId != permissionId);
-            changed = true;
+        message += '.<br />Are you sure?';
+        toast.info(
+            <ConfirmationDialog
+                Message={message}
+                ConfirmText="Hell Yeah!" 
+                CancelText="Oh Shit... No"
+                OnConfirm={handleRefund}
+                OnCancel={() => {}}
+                />,
+                {
+                  autoClose: false,
+                  closeOnClick: false,
+                }
+        );
+    };
+
+    const handleRefund = () => {
+        if (!currentAdminSelection.selectedEvent) {
+            return false;
         }
-        if (changed) {
-            roleToUpdate.permissions = currentPermissions;
-            dispatch (
-                setSelectedRole(roleToUpdate)
-            );
-        }
+        dispatch (
+            setIsLoading(true)
+        );
+        const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
+        refundEvent(eventId, markCancelled, refundServiceFees)
+            .then((response: ModifyEventResponse) => {
+                if (response.success && !response.eventError && currentAdminSelection.selectedEvent != undefined) {
+                    let currentEvent = {...currentAdminSelection.selectedEvent};
+                    currentEvent.isCancelled = true;
+                    currentEvent.cancelledDate = moment().format('MM/DD/YYYY');
+                    dispatch (
+                        setAdminEvent(currentEvent)
+                    );
+                }
+                dispatch (
+                    setIsLoading(false)
+                );
+            });
     };
 
     const onSubmit = () => {
         setErrorMessage(undefined);
-        if (!currentAdminSelection.selectedRole) {
+        if (!currentAdminSelection.selectedEvent) {
             return false;
         }
         dispatch(
             setIsLoading(true)
         );
+        /*
         const newRoleName: string = (roleName ? roleName : '');
         let roleToUpdate: Role = {...currentAdminSelection.selectedRole, roleName: newRoleName};
         updateRole(roleToUpdate).then((response: UpdateRoleResponse) => {
@@ -99,38 +113,79 @@ export default function AdminEventEdit() {
             dispatch(
                 setIsLoading(false)
             );
-        });
+        });*/
     }
 
-    let permissionRows: any[] = [];
-    if (allPermissions && allPermissions.length > 0) {
-        allPermissions.map((item, index) => {
-            const checked: boolean = hasPermission(item.permissionId);
-            const key = `perm${index}`;
-            permissionRows.push(<FormCheck key={key} id={item.permissionId.toString()} onChange={updateRolePermissions} checked={checked} label={item.permissionName} />);
+    const pageHeader = "Edit event";
+
+    const eventTitle = (currentAdminSelection.selectedEvent != undefined) ? currentAdminSelection.selectedEvent.title : '';
+    const location = (currentAdminSelection.selectedEvent?.venue != undefined) ? getLocation(currentAdminSelection.selectedEvent.venue) : '';
+    const eventDate = currentAdminSelection.selectedEvent?.eventDate != undefined ? moment(currentAdminSelection.selectedEvent.eventDate).format('MM/DD/YYYY') : '';
+
+    let ticketTypeRows: any[] = [];
+    if (currentAdminSelection.selectedEvent && currentAdminSelection.selectedEvent.ticketTypes && currentAdminSelection.selectedEvent.ticketTypes.length > 0) {
+        currentAdminSelection.selectedEvent.ticketTypes.forEach(ticketType => {
+            const ticketTypeId = ticketType.ticketTypeName;
+            const ticketTypeDisabled = false;
+            if (currentAdminSelection.selectedEvent && currentAdminSelection.selectedEvent.orders) {
+                currentAdminSelection.selectedEvent.orders.forEach((order) => {
+                    var ticketsWithType = order.tickets?.find(x => x.ticketType)
+                });
+            }
+
+            ticketTypeRows.push(<div>{ticketType.ticketTypeName} <FormCheck disabled={ticketTypeDisabled} checked={ticketType.isActive} onChange={(e) => setTicketTypeStatus(e.target.checked)} label="Active" /></div>);
         });
     }
-
-    const pageHeader = (currentAdminSelection.selectedRole?.roleId ?? 0 > 0) ? "Edit role" : "Add role";
 
     return (
-        <div className="admin-container" hidden={!(permissionRows.length > 0 && currentAdminSelection.selectedRole != undefined)}>
-            <h1>{pageHeader}</h1>
+        <div className="admin-container" hidden={currentAdminSelection.selectedEvent == undefined}>
+            <h3>{pageHeader}</h3>
             <div className="form-group">
-              <label className="mt-4">Role Name</label>
-              <input
-                value={roleName}
-                onChange={(e) => setRoleName(e.target.value)}
-                className="form-control"
-                placeholder="role name"
-                type="text"
-              />
-            </div>
-            { permissionRows }
-            <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
-            { errorMessage ? 
-            <div className="danger">{errorMessage}</div>
-            : ''}
-        </div> 
+                <div className="form-header">
+                    <span className="title">Title:</span> {eventTitle}<br />
+                    <span className="title">Date:</span> {eventDate}<br />
+                    <span className="title">Location:</span> {location}<br />
+                </div>
+                <div>
+                    <Button onClick={confirmDoRefund}>Refund Event</Button>
+                    <FormCheck
+                        checked={markCancelled}
+                        onChange={(e) => setMarkCancelled(e.target.checked)}
+                        label="Mark as cancelled?"                
+                    />
+                    <FormCheck
+                        checked={refundServiceFees}
+                        onChange={(e) => setRefundServiceFees(e.target.checked)}
+                        label="Refund service fees?"                
+                    />
+                </div>
+                <FormCheck
+                    checked={isActive}
+                    onChange={(e) => setIsActive(e.target.checked)}
+                    label="Is Active?"                
+                />
+                <FormCheck
+                    checked={isHidden}
+                    onChange={(e) => setIsHidden(e.target.checked)}
+                    label="Is Hidden?"                
+                />
+                <FormCheck
+                    checked={isDeleted}
+                    onChange={(e) => setIsDeleted(e.target.checked)}
+                    label="Is Deleted?"                
+                />
+                <FormCheck
+                    checked={isAddedToBandsInTown}
+                    onChange={(e) => setIsAddedToBandsInTown(e.target.checked)}
+                    label="Is Added to BandsInTown?"                
+                />
+                <h5>Ticket Types</h5>
+                {ticketTypeRows}
+                <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+                { errorMessage ? 
+                <div className="danger">{errorMessage}</div>
+                : ''}
+            </div> 
+        </div>
     );
 }

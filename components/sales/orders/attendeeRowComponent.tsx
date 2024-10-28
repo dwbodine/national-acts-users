@@ -10,7 +10,7 @@ export default function AttendeeRow(props: any) {
     const canCheckInTickets = props.CanCheckInTickets as boolean;
     const ticket = props.Ticket as Ticket;
     const ticketId = ticket.ticketSocketOrderTicketId;
-    const attendeeName = ticket.attendeeName;
+    const attendeeName = `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
     const currentCheckIn = ticket.isCheckedIn;
     const id = `ticket_${ticket.ticketSocketOrderTicketId}`;
     let className = '';

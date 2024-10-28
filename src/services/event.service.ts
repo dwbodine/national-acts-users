@@ -334,6 +334,91 @@ export class EventService {
     });
   }
 
+  refundEvent = async (eventId: number, markCancelled: boolean, refundServiceFees: boolean): Promise<ModifyEventResponse> => {
+    let url = markCancelled ? '/admin/events/cancel' : 'admin/events/refund';
+
+    let eventResponse: ModifyEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200
+    };
+
+    const eventData = {
+      eventId: eventId,
+      refundOrders: true,
+      refundServiceFees: refundServiceFees
+    }
+
+    const data = JSON.stringify(eventData);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      })
+      .then((res) => {
+        eventResponse.success = res.data;
+        return eventResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          eventResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while issuing event refund";
+        }
+        eventResponse.eventError = errorMessage;
+        return eventResponse;
+    });
+  }
+
+  refundOrder = async (orderId: number, refundServiceFees: boolean): Promise<ModifyOrderResponse> => {
+    let url = 'admin/orders/refund';
+
+    let orderResposne: ModifyOrderResponse = {
+      success: false,
+      orderError: undefined,
+      statusCode: 200
+    };
+
+    const orderData = {
+      orderId: orderId,
+      refundServiceFees: refundServiceFees
+    }
+
+    const data = JSON.stringify(orderData);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers
+      })
+      .then((res) => {
+        orderResposne.success = res.data;
+        return orderResposne;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          orderResposne.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while issuing event refund";
+        }
+        orderResposne.orderError = errorMessage;
+        return orderResposne;
+    });
+  }
+
   updateOrder = async (orderToUpdate: Order): Promise<ModifyOrderResponse> => {
     let url = `/admin/orders/update`;
 
@@ -1153,7 +1238,6 @@ export class EventService {
     const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
     const purchaserZip = order.purchaserZipCode ?? '';
     const purchaserIpAddress = order.purchaserIpAddress ?? '';
-    const attendeeNames = order.attendeeNames?.join(" / ");
     const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
     const eventDate = moment(order.eventDate).format('MM/DD/YYYY');
     const eventName = order.eventTitle;          
@@ -1171,10 +1255,14 @@ export class EventService {
     }
     const shirts = order.shirts?.join(' / ') ?? '';
     let ticketTypeStr = '';
-    if (numTickets > 0) {
-      
+    let attendeeNames = '';
+    if (numTickets > 0) {      
       const ticketMap = new Map<string, number>();
       order.tickets?.forEach((ticket) => {
+          if (attendeeNames.length > 0) {
+            attendeeNames += ' / ';
+          }
+          attendeeNames += `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
           const item = ticketMap.get(ticket.ticketType);
           let num: number = 1;
           if (item && item > 0) {

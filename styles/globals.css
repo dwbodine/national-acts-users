@@ -727,6 +727,16 @@ div hidden {
   margin: 10px 0;
 }
 
+.form-header {
+  margin: 10px 0;
+}
+
+.form-header .title {
+  font-weight: bold;
+  display: inline-block;
+  width: 100px;
+}
+
 /* MOBILE QUERIES */
 /* Bootstrap xxl */
 @media (max-width: 1400px) {
