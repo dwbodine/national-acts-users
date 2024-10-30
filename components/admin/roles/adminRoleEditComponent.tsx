@@ -8,6 +8,7 @@ import { useGetAllPermissions } from "@/hooks/user/useGetAllPermissions";
 import { setReloadRoles, setSelectedRole } from "@/lib/adminSelectionSlice";
 import { useUpdateRole } from "@/hooks/admin/useUpdateRole";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
+import { toast } from "react-toastify";
 
 export default function AdminRoleEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -16,8 +17,7 @@ export default function AdminRoleEdit() {
     const { updateRole } = useUpdateRole();
     const [allPermissions, setAllPermissions] = useState<Permission[] | undefined>(undefined);
     const [roleName, setRoleName] = useState<string | undefined>(undefined);
-    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-
+    
     useEffect(() => {
         if (currentAdminSelection.selectedRole == undefined) {
             goBack();
@@ -78,7 +78,6 @@ export default function AdminRoleEdit() {
     };
 
     const onSubmit = () => {
-        setErrorMessage(undefined);
         if (!currentAdminSelection.selectedRole) {
             return false;
         }
@@ -92,9 +91,10 @@ export default function AdminRoleEdit() {
                 dispatch(
                     setReloadRoles(true)
                 )
+                toast.success('Save role succeeded');
                 router.push('/admin/roles/');
             } else {
-                setErrorMessage(response.roleError ?? "Error occurred while saving role");
+                toast.error(response.roleError ?? "Error occurred while saving role");
             }
             dispatch(
                 setIsLoading(false)
@@ -128,9 +128,6 @@ export default function AdminRoleEdit() {
             </div>
             { permissionRows }
             <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
-            { errorMessage ? 
-            <div className="danger">{errorMessage}</div>
-            : ''}
         </div> 
     );
 }

@@ -324,7 +324,7 @@ div hidden {
 }
 
 .resultsTable tr.event-deleted {
-  color: maroon;
+  color: rgb(0, 220, 0);
   font-weight: bold;
 }
 
@@ -428,7 +428,7 @@ div hidden {
 }
 
 .vipTable .deleted {
-  color: maroon;
+  color: rgb(0, 220, 0);
   font-weight: bold;
 }
 
@@ -735,6 +735,59 @@ div hidden {
   font-weight: bold;
   display: inline-block;
   width: 100px;
+}
+
+.form-control-float {
+  float: left;
+  margin-right: 10px !important;
+}
+
+.confirmation-dialog {
+  min-width: 33%;
+  max-width: 100%;
+}
+
+.confirmation-dialog p {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.confirmation-dialog-buttons, .confirmation-dialog-sure {
+  width: 100%;
+  text-align: center;
+}
+
+.confirmation-dialog-buttons button {
+  margin: 0 10px;
+}
+
+.ticket-type-table td {
+  padding-right: 10px;
+}
+
+.deleted .rs-table-cell {
+  color: rgb(0, 220, 0) !important;
+  font-weight: bold;
+}
+
+.inactive .rs-table-cell {
+  color: red !important;
+  font-weight: bold;
+}
+
+.cancelled .rs-table-cell {
+  color: rgb(0, 128, 255) !important;
+  font-weight: bold;
+}
+
+.hidden .rs-table-cell {
+  color: orange !important;
+  font-weight: bold;
+}
+
+.refunded .rs-table-cell {
+  color: blueviolet !important;
+  font-weight: bold;
 }
 
 /* MOBILE QUERIES */

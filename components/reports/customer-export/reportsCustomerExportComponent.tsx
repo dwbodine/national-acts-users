@@ -15,6 +15,7 @@ import moment from "moment";
 import { useLogActivityData } from "@/hooks/common/useLogActivityData";
 import { UserActivityType } from "@/types/user";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
+import { toast } from "react-toastify";
 
 export default function ReportsCustomerExport() {
     const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -22,7 +23,6 @@ export default function ReportsCustomerExport() {
     const dispatch = useDispatch();
     const { getAllEvents } = useGetAllEvents();
     const { logActivityData } = useLogActivityData();
-    const [errorMessage, setErrorMessage] = useState('');
     const { exportCustomerDataToCsv } = useGetExport();
 
     useEffect(() => { },[currentAdminReportSelection, globalSelection.isLoading]);
@@ -38,19 +38,18 @@ export default function ReportsCustomerExport() {
 
     const onSubmit = () => {
         if (currentAdminReportSelection && currentAdminReportSelection.start && currentAdminReportSelection.end) {
-            setErrorMessage('');
 
             const start = currentAdminReportSelection.start;
             const end = currentAdminReportSelection.end;
 
             if (start >= end) {
-                setErrorMessage("Start date must be before end date");
+                toast.warning("Start date must be before end date");
                 return false;
             }
 
             if (start < MINIMUM_UNIX_TIMESTAMP) {
                 const minDate = moment.unix(MINIMUM_UNIX_TIMESTAMP).format('MM/DD/YYYY');
-                setErrorMessage(`Start date must be on or before ${minDate}`);
+                toast.warning(`Start date must be on or before ${minDate}`);
                 return false;
             }
 
@@ -63,7 +62,7 @@ export default function ReportsCustomerExport() {
                         if (response && !response.eventError) {
                             exportCustomerData(response.events);
                         } else {
-                            setErrorMessage(response.eventError ?? 'Unknown error occurred');
+                            toast.error(response.eventError ?? 'Unknown error occurred');
                         }                    
                         dispatch(
                             setIsLoading(false)
@@ -72,7 +71,7 @@ export default function ReportsCustomerExport() {
             });
             
         } else {
-            setErrorMessage('No dates selected');
+            toast.warning('No dates selected');
         }
     };
 
@@ -96,7 +95,7 @@ export default function ReportsCustomerExport() {
             const fileName = getFileNameFromReportAdminSelection('customer_export', currentAdminReportSelection);
             downloadFile(fileName, csvData);
         } else {
-            setErrorMessage('No events found');
+            toast.warning('No events found');
         }
     };
     
@@ -105,9 +104,6 @@ export default function ReportsCustomerExport() {
             <h3>Export Customer Data</h3>
             <ReportDatePicker onChange={onDateChange} start={currentAdminReportSelection.start} end={currentAdminReportSelection.end} />            
             <Button onClick={onSubmit}>Submit</Button><ReportsListHomeButton />
-            { errorMessage ? 
-            <div className="danger">{errorMessage}</div>
-            : ''}
         </div>
     );
 }

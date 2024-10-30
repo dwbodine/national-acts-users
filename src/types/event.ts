@@ -24,6 +24,7 @@ export interface Ticket {
   price?: number;
   isActive?: boolean;
   ticketType: string;
+  ticketTypeId?: number;
   serviceFee?: number;
   isCheckedIn?: boolean;
   attendeeFirstName?: string;

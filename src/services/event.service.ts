@@ -315,7 +315,7 @@ export class EventService {
         headers: headers
       })
       .then((res) => {
-        eventResponse.success = res.data;
+        eventResponse.success = (res.status == 200);
         return eventResponse;
       })
       .catch((err) => {
@@ -358,7 +358,7 @@ export class EventService {
         headers: headers
       })
       .then((res) => {
-        eventResponse.success = res.data;
+        eventResponse.success = (res.status == 200);
         return eventResponse;
       })
       .catch((err) => {
@@ -400,7 +400,7 @@ export class EventService {
         headers: headers
       })
       .then((res) => {
-        orderResposne.success = res.data;
+        orderResposne.success = (res.status == 200);
         return orderResposne;
       })
       .catch((err) => {
@@ -437,7 +437,7 @@ export class EventService {
         headers: headers
       })
       .then((res) => {
-        orderResponse.success = res.data;
+        orderResponse.success = (res.status == 200);
         return orderResponse;
       })
       .catch((err) => {
@@ -553,7 +553,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.eventError = "Unexpected error occurred while modifying event - please contact your administrator";
         }
@@ -594,7 +594,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.eventError = "Unexpected error occurred while modifying events - please contact your administrator";
         }
@@ -635,7 +635,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.eventError = "Unexpected error occurred while modifying event - please contact your administrator";
         }
@@ -676,7 +676,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.eventError = "Unexpected error occurred while modifying events - please contact your administrator";
         }
@@ -717,7 +717,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.eventError = "Unexpected error occurred while modifying event - please contact your administrator";
         }
@@ -758,7 +758,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.eventError = "Unexpected error occurred while modifying event - please contact your administrator";
         }
@@ -799,7 +799,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.orderError = "Unexpected error occurred while modifying order - please contact your administrator";
         }
@@ -840,7 +840,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.orderError = "Unexpected error occurred while modifying orders - please contact your administrator";
         }
@@ -881,7 +881,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.orderError = "Unexpected error occurred while modifying order - please contact your administrator";
         }
@@ -922,7 +922,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.orderError = "Unexpected error occurred while modifying orders - please contact your administrator";
         }
@@ -963,7 +963,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.orderError = "Unexpected error occurred while modifying order - please contact your administrator";
         }
@@ -1004,7 +1004,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.orderError = "Unexpected error occurred while modifying orders - please contact your administrator";
         }
@@ -1045,7 +1045,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.ticketError = "Unexpected error occurred while modifying ticket - please contact your administrator";
         }
@@ -1086,7 +1086,7 @@ export class EventService {
       .post(url, data, {
         headers: headers
       }).then((res) => {
-        modifyResponse.success = res.data as boolean;
+        modifyResponse.success = (res.status == 200);
         if (!modifyResponse.success) {
           modifyResponse.ticketError = "Unexpected error occurred while modifying tickets - please contact your administrator";
         }

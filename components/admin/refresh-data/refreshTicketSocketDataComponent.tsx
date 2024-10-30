@@ -15,6 +15,7 @@ import { useGetRefreshHistory } from "@/hooks/admin/useGetRefreshHistory";
 import { useRefreshEventsFromTicketSocket } from "@/hooks/admin/useRefreshEventsFromTicketSocket";
 import { AdminSelection } from "@/types/user";
 import { DiPerl } from "react-icons/di";
+import { toast } from "react-toastify";
 
 export default function RefreshTicketSocketData() { 
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -22,7 +23,6 @@ export default function RefreshTicketSocketData() {
     const { getRefreshHistory } = useGetRefreshHistory();
     const { refreshEventsFromTicketSocket } = useRefreshEventsFromTicketSocket();
     const dispatch = useDispatch();
-    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
     const [updateResults, setUpdateResults] = useState<TicketSocketRefreshHistory | undefined>(undefined);
     const [history, setHistory] = useState<TicketSocketRefreshHistory[] | undefined>(undefined);
 
@@ -72,10 +72,9 @@ export default function RefreshTicketSocketData() {
     };
 
     const submitReset = () => {
-        setErrorMessage(undefined);
         let adminSelection = { ...currentAdminSelection };
         if (!adminSelection.sellerId) {
-            setErrorMessage("Must select a seller");
+            toast.warning("Must select a seller");
             return;
         }
         dispatch(
@@ -99,9 +98,6 @@ export default function RefreshTicketSocketData() {
                     <AdminSellerSelect id="refresh" Sellers={currentAdminSelection.allSellers} SellerId={currentAdminSelection.sellerId} OnSellerChange={updateSeller} />
                     <ReportDatePicker onChange={onDateChange} start={currentAdminSelection.start} end={currentAdminSelection.end} />   
                     <Button onClick={submitReset}>Reset</Button> <AdminListHomeButton />
-                    { errorMessage ? 
-                    <div className="danger">{errorMessage}</div>
-                    : ''}
                 </Col>
                 <Col xl={8} lg={12}>
                     <RefreshTicketSocketDataResults updateResults={updateResults} />

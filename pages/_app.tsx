@@ -5,6 +5,7 @@ import Head from 'next/head';
 import 'rsuite/dist/rsuite.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/globals.css';
+import { ToastContainer } from 'react-toastify';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -15,6 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Provider store={store}>
         <Component {...pageProps} />
       </Provider>
+      <ToastContainer />
     </>
   )
 }

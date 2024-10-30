@@ -11,6 +11,7 @@ import { Button, Col, Container, FormCheck, Row } from "react-bootstrap";
 import { useDeleteRoles } from "@/hooks/admin/useDeleteRoles";
 import { CirclesWithBar } from "react-loader-spinner";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
+import { toast } from "react-toastify";
 
 export default function AdminRolesIndex() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -19,7 +20,6 @@ export default function AdminRolesIndex() {
     const { deleteRoles } = useDeleteRoles();
     const { Column, HeaderCell, Cell } = Table;
     const [ selectedRoles, setSelectedRoles ] = useState<number[]>([]);
-    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
     const [tableLoading, setTableLoading] = useState(true);
 
     useEffect(() => {
@@ -89,18 +89,18 @@ export default function AdminRolesIndex() {
     }
 
     const deleteSelectedRoles = () => {
-        setErrorMessage(undefined);
         if (selectedRoles.length == 0) {
             return;
         }
         deleteRoles(selectedRoles).then((response) => {
             if (response.success) {
                 setSelectedRoles([]);
+                toast.success('Roles deleted successfully');
                 dispatch (
                     setReloadRoles(true)
                 );
             } else {
-                setErrorMessage(response.roleError);
+                toast.error(response.roleError);
             }
         })
     };
@@ -113,15 +113,12 @@ export default function AdminRolesIndex() {
                     <HeaderCell> </HeaderCell>
                     <Cell>{rowData => rowData.roleId > 4 ? <FormCheck id={rowData.roleId} checked={selectedRoles.includes(rowData.roleId)} onChange={updateSelectedRoles} /> : ''}</Cell>
                 </Column>
-                <Column flexGrow={4}>
+                <Column width={300}>
                     <HeaderCell>Role</HeaderCell>
                     <Cell className="admin-click-cell">{rowData => <div id={rowData.roleId} onClick={editRole}>{rowData.roleName}</div> }</Cell>
                 </Column>
             </Table>
             <Button onClick={addRole}>Add</Button> <Button hidden={selectedRoles.length == 0} onClick={deleteSelectedRoles}>Delete</Button> <AdminListHomeButton />
-            { errorMessage ? 
-            <div className="danger">{errorMessage}</div>
-            : ''}
         </div>
     );
 }

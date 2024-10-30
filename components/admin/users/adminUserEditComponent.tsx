@@ -15,6 +15,7 @@ import { useDeleteUser } from "@/hooks/admin/useDeleteUser";
 import { current } from "@reduxjs/toolkit";
 import { CirclesWithBar } from "react-loader-spinner";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
+import { toast } from "react-toastify";
 
 export default function AdminUserEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -35,7 +36,6 @@ export default function AdminUserEdit() {
     const [sendEmailReset, setSendEmailReset] = useState<boolean>(false);
     const [sendTextReset, setSendTextReset] = useState<boolean>(false);
     const [disableCheckIn, setDisableCheckIn] = useState<boolean>(false);
-    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         if (currentAdminSelection.selectedUser == undefined) {
@@ -162,7 +162,6 @@ export default function AdminUserEdit() {
     };
 
     const deleteCurrentUser = () => {
-        setErrorMessage(undefined);
         if (!currentAdminSelection.selectedUser) {
             return false;
         
@@ -178,16 +177,16 @@ export default function AdminUserEdit() {
                     dispatch(
                         setReloadUsers(true)
                     )
+                    toast.success('User deleted successfully');
                     router.push('/admin/users/');
                 } else {
-                    setErrorMessage(response.userError);
+                    toast.error(response.userError);
                 }
             });
         }
     }
 
     const onSubmit = () => {
-        setErrorMessage(undefined);
         dispatch(
             setIsLoading(true)
         );
@@ -209,7 +208,7 @@ export default function AdminUserEdit() {
 
         const sellersInvalid = userToUpdate.sellers == undefined || userToUpdate.sellers.length == 0 || (userToUpdate.sellers.find(x => x.sellerId == 0) != undefined);
         if (sellersInvalid) {
-            setErrorMessage("Seller selection invalid, please correct before submitting");
+            toast.warning("Seller selection invalid, please correct before submitting");
             return false;
         }
 
@@ -218,9 +217,10 @@ export default function AdminUserEdit() {
                 dispatch(
                     setReloadUsers(true)
                 )
+                toast.success('User updated successfully');
                 router.push('/admin/users/');
             } else {
-                setErrorMessage(response.userError ?? "Error occurred while saving user");
+                toast.error(response.userError ?? "Error occurred while saving user");
             }
             dispatch(
                 setIsLoading(false)
@@ -328,9 +328,6 @@ export default function AdminUserEdit() {
             <div className="admin-button-group">
                 <Button onClick={goBack}>Back</Button>
             </div>
-            { errorMessage ? 
-            <div className="danger">{errorMessage}</div>
-            : ''}
         </div> 
         : ''
     );

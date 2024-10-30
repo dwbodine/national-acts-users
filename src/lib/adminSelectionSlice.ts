@@ -6,7 +6,7 @@ import moment from "moment";
 
 const initialState: AdminSelection = {
     sellerId: undefined,
-    start: moment().startOf('day').unix(),
+    start: undefined,
     end: undefined,
     reloadUsers: true,
     reloadEvents: true,

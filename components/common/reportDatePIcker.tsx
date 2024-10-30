@@ -7,8 +7,10 @@ import { DatePicker } from "rsuite";
 
 export default function ReportDatePicker(props: any) {
     const onChange = props.onChange;
-    const [start, setStart] = useState<number>(props.start);
-    const [end, setEnd] = useState<number>(props.end);
+    const onStartClear = props.onStartClear;
+    const onEndClear = props.onEndClear;
+    const [start, setStart] = useState<number | undefined>(props.start);
+    const [end, setEnd] = useState<number | undefined>(props.end);
 
     const minStart = MINIMUM_UNIX_TIMESTAMP;
 
@@ -23,7 +25,9 @@ export default function ReportDatePicker(props: any) {
         }
         
         setStart(newStart);
-        onChange(newStart, end);
+        if (onChange) {
+            onChange(newStart, end);
+        }            
     };
 
     const onEndChange = (date: Date | null) => {
@@ -36,19 +40,35 @@ export default function ReportDatePicker(props: any) {
             newEnd = minStart;
         }
         setEnd(newEnd);
-        onChange(start, newEnd);
+        if (onChange) {
+            onChange(start, newEnd);
+        }        
     };
 
-    const startDate = moment.unix(start).toDate();
-    const endDate = moment.unix(end).toDate();
+    const onCleanStart = () => {
+        setStart(undefined);
+        if (onStartClear) {
+            onStartClear();
+        }        
+    };
+
+    const onCleanEnd = () => {
+        setEnd(undefined);
+        if (onEndClear) {
+            onEndClear();
+        }        
+    };
+
+    const startDate = start ? moment.unix(start).toDate() : null;
+    const endDate = end ? moment.unix(end).toDate() : null;
 
     return(
         <>
             <Row>
-                <Col><label className="admin-report-datepicker-label">Start date:</label><DatePicker id="startDate" format="M/d/yyyy" onChange={onStartChange} value={startDate} oneTap={true} /></Col>
+                <Col><label className="admin-report-datepicker-label">Start date:</label><DatePicker id="startDate" format="M/d/yyyy" onChange={onStartChange} value={startDate} oneTap cleanable onClean={onCleanStart} /></Col>
             </Row>
             <Row>
-                <Col><label className="admin-report-datepicker-label">End date:</label><DatePicker id="endDate" format="M/d/yyyy" onChange={onEndChange} value={endDate} oneTap={true} /></Col>
+                <Col><label className="admin-report-datepicker-label">End date:</label><DatePicker id="endDate" format="M/d/yyyy" onChange={onEndChange} value={endDate} oneTap cleanable onClean={onCleanEnd} /></Col>
             </Row>            
         </>
     );

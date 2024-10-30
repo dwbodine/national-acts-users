@@ -8,20 +8,20 @@ import { Button, Col, Container, FormCheck, Row } from "react-bootstrap";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import AdminSellerSelect from "../../common/adminSellerSelectComponent";
 import ReportDatePicker from "../../../common/reportDatePIcker";
-import { GetSellersResponse, Seller, VipEvent } from "@/types/event";
+import { GetSellersResponse, Order, Seller, VipEvent } from "@/types/event";
 import { useGetSellers } from "@/hooks/common/useGetSellers";
 import router from "next/router";
 import moment from "moment";
 import { current } from "@reduxjs/toolkit";
+import { useGetOrderStatus } from "@/hooks/common/useGetOrderStatus";
 
 export default function AdminOrdersIndex() {
     const { Column, HeaderCell, Cell } = Table;
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
     const currentEvent = currentAdminSelection.selectedEvent;
     const [tableLoading, setTableLoading] = useState(true);
-
     const dispatch = useDispatch();
-    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+    const { getOrderStatusSlug, getOrderStatusText } = useGetOrderStatus();
 
     useEffect(() => {
         if (currentEvent == undefined) {
@@ -77,7 +77,8 @@ export default function AdminOrdersIndex() {
             </Row>            
             <Row>
                 <Col>
-                    <Table height={420} data={currentEvent?.orders} bordered cellBordered loading={tableLoading}>
+                    <Table height={420} data={currentEvent?.orders} bordered cellBordered loading={tableLoading} 
+                        rowClassName={ (rowData) => { return getOrderStatusSlug(rowData)} }>
                         <Column flexGrow={1}>
                             <HeaderCell>Purchase Date</HeaderCell>
                             <Cell>{rowData => moment(rowData.purchaseDate).format('MM/DD/YYYY')}</Cell>
@@ -89,6 +90,10 @@ export default function AdminOrdersIndex() {
                         <Column flexGrow={3}>
                             <HeaderCell># of Tickets</HeaderCell>
                             <Cell>{rowData => rowData.numTickets ? rowData.numTickets : ''}</Cell>
+                        </Column>
+                        <Column flexGrow={3}>
+                            <HeaderCell>Order Status</HeaderCell>
+                            <Cell>{rowData => getOrderStatusText(rowData as Order)}</Cell>
                         </Column>
                         <Column flexGrow={1}>
                             <HeaderCell>&nbsp;</HeaderCell>
