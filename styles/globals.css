@@ -734,7 +734,8 @@ div hidden {
 .form-header .title {
   font-weight: bold;
   display: inline-block;
-  width: 100px;
+  white-space: nowrap;
+  width: 300px;
 }
 
 .form-control-float {
@@ -761,8 +762,25 @@ div hidden {
   margin: 0 10px;
 }
 
+.ticket-type-table {
+  margin: 15px 0;
+  border: 1px solid black;
+}
+
 .ticket-type-table td {
   padding-right: 10px;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.ticket-table {
+  margin: 15px 0;
+  border: 1px solid black;
+}
+
+.ticket-table td, .ticket-table th {
+  border: 1px solid black;
+  padding: 10px;
 }
 
 .deleted .rs-table-cell {

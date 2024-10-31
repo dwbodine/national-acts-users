@@ -188,6 +188,7 @@ export default function AdminEventEdit() {
                 <Col className="form-header">
                     <span className="title">Title:</span> {eventTitle}<br />
                     <span className="title">Date:</span> {eventDate}<br />
+                    <span className="title">Venue:</span> {currentAdminSelection.selectedEvent?.venue?.name} <br />
                     <span className="title">Location:</span> {location}<br />
                     <span className="title">Status:</span> {getEventStatusText(currentAdminSelection.selectedEvent)}<br />
                 </Col>

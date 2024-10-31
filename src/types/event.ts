@@ -55,7 +55,9 @@ export interface Order {
   chargebackDate?: string;
   numTicketsRefunded?: number;
   revenueRefunded?: number;
+  revenueRefundedUsd?: number;
   serviceFeeRevenueRefunded?: number;
+  serviceFeeRevenueRefundedUsd?: number;
   totalShirts?: number;
   revenueUsd: number;
   serviceFeesUsd?: number;

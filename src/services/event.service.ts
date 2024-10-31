@@ -377,7 +377,7 @@ export class EventService {
     });
   }
 
-  refundOrder = async (orderId: number, refundServiceFees: boolean): Promise<ModifyOrderResponse> => {
+  refundOrder = async (orderId: number, refundServiceFees: boolean, markChargeback: boolean = false): Promise<ModifyOrderResponse> => {
     let url = 'admin/orders/refund';
 
     let orderResposne: ModifyOrderResponse = {
@@ -388,7 +388,8 @@ export class EventService {
 
     const orderData = {
       orderId: orderId,
-      refundServiceFees: refundServiceFees
+      refundServiceFees: refundServiceFees,
+      markChargeback: markChargeback
     }
 
     const data = JSON.stringify(orderData);

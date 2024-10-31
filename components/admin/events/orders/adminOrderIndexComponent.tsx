@@ -14,6 +14,8 @@ import router from "next/router";
 import moment from "moment";
 import { current } from "@reduxjs/toolkit";
 import { useGetOrderStatus } from "@/hooks/common/useGetOrderStatus";
+import { useGetEventStatus } from "@/hooks/common/useGetEventStatus";
+import { useGetLocation } from "@/hooks/common/useGetLocation";
 
 export default function AdminOrdersIndex() {
     const { Column, HeaderCell, Cell } = Table;
@@ -21,7 +23,9 @@ export default function AdminOrdersIndex() {
     const currentEvent = currentAdminSelection.selectedEvent;
     const [tableLoading, setTableLoading] = useState(true);
     const dispatch = useDispatch();
+    const { getLocation } = useGetLocation();
     const { getOrderStatusSlug, getOrderStatusText } = useGetOrderStatus();
+    const { getEventStatusText } = useGetEventStatus();
 
     useEffect(() => {
         if (currentEvent == undefined) {
@@ -56,23 +60,23 @@ export default function AdminOrdersIndex() {
         router.push('/admin/events/');
     }
 
+    const location = (currentEvent?.venue != undefined) ? getLocation(currentEvent.venue) : '';
+
     return(
         <div className="admin-container">
             <Row className="admin-event-info">
                 <Col><Button onClick={goBack}>Back</Button> </Col>
             </Row>
-            <Row className="admin-event-info">
-                <Col>
-                    <h3>{currentEvent?.title}</h3>
+            <Row className="form-group">
+                <Col className="form-header">
+                    <h3> {currentEvent?.title}</h3>
+                    <span className="title">Date:</span> {moment(currentEvent?.eventDate).format('MM/DD/YYYY')}<br />
+                    <span className="title">Venue:</span> {currentEvent?.venue?.name}<br />
+                    <span className="title">Location:</span> {location}<br />
+                    <span className="title">Status:</span> {getEventStatusText(currentEvent)}<br />
                 </Col>
             </Row>
-            <Row className="admin-event-info">
-                <Col>Date: {moment(currentEvent?.eventDate).format('MM/DD/YYYY')}</Col>
-            </Row>
-            <Row className="admin-event-info">
-                <Col>Venue: {currentEvent?.venue?.name}</Col>
-            </Row>
-            <Row className="admin-event-info">
+            <Row>
                 <Col><h5>Orders</h5></Col>
             </Row>            
             <Row>
