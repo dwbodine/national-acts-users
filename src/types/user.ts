@@ -125,6 +125,8 @@ export interface IDailyOrderData {
   numTicketsRefunded?: number;
   revenueRefunded?: number;
   serviceFeeRevenueRefunded?: number;
+  revenueChargedBack?: number;
+  serviceFeeRevenueChargedBack?: number;
 }
 
 export interface IDashboardTotals {
@@ -136,8 +138,11 @@ export interface IDashboardTotals {
   totalDaysInYear: number;
   tickets: number;
   numTicketsRefunded?: number;
+  numTicketsChargedBack?: number;
   revenueRefunded?: number;
+  revenueChargedBack?: number;
   serviceFeeRevenueRefunded?: number;
+  serviceFeeRevenueChargedBack?: number;
   orders: number;
   ticketRevenueUsd: number;
   serviceFeesRevenueUsd: number;

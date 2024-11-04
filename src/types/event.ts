@@ -21,6 +21,7 @@ export interface ShirtSales {
 
 export interface Ticket {
   ticketSocketOrderTicketId: number;
+  ticketSocketOrderId?: number;
   price?: number;
   isActive?: boolean;
   ticketType: string;
@@ -29,6 +30,14 @@ export interface Ticket {
   isCheckedIn?: boolean;
   attendeeFirstName?: string;
   attendeeLastName?: string;
+  isRefunded?: boolean;
+  refundDate?: string;
+  isChargedBack?: boolean;
+  chargebackDate?: string;
+  isServiceFeeRefunded?: boolean;
+  barcode?: string;
+  availableScans?: number;
+  purchaseLocation?: string;
 }
 
 export interface Order {
@@ -49,15 +58,18 @@ export interface Order {
   orderId: number;
   isActive: boolean;
   isDeleted: boolean;
-  isRefunded: boolean;
-  isChargedBack: boolean;
-  refundDate?: string;
-  chargebackDate?: string;
+  hasRefunds: boolean;
+  hasChargebacks: boolean;
   numTicketsRefunded?: number;
+  numTicketsChargedBack?: number;
   revenueRefunded?: number;
+  revenueChargedBack?: number;
   revenueRefundedUsd?: number;
+  revenueChargedBackUsd?: number;
   serviceFeeRevenueRefunded?: number;
+  serviceFeeRevenueChargedBack?: number;
   serviceFeeRevenueRefundedUsd?: number;
+  serviceFeeRevenueChargedBackUsd?: number;
   totalShirts?: number;
   revenueUsd: number;
   serviceFeesUsd?: number;
@@ -133,6 +145,11 @@ export interface VipEvent {
   nonUsaCurrencySymbol?: string;
   nonUsaCurrencyAbbrev?: string;
   numTicketsRefunded?: number;
+  revenueRefunded?: number;
+  serviceFeeRevenueRefunded?: number;
+  numTicketsChargedBack?: number;
+  revenueChargedBack?: number;
+  serviceFeeRevenueChargedBack?: number;
   ticketTypes?: TicketType[];
   hasTicketTypeData?: boolean;
   isAddedToBandsInTown?: boolean;
