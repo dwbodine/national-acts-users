@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../common/confirmationDialogComponent";
 import { ModifyOrderResponse } from "@/types/event";
 import moment from "moment";
+import { useGetEventStatus } from "@/hooks/common/useGetEventStatus";
 
 export default function AdminOrderEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -23,6 +24,7 @@ export default function AdminOrderEdit() {
     const { refundOrder } = useRefundOrder();
     const { updateOrder } = useUpdateOrder();
     const { getOrderStatusText } = useGetOrderStatus();
+    const { getEventStatusText } = useGetEventStatus();
     const [isActive, setIsActive] = useState<boolean>(false);
     const [isHidden, setIsHidden] = useState<boolean>(false);
     const [isDeleted, setIsDeleted] = useState<boolean>(false);
@@ -112,7 +114,7 @@ export default function AdminOrderEdit() {
     const purchaserName = `${currentOrder?.purchaserFirstName} ${currentOrder?.purchaserLastName}`;
     const eventDate = currentOrder?.eventDate ? moment(currentOrder.eventDate).format('MM/DD/YYYY') : '';
     const refundsDisabled = currentOrder?.numTickets == 0;
-    const chargebackDisabled = (currentOrder?.isChargedBack);
+    const chargebackDisabled = (currentOrder?.hasChargebacks);
     const chargebackTitle = chargebackDisabled ? 'Order has already been charged back': '';
 
     let ticketRows: any[] = [];
@@ -144,7 +146,8 @@ export default function AdminOrderEdit() {
             <Row className="form-group">
                 <Col className="form-header">
                     <span className="title">Event:</span> {currentOrder?.eventTitle}<br />
-                    <span className="title">Event Date:</span> {eventDate}
+                    <span className="title">Event Date:</span> {eventDate}<br />
+                    <span className="title">Status:</span> {getEventStatusText(currentAdminSelection.selectedEvent)}
                 </Col>
             </Row>    
             <Row className="form-group">
@@ -161,7 +164,7 @@ export default function AdminOrderEdit() {
                     <span className="title">Service Fee Revenue (USD):</span> {currentOrder?.serviceFeesUsd?.toFixed(2)}<br />
                 </Col>
             </Row>
-            <Row className="form-group" hidden={!currentOrder || !(currentOrder.isRefunded || currentOrder.isChargedBack)}>
+            <Row className="form-group" hidden={!currentOrder || !(currentOrder.hasRefunds || currentOrder.hasChargebacks)}>
                 <Col className="form-header">
                     <span className="title">Number Tickets Refunded:</span> {currentOrder?.numTicketsRefunded}<br />
                     <div hidden={!currentOrder || currentOrder.currencyAbbrev == "USD"}>

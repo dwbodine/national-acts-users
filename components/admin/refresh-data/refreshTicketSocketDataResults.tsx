@@ -45,7 +45,7 @@ export default function RefreshTicketSocketDataResults(props: any) {
         errorMessage = results.succeeded ? '' : (results.errorMessage ?? 'unknown');
         userName = results.userName ? results.userName : (results.userId?.toString() ?? 'n/a');
         sellerName = results.sellerName ? results.sellerName : (results.sellerId?.toString() ?? 'n/a');
-        startRefreshStr = results.start ? moment.unix(results.start).format("MM/DD/YYYYY") : 'n/a';
+        startRefreshStr = results.start ? moment.unix(results.start).format("MM/DD/YYYY") : 'n/a';
         endRefreshStr = results.end ? moment.unix(results.end).format("MM/DD/YYYYY") : 'n/a';
         startTimerStr = results.startTimer ? moment.unix(results.startTimer).format("hh:mm:ss A") : 'n/a';
         endTimerStr = results.endTimer ? moment.unix(results.endTimer).format("hh:mm:ss A") : 'n/a';
