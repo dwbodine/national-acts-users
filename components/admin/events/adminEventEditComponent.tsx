@@ -13,6 +13,7 @@ import { ModifyEventResponse, VipEvent } from "@/types/event";
 import { setAdminEvent, setReloadEvents } from "@/lib/adminSelectionSlice";
 import { useUpdateEvent } from "@/hooks/admin/useUpdateEvent";
 import { useGetEventStatus } from "@/hooks/common/useGetEventStatus";
+import { DatePicker } from "rsuite";
 
 export default function AdminEventEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -38,6 +39,41 @@ export default function AdminEventEdit() {
             setIsAddedToBandsInTown(currentAdminSelection.selectedEvent.isAddedToBandsInTown ?? false);
         }
     }, [currentAdminSelection, dispatch]);
+
+    const onAnnounceDateChange = (date: Date | null) => {
+        if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+            return;
+        }
+
+        if (date <= new Date()) {
+            onCleanAnnounceDate();
+            return;
+        }
+
+        const eventDate = moment(currentAdminSelection.selectedEvent.eventDate).toDate();
+        if (date >= eventDate) {
+            onCleanAnnounceDate();
+            return;
+        }
+
+        const announceDate = moment(date).startOf('day');
+        let currentEvent = {...currentAdminSelection.selectedEvent};
+        currentEvent.announceDate = announceDate.format('YYYY-MM-DD');
+        dispatch(
+            setAdminEvent(currentEvent)
+        );
+    };
+
+    const onCleanAnnounceDate = () => {
+        if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+            return;
+        }
+        let currentEvent = {...currentAdminSelection.selectedEvent};
+        currentEvent.announceDate = undefined;
+        dispatch(
+            setAdminEvent(currentEvent)
+        );      
+    };
 
     const goBack = () => {
         router.push('/admin/events/');
@@ -152,10 +188,12 @@ export default function AdminEventEdit() {
     const refundsDisabled = (currentAdminSelection.selectedEvent == undefined) || currentAdminSelection.selectedEvent.totalTickets == 0;
     const cancelDisabled = (currentAdminSelection.selectedEvent?.isCancelled);
     const cancelTitle = cancelDisabled ? 'Event has already been cancelled': '';
+    const announceDate = (currentAdminSelection.selectedEvent != undefined && currentAdminSelection.selectedEvent.announceDate != null) ? moment(currentAdminSelection.selectedEvent.announceDate).toDate() : null;
+    const announceDateDisabled = (currentAdminSelection.selectedEvent != undefined && eventDate != undefined) ? moment(eventDate).toDate() < new Date() : false;
 
     let ticketTypeRows: any[] = [];
     if (currentAdminSelection.selectedEvent && currentAdminSelection.selectedEvent.ticketTypes && currentAdminSelection.selectedEvent.ticketTypes.length > 0) {
-        currentAdminSelection.selectedEvent.ticketTypes.forEach(ticketType => {
+        currentAdminSelection.selectedEvent.ticketTypes.forEach((ticketType, i) => {
             const ticketTypeId = ticketType.ticketTypeId;
             let ticketTypeDisabled = false;
             if (currentAdminSelection.selectedEvent && currentAdminSelection.selectedEvent.orders) {
@@ -170,8 +208,9 @@ export default function AdminEventEdit() {
             }
 
             const rowTitle = ticketTypeDisabled ? "Cannot change the status of a ticket type with tickets sold" : "";
+            const key = `admin_tt${i}`;
 
-            ticketTypeRows.push(<tr><td>{ticketType.ticketTypeName}</td><td><FormCheck id={`ticketType_${ticketType.ticketTypeId}`} title={rowTitle} disabled={ticketTypeDisabled} checked={ticketType.isActive} onChange={(e) => setTicketTypeStatus(e)} label="Active" /></td></tr>);
+            ticketTypeRows.push(<tr key={key}><td>{ticketType.ticketTypeName}</td><td><FormCheck id={`ticketType_${ticketType.ticketTypeId}`} title={rowTitle} disabled={ticketTypeDisabled} checked={ticketType.isActive} onChange={(e) => setTicketTypeStatus(e)} label="Active" /></td></tr>);
         });
     }
 
@@ -210,6 +249,11 @@ export default function AdminEventEdit() {
                         onChange={(e) => setRefundServiceFees(e.target.checked)}
                         label="Refund service fees?"                
                     />
+                </Col>
+            </Row>
+            <Row className="form-group">
+                <Col>
+                    Announce Date: <DatePicker id="announceDate" format="M/d/yyyy" onChange={onAnnounceDateChange} value={announceDate} oneTap cleanable onClean={onCleanAnnounceDate} disabled={announceDateDisabled} />
                 </Col>
             </Row>
             <Row className="form-group">

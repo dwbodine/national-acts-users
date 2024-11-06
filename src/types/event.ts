@@ -157,6 +157,7 @@ export interface VipEvent {
   isHidden?: boolean;
   isCancelled?: boolean;
   cancelledDate?: string;
+  announceDate?: string;
 }
 
 export interface TicketSocketRefreshHistory {

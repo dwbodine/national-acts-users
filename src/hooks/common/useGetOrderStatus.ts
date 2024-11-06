@@ -8,9 +8,9 @@ export const useGetOrderStatus = () => {
     }
     if (order.isDeleted) {
       statusSlug = 'deleted';
-    } else if (order.isRefunded) {
+    } else if (order.hasRefunds) {
       statusSlug = 'refunded';
-    } else if (order.isChargedBack) {
+    } else if (order.hasChargebacks) {
       statusSlug = 'charged-back';
     } else if (!order.isActive) {
       statusSlug = 'inactive';

@@ -31,7 +31,7 @@ export default function OrderMobileRow(props: any) {
         statusClass += 'deleted';
     }  else if (!order.isActive) {
         statusClass += 'inactive';
-    } else if (order.isRefunded) {
+    } else if (order.hasRefunds) {
         statusClass += 'refunded';
     } else if (order.isHidden) {
         statusClass += 'hidden';

@@ -146,8 +146,8 @@ export default function AdminEventsIndex() {
             <Row className="refresh-results-header">
                 <Col>
                     <h3>Event Admin</h3>
-                    <AdminSellerSelect id="refresh" Sellers={currentAdminSelection.allSellers} SellerId={currentAdminSelection.sellerId} OnSellerChange={updateSeller} />
                     <ReportDatePicker onChange={onDateChange} onStartClear={onStartClear} onEndClear={onEndClear} start={currentAdminSelection.start} end={currentAdminSelection.end} />   
+                    <AdminSellerSelect id="refresh" Sellers={currentAdminSelection.allSellers} SellerId={currentAdminSelection.sellerId} OnSellerChange={updateSeller} />
                     <AdminListHomeButton />
                 </Col>
             </Row>
