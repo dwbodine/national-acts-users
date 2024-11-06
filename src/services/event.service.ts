@@ -1,6 +1,31 @@
 import axios, { AxiosInstance } from "axios";
-import { VipEvent, GetEventsResponse, ModifyEventResponse, ModifyOrderResponse, ITicketData, ITicketTypeData, Order, IShirtSizeData, Venue, TicketType, ModifyTicketResponse, GetOrdersResponse, GetDashboardOrdersResponse, GetSellersResponse, Seller, RefreshHistoryResponse, TicketSocketRefreshHistory, GetRefreshHistoryResponse } from "../types/event";
-import { AdminDashboardSelection, AdminSelection, IDailyOrderData, IDashboardTotals, UserReportSelection } from "@/types/user";
+import {
+  VipEvent,
+  GetEventsResponse,
+  ModifyEventResponse,
+  ModifyOrderResponse,
+  ITicketData,
+  ITicketTypeData,
+  Order,
+  IShirtSizeData,
+  Venue,
+  TicketType,
+  ModifyTicketResponse,
+  GetOrdersResponse,
+  GetDashboardOrdersResponse,
+  GetSellersResponse,
+  Seller,
+  RefreshHistoryResponse,
+  TicketSocketRefreshHistory,
+  GetRefreshHistoryResponse,
+} from "../types/event";
+import {
+  AdminDashboardSelection,
+  AdminSelection,
+  IDailyOrderData,
+  IDashboardTotals,
+  UserReportSelection,
+} from "@/types/user";
 import { getAuthorizationHeader } from "../utils/getAuthorizationHeader";
 import { getTicketDataFromEvents } from "@/utils/getTicketDataFromEvents";
 import moment from "moment";
@@ -10,7 +35,7 @@ import { MINIMUM_UNIX_TIMESTAMP } from "@/constants";
 export class EventService {
   protected readonly instance: AxiosInstance;
   protected readonly baseUrl: string;
-  
+
   public constructor(url: string) {
     this.baseUrl = url;
     this.instance = axios.create({
@@ -20,19 +45,21 @@ export class EventService {
     });
   }
 
-  getEvents = async (reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
+  getEvents = async (
+    reportSelection: UserReportSelection
+  ): Promise<GetEventsResponse> => {
     let url = `/user/eventsAndOrdersSecured?excludeExternal=1&sellerId=${reportSelection.seller.sellerId}`;
 
     if (reportSelection.showInactive) {
-      url += '&inactive=1';
+      url += "&inactive=1";
     }
 
     if (reportSelection.showDeleted) {
-      url += '&deleted=1';
+      url += "&deleted=1";
     }
 
     if (reportSelection.showHidden) {
-      url += '&hidden=1';
+      url += "&hidden=1";
     }
 
     if (reportSelection.start) {
@@ -46,18 +73,18 @@ export class EventService {
     let eventResponse: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const headers = getAuthorizationHeader();
 
     return this.instance
       .get(url, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
         const events = res.data;
-        eventResponse.events = events.length ? events as VipEvent[] : [];
+        eventResponse.events = events.length ? (events as VipEvent[]) : [];
         return eventResponse;
       })
       .catch((err) => {
@@ -69,14 +96,17 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching events - please contact your administrator";
+          errorMessage =
+            "Unknown error while fetching events - please contact your administrator";
         }
         eventResponse.eventError = errorMessage;
         return eventResponse;
       });
   };
 
-  getAdminEvents = async (reportSelection: AdminSelection): Promise<GetEventsResponse> => {
+  getAdminEvents = async (
+    reportSelection: AdminSelection
+  ): Promise<GetEventsResponse> => {
     let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
 
     if (reportSelection.start) {
@@ -90,18 +120,18 @@ export class EventService {
     let eventResponse: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const headers = getAuthorizationHeader();
 
     return this.instance
       .get(url, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
         const events = res.data;
-        eventResponse.events = events.length ? events as VipEvent[] : [];
+        eventResponse.events = events.length ? (events as VipEvent[]) : [];
         return eventResponse;
       })
       .catch((err) => {
@@ -113,30 +143,34 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching events - please contact your administrator";
+          errorMessage =
+            "Unknown error while fetching events - please contact your administrator";
         }
         eventResponse.eventError = errorMessage;
         return eventResponse;
       });
   };
 
-  getAllOrders = async (start: number, end: number): Promise<GetOrdersResponse> => {
+  getAllOrders = async (
+    start: number,
+    end: number
+  ): Promise<GetOrdersResponse> => {
     let url = `/user/ordersSecured?start=${start}&end=${end}&ignoreFlags=1`;
 
     let ordersResponse: GetOrdersResponse = {
       orders: undefined,
       orderError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const headers = getAuthorizationHeader();
 
     return this.instance
       .get(url, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
-        ordersResponse.orders = res.data ? res.data as Order[] : undefined;
+        ordersResponse.orders = res.data ? (res.data as Order[]) : undefined;
         return ordersResponse;
       })
       .catch((err) => {
@@ -148,19 +182,25 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching orders - please contact your administrator";
+          errorMessage =
+            "Unknown error while fetching orders - please contact your administrator";
         }
         ordersResponse.orderError = errorMessage;
         return ordersResponse;
       });
   };
 
-  getDashboardOrderData = async (currentDashboardSelection: AdminDashboardSelection): Promise<GetDashboardOrdersResponse> => {
-
-    let year = "0"
+  getDashboardOrderData = async (
+    currentDashboardSelection: AdminDashboardSelection
+  ): Promise<GetDashboardOrdersResponse> => {
+    let year = "0";
     let selectedYear = moment.unix(currentDashboardSelection.start).year();
     const currentYear = moment().year();
-    if (selectedYear != currentYear && selectedYear >= 2022 && selectedYear < currentYear) {
+    if (
+      selectedYear != currentYear &&
+      selectedYear >= 2022 &&
+      selectedYear < currentYear
+    ) {
       year = currentYear.toString();
     }
 
@@ -169,17 +209,19 @@ export class EventService {
     let dashResponse: GetDashboardOrdersResponse = {
       totals: undefined,
       dashError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const headers = getAuthorizationHeader();
 
     return this.instance
       .get(url, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
-        dashResponse.totals = res.data ? res.data as IDashboardTotals : undefined;
+        dashResponse.totals = res.data
+          ? (res.data as IDashboardTotals)
+          : undefined;
         return dashResponse;
       })
       .catch((err) => {
@@ -191,24 +233,29 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching dashboard data - please contact your administrator";
+          errorMessage =
+            "Unknown error while fetching dashboard data - please contact your administrator";
         }
         dashResponse.dashError = errorMessage;
         return dashResponse;
       });
   };
 
-  getAllEvents = async (start: number = 0, end: number = 0, sellerId: number = 0): Promise<GetEventsResponse> => {
+  getAllEvents = async (
+    start: number = 0,
+    end: number = 0,
+    sellerId: number = 0
+  ): Promise<GetEventsResponse> => {
     if (start > 0 && start < MINIMUM_UNIX_TIMESTAMP) {
       start = MINIMUM_UNIX_TIMESTAMP;
     }
 
     if (start > 0 && end > 0 && end <= start) {
-      end = start + (7 * 24 * 60 * 60);
+      end = start + 7 * 24 * 60 * 60;
     }
 
     let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1`;
-    
+
     if (start > 0) {
       url += `&start=${start}`;
     }
@@ -224,22 +271,22 @@ export class EventService {
     let eventResponse: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const headers = getAuthorizationHeader();
 
     const apiInstance = axios.create({
-      baseURL: this.baseUrl
+      baseURL: this.baseUrl,
     });
 
     return apiInstance
       .get(url, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
         const events = res.data;
-        eventResponse.events = events.length ? events as VipEvent[] : [];
+        eventResponse.events = events.length ? (events as VipEvent[]) : [];
         return eventResponse;
       })
       .catch((err) => {
@@ -251,13 +298,13 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching events - please contact your administrator";
+          errorMessage =
+            "Unknown error while fetching events - please contact your administrator";
         }
         eventResponse.eventError = errorMessage;
         return eventResponse;
       });
   };
-  
 
   getEventDetail = async (eventId: number): Promise<GetEventsResponse> => {
     let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&tsEventId=${eventId}`;
@@ -265,18 +312,18 @@ export class EventService {
     let eventResponse: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const headers = getAuthorizationHeader();
 
     return this.instance
       .get(url, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
         const events = res.data;
-        eventResponse.events = events.length ? events as VipEvent[] : [];
+        eventResponse.events = events.length ? (events as VipEvent[]) : [];
         return eventResponse;
       })
       .catch((err) => {
@@ -288,22 +335,23 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching events - please contact your administrator";
+          errorMessage =
+            "Unknown error while fetching events - please contact your administrator";
         }
         eventResponse.eventError = errorMessage;
         return eventResponse;
       });
   };
 
-  
-
-  updateEvent = async (eventToUpdate: VipEvent): Promise<ModifyEventResponse> => {
+  updateEvent = async (
+    eventToUpdate: VipEvent
+  ): Promise<ModifyEventResponse> => {
     let url = `/admin/events/update`;
 
     let eventResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = JSON.stringify(eventToUpdate);
@@ -312,10 +360,10 @@ export class EventService {
 
     return this.instance
       .post(url, data, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
-        eventResponse.success = (res.status == 200);
+        eventResponse.success = res.status == 200;
         return eventResponse;
       })
       .catch((err) => {
@@ -331,23 +379,27 @@ export class EventService {
         }
         eventResponse.eventError = errorMessage;
         return eventResponse;
-    });
-  }
+      });
+  };
 
-  refundEvent = async (eventId: number, markCancelled: boolean, refundServiceFees: boolean): Promise<ModifyEventResponse> => {
-    let url = markCancelled ? '/admin/events/cancel' : 'admin/events/refund';
+  refundEvent = async (
+    eventId: number,
+    markCancelled: boolean,
+    refundServiceFees: boolean
+  ): Promise<ModifyEventResponse> => {
+    let url = markCancelled ? "/admin/events/cancel" : "admin/events/refund";
 
     let eventResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const eventData = {
       eventId: eventId,
       refundOrders: true,
-      refundServiceFees: refundServiceFees
-    }
+      refundServiceFees: refundServiceFees,
+    };
 
     const data = JSON.stringify(eventData);
 
@@ -355,10 +407,10 @@ export class EventService {
 
     return this.instance
       .post(url, data, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
-        eventResponse.success = (res.status == 200);
+        eventResponse.success = res.status == 200;
         return eventResponse;
       })
       .catch((err) => {
@@ -374,23 +426,27 @@ export class EventService {
         }
         eventResponse.eventError = errorMessage;
         return eventResponse;
-    });
-  }
+      });
+  };
 
-  refundOrder = async (orderId: number, refundServiceFees: boolean, markChargeback: boolean = false): Promise<ModifyOrderResponse> => {
-    let url = 'admin/orders/refund';
+  refundOrder = async (
+    orderId: number,
+    refundServiceFees: boolean,
+    markChargeback: boolean = false
+  ): Promise<ModifyOrderResponse> => {
+    let url = "admin/orders/refund";
 
-    let orderResposne: ModifyOrderResponse = {
+    let orderResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const orderData = {
       orderId: orderId,
       refundServiceFees: refundServiceFees,
-      markChargeback: markChargeback
-    }
+      markChargeback: markChargeback,
+    };
 
     const data = JSON.stringify(orderData);
 
@@ -398,27 +454,27 @@ export class EventService {
 
     return this.instance
       .post(url, data, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
-        orderResposne.success = (res.status == 200);
-        return orderResposne;
+        orderResponse.success = res.status == 200;
+        return orderResponse;
       })
       .catch((err) => {
         console.log(err);
         var errorMessage = "";
         if (err?.response?.status) {
-          orderResposne.statusCode = parseInt(err.response.status);
+          orderResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage = "Unknown error while issuing event refund";
         }
-        orderResposne.orderError = errorMessage;
-        return orderResposne;
-    });
-  }
+        orderResponse.orderError = errorMessage;
+        return orderResponse;
+      });
+  };
 
   updateOrder = async (orderToUpdate: Order): Promise<ModifyOrderResponse> => {
     let url = `/admin/orders/update`;
@@ -426,7 +482,7 @@ export class EventService {
     let orderResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = JSON.stringify(orderToUpdate);
@@ -435,10 +491,10 @@ export class EventService {
 
     return this.instance
       .post(url, data, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
-        orderResponse.success = (res.status == 200);
+        orderResponse.success = res.status == 200;
         return orderResponse;
       })
       .catch((err) => {
@@ -454,34 +510,40 @@ export class EventService {
         }
         orderResponse.orderError = errorMessage;
         return orderResponse;
-    });
-  }
+      });
+  };
 
-  refreshEventsFromService = async(sellerId: number, start?: number, end?: number): Promise<RefreshHistoryResponse> => {
+  refreshEventsFromService = async (
+    sellerId: number,
+    start?: number,
+    end?: number
+  ): Promise<RefreshHistoryResponse> => {
     let url = `/internal/refreshEventsFromService/${sellerId}`;
 
     if (start && end) {
       url += `?start=${start}&end=${end}`;
     } else if (start) {
       url += `?start=${start}`;
-    }  else if (end) {
+    } else if (end) {
       url += `?start=${end}`;
     }
 
     let refreshResponse: RefreshHistoryResponse = {
       results: undefined,
       refreshError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const headers = getAuthorizationHeader();
 
     return this.instance
       .get(url, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
-        refreshResponse.results = res.data ? res.data as TicketSocketRefreshHistory : undefined;
+        refreshResponse.results = res.data
+          ? (res.data as TicketSocketRefreshHistory)
+          : undefined;
         return refreshResponse;
       })
       .catch((err) => {
@@ -493,111 +555,127 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while refreshing events from TicketSocket - please contact your administrator";
+          errorMessage =
+            "Unknown error while refreshing events from TicketSocket - please contact your administrator";
         }
         refreshResponse.refreshError = errorMessage;
         return refreshResponse;
-      });    
+      });
   };
 
-  getTicketSocketRefreshHistory = async(): Promise<GetRefreshHistoryResponse> => {
-    let url = `/internal/getUpdateHistory`;
+  getTicketSocketRefreshHistory =
+    async (): Promise<GetRefreshHistoryResponse> => {
+      let url = `/internal/getUpdateHistory`;
 
-    let refreshResponse: GetRefreshHistoryResponse = {
-      history: undefined,
-      refreshError: undefined,
-      statusCode: 200
+      let refreshResponse: GetRefreshHistoryResponse = {
+        history: undefined,
+        refreshError: undefined,
+        statusCode: 200,
+      };
+
+      const headers = getAuthorizationHeader();
+
+      return this.instance
+        .get(url, {
+          headers: headers,
+        })
+        .then((res) => {
+          refreshResponse.history = res.data
+            ? (res.data as TicketSocketRefreshHistory[])
+            : undefined;
+          return refreshResponse;
+        })
+        .catch((err) => {
+          console.log(err);
+          var errorMessage = "";
+          if (err?.response?.status) {
+            refreshResponse.statusCode = parseInt(err.response.status);
+          }
+          if (err?.response?.data?.msg) {
+            errorMessage = err.response.data.msg;
+          } else {
+            errorMessage =
+              "Unknown error while fetching event refresh history from TicketSocket - please contact your administrator";
+          }
+          refreshResponse.refreshError = errorMessage;
+          return refreshResponse;
+        });
     };
 
+  setEventInactive = async (
+    eventId: number,
+    isActive: boolean
+  ): Promise<ModifyEventResponse> => {
+    const url = "/user/setEventInactiveSecured";
     const headers = getAuthorizationHeader();
 
+    let modifyResponse: ModifyEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const data = {
+      eventId: eventId,
+      isActive: isActive ? 0 : 1,
+    };
+
     return this.instance
-      .get(url, {
-        headers: headers
+      .post(url, data, {
+        headers: headers,
       })
       .then((res) => {
-        refreshResponse.history = res.data ? res.data as TicketSocketRefreshHistory[] : undefined;
-        return refreshResponse;
+        modifyResponse.success = res.status == 200;
+        if (!modifyResponse.success) {
+          modifyResponse.eventError =
+            "Unexpected error occurred while modifying event - please contact your administrator";
+        }
+        return modifyResponse;
       })
       .catch((err) => {
         console.log(err);
         var errorMessage = "";
         if (err?.response?.status) {
-          refreshResponse.statusCode = parseInt(err.response.status);
+          modifyResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching event refresh history from TicketSocket - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying event - please contact your administrator";
         }
-        refreshResponse.refreshError = errorMessage;
-        return refreshResponse;
+        modifyResponse.eventError = errorMessage;
+        return modifyResponse;
       });
   };
 
-  setEventInactive = async(eventId: number, isActive: boolean): Promise<ModifyEventResponse> => {
+  setEventListInactive = async (
+    eventIdList: number[],
+    isActive: boolean
+  ): Promise<ModifyEventResponse> => {
     const url = "/user/setEventInactiveSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
-      statusCode: 200
-    };
-
-    const data = {
-      'eventId': eventId,
-      'isActive': isActive ? 0 : 1
-    };
-
-    return this.instance
-      .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
-        if (!modifyResponse.success) {
-          modifyResponse.eventError = "Unexpected error occurred while modifying event - please contact your administrator";
-        }
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        var errorMessage = "";
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = "Unknown error while modifying event - please contact your administrator";
-        }
-        modifyResponse.eventError = errorMessage;
-        return modifyResponse;
-      });
-  };
-
-  setEventListInactive = async(eventIdList: number[], isActive: boolean): Promise<ModifyEventResponse> => {
-    const url = "/user/setEventInactiveSecured";
-    const headers = getAuthorizationHeader();
-
-    let modifyResponse: ModifyEventResponse = {
-      success: false,
-      eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = JSON.stringify({
-      'eventIdList': eventIdList,
-      'isActive': isActive ? 0 : 1
+      eventIdList: eventIdList,
+      isActive: isActive ? 0 : 1,
     });
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.eventError = "Unexpected error occurred while modifying events - please contact your administrator";
+          modifyResponse.eventError =
+            "Unexpected error occurred while modifying events - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -610,35 +688,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying events - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying events - please contact your administrator";
         }
         modifyResponse.eventError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setEventDeleted = async(eventId: number, isDeleted: boolean): Promise<ModifyEventResponse> => {
+  setEventDeleted = async (
+    eventId: number,
+    isDeleted: boolean
+  ): Promise<ModifyEventResponse> => {
     const url = "/user/setEventDeletedSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = {
-      'eventId': eventId,
-      'isDeleted': isDeleted ? 0 : 1
+      eventId: eventId,
+      isDeleted: isDeleted ? 0 : 1,
     };
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.eventError = "Unexpected error occurred while modifying event - please contact your administrator";
+          modifyResponse.eventError =
+            "Unexpected error occurred while modifying event - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -651,35 +735,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying event - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying event - please contact your administrator";
         }
         modifyResponse.eventError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setEventListDeleted = async(eventIdList: number[], isDeleted: boolean): Promise<ModifyEventResponse> => {
+  setEventListDeleted = async (
+    eventIdList: number[],
+    isDeleted: boolean
+  ): Promise<ModifyEventResponse> => {
     const url = "/user/setEventDeletedSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = JSON.stringify({
-      'eventIdList': eventIdList,
-      'isDeleted': isDeleted ? 0 : 1
+      eventIdList: eventIdList,
+      isDeleted: isDeleted ? 0 : 1,
     });
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.eventError = "Unexpected error occurred while modifying events - please contact your administrator";
+          modifyResponse.eventError =
+            "Unexpected error occurred while modifying events - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -692,35 +782,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying events - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying events - please contact your administrator";
         }
         modifyResponse.eventError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setEventHidden = async(eventId: number, isHidden: boolean): Promise<ModifyEventResponse> => {
+  setEventHidden = async (
+    eventId: number,
+    isHidden: boolean
+  ): Promise<ModifyEventResponse> => {
     const url = "/user/setEventHiddenSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = {
-      'eventId': eventId,
-      'isHidden': isHidden ? 0 : 1
+      eventId: eventId,
+      isHidden: isHidden ? 0 : 1,
     };
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.eventError = "Unexpected error occurred while modifying event - please contact your administrator";
+          modifyResponse.eventError =
+            "Unexpected error occurred while modifying event - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -733,35 +829,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying event - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying event - please contact your administrator";
         }
         modifyResponse.eventError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setEventListHidden = async(eventIdList: number[], isHidden: boolean): Promise<ModifyEventResponse> => {
+  setEventListHidden = async (
+    eventIdList: number[],
+    isHidden: boolean
+  ): Promise<ModifyEventResponse> => {
     const url = "/user/setEventHiddenSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = JSON.stringify({
-      'eventIdList': eventIdList,
-      'isHidden': isHidden ? 0 : 1
+      eventIdList: eventIdList,
+      isHidden: isHidden ? 0 : 1,
     });
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.eventError = "Unexpected error occurred while modifying event - please contact your administrator";
+          modifyResponse.eventError =
+            "Unexpected error occurred while modifying event - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -774,35 +876,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying event - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying event - please contact your administrator";
         }
         modifyResponse.eventError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setOrderInactive = async(orderId: number, isActive: boolean): Promise<ModifyOrderResponse> => {
+  setOrderInactive = async (
+    orderId: number,
+    isActive: boolean
+  ): Promise<ModifyOrderResponse> => {
     const url = "/user/setOrderInactiveSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = {
-      'orderId': orderId,
-      'isActive': isActive ? 0 : 1
+      orderId: orderId,
+      isActive: isActive ? 0 : 1,
     };
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.orderError = "Unexpected error occurred while modifying order - please contact your administrator";
+          modifyResponse.orderError =
+            "Unexpected error occurred while modifying order - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -815,35 +923,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying order - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying order - please contact your administrator";
         }
         modifyResponse.orderError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setOrderListInactive = async(orderIdList: number[], isActive: boolean): Promise<ModifyOrderResponse> => {
+  setOrderListInactive = async (
+    orderIdList: number[],
+    isActive: boolean
+  ): Promise<ModifyOrderResponse> => {
     const url = "/user/setOrderInactiveSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = JSON.stringify({
-      'orderIdList': orderIdList,
-      'isActive': isActive ? 0 : 1
+      orderIdList: orderIdList,
+      isActive: isActive ? 0 : 1,
     });
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.orderError = "Unexpected error occurred while modifying orders - please contact your administrator";
+          modifyResponse.orderError =
+            "Unexpected error occurred while modifying orders - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -856,35 +970,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying orders - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying orders - please contact your administrator";
         }
         modifyResponse.orderError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setOrderDeleted = async(orderId: number, isDeleted: boolean): Promise<ModifyOrderResponse> => {
+  setOrderDeleted = async (
+    orderId: number,
+    isDeleted: boolean
+  ): Promise<ModifyOrderResponse> => {
     const url = "/user/setOrderDeletedSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = {
-      'orderId': orderId,
-      'isDeleted': isDeleted ? 0 : 1
+      orderId: orderId,
+      isDeleted: isDeleted ? 0 : 1,
     };
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.orderError = "Unexpected error occurred while modifying order - please contact your administrator";
+          modifyResponse.orderError =
+            "Unexpected error occurred while modifying order - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -897,35 +1017,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying order - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying order - please contact your administrator";
         }
         modifyResponse.orderError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setOrderListDeleted = async(orderIdList: number[], isDeleted: boolean): Promise<ModifyOrderResponse> => {
+  setOrderListDeleted = async (
+    orderIdList: number[],
+    isDeleted: boolean
+  ): Promise<ModifyOrderResponse> => {
     const url = "/user/setOrderDeletedSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = JSON.stringify({
-      'orderIdList': orderIdList,
-      'isDeleted': isDeleted ? 0 : 1
+      orderIdList: orderIdList,
+      isDeleted: isDeleted ? 0 : 1,
     });
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.orderError = "Unexpected error occurred while modifying orders - please contact your administrator";
+          modifyResponse.orderError =
+            "Unexpected error occurred while modifying orders - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -938,35 +1064,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying orders - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying orders - please contact your administrator";
         }
         modifyResponse.orderError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setOrderHidden = async(orderId: number, isHidden: boolean): Promise<ModifyOrderResponse> => {
+  setOrderHidden = async (
+    orderId: number,
+    isHidden: boolean
+  ): Promise<ModifyOrderResponse> => {
     const url = "/user/setOrderHiddenSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = {
-      'orderId': orderId,
-      'isHidden': isHidden ? 0 : 1
+      orderId: orderId,
+      isHidden: isHidden ? 0 : 1,
     };
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.orderError = "Unexpected error occurred while modifying order - please contact your administrator";
+          modifyResponse.orderError =
+            "Unexpected error occurred while modifying order - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -979,35 +1111,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying order - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying order - please contact your administrator";
         }
         modifyResponse.orderError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setOrderListHidden = async(orderIdList: number[], isHidden: boolean): Promise<ModifyOrderResponse> => {
+  setOrderListHidden = async (
+    orderIdList: number[],
+    isHidden: boolean
+  ): Promise<ModifyOrderResponse> => {
     const url = "/user/setOrderHiddenSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = JSON.stringify({
-      'orderIdList': orderIdList,
-      'isHidden': isHidden ? 0 : 1
+      orderIdList: orderIdList,
+      isHidden: isHidden ? 0 : 1,
     });
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.orderError = "Unexpected error occurred while modifying orders - please contact your administrator";
+          modifyResponse.orderError =
+            "Unexpected error occurred while modifying orders - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -1020,35 +1158,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying orders - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying orders - please contact your administrator";
         }
         modifyResponse.orderError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setTicketCheckedIn = async(ticketId: number, isCheckedIn: boolean): Promise<ModifyTicketResponse> => {
+  setTicketCheckedIn = async (
+    ticketId: number,
+    isCheckedIn: boolean
+  ): Promise<ModifyTicketResponse> => {
     const url = "/user/setTicketCheckinSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyTicketResponse = {
       success: false,
       ticketError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = {
-      'ticketId': ticketId,
-      'isCheckedIn': isCheckedIn ? 1 : 0
+      ticketId: ticketId,
+      isCheckedIn: isCheckedIn ? 1 : 0,
     };
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.ticketError = "Unexpected error occurred while modifying ticket - please contact your administrator";
+          modifyResponse.ticketError =
+            "Unexpected error occurred while modifying ticket - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -1061,35 +1205,41 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying ticket - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying ticket - please contact your administrator";
         }
         modifyResponse.ticketError = errorMessage;
         return modifyResponse;
       });
   };
 
-  setTicketListCheckedIn = async(ticketIdList: number[], isCheckedIn: boolean): Promise<ModifyTicketResponse> => {
+  setTicketListCheckedIn = async (
+    ticketIdList: number[],
+    isCheckedIn: boolean
+  ): Promise<ModifyTicketResponse> => {
     const url = "/user/setTicketCheckinSecured";
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyTicketResponse = {
       success: false,
       ticketError: undefined,
-      statusCode: 200
+      statusCode: 200,
     };
 
     const data = JSON.stringify({
-      'ticketIdList': ticketIdList,
-      'isCheckedIn': isCheckedIn ? 1 : 0
+      ticketIdList: ticketIdList,
+      isCheckedIn: isCheckedIn ? 1 : 0,
     });
 
     return this.instance
       .post(url, data, {
-        headers: headers
-      }).then((res) => {
-        modifyResponse.success = (res.status == 200);
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
         if (!modifyResponse.success) {
-          modifyResponse.ticketError = "Unexpected error occurred while modifying tickets - please contact your administrator";
+          modifyResponse.ticketError =
+            "Unexpected error occurred while modifying tickets - please contact your administrator";
         }
         return modifyResponse;
       })
@@ -1102,16 +1252,21 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while modifying tickets - please contact your administrator";
+          errorMessage =
+            "Unknown error while modifying tickets - please contact your administrator";
         }
         modifyResponse.ticketError = errorMessage;
         return modifyResponse;
       });
   };
 
-  exportEventsToCsv = (events: VipEvent[], viewServiceFees: boolean, showRevenueData: boolean): string => {
+  exportEventsToCsv = (
+    events: VipEvent[],
+    viewServiceFees: boolean,
+    showRevenueData: boolean
+  ): string => {
     if (!events || events.length == 0) {
-      return '';
+      return "";
     }
 
     let exportStr = `"Summary"\n"Shows Listed:","${events.length}"\n`;
@@ -1123,10 +1278,12 @@ export class EventService {
       let arr: any = [];
       ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
         ticketTypes.forEach((ticketType: TicketType) => {
-          var data = ticketTypeData.find(x => x.TicketType == ticketType.ticketTypeName);
+          var data = ticketTypeData.find(
+            (x) => x.TicketType == ticketType.ticketTypeName
+          );
           var number = arr[ticketType.ticketTypeName] ?? 0;
           if (data) {
-              number += data.Number;
+            number += data.Number;
           }
           arr[ticketType.ticketTypeName] = number;
         });
@@ -1136,14 +1293,15 @@ export class EventService {
       }
     }
 
-    exportStr += '"Seller Name","Date","Title","Venue","Location","Tickets sold",';
+    exportStr +=
+      '"Seller Name","Date","Title","Venue","Location","Tickets sold",';
     if (showRevenueData) {
       exportStr += '"Revenue (USD)",';
-    }    
+    }
     if (viewServiceFees) {
       exportStr += '"Service Fees (USD)"\n';
     } else {
-      exportStr += '\n';
+      exportStr += "\n";
     }
 
     let totalTcketsSold = 0;
@@ -1152,13 +1310,13 @@ export class EventService {
 
     events.forEach((vipEvent: VipEvent) => {
       const sellerName = vipEvent.sellerName;
-      const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
+      const eventDate = moment(vipEvent.eventDate).format("MM/DD/YYYY");
       const title = vipEvent.title;
-      let venue = '';
-      let location = '';
+      let venue = "";
+      let location = "";
       if (vipEvent.venue) {
-          venue = vipEvent.venue.name;
-          location = this.getLocationInfoFromVenue(vipEvent.venue);
+        venue = vipEvent.venue.name;
+        location = this.getLocationInfoFromVenue(vipEvent.venue);
       }
       const ticketsSold = vipEvent.totalTickets;
       totalTcketsSold += ticketsSold;
@@ -1168,43 +1326,52 @@ export class EventService {
       exportStr += `"${sellerName}","${eventDate}","${title}","${venue}","${location}","${ticketsSold}",`;
       if (showRevenueData) {
         exportStr += `"${revenue.toFixed(2)}",`;
-      }      
+      }
       if (viewServiceFees) {
         exportStr += `"${serviceFees.toFixed(2)}"\n`;
       } else {
-        exportStr += '\n';
+        exportStr += "\n";
       }
     });
 
     exportStr += `"Total","","","","","${totalTcketsSold}",`;
     if (showRevenueData) {
       exportStr += `"${totalRevenue.toFixed(2)}",`;
-    }    
+    }
     if (viewServiceFees) {
       exportStr += `"${totalServiceFees.toFixed(2)}"\n`;
     } else {
-      exportStr += '\n';
+      exportStr += "\n";
     }
-    
+
     return exportStr;
   };
 
-  getOrderExportTableHeader = (viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean, currencyAbbrev?: string, hideCurrencyInHeaders: boolean = false): string => {
-    let exportStr = '"Seller Name","Purchaser Name","Purchaser Zip","Purchaser IP Address","Attendee Name(s)","Purchase Date","Event Date","Event Name","Ticket Type","Number of tickets"';
+  getOrderExportTableHeader = (
+    viewServiceFees: boolean,
+    showRevenueData: boolean,
+    hasPhoneData: boolean,
+    hasShirtData: boolean,
+    hasNonUsaOrders: boolean,
+    currencyAbbrev?: string,
+    hideCurrencyInHeaders: boolean = false
+  ): string => {
+    let exportStr =
+      '"Seller Name","Purchaser Name","Purchaser Zip","Purchaser IP Address","Attendee Name(s)","Purchase Date","Event Date","Event Name","Ticket Type","Number of tickets"';
     if (hasNonUsaOrders) {
       if (showRevenueData) {
         if (hideCurrencyInHeaders) {
           exportStr += `,"Original Price","Exchange Rate"`;
         } else {
           exportStr += `,"Original Price (${currencyAbbrev})","Exchange Rate (${currencyAbbrev} to USD)"`;
-        }        
-      }      
+        }
+      }
       if (viewServiceFees) {
         if (hideCurrencyInHeaders) {
           exportStr += `,"Original Service Fees"`;
         } else {
           exportStr += `,"Original Service Fees (${currencyAbbrev})"`;
-        }        
+        }
       }
     }
     if (viewServiceFees) {
@@ -1212,7 +1379,7 @@ export class EventService {
     }
     if (showRevenueData) {
       exportStr += ',"Revenue (USD)"';
-    }   
+    }
     exportStr += ',"Email"';
     if (hasPhoneData) {
       exportStr += ',"Phone"';
@@ -1220,28 +1387,52 @@ export class EventService {
     if (hasShirtData) {
       exportStr += ',"Shirt Sizes"';
     }
-    exportStr += ',"Venue","Event Address","Event City","Event State","Event Zip","Event Country"\n'
+    exportStr +=
+      ',"Venue","Event Address","Event City","Event State","Event Zip","Event Country"\n';
     return exportStr;
-  }
+  };
 
-  getOrderExportTableFromEvent = (vipEvent: VipEvent, viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean) : string => {
-    let exportStr = '';
+  getOrderExportTableFromEvent = (
+    vipEvent: VipEvent,
+    viewServiceFees: boolean,
+    showRevenueData: boolean,
+    hasPhoneData: boolean,
+    hasShirtData: boolean,
+    hasNonUsaOrders: boolean
+  ): string => {
+    let exportStr = "";
     if (vipEvent.orders && vipEvent.orders.length > 0) {
-        vipEvent.orders.forEach((order: Order) => {
-          exportStr += this.getOrderExportRow(order, viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders);
-        });
+      vipEvent.orders.forEach((order: Order) => {
+        exportStr += this.getOrderExportRow(
+          order,
+          viewServiceFees,
+          showRevenueData,
+          hasPhoneData,
+          hasShirtData,
+          hasNonUsaOrders
+        );
+      });
     }
     return exportStr;
-  }
+  };
 
-  getOrderExportRow = (order: Order, viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean): string  => {
-    let exportStr = '';
+  getOrderExportRow = (
+    order: Order,
+    viewServiceFees: boolean,
+    showRevenueData: boolean,
+    hasPhoneData: boolean,
+    hasShirtData: boolean,
+    hasNonUsaOrders: boolean
+  ): string => {
+    let exportStr = "";
     const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
-    const purchaserZip = order.purchaserZipCode ?? '';
-    const purchaserIpAddress = order.purchaserIpAddress ?? '';
-    const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
-    const eventDate = moment(order.eventDate).format('MM/DD/YYYY');
-    const eventName = order.eventTitle;          
+    const purchaserZip = order.purchaserZipCode ?? "";
+    const purchaserIpAddress = order.purchaserIpAddress ?? "";
+    const purchaseDate = moment(order.purchaseTimestamp).format(
+      "MM/DD/YYYY LT"
+    );
+    const eventDate = moment(order.eventDate).format("MM/DD/YYYY");
+    const eventName = order.eventTitle;
     const sellerName = order.sellerName;
     const numTickets = order.numTickets;
     const originalPrice = order.revenue?.toFixed(2) ?? 0;
@@ -1250,35 +1441,35 @@ export class EventService {
     const revenue = order.revenueUsd?.toFixed(2) ?? 0;
     const serviceFees = order.serviceFeesUsd?.toFixed(2) ?? 0;
     const email = order.email;
-    let phone = '';
+    let phone = "";
     if (order.phone) {
       phone = order.phone;
     }
-    const shirts = order.shirts?.join(' / ') ?? '';
-    let ticketTypeStr = '';
-    let attendeeNames = '';
-    if (numTickets > 0) {      
+    const shirts = order.shirts?.join(" / ") ?? "";
+    let ticketTypeStr = "";
+    let attendeeNames = "";
+    if (numTickets > 0) {
       const ticketMap = new Map<string, number>();
       order.tickets?.forEach((ticket) => {
-          if (attendeeNames.length > 0) {
-            attendeeNames += ' / ';
-          }
-          attendeeNames += `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
-          const item = ticketMap.get(ticket.ticketType);
-          let num: number = 1;
-          if (item && item > 0) {
-              num = item + 1;
-          } 
-          ticketMap.set(ticket.ticketType, num);                  
+        if (attendeeNames.length > 0) {
+          attendeeNames += " / ";
+        }
+        attendeeNames += `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
+        const item = ticketMap.get(ticket.ticketType);
+        let num: number = 1;
+        if (item && item > 0) {
+          num = item + 1;
+        }
+        ticketMap.set(ticket.ticketType, num);
       });
       ticketMap.forEach((value: Number, key: string) => {
-        if (ticketTypeStr.length > 0) {                
+        if (ticketTypeStr.length > 0) {
           ticketTypeStr += " / ";
         }
         ticketTypeStr += `${key} (${value})`;
       });
-    } 
-    
+    }
+
     exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${purchaserIpAddress}","${attendeeNames}","${purchaseDate}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
     if (hasNonUsaOrders) {
       if (showRevenueData) {
@@ -1286,14 +1477,14 @@ export class EventService {
           exportStr += `,"${originalPrice} ${order.currencySymbol}","${exchangeRate}"`;
         } else {
           exportStr += `,"${originalPrice}","${exchangeRate}"`;
-        }        
-      }            
+        }
+      }
       if (viewServiceFees) {
         if (order.currencyAbbrev != "USD" && order.currencySymbol != "$") {
           exportStr += `,"${originalServiceFees} ${order.currencySymbol}"`;
         } else {
           exportStr += `,"${originalServiceFees}"`;
-        }        
+        }
       }
     }
     if (viewServiceFees) {
@@ -1301,7 +1492,7 @@ export class EventService {
     }
     if (showRevenueData) {
       exportStr += `,"${revenue}"`;
-    }    
+    }
     exportStr += `,"${email}"`;
     if (hasPhoneData) {
       exportStr += `,"${phone}"`;
@@ -1309,78 +1500,133 @@ export class EventService {
     if (hasShirtData) {
       exportStr += `,"${shirts}"`;
     }
-    exportStr += `,${order.venue},${order.eventAddress},${order.eventCity},${order.eventState},${order.eventZip},${order.eventCountry}\n`
+    exportStr += `,${order.venue},${order.eventAddress},${order.eventCity},${order.eventState},${order.eventZip},${order.eventCountry}\n`;
     return exportStr;
   };
 
-  exportCustomerDataToCsv = (events: VipEvent[], viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasShirtData: boolean, hasNonUsaOrders: boolean, currencyAbbrev?: string): string => {
+  exportCustomerDataToCsv = (
+    events: VipEvent[],
+    viewServiceFees: boolean,
+    showRevenueData: boolean,
+    hasPhoneData: boolean,
+    hasShirtData: boolean,
+    hasNonUsaOrders: boolean,
+    currencyAbbrev?: string
+  ): string => {
     if (!events || events.length == 0) {
-      return '';
+      return "";
     }
 
-    let exportStr = this.getOrderExportTableHeader(viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencyAbbrev);
+    let exportStr = this.getOrderExportTableHeader(
+      viewServiceFees,
+      showRevenueData,
+      hasPhoneData,
+      hasShirtData,
+      hasNonUsaOrders,
+      currencyAbbrev
+    );
 
     events.forEach((vipEvent: VipEvent) => {
-      exportStr += this.getOrderExportTableFromEvent(vipEvent, viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders);
+      exportStr += this.getOrderExportTableFromEvent(
+        vipEvent,
+        viewServiceFees,
+        showRevenueData,
+        hasPhoneData,
+        hasShirtData,
+        hasNonUsaOrders
+      );
     });
 
     return exportStr;
   };
 
-  exportEventCustomerDataToCsv = (vipEvent: VipEvent, viewServiceFees: boolean, showRevenueData: boolean, hasPhoneData: boolean, hasNonUsaOrders: boolean, currencyAbbrev?: string): string => {
+  exportEventCustomerDataToCsv = (
+    vipEvent: VipEvent,
+    viewServiceFees: boolean,
+    showRevenueData: boolean,
+    hasPhoneData: boolean,
+    hasNonUsaOrders: boolean,
+    currencyAbbrev?: string
+  ): string => {
     if (!vipEvent || !vipEvent?.orders || vipEvent.orders.length == 0) {
-      return '';
+      return "";
     }
 
-    let exportStr = '';
+    let exportStr = "";
     let hasShirtData = false;
 
     const ticketData = getTicketDataFromEvents([vipEvent]);
     const ticketTypes = ticketData?.TicketTypes;
     if (ticketTypes?.length > 0) {
-        exportStr += '"Ticket Types Sold:"\n';
-        exportStr += '"Type","Number"\n';
-        ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
-            ticketTypes.forEach((ticketType: TicketType) => {
-                var data = ticketTypeData.find(x => x.TicketType == ticketType.ticketTypeName);
-                var number = 0;
-                if (data) {
-                    number = data.Number;
-                }
-                exportStr += `"${ticketType}","${number}"\n`;
-            });
+      exportStr += '"Ticket Types Sold:"\n';
+      exportStr += '"Type","Number"\n';
+      ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
+        ticketTypes.forEach((ticketType: TicketType) => {
+          var data = ticketTypeData.find(
+            (x) => x.TicketType == ticketType.ticketTypeName
+          );
+          var number = 0;
+          if (data) {
+            number = data.Number;
+          }
+          exportStr += `"${ticketType}","${number}"\n`;
         });
-        exportStr += '\n';
+      });
+      exportStr += "\n";
     }
-    
+
     const shirtData = getShirtDataFromEvents([vipEvent]);
     const shirtSizes = shirtData?.ShirtSizes ?? [];
-    if (shirtSizes.length > 0) {    
-        hasShirtData = true;
-        exportStr += '"Shirt Totals:"\n';
-        exportStr += '"Type","Number"\n';
-        shirtData?.ShirtData?.forEach((shirtSizeData: IShirtSizeData[]) => {
-            shirtSizeData.forEach((shirtSize) => {
-              exportStr += `"${shirtSize.ShirtSize}","${shirtSize.Number}"\n`;
-            });
+    if (shirtSizes.length > 0) {
+      hasShirtData = true;
+      exportStr += '"Shirt Totals:"\n';
+      exportStr += '"Type","Number"\n';
+      shirtData?.ShirtData?.forEach((shirtSizeData: IShirtSizeData[]) => {
+        shirtSizeData.forEach((shirtSize) => {
+          exportStr += `"${shirtSize.ShirtSize}","${shirtSize.Number}"\n`;
         });
-        exportStr += '\n';
-    }      
+      });
+      exportStr += "\n";
+    }
 
-    exportStr += this.getOrderExportTableHeader(viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders, currencyAbbrev);
-    exportStr += this.getOrderExportTableFromEvent(vipEvent, viewServiceFees, showRevenueData, hasPhoneData, hasShirtData, hasNonUsaOrders);
+    exportStr += this.getOrderExportTableHeader(
+      viewServiceFees,
+      showRevenueData,
+      hasPhoneData,
+      hasShirtData,
+      hasNonUsaOrders,
+      currencyAbbrev
+    );
+    exportStr += this.getOrderExportTableFromEvent(
+      vipEvent,
+      viewServiceFees,
+      showRevenueData,
+      hasPhoneData,
+      hasShirtData,
+      hasNonUsaOrders
+    );
 
     return exportStr;
   };
 
-  exportDashboardOrdersToCsv = (currentDashboardSelection: AdminDashboardSelection): string => {
-    if (!currentDashboardSelection.currentDashboardData || !currentDashboardSelection.currentDashboardData.orders || currentDashboardSelection.currentDashboardData.orders.length == 0) {
-      return '';
+  exportDashboardOrdersToCsv = (
+    currentDashboardSelection: AdminDashboardSelection
+  ): string => {
+    if (
+      !currentDashboardSelection.currentDashboardData ||
+      !currentDashboardSelection.currentDashboardData.orders ||
+      currentDashboardSelection.currentDashboardData.orders.length == 0
+    ) {
+      return "";
     }
 
     const orders = currentDashboardSelection.currentDashboardData.orders;
-    const startDate = moment.unix(currentDashboardSelection.start).format('M/D/YYYY');
-    const endDate = moment.unix(currentDashboardSelection.end).format('M/D/YYYY');
+    const startDate = moment
+      .unix(currentDashboardSelection.start)
+      .format("M/D/YYYY");
+    const endDate = moment
+      .unix(currentDashboardSelection.end)
+      .format("M/D/YYYY");
 
     let exportStr = `"Admin dashboard - orders from ${startDate} to ${endDate}"\n\n`;
 
@@ -1388,7 +1634,7 @@ export class EventService {
     let hasPhoneData = false;
     let hasNonUsaOrders = false;
     for (const order of orders) {
-      if (order.phone && order.phone != '') {
+      if (order.phone && order.phone != "") {
         hasPhoneData = true;
       }
       if (order.shirts && order.shirts.length > 0) {
@@ -1402,39 +1648,66 @@ export class EventService {
       }
     }
 
-    exportStr += this.getOrderExportTableHeader(true, true, hasPhoneData, hasShirtData, hasNonUsaOrders, '', true);
+    exportStr += this.getOrderExportTableHeader(
+      true,
+      true,
+      hasPhoneData,
+      hasShirtData,
+      hasNonUsaOrders,
+      "",
+      true
+    );
 
     orders.forEach((order: Order) => {
-      exportStr += this.getOrderExportRow(order, true, true, hasPhoneData, hasShirtData, hasNonUsaOrders);
+      exportStr += this.getOrderExportRow(
+        order,
+        true,
+        true,
+        hasPhoneData,
+        hasShirtData,
+        hasNonUsaOrders
+      );
     });
 
     return exportStr;
   };
 
   getLocationInfoFromVenue = (venue: Venue): string => {
-    let location = `${venue.city}`; 
-    if (venue.state && venue.state.trim() != '') {
+    let location = `${venue.city}`;
+    if (venue.state && venue.state.trim() != "") {
       location += `, ${venue.state}`;
-    }    
-    if (venue.country && venue.country != "United States" && venue.country != "USA" && (venue.state && venue.country.trim() != venue.state.trim())) {
-        location += ", " + venue.country;
+    }
+    if (
+      venue.country &&
+      venue.country != "United States" &&
+      venue.country != "USA" &&
+      venue.state &&
+      venue.country.trim() != venue.state.trim()
+    ) {
+      location += ", " + venue.country;
     }
     return location;
-  }
+  };
 
   getLocationInfoFromDailyOrderData = (order: IDailyOrderData): string => {
-    let location = `${order.city}`; 
-    if (order.state && order.state.trim() != '') {
+    let location = `${order.city}`;
+    if (order.state && order.state.trim() != "") {
       location += `, ${order.state}`;
-    }    
-    if (order.country && order.country != "United States" && order.country != "USA" && (order.state && order.country.trim() != order.state.trim())) {
-        location += ", " + order.country;
+    }
+    if (
+      order.country &&
+      order.country != "United States" &&
+      order.country != "USA" &&
+      order.state &&
+      order.country.trim() != order.state.trim()
+    ) {
+      location += ", " + order.country;
     }
     return location;
-  }
+  };
 
   getAccountNameFromTicketSocketId = (ticketSocketId: number): string => {
-    let accountName = '';
+    let accountName = "";
     switch (ticketSocketId) {
       case 2:
         accountName = "European VIP Tickets";
@@ -1450,6 +1723,5 @@ export class EventService {
         break;
     }
     return accountName;
-  }
-
+  };
 }

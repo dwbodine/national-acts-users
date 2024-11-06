@@ -3,8 +3,8 @@ import { IDashboardTotals } from "./user";
 export enum SellerType {
   Artist = 1,
   Venue = 2,
-  Promoter = 3
-};
+  Promoter = 3,
+}
 
 export interface Seller {
   sellerId: number;
@@ -222,9 +222,9 @@ export interface ModifyEventResponse {
 }
 
 export interface RefreshHistoryResponse {
-   results?: TicketSocketRefreshHistory;
-   statusCode?: number;
-   refreshError?: string;
+  results?: TicketSocketRefreshHistory;
+  statusCode?: number;
+  refreshError?: string;
 }
 
 export interface GetRefreshHistoryResponse {
@@ -277,7 +277,7 @@ export interface ITicketEventSalesData {
   Tickets: number;
   Revenue: number;
   ServiceFees: number;
-  TotalRevenue: number;  
+  TotalRevenue: number;
 }
 
 export interface ITicketSellerSalesData {
@@ -299,7 +299,7 @@ export interface ITicketSalesData {
   ServiceFees: number;
   TotalRevenue: number;
   TicketsRefunded?: number;
-  children?: ITicketSellerSalesData[]
+  children?: ITicketSellerSalesData[];
 }
 
 export interface IShirtData {

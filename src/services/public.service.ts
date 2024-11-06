@@ -3,7 +3,7 @@ import { GetSellersResponse, Seller } from "../types/event";
 
 export class PublicService {
   protected readonly instance: AxiosInstance;
-  
+
   public constructor(url: string) {
     this.instance = axios.create({
       baseURL: url,
@@ -17,21 +17,21 @@ export class PublicService {
 
     let sellersResponse: GetSellersResponse = {
       sellers: undefined,
-      sellersError: undefined
+      sellersError: undefined,
     };
 
     const headers = {
-        'Content-Type': 'application/json',
-        'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`
+      "Content-Type": "application/json",
+      "x-api-key": `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
     return this.instance
       .get(url, {
-        headers: headers
+        headers: headers,
       })
       .then((res) => {
         const sellers = res.data;
-        sellersResponse.sellers = sellers.length ? sellers as Seller[] : [];
+        sellersResponse.sellers = sellers.length ? (sellers as Seller[]) : [];
         return sellersResponse;
       })
       .catch((err) => {
@@ -40,12 +40,11 @@ export class PublicService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching sellers - please contact your administrator";
+          errorMessage =
+            "Unknown error while fetching sellers - please contact your administrator";
         }
         sellersResponse.sellersError = errorMessage;
         return sellersResponse;
       });
   };
-
-
 }

@@ -3,7 +3,7 @@ import { ITicketSalesData, Order, Seller, SellerType, VipEvent } from "./event";
 export type LoginResponse = {
   user?: User;
   loginError?: string;
-}
+};
 
 export type UserSeller = {
   sellerId: number;
@@ -11,24 +11,24 @@ export type UserSeller = {
   sellerType: SellerType;
   roleId?: number;
   permissions?: number[];
-}
+};
 
 export type Role = {
   roleId: number;
   roleName: string;
   permissions?: Permission[];
-}
+};
 
 export type Permission = {
   permissionId: number;
   permissionName: string;
-}
+};
 
 export type UserSellerResponse = {
   userSeller?: UserSeller;
   userSellerError?: string;
   statusCode?: number;
-}
+};
 
 export enum EnumPermission {
   ViewInactiveEvents = 1,
@@ -41,8 +41,8 @@ export enum EnumPermission {
   CheckInUsers = 8,
   ChangeEventStatus = 9,
   ChangeOrderStatus = 10,
-  ExportCustomerData = 11, 
-  ViewHiddenEvents = 12 
+  ExportCustomerData = 11,
+  ViewHiddenEvents = 12,
 }
 
 export type User = {
@@ -57,7 +57,7 @@ export type User = {
   isAuthenticated?: boolean;
   token?: string;
   category?: string;
-  isActive: boolean;  
+  isActive: boolean;
   sellers?: UserSeller[];
   selectedSellerId?: number;
   selectedHideRevenue?: boolean;
@@ -87,7 +87,7 @@ export type UserReportSelection = {
   showHidden?: boolean;
   showHiddenOrders?: boolean;
   isForAdmin?: boolean;
-}
+};
 
 export interface ITopSeller {
   sellerId: number;
@@ -212,7 +212,7 @@ export type AdminDashboardSelection = {
   reloadOrders: boolean;
   currentDashboardData?: IDashboardData;
   dashboardTotals?: IDashboardTotals;
-}
+};
 
 export type UserActivitySelection = {
   start: number;
@@ -221,11 +221,11 @@ export type UserActivitySelection = {
   filterAdmins: boolean;
   currentLogins?: number;
   currentActivities?: UserActivity[];
-}
+};
 
 export type GlobalSelection = {
   isLoading: boolean;
-}
+};
 
 export enum UserActivityType {
   Login = 1,
@@ -243,16 +243,16 @@ export enum UserActivityType {
   ExportedEventSummary = 14,
   ExportedCustomerData = 15,
   ExportedEventData = 16,
-  ShowInactiveEvents = 17, 
+  ShowInactiveEvents = 17,
   ShowDeletedEvents = 18,
-  ShowRevenue = 19, 
+  ShowRevenue = 19,
   ShowServiceFees = 20,
   ShowInactiveOrders = 21,
   ShowDeletedOrders = 22,
   PrintButtonClicked = 23,
-  ResetButtonClicked = 24, 
+  ResetButtonClicked = 24,
   CustomerExportReport = 25,
-  UserActivityReport = 26
+  UserActivityReport = 26,
 }
 
 export type UserActivity = {
@@ -262,7 +262,7 @@ export type UserActivity = {
   username?: string;
   activityData?: string;
   timestamp: string;
-}
+};
 
 export type AdminSelection = {
   sellerId?: number;
@@ -279,29 +279,29 @@ export type AdminSelection = {
   roles?: Role[] | undefined;
   users?: User[] | undefined;
   events?: VipEvent[] | undefined;
-}
+};
 
 export type AdminReportsSelection = {
-  start?: number,
-  end?: number,
-  reloadData?: boolean
-}
+  start?: number;
+  end?: number;
+  reloadData?: boolean;
+};
 
 export type UserLoginResponse = {
   user?: User;
   loginError?: string;
-}
+};
 
 export type UserResponse = {
   user?: User;
   errorMessage?: string;
-}
+};
 
 export enum ForgotPasswordMode {
   SendPasswordReset,
   ValidateResetCode,
-  ResetPassword
-};
+  ResetPassword,
+}
 
 export interface GetUsersResponse {
   users?: User[];
