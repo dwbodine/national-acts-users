@@ -79,6 +79,13 @@ export default function AdminEventEdit() {
         router.push('/admin/events/');
     }
 
+    const manageOrders = () => {
+        if (!currentAdminSelection.selectedEvent) {
+            return;
+        }
+        router.push('/admin/events/orders/');
+    }
+
     const setTicketTypeStatus = (e: any) => {
         if (currentAdminSelection.selectedEvent == undefined || currentAdminSelection.selectedEvent.ticketTypes == undefined) {
             return;
@@ -232,25 +239,6 @@ export default function AdminEventEdit() {
                     <span className="title">Status:</span> {getEventStatusText(currentAdminSelection.selectedEvent)}<br />
                 </Col>
             </Row>
-            <Row className="form-group" hidden={refundsDisabled}>
-                <Col>
-                    <Button className="form-control-float" onClick={confirmDoRefund}>Refund All Tickets</Button>
-                    <FormCheck
-                        disabled={cancelDisabled}
-                        title={cancelTitle}
-                        className="form-control-float"
-                        checked={markCancelled}
-                        onChange={(e) => setMarkCancelled(e.target.checked)}
-                        label="Mark as cancelled?"                
-                    />
-                    <FormCheck
-                        className="form-control-float"
-                        checked={refundServiceFees}
-                        onChange={(e) => setRefundServiceFees(e.target.checked)}
-                        label="Refund service fees?"                
-                    />
-                </Col>
-            </Row>
             <Row className="form-group">
                 <Col>
                     Announce Date: <DatePicker id="announceDate" format="M/d/yyyy" onChange={onAnnounceDateChange} value={announceDate} oneTap cleanable onClean={onCleanAnnounceDate} disabled={announceDateDisabled} />
@@ -285,7 +273,7 @@ export default function AdminEventEdit() {
             </Row>
             <Row>
                 <Col>
-                <h5>Ticket Types</h5>
+                    <h5>Ticket Types</h5>
                 </Col>
             </Row>
             <Row>
@@ -297,6 +285,35 @@ export default function AdminEventEdit() {
                     </table>
                 </Col>
             </Row>
+            <Row className="refund-section-header" hidden={refundsDisabled}>
+                <Col>
+                    <h5>Process Event Refunds</h5>
+                </Col>
+            </Row>
+            <Row className="refund-section" hidden={refundsDisabled}>
+                <Col>
+                    <Button className="form-control-float" onClick={confirmDoRefund}>Refund All Tickets</Button>
+                    <FormCheck
+                        disabled={cancelDisabled}
+                        title={cancelTitle}
+                        className="form-control-float"
+                        checked={markCancelled}
+                        onChange={(e) => setMarkCancelled(e.target.checked)}
+                        label="Mark as cancelled?"                
+                    />
+                    <FormCheck
+                        className="form-control-float"
+                        checked={refundServiceFees}
+                        onChange={(e) => setRefundServiceFees(e.target.checked)}
+                        label="Refund service fees?"                
+                    />
+                </Col>
+            </Row>
+            <Row className="refund-section">
+                <Col>
+                    <Button onClick={manageOrders}>Manage Orders</Button>
+                </Col>
+            </Row> 
             <Row>
                 <Col>
                     <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>

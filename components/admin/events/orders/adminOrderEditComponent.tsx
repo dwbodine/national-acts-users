@@ -175,25 +175,7 @@ export default function AdminOrderEdit() {
                     <span className="title">Service Fee Revenue Refunded (USD):</span> {currentOrder?.serviceFeeRevenueRefundedUsd?.toFixed(2)}<br />
                 </Col>
             </Row>
-            <Row className="form-group" hidden={refundsDisabled}>
-                <Col>
-                    <Button className="form-control-float" onClick={confirmDoRefund}>Refund All Tickets</Button>
-                    <FormCheck
-                        disabled={chargebackDisabled}
-                        title={chargebackTitle}
-                        className="form-control-float"
-                        checked={markChargeback}
-                        onChange={(e) => setMarkChargeback(e.target.checked)}
-                        label="Mark as chargeback?"                
-                    />
-                    <FormCheck
-                        className="form-control-float"
-                        checked={refundServiceFees}
-                        onChange={(e) => setRefundServiceFees(e.target.checked)}
-                        label="Refund service fees?"                
-                    />
-                </Col>
-            </Row>
+            
             <Row className="form-group">
                 <Col>
                     <FormCheck
@@ -238,6 +220,30 @@ export default function AdminOrderEdit() {
                             {ticketRows}
                         </tbody>
                     </table>
+                </Col>
+            </Row>
+            <Row className="refund-section-header">
+                <Col>
+                    <h5>Process Refunds</h5>
+                </Col>
+            </Row>
+            <Row className="refund-section" hidden={refundsDisabled}>
+                <Col>
+                    <Button className="form-control-float" onClick={confirmDoRefund}>Refund All Tickets</Button>
+                    <FormCheck
+                        disabled={chargebackDisabled}
+                        title={chargebackTitle}
+                        className="form-control-float"
+                        checked={markChargeback}
+                        onChange={(e) => setMarkChargeback(e.target.checked)}
+                        label="Mark as chargeback?"                
+                    />
+                    <FormCheck
+                        className="form-control-float"
+                        checked={refundServiceFees}
+                        onChange={(e) => setRefundServiceFees(e.target.checked)}
+                        label="Refund service fees?"                
+                    />
                 </Col>
             </Row>
             <Row>
