@@ -12,6 +12,18 @@ div hidden {
   display: none;
 }
 
+select {
+  margin: 10px 0;
+  padding: 7px;
+  min-width: 220px;
+  border-radius: 6px;
+  border: 1px lightgray solid;
+}
+
+select:hover {
+  border-color: #3498ff;
+}
+
 .btn {
   white-space: nowrap;
 }
@@ -601,18 +613,6 @@ div hidden {
   margin: 5px 0;
 }
 
-.admin-container .admin-select select {
-  margin: 10px 0;
-  padding: 7px;
-  min-width: 220px;
-  border-radius: 6px;
-  border: 1px lightgray solid;
-}
-
-.admin-container .admin-select select:hover {
-  border-color: #3498ff;
-}
-
 .admin-container .admin-button-group {
   margin: 10px 0;
 }
@@ -740,9 +740,13 @@ div hidden {
   margin: 10px 0;
 }
 
+.form-header span {
+  display: inline-block;
+  margin: 5px 0;
+}
+
 .form-header .title {
   font-weight: bold;
-  display: inline-block;
   white-space: nowrap;
   width: 300px;
 }
@@ -750,6 +754,14 @@ div hidden {
 .form-control-float {
   float: left;
   margin-right: 10px !important;
+}
+
+.refund-section-header {
+  margin: 5px 0 5px -10px;
+}
+
+.refund-section {
+  margin: 5px 0 15px -10px;
 }
 
 .confirmation-dialog {

@@ -1,7 +1,6 @@
 import { Seller } from "@/types/event";
 import { Role } from "@/types/user";
 import { FaMinus } from "react-icons/fa";
-import { Dropdown } from "rsuite";
 
 
 export default function AdminSellerSelect(props: any) {
