@@ -602,16 +602,25 @@ div hidden {
 }
 
 .admin-container .admin-select select {
-  margin: 10px;
+  margin: 10px 0;
+  padding: 7px;
+  min-width: 220px;
+  border-radius: 6px;
+  border: 1px lightgray solid;
+}
+
+.admin-container .admin-select select:hover {
+  border-color: #3498ff;
 }
 
 .admin-container .admin-button-group {
   margin: 10px 0;
 }
 
-.admin-report-datepicker-label {
+.admin-report-datepicker-label, .admin-seller-select-label {
   width: 100px;
   margin: 15px 0;
+  display: inline-block;
 }
 
 .admin-click-cell {
@@ -716,7 +725,7 @@ div hidden {
 }
 
 .refresh-results-header {
-  margin: 25px 0 25px 15px;
+  margin: 25px 0 25px 0;
 }
 
 .refresh-results-header-col {

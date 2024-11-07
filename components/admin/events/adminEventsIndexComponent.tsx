@@ -4,7 +4,7 @@ import { Table } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setAdminDates, setAdminEvent, setAdminEvents, setAdminSellerId, setAllSellers, setReloadEvents } from "@/lib/adminSelectionSlice";
-import { Button, Col, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import AdminSellerSelect from "../common/adminSellerSelectComponent";
 import ReportDatePicker from "../../common/reportDatePIcker";
@@ -145,10 +145,14 @@ export default function AdminEventsIndex() {
         <div className="admin-container">
             <Row className="refresh-results-header">
                 <Col>
+                    <AdminListHomeButton />
+                </Col>
+            </Row>  
+            <Row className="refresh-results-header">
+                <Col>
                     <h3>Event Admin</h3>
                     <ReportDatePicker onChange={onDateChange} onStartClear={onStartClear} onEndClear={onEndClear} start={currentAdminSelection.start} end={currentAdminSelection.end} />   
                     <AdminSellerSelect id="refresh" Sellers={currentAdminSelection.allSellers} SellerId={currentAdminSelection.sellerId} OnSellerChange={updateSeller} />
-                    <AdminListHomeButton />
                 </Col>
             </Row>
             <Row>

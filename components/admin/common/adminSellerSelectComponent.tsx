@@ -1,8 +1,7 @@
-import { useGetSellers } from "@/hooks/common/useGetSellers";
 import { Seller } from "@/types/event";
 import { Role } from "@/types/user";
-import { useEffect, useState } from "react";
 import { FaMinus } from "react-icons/fa";
+import { Dropdown } from "rsuite";
 
 
 export default function AdminSellerSelect(props: any) {
@@ -36,7 +35,7 @@ export default function AdminSellerSelect(props: any) {
 
     return (
         <div className="admin-select">
-            <span>Seller<span hidden={!number}> # {number}</span>:</span>
+            <span className="admin-seller-select-label">Seller<span hidden={!number}> # {number}</span>:</span>
             <select hidden={sellerOptions.length == 0 || !onSellerChange} id={`${id}_seller`} onChange={onSellerChange} defaultValue={sellerId}> { sellerOptions } </select>
             <select hidden={roleOptions.length == 0 || !onRoleChange} id={`${id}_role`} onChange={onRoleChange} defaultValue={roleId}> { roleOptions } </select>
             <span hidden={!onDelete}><FaMinus title="Remove seller" className="admin-click-cell" id={`${id}_remove`} onClick={onDelete}></FaMinus></span>

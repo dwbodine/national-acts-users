@@ -215,7 +215,7 @@ export default function AdminEventEdit() {
     }
 
     if (ticketTypeRows.length == 0) {
-        ticketTypeRows.push(<tr><td colSpan={2}>n/a</td></tr>);
+        ticketTypeRows.push(<tr key="admin_tt0"><td colSpan={2}>n/a</td></tr>);
     }
 
     return (
