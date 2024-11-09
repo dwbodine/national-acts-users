@@ -1,52 +1,261 @@
 import { RootState } from "@/lib/store";
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import router from 'next/router';
-import { GetPermissionsResponse, Permission, Role, UpdateRoleResponse } from "@/types/user";
 import { Button, Col, FormCheck, Row } from "react-bootstrap";
-import { useGetAllPermissions } from "@/hooks/user/useGetAllPermissions";
-import { setAdminOrder, setReloadRoles, setSelectedRole } from "@/lib/adminSelectionSlice";
-import { useUpdateRole } from "@/hooks/admin/useUpdateRole";
+import { setAdminOrder, setMustSaveOrder, setReloadEvents } from "@/lib/adminSelectionSlice";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { useRefundOrder } from "@/hooks/admin/useRefundOrder";
 import { useUpdateOrder } from "@/hooks/admin/useUpdateOrder";
-import { useGetLocation } from "@/hooks/common/useGetLocation";
 import { useGetOrderStatus } from "@/hooks/common/useGetOrderStatus";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../common/confirmationDialogComponent";
 import { ModifyOrderResponse } from "@/types/event";
 import moment from "moment";
 import { useGetEventStatus } from "@/hooks/common/useGetEventStatus";
+import { useRefundTicket } from "@/hooks/admin/useRefundTicket";
 
 export default function AdminOrderEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
     const dispatch = useDispatch();
     const { refundOrder } = useRefundOrder();
+    const { refundTicket } = useRefundTicket();
     const { updateOrder } = useUpdateOrder();
     const { getOrderStatusText } = useGetOrderStatus();
-    const { getEventStatusText } = useGetEventStatus();
-    const [isActive, setIsActive] = useState<boolean>(false);
-    const [isHidden, setIsHidden] = useState<boolean>(false);
-    const [isDeleted, setIsDeleted] = useState<boolean>(false);
     const [markChargeback, setMarkChargeback] = useState<boolean>(false);
     const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
+    const [refundTicketId, setRefundTicketId] = useState<number>(0);
+    const [refundTicketServiceFees, setRefundTicketServiceFees] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (currentAdminSelection.selectedOrder == undefined) {
-            goBack();
-        } else {
-            setIsActive(currentAdminSelection.selectedOrder.isActive);
-            setIsHidden(currentAdminSelection.selectedOrder.isHidden ?? false);
-            setIsDeleted(currentAdminSelection.selectedOrder.isDeleted);
+    const setPrice = (e: any): any => {
+        const newPrice = parseFloat(e.currentTarget?.value ?? 0);
+        if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id || isNaN(newPrice)) {
+            return;
         }
-    }, [currentAdminSelection, dispatch]);
+        const ticketId = parseInt(e.currentTarget.id.replace('price_', ''));
+        let currentOrder = { ...currentAdminSelection.selectedOrder };
+        if (!isNaN(ticketId) && currentOrder.tickets) {
+            let orderRevenue = 0;
+            currentOrder.tickets = currentOrder.tickets.map((t) => {
+                let ticket = { ...t };
+                if (ticket.ticketSocketOrderTicketId == ticketId) {
+                    ticket.price = newPrice;
+                    orderRevenue += newPrice;
+                } else {
+                    orderRevenue += ticket.price ?? 0;
+                }
+                return ticket;
+            });
+            currentOrder.revenue = orderRevenue;
+            currentOrder.revenueUsd = orderRevenue * currentOrder.exchangeRate;
 
-    const goBack = () => {
+            dispatch(
+                setAdminOrder(currentOrder)
+            );
+
+            dispatch(
+                setMustSaveOrder(true)
+            );
+        }
+        return null;
+    };
+
+    const goBack = (dismissToast: boolean = true) => {
+        if (dismissToast) {
+            toast.dismiss();
+        }        
+        dispatch(
+            setMustSaveOrder(false)
+        );
         router.push('/admin/events/orders/');
     }
 
-    const setTicketCheckInStatus = () => {
+    const confirmGoBack = () => {
+        if (!currentAdminSelection?.mustSaveOrder) {
+            goBack();
+            return;
+        }
 
+        let message: string = 'You have made changes to this order, are you sure you want to discard them and leave?';
+        const toastId = toast.warning(
+            <ConfirmationDialog
+                Message={message}
+                ConfirmText="Word Booty" 
+                CancelText="Oops sorry"
+                OnConfirm={goBack}
+                OnCancel={() => { toast.dismiss() }}
+                />,
+                {
+                  position: 'top-left',
+                  autoClose: false,
+                  closeOnClick: false
+                }
+        );
+    }
+
+    const markDirty = () => {
+        dispatch(
+            setMustSaveOrder(true)
+        );
+    }
+
+    const setIsActive = (isActive: boolean) => {
+        if (!currentAdminSelection || !currentAdminSelection.selectedOrder) {
+            return;
+        }
+        let currentOrder = {...currentAdminSelection.selectedOrder};
+        currentOrder.isActive = isActive;
+        dispatch(
+            setAdminOrder(currentOrder)
+        );   
+        markDirty();   
+    };
+
+    const setIsHidden = (isHidden: boolean) => {
+        if (!currentAdminSelection || !currentAdminSelection.selectedOrder) {
+            return;
+        }
+        let currentOrder = {...currentAdminSelection.selectedOrder};
+        currentOrder.isHidden = isHidden;
+        dispatch(
+            setAdminOrder(currentOrder)
+        );   
+        markDirty();   
+    };
+
+    const setIsDeleted = (isDeleted: boolean) => {
+        if (!currentAdminSelection || !currentAdminSelection.selectedOrder) {
+            return;
+        }
+        let currentOrder = {...currentAdminSelection.selectedOrder};
+        currentOrder.isDeleted = isDeleted;
+        dispatch(
+            setAdminOrder(currentOrder)
+        );   
+        markDirty();   
+    };
+    
+    
+
+    const setServiceFee = (e: any) => {
+        const newServiceFee = parseFloat(e?.currentTarget?.value ?? 0);
+        if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id || isNaN(newServiceFee)) {
+            return;
+        }
+        const ticketId = parseInt(e.currentTarget.id.replace('serviceFee_', ''));
+        let currentOrder = { ...currentAdminSelection.selectedOrder };
+        if (!isNaN(ticketId) && currentOrder.tickets) {
+            let orderServiceFees = 0;
+            currentOrder.tickets = currentOrder.tickets.map((t) => {
+                let ticket = { ...t };
+                if (ticket.ticketSocketOrderTicketId == ticketId) {
+                    ticket.serviceFee = newServiceFee;
+                    orderServiceFees += newServiceFee;
+                } else {
+                    orderServiceFees += ticket.serviceFee ?? 0;
+                }
+                return ticket;
+            });
+            currentOrder.serviceFees = orderServiceFees;
+            currentOrder.serviceFeesUsd = orderServiceFees * currentOrder.exchangeRate;
+
+            dispatch(
+                setAdminOrder(currentOrder)
+            );
+
+            dispatch(
+                setMustSaveOrder(true)
+            );
+        }
+    };
+
+    const setTicketActive = (e: any) => {
+        if (!e.currentTarget || !e.currentTarget.id) {
+            return;
+        }
+        const ticketId = parseInt(e.currentTarget.id.replace('serviceFee_', ''));
+    };
+
+    const setTicketCheckInStatus = (e: any) => {
+        if (!e.currentTarget || !e.currentTarget.id) {
+            return;
+        }
+        const ticketId = parseInt(e.currentTarget.id.replace('serviceFee_', ''));
+    };
+
+    const confirmRefundTicket = (e: any) => {
+        if (!e.currentTarget || !e.currentTarget.id) {
+            return;
+        }
+        const ticketId = parseInt(e.currentTarget.id.replace('refund_', ''));
+        setRefundTicketId(ticketId);
+        setRefundTicketServiceFees(false);
+
+        let message: string = 'By continuing, this ticket will be marked as refunded in full';
+        const toastId = toast.warning(
+            <ConfirmationDialog
+                Message={message}
+                ConfirmText="Yep" 
+                CancelText="Nope"
+                OnConfirm={doRefundTicket}
+                OnCancel={() => { toast.dismiss() }}
+                />,
+                {
+                  position: 'top-left',
+                  autoClose: false,
+                  closeOnClick: false
+                }
+        );
+    };
+
+    const confirmRefundTicketWithServiceFees = (e: any) => {
+        if (!e.currentTarget || !e.currentTarget.id) {
+            return;
+        }
+        const ticketId = parseInt(e.currentTarget.id.replace('refundSf_', ''));
+        setRefundTicketId(ticketId);
+        setRefundTicketServiceFees(true);
+
+        let message: string = 'By continuing, this ticket will be marked as refunded in full, including all service fees';
+        const toastId = toast.warning(
+            <ConfirmationDialog
+                Message={message}
+                ConfirmText="Yep" 
+                CancelText="Nope"
+                OnConfirm={doRefundTicket}
+                OnCancel={() => { toast.dismiss() }}
+                />,
+                {
+                  position: 'top-left',
+                  autoClose: false,
+                  closeOnClick: false
+                }
+        );
+    };
+
+    const doRefundTicket = () => {
+        toast.dismiss();
+        dispatch (
+            setIsLoading(true)
+        );
+        refundTicket(refundTicketId, refundTicketServiceFees)
+            .then((response: ModifyOrderResponse) => {
+                const success = response.success;
+                dispatch (
+                    setIsLoading(false)
+                );
+                if (success) {
+                    toast.success('Refund succeeded');
+                    dispatch (
+                        setAdminOrder(undefined)
+                    );
+                    setRefundTicketId(0);
+                    setRefundTicketServiceFees(false);
+                    goBack(false);
+                } else {
+                    toast.error('Refund failed');
+                }
+            });
     };
     
     const confirmDoRefund = () => {
@@ -90,7 +299,7 @@ export default function AdminOrderEdit() {
                     dispatch (
                         setAdminOrder(undefined)
                     );
-                    goBack();
+                    goBack(false);
                 } else {
                     toast.error('Refund failed');
                 }
@@ -105,7 +314,24 @@ export default function AdminOrderEdit() {
         dispatch(
             setIsLoading(true)
         );
-        
+        const currentOrder = { ...currentAdminSelection.selectedOrder };
+        updateOrder(currentOrder)
+            .then((results: ModifyOrderResponse) => {
+                dispatch(
+                    setIsLoading(false)
+                );
+                if (results.success && !results.orderError) {
+                    toast.success("Order updated successfully");
+                    dispatch (
+                        setReloadEvents(true)
+                    );
+                    setTimeout(() => {
+                        goBack(false);    
+                    }, 500);                    
+                } else {
+                    toast.error(results.orderError ?? "Unknown error occurred while saving order");
+                }                
+            });
     }    
 
     const pageHeader = "Edit Order";
@@ -116,19 +342,31 @@ export default function AdminOrderEdit() {
     const refundsDisabled = currentOrder?.numTickets == 0;
     const chargebackDisabled = (currentOrder?.hasChargebacks);
     const chargebackTitle = chargebackDisabled ? 'Order has already been charged back': '';
+    const currencyAbbrev = currentOrder?.currencyAbbrev;
+    const isActive = currentOrder?.isActive ?? false;
+    const isDeleted = currentOrder?.isDeleted ?? false;
+    const isHidden = currentOrder?.isHidden ?? false;
 
     let ticketRows: any[] = [];
     if (currentOrder && currentOrder.tickets && currentOrder.tickets.length > 0) {
         currentOrder.tickets.forEach(ticket => {
             const ticketId = ticket.ticketSocketOrderTicketId;
-            const ticketRow = <tr>
+            const ticketRow = <tr key={`row_${ticketId}`}> 
                                 <td>{ticket.ticketSocketOrderTicketId}</td>
                                 <td>{ticket.attendeeFirstName}</td>
                                 <td>{ticket.attendeeLastName}</td>
-                                <td>{ticket.price?.toFixed(2)}</td>
-                                <td>{ticket.serviceFee?.toFixed(2)}</td>
-                                <td></td>
-                                <td></td>
+                                <td><input id={`price_${ticketId}`} disabled={ticket.isRefunded || ticket.isChargedBack} value={ticket.price?.toFixed(2)} type="number" step={0.25} onChange={setPrice} /></td>
+                                <td><input id={`serviceFee_${ticketId}`} disabled={ticket.isRefunded || ticket.isChargedBack} value={ticket.serviceFee?.toFixed(2)} type="number" step={0.25} onChange={setServiceFee} /></td>
+                                <td style={{'textAlign': 'center'}}>
+                                    <input id={`checkin__${ticketId}`} disabled={ticket.isRefunded || ticket.isChargedBack} type="checkbox" defaultChecked={ticket.isActive && ticket.isCheckedIn} onClick={setTicketCheckInStatus} />
+                                </td>
+                                <td style={{'textAlign': 'center'}}>
+                                    <input id={`active__${ticketId}`} disabled={ticket.isRefunded || ticket.isChargedBack} type="checkbox" defaultChecked={ticket.isActive} onClick={setTicketActive} />
+                                </td>
+                                <td>
+                                    <Button title={`Refund ticket # ${ticket.ticketSocketOrderTicketId}`} disabled={ticket.isRefunded || ticket.isChargedBack} id={`refund_${ticketId}`} onClick={confirmRefundTicket}>Refund Ticket</Button>
+                                    <Button title={`Refund ticket # ${ticket.ticketSocketOrderTicketId} with service fees`} disabled={ticket.isRefunded || ticket.isChargedBack} id={`refundSf_${ticketId}`} onClick={confirmRefundTicketWithServiceFees}>Refund Ticket With Service Fees</Button>
+                                </td>
                               </tr>;
             ticketRows.push(ticketRow);
         });
@@ -147,18 +385,18 @@ export default function AdminOrderEdit() {
                 <Col className="form-header">
                     <span className="title">Event:</span> {currentOrder?.eventTitle}<br />
                     <span className="title">Event Date:</span> {eventDate}<br />
-                    <span className="title">Status:</span> {getEventStatusText(currentAdminSelection.selectedEvent)}
                 </Col>
             </Row>    
             <Row className="form-group">
                 <Col className="form-header">
                     <span className="title">Purchase Date:</span> {purchaseDate}<br />                    
+                    <span className="title">Order Status:</span> {getOrderStatusText(currentAdminSelection.selectedOrder)}<br />
                     <span className="title">Purchaser Name:</span> {purchaserName}<br />
                     <span className="title">Number Tickets Sold:</span> {currentOrder?.numTickets}<br />
-                    <div hidden={!currentOrder || currentOrder.currencyAbbrev == "USD"}>
+                    <div hidden={!currentOrder || currencyAbbrev == "USD"}>
                         <span className="title">Exchange Rate:</span> {currentOrder?.exchangeRate} <br />
-                        <span className="title">Ticket Revenue:</span> {currentOrder?.revenue?.toFixed(2)} <br />
-                        <span className="title">Service Fee Revenue:</span> {currentOrder?.serviceFees?.toFixed(2)} <br />
+                        <span className="title">Ticket Revenue {currencyAbbrev}:</span> {currentOrder?.revenue?.toFixed(2)} <br />
+                        <span className="title">Service Fee Revenue {currencyAbbrev}:</span> {currentOrder?.serviceFees?.toFixed(2)} <br />
                     </div>
                     <span className="title">Ticket Revenue (USD):</span> {currentOrder?.revenueUsd?.toFixed(2)}<br />
                     <span className="title">Service Fee Revenue (USD):</span> {currentOrder?.serviceFeesUsd?.toFixed(2)}<br />
@@ -213,6 +451,7 @@ export default function AdminOrderEdit() {
                                 <th>Price</th>
                                 <th>Service Fees</th>
                                 <th>Checked-in</th>
+                                <th>Active</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
@@ -248,7 +487,7 @@ export default function AdminOrderEdit() {
             </Row>
             <Row>
                 <Col>
-                    <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+                    <Button onClick={onSubmit}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
                 </Col>
             </Row> 
         </Col> 

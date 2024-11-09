@@ -27,7 +27,7 @@ export default function AdminEventsIndex() {
     const [tableLoading, setTableLoading] = useState(true);
     
     useEffect(() => {
-            if (currentAdminSelection.allSellers == undefined) {      
+        if (currentAdminSelection.allSellers == undefined) {      
             setTableLoading(true);      
             dispatch(
                 setIsLoading(true)
@@ -50,6 +50,7 @@ export default function AdminEventsIndex() {
         } else if (currentAdminSelection.reloadEvents) {
             let adminSelection = { ...currentAdminSelection };
             if (!adminSelection.sellerId) {
+                setTableLoading(false);
                 return;
             }
             setTableLoading(true);
@@ -137,10 +138,6 @@ export default function AdminEventsIndex() {
         router.push('/admin/events/orders/');
     };
 
-    const fetchEvents = () => {
-        
-    }
-
     return(
         <div className="admin-container">
             <Row className="refresh-results-header">
@@ -158,38 +155,38 @@ export default function AdminEventsIndex() {
             <Row>
                 <Col>
                     <Table autoHeight={true} data={currentAdminSelection.events} bordered cellBordered loading={tableLoading}
-                        rowClassName={ (rowData) => { return getEventStatusSlug(rowData)} }>
+                        rowClassName={ (rowData: VipEvent) => { return getEventStatusSlug(rowData)} }>
                         <Column flexGrow={1} minWidth={100}>
                             <HeaderCell>Date</HeaderCell>
-                            <Cell>{rowData => moment(rowData.eventDate).format('MM/DD/YYYY')}</Cell>
+                            <Cell>{(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}</Cell>
                         </Column>
                         <Column flexGrow={3}>
                             <HeaderCell>Title</HeaderCell>
-                            <Cell>{rowData => rowData.title}</Cell>
+                            <Cell>{(rowData: VipEvent) => rowData.title}</Cell>
                         </Column>
                         <Column flexGrow={2}>
                             <HeaderCell>Venue</HeaderCell>
-                            <Cell>{rowData => rowData.venue ? rowData.venue.name : ''}</Cell>
+                            <Cell>{(rowData: VipEvent) => rowData.venue ? rowData.venue.name : ''}</Cell>
                         </Column>
                         <Column flexGrow={3}>
                             <HeaderCell>Location</HeaderCell>
-                            <Cell>{rowData => rowData.venue ? getLocation(rowData.venue) : ''}</Cell>
+                            <Cell>{(rowData: VipEvent) => rowData.venue ? getLocation(rowData.venue) : ''}</Cell>
                         </Column>
                         <Column flexGrow={1}>
                             <HeaderCell>Tickets sold</HeaderCell>
-                            <Cell>{rowData => rowData.totalTickets}</Cell>
+                            <Cell>{(rowData: VipEvent) => rowData.totalTickets}</Cell>
                         </Column>
                         <Column flexGrow={2}>
                             <HeaderCell>Event Status</HeaderCell>
-                            <Cell>{rowData => getEventStatusText(rowData as VipEvent)}</Cell>
+                            <Cell>{(rowData: VipEvent) => getEventStatusText(rowData as VipEvent)}</Cell>
                         </Column>
                         <Column flexGrow={1}>
                             <HeaderCell>&nbsp;</HeaderCell>
-                            <Cell>{rowData => rowData.ticketSocketEventId ? <a href="#" id={`${rowData.ticketSocketEventId}_event`} onClick={editEvent}>Edit</a> : ''}</Cell>
+                            <Cell>{(rowData: VipEvent) => rowData.ticketSocketEventId ? <a href="#" id={`${rowData.ticketSocketEventId}_event`} onClick={editEvent}>Edit</a> : ''}</Cell>
                         </Column>
                         <Column flexGrow={1}>
                             <HeaderCell>&nbsp;</HeaderCell>
-                            <Cell>{rowData => rowData.ticketSocketEventId && rowData.totalTickets > 0 ? <a href="#" id={`${rowData.ticketSocketEventId}_orders`} onClick={viewOrders}>Manage Orders</a> : ''}</Cell>
+                            <Cell>{(rowData: VipEvent) => rowData.ticketSocketEventId && rowData.totalTickets > 0 ? <a href="#" id={`${rowData.ticketSocketEventId}_orders`} onClick={viewOrders}>Manage Orders</a> : ''}</Cell>
                         </Column>
                     </Table>
                 </Col>

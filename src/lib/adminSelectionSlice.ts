@@ -18,7 +18,9 @@ const initialState: AdminSelection = {
     allSellers: undefined,
     roles: undefined,
     users: undefined,
-    events: undefined
+    events: undefined,
+    mustSaveEvent: false,
+    mustSaveOrder: false
 };
 
 export const adminSelectionSlice = createSlice({
@@ -73,16 +75,13 @@ export const adminSelectionSlice = createSlice({
         },
         setAdminEvents: (state, action: PayloadAction<VipEvent[]>) => {
             state.events = action.payload;
+            state.selectedEvent = undefined;
+            state.selectedOrder = undefined;
             state.reloadEvents = false;
             return state;
         },
         setReloadEvents: (state, action: PayloadAction<boolean>) =>{
             state.reloadEvents = action.payload;
-            if (state.reloadEvents) {
-                state.selectedEvent = undefined;
-                state.selectedOrder = undefined;
-                state.events = undefined;
-            }
             return state;
         },
         setSelectedRole: (state, action: PayloadAction<Role>) => {
@@ -92,6 +91,14 @@ export const adminSelectionSlice = createSlice({
         setRoles: (state, action: PayloadAction<Role[]>) => {
             state.roles = action.payload;
             state.reloadRoles = false;
+            return state;
+        },
+        setMustSaveEvent: (state, action: PayloadAction<boolean>) => {
+            state.mustSaveEvent = action.payload;
+            return state;
+        },
+        setMustSaveOrder: (state, action: PayloadAction<boolean>) => {
+            state.mustSaveOrder = action.payload;
             return state;
         },
         resetAdmin: (state) => {
@@ -108,6 +115,8 @@ export const adminSelectionSlice = createSlice({
             state.roles = undefined;
             state.users = undefined;
             state.events = undefined;
+            state.mustSaveEvent = false;
+            state.mustSaveOrder = false;
             return state;
         }
     }
@@ -126,7 +135,9 @@ export const { setAdminDates,
                setAdminOrder,
                setReloadEvents,
                setAllSellers,
-               setAdminEvents
+               setAdminEvents, 
+               setMustSaveEvent,
+               setMustSaveOrder
              } = adminSelectionSlice.actions
 
 export default adminSelectionSlice.reducer

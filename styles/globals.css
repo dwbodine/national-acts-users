@@ -12,15 +12,20 @@ div hidden {
   display: none;
 }
 
-select {
-  margin: 10px 0;
+select, input[type=text], input[type=password], input[type=number] {
+  margin: 10px 5px;
   padding: 7px;
   min-width: 220px;
   border-radius: 6px;
   border: 1px lightgray solid;
 }
 
-select:hover {
+input[type=checkbox] {
+  border-radius: 6px;
+  border: 1px lightgray solid;
+}
+
+select:hover, input[type=text]:hover, input[type=password]:hover, input[type=checkbox]:hover, input[type=number]:hover {
   border-color: #3498ff;
 }
 

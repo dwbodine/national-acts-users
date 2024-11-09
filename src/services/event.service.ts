@@ -476,6 +476,51 @@ export class EventService {
       });
   };
 
+  refundTicket = async (
+    ticketId: number,
+    refundServiceFees: boolean
+  ): Promise<ModifyOrderResponse> => {
+    let url = "admin/tickets/refund";
+
+    let orderResponse: ModifyOrderResponse = {
+      success: false,
+      orderError: undefined,
+      statusCode: 200,
+    };
+
+    const orderData = {
+      ticketId: ticketId,
+      refundServiceFees: refundServiceFees
+    };
+
+    const data = JSON.stringify(orderData);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        orderResponse.success = res.status == 200;
+        return orderResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = "";
+        if (err?.response?.status) {
+          orderResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = "Unknown error while issuing ticket refund";
+        }
+        orderResponse.orderError = errorMessage;
+        return orderResponse;
+      });
+  };
+
   updateOrder = async (orderToUpdate: Order): Promise<ModifyOrderResponse> => {
     let url = `/admin/orders/update`;
 

@@ -39,7 +39,12 @@ export const useGetOrderStatus = () => {
         statusText = "Active";
         break;
       case 'refunded':
-        statusText = "Refunded";
+        const hasActiveTickets = order?.tickets?.find(x => !x.isRefunded);
+        if (hasActiveTickets) {
+          statusText = "Partially Refunded";
+        } else {
+          statusText = "Refunded";
+        }        
         break;
       case 'charged-back':
         statusText = "Charged Back";

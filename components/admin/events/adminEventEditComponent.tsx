@@ -10,7 +10,7 @@ import moment from "moment";
 import ConfirmationDialog from "../../common/confirmationDialogComponent";
 import { useRefundEvent } from "@/hooks/admin/useRefundEvent";
 import { ModifyEventResponse, VipEvent } from "@/types/event";
-import { setAdminEvent, setReloadEvents } from "@/lib/adminSelectionSlice";
+import { setAdminEvent, setReloadEvents, setMustSaveEvent } from "@/lib/adminSelectionSlice";
 import { useUpdateEvent } from "@/hooks/admin/useUpdateEvent";
 import { useGetEventStatus } from "@/hooks/common/useGetEventStatus";
 import { DatePicker } from "rsuite";
@@ -22,23 +22,62 @@ export default function AdminEventEdit() {
     const { refundEvent } = useRefundEvent();
     const { updateEvent } = useUpdateEvent();
     const { getEventStatusText } = useGetEventStatus();
-    const [isActive, setIsActive] = useState<boolean>(false);
-    const [isHidden, setIsHidden] = useState<boolean>(false);
-    const [isDeleted, setIsDeleted] = useState<boolean>(false);
     const [markCancelled, setMarkCancelled] = useState<boolean>(true);
     const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
-    const [isAddedToBandsInTown, setIsAddedToBandsInTown] = useState<boolean>(false);
 
     useEffect(() => {
         if (currentAdminSelection.selectedEvent == undefined) {
             goBack();
-        } else {
-            setIsActive(currentAdminSelection.selectedEvent.isActive);
-            setIsHidden(currentAdminSelection.selectedEvent.isHidden ?? false);
-            setIsDeleted(currentAdminSelection.selectedEvent.isDeleted);
-            setIsAddedToBandsInTown(currentAdminSelection.selectedEvent.isAddedToBandsInTown ?? false);
         }
     }, [currentAdminSelection, dispatch]);
+
+    const setIsActive = (isActive: boolean) => {
+        if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+            return;
+        }
+        let currentEvent = {...currentAdminSelection.selectedEvent};
+        currentEvent.isActive = isActive;
+        dispatch(
+            setAdminEvent(currentEvent)
+        );   
+        markDirty();   
+    };
+
+    const setIsHidden = (isHidden: boolean) => {
+        if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+            return;
+        }
+        let currentEvent = {...currentAdminSelection.selectedEvent};
+        currentEvent.isHidden = isHidden;
+        dispatch(
+            setAdminEvent(currentEvent)
+        );   
+        markDirty();   
+    };
+
+    const setIsDeleted = (isDeleted: boolean) => {
+        if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+            return;
+        }
+        let currentEvent = {...currentAdminSelection.selectedEvent};
+        currentEvent.isDeleted = isDeleted;
+        dispatch(
+            setAdminEvent(currentEvent)
+        );   
+        markDirty();   
+    };
+
+    const setIsAddedToBandsInTown = (isAddedToBandsInTown: boolean) => {
+        if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+            return;
+        }
+        let currentEvent = {...currentAdminSelection.selectedEvent};
+        currentEvent.isAddedToBandsInTown = isAddedToBandsInTown;
+        dispatch(
+            setAdminEvent(currentEvent)
+        );   
+        markDirty();   
+    };
 
     const onAnnounceDateChange = (date: Date | null) => {
         if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
@@ -62,6 +101,7 @@ export default function AdminEventEdit() {
         dispatch(
             setAdminEvent(currentEvent)
         );
+        markDirty();
     };
 
     const onCleanAnnounceDate = () => {
@@ -72,11 +112,41 @@ export default function AdminEventEdit() {
         currentEvent.announceDate = undefined;
         dispatch(
             setAdminEvent(currentEvent)
-        );      
+        );   
+        markDirty();   
     };
 
-    const goBack = () => {
+    const goBack = (dismissToast: boolean = true) => {
+        if (dismissToast) {
+            toast.dismiss();
+        }            
+        dispatch(
+            setMustSaveEvent(false)
+        );
         router.push('/admin/events/');
+    }
+
+    const confirmGoBack = () => {
+        if (!currentAdminSelection?.mustSaveEvent) {
+            goBack();
+            return;
+        }
+
+        let message: string = 'You have made changes to this event, are you sure you want to discard them and leave?';
+        const toastId = toast.warning(
+            <ConfirmationDialog
+                Message={message}
+                ConfirmText="Honey Badger Don't Care" 
+                CancelText="Oh...No"
+                OnConfirm={goBack}
+                OnCancel={() => { toast.dismiss() }}
+                />,
+                {
+                  position: 'top-left',
+                  autoClose: false,
+                  closeOnClick: false
+                }
+        );
     }
 
     const manageOrders = () => {
@@ -104,6 +174,7 @@ export default function AdminEventEdit() {
             dispatch(
                 setAdminEvent(currentEvent)
             );
+            markDirty();
         }
     };
 
@@ -155,12 +226,18 @@ export default function AdminEventEdit() {
                     dispatch (
                         setAdminEvent(undefined)
                     );
-                    goBack();
+                    goBack(false);
                 } else {
                     toast.error('Refund failed');
                 }                
             });
     };
+
+    const markDirty = () => {
+        dispatch(
+            setMustSaveEvent(true)
+        );
+    }
 
     const onSubmit = () => {
         if (!currentAdminSelection.selectedEvent) {
@@ -170,14 +247,17 @@ export default function AdminEventEdit() {
             setIsLoading(true)
         );
         
-        let eventToUpdate: VipEvent = {...currentAdminSelection.selectedEvent, isActive, isHidden, isDeleted, isAddedToBandsInTown};
+        let eventToUpdate: VipEvent = {...currentAdminSelection.selectedEvent };
         updateEvent(eventToUpdate).then((response: ModifyEventResponse) => {
             if (response.success) {
+                toast.success("Event updated successfully");
                 dispatch(
                     setReloadEvents(true)
                 );
-                toast.success("Event updated successfully");
-                router.push('/admin/events/');
+                dispatch (
+                    setAdminEvent(undefined)
+                );                
+                goBack(false);
             } else {
                 toast.error(response.eventError ?? "Error occurred while updating event");
             }
@@ -197,6 +277,10 @@ export default function AdminEventEdit() {
     const cancelTitle = cancelDisabled ? 'Event has already been cancelled': '';
     const announceDate = (currentAdminSelection.selectedEvent != undefined && currentAdminSelection.selectedEvent.announceDate != null) ? moment(currentAdminSelection.selectedEvent.announceDate).toDate() : null;
     const announceDateDisabled = (currentAdminSelection.selectedEvent != undefined && eventDate != undefined) ? moment(eventDate).toDate() < new Date() : false;
+    const isActive = currentAdminSelection?.selectedEvent?.isActive ?? false;
+    const isDeleted = currentAdminSelection?.selectedEvent?.isDeleted ?? false;
+    const isHidden = currentAdminSelection?.selectedEvent?.isHidden ?? false;
+    const isAddedToBandsInTown = currentAdminSelection?.selectedEvent?.isAddedToBandsInTown ?? false;
 
     let ticketTypeRows: any[] = [];
     if (currentAdminSelection.selectedEvent && currentAdminSelection.selectedEvent.ticketTypes && currentAdminSelection.selectedEvent.ticketTypes.length > 0) {
@@ -217,7 +301,12 @@ export default function AdminEventEdit() {
             const rowTitle = ticketTypeDisabled ? "Cannot change the status of a ticket type with tickets sold" : "";
             const key = `admin_tt${i}`;
 
-            ticketTypeRows.push(<tr key={key}><td>{ticketType.ticketTypeName}</td><td><FormCheck id={`ticketType_${ticketType.ticketTypeId}`} title={rowTitle} disabled={ticketTypeDisabled} checked={ticketType.isActive} onChange={(e) => setTicketTypeStatus(e)} label="Active" /></td></tr>);
+            ticketTypeRows.push(<tr key={key}>
+                                    <td>{ticketType.ticketTypeName}</td>
+                                    <td>
+                                        <FormCheck id={`ticketType_${ticketType.ticketTypeId}`} title={rowTitle} 
+                                            disabled={ticketTypeDisabled} checked={ticketType.isActive}
+                                             onChange={(e) => setTicketTypeStatus(e)} label="Active" /></td></tr>);
         });
     }
 
@@ -316,7 +405,7 @@ export default function AdminEventEdit() {
             </Row> 
             <Row>
                 <Col>
-                    <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+                    <Button onClick={onSubmit}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
                 </Col>
             </Row> 
         </Col>

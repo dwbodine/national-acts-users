@@ -275,6 +275,8 @@ export type AdminSelection = {
   selectedRole?: Role | undefined;
   selectedEvent?: VipEvent | undefined;
   selectedOrder?: Order | undefined;
+  mustSaveOrder?: boolean;
+  mustSaveEvent?: boolean;
   allSellers?: Seller[] | undefined;
   roles?: Role[] | undefined;
   users?: User[] | undefined;
