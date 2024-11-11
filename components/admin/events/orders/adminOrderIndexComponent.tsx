@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
-import AdminListHomeButton from "../../adminListHomeButton";
 import { Table } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import { setAdminDates, setAdminEvent, setAdminEvents, setAdminOrder, setAdminSellerId, setReloadEvents, setReloadRoles, setRoles, setSelectedRole } from "@/lib/adminSelectionSlice";
-import { Button, Col, Container, FormCheck, Row } from "react-bootstrap";
+import { setAdminEvent, setAdminEvents, setAdminOrder, setReloadEvents } from "@/lib/adminSelectionSlice";
+import { Button, Col, Row } from "react-bootstrap";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
-import AdminSellerSelect from "../../common/adminSellerSelectComponent";
-import ReportDatePicker from "../../../common/reportDatePIcker";
-import { GetEventsResponse, GetSellersResponse, Order, Seller, VipEvent } from "@/types/event";
-import { useGetSellers } from "@/hooks/common/useGetSellers";
+import { GetEventsResponse, Order } from "@/types/event";
 import router from "next/router";
 import moment from "moment";
-import { current } from "@reduxjs/toolkit";
 import { useGetOrderStatus } from "@/hooks/common/useGetOrderStatus";
 import { useGetEventStatus } from "@/hooks/common/useGetEventStatus";
 import { useGetLocation } from "@/hooks/common/useGetLocation";
@@ -32,11 +27,10 @@ export default function AdminOrdersIndex() {
         if (currentAdminSelection.reloadEvents) {
             let adminSelection = { ...currentAdminSelection };
             let selectedEventId = adminSelection.selectedEvent?.ticketSocketEventId;
-            let selectedOrderId = adminSelection.selectedOrder?.ticketSocketOrderId;
             dispatch (
                 setReloadEvents(false)
             );
-            if (!adminSelection.sellerId) {
+            if (!adminSelection.sellerId || !selectedEventId) {
                 setTableLoading(false);
                 return;
             }
@@ -51,13 +45,9 @@ export default function AdminOrdersIndex() {
                             setAdminEvents(response.events)
                         );
                         const currentEvent = response.events.find(x => x.ticketSocketEventId == selectedEventId);
-                        if (currentEvent && currentEvent.orders) {
+                        if (currentEvent) {
                             dispatch (
                                 setAdminEvent(currentEvent)
-                            );
-                            const currentOrder = currentEvent.orders.find(x => x.ticketSocketOrderId == selectedOrderId);    
-                            dispatch(
-                                setAdminOrder(currentOrder)
                             );
                         }                        
                     }

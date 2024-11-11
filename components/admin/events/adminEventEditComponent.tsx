@@ -136,13 +136,13 @@ export default function AdminEventEdit() {
         const toastId = toast.warning(
             <ConfirmationDialog
                 Message={message}
-                ConfirmText="Honey Badger Don't Care" 
-                CancelText="Oh...No"
+                ConfirmText="Yes" 
+                CancelText="No"
                 OnConfirm={goBack}
                 OnCancel={() => { toast.dismiss() }}
                 />,
                 {
-                  position: 'top-left',
+                  position: 'top-center',
                   autoClose: false,
                   closeOnClick: false
                 }
@@ -179,6 +179,26 @@ export default function AdminEventEdit() {
     };
 
     const confirmDoRefund = () => {
+        if (!currentAdminSelection.selectedEvent || !currentAdminSelection.selectedEvent.orders || currentAdminSelection.selectedEvent.orders.length == 0) {
+            return;
+        }
+
+        let hasMissingPrices = false;
+        for (const order of currentAdminSelection.selectedEvent.orders) {
+            if (order.tickets && order.tickets.length > 0) {
+                const missingOrderTicket = order.tickets.find(x => (x.price ?? 0) == 0);
+                if (missingOrderTicket != undefined) {
+                    hasMissingPrices = true;
+                    break;
+                }
+            }
+        }
+
+        if (hasMissingPrices) {
+            toast.error("Cannot refund entire event - one or more orders has tickets with missing prices, please correct before continuing");
+            return;
+        }
+
         let message: string = 'By continuing, ';
         if (markCancelled) {
             message += 'this event will be marked as cancelled and ';
@@ -190,13 +210,13 @@ export default function AdminEventEdit() {
         const toastId = toast.warning(
             <ConfirmationDialog
                 Message={message}
-                ConfirmText="Hell Yeah!" 
-                CancelText="Oh Shit... No"
+                ConfirmText="Yes" 
+                CancelText="No"
                 OnConfirm={handleRefund}
                 OnCancel={() => { toast.dismiss() }}
                 />,
                 {
-                  position: 'top-left',
+                  position: 'top-center',
                   autoClose: false,
                   closeOnClick: false
                 }
@@ -229,6 +249,35 @@ export default function AdminEventEdit() {
                     goBack(false);
                 } else {
                     toast.error('Refund failed');
+                }                
+            });
+    };
+
+    const cancelEvent = () => {
+        if (!currentAdminSelection.selectedEvent) {
+            return false;
+        }
+        dispatch (
+            setIsLoading(true)
+        );
+        const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
+        refundEvent(eventId, true, false)
+            .then((response: ModifyEventResponse) => {
+                const success = response.success;
+                dispatch (
+                    setIsLoading(false)
+                );
+                if (success) {
+                    toast.success('Refund succeeded');
+                    dispatch (
+                        setReloadEvents(true)
+                    );
+                    dispatch (
+                        setAdminEvent(undefined)
+                    );
+                    goBack(false);
+                } else {
+                    toast.error('Cancellation failed');
                 }                
             });
     };
@@ -396,6 +445,11 @@ export default function AdminEventEdit() {
                         onChange={(e) => setRefundServiceFees(e.target.checked)}
                         label="Refund service fees?"                
                     />
+                </Col>
+            </Row>
+            <Row className="refund-section" hidden={(currentAdminSelection?.selectedEvent?.orders?.length ?? 0) > 0}>
+                <Col>
+                    <Button onClick={cancelEvent}>Mark Cancelled</Button>
                 </Col>
             </Row>
             <Row className="refund-section">

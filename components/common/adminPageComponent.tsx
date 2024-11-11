@@ -46,8 +46,11 @@ export default function AdminPage(props: any) {
     };
   }, [title, logActivityData, userActivity, isLoading, getUser]);
 
-  const onSelectTab = (eventKey: string | undefined) => {
-    const key: ActivePageKey = eventKey ? parseInt(eventKey) : activeKey;
+  const onSelectTab = (eventKey: string | number | undefined) => {
+    let key: ActivePageKey = activeKey;
+    if (eventKey != undefined) {
+      key = parseInt(eventKey as string); 
+    }
     dispatch(
       setIsLoading(true)
     );

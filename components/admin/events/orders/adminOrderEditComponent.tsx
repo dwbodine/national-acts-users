@@ -1,5 +1,5 @@
 import { RootState } from "@/lib/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import router from 'next/router';
 import { Button, Col, FormCheck, Row } from "react-bootstrap";
@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../common/confirmationDialogComponent";
 import { ModifyOrderResponse } from "@/types/event";
 import moment from "moment";
-import { useGetEventStatus } from "@/hooks/common/useGetEventStatus";
 import { useRefundTicket } from "@/hooks/admin/useRefundTicket";
 
 export default function AdminOrderEdit() {
@@ -24,8 +23,9 @@ export default function AdminOrderEdit() {
     const { getOrderStatusText } = useGetOrderStatus();
     const [markChargeback, setMarkChargeback] = useState<boolean>(false);
     const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
-    const [refundTicketId, setRefundTicketId] = useState<number>(0);
-    const [refundTicketServiceFees, setRefundTicketServiceFees] = useState<boolean>(false);
+
+    useEffect(() => {
+    }, [currentAdminSelection]);
 
     const setPrice = (e: any): any => {
         const newPrice = parseFloat(e.currentTarget?.value ?? 0);
@@ -80,13 +80,13 @@ export default function AdminOrderEdit() {
         const toastId = toast.warning(
             <ConfirmationDialog
                 Message={message}
-                ConfirmText="Word Booty" 
-                CancelText="Oops sorry"
+                ConfirmText="Yes" 
+                CancelText="No"
                 OnConfirm={goBack}
                 OnCancel={() => { toast.dismiss() }}
                 />,
                 {
-                  position: 'top-left',
+                  position: 'top-center',
                   autoClose: false,
                   closeOnClick: false
                 }
@@ -133,8 +133,7 @@ export default function AdminOrderEdit() {
             setAdminOrder(currentOrder)
         );   
         markDirty();   
-    };
-    
+    };   
     
 
     const setServiceFee = (e: any) => {
@@ -170,38 +169,90 @@ export default function AdminOrderEdit() {
     };
 
     const setTicketActive = (e: any) => {
-        if (!e.currentTarget || !e.currentTarget.id) {
+        if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
             return;
         }
         const ticketId = parseInt(e.currentTarget.id.replace('serviceFee_', ''));
+        let currentOrder = { ...currentAdminSelection.selectedOrder };
+        if (!isNaN(ticketId) && currentOrder.tickets) {
+            const isActive = e.currentTarget.checked;
+            currentOrder.tickets = currentOrder.tickets.map((t) => {
+                let ticket = { ...t };
+                if (ticket.ticketSocketOrderTicketId == ticketId) {
+                    ticket.isActive = isActive;
+                }
+                return ticket;
+            });
+
+            dispatch(
+                setAdminOrder(currentOrder)
+            );
+
+            dispatch(
+                setMustSaveOrder(true)
+            );
+        }
     };
 
     const setTicketCheckInStatus = (e: any) => {
-        if (!e.currentTarget || !e.currentTarget.id) {
+        if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
             return;
         }
         const ticketId = parseInt(e.currentTarget.id.replace('serviceFee_', ''));
+        let currentOrder = { ...currentAdminSelection.selectedOrder };
+        if (!isNaN(ticketId) && currentOrder.tickets) {
+            const isCheckedIn = e.currentTarget.checked;
+            currentOrder.tickets = currentOrder.tickets.map((t) => {
+                let ticket = { ...t };
+                if (ticket.ticketSocketOrderTicketId == ticketId) {
+                    ticket.isCheckedIn = isCheckedIn;
+                }
+                return ticket;
+            });
+
+            dispatch(
+                setAdminOrder(currentOrder)
+            );
+
+            dispatch(
+                setMustSaveOrder(true)
+            );
+        }
     };
 
     const confirmRefundTicket = (e: any) => {
-        if (!e.currentTarget || !e.currentTarget.id) {
+        if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
             return;
         }
         const ticketId = parseInt(e.currentTarget.id.replace('refund_', ''));
-        setRefundTicketId(ticketId);
-        setRefundTicketServiceFees(false);
+
+        const ticket = currentAdminSelection.selectedOrder.tickets?.find(x => x.ticketSocketOrderTicketId == ticketId);
+        if (!ticket) {
+            toast.warning("Ticket not found");
+            return;
+        }
+
+        if (currentAdminSelection.mustSaveOrder) {
+            toast.warning("Must save changes to order before proceeding");
+            return;
+        }
+
+        if ((ticket.price ?? 0) == 0) {
+            toast.warning("Ticket price must be set and saved before attempting refund");
+            return;
+        }        
 
         let message: string = 'By continuing, this ticket will be marked as refunded in full';
         const toastId = toast.warning(
             <ConfirmationDialog
                 Message={message}
-                ConfirmText="Yep" 
-                CancelText="Nope"
-                OnConfirm={doRefundTicket}
-                OnCancel={() => { toast.dismiss() }}
+                ConfirmText="Yes" 
+                CancelText="No"
+                OnConfirm={() => doRefundTicket(ticketId, false)}
+                OnCancel={cancelRefundTicket}
                 />,
                 {
-                  position: 'top-left',
+                  position: 'top-center',
                   autoClose: false,
                   closeOnClick: false
                 }
@@ -209,36 +260,55 @@ export default function AdminOrderEdit() {
     };
 
     const confirmRefundTicketWithServiceFees = (e: any) => {
-        if (!e.currentTarget || !e.currentTarget.id) {
+        if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
             return;
         }
         const ticketId = parseInt(e.currentTarget.id.replace('refundSf_', ''));
-        setRefundTicketId(ticketId);
-        setRefundTicketServiceFees(true);
+
+        const ticket = currentAdminSelection.selectedOrder.tickets?.find(x => x.ticketSocketOrderTicketId == ticketId);
+        if (!ticket) {
+            toast.warning("Ticket not found");
+            return;
+        }
+
+        if (currentAdminSelection.mustSaveOrder) {
+            toast.warning("Must save changes to order before proceeding");
+            return;
+        }
+
+        if ((ticket.price ?? 0) == 0) {
+            toast.warning("Ticket price must be set and saved before attempting refund");
+            return;
+        }        
 
         let message: string = 'By continuing, this ticket will be marked as refunded in full, including all service fees';
         const toastId = toast.warning(
             <ConfirmationDialog
                 Message={message}
-                ConfirmText="Yep" 
-                CancelText="Nope"
-                OnConfirm={doRefundTicket}
-                OnCancel={() => { toast.dismiss() }}
+                ConfirmText="Yes" 
+                CancelText="No"
+                OnConfirm={() => doRefundTicket(ticketId, true)}
+                OnCancel={cancelRefundTicket}
                 />,
                 {
-                  position: 'top-left',
+                  position: 'top-center',
                   autoClose: false,
                   closeOnClick: false
                 }
         );
     };
 
-    const doRefundTicket = () => {
+    const cancelRefundTicket = () => {
+        toast.dismiss();
+    };
+
+    const doRefundTicket = (refundTicketId: number, refundServiceFees: boolean) => {
         toast.dismiss();
         dispatch (
             setIsLoading(true)
         );
-        refundTicket(refundTicketId, refundTicketServiceFees)
+
+        refundTicket(refundTicketId, refundServiceFees)
             .then((response: ModifyOrderResponse) => {
                 const success = response.success;
                 dispatch (
@@ -249,8 +319,9 @@ export default function AdminOrderEdit() {
                     dispatch (
                         setAdminOrder(undefined)
                     );
-                    setRefundTicketId(0);
-                    setRefundTicketServiceFees(false);
+                    dispatch(
+                        setReloadEvents(true)
+                    );
                     goBack(false);
                 } else {
                     toast.error('Refund failed');
@@ -259,6 +330,21 @@ export default function AdminOrderEdit() {
     };
     
     const confirmDoRefund = () => {
+        if (!currentAdminSelection.selectedOrder) {
+            return;
+        }
+
+        if (currentAdminSelection.mustSaveOrder) {
+            toast.warning("Must save changes to order before proceeding");
+            return;
+        }
+
+        const missingPriceTicket = currentAdminSelection.selectedOrder?.tickets?.find(x => (x.price ?? 0) == 0);
+        if (missingPriceTicket != undefined) {
+            toast.warning("One or more tickets have a zero price, please correct before attempting refund");
+            return;
+        }
+
         let message: string = 'By continuing, this order will be marked as refunded in full';
         if (refundServiceFees) {
             message += ', including all service fees';
@@ -266,13 +352,13 @@ export default function AdminOrderEdit() {
         const toastId = toast.warning(
             <ConfirmationDialog
                 Message={message}
-                ConfirmText="Yayuh!" 
-                CancelText="Oh HAIL No"
+                ConfirmText="Yes" 
+                CancelText="No"
                 OnConfirm={handleRefund}
                 OnCancel={() => { toast.dismiss() }}
                 />,
                 {
-                  position: 'top-left',
+                  position: 'top-center',
                   autoClose: false,
                   closeOnClick: false
                 }
@@ -299,6 +385,9 @@ export default function AdminOrderEdit() {
                     dispatch (
                         setAdminOrder(undefined)
                     );
+                    dispatch(
+                        setReloadEvents(true)
+                    );
                     goBack(false);
                 } else {
                     toast.error('Refund failed');
@@ -323,6 +412,9 @@ export default function AdminOrderEdit() {
                 if (results.success && !results.orderError) {
                     toast.success("Order updated successfully");
                     dispatch (
+                        setAdminOrder(undefined)
+                    );
+                    dispatch (
                         setReloadEvents(true)
                     );
                     setTimeout(() => {
@@ -339,8 +431,8 @@ export default function AdminOrderEdit() {
     const purchaseDate = currentOrder?.purchaseDate != undefined ? moment(currentOrder.purchaseDate).format('MM/DD/YYYY') : '';
     const purchaserName = `${currentOrder?.purchaserFirstName} ${currentOrder?.purchaserLastName}`;
     const eventDate = currentOrder?.eventDate ? moment(currentOrder.eventDate).format('MM/DD/YYYY') : '';
-    const refundsDisabled = currentOrder?.numTickets == 0;
-    const chargebackDisabled = (currentOrder?.hasChargebacks);
+    const refundsDisabled = (currentOrder?.numTickets == 0 || (currentOrder?.hasRefunds && currentOrder?.tickets?.find(x => !x.isRefunded) == undefined));
+    const chargebackDisabled = (currentOrder?.numTickets == 0 || (currentOrder?.hasChargebacks && currentOrder?.tickets?.find(x => !x.isChargedBack) == undefined));
     const chargebackTitle = chargebackDisabled ? 'Order has already been charged back': '';
     const currencyAbbrev = currentOrder?.currencyAbbrev;
     const isActive = currentOrder?.isActive ?? false;
@@ -395,22 +487,22 @@ export default function AdminOrderEdit() {
                     <span className="title">Number Tickets Sold:</span> {currentOrder?.numTickets}<br />
                     <div hidden={!currentOrder || currencyAbbrev == "USD"}>
                         <span className="title">Exchange Rate:</span> {currentOrder?.exchangeRate} <br />
-                        <span className="title">Ticket Revenue {currencyAbbrev}:</span> {currentOrder?.revenue?.toFixed(2)} <br />
-                        <span className="title">Service Fee Revenue {currencyAbbrev}:</span> {currentOrder?.serviceFees?.toFixed(2)} <br />
+                        <span className="title">Ticket Revenue {currencyAbbrev}:</span> {(currentOrder?.revenue ?? 0).toFixed(2)} <br />
+                        <span className="title">Service Fee Revenue {currencyAbbrev}:</span> {(currentOrder?.serviceFees ?? 0).toFixed(2)} <br />
                     </div>
-                    <span className="title">Ticket Revenue (USD):</span> {currentOrder?.revenueUsd?.toFixed(2)}<br />
-                    <span className="title">Service Fee Revenue (USD):</span> {currentOrder?.serviceFeesUsd?.toFixed(2)}<br />
+                    <span className="title">Ticket Revenue (USD):</span> {(currentOrder?.revenueUsd ?? 0).toFixed(2)}<br />
+                    <span className="title">Service Fee Revenue (USD):</span> {(currentOrder?.serviceFeesUsd ?? 0).toFixed(2)}<br />
                 </Col>
             </Row>
             <Row className="form-group" hidden={!currentOrder || !(currentOrder.hasRefunds || currentOrder.hasChargebacks)}>
                 <Col className="form-header">
                     <span className="title">Number Tickets Refunded:</span> {currentOrder?.numTicketsRefunded}<br />
                     <div hidden={!currentOrder || currentOrder.currencyAbbrev == "USD"}>
-                        <span className="title">Ticket Revenue Refunded:</span> {currentOrder?.revenueRefunded?.toFixed(2)} <br />
-                        <span className="title">Service Fee Revenue Refunded:</span> {currentOrder?.serviceFeeRevenueRefunded?.toFixed(2)} <br />
+                        <span className="title">Ticket Revenue Refunded:</span> {(currentOrder?.revenueRefunded ?? 0).toFixed(2)} <br />
+                        <span className="title">Service Fee Revenue Refunded:</span> {(currentOrder?.serviceFeeRevenueRefunded ?? 0).toFixed(2)} <br />
                     </div>
-                    <span className="title">Ticket Revenue Refunded (USD):</span> {currentOrder?.revenueRefundedUsd?.toFixed(2)}<br />
-                    <span className="title">Service Fee Revenue Refunded (USD):</span> {currentOrder?.serviceFeeRevenueRefundedUsd?.toFixed(2)}<br />
+                    <span className="title">Ticket Revenue Refunded (USD):</span> {(currentOrder?.revenueRefundedUsd ?? 0).toFixed(2)}<br />
+                    <span className="title">Service Fee Revenue Refunded (USD):</span> {(currentOrder?.serviceFeeRevenueRefundedUsd ?? 0).toFixed(2)}<br />
                 </Col>
             </Row>
             
@@ -461,7 +553,7 @@ export default function AdminOrderEdit() {
                     </table>
                 </Col>
             </Row>
-            <Row className="refund-section-header">
+            <Row className="refund-section-header" hidden={refundsDisabled}>
                 <Col>
                     <h5>Process Refunds</h5>
                 </Col>

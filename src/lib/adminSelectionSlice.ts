@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { AdminSelection, Role, User } from "../types/user";
 import { Order, Seller, VipEvent } from "@/types/event";
-import moment from "moment";
 
 const initialState: AdminSelection = {
     sellerId: undefined,
