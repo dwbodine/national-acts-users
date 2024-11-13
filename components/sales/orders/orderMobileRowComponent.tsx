@@ -55,13 +55,15 @@ export default function OrderMobileRow(props: any) {
   const shirtSizeRows: any[] = [];
   if (hasShirtData) {
     const shirtMap = new Map<string, number>();
-    order.shirts?.forEach((shirt) => {
-      const item = shirtMap.get(shirt);
-      let num: number = 1;
-      if (item && item > 0) {
-        num = item + 1;
-      }
-      shirtMap.set(shirt, num);
+    order.tickets?.forEach((ticket) => {
+      if (ticket.shirtSize) {
+        const item = shirtMap.get(ticket.shirtSize);
+        let num: number = 1;
+        if (item && item > 0) {
+          num = item + 1;
+        }
+        shirtMap.set(ticket.shirtSize, num);  
+      }      
     });
     let i = 0;
     shirtMap.forEach((numShirts: Number, shirtSize: string) => {

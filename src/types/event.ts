@@ -38,6 +38,7 @@ export interface Ticket {
   barcode?: string;
   availableScans?: number;
   purchaseLocation?: string;
+  shirtSize?: string;
 }
 
 export interface Order {
@@ -90,7 +91,6 @@ export interface Order {
   purchaserIpAddress?: string;
   revenue: number;
   serviceFees?: number;
-  shirts?: string[];
 }
 
 export interface Venue {

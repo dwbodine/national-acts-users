@@ -10,8 +10,8 @@ export default function ShirtSizesWidget(props: any) {
 
   let arr: any = [];
   if (shirtSizes?.length > 0) {
-    shirtPropData.ShirtData?.forEach((shirSizeData: IShirtSizeData[], key: string) => {
-      shirtSizes.forEach((shirtSize: string) => {
+    shirtSizes.forEach((shirtSize: string) => {
+      shirtPropData.ShirtData?.forEach((shirSizeData: IShirtSizeData[], key: string) => {
         var data = shirSizeData.find((x) => x.ShirtSize == shirtSize);
         var number = arr[shirtSize] ?? 0;
         if (data) {

@@ -1479,7 +1479,7 @@ export class EventService {
     if (order.phone) {
       phone = order.phone;
     }
-    const shirts = order.shirts?.join(' / ') ?? '';
+    let shirts = '';
     let ticketTypeStr = '';
     let attendeeNames = '';
     if (numTickets > 0) {
@@ -1488,7 +1488,13 @@ export class EventService {
         if (attendeeNames.length > 0) {
           attendeeNames += ' / ';
         }
+        if (shirts.length > 0) {
+          shirts += ' / ';
+        }
         attendeeNames += `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
+        if (ticket.shirtSize) {
+          shirts += ticket.shirtSize;
+        }
         const item = ticketMap.get(ticket.ticketType);
         let num: number = 1;
         if (item && item > 0) {
@@ -1667,7 +1673,7 @@ export class EventService {
       if (order.phone && order.phone != '') {
         hasPhoneData = true;
       }
-      if (order.shirts && order.shirts.length > 0) {
+      if (order.totalShirts ?? 0 > 0) {
         hasShirtData = true;
       }
       if (order.currencyAbbrev != 'USD') {

@@ -371,20 +371,29 @@ export default function EventDetail(props: any) {
     }
     shirtData = getShirtDataFromOrders(filteredOrders);
     const shirtSizes = shirtData?.ShirtSizes ?? [];
+    let arr: any = [];
     if (shirtSizes.length > 0) {
       hasShirtData = true;
-      let i = 0;
-      shirtData?.ShirtData?.forEach((shirtSizeData: IShirtSizeData[]) => {
-        shirtSizeData.forEach((shirtSize) => {
-          const key = `ssd${i}`;
-          shirtSizeBreakdownRows.push(
-            <div key={key}>
-              {shirtSize.ShirtSize} ({shirtSize.Number})
-            </div>,
-          );
-          i++;
+      shirtSizes.forEach((shirtSize: string) => {
+        shirtData?.ShirtData?.forEach((shirSizeData: IShirtSizeData[], key: string) => {
+          var data = shirSizeData.find((x) => x.ShirtSize == shirtSize);
+          var number = arr[shirtSize] ?? 0;
+          if (data) {
+            number += data.Number;
+          }
+          arr[shirtSize] = number;
         });
       });
+      let i = 0;
+      for (const shirtSize of shirtSizes) {
+        const key = `ssw${i}`;
+        shirtSizeBreakdownRows.push(
+          <div key={key}>
+            {shirtSize} ({arr[shirtSize]})
+          </div>,
+        );
+        i++;
+      }
     }
   }
 

@@ -8,7 +8,7 @@ export default function OrderRow(props: any) {
   const eventName = props.EventName as string;
   const order = props.Order as Order;
   const hasPhoneData = props.HasPhoneData as boolean;
-  const hasShirtData = props.HasShirtData as boolean;
+  const hasShirtData = order.totalShirts ?? 0 > 0;
   const hideRev = props.HideRevenue as boolean;
   const hideServiceFees = props.HideServiceFees as boolean;
   const canCheckInTickets = props.CanCheckInTickets as boolean;
@@ -54,15 +54,18 @@ export default function OrderRow(props: any) {
   const shirtSizeRows: any[] = [];
   if (hasShirtData) {
     const shirtMap = new Map<string, number>();
-    order.shirts?.forEach((shirt) => {
-      const item = shirtMap.get(shirt);
-      let num: number = 1;
-      if (item && item > 0) {
-        num = item + 1;
-      }
-      shirtMap.set(shirt, num);
+    order.tickets?.forEach((ticket) => {
+      if (ticket.shirtSize) {
+        const item = shirtMap.get(ticket.shirtSize);
+        let num: number = 1;
+        if (item && item > 0) {
+          num = item + 1;
+        }
+        shirtMap.set(ticket.shirtSize, num);
+      }      
     });
     let i = 0;
+    
     shirtMap.forEach((numShirts: Number, shirtSize: string) => {
       const key = `sm${i}`;
       shirtSizeRows.push(

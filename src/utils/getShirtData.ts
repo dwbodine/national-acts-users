@@ -48,8 +48,23 @@ export function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefin
   });
   if (eventsHaveShirtData) {
     shirtSizes.sort();
+    let shirtSizeSorted: string[] = [];
+    if (shirtSizes.find((x) => x == 'S')) {
+      shirtSizeSorted.push('S');
+    }
+    if (shirtSizes.find((x) => x == 'M')) {
+      shirtSizeSorted.push('M');
+    }
+    if (shirtSizes.find((x) => x == 'L')) {
+      shirtSizeSorted.push('L');
+    }
+    shirtSizes.forEach((size) => {
+      if (size != 'S' && size != 'M' && size != 'L') {
+        shirtSizeSorted.push(size);
+      }
+    });
     return {
-      ShirtSizes: shirtSizes,
+      ShirtSizes: shirtSizeSorted,
       ShirtData: map,
     };
   } else {
