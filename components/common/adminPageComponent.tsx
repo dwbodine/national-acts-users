@@ -59,6 +59,7 @@ export default function AdminPage(props: any) {
         router.push('/admin/');
         break;
       case ActivePageKey.SalesOverview:
+        dispatch(setIsLoading(true));
         dispatch(setReloadEvents(true));
         router.push('/sellers/');
         break;
