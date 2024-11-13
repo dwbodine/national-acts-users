@@ -1,14 +1,14 @@
-import { GetRolesResponse } from "@/types/user";
-import { userService } from "../../services";
+import { GetRolesResponse } from '@/types/user';
+import { userService } from '../../services';
 
 export const useGetAllRoles = () => {
   const getAllRoles = async (): Promise<GetRolesResponse> => {
     let response: GetRolesResponse = {
-        roles: [],
-        roleError: undefined
+      roles: [],
+      roleError: undefined,
     };
     response = await userService.getRoles();
-    return response;    
+    return response;
   };
 
   return { getAllRoles };

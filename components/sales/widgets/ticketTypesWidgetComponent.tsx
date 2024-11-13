@@ -3,46 +3,52 @@ import { ITicketData, ITicketTypeData, TicketType } from '@/types/event';
 import { FaTicketAlt } from 'react-icons/fa';
 
 export default function TicketTypesWidget(props: any) {
+  const ticketPropData: ITicketData = props.TicketData as ITicketData;
+  const totalTickets: number = props.TotalTickets as number;
+  const ticketsRefunded: number = props.TicketsRefunded as number;
 
-    const ticketPropData: ITicketData = props.TicketData as ITicketData;
-    const totalTickets: number = props.TotalTickets as number;
-    const ticketsRefunded: number = props.TicketsRefunded as number;
+  const ticketTypes = ticketPropData?.TicketTypes;
 
-    const ticketTypes = ticketPropData?.TicketTypes;
-    
-    let arr: any = [];
-    if (ticketTypes?.length > 0) {
-        ticketPropData.TicketData?.forEach((ticketTypeData: ITicketTypeData[], key: string) => {
-            ticketTypes.forEach((ticketType: TicketType) => {
-                var data = ticketTypeData.find(x => x.TicketType.toLowerCase() == ticketType.ticketTypeName.toLowerCase());
-                var number = arr[ticketType.ticketTypeName] ?? 0;
-                if (data) {
-                    number += data.Number;
-                }
-                arr[ticketType.ticketTypeName] = number;
-            });
+  let arr: any = [];
+  if (ticketTypes?.length > 0) {
+    ticketPropData.TicketData?.forEach(
+      (ticketTypeData: ITicketTypeData[], key: string) => {
+        ticketTypes.forEach((ticketType: TicketType) => {
+          var data = ticketTypeData.find(
+            (x) => x.TicketType.toLowerCase() == ticketType.ticketTypeName.toLowerCase(),
+          );
+          var number = arr[ticketType.ticketTypeName] ?? 0;
+          if (data) {
+            number += data.Number;
+          }
+          arr[ticketType.ticketTypeName] = number;
         });
-   
+      },
+    );
 
-        var ttypes = [];
-        let i = 0;
-        for (const ticketType of ticketTypes) {
-            const key = `ttw${i}`;
-            ttypes.push(<div key={key}>{ticketType.ticketTypeName} ({arr[ticketType.ticketTypeName]})</div>);
-            i++;
-        }
-
-        return (
-            <>
-                <FaTicketAlt size="2em" />
-                <div>Ticket types sold:</div>
-                {ttypes}
-                <span>Total: {totalTickets}</span>
-                <div className="second">Tickets refunded:</div>
-                <span>{ticketsRefunded}</span>
-            </>
-        );
-    } else {
-        return(<></>);
+    var ttypes = [];
+    let i = 0;
+    for (const ticketType of ticketTypes) {
+      const key = `ttw${i}`;
+      ttypes.push(
+        <div key={key}>
+          {ticketType.ticketTypeName} ({arr[ticketType.ticketTypeName]})
+        </div>,
+      );
+      i++;
     }
+
+    return (
+      <>
+        <FaTicketAlt size="2em" />
+        <div>Ticket types sold:</div>
+        {ttypes}
+        <span>Total: {totalTickets}</span>
+        <div className="second">Tickets refunded:</div>
+        <span>{ticketsRefunded}</span>
+      </>
+    );
+  } else {
+    return <></>;
+  }
 }

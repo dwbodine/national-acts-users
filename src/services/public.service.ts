@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from "axios";
-import { GetSellersResponse, Seller } from "../types/event";
+import axios, { AxiosInstance } from 'axios';
+import { GetSellersResponse, Seller } from '../types/event';
 
 export class PublicService {
   protected readonly instance: AxiosInstance;
@@ -8,7 +8,7 @@ export class PublicService {
     this.instance = axios.create({
       baseURL: url,
       timeout: 30000,
-      timeoutErrorMessage: "Time out!",
+      timeoutErrorMessage: 'Time out!',
     });
   }
 
@@ -21,8 +21,8 @@ export class PublicService {
     };
 
     const headers = {
-      "Content-Type": "application/json",
-      "x-api-key": `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
     return this.instance
@@ -36,12 +36,12 @@ export class PublicService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage =
-            "Unknown error while fetching sellers - please contact your administrator";
+            'Unknown error while fetching sellers - please contact your administrator';
         }
         sellersResponse.sellersError = errorMessage;
         return sellersResponse;

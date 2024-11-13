@@ -1,7 +1,7 @@
-import { AuthService } from "./auth.service";
-import { EventService } from "./event.service";
-import { PublicService } from "./public.service";
-import { UserService } from "./user.service";
+import { AuthService } from './auth.service';
+import { EventService } from './event.service';
+import { PublicService } from './public.service';
+import { UserService } from './user.service';
 
 const baseServiceUrl: string = `${process.env.NEXT_PUBLIC_SERVICE_URL}`;
 

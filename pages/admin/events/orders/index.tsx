@@ -3,9 +3,13 @@ import AdminPage from '../../../../components/common/adminPageComponent';
 import AdminOrdersIndex from '../../../../components/admin/events/orders/adminOrderIndexComponent';
 
 export default function AdminOrders() {
-  const title = "Client Portal - Admin Orders";
+  const title = 'Client Portal - Admin Orders';
 
   return (
-    <AdminPage title={title} activeKey={ActivePageKey.Admin} adminComponent={<AdminOrdersIndex />} />
+    <AdminPage
+      title={title}
+      activeKey={ActivePageKey.Admin}
+      adminComponent={<AdminOrdersIndex />}
+    />
   );
 }

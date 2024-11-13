@@ -1,6 +1,6 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 import Script from 'next/script';
- 
+
 export default function Document() {
   return (
     <Html>
@@ -11,10 +11,10 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Inter&display=optional"
           rel="stylesheet"
         />
-        <link 
-          rel="stylesheet" 
+        <link
+          rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-          />
+        />
       </Head>
       <body>
         <Main />
@@ -22,5 +22,5 @@ export default function Document() {
         <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></Script>
       </body>
     </Html>
-  )
+  );
 }

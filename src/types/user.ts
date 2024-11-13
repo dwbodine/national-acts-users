@@ -1,4 +1,4 @@
-import { ITicketSalesData, Order, Seller, SellerType, VipEvent } from "./event";
+import { ITicketSalesData, Order, Seller, SellerType, VipEvent } from './event';
 
 export type LoginResponse = {
   user?: User;
@@ -85,7 +85,6 @@ export type UserReportSelection = {
   currentDetailEvent?: VipEvent;
   focusControl?: string;
   showHidden?: boolean;
-  showHiddenOrders?: boolean;
   isForAdmin?: boolean;
 };
 
@@ -125,6 +124,7 @@ export interface IDailyOrderData {
   numTicketsRefunded?: number;
   revenueRefunded?: number;
   serviceFeeRevenueRefunded?: number;
+  numTicketsChargedBack?: number;
   revenueChargedBack?: number;
   serviceFeeRevenueChargedBack?: number;
 }
@@ -161,6 +161,8 @@ export interface IAverageDailyData {
   transactions?: number;
   tickets?: number;
   refunds?: number;
+  revenueRefunded?: number;
+  serviceFeeRevenueRefunded?: number;
 }
 
 export interface ISalesData {
@@ -178,7 +180,11 @@ export interface IDashboardData {
   tickets?: number;
   monthToDateTickets?: number;
   ticketsRefunded?: number;
+  revenueRefunded?: number;
+  serviceFeeRevenueRefunded: number;
   monthToDateTicketsRefunded?: number;
+  monthToDateRevenueRefunded?: number;
+  monthToDateServiceFeesRefunded?: number;
   revenue?: number;
   monthToDateRevenue?: number;
   serviceFees?: number;

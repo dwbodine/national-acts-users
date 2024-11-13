@@ -1,4 +1,4 @@
-import { Order } from "@/types/event";
+import { Order } from '@/types/event';
 
 export const useGetOrderStatus = () => {
   const getOrderStatusSlug = (order: Order | undefined): string => {
@@ -14,8 +14,6 @@ export const useGetOrderStatus = () => {
       statusSlug = 'charged-back';
     } else if (!order.isActive) {
       statusSlug = 'inactive';
-    } else if (order.isHidden) {
-      statusSlug = 'hidden';
     } else {
       statusSlug = 'active';
     }
@@ -30,24 +28,21 @@ export const useGetOrderStatus = () => {
         statusText = 'Deleted';
         break;
       case 'inactive':
-        statusText = "Inactive";
-        break;
-      case 'hidden':
-        statusText = "Hidden";
+        statusText = 'Inactive';
         break;
       case 'active':
-        statusText = "Active";
+        statusText = 'Active';
         break;
       case 'refunded':
-        const hasActiveTickets = order?.tickets?.find(x => !x.isRefunded);
+        const hasActiveTickets = order?.tickets?.find((x) => !x.isRefunded);
         if (hasActiveTickets) {
-          statusText = "Partially Refunded";
+          statusText = 'Partially Refunded';
         } else {
-          statusText = "Refunded";
-        }        
+          statusText = 'Refunded';
+        }
         break;
       case 'charged-back':
-        statusText = "Charged Back";
+        statusText = 'Charged Back';
         break;
       default:
         break;

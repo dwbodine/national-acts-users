@@ -1,142 +1,143 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { AdminSelection, Role, User } from "../types/user";
-import { Order, Seller, VipEvent } from "@/types/event";
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { AdminSelection, Role, User } from '../types/user';
+import { Order, Seller, VipEvent } from '@/types/event';
 
 const initialState: AdminSelection = {
-    sellerId: undefined,
-    start: undefined,
-    end: undefined,
-    reloadUsers: true,
-    reloadEvents: true,
-    reloadRoles: true,
-    selectedEvent: undefined,
-    selectedOrder: undefined,
-    selectedUser: undefined,    
-    selectedRole: undefined,
-    allSellers: undefined,
-    roles: undefined,
-    users: undefined,
-    events: undefined,
-    mustSaveEvent: false,
-    mustSaveOrder: false
+  sellerId: undefined,
+  start: undefined,
+  end: undefined,
+  reloadUsers: true,
+  reloadEvents: true,
+  reloadRoles: true,
+  selectedEvent: undefined,
+  selectedOrder: undefined,
+  selectedUser: undefined,
+  selectedRole: undefined,
+  allSellers: undefined,
+  roles: undefined,
+  users: undefined,
+  events: undefined,
+  mustSaveEvent: false,
+  mustSaveOrder: false,
 };
 
 export const adminSelectionSlice = createSlice({
-    name: 'adminSelection',
-    initialState,
-    reducers: {
-        setAdminDates: (state, action: PayloadAction<AdminSelection>) =>{
-            state.start = action.payload.start;
-            state.end = action.payload.end;
-            return state;
-        },
-        setAdminSellerId: (state, action: PayloadAction<number | undefined>) => {
-            state.sellerId = action.payload;
-            return state;
-        },
-        setAllSellers: (state, action: PayloadAction<Seller[] | undefined>) => {
-            state.allSellers = action.payload;
-            return state;
-        },
-        setAdminEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
-            state.selectedEvent = action.payload;
-            return state;
-        },
-        setAdminOrder: (state, action: PayloadAction<Order | undefined>) => {
-            state.selectedOrder = action.payload;
-            return state;
-        },
-        setReloadUsers: (state, action: PayloadAction<boolean>) =>{
-            state.reloadUsers = action.payload;
-            if (state.reloadUsers) {
-                state.selectedUser = undefined;
-                state.users = undefined;
-            }
-            return state;
-        },
-        setSelectedUser: (state, action: PayloadAction<User>) => {
-            state.selectedUser = action.payload;
-            return state;
-        },
-        setUsers: (state, action: PayloadAction<User[]>) => {
-            state.users = action.payload;
-            state.reloadUsers = false;
-            return state;
-        },
-        setReloadRoles: (state, action: PayloadAction<boolean>) =>{
-            state.reloadRoles = action.payload;
-            if (state.reloadRoles) {
-                state.selectedRole = undefined;
-                state.roles = undefined;
-            }
-            return state;
-        },
-        setAdminEvents: (state, action: PayloadAction<VipEvent[]>) => {
-            state.events = action.payload;
-            state.selectedEvent = undefined;
-            state.selectedOrder = undefined;
-            state.reloadEvents = false;
-            return state;
-        },
-        setReloadEvents: (state, action: PayloadAction<boolean>) =>{
-            state.reloadEvents = action.payload;
-            return state;
-        },
-        setSelectedRole: (state, action: PayloadAction<Role>) => {
-            state.selectedRole = action.payload;
-            return state;
-        },
-        setRoles: (state, action: PayloadAction<Role[]>) => {
-            state.roles = action.payload;
-            state.reloadRoles = false;
-            return state;
-        },
-        setMustSaveEvent: (state, action: PayloadAction<boolean>) => {
-            state.mustSaveEvent = action.payload;
-            return state;
-        },
-        setMustSaveOrder: (state, action: PayloadAction<boolean>) => {
-            state.mustSaveOrder = action.payload;
-            return state;
-        },
-        resetAdmin: (state) => {
-            state.sellerId = undefined;
-            state.start = undefined;
-            state.end = undefined;
-            state.reloadUsers = true;
-            state.reloadRoles = true;
-            state.reloadEvents = true;
-            state.selectedUser = undefined;
-            state.selectedRole = undefined;
-            state.selectedEvent = undefined;
-            state.selectedOrder = undefined;
-            state.roles = undefined;
-            state.users = undefined;
-            state.events = undefined;
-            state.mustSaveEvent = false;
-            state.mustSaveOrder = false;
-            return state;
-        }
-    }
+  name: 'adminSelection',
+  initialState,
+  reducers: {
+    setAdminDates: (state, action: PayloadAction<AdminSelection>) => {
+      state.start = action.payload.start;
+      state.end = action.payload.end;
+      return state;
+    },
+    setAdminSellerId: (state, action: PayloadAction<number | undefined>) => {
+      state.sellerId = action.payload;
+      return state;
+    },
+    setAllSellers: (state, action: PayloadAction<Seller[] | undefined>) => {
+      state.allSellers = action.payload;
+      return state;
+    },
+    setAdminEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
+      state.selectedEvent = action.payload;
+      return state;
+    },
+    setAdminOrder: (state, action: PayloadAction<Order | undefined>) => {
+      state.selectedOrder = action.payload;
+      return state;
+    },
+    setReloadUsers: (state, action: PayloadAction<boolean>) => {
+      state.reloadUsers = action.payload;
+      if (state.reloadUsers) {
+        state.selectedUser = undefined;
+        state.users = undefined;
+      }
+      return state;
+    },
+    setSelectedUser: (state, action: PayloadAction<User>) => {
+      state.selectedUser = action.payload;
+      return state;
+    },
+    setUsers: (state, action: PayloadAction<User[]>) => {
+      state.users = action.payload;
+      state.reloadUsers = false;
+      return state;
+    },
+    setReloadRoles: (state, action: PayloadAction<boolean>) => {
+      state.reloadRoles = action.payload;
+      if (state.reloadRoles) {
+        state.selectedRole = undefined;
+        state.roles = undefined;
+      }
+      return state;
+    },
+    setAdminEvents: (state, action: PayloadAction<VipEvent[]>) => {
+      state.events = action.payload;
+      state.selectedEvent = undefined;
+      state.selectedOrder = undefined;
+      state.reloadEvents = false;
+      return state;
+    },
+    setReloadEvents: (state, action: PayloadAction<boolean>) => {
+      state.reloadEvents = action.payload;
+      return state;
+    },
+    setSelectedRole: (state, action: PayloadAction<Role>) => {
+      state.selectedRole = action.payload;
+      return state;
+    },
+    setRoles: (state, action: PayloadAction<Role[]>) => {
+      state.roles = action.payload;
+      state.reloadRoles = false;
+      return state;
+    },
+    setMustSaveEvent: (state, action: PayloadAction<boolean>) => {
+      state.mustSaveEvent = action.payload;
+      return state;
+    },
+    setMustSaveOrder: (state, action: PayloadAction<boolean>) => {
+      state.mustSaveOrder = action.payload;
+      return state;
+    },
+    resetAdmin: (state) => {
+      state.sellerId = undefined;
+      state.start = undefined;
+      state.end = undefined;
+      state.reloadUsers = true;
+      state.reloadRoles = true;
+      state.reloadEvents = true;
+      state.selectedUser = undefined;
+      state.selectedRole = undefined;
+      state.selectedEvent = undefined;
+      state.selectedOrder = undefined;
+      state.roles = undefined;
+      state.users = undefined;
+      state.events = undefined;
+      state.mustSaveEvent = false;
+      state.mustSaveOrder = false;
+      return state;
+    },
+  },
 });
 
-export const { setAdminDates,
-               setAdminSellerId, 
-               setReloadUsers,
-               setSelectedUser,
-               setUsers,
-               setReloadRoles,
-               setSelectedRole,
-               setRoles,
-               resetAdmin, 
-               setAdminEvent, 
-               setAdminOrder,
-               setReloadEvents,
-               setAllSellers,
-               setAdminEvents, 
-               setMustSaveEvent,
-               setMustSaveOrder
-             } = adminSelectionSlice.actions
+export const {
+  setAdminDates,
+  setAdminSellerId,
+  setReloadUsers,
+  setSelectedUser,
+  setUsers,
+  setReloadRoles,
+  setSelectedRole,
+  setRoles,
+  resetAdmin,
+  setAdminEvent,
+  setAdminOrder,
+  setReloadEvents,
+  setAllSellers,
+  setAdminEvents,
+  setMustSaveEvent,
+  setMustSaveOrder,
+} = adminSelectionSlice.actions;
 
-export default adminSelectionSlice.reducer
+export default adminSelectionSlice.reducer;

@@ -1,6 +1,6 @@
-import axios, { AxiosInstance } from "axios";
-import { User, UserLoginResponse, UserResponse } from "../types/user";
-import { getAuthorizationHeader } from "@/utils/getAuthorizationHeader";
+import axios, { AxiosInstance } from 'axios';
+import { User, UserLoginResponse, UserResponse } from '../types/user';
+import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
 
 export class AuthService {
   protected readonly instance: AxiosInstance;
@@ -9,17 +9,14 @@ export class AuthService {
     this.instance = axios.create({
       baseURL: url,
       timeout: 30000,
-      timeoutErrorMessage: "Time out!",
+      timeoutErrorMessage: 'Time out!',
     });
   }
 
-  login = async (
-    username: string,
-    password: string
-  ): Promise<UserLoginResponse> => {
+  login = async (username: string, password: string): Promise<UserLoginResponse> => {
     const headers = {
-      "Content-Type": "application/json",
-      "x-api-key": `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
     };
 
     const data = {
@@ -33,7 +30,7 @@ export class AuthService {
     };
 
     return this.instance
-      .post("/user/login", data, {
+      .post('/user/login', data, {
         headers: headers,
       })
       .then((res) => {
@@ -43,12 +40,11 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage =
-            "Unknown error during login - please contact your administrator";
+          errorMessage = 'Unknown error during login - please contact your administrator';
         }
         userResponse.loginError = errorMessage;
         return userResponse;
@@ -58,7 +54,7 @@ export class AuthService {
   resetPasswordSecure = async (
     username: string,
     password: string,
-    confirmPassword: string
+    confirmPassword: string,
   ): Promise<UserResponse> => {
     const headers = getAuthorizationHeader();
 
@@ -74,7 +70,7 @@ export class AuthService {
     };
 
     return this.instance
-      .post("/user/resetPasswordSecured", data, {
+      .post('/user/resetPasswordSecured', data, {
         headers: headers,
       })
       .then((res) => {
@@ -84,12 +80,12 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage =
-            "Unknown error while resetting password - please contact your administrator";
+            'Unknown error while resetting password - please contact your administrator';
         }
         userResponse.errorMessage = errorMessage;
         return userResponse;
@@ -98,8 +94,8 @@ export class AuthService {
 
   forgotPassword = async (username: string): Promise<UserResponse> => {
     const headers = {
-      "Content-Type": "application/json",
-      "x-api-key": `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
     };
 
     const data = {
@@ -112,7 +108,7 @@ export class AuthService {
     };
 
     return this.instance
-      .post("/user/sendPasswordReset", data, {
+      .post('/user/sendPasswordReset', data, {
         headers: headers,
       })
       .then((res) => {
@@ -122,25 +118,22 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage =
-            "Unknown error during send of password reset email - please contact your administrator";
+            'Unknown error during send of password reset email - please contact your administrator';
         }
         userResponse.errorMessage = errorMessage;
         return userResponse;
       });
   };
 
-  validateResetCode = async (
-    username: string,
-    code: number
-  ): Promise<UserResponse> => {
+  validateResetCode = async (username: string, code: number): Promise<UserResponse> => {
     const headers = {
-      "Content-Type": "application/json",
-      "x-api-key": `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
     };
 
     const data = {
@@ -154,7 +147,7 @@ export class AuthService {
     };
 
     return this.instance
-      .post("/user/validateResetCode", data, {
+      .post('/user/validateResetCode', data, {
         headers: headers,
       })
       .then((res) => {
@@ -164,12 +157,12 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage =
-            "Unknown error while validating reset code - please contact your administrator";
+            'Unknown error while validating reset code - please contact your administrator';
         }
         userResponse.errorMessage = errorMessage;
         return userResponse;
@@ -180,11 +173,11 @@ export class AuthService {
     username: string,
     password: string,
     confirmPassword: string,
-    code: number
+    code: number,
   ): Promise<UserResponse> => {
     const headers = {
-      "Content-Type": "application/json",
-      "x-api-key": `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
     };
 
     const data = {
@@ -200,7 +193,7 @@ export class AuthService {
     };
 
     return this.instance
-      .post("/user/resetPassword", data, {
+      .post('/user/resetPassword', data, {
         headers: headers,
       })
       .then((res) => {
@@ -210,12 +203,12 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage =
-            "Unknown error while resetting password - please contact your administrator";
+            'Unknown error while resetting password - please contact your administrator';
         }
         userResponse.errorMessage = errorMessage;
         return userResponse;
@@ -229,11 +222,11 @@ export class AuthService {
     sellerId: number,
     password: string,
     confirmPassword: string,
-    notes?: string
+    notes?: string,
   ): Promise<UserResponse> => {
     const headers = {
-      "Content-Type": "application/json",
-      "x-api-key": `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
     };
 
     const data = {
@@ -252,7 +245,7 @@ export class AuthService {
     };
 
     return this.instance
-      .post("/user/register", data, {
+      .post('/user/register', data, {
         headers: headers,
       })
       .then((res) => {
@@ -262,12 +255,12 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage =
-            "Unknown error while registering user - please contact your administrator";
+            'Unknown error while registering user - please contact your administrator';
         }
         userResponse.errorMessage = errorMessage;
         return userResponse;

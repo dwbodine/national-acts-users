@@ -1,14 +1,14 @@
-import { GetUsersResponse } from "@/types/user";
-import { userService } from "../../services";
+import { GetUsersResponse } from '@/types/user';
+import { userService } from '../../services';
 
 export const useGetAllUsers = () => {
   const getAllUsers = async (): Promise<GetUsersResponse> => {
     let response: GetUsersResponse = {
-        users: [],
-        userError: undefined
+      users: [],
+      userError: undefined,
     };
     response = await userService.getUsers();
-    return response;    
+    return response;
   };
 
   return { getAllUsers };

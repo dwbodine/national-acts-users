@@ -1,13 +1,13 @@
-import { WindowSize } from "@/types/windowSize";
-import { MOBILE_WIDTH_BREAKPOINT } from "@/constants";
-import { useEffect, useState } from "react";
+import { WindowSize } from '@/types/windowSize';
+import { MOBILE_WIDTH_BREAKPOINT } from '@/constants';
+import { useEffect, useState } from 'react';
 export const useWindowSize = (): WindowSize => {
   const [windowSize, setWindowSize] = useState<WindowSize>({
     width: 0,
     height: 0,
     orientation: undefined,
     isMobile: false,
-    angle: 0
+    angle: 0,
   });
 
   const windowSizeJson = JSON.stringify(windowSize);
@@ -27,24 +27,30 @@ export const useWindowSize = (): WindowSize => {
           let temp = windowWidth;
           windowWidth = windowHeight;
           windowHeight = temp;
-        }        
-      } else if (!isLandscape && currentAngle == 0)  {
+        }
+      } else if (!isLandscape && currentAngle == 0) {
         if (windowWidth >= windowHeight) {
           let temp = windowWidth;
           windowWidth = windowHeight;
           windowHeight = temp;
-        }        
+        }
       }
-      const isMobileWidth: boolean = (windowWidth < MOBILE_WIDTH_BREAKPOINT);
-      setWindowSize({width: windowWidth, height: windowHeight, orientation: currentOrientation, isMobile: isMobileWidth, angle: currentAngle});  
+      const isMobileWidth: boolean = windowWidth < MOBILE_WIDTH_BREAKPOINT;
+      setWindowSize({
+        width: windowWidth,
+        height: windowHeight,
+        orientation: currentOrientation,
+        isMobile: isMobileWidth,
+        angle: currentAngle,
+      });
     };
-    screen.orientation.addEventListener("change", windowSizeHandler);
-    window.addEventListener("resize", windowSizeHandler);
+    screen.orientation.addEventListener('change', windowSizeHandler);
+    window.addEventListener('resize', windowSizeHandler);
     if (!windowSize.orientation || windowSize.width == 0) {
       windowSizeHandler();
-    }    
+    }
     return () => {
-      window.removeEventListener("resize", windowSizeHandler);
+      window.removeEventListener('resize', windowSizeHandler);
       screen.orientation.removeEventListener('change', windowSizeHandler);
     };
   }, [windowSize, windowSizeJson]);

@@ -1,6 +1,8 @@
 html,
 body {
-  font: 14px "Open Sans", sans-serif;
+  font:
+    14px 'Open Sans',
+    sans-serif;
   min-height: 100vh;
 }
 
@@ -12,7 +14,10 @@ div hidden {
   display: none;
 }
 
-select, input[type=text], input[type=password], input[type=number] {
+select,
+input[type='text'],
+input[type='password'],
+input[type='number'] {
   margin: 10px 5px;
   padding: 7px;
   min-width: 220px;
@@ -20,12 +25,16 @@ select, input[type=text], input[type=password], input[type=number] {
   border: 1px lightgray solid;
 }
 
-input[type=checkbox] {
+input[type='checkbox'] {
   border-radius: 6px;
   border: 1px lightgray solid;
 }
 
-select:hover, input[type=text]:hover, input[type=password]:hover, input[type=checkbox]:hover, input[type=number]:hover {
+select:hover,
+input[type='text']:hover,
+input[type='password']:hover,
+input[type='checkbox']:hover,
+input[type='number']:hover {
   border-color: #3498ff;
 }
 
@@ -69,7 +78,7 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
   margin-bottom: 5px;
 }
 
-.form-check-input[type=checkbox] {
+.form-check-input[type='checkbox'] {
   margin-right: 5px;
 }
 
@@ -127,7 +136,7 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
   box-shadow: none !important;
-  background-color: #EFEFEF;
+  background-color: #efefef;
   width: 100%;
 }
 
@@ -254,7 +263,7 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
 
 .stat-block {
   padding: 15px;
-  background-color: #EFEFEF;
+  background-color: #efefef;
   border: 1px solid #dedede;
   border-radius: 4px;
   line-height: 14px;
@@ -323,7 +332,7 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
 
 .resultsTable tr:nth-child(even),
 .vipTable tr:nth-child(even) {
-  background-color: #EFEFEF;
+  background-color: #efefef;
 }
 
 .resultsTable tr:hover,
@@ -622,7 +631,8 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
   margin: 10px 0;
 }
 
-.admin-report-datepicker-label, .admin-seller-select-label {
+.admin-report-datepicker-label,
+.admin-seller-select-label {
   width: 100px;
   margin: 15px 0;
   display: inline-block;
@@ -701,8 +711,8 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
   margin: 0 0 10px 0;
 }
 
-
-.sales-stat-block-name, .sales-stat-block-name-tooltip {
+.sales-stat-block-name,
+.sales-stat-block-name-tooltip {
   text-align: left;
   white-space: nowrap;
 }
@@ -779,7 +789,8 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
   margin: 10px 0;
 }
 
-.confirmation-dialog-buttons, .confirmation-dialog-sure {
+.confirmation-dialog-buttons,
+.confirmation-dialog-sure {
   width: 100%;
   text-align: center;
 }
@@ -804,7 +815,8 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
   border: 1px solid black;
 }
 
-.ticket-table td, .ticket-table th {
+.ticket-table td,
+.ticket-table th {
   border: 1px solid black;
   padding: 10px;
 }
@@ -855,7 +867,6 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
 
   .sales-stat-block {
     width: 100%;
-    height: 350px;
     font-size: 12px;
   }
 
@@ -1049,7 +1060,7 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
   .vipTable tbody,
   .vipTable th,
   .vipTable td {
-    border: unset
+    border: unset;
   }
 
   .resultsTable th,
@@ -1076,7 +1087,7 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
   .resultsTable .mobile-event-card-container:nth-child(even),
   .vipTable .mobile-event-card-container:nth-child(even) {
     .mobile-event-card {
-      background-color: #EFEFEF !important;
+      background-color: #efefef !important;
     }
   }
 
@@ -1108,9 +1119,7 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
   }
 }
 
-
 @media print {
-
   .no-print,
   .rs-nav-item,
   .rs-nav-bar {
@@ -1141,7 +1150,6 @@ select:hover, input[type=text]:hover, input[type=password]:hover, input[type=che
 
   .check-out-show,
   .check-in-show {
-    display: none
+    display: none;
   }
-
 }

@@ -3,9 +3,9 @@ export const FULL_PAGE_CHART_BREAKPOINT: number = 1200;
 export const MINIMUM_UNIX_TIMESTAMP: number = 1641013200;
 
 export enum ActivePageKey {
-    Dashboard = 1,
-    SalesOverview = 2,
-    Admin = 3,
-    Reports = 4,
-    Users = 5
-};
+  Dashboard = 1,
+  SalesOverview = 2,
+  Admin = 3,
+  Reports = 4,
+  Users = 5,
+}

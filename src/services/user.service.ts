@@ -13,9 +13,9 @@ import {
   UserActivityType,
   UserSeller,
   UserSellerResponse,
-} from "@/types/user";
-import { getAuthorizationHeader } from "@/utils/getAuthorizationHeader";
-import axios, { AxiosInstance } from "axios";
+} from '@/types/user';
+import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
+import axios, { AxiosInstance } from 'axios';
 
 export class UserService {
   protected readonly instance: AxiosInstance;
@@ -24,7 +24,7 @@ export class UserService {
     this.instance = axios.create({
       baseURL: url,
       timeout: 30000,
-      timeoutErrorMessage: "Time out!",
+      timeoutErrorMessage: 'Time out!',
     });
   }
 
@@ -50,14 +50,14 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.status) {
           usersResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching users";
+          errorMessage = 'Unknown error while fetching users';
         }
         usersResponse.userError = errorMessage;
         return usersResponse;
@@ -86,14 +86,14 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.status) {
           rolesResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching roles";
+          errorMessage = 'Unknown error while fetching roles';
         }
         rolesResponse.roleError = errorMessage;
         return rolesResponse;
@@ -124,14 +124,14 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.status) {
           permResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while fetching users";
+          errorMessage = 'Unknown error while fetching users';
         }
         permResponse.permissionError = errorMessage;
         return permResponse;
@@ -140,7 +140,7 @@ export class UserService {
 
   getUserSellerFromEventId = async (
     eventId: number,
-    userId: number
+    userId: number,
   ): Promise<UserSellerResponse> => {
     let url = `/user/getUserSellerFromEventId/${userId}/${eventId}`;
 
@@ -157,14 +157,12 @@ export class UserService {
         headers: headers,
       })
       .then((res) => {
-        sellerResponse.userSeller = res.data
-          ? (res.data as UserSeller)
-          : undefined;
+        sellerResponse.userSeller = res.data ? (res.data as UserSeller) : undefined;
         return sellerResponse;
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.status) {
           sellerResponse.statusCode = parseInt(err.response.status);
         }
@@ -172,7 +170,7 @@ export class UserService {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage =
-            "Unknown error while fetching user seller - please contact your administrator";
+            'Unknown error while fetching user seller - please contact your administrator';
         }
         sellerResponse.userSellerError = errorMessage;
         return sellerResponse;
@@ -202,14 +200,14 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.status) {
           rolesResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while updating role";
+          errorMessage = 'Unknown error while updating role';
         }
         rolesResponse.roleError = errorMessage;
         return rolesResponse;
@@ -239,14 +237,14 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.status) {
           rolesResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while deleting roles";
+          errorMessage = 'Unknown error while deleting roles';
         }
         rolesResponse.roleError = errorMessage;
         return rolesResponse;
@@ -276,14 +274,14 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.status) {
           userResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while updating user";
+          errorMessage = 'Unknown error while updating user';
         }
         userResponse.userError = errorMessage;
         return userResponse;
@@ -315,14 +313,14 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.status) {
           userResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while deleting user";
+          errorMessage = 'Unknown error while deleting user';
         }
         userResponse.userError = errorMessage;
         return userResponse;
@@ -332,9 +330,9 @@ export class UserService {
   logUserActivity = async (
     activityType: UserActivityType,
     activityData: string | undefined = undefined,
-    token: string | undefined = undefined
+    token: string | undefined = undefined,
   ): Promise<LogActivityResponse> => {
-    let url = "/internal/logUserActivity";
+    let url = '/internal/logUserActivity';
 
     let activityResponse: LogActivityResponse = {
       statusCode: 200,
@@ -356,21 +354,20 @@ export class UserService {
         const success = res.data;
         if (!success) {
           activityResponse.statusCode = 500;
-          activityResponse.logActivityError =
-            "Unknown error while logging activity data";
+          activityResponse.logActivityError = 'Unknown error while logging activity data';
         }
         return activityResponse;
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.status) {
           activityResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while logging activity data";
+          errorMessage = 'Unknown error while logging activity data';
         }
         activityResponse.logActivityError = errorMessage;
         return activityResponse;
@@ -382,9 +379,9 @@ export class UserService {
     end: number,
     userId: number | undefined = undefined,
     activityType: UserActivityType | undefined = undefined,
-    filterAdmins: boolean = false
+    filterAdmins: boolean = false,
   ): Promise<GetActivityResponse> => {
-    let url = "/dashboard/getUserActivity";
+    let url = '/dashboard/getUserActivity';
 
     let activityResponse: GetActivityResponse = {
       statusCode: 200,
@@ -398,7 +395,7 @@ export class UserService {
       end: end,
       userId: userId,
       activityType: activityType,
-      filterAdmins: filterAdmins ? "1" : undefined,
+      filterAdmins: filterAdmins ? '1' : undefined,
     };
 
     return this.instance
@@ -414,14 +411,14 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = "";
+        var errorMessage = '';
         if (err?.response?.status) {
           activityResponse.statusCode = parseInt(err.response.status);
         }
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = "Unknown error while getting activity data";
+          errorMessage = 'Unknown error while getting activity data';
         }
         activityResponse.logActivityError = errorMessage;
         return activityResponse;

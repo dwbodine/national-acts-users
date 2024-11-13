@@ -13,22 +13,24 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const { logActivityData } = useLogActivityData();
 
-  const title = "Client Portal - Home";
+  const title = 'Client Portal - Home';
 
   useEffect(() => {
     const user = getUser();
     if (user && user.isAuthenticated) {
       if (user.isAdmin) {
         logActivityData(UserActivityType.AccessDashboard).then(() => {
-          dispatch (
-            setReloadDashboardOrders(true)
-          );
+          dispatch(setReloadDashboardOrders(true));
         });
-      }      
-    }    
+      }
+    }
   }, [logActivityData, dispatch, getUser]);
 
   return (
-    <AdminPage title={title} activeKey={ActivePageKey.Dashboard} dashboardComponent={<DashboardIndex />} />
+    <AdminPage
+      title={title}
+      activeKey={ActivePageKey.Dashboard}
+      dashboardComponent={<DashboardIndex />}
+    />
   );
 }

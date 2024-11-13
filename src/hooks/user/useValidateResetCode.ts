@@ -1,4 +1,4 @@
-import { authService } from "../../services";
+import { authService } from '../../services';
 
 export const useValidateResetCode = () => {
   const validateResetCode = async (username: string, code: number) => {

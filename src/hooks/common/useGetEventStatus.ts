@@ -1,4 +1,4 @@
-import { VipEvent } from "@/types/event";
+import { VipEvent } from '@/types/event';
 
 export const useGetEventStatus = () => {
   const getEventStatusSlug = (event: VipEvent | undefined): string => {
@@ -28,16 +28,16 @@ export const useGetEventStatus = () => {
         statusText = 'Deleted';
         break;
       case 'cancelled':
-        statusText = "Cancelled";
+        statusText = 'Cancelled';
         break;
       case 'inactive':
-        statusText = "Inactive";
+        statusText = 'Inactive';
         break;
       case 'hidden':
-        statusText = "Hidden";
+        statusText = 'Hidden';
         break;
       case 'active':
-        statusText = "Active";
+        statusText = 'Active';
         break;
       default:
         break;

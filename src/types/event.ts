@@ -1,4 +1,4 @@
-import { IDashboardTotals } from "./user";
+import { IDashboardTotals } from './user';
 
 export enum SellerType {
   Artist = 1,
@@ -91,7 +91,6 @@ export interface Order {
   revenue: number;
   serviceFees?: number;
   shirts?: string[];
-  isHidden?: boolean;
 }
 
 export interface Venue {
@@ -299,6 +298,11 @@ export interface ITicketSalesData {
   ServiceFees: number;
   TotalRevenue: number;
   TicketsRefunded?: number;
+  RevenueRefunded?: number;
+  ServiceFeeRevenueRefunded?: number;
+  TicketsChargedBack?: number;
+  RevenueChargedBack?: number;
+  ServiceFeeRevenueChargedBack?: number;
   children?: ITicketSellerSalesData[];
 }
 
