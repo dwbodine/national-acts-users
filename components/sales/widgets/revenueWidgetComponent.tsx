@@ -1,8 +1,8 @@
 import { FaMoneyBillAlt } from 'react-icons/fa';
 
 export default function RevenueWidget(props: any) {
-  const totalRevenue: number = props.TotalRevenue as number;
-  const totalServiceFees: number = props.TotalServiceFees as number;
+  const totalRevenue: number = (props.TotalRevenue as number ?? 0);
+  const totalServiceFees: number = (props.TotalServiceFees as number ?? 0);  
   const hideServiceFees: boolean = props.HideServiceFees as boolean;
 
   return (
@@ -12,7 +12,7 @@ export default function RevenueWidget(props: any) {
       <span>${totalRevenue.toFixed(2)}</span>
       <div className="second" hidden={hideServiceFees}>
         <div>Service Fees:</div>
-        <span>${totalServiceFees.toFixed(2)}</span>
+        <span>${(totalServiceFees ?? 0).toFixed(2)}</span>
       </div>
     </>
   );

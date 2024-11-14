@@ -25,8 +25,8 @@ export default function OrderRow(props: any) {
   const id = `order_${order.ticketSocketOrderId}`;
   const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
   const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
-  const revenue = new Number(order.revenueUsd).toFixed(2);
-  const serviceFees = new Number(order.serviceFeesUsd).toFixed(2);
+  const revenue = new Number(order.revenueUsd - (order.revenueRefundedUsd ?? 0)).toFixed(2);
+  const serviceFees = new Number((order.serviceFeesUsd ?? 0) - (order.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2);
 
   const ticketTypeRows: any[] = [];
   if (order.tickets && order.tickets.length > 0) {

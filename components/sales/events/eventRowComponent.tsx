@@ -26,8 +26,8 @@ export default function EventRow(props: any) {
   }
 
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
-  const revenue = new Number(vipEvent.totalRevenue).toFixed(2);
-  const serviceFees = new Number(vipEvent.totalServiceFees).toFixed(2);
+  const revenue = new Number(vipEvent.totalRevenue - (vipEvent.revenueRefunded ?? 0)).toFixed(2);
+  const serviceFees = new Number(vipEvent.totalServiceFees - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2);
   const url = `/event/?id=${vipEvent.ticketSocketEventId}`;
 
   return (

@@ -27,6 +27,7 @@ import { useWindowSize } from '@/hooks/common/useWindowSize';
 import HiddenCheck from './hiddenCheckComponent';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
 import { GetEventsResponse } from '@/types/event';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 
 export default function SalesBar() {
   const dispatch = useDispatch();
@@ -139,11 +140,13 @@ export default function SalesBar() {
     reportSelection.start = selectedStart;
     reportSelection.end = selectedEnd;
     reportSelection.retainDateSelection = true;
+    dispatch(setIsLoading(true));
     dispatch(setDateRange(reportSelection));
     dispatch(setReloadEvents(true));
   };
 
   const onResetClick = () => {
+    dispatch(setIsLoading(true));
     dispatch(resetSelection());
   };
 

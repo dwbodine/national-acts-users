@@ -214,7 +214,9 @@ export default function CurrentEvents() {
   let totalShirts = 0;
   let totalOrders = 0;
   let ticketsRefunded = 0;
+  let revenueRefunded = 0;
   let totalServiceFees = 0;
+  let serviceFeesRefunded = 0;
 
   if (vipEvents && vipEvents.length > 0) {
     if (windowSize.isMobile || vipEvents.length > 10) {
@@ -255,11 +257,14 @@ export default function CurrentEvents() {
 
       if (!evt.isDeleted) {
         totalTickets += evt.totalTickets;
-        totalRevenue += evt.totalRevenue;
+        revenueRefunded += evt.revenueRefunded ?? 0;
+        totalRevenue += evt.totalRevenue - (evt.revenueRefunded ?? 0);
         ticketsRefunded += evt.numTicketsRefunded ?? 0;
+        
         totalOrders += evt.orders?.length ?? 0;
         totalShirts += evt.totalShirts;
-        totalServiceFees += evt.totalServiceFees;
+        serviceFeesRefunded += evt.serviceFeeRevenueRefunded ?? 0;
+        totalServiceFees += evt.totalServiceFees - (evt.serviceFeeRevenueRefunded ?? 0);        
       }
       i++;
     }
@@ -293,6 +298,8 @@ export default function CurrentEvents() {
           TicketsRefunded={ticketsRefunded}
           TotalServiceFees={totalServiceFees}
           HideServiceFees={hideServiceFees}
+          RevenueRefunded={revenueRefunded}
+          ServiceFeesRefunded={serviceFeesRefunded}
         />
         <TicketSalesChart
           TicketSalesData={ticketSalesData}
