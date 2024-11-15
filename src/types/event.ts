@@ -185,7 +185,7 @@ export interface TicketSocketRefreshHistory {
   duration?: number;
   succeeded?: boolean;
   errorMessage?: string;
-  userName?: string;
+  username?: string;
   ticketSocketRefreshHistoryId?: number;
   orderDataUpdateSucceeded?: boolean;
   orderDataUpdateDuration?: number;

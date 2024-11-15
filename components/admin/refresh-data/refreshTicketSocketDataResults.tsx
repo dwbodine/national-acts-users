@@ -7,7 +7,7 @@ export default function RefreshTicketSocketDataResults(props: any) {
 
   let succeeded = '';
   let errorMessage = '';
-  let userName = '';
+  let username = '';
   let sellerName = '';
   let startTimerStr = '';
   let endTimerStr = '';
@@ -41,8 +41,8 @@ export default function RefreshTicketSocketDataResults(props: any) {
     succeeded = results.succeeded ? 'true' : 'false';
     orderDataUpdateSucceeded = results.orderDataUpdateSucceeded ? 'true' : 'false';
     errorMessage = results.succeeded ? '' : (results.errorMessage ?? 'unknown');
-    userName = results.userName
-      ? results.userName
+    username = results.username
+      ? results.username
       : (results.userId?.toString() ?? 'n/a');
     sellerName = results.sellerName
       ? results.sellerName
@@ -131,7 +131,7 @@ export default function RefreshTicketSocketDataResults(props: any) {
             <Col>Order data update succeeded: {orderDataUpdateSucceeded}</Col>
           </Row>
           <Row>
-            <Col>User: {userName}</Col>
+            <Col>User: {username}</Col>
           </Row>
           <Row>
             <Col>Seller: {sellerName}</Col>

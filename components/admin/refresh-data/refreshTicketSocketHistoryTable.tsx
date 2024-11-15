@@ -1,6 +1,5 @@
 import { TicketSocketRefreshHistory } from '@/types/event';
 import moment from 'moment';
-import { useState } from 'react';
 import { Table } from 'rsuite';
 
 export default function RefreshTicketSocketHistoryTable(props: any) {
@@ -13,7 +12,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
         <HeaderCell>User</HeaderCell>
         <Cell>
           {(rowData) =>
-            rowData.userName ? rowData.userName : (rowData.userId?.toString() ?? 'n/a')
+            rowData.username ? rowData.username : (rowData.userId?.toString() ?? 'n/a')
           }
         </Cell>
       </Column>
