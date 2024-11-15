@@ -301,9 +301,19 @@ export default function DashboardIndex() {
                 <Cell>{(rowData) => `$${parseFloat(rowData.Revenue).toFixed(2)}`}</Cell>
               </Column>
               <Column flexGrow={1}>
+                <HeaderCell>Revenue Refunded (USD)</HeaderCell>
+                <Cell>{(rowData) => `$${parseFloat(rowData.RevenueRefunded).toFixed(2)}`}</Cell>
+              </Column>
+              <Column flexGrow={1}>
                 <HeaderCell>Service Fees (USD)</HeaderCell>
                 <Cell>
                   {(rowData) => `$${parseFloat(rowData.ServiceFees).toFixed(2)}`}
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Service Fees Refunded (USD)</HeaderCell>
+                <Cell>
+                  {(rowData) => `$${parseFloat(rowData.ServiceFeeRevenueRefunded).toFixed(2)}`}
                 </Cell>
               </Column>
               <Column flexGrow={1}>

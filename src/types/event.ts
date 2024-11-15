@@ -279,6 +279,8 @@ export interface ITicketEventSalesData {
   Revenue: number;
   ServiceFees: number;
   TotalRevenue: number;
+  RevenueRefunded?: number;
+  ServiceFeeRevenueRefunded?: number;
 }
 
 export interface ITicketSellerSalesData {
@@ -289,6 +291,8 @@ export interface ITicketSellerSalesData {
   Revenue: number;
   ServiceFees: number;
   TotalRevenue: number;
+  RevenueRefunded?: number;
+  ServiceFeeRevenueRefunded?: number;
   children?: ITicketEventSalesData[];
 }
 
