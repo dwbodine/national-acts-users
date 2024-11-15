@@ -53,7 +53,7 @@ export function getTicketDataFromOrders(
           map.set(key, [data]);
         } else {
           let ticketTypeName = ticket.ticketType;
-          const ttype = ticketTypes.find(x => x.ticketTypeId == ticket.ticketTypeId);
+          const ttype = ticketTypes.find((x) => x.ticketTypeId == ticket.ticketTypeId);
           if (ttype) {
             ticketTypeName = ttype.ticketTypeName;
           }
