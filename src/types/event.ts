@@ -41,6 +41,7 @@ export interface Ticket {
   availableScans?: number;
   purchaseLocation?: string;
   shirtSize?: string;
+  lastUpdate?: string;
 }
 
 export interface Order {

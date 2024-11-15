@@ -182,8 +182,49 @@ export default function EventDetail(props: any) {
           }
           const results = await getEventDetails(id);
           if (results && results.events && results.events.length > 0) {
-            const newEvent: VipEvent = results.events[0];
+            let newEvent: VipEvent = results.events[0];
             if (newEvent) {
+              if (newEvent.orders && newEvent.orders.length > 0) {
+                let orders: Order[] = [];
+                for (const order of newEvent.orders) {
+                  if (order.isComped && order.tickets) {
+                    for (const ticket of order.tickets) {
+                      if (ticket.ticketTypeId != 0) {
+                        continue;
+                      }
+                      let newOrder: Order = {
+                        ticketSocketEventId: newEvent.ticketSocketEventId,
+                        ticketSocketOrderId: order.ticketSocketOrderId,
+                        purchaserLastName: ticket.attendeeLastName ?? '',
+                        purchaserFirstName: ticket.attendeeFirstName ?? '',
+                        purchaseDate: '',
+                        purchaseTimestamp:  '',
+                        eventId: 0,
+                        orderId: 0,
+                        isActive: true,
+                        numTickets: 1,
+                        isDeleted: false,
+                        hasRefunds: false,
+                        hasChargebacks: false,
+                        revenue: 0,
+                        revenueUsd: 0,
+                        exchangeRate: 0,
+                        currencySymbol: '',
+                        currencyAbbrev: '',
+                        email: ticket.attendeeEmail ?? '',
+                        phone: ticket.attendeePhone,
+                        tickets: [ticket]
+                      };
+                      orders.push(newOrder);
+                    }
+                  } else {
+                    orders.push(order);
+                  }
+                }
+                newEvent.orders = orders;
+              }
+              
+
               dispatch(setCurrentDetailEvent(newEvent));
               if (currentReportSelection.currentEvents) {
                 document.title = newEvent.title;
@@ -259,7 +300,7 @@ export default function EventDetail(props: any) {
 
     if (orders && orders.length > 0) {
       visibleOrders = orders.filter((order) => {
-        return (!order.isComped && (
+        return ((
           (currentReportSelection.showDeletedOrders && order.isDeleted) ||
           (currentReportSelection.showInactiveOrders &&
             !order.isActive &&
@@ -317,6 +358,7 @@ export default function EventDetail(props: any) {
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFeeDisplay}
             CanCheckInTickets={canCheckInTickets}
+            TicketTypes={currentReportSelection.currentDetailEvent?.ticketTypes}
           />,
         );
       } else {
@@ -332,6 +374,7 @@ export default function EventDetail(props: any) {
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFeeDisplay}
             CanCheckInTickets={canCheckInTickets}
+            TicketTypes={currentReportSelection.currentDetailEvent?.ticketTypes}
           />,
         );
       }

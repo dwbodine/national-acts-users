@@ -15,6 +15,7 @@ export function getTicketDataFromOrders(
     };
   }
   const key = moment(evt.eventDate).format('MM/DD/YYYY');
+  // older data may not have ticket types attached
   let eventHasTicketTypes: boolean = evt.hasTicketTypeData ?? false;
   if (eventHasTicketTypes) {
     evt.ticketTypes?.forEach((ticketType) => {
@@ -51,8 +52,13 @@ export function getTicketDataFromOrders(
           };
           map.set(key, [data]);
         } else {
+          let ticketTypeName = ticket.ticketType;
+          const ttype = ticketTypes.find(x => x.ticketTypeId == ticket.ticketTypeId);
+          if (ttype) {
+            ticketTypeName = ttype.ticketTypeName;
+          }
           const indexToUpdate = collection.findIndex(
-            (item) => item.TicketType === ticket.ticketType,
+            (item) => item.TicketType === ticketTypeName,
           );
           if (indexToUpdate >= 0) {
             let item = collection[indexToUpdate];
@@ -60,7 +66,7 @@ export function getTicketDataFromOrders(
             collection[indexToUpdate] = item;
           } else {
             collection.push({
-              TicketType: ticket.ticketType,
+              TicketType: ticketTypeName,
               Number: 1,
             });
           }

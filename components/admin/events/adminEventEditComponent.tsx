@@ -78,6 +78,24 @@ export default function AdminEventEdit() {
     markDirty();
   };
 
+  const setCompTicketTypeName = (ticketTypeName: string) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    if (currentEvent.ticketTypes) {
+      currentEvent.ticketTypes = currentEvent.ticketTypes.map((ticketType) => {
+        let newTicketType = {...ticketType};
+        if (newTicketType.ticketTypeId == 0) {
+          newTicketType.ticketTypeName = ticketTypeName;
+        }
+        return newTicketType;
+      });
+    }    
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();    
+  };
+
   const onAnnounceDateChange = (date: Date | null) => {
     if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
@@ -366,13 +384,17 @@ export default function AdminEventEdit() {
       ) {
         for (let i = 0; i < currentAdminSelection.selectedEvent.orders.length; i++) {
           const order = currentAdminSelection.selectedEvent.orders[i];
-          var ticketsWithType = order.tickets?.find(
-            (x) => x.ticketTypeId == ticketTypeId,
-          );
-          if (ticketsWithType != undefined) {
+          if (order.isComped) {
             ticketTypeDisabled = true;
-            break;
-          }
+          } else {
+            var ticketsWithType = order.tickets?.find(
+              (x) => x.ticketTypeId == ticketTypeId,
+            );
+            if (ticketsWithType != undefined) {
+              ticketTypeDisabled = true;
+              break;
+            }
+          }          
         }
       }
 
@@ -383,8 +405,17 @@ export default function AdminEventEdit() {
 
       ticketTypeRows.push(
         <tr key={key}>
-          <td>{ticketType.ticketTypeName}</td>
+          <td>{ ticketType.ticketTypeId == 0 ?
+                <input
+                  type="text"
+                  value={ticketType.ticketTypeName}
+                  onChange={(e) => setCompTicketTypeName(e.target.value)}
+                /> :
+                ticketType.ticketTypeName
+              }
+          </td>
           <td>
+            { ticketType.ticketTypeId != 0 ?
             <FormCheck
               id={`ticketType_${ticketType.ticketTypeId}`}
               title={rowTitle}
@@ -392,7 +423,7 @@ export default function AdminEventEdit() {
               checked={ticketType.isActive}
               onChange={(e) => setTicketTypeStatus(e)}
               label="Active"
-            />
+            /> : ''}
           </td>
         </tr>,
       );

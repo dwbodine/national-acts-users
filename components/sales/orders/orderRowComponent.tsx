@@ -1,9 +1,10 @@
-import { Order } from '@/types/event';
+import { Order, TicketType } from '@/types/event';
 import moment from 'moment';
 import React from 'react';
 import AttendeeRow from './attendeeRowComponent';
 
 export default function OrderRow(props: any) {
+  const ticketTypes = props.TicketTypes as TicketType[] | undefined;
   const eventDate = props.EventDate as string;
   const eventName = props.EventName as string;
   const order = props.Order as Order;
@@ -24,20 +25,26 @@ export default function OrderRow(props: any) {
 
   const id = `order_${order.ticketSocketOrderId}`;
   const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
-  const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
+  const purchaseDate = order.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
   const revenue = new Number(order.revenueUsd - (order.revenueRefundedUsd ?? 0)).toFixed(2);
   const serviceFees = new Number((order.serviceFeesUsd ?? 0) - (order.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2);
 
   const ticketTypeRows: any[] = [];
+
   if (order.tickets && order.tickets.length > 0) {
     const ticketMap = new Map<string, number>();
     order.tickets?.forEach((ticket) => {
-      const item = ticketMap.get(ticket.ticketType);
+      let ticketTypeName = ticket.ticketType;
+      const ticketType = ticketTypes?.find(t => t.ticketTypeId == ticket.ticketTypeId);
+      if (ticketType) {
+        ticketTypeName = ticketType.ticketTypeName;
+      }
+      const item = ticketMap.get(ticketTypeName);
       let num: number = 1;
       if (item && item > 0) {
         num = item + 1;
       }
-      ticketMap.set(ticket.ticketType, num);
+      ticketMap.set(ticketTypeName, num);
     });
     let i = 0;
     ticketMap.forEach((tickets: Number, ticketType: string) => {
