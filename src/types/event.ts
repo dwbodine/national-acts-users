@@ -30,6 +30,8 @@ export interface Ticket {
   isCheckedIn?: boolean;
   attendeeFirstName?: string;
   attendeeLastName?: string;
+  attendeeEmail?: string;
+  attendeePhone?: string;
   isRefunded?: boolean;
   refundDate?: string;
   isChargedBack?: boolean;

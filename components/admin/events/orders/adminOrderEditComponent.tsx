@@ -216,6 +216,116 @@ export default function AdminOrderEdit() {
     }
   };
 
+  const setFirstName = (e: any) => {
+    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+      return;
+    }
+    const ticketId = parseInt(e.currentTarget.id.replace('fName_', ''));
+    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    if (!isNaN(ticketId) && currentOrder.tickets) {
+      const firstName = e.currentTarget.value;
+      currentOrder.tickets = currentOrder.tickets.map((t) => {
+        let ticket = { ...t };
+        if (ticket.ticketSocketOrderTicketId == ticketId) {
+          ticket.attendeeFirstName = firstName;
+        }
+        return ticket;
+      });
+
+      dispatch(setAdminOrder(currentOrder));
+
+      dispatch(setMustSaveOrder(true));
+    }
+  };
+
+  const setLastName = (e: any) => {
+    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+      return;
+    }
+    const ticketId = parseInt(e.currentTarget.id.replace('lName_', ''));
+    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    if (!isNaN(ticketId) && currentOrder.tickets) {
+      const lastName = e.currentTarget.value;
+      currentOrder.tickets = currentOrder.tickets.map((t) => {
+        let ticket = { ...t };
+        if (ticket.ticketSocketOrderTicketId == ticketId) {
+          ticket.attendeeLastName = lastName;
+        }
+        return ticket;
+      });
+
+      dispatch(setAdminOrder(currentOrder));
+
+      dispatch(setMustSaveOrder(true));
+    }
+  };
+
+  const setEmail = (e: any) => {
+    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+      return;
+    }
+    const ticketId = parseInt(e.currentTarget.id.replace('email_', ''));
+    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    if (!isNaN(ticketId) && currentOrder.tickets) {
+      const email = e.currentTarget.value;
+      currentOrder.tickets = currentOrder.tickets.map((t) => {
+        let ticket = { ...t };
+        if (ticket.ticketSocketOrderTicketId == ticketId) {
+          ticket.attendeeEmail = email;
+        }
+        return ticket;
+      });
+
+      dispatch(setAdminOrder(currentOrder));
+
+      dispatch(setMustSaveOrder(true));
+    }
+  };
+
+  const setPhone = (e: any) => {
+    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+      return;
+    }
+    const ticketId = parseInt(e.currentTarget.id.replace('phone_', ''));
+    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    if (!isNaN(ticketId) && currentOrder.tickets) {
+      const phone = e.currentTarget.value;
+      currentOrder.tickets = currentOrder.tickets.map((t) => {
+        let ticket = { ...t };
+        if (ticket.ticketSocketOrderTicketId == ticketId) {
+          ticket.attendeePhone = phone;
+        }
+        return ticket;
+      });
+
+      dispatch(setAdminOrder(currentOrder));
+
+      dispatch(setMustSaveOrder(true));
+    }
+  };
+
+  const setShirtSize = (e: any) => {
+    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+      return;
+    }
+    const ticketId = parseInt(e.currentTarget.id.replace('shirt_', ''));
+    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    if (!isNaN(ticketId) && currentOrder.tickets) {
+      const shirtSize = e.currentTarget.value;
+      currentOrder.tickets = currentOrder.tickets.map((t) => {
+        let ticket = { ...t };
+        if (ticket.ticketSocketOrderTicketId == ticketId) {
+          ticket.shirtSize = shirtSize;
+        }
+        return ticket;
+      });
+
+      dispatch(setAdminOrder(currentOrder));
+
+      dispatch(setMustSaveOrder(true));
+    }
+  };
+
   const confirmRefundTicket = (e: any) => {
     if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
       return;
@@ -440,9 +550,62 @@ export default function AdminOrderEdit() {
       const ticketRow = (
         <tr key={`row_${ticketId}`}>
           <td>{ticket.ticketSocketOrderTicketId}</td>
-          <td>{ticket.attendeeFirstName}</td>
-          <td>{ticket.attendeeLastName}</td>
           <td>
+            {isComped ? 
+              <input 
+                id={`fName_${ticketId}`}
+                value={ticket.attendeeFirstName}
+                type="text"
+                onChange={setFirstName}
+               /> 
+              : ticket.attendeeFirstName
+            }
+          </td>
+          <td>
+            {isComped ? 
+              <input 
+                id={`lName_${ticketId}`}
+                value={ticket.attendeeLastName}
+                type="text"
+                onChange={setLastName}
+              /> 
+              : ticket.attendeeLastName
+            }
+          </td>
+          <td hidden={!isComped}>
+              <input 
+                id={`phone_${ticketId}`}
+                value={ticket.attendeePhone}
+                type="text"
+                onChange={setPhone}
+              /> 
+          </td>
+          <td hidden={!isComped}>
+              <input 
+                id={`email_${ticketId}`}
+                value={ticket.attendeeEmail}
+                type="text"
+                onChange={setEmail}
+              /> 
+          </td>
+          <td>
+            {isComped ? 
+              <select 
+                id={`shirt_${ticketId}`}
+                defaultValue={ticket.shirtSize}
+                onChange={setShirtSize}>
+                  <option value="XS">XS</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="XXL">XXL</option>
+                  <option value="XXXL">XXXL</option>
+                </select>
+              : (ticket.shirtSize ? ticket.shirtSize : 'n/a')
+            }
+          </td>
+          <td hidden={isComped}>
             <input
               id={`price_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
@@ -452,7 +615,7 @@ export default function AdminOrderEdit() {
               onChange={setPrice}
             />
           </td>
-          <td>
+          <td hidden={isComped}>
             <input
               id={`serviceFee_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
@@ -462,7 +625,7 @@ export default function AdminOrderEdit() {
               onChange={setServiceFee}
             />
           </td>
-          <td style={{ textAlign: 'center' }}>
+          <td style={{ textAlign: 'center' }} hidden={isComped}>
             <input
               id={`checkin__${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
@@ -471,7 +634,7 @@ export default function AdminOrderEdit() {
               onClick={setTicketCheckInStatus}
             />
           </td>
-          <td style={{ textAlign: 'center' }}>
+          <td style={{ textAlign: 'center' }} hidden={isComped}>
             <input
               id={`active__${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
@@ -480,7 +643,7 @@ export default function AdminOrderEdit() {
               onClick={setTicketActive}
             />
           </td>
-          <td>
+          <td hidden={isComped}>
             <Button
               title={`Refund ticket # ${ticket.ticketSocketOrderTicketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
@@ -603,12 +766,12 @@ export default function AdminOrderEdit() {
           />
         </Col>
       </Row>
-      <Row hidden={isComped}>
+      <Row>
         <Col>
           <h5>Tickets</h5>
         </Col>
       </Row>
-      <Row hidden={isComped}>
+      <Row>
         <Col>
           <table className="ticket-table">
             <thead>
@@ -616,11 +779,14 @@ export default function AdminOrderEdit() {
                 <th>Ticket Id</th>
                 <th>Attendee First Name</th>
                 <th>Attendee Last Name</th>
-                <th>Price</th>
-                <th>Service Fees</th>
-                <th>Checked-in</th>
-                <th>Active</th>
-                <th>&nbsp;</th>
+                <th hidden={!isComped}>Attendee Phone</th>
+                <th hidden={!isComped}>Attendee Email</th>
+                <th>Shirt Size</th>
+                <th hidden={isComped}>Price</th>
+                <th hidden={isComped}>Service Fees</th>
+                <th hidden={isComped}>Checked-in</th>
+                <th hidden={isComped}>Active</th>                
+                <th hidden={isComped}>&nbsp;</th>
               </tr>
             </thead>
             <tbody>{ticketRows}</tbody>
