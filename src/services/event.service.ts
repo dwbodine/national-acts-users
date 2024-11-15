@@ -551,7 +551,10 @@ export class EventService {
       });
   };
 
-  addCompedOrder = async (eventId: number, numTickets: number): Promise<ModifyOrderResponse> => {
+  addCompedOrder = async (
+    eventId: number,
+    numTickets: number,
+  ): Promise<ModifyOrderResponse> => {
     let url = `/admin/orders/comp`;
 
     let orderResponse: ModifyOrderResponse = {
@@ -562,7 +565,7 @@ export class EventService {
 
     const data = JSON.stringify({
       eventId: eventId,
-      numTickets: numTickets
+      numTickets: numTickets,
     });
 
     const headers = getAuthorizationHeader();

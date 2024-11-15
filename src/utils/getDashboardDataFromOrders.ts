@@ -231,7 +231,7 @@ export function getDashboardDataFromOrders(
           ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
           TotalRevenue: dailyOrderData.totalRevenueUsd,
           RevenueRefunded: dailyOrderData.revenueRefunded ?? 0,
-          ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0
+          ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
         };
 
         let salesData = orderMap.get(key);
@@ -267,8 +267,11 @@ export function getDashboardDataFromOrders(
           salesData.ServiceFees += dailyOrderData.serviceFeesRevenueUsd;
           salesData.Purchases += dailyOrderData.orders;
           salesData.TotalRevenue += dailyOrderData.totalRevenueUsd;
-          salesData.RevenueRefunded = (salesData.RevenueRefunded ?? 0) + (dailyOrderData.revenueRefunded ?? 0);
-          salesData.ServiceFeeRevenueRefunded = (salesData.ServiceFeeRevenueRefunded ?? 0) + (dailyOrderData.serviceFeeRevenueRefunded ?? 0);
+          salesData.RevenueRefunded =
+            (salesData.RevenueRefunded ?? 0) + (dailyOrderData.revenueRefunded ?? 0);
+          salesData.ServiceFeeRevenueRefunded =
+            (salesData.ServiceFeeRevenueRefunded ?? 0) +
+            (dailyOrderData.serviceFeeRevenueRefunded ?? 0);
           if (salesData.children) {
             if (salesData.children.find((x) => x.SellerName == esd.SellerName)) {
               let sellerSalesData = salesData.children.map((seller) => {
@@ -278,8 +281,11 @@ export function getDashboardDataFromOrders(
                   seller.ServiceFees += dailyOrderData.serviceFeesRevenueUsd;
                   seller.Purchases += 1;
                   seller.TotalRevenue += dailyOrderData.totalRevenueUsd;
-                  seller.RevenueRefunded = (seller.RevenueRefunded ?? 0) + (dailyOrderData.revenueRefunded ?? 0);
-                  seller.ServiceFeeRevenueRefunded = (seller.ServiceFeeRevenueRefunded ?? 0) + (dailyOrderData.serviceFeeRevenueRefunded ?? 0);
+                  seller.RevenueRefunded =
+                    (seller.RevenueRefunded ?? 0) + (dailyOrderData.revenueRefunded ?? 0);
+                  seller.ServiceFeeRevenueRefunded =
+                    (seller.ServiceFeeRevenueRefunded ?? 0) +
+                    (dailyOrderData.serviceFeeRevenueRefunded ?? 0);
                   if (seller.children) {
                     if (
                       seller.children.find(
@@ -298,8 +304,12 @@ export function getDashboardDataFromOrders(
                           evt.ServiceFees += dailyOrderData.serviceFeesRevenueUsd;
                           evt.Purchases += 1;
                           evt.TotalRevenue += dailyOrderData.totalRevenueUsd;
-                          evt.RevenueRefunded = (evt.RevenueRefunded ?? 0) + (dailyOrderData.revenueRefunded ?? 0);
-                          evt.ServiceFeeRevenueRefunded = (evt.ServiceFeeRevenueRefunded ?? 0) + (dailyOrderData.serviceFeeRevenueRefunded ?? 0);
+                          evt.RevenueRefunded =
+                            (evt.RevenueRefunded ?? 0) +
+                            (dailyOrderData.revenueRefunded ?? 0);
+                          evt.ServiceFeeRevenueRefunded =
+                            (evt.ServiceFeeRevenueRefunded ?? 0) +
+                            (dailyOrderData.serviceFeeRevenueRefunded ?? 0);
                         }
                         return evt;
                       });
