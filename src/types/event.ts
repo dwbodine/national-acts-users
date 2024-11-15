@@ -59,6 +59,7 @@ export interface Order {
   orderId: number;
   isActive: boolean;
   isDeleted: boolean;
+  isComped?: boolean;
   hasRefunds: boolean;
   hasChargebacks: boolean;
   numTicketsRefunded?: number;
@@ -123,6 +124,7 @@ export interface VipEvent {
   totalRevenue: number;
   totalServiceFees: number;
   totalTickets: number;
+  numTicketsComped?: number;
   totalCheckedIn: number;
   totalShirts: number;
   shirtSales?: ShirtSales[];

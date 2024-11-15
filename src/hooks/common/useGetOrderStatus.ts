@@ -6,7 +6,9 @@ export const useGetOrderStatus = () => {
     if (!order) {
       return '';
     }
-    if (order.isDeleted) {
+    if (order.isComped) {
+      statusSlug = 'comped';
+    } else if (order.isDeleted) {
       statusSlug = 'deleted';
     } else if (order.hasRefunds) {
       statusSlug = 'refunded';
@@ -26,6 +28,9 @@ export const useGetOrderStatus = () => {
     switch (slug) {
       case 'deleted':
         statusText = 'Deleted';
+        break;
+      case 'comped':
+        statusText = 'Comped';
         break;
       case 'inactive':
         statusText = 'Inactive';

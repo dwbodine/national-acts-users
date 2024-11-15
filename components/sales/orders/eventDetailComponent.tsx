@@ -259,12 +259,12 @@ export default function EventDetail(props: any) {
 
     if (orders && orders.length > 0) {
       visibleOrders = orders.filter((order) => {
-        return (
+        return (!order.isComped && (
           (currentReportSelection.showDeletedOrders && order.isDeleted) ||
           (currentReportSelection.showInactiveOrders &&
             !order.isActive &&
             !order.isDeleted) ||
-          (!order.isDeleted && order.isActive)
+          (!order.isDeleted && order.isActive))
         );
       });
     }
@@ -299,7 +299,7 @@ export default function EventDetail(props: any) {
 
     filteredOrders = filterOrders(currentReportSelection.currentDetailEvent.orders);
     filteredOrders?.forEach((order, i) => {
-      if (order.isActive && !order.isDeleted) {
+      if (order.isActive && !order.isDeleted && !order.isComped) {
         totalTickets += order.numTickets;
       }
       hasOrders = true;

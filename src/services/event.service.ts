@@ -544,7 +544,47 @@ export class EventService {
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
-          errorMessage = 'Unknown error while updating event';
+          errorMessage = 'Unknown error while updating order';
+        }
+        orderResponse.orderError = errorMessage;
+        return orderResponse;
+      });
+  };
+
+  addCompedOrder = async (eventId: number, numTickets: number): Promise<ModifyOrderResponse> => {
+    let url = `/admin/orders/comp`;
+
+    let orderResponse: ModifyOrderResponse = {
+      success: false,
+      orderError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify({
+      eventId: eventId,
+      numTickets: numTickets
+    });
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        orderResponse.success = res.status == 200;
+        return orderResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          orderResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while adding comp order';
         }
         orderResponse.orderError = errorMessage;
         return orderResponse;

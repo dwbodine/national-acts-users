@@ -495,6 +495,15 @@ input[type='number']:hover {
   text-align: center;
 }
 
+.comped-tickets {
+  min-width: unset !important;
+  width: 50px;
+}
+
+.comp-button {
+  margin-left: 15px;
+}
+
 /* MOBILE CSS */
 
 .mobile-event-card-container {
@@ -843,6 +852,11 @@ input[type='number']:hover {
 
 .refunded .rs-table-cell {
   color: blueviolet !important;
+  font-weight: bold;
+}
+
+.comped .rs-table-cell {
+  color: indigo !important;
   font-weight: bold;
 }
 

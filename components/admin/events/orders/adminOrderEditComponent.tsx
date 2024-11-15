@@ -42,8 +42,8 @@ export default function AdminOrderEdit() {
     }
     const ticketId = parseInt(e.currentTarget.id.replace('price_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
-    if (!isNaN(ticketId) && currentOrder.tickets) {
-      let orderRevenue = 0;
+    let orderRevenue = 0;
+    if (!isNaN(ticketId) && currentOrder.tickets && !currentOrder.isComped) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -54,6 +54,9 @@ export default function AdminOrderEdit() {
         }
         return ticket;
       });
+    }
+
+    if (currentOrder.revenue != orderRevenue) {
       currentOrder.revenue = orderRevenue;
       currentOrder.revenueUsd = orderRevenue * currentOrder.exchangeRate;
 
@@ -61,7 +64,6 @@ export default function AdminOrderEdit() {
 
       dispatch(setMustSaveOrder(true));
     }
-    return null;
   };
 
   const goBack = (dismissToast: boolean = true) => {
@@ -122,6 +124,18 @@ export default function AdminOrderEdit() {
     markDirty();
   };
 
+  const setIsComped = (isComped: boolean) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedOrder) {
+      return;
+    }
+    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    currentOrder.isComped = isComped;
+    currentOrder.isDeleted = false;
+    currentOrder.isActive = true;
+    dispatch(setAdminOrder(currentOrder));
+    markDirty();
+  };
+
   const setServiceFee = (e: any) => {
     const newServiceFee = parseFloat(e?.currentTarget?.value ?? 0);
     if (
@@ -134,8 +148,8 @@ export default function AdminOrderEdit() {
     }
     const ticketId = parseInt(e.currentTarget.id.replace('serviceFee_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
-    if (!isNaN(ticketId) && currentOrder.tickets) {
-      let orderServiceFees = 0;
+    let orderServiceFees = 0;
+    if (!isNaN(ticketId) && currentOrder.tickets && !currentOrder.isComped) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -146,6 +160,9 @@ export default function AdminOrderEdit() {
         }
         return ticket;
       });
+    }
+
+    if (currentOrder.serviceFees != orderServiceFees) {
       currentOrder.serviceFees = orderServiceFees;
       currentOrder.serviceFeesUsd = orderServiceFees * currentOrder.exchangeRate;
 
@@ -414,6 +431,7 @@ export default function AdminOrderEdit() {
   const currencyAbbrev = currentOrder?.currencyAbbrev;
   const isActive = currentOrder?.isActive ?? false;
   const isDeleted = currentOrder?.isDeleted ?? false;
+  const isComped = currentOrder?.isComped ?? false;
 
   let ticketRows: any[] = [];
   if (currentOrder && currentOrder.tickets && currentOrder.tickets.length > 0) {
@@ -568,23 +586,29 @@ export default function AdminOrderEdit() {
         <Col>
           <FormCheck
             checked={isActive && !isDeleted}
-            disabled={isDeleted}
+            disabled={isDeleted || isComped}
             onChange={(e) => setIsActive(e.target.checked)}
             label="Is Active?"
           />
           <FormCheck
             checked={isDeleted}
+            disabled={isComped}
             onChange={(e) => setIsDeleted(e.target.checked)}
             label="Is Deleted?"
           />
+          <FormCheck
+            checked={isComped}
+            onChange={(e) => setIsComped(e.target.checked)}
+            label="Is Comped?"
+          />
         </Col>
       </Row>
-      <Row>
+      <Row hidden={isComped}>
         <Col>
           <h5>Tickets</h5>
         </Col>
       </Row>
-      <Row>
+      <Row hidden={isComped}>
         <Col>
           <table className="ticket-table">
             <thead>
@@ -603,12 +627,12 @@ export default function AdminOrderEdit() {
           </table>
         </Col>
       </Row>
-      <Row className="refund-section-header" hidden={refundsDisabled}>
+      <Row className="refund-section-header" hidden={refundsDisabled || isComped}>
         <Col>
           <h5>Process Refunds</h5>
         </Col>
       </Row>
-      <Row className="refund-section" hidden={refundsDisabled}>
+      <Row className="refund-section" hidden={refundsDisabled || isComped}>
         <Col>
           <Button className="form-control-float" onClick={confirmDoRefund}>
             Refund All Tickets

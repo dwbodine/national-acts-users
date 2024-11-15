@@ -9,7 +9,7 @@ import { useGetLocation } from '@/hooks/common/useGetLocation';
 import moment from 'moment';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { useRefundEvent } from '@/hooks/admin/useRefundEvent';
-import { ModifyEventResponse, VipEvent } from '@/types/event';
+import { ModifyEventResponse, ModifyOrderResponse, VipEvent } from '@/types/event';
 import {
   setAdminEvent,
   setReloadEvents,
@@ -18,6 +18,7 @@ import {
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { DatePicker } from 'rsuite';
+import { useAddCompedOrder } from '@/hooks/admin/useAddCompOrder';
 
 export default function AdminEventEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -27,7 +28,9 @@ export default function AdminEventEdit() {
   const { updateEvent } = useUpdateEvent();
   const { getEventStatusText } = useGetEventStatus();
   const [markCancelled, setMarkCancelled] = useState<boolean>(true);
+  const [numCompedTickets, setNumCompedTickets] = useState<number>(0);
   const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
+  const { addCompedOrder } = useAddCompedOrder();
 
   useEffect(() => {
     if (currentAdminSelection.selectedEvent == undefined) {
@@ -243,6 +246,28 @@ export default function AdminEventEdit() {
           goBack(false);
         } else {
           toast.error('Refund failed');
+        }
+      },
+    );
+  };
+
+  const compOrder = () => {
+    if (!currentAdminSelection.selectedEvent || numCompedTickets == 0) {
+      return false;
+    }
+    dispatch(setIsLoading(true));
+    const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
+    addCompedOrder(eventId, numCompedTickets).then(
+      (response: ModifyOrderResponse) => {
+        const success = response.success;
+        dispatch(setIsLoading(false));
+        if (success) {
+          toast.success('Comp order created');
+          dispatch(setReloadEvents(true));
+          dispatch(setAdminEvent(undefined));
+          goBack(false);
+        } else {
+          toast.error('Comp order creation failed');
         }
       },
     );
@@ -485,6 +510,19 @@ export default function AdminEventEdit() {
             onChange={(e) => setRefundServiceFees(e.target.checked)}
             label="Refund service fees?"
           />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+        Add comp order with 
+        <input
+            value={numCompedTickets}
+            onChange={(e) => setNumCompedTickets(parseInt(e.target.value))}
+            type="number"
+            className="comped-tickets"
+          />
+        tickets
+        <Button className="comp-button" onClick={compOrder}>Comp</Button>
         </Col>
       </Row>
       <Row

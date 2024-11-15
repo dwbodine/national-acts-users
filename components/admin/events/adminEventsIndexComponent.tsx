@@ -191,6 +191,10 @@ export default function AdminEventsIndex() {
               <HeaderCell>Tickets sold</HeaderCell>
               <Cell>{(rowData: VipEvent) => rowData.totalTickets}</Cell>
             </Column>
+            <Column flexGrow={1}>
+              <HeaderCell>Tickets comped</HeaderCell>
+              <Cell>{(rowData: VipEvent) => rowData.numTicketsComped}</Cell>
+            </Column>
             <Column flexGrow={2}>
               <HeaderCell>Event Status</HeaderCell>
               <Cell>
@@ -219,7 +223,7 @@ export default function AdminEventsIndex() {
               <HeaderCell>&nbsp;</HeaderCell>
               <Cell>
                 {(rowData: VipEvent) =>
-                  rowData.ticketSocketEventId && rowData.totalTickets > 0 ? (
+                  rowData.ticketSocketEventId && rowData.orders && rowData.orders.length > 0 ? (
                     <a
                       href="#"
                       id={`${rowData.ticketSocketEventId}_orders`}

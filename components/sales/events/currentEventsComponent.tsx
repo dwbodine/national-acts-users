@@ -261,7 +261,7 @@ export default function CurrentEvents() {
         totalRevenue += evt.totalRevenue - (evt.revenueRefunded ?? 0);
         ticketsRefunded += evt.numTicketsRefunded ?? 0;
         
-        totalOrders += evt.orders?.length ?? 0;
+        totalOrders += evt.orders?.filter(x => !x.isComped)?.length ?? 0;
         totalShirts += evt.totalShirts;
         serviceFeesRefunded += evt.serviceFeeRevenueRefunded ?? 0;
         totalServiceFees += evt.totalServiceFees - (evt.serviceFeeRevenueRefunded ?? 0);        
