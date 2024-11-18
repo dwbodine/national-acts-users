@@ -34,7 +34,6 @@ export default function EventSalesBar() {
     let reportSelection = { ...currentReportSelection };
     reportSelection.start = selectedStart;
     reportSelection.end = selectedEnd;
-    reportSelection.retainDateSelection = true;
     dispatch(setIsLoading(true));
     dispatch(setDateRange(reportSelection));
     dispatch(setReloadEvents(true));
