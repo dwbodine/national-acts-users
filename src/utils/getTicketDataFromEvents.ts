@@ -47,9 +47,15 @@ export function getTicketDataFromEvents(events: VipEvent[]): ITicketData {
               };
               map.set(key, [data]);
             } else {
+              let ticketTypeName = ticket.ticketType;
+              const ttype = ticketTypes.find(
+                (x) => x.ticketTypeId == ticket.ticketTypeId,
+              );
+              if (ttype) {
+                ticketTypeName = ttype.ticketTypeName;
+              }
               const indexToUpdate = collection.findIndex(
-                (item) =>
-                  item.TicketType.toLowerCase() === ticket.ticketType.toLowerCase(),
+                (item) => item.TicketType.toLowerCase() === ticketTypeName.toLowerCase(),
               );
               if (indexToUpdate >= 0) {
                 let item = collection[indexToUpdate];
@@ -57,7 +63,7 @@ export function getTicketDataFromEvents(events: VipEvent[]): ITicketData {
                 collection[indexToUpdate] = item;
               } else {
                 collection.push({
-                  TicketType: ticket.ticketType,
+                  TicketType: ticketTypeName,
                   Number: 1,
                 });
               }

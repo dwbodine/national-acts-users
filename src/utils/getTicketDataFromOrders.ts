@@ -34,7 +34,9 @@ export function getTicketDataFromOrders(
       if (ticket.isActive) {
         if (
           !eventHasTicketTypes &&
-          !ticketTypes.find((x) => x.ticketTypeName == ticket.ticketType)
+          !ticketTypes.find(
+            (x) => x.ticketTypeName.toLowerCase() == ticket.ticketType.toLowerCase(),
+          )
         ) {
           ticketTypes.push({
             eventId: evt.ticketSocketEventId,
@@ -58,7 +60,7 @@ export function getTicketDataFromOrders(
             ticketTypeName = ttype.ticketTypeName;
           }
           const indexToUpdate = collection.findIndex(
-            (item) => item.TicketType === ticketTypeName,
+            (item) => item.TicketType.toLowerCase() === ticketTypeName.toLowerCase(),
           );
           if (indexToUpdate >= 0) {
             let item = collection[indexToUpdate];
