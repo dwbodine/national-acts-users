@@ -57,33 +57,35 @@ export default function AllEvents() {
       }
     }
 
-      if (currentReportSelection.reloadEvents) {
-        dispatch(setReloadEvents(false));
-        getAllEvents(currentReportSelection?.start ?? 0, currentReportSelection?.end ?? 0).then((response) => {
-          if (!response.eventError && response.events) {
-            if (response.events.length > 0) {
-              const start = moment(response.events[0].eventDate).unix();
-              const end = moment(
-                response.events[response.events.length - 1].eventDate,
-              ).unix();
-              const selection: EventReportSelection = {
-                ...currentReportSelection,
-                start: start,
-                end: end,
-              };
+    if (currentReportSelection.reloadEvents) {
+      dispatch(setReloadEvents(false));
+      getAllEvents(currentReportSelection?.start ?? 0, currentReportSelection?.end ?? 0).then((response) => {
+        if (!response.eventError && response.events) {
+          if (response.events.length > 0) {
+            const start = moment(response.events[0].eventDate).unix();
+            const end = moment(
+              response.events[response.events.length - 1].eventDate,
+            ).unix();
+            const selection: EventReportSelection = {
+              ...currentReportSelection,
+              start: start,
+              end: end,
+            };
 
-              dispatch(setDateRange(selection));
-            }
-            dispatch(setEvents(response.events));
-            dispatch(setIsLoading(false));
-          } else if (response.statusCode == 401 || response.statusCode == 422) {
-            router.push('/logout/');
-          } else {
-            dispatch(setEvents([]));
-            dispatch(setIsLoading(false));
+            dispatch(setDateRange(selection));
           }
-        });
-      }
+          dispatch(setEvents(response.events));
+          dispatch(setIsLoading(false));
+        } else if (response.statusCode == 401 || response.statusCode == 422) {
+          router.push('/logout/');
+        } else {
+          dispatch(setEvents([]));
+          dispatch(setIsLoading(false));
+        }
+      });
+    } else if (currentReportSelection.currentEvents) {
+      dispatch(setIsLoading(false));
+    }
     return () => {
       debouncedResults.cancel();
     };
