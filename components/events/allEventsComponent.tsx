@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../src/lib/store';
-import { setEvents, setDateRange, setReloadEvents } from '@/lib/adminEventsSelectionSlice';
+import { setAdminEvents, setAdminDateRange, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { ITicketData, VipEvent } from '@/types/event';
 import { useEffect, useMemo, useState } from 'react';
 import moment from 'moment';
@@ -8,7 +8,6 @@ import { EventReportSelection, User } from '@/types/user';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
 import EventRow from '../common/eventRowComponent';
 import router from 'next/router';
@@ -22,9 +21,8 @@ import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
 
 export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
+  const isLoading = globalSelection.isLoading;
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
-  const { getUser } = useCurrentUser();
-  const [user, setUser] = useState<User | undefined>(undefined);
   const { getAllEvents } = useGetAllEvents();
   const dispatch = useDispatch();
 
@@ -50,54 +48,46 @@ export default function AllEvents() {
   };
 
   useEffect(() => {
-    if (user == undefined) {
-      const currentUser = getUser();
-      if (currentUser != undefined) {
-        setUser(currentUser);
-      }
-    }
+    const timeoutId = setTimeout(() => {
+      if (currentReportSelection.reloadEvents) {
+        dispatch(setReloadAdminEvents(false));
+        dispatch(setIsLoading(true));
+        getAllEvents(currentReportSelection?.start ?? 0, currentReportSelection?.end ?? 0).then((response) => {
+          if (!response.eventError && response.events) {
+            if (response.events.length > 0) {
+              const start = moment(response.events[0].eventDate).unix();
+              const end = moment(
+                response.events[response.events.length - 1].eventDate,
+              ).unix();
+              const selection: EventReportSelection = {
+                ...currentReportSelection,
+                start: start,
+                end: end,
+              };
 
-    if (currentReportSelection.reloadEvents) {
-      dispatch(setReloadEvents(false));
-      getAllEvents(currentReportSelection?.start ?? 0, currentReportSelection?.end ?? 0).then((response) => {
-        if (!response.eventError && response.events) {
-          if (response.events.length > 0) {
-            const start = moment(response.events[0].eventDate).unix();
-            const end = moment(
-              response.events[response.events.length - 1].eventDate,
-            ).unix();
-            const selection: EventReportSelection = {
-              ...currentReportSelection,
-              start: start,
-              end: end,
-            };
-
-            dispatch(setDateRange(selection));
+              dispatch(setAdminDateRange(selection));
+            }
+            dispatch(setAdminEvents(response.events));
+          } else if (response.statusCode == 401 || response.statusCode == 422) {
+            router.push('/logout/');
+          } else {
+            dispatch(setAdminEvents([]));
           }
-          dispatch(setEvents(response.events));
           dispatch(setIsLoading(false));
-        } else if (response.statusCode == 401 || response.statusCode == 422) {
-          router.push('/logout/');
-        } else {
-          dispatch(setEvents([]));
-          dispatch(setIsLoading(false));
-        }
-      });
-    } else if (currentReportSelection.currentEvents) {
-      dispatch(setIsLoading(false));
-    }
+        });
+      }
+    }, 300);    
     return () => {
       debouncedResults.cancel();
+      clearTimeout(timeoutId);
     };
   }, [
     currentReportSelection,
     dispatch,
     getAllEvents,
-    user,
     debouncedResults,
     windowSizeJson,
-    globalSelection.isLoading,
-    getUser,
+    isLoading
   ]);
 
   const filterEvents = (events: VipEvent[]) => {
@@ -197,14 +187,14 @@ export default function AllEvents() {
 
   return (
     <>
-      <Container fluid hidden={!globalSelection.isLoading || !user || user.isAdmin}>
+      <Container fluid hidden={!isLoading}>
         <Row>
           <Col className="spinner-container">
             <CirclesWithBar height="100" width="100" color="#d12610" />
           </Col>
         </Row>
       </Container>
-      <div hidden={globalSelection.isLoading}>
+      <div hidden={isLoading}>
         <input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

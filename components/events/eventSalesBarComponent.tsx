@@ -7,9 +7,9 @@ import ResetButton from '../common/resetButtonComponent';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import PrintButton from '../common/printButtonComponent';
 import {
-  resetSelection,
-  setDateRange,
-  setReloadEvents,
+  resetAdminSelection,
+  setAdminDateRange,
+  setReloadAdminEvents,
 } from '@/lib/adminEventsSelectionSlice';
 import { useEffect } from 'react';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
@@ -35,13 +35,13 @@ export default function EventSalesBar() {
     reportSelection.start = selectedStart;
     reportSelection.end = selectedEnd;
     dispatch(setIsLoading(true));
-    dispatch(setDateRange(reportSelection));
-    dispatch(setReloadEvents(true));
+    dispatch(setAdminDateRange(reportSelection));
+    dispatch(setReloadAdminEvents(true));
   };
 
   const onResetClick = () => {
     dispatch(setIsLoading(true));
-    dispatch(resetSelection());
+    dispatch(resetAdminSelection());
   };
 
   useEffect(() => {

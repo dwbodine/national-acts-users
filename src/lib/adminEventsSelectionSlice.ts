@@ -18,7 +18,7 @@ export const adminEventsSelectionSlice = createSlice({
   name: 'adminEventReportSelection',
   initialState,
   reducers: {
-    setDateRange: (state, action: PayloadAction<EventReportSelection>) => {
+    setAdminDateRange: (state, action: PayloadAction<EventReportSelection>) => {
       state.start = action.payload.start;
       state.end = action.payload.end;
       return state;
@@ -39,7 +39,7 @@ export const adminEventsSelectionSlice = createSlice({
       state.reloadEvents = true;
       return state;
     },
-    setEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
+    setAdminEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
       if (action.payload) {
         state.currentEvents = action.payload;
         state.reloadEvents = false;
@@ -50,11 +50,11 @@ export const adminEventsSelectionSlice = createSlice({
 
       return state;
     },
-    setReloadEvents: (state, action: PayloadAction<boolean>) => {
+    setReloadAdminEvents: (state, action: PayloadAction<boolean>) => {
       state.reloadEvents = action.payload;
       return state;
     },
-    resetSelection: (state) => {
+    resetAdminSelection: (state) => {
       state.start = moment().unix();
       state.end = moment().unix() + 30 * 24 * 60 * 60;
       state.showDeleted = false;
@@ -78,12 +78,12 @@ export const adminEventsSelectionSlice = createSlice({
 });
 
 export const {
-  setDateRange,
-  setReloadEvents,
+  setAdminDateRange,
+  setReloadAdminEvents,
   setShowInactive,
   setShowDeleted,
-  resetSelection,
-  setEvents,
+  resetAdminSelection,
+  setAdminEvents,
   resetAllAdminEvents,
   setShowHidden,
 } = adminEventsSelectionSlice.actions;

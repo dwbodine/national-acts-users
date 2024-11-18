@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setReloadEvents } from '@/lib/reportSelectionSlice';
+import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 
 export default function AdminPage(props: any) {
   const { getUser } = useCurrentUser();
@@ -70,6 +71,7 @@ export default function AdminPage(props: any) {
         router.push('/users');
         break;
       case ActivePageKey.Events:
+        dispatch(setReloadAdminEvents(true));
         router.push('/events/');
         break;
       default:

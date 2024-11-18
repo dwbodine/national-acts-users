@@ -44,7 +44,6 @@ export default function CurrentEvents() {
   const [viewRevenueControls, setViewRevenueControls] = useState(false);
   const [viewRevenueData, setViewRevenueData] = useState(false);
   const [viewServiceFees, setViewServiceFees] = useState(false);
-  const [changeEventStatus, setChangeEventStatus] = useState(false);
   const [canCheckInTickets, setCanCheckInTickets] = useState(false);
   const [alwaysShowRevenue, setAlwaysShowRevenue] = useState(false);
 
@@ -98,7 +97,6 @@ export default function CurrentEvents() {
       setViewRevenueControls(vRevenueControls);
       setViewRevenueData(vRevenueData);
       setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
-      setChangeEventStatus(userHasPermission(user, EnumPermission.ChangeEventStatus));
       setCanCheckInTickets(
         !user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers),
       );
