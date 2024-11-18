@@ -6,7 +6,7 @@ import moment from 'moment';
 
 const initialState: EventReportSelection = {
   start: moment().unix(),
-  end: moment().unix() + (30 * 24 * 60 * 60),
+  end: moment().unix() + 30 * 24 * 60 * 60,
   showDeleted: false,
   showInactive: false,
   reloadEvents: true,
@@ -56,7 +56,7 @@ export const adminEventsSelectionSlice = createSlice({
     },
     resetSelection: (state) => {
       state.start = moment().unix();
-      state.end = moment().unix() + (30 * 24 * 60 * 60);
+      state.end = moment().unix() + 30 * 24 * 60 * 60;
       state.showDeleted = false;
       state.showInactive = false;
       state.reloadEvents = true;
@@ -66,7 +66,7 @@ export const adminEventsSelectionSlice = createSlice({
     },
     resetAllAdminEvents: (state) => {
       state.start = moment().unix();
-      state.end = moment().unix() + (30 * 24 * 60 * 60);
+      state.end = moment().unix() + 30 * 24 * 60 * 60;
       state.showDeleted = false;
       state.showInactive = false;
       state.reloadEvents = true;
