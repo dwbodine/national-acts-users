@@ -5,6 +5,7 @@ import adminSelectionReducer from './adminSelectionSlice';
 import adminReportsSelectionReducer from './adminReportsSelectionSlice';
 import userActivitySelectionReducer from './userActivitySelectionSlice';
 import globalSelectionReducer from './globalSelectionSlice';
+import eventAdminSelectionReducer from './adminEventsSelectionSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     adminSelection: adminSelectionReducer,
     adminReportSelection: adminReportsSelectionReducer,
     userActivitySelection: userActivitySelectionReducer,
+    eventAdminSelection: eventAdminSelectionReducer,
   },
 });
 

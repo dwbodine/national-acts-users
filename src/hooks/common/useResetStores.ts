@@ -5,6 +5,7 @@ import { resetDashboard } from '@/lib/dashboardSelectionSlice';
 import { resetAdminReports } from '@/lib/adminReportsSelectionSlice';
 import { resetUserActivity } from '@/lib/userActivitySelectionSlice';
 import { resetGlobalSettings } from '@/lib/globalSelectionSlice';
+import { resetAllAdminEvents } from '@/lib/adminEventsSelectionSlice';
 
 export const useResetStores = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ export const useResetStores = () => {
     dispatch(resetAdminReports());
     dispatch(resetUserActivity());
     dispatch(resetGlobalSettings());
+    dispatch(resetAllAdminEvents());
   };
 
   return { resetStores };

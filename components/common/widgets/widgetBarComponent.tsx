@@ -16,9 +16,10 @@ export default function WidgetBar(props: any) {
   const hideServiceFees = props.HideServiceFees as boolean;
   const ticketsRefunded: number = props.TicketsRefunded as number;
   const totalServiceFees: number = props.TotalServiceFees as number;
+  const hideTicketBreakdown: boolean = props.HideTicketBreakDown as boolean;
 
-  const hideTickets = totalTickets == 0;
-  const hideShirts = totalShirts == 0;
+  const hideTickets = !ticketData || totalTickets == 0;
+  const hideShirts = !shirtData || totalShirts == 0;
 
   return (
     <Row className="no-print widget-row" hidden={!totalShows}>
@@ -33,6 +34,7 @@ export default function WidgetBar(props: any) {
             TicketData={ticketData}
             TotalTickets={totalTickets}
             TicketsRefunded={ticketsRefunded}
+            HideTicketBreakDown={hideTicketBreakdown}
           />
         </div>
       </Col>

@@ -2,13 +2,13 @@ import { ActivePageKey } from '@/constants';
 import AdminPage from '../../components/common/adminPageComponent';
 import { UserActivityType } from '@/types/user';
 import CurrentEvents from '../../components/sales/events/currentEventsComponent';
-import AdminBar from '../../components/sales/events/salesBarComponent';
+import SalesBar from '../../components/sales/events/salesBarComponent';
 
 export default function AdminHome() {
   const title = 'Client Portal - Sales Overview';
   const salesComponent = (
     <>
-      <AdminBar />
+      <SalesBar />
       <CurrentEvents />
     </>
   );

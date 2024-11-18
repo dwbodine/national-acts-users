@@ -229,7 +229,7 @@ export default function EventDetail(props: any) {
               }              
 
               dispatch(setCurrentDetailEvent(newEvent));
-              if (currentReportSelection.currentEvents) {
+              if (currentReportSelection.currentEvents != undefined) {
                 document.title = newEvent.title;
                 currentReportSelection.currentEvents.map((evt) => {
                   return evt.ticketSocketEventId == newEvent.ticketSocketEventId

@@ -1,58 +1,40 @@
 import { useSelector, useDispatch } from 'react-redux';
-import type { RootState } from '../../../src/lib/store';
-import { useGetEvents } from '@/hooks/event/useGetEvents';
-import { setEvents, setDateRange, setReloadEvents } from '@/lib/reportSelectionSlice';
-import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
+import type { RootState } from '../../src/lib/store';
+import { setEvents, setDateRange, setReloadEvents } from '@/lib/adminEventsSelectionSlice';
+import { ITicketData, VipEvent } from '@/types/event';
 import { useEffect, useMemo, useState } from 'react';
 import moment from 'moment';
-import { EnumPermission, User, UserReportSelection } from '@/types/user';
+import { EventReportSelection, User } from '@/types/user';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CirclesWithBar } from 'react-loader-spinner';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
-import { getShirtDataFromEvents } from '@/utils/getShirtData';
-import EventRow from '../../common/eventRowComponent';
+import EventRow from '../common/eventRowComponent';
 import router from 'next/router';
-import WidgetBar from '../../common/widgets/widgetBarComponent';
-import TicketSalesChart from '../../common/ticketSalesChartComponent';
-import { getPurchaseDataFromEvents } from '@/utils/getPurchaseData';
+import WidgetBar from '../common/widgets/widgetBarComponent';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
-import EventMobileRow from '../../common/eventMobileRowComponent';
-import { useHasPermission } from '@/hooks/user/useHasPermission';
+import EventMobileRow from '../common/eventMobileRowComponent';
 import debouce from 'lodash.debounce';
-import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { Container } from 'react-bootstrap';
+import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
 
-export default function CurrentEvents() {
+export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
-  const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const { getUser } = useCurrentUser();
   const [user, setUser] = useState<User | undefined>(undefined);
-  const { userHasPermission } = useHasPermission();
-  const { getEvents } = useGetEvents();
+  const { getAllEvents } = useGetAllEvents();
   const dispatch = useDispatch();
 
-  const [chartsHidden, setChartsHidden] = useState(true);
-  const [hideRevItem, setHideRevItem] = useState(true);
-  const [hideServiceFees, setHideServiceFees] = useState(true);
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
-  const hideTicketChart = windowSize.width < FULL_PAGE_CHART_BREAKPOINT;
   const [searchTerm, setSearchTerm] = useState('');
-  const [viewRevenueControls, setViewRevenueControls] = useState(false);
-  const [viewRevenueData, setViewRevenueData] = useState(false);
-  const [viewServiceFees, setViewServiceFees] = useState(false);
-  const [changeEventStatus, setChangeEventStatus] = useState(false);
-  const [canCheckInTickets, setCanCheckInTickets] = useState(false);
-  const [alwaysShowRevenue, setAlwaysShowRevenue] = useState(false);
 
   let ticketData: ITicketData | undefined = undefined;
-  let shirtData: IShirtData | undefined = undefined;
   let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;
   let visibleEvents: VipEvent[] = [];
-  let ticketSalesData: ITicketSalesData[] | undefined = undefined;
   let searchBarHidden = true;
 
   const debouncedResults = useMemo(() => {
@@ -67,75 +49,28 @@ export default function CurrentEvents() {
     return getTicketDataFromEvents(events);
   };
 
-  const getTicketSalesData = (events: VipEvent[]): ITicketSalesData[] | undefined => {
-    if (!events || events.length == 0) {
-      return undefined;
-    }
-
-    return getPurchaseDataFromEvents(events);
-  };
-
-  const getShirtData = (events: VipEvent[]): IShirtData | undefined => {
-    if (!events || events.length == 0) {
-      return undefined;
-    }
-
-    return getShirtDataFromEvents(events);
-  };
-
   useEffect(() => {
     if (user == undefined) {
       const currentUser = getUser();
       if (currentUser != undefined) {
         setUser(currentUser);
       }
-    } else {
-      const vRevenueControls = userHasPermission(
-        user,
-        EnumPermission.ViewRevenueControls,
-      );
-      const vRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
-      setViewRevenueControls(vRevenueControls);
-      setViewRevenueData(vRevenueData);
-      setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
-      setChangeEventStatus(userHasPermission(user, EnumPermission.ChangeEventStatus));
-      setCanCheckInTickets(
-        !user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers),
-      );
-      setAlwaysShowRevenue(vRevenueData && !vRevenueControls);
     }
 
-    if (currentReportSelection.seller.sellerId > 0) {
-      if (alwaysShowRevenue) {
-        setHideRevItem(false);
-      } else if (!viewRevenueData) {
-        setHideRevItem(true);
-      } else {
-        setHideRevItem(currentReportSelection.hideRevenue ?? true);
-      }
-
-      if (viewServiceFees) {
-        setHideServiceFees(currentReportSelection.hideServiceFees ?? true);
-      } else {
-        setHideServiceFees(true);
-      }
-
       if (currentReportSelection.reloadEvents) {
-        setChartsHidden(true);
         dispatch(setReloadEvents(false));
-        getEvents(currentReportSelection).then((response) => {
+        getAllEvents(currentReportSelection?.start ?? 0, currentReportSelection?.end ?? 0).then((response) => {
           if (!response.eventError && response.events) {
             if (response.events.length > 0) {
               const start = moment(response.events[0].eventDate).unix();
               const end = moment(
                 response.events[response.events.length - 1].eventDate,
               ).unix();
-              const selection: UserReportSelection = {
+              const selection: EventReportSelection = {
                 ...currentReportSelection,
                 start: start,
                 end: end,
               };
-              setChartsHidden(false);
 
               dispatch(setDateRange(selection));
             }
@@ -149,26 +84,18 @@ export default function CurrentEvents() {
           }
         });
       }
-    } else {
-      dispatch(setIsLoading(false));
-    }
     return () => {
       debouncedResults.cancel();
     };
   }, [
     currentReportSelection,
     dispatch,
-    getEvents,
-    alwaysShowRevenue,
-    viewRevenueData,
-    viewServiceFees,
+    getAllEvents,
     user,
     debouncedResults,
     windowSizeJson,
     globalSelection.isLoading,
     getUser,
-    userHasPermission,
-    viewRevenueControls,
   ]);
 
   const filterEvents = (events: VipEvent[]) => {
@@ -211,7 +138,6 @@ export default function CurrentEvents() {
   let totalEvents = 0;
   let totalTickets = 0;
   let totalRevenue = 0.0;
-  let totalShirts = 0;
   let totalOrders = 0;
   let ticketsRefunded = 0;
   let revenueRefunded = 0;
@@ -226,8 +152,6 @@ export default function CurrentEvents() {
 
     totalEvents = filteredEvents.length;
     ticketData = getTicketData(filteredEvents);
-    shirtData = getShirtData(filteredEvents);
-    ticketSalesData = getTicketSalesData(filteredEvents);
 
     let i = 0;
     for (const evt of filteredEvents) {
@@ -237,9 +161,10 @@ export default function CurrentEvents() {
           <EventMobileRow
             key={key}
             VipEvent={evt}
-            HideRevenue={hideRevItem}
-            HideServiceFees={hideServiceFees}
-            CanCheckInTickets={canCheckInTickets}
+            HideRevenue={false}
+            HideServiceFees={false}
+            CanCheckInTickets={false}
+            ShowNotes={true}
           />,
         );
       } else {
@@ -247,8 +172,9 @@ export default function CurrentEvents() {
           <EventRow
             key={key}
             VipEvent={evt}
-            HideRevenue={hideRevItem}
-            HideServiceFees={hideServiceFees}
+            HideRevenue={false}
+            HideServiceFees={false}
+            ShowNotes={true}
           />,
         );
       }
@@ -260,7 +186,6 @@ export default function CurrentEvents() {
         ticketsRefunded += evt.numTicketsRefunded ?? 0;
         
         totalOrders += evt.orders?.filter(x => !x.isComped)?.length ?? 0;
-        totalShirts += evt.totalShirts;
         serviceFeesRefunded += evt.serviceFeeRevenueRefunded ?? 0;
         totalServiceFees += evt.totalServiceFees - (evt.serviceFeeRevenueRefunded ?? 0);        
       }
@@ -289,21 +214,14 @@ export default function CurrentEvents() {
           TotalShows={totalEvents}
           TicketData={ticketData}
           TotalTickets={totalTickets}
-          ShirtData={shirtData}
-          TotalShirts={totalShirts}
           TotalRevenue={totalRevenue}
-          HideRevenue={hideRevItem}
+          HideRevenue={false}
           TicketsRefunded={ticketsRefunded}
           TotalServiceFees={totalServiceFees}
-          HideServiceFees={hideServiceFees}
+          HideServiceFees={false}
           RevenueRefunded={revenueRefunded}
           ServiceFeesRefunded={serviceFeesRefunded}
-        />
-        <TicketSalesChart
-          TicketSalesData={ticketSalesData}
-          ChartsHidden={chartsHidden}
-          HideRevenue={hideRevItem}
-          HideMobile={hideTicketChart}
+          HideTicketBreakDown={true}
         />
         <Row className="results-container">
           <Col className="results-col">
@@ -316,10 +234,11 @@ export default function CurrentEvents() {
                     <th>Venue</th>
                     <th>Location</th>
                     <th>Tickets Sold</th>
-                    <th hidden={hideRevItem}>Revenue (USD)</th>
-                    <th className="no-print" hidden={hideServiceFees}>
+                    <th>Revenue (USD)</th>
+                    <th className="no-print">
                       Service Fees
                     </th>
+                    <th>Notes</th>
                   </tr>
                 </thead>
                 <tbody>{rows}</tbody>
@@ -327,20 +246,21 @@ export default function CurrentEvents() {
                   <tr>
                     <td colSpan={4}>Total</td>
                     <td className="pull-right">{totalTickets}</td>
-                    <td className="pull-right" hidden={hideRevItem}>
+                    <td className="pull-right">
                       {totalRevenue.toFixed(2)}
                     </td>
-                    <td className="pull-right" hidden={hideServiceFees}>
+                    <td className="pull-right">
                       {totalServiceFees.toFixed(2)}
                     </td>
+                    <td></td>
                   </tr>
                 </tfoot>
               </table>
             ) : (
               ''
             )}
-            {(!visibleEvents || visibleEvents.length == 0) &&
-            currentReportSelection.seller.sellerId > 0 ? (
+            {(!visibleEvents || visibleEvents.length == 0)
+             ? (
               <Col className="no-events">No events found</Col>
             ) : (
               ''

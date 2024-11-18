@@ -7,7 +7,7 @@ import CheckAuth from './checkAuthComponent';
 import NavBar from './navBarComponent';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
-import { User, UserActivityType } from '@/types/user';
+import { UserActivityType } from '@/types/user';
 import { CirclesWithBar } from 'react-loader-spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
@@ -69,6 +69,9 @@ export default function AdminPage(props: any) {
       case ActivePageKey.Users:
         router.push('/users');
         break;
+      case ActivePageKey.Events:
+        router.push('/events/');
+        break;
       default:
         break;
     }
@@ -101,6 +104,26 @@ export default function AdminPage(props: any) {
                   hidden={isLoading || !props.dashboardComponent}
                 >
                   {props.dashboardComponent}
+                </Container>
+              </>
+            )}
+          </Tabs.Tab>
+          <Tabs.Tab eventKey={ActivePageKey.Events.toString()} title="EVENTS">
+            {activeKey == ActivePageKey.Events && (
+              <>
+                <Container fluid hidden={!isLoading || !props.eventsComponent}>
+                  <Row>
+                    <Col className="spinner-container">
+                      <CirclesWithBar height="100" width="100" color="#d12610" />
+                    </Col>
+                  </Row>
+                </Container>
+                <Container
+                  className="tab-container"
+                  fluid
+                  hidden={isLoading || !props.eventsComponent}
+                >
+                  {props.eventsComponent}
                 </Container>
               </>
             )}

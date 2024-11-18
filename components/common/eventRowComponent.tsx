@@ -7,6 +7,7 @@ export default function EventRow(props: any) {
   const vipEvent = props.VipEvent as VipEvent;
   const hideRevItem = props.HideRevenue as boolean;
   const hideServiceFees = props.HideServiceFees as boolean;
+  const showNotes = props.ShowNotes as boolean;
   const { getLocation } = useGetLocation();
   const id = `event_${vipEvent.ticketSocketEventId}`;
 
@@ -34,9 +35,14 @@ export default function EventRow(props: any) {
     <tr className={statusClass} id={id}>
       <td>{eventDate}</td>
       <td>
-        <a href={url} target="_blank">
-          {vipEvent.title}
-        </a>
+        {vipEvent.orders?.length ?? 0 > 0 ?
+          <a href={url} target="_blank">
+            {vipEvent.title}
+          </a>
+        :
+        vipEvent.title
+        }
+        
       </td>
       <td>{venueName}</td>
       <td>{location}</td>
@@ -46,6 +52,9 @@ export default function EventRow(props: any) {
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees}>
         {serviceFees}
+      </td>
+      <td hidden={!showNotes}>
+        Notes
       </td>
     </tr>
   );

@@ -88,6 +88,16 @@ export type UserReportSelection = {
   isForAdmin?: boolean;
 };
 
+export type EventReportSelection = {
+  start?: number;
+  end?: number;
+  showInactive?: boolean;
+  showDeleted?: boolean;
+  showHidden?: boolean;
+  reloadEvents?: boolean;
+  currentEvents?: VipEvent[];
+};
+
 export interface ITopSeller {
   sellerId: number;
   sellerName: string;
@@ -259,6 +269,7 @@ export enum UserActivityType {
   ResetButtonClicked = 24,
   CustomerExportReport = 25,
   UserActivityReport = 26,
+  AdminEventsOverview = 27,
 }
 
 export type UserActivity = {

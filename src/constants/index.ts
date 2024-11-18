@@ -8,4 +8,5 @@ export enum ActivePageKey {
   Admin = 3,
   Reports = 4,
   Users = 5,
+  Events = 6,
 }

@@ -12,6 +12,7 @@ export default function EventMobileRow(props: any) {
   const hideRevItem = props.HideRevenue as boolean;
   const hideServiceFees = props.HideServiceFees as boolean;
   const canCheckInTickets = props.CanCheckInTickets as boolean;
+  const showNotes = props.ShowNotes as boolean;
   const { getLocation } = useGetLocation();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const currentSellerType = currentReportSelection.seller.sellerType;
@@ -71,6 +72,7 @@ export default function EventMobileRow(props: any) {
   const revenue = `$${new Number(vipEvent.totalRevenue - (vipEvent.revenueRefunded ?? 0)).toFixed(2)}`;
   const serviceFees = `$${new Number(vipEvent.totalServiceFees - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2)}`;
   const buttonText = currentSellerType == SellerType.Venue ? 'Customer List' : 'VIP List';
+  const noOrders = (!vipEvent.orders || vipEvent.orders.length == 0);
 
   return (
     <tr className={'mobile-event-card-container ' + statusClass}>
@@ -114,9 +116,14 @@ export default function EventMobileRow(props: any) {
             <Col>Service Fees:</Col>
             <Col>{serviceFees}</Col>
           </Row>
-          <Row>
+          <Row hidden={noOrders}>
             <Col>
               <Button onClick={setDetailEvent}>{buttonText}</Button>
+            </Col>
+          </Row>
+          <Row hidden={!showNotes}>
+            <Col>
+              <Button>Notes</Button>
             </Col>
           </Row>
         </Container>
