@@ -176,7 +176,7 @@ export default function AdminOrderEdit() {
     if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('serviceFee_', ''));
+    const ticketId = parseInt(e.currentTarget.id.replace('active_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
     if (!isNaN(ticketId) && currentOrder.tickets) {
       const isActive = e.currentTarget.checked;
@@ -198,7 +198,7 @@ export default function AdminOrderEdit() {
     if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('serviceFee_', ''));
+    const ticketId = parseInt(e.currentTarget.id.replace('checkin_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
     if (!isNaN(ticketId) && currentOrder.tickets) {
       const isCheckedIn = e.currentTarget.checked;
@@ -627,7 +627,7 @@ export default function AdminOrderEdit() {
           </td>
           <td style={{ textAlign: 'center' }} hidden={isComped}>
             <input
-              id={`checkin__${ticketId}`}
+              id={`checkin_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               type="checkbox"
               defaultChecked={ticket.isActive && ticket.isCheckedIn}
@@ -636,7 +636,7 @@ export default function AdminOrderEdit() {
           </td>
           <td style={{ textAlign: 'center' }} hidden={isComped}>
             <input
-              id={`active__${ticketId}`}
+              id={`active_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               type="checkbox"
               defaultChecked={ticket.isActive}

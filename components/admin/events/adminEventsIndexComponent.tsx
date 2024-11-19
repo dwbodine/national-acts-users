@@ -34,36 +34,41 @@ export default function AdminEventsIndex() {
   const [tableLoading, setTableLoading] = useState(true);
 
   useEffect(() => {
-    if (currentAdminSelection.allSellers == undefined) {
-      setTableLoading(true);
-      dispatch(setIsLoading(true));
-      dispatch(setAdminSellerId(undefined));
-      dispatch(setReloadEvents(true));
-      getSellers().then((response: GetSellersResponse) => {
-        dispatch(setAllSellers(response.sellers));
-        dispatch(setIsLoading(false));
-        setTableLoading(false);
-      });
-    } else if (currentAdminSelection.reloadEvents) {
-      let adminSelection = { ...currentAdminSelection };
-      if (!adminSelection.sellerId) {
-        setTableLoading(false);
-        return;
-      }
-      setTableLoading(true);
-      dispatch(setIsLoading(true));
-      getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
-        if (response.events && !response.eventError) {
-          dispatch(setAdminEvents(response.events));
+    const timeoutId = setTimeout(() => {
+      if (currentAdminSelection.allSellers == undefined) {
+        setTableLoading(true);
+        dispatch(setIsLoading(true));
+        dispatch(setAdminSellerId(undefined));
+        dispatch(setReloadEvents(true));
+        getSellers().then((response: GetSellersResponse) => {
+          dispatch(setAllSellers(response.sellers));
+          dispatch(setIsLoading(false));
+          setTableLoading(false);
+        });
+      } else if (currentAdminSelection.reloadEvents) {
+        let adminSelection = { ...currentAdminSelection };
+        if (!adminSelection.sellerId) {
+          setTableLoading(false);
+          return;
         }
-        dispatch(setIsLoading(false));
-        setTableLoading(false);
-      });
-    } else if (currentAdminSelection.events != undefined && tableLoading) {
-      setTimeout(() => {
-        setTableLoading(false);
-      }, 300);
-    }
+        setTableLoading(true);
+        dispatch(setIsLoading(true));
+        getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
+          if (response.events && !response.eventError) {
+            dispatch(setAdminEvents(response.events));
+          }
+          dispatch(setIsLoading(false));
+          setTableLoading(false);
+        });
+      } else if (currentAdminSelection.events != undefined && tableLoading) {
+        setTimeout(() => {
+          setTableLoading(false);
+        }, 300);
+      }
+    }, 200);
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [dispatch, getSellers, currentAdminSelection, getAdminEvents, tableLoading]);
 
   const updateSeller = (e: any) => {

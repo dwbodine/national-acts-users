@@ -29,33 +29,38 @@ export default function AdminOrdersIndex() {
   const { getAdminEvents } = useGetAdminEvents();
 
   useEffect(() => {
-    if (currentAdminSelection.reloadEvents) {
-      let adminSelection = { ...currentAdminSelection };
-      let selectedEventId = adminSelection.selectedEvent?.ticketSocketEventId;
-      dispatch(setReloadEvents(false));
-      if (!adminSelection.sellerId || !selectedEventId) {
-        setTableLoading(false);
-        return;
-      }
-      setTableLoading(true);
-      dispatch(setIsLoading(true));
-      getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
-        if (response.events && !response.eventError) {
-          dispatch(setAdminEvents(response.events));
-          const currentEvent = response.events.find(
-            (x) => x.ticketSocketEventId == selectedEventId,
-          );
-          if (currentEvent) {
-            dispatch(setAdminEvent(currentEvent));
-          }
+    const timeoutId = setTimeout(() => {
+      if (currentAdminSelection.reloadEvents) {
+        let adminSelection = { ...currentAdminSelection };
+        let selectedEventId = adminSelection.selectedEvent?.ticketSocketEventId;
+        dispatch(setReloadEvents(false));
+        if (!adminSelection.sellerId || !selectedEventId) {
+          setTableLoading(false);
+          return;
         }
-        dispatch(setIsLoading(false));
-      });
-    } else if (tableLoading) {
-      setTimeout(() => {
-        setTableLoading(false);
-      }, 300);
-    }
+        setTableLoading(true);
+        dispatch(setIsLoading(true));
+        getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
+          if (response.events && !response.eventError) {
+            dispatch(setAdminEvents(response.events));
+            const currentEvent = response.events.find(
+              (x) => x.ticketSocketEventId == selectedEventId,
+            );
+            if (currentEvent) {
+              dispatch(setAdminEvent(currentEvent));
+            }
+          }
+          dispatch(setIsLoading(false));
+        });
+      } else if (tableLoading) {
+        setTimeout(() => {
+          setTableLoading(false);
+        }, 300);
+      }
+    }, 200);
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [currentAdminSelection, tableLoading, dispatch, getAdminEvents]);
 
   const viewOrder = (e: any) => {
@@ -119,7 +124,7 @@ export default function AdminOrdersIndex() {
       <Row>
         <Col>
           <Table
-            height={420}
+            autoHeight={true}
             data={currentAdminSelection.selectedEvent?.orders}
             bordered
             cellBordered

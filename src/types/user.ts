@@ -279,6 +279,8 @@ export type UserActivity = {
   username?: string;
   activityData?: string;
   timestamp: string;
+  fullName?: string;
+  sellerName?: string;
 };
 
 export type AdminSelection = {

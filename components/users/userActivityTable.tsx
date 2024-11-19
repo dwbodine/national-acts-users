@@ -89,7 +89,15 @@ export default function UserActivityTable() {
               </Column>
               <Column flexGrow={4}>
                 <HeaderCell>User</HeaderCell>
+                <Cell dataKey="fullName"></Cell>
+              </Column>
+              <Column flexGrow={4}>
+                <HeaderCell>Email</HeaderCell>
                 <Cell dataKey="username"></Cell>
+              </Column>
+              <Column flexGrow={4}>
+                <HeaderCell>Seller</HeaderCell>
+                <Cell dataKey="sellerName"></Cell>
               </Column>
               <Column flexGrow={4}>
                 <HeaderCell>Activity</HeaderCell>
