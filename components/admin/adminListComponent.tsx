@@ -2,9 +2,14 @@ import { SyntheticEvent, useEffect } from 'react';
 import router from 'next/router';
 import { useDispatch } from 'react-redux';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 
 export default function AdminList() {
   const dispatch = useDispatch();
+  const { getUser } = useCurrentUser();
+  const user = getUser();
+  const isDennis = (user?.isAdmin ?? false) && (user?.username == 'dwbodine@gmail.com');
+
   const goToAdminPage = (e: SyntheticEvent) => {
     e.preventDefault();
     const id = e.currentTarget.id;
@@ -21,6 +26,9 @@ export default function AdminList() {
       case 'manage-events':
         router.push('/admin/events/');
         break;
+      case 'view-log':
+        router.push('/admin/log/');
+        break;
       default:
         break;
     }
@@ -33,6 +41,11 @@ export default function AdminList() {
   return (
     <div className="admin-container">
       <ul>
+        <li hidden={!isDennis}>
+          <a id="view-log" className="admin-link" onClick={goToAdminPage}>
+            View Logs
+          </a>
+        </li>
         <li>
           <a id="manage-roles" className="admin-link" onClick={goToAdminPage}>
             Manage Roles

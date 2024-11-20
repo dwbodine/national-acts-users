@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { User, UserLoginResponse, UserResponse } from '../types/user';
+import { LogResponse, User, UserLoginResponse, UserResponse } from '../types/user';
 import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
 
 export class AuthService {
@@ -12,6 +12,37 @@ export class AuthService {
       timeoutErrorMessage: 'Time out!',
     });
   }
+
+  getLogs = async (): Promise<LogResponse> => {
+    const url = `/log`;
+
+    let logResponse: LogResponse = {
+      logs: undefined,
+      errorMessage: undefined,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        logResponse.logs = res.data as string;
+        return logResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while retrieving logs';
+        }
+        logResponse.errorMessage = errorMessage;
+        return logResponse;
+      });
+  };
 
   login = async (username: string, password: string): Promise<UserLoginResponse> => {
     const headers = {

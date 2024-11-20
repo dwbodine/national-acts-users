@@ -504,6 +504,10 @@ input[type='number']:hover {
   margin-left: 15px;
 }
 
+.log-table {
+  margin: 10px;
+}
+
 /* MOBILE CSS */
 
 .mobile-event-card-container {

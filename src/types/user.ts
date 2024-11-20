@@ -318,6 +318,11 @@ export type UserResponse = {
   errorMessage?: string;
 };
 
+export type LogResponse = {
+  logs?: string;
+  errorMessage?: string;
+};
+
 export enum ForgotPasswordMode {
   SendPasswordReset,
   ValidateResetCode,
