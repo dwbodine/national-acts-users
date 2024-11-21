@@ -8,27 +8,26 @@ export default function TicketTypesWidget(props: any) {
   const ticketsRefunded: number = props.TicketsRefunded as number;
   const hideTicketBreakdown: boolean = props.HideTicketBreakDown as boolean;
 
-  const ticketTypes = ticketPropData?.TicketTypes;
+  const ticketTypes: TicketType[] | undefined = ticketPropData?.TicketTypes;
 
   let arr: any = [];
   if (ticketTypes?.length > 0) {
     let ttypes: any = [];
 
     if (!hideTicketBreakdown) {
-      ticketPropData.TicketData?.forEach(
-        (ticketTypeData: ITicketTypeData[], key: string) => {
-          ticketTypes.forEach((ticketType: TicketType) => {
-            var data = ticketTypeData.find(
-              (x) => x.TicketType.toLowerCase() == ticketType.ticketTypeName.toLowerCase(),
-            );
-            var number = arr[ticketType.ticketTypeName] ?? 0;
-            if (data) {
-              number += data.Number;
-            }
-            arr[ticketType.ticketTypeName] = number;
-          });
-        },
-      );
+      ticketTypes.forEach((ticketType) => {
+        ticketPropData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
+              const data = ticketTypeData.find(
+                (x) => x.TicketType.toLowerCase() == ticketType.ticketTypeName.toLowerCase(),
+              );
+              let number = arr[ticketType.ticketTypeName] ?? 0;
+              if (data != undefined) {
+                number += data.Number;
+              }
+              arr[ticketType.ticketTypeName] = number;
+          }
+        );
+      });
 
       let i = 0;
       for (const ticketType of ticketTypes) {

@@ -1,6 +1,8 @@
 import { useGetLogs } from '@/hooks/admin/useGetLogs';
 import { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+import moment from 'moment';
+ 
 
 export default function AdminLogIndex() {
 
@@ -33,7 +35,7 @@ export default function AdminLogIndex() {
     <>
       <Container fluid>
         <Row>
-          <h5>API Error Log</h5>
+          <h5>API Error Log - {moment().format('YYYY-DD-MM HH:mm:ss')}</h5>
         </Row>
         <Row>
           <Col className="log-table">
