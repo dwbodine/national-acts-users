@@ -81,12 +81,13 @@ export default function AdminUserEdit() {
     router.push('/admin/users/');
   };
 
-  const updateSeller = (e: any) => {
+  const updateSeller = (sellerId: number, newSellerId: number) => {
+    if (!sellerId || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
+      return;
+    }
     if (currentAdminSelection.selectedUser) {
       let user: User = { ...currentAdminSelection.selectedUser };
       let userSellers = user.sellers ? [...user.sellers] : [];
-      const sellerId = parseInt(e.currentTarget.id.replace('_seller', ''));
-      const newSellerId = parseInt(e.currentTarget.value);
       const newSeller = allSellers?.find((x) => x.sellerId == newSellerId);
       if (newSeller) {
         for (let i = 0; i < userSellers.length; i++) {
@@ -107,23 +108,21 @@ export default function AdminUserEdit() {
     }
   };
 
-  const updateRole = (e: any) => {
+  const updateRole = (sellerId: number, newRoleId: number) => {
+    if (!sellerId || isNaN(sellerId) || !newRoleId || isNaN(newRoleId)) {
+      return;
+    }
     if (currentAdminSelection.selectedUser) {
       let user: User = { ...currentAdminSelection.selectedUser };
-      let userSellers = user.sellers ? [...user.sellers] : [];
-      const sellerId = parseInt(e.currentTarget.id.replace('_role', ''));
-      const newRoleId = parseInt(e.currentTarget.value);
       const newRole = allRoles?.find((x) => x.roleId == newRoleId);
-      if (newRole) {
-        for (let i = 0; i < userSellers.length; i++) {
-          if (userSellers[i].sellerId == sellerId) {
-            let userSeller = { ...userSellers[i] };
+      if (newRole && user.sellers) {
+        user.sellers = user.sellers.map((us) => {
+          let userSeller = {...us};
+          if (userSeller.sellerId == sellerId) {
             userSeller.roleId = newRoleId;
-            userSellers[i] = userSeller;
-            break;
           }
-        }
-        user.sellers = userSellers;
+          return userSeller;
+        });
         dispatch(setSelectedUser(user));
       }
     } else {
@@ -150,11 +149,13 @@ export default function AdminUserEdit() {
     }
   };
 
-  const removeSeller = (e: any) => {
+  const removeSeller = (sellerId: number) => {
+    if (!sellerId || isNaN(sellerId)) {
+      return;
+    }
     if (currentAdminSelection.selectedUser) {
       let user: User = { ...currentAdminSelection.selectedUser };
       let userSellers = user.sellers ? [...user.sellers] : [];
-      const sellerId = parseInt(e.currentTarget.id.replace('_remove', ''));
       userSellers = userSellers.filter((x) => x.sellerId != sellerId);
       user.sellers = userSellers;
       dispatch(setSelectedUser(user));
@@ -243,9 +244,9 @@ export default function AdminUserEdit() {
           Roles={allRoles}
           SellerId={item.sellerId}
           RoleId={item.roleId}
-          OnSellerChange={updateSeller}
-          OnRoleChange={updateRole}
-          OnDelete={removeSeller}
+          OnSellerChange={(newSellerId: number) => updateSeller(parseInt(`${item.sellerId}`), newSellerId)}
+          OnRoleChange={(newRoleId: number) => updateRole(parseInt(`${item.sellerId}`), newRoleId)}
+          OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
         />,
       );
     });

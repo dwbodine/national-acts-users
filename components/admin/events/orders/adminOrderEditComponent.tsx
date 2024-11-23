@@ -1,5 +1,5 @@
 import { RootState } from '@/lib/store';
-import { useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
@@ -17,6 +17,7 @@ import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 import { ModifyOrderResponse } from '@/types/event';
 import moment from 'moment';
 import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
+import { DatePicker } from 'rsuite';
 
 export default function AdminOrderEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -30,20 +31,18 @@ export default function AdminOrderEdit() {
 
   useEffect(() => {}, [currentAdminSelection]);
 
-  const setPrice = (e: any): any => {
-    const newPrice = parseFloat(e.currentTarget?.value ?? 0);
+  const setPrice = (ticketId: number, newPrice: number): any => {
     if (
       !currentAdminSelection.selectedOrder ||
-      !e.currentTarget ||
-      !e.currentTarget.id ||
+      !ticketId ||
+      isNaN(ticketId) ||
       isNaN(newPrice)
     ) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('price_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
     let orderRevenue = 0;
-    if (!isNaN(ticketId) && currentOrder.tickets && !currentOrder.isComped) {
+    if (currentOrder.tickets && !currentOrder.isComped) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -136,20 +135,18 @@ export default function AdminOrderEdit() {
     markDirty();
   };
 
-  const setServiceFee = (e: any) => {
-    const newServiceFee = parseFloat(e?.currentTarget?.value ?? 0);
+  const setServiceFee = (ticketId: number, newServiceFee: number) => {
     if (
       !currentAdminSelection.selectedOrder ||
-      !e.currentTarget ||
-      !e.currentTarget.id ||
+      !ticketId ||
+      isNaN(ticketId) ||
       isNaN(newServiceFee)
     ) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('serviceFee_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
     let orderServiceFees = 0;
-    if (!isNaN(ticketId) && currentOrder.tickets && !currentOrder.isComped) {
+    if (currentOrder.tickets && !currentOrder.isComped) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -172,14 +169,12 @@ export default function AdminOrderEdit() {
     }
   };
 
-  const setTicketActive = (e: any) => {
-    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+  const setTicketActive = (ticketId: number, isActive: boolean) => {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('active_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
-    if (!isNaN(ticketId) && currentOrder.tickets) {
-      const isActive = e.currentTarget.checked;
+    if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -194,14 +189,12 @@ export default function AdminOrderEdit() {
     }
   };
 
-  const setTicketCheckInStatus = (e: any) => {
-    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+  const setTicketCheckInStatus = (ticketId: number, isCheckedIn: boolean) => {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('checkin_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
-    if (!isNaN(ticketId) && currentOrder.tickets) {
-      const isCheckedIn = e.currentTarget.checked;
+    if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -216,14 +209,12 @@ export default function AdminOrderEdit() {
     }
   };
 
-  const setFirstName = (e: any) => {
-    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+  const setFirstName = (ticketId: number, firstName: string) => {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('fName_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
-    if (!isNaN(ticketId) && currentOrder.tickets) {
-      const firstName = e.currentTarget.value;
+    if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -238,14 +229,12 @@ export default function AdminOrderEdit() {
     }
   };
 
-  const setLastName = (e: any) => {
-    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+  const setLastName = (ticketId: number, lastName: string) => {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('lName_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
-    if (!isNaN(ticketId) && currentOrder.tickets) {
-      const lastName = e.currentTarget.value;
+    if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -260,14 +249,12 @@ export default function AdminOrderEdit() {
     }
   };
 
-  const setEmail = (e: any) => {
-    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+  const setEmail = (ticketId: number, email: string) => {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('email_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
-    if (!isNaN(ticketId) && currentOrder.tickets) {
-      const email = e.currentTarget.value;
+    if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -282,14 +269,12 @@ export default function AdminOrderEdit() {
     }
   };
 
-  const setPhone = (e: any) => {
-    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+  const setPhone = (ticketId: number, phone: string) => {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('phone_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
-    if (!isNaN(ticketId) && currentOrder.tickets) {
-      const phone = e.currentTarget.value;
+    if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -304,14 +289,12 @@ export default function AdminOrderEdit() {
     }
   };
 
-  const setShirtSize = (e: any) => {
-    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+  const setShirtSize = (ticketId: number, shirtSize: string) => {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('shirt_', ''));
     let currentOrder = { ...currentAdminSelection.selectedOrder };
-    if (!isNaN(ticketId) && currentOrder.tickets) {
-      const shirtSize = e.currentTarget.value;
+    if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         let ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
@@ -326,11 +309,35 @@ export default function AdminOrderEdit() {
     }
   };
 
-  const confirmRefundTicket = (e: any) => {
-    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+  const setRefundOrChargebackDate = (ticketId: number, newDate: Date | null) => {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('refund_', ''));
+    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    if (!isNaN(ticketId) && currentOrder.tickets) {
+      const refundDate = moment(newDate).format('YYYY-MM-DD');
+      currentOrder.tickets = currentOrder.tickets.map((t) => {
+        let ticket = { ...t };
+        if (ticket.ticketSocketOrderTicketId == ticketId) {
+          if (ticket.isChargedBack) {
+            ticket.chargebackDate = refundDate;
+          } else if (ticket.isRefunded) {
+            ticket.refundDate = refundDate;
+          }
+        }
+        return ticket;
+      });
+
+      dispatch(setAdminOrder(currentOrder));
+
+      dispatch(setMustSaveOrder(true));
+    }
+  };
+
+  const confirmRefundTicket = (ticketId: number) => {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
+      return;
+    }
 
     const ticket = currentAdminSelection.selectedOrder.tickets?.find(
       (x) => x.ticketSocketOrderTicketId == ticketId,
@@ -367,11 +374,10 @@ export default function AdminOrderEdit() {
     );
   };
 
-  const confirmRefundTicketWithServiceFees = (e: any) => {
-    if (!currentAdminSelection.selectedOrder || !e.currentTarget || !e.currentTarget.id) {
+  const confirmRefundTicketWithServiceFees = (ticketId: number) => {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    const ticketId = parseInt(e.currentTarget.id.replace('refundSf_', ''));
 
     const ticket = currentAdminSelection.selectedOrder.tickets?.find(
       (x) => x.ticketSocketOrderTicketId == ticketId,
@@ -544,9 +550,19 @@ export default function AdminOrderEdit() {
   const isComped = currentOrder?.isComped ?? false;
 
   let ticketRows: any[] = [];
+  let hasRefunds = false;
+  let hasChargebacks = false;
   if (currentOrder && currentOrder.tickets && currentOrder.tickets.length > 0) {
     currentOrder.tickets.forEach((ticket) => {
       const ticketId = ticket.ticketSocketOrderTicketId;
+      let refundDate = undefined;
+      if (ticket.isChargedBack) {
+        hasChargebacks = true;
+        refundDate = moment(ticket.chargebackDate).toDate();
+      } else if (ticket.isRefunded) {
+        hasRefunds = true;
+        refundDate = moment(ticket.refundDate).toDate();
+      }
       const ticketRow = (
         <tr key={`row_${ticketId}`}>
           <td>{ticket.ticketSocketOrderTicketId}</td>
@@ -556,7 +572,7 @@ export default function AdminOrderEdit() {
                 id={`fName_${ticketId}`}
                 value={ticket.attendeeFirstName}
                 type="text"
-                onChange={setFirstName}
+                onChange={(e) => setFirstName(parseInt(`${ticketId}`), e.currentTarget.value)}
                /> 
               : ticket.attendeeFirstName
             }
@@ -567,7 +583,7 @@ export default function AdminOrderEdit() {
                 id={`lName_${ticketId}`}
                 value={ticket.attendeeLastName}
                 type="text"
-                onChange={setLastName}
+                onChange={(e) => setLastName(parseInt(`${ticketId}`), e.currentTarget.value)}
               /> 
               : ticket.attendeeLastName
             }
@@ -577,7 +593,7 @@ export default function AdminOrderEdit() {
                 id={`phone_${ticketId}`}
                 value={ticket.attendeePhone}
                 type="text"
-                onChange={setPhone}
+                onChange={(e) => setPhone(parseInt(`${ticketId}`), e.currentTarget.value)}
               /> 
           </td>
           <td hidden={!isComped}>
@@ -585,7 +601,7 @@ export default function AdminOrderEdit() {
                 id={`email_${ticketId}`}
                 value={ticket.attendeeEmail}
                 type="text"
-                onChange={setEmail}
+                onChange={(e) => setEmail(parseInt(`${ticketId}`), e.currentTarget.value)}
               /> 
           </td>
           <td>
@@ -593,7 +609,7 @@ export default function AdminOrderEdit() {
               <select 
                 id={`shirt_${ticketId}`}
                 defaultValue={ticket.shirtSize}
-                onChange={setShirtSize}>
+                onChange={(e) => setShirtSize(parseInt(`${ticketId}`), e.currentTarget.value)}>
                   <option value="XS">XS</option>
                   <option value="S">S</option>
                   <option value="M">M</option>
@@ -612,7 +628,7 @@ export default function AdminOrderEdit() {
               value={ticket.price?.toFixed(2)}
               type="number"
               step={0.25}
-              onChange={setPrice}
+              onChange={(e) => setPrice(parseInt(`${ticketId}`), parseFloat(e.currentTarget.value))}
             />
           </td>
           <td hidden={isComped}>
@@ -622,7 +638,17 @@ export default function AdminOrderEdit() {
               value={ticket.serviceFee?.toFixed(2)}
               type="number"
               step={0.25}
-              onChange={setServiceFee}
+              onChange={(e) => setServiceFee(parseInt(`${ticketId}`), parseFloat(e.currentTarget.value))}
+            />
+          </td>
+          <td hidden={isComped || (!hasChargebacks && !hasRefunds)}>
+            <DatePicker
+              id={`rcDate_${ticketId}`}
+              format="M/d/yyyy"
+              onChange={(newDate: Date | null) => setRefundOrChargebackDate(parseInt(`${ticketId}`), newDate)}
+              value={refundDate}
+              oneTap
+              cleanable={false}
             />
           </td>
           <td style={{ textAlign: 'center' }} hidden={isComped}>
@@ -631,7 +657,7 @@ export default function AdminOrderEdit() {
               disabled={ticket.isRefunded || ticket.isChargedBack}
               type="checkbox"
               defaultChecked={ticket.isActive && ticket.isCheckedIn}
-              onClick={setTicketCheckInStatus}
+              onClick={(e) => setTicketCheckInStatus(parseInt(`${ticketId}`), e.currentTarget.checked)}
             />
           </td>
           <td style={{ textAlign: 'center' }} hidden={isComped}>
@@ -640,7 +666,7 @@ export default function AdminOrderEdit() {
               disabled={ticket.isRefunded || ticket.isChargedBack}
               type="checkbox"
               defaultChecked={ticket.isActive}
-              onClick={setTicketActive}
+              onClick={(e) => setTicketActive(parseInt(`${ticketId}`), e.currentTarget.checked)}
             />
           </td>
           <td hidden={isComped}>
@@ -648,7 +674,7 @@ export default function AdminOrderEdit() {
               title={`Refund ticket # ${ticket.ticketSocketOrderTicketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               id={`refund_${ticketId}`}
-              onClick={confirmRefundTicket}
+              onClick={(e) => confirmRefundTicket(parseInt(`${ticketId}`))}
             >
               Refund Ticket
             </Button>
@@ -656,7 +682,7 @@ export default function AdminOrderEdit() {
               title={`Refund ticket # ${ticket.ticketSocketOrderTicketId} with service fees`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               id={`refundSf_${ticketId}`}
-              onClick={confirmRefundTicketWithServiceFees}
+              onClick={(e) => confirmRefundTicketWithServiceFees(parseInt(`${ticketId}`))}
             >
               Refund Ticket With Service Fees
             </Button>
@@ -784,6 +810,7 @@ export default function AdminOrderEdit() {
                 <th>Shirt Size</th>
                 <th hidden={isComped}>Price</th>
                 <th hidden={isComped}>Service Fees</th>
+                <th hidden={isComped || (!hasChargebacks && !hasRefunds)}>{hasChargebacks ? "Chargeback Date" : "Refund Date"}</th>
                 <th hidden={isComped}>Checked-in</th>
                 <th hidden={isComped}>Active</th>                
                 <th hidden={isComped}>&nbsp;</th>

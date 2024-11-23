@@ -56,28 +56,23 @@ export default function AdminRoleEdit() {
     );
   };
 
-  const updateRolePermissions = (e: any) => {
-    if (!allPermissions || !currentAdminSelection.selectedRole) {
+  const updateRolePermissions = (permissionId: number, isChecked: boolean) => {
+    if (!allPermissions || !currentAdminSelection.selectedRole || !permissionId || isNaN(permissionId) || permissionId <= 0) {
       return;
     }
-    const permissionId = parseInt(e.currentTarget.id);
-    if (isNaN(permissionId) || permissionId <= 0) {
-      return;
-    }
-    const checked = e.currentTarget.checked;
     const hasPerm = hasPermission(permissionId);
     let roleToUpdate: Role = { ...currentAdminSelection.selectedRole };
     let currentPermissions: Permission[] = roleToUpdate.permissions
       ? [...roleToUpdate.permissions]
       : [];
     let changed = false;
-    if (checked && !hasPerm) {
+    if (isChecked && !hasPerm) {
       const permissionToAdd = allPermissions.find((x) => x.permissionId == permissionId);
       if (permissionToAdd) {
         currentPermissions.push(permissionToAdd);
         changed = true;
       }
-    } else if (!checked && hasPerm) {
+    } else if (!isChecked && hasPerm) {
       currentPermissions = currentPermissions.filter(
         (x) => x.permissionId != permissionId,
       );
@@ -120,7 +115,7 @@ export default function AdminRoleEdit() {
         <FormCheck
           key={key}
           id={item.permissionId.toString()}
-          onChange={updateRolePermissions}
+          onChange={(e) => updateRolePermissions(parseInt(`${item.permissionId}`), e.currentTarget.checked)}
           checked={checked}
           label={item.permissionName}
         />,

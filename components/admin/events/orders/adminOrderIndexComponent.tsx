@@ -63,10 +63,10 @@ export default function AdminOrdersIndex() {
     };
   }, [currentAdminSelection, tableLoading, dispatch, getAdminEvents]);
 
-  const viewOrder = (e: any) => {
-    const ticketSocketOrderId = parseInt(e.currentTarget.id);
+  const viewOrder = (ticketSocketOrderId: number) => {
     if (
       !ticketSocketOrderId ||
+      isNaN(ticketSocketOrderId) || 
       !currentAdminSelection.selectedEvent ||
       !currentAdminSelection.selectedEvent.orders
     ) {
@@ -165,7 +165,7 @@ export default function AdminOrdersIndex() {
                     <a
                       href="#"
                       id={rowData.ticketSocketOrderId.toString()}
-                      onClick={viewOrder}
+                      onClick={() => viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))}
                     >
                       Edit
                     </a>

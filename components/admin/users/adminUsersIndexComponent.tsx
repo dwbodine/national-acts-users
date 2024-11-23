@@ -45,8 +45,10 @@ export default function AdminUsersIndex() {
     };
   }, [getAllUsers, dispatch, currentAdminSelection, debouncedResults, tableLoading]);
 
-  const editUser = (e: SyntheticEvent) => {
-    const userId = parseInt(e.currentTarget.id);
+  const editUser = (userId: number) => {
+    if (!userId || isNaN(userId)) {
+      return;
+    }
     let user = currentAdminSelection.users?.find((x) => x.userId == userId);
     if (user) {
       dispatch(setSelectedUser(user));
@@ -97,7 +99,7 @@ export default function AdminUsersIndex() {
               const name = `${rowData.firstName} ${rowData.lastName} (${rowData.username})`;
               const className = rowData.isActive ? '' : 'admin-inactive';
               return (
-                <div className={className} id={rowData.userId} onClick={editUser}>
+                <div className={className} id={rowData.userId} onClick={() => editUser(parseInt(`${rowData.userId}`))}>
                   {name}
                 </div>
               );
@@ -118,7 +120,7 @@ export default function AdminUsersIndex() {
               }
               const className = rowData.isActive ? '' : 'admin-inactive';
               return (
-                <div className={className} id={rowData.userId} onClick={editUser}>
+                <div className={className} id={rowData.userId} onClick={() => editUser(parseInt(`${rowData.userId}`))}>
                   {seller}
                 </div>
               );

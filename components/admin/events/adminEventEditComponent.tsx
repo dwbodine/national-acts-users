@@ -170,21 +170,21 @@ export default function AdminEventEdit() {
     router.push('/admin/events/orders/');
   };
 
-  const setTicketTypeStatus = (e: any) => {
+  const setTicketTypeStatus = (ticketTypeId: number, isActive: boolean) => {
     if (
       currentAdminSelection.selectedEvent == undefined ||
-      currentAdminSelection.selectedEvent.ticketTypes == undefined
+      currentAdminSelection.selectedEvent.ticketTypes == undefined || 
+      !ticketTypeId ||
+      isNaN(ticketTypeId)
     ) {
       return;
     }
 
-    const ticketTypeId = parseInt(e.currentTarget.id?.replace('ticketType_', ''));
-    if (!isNaN(ticketTypeId) && ticketTypeId > 0) {
-      const isChecked = e.currentTarget.checked ?? false;
+    if (ticketTypeId > 0) {
       let currentEvent = { ...currentAdminSelection.selectedEvent };
       currentEvent.ticketTypes = currentEvent.ticketTypes?.map((ticketType) => {
         if (ticketType.ticketTypeId == ticketTypeId) {
-          ticketType = { ...ticketType, isActive: isChecked };
+          ticketType = { ...ticketType, isActive: isActive };
         }
         return ticketType;
       });
@@ -421,7 +421,7 @@ export default function AdminEventEdit() {
               title={rowTitle}
               disabled={ticketTypeDisabled}
               checked={ticketType.isActive}
-              onChange={(e) => setTicketTypeStatus(e)}
+              onChange={(e) => setTicketTypeStatus(parseInt(`${ticketType.ticketTypeId}`), e.currentTarget.checked)}
               label="Active"
             /> : ''}
           </td>

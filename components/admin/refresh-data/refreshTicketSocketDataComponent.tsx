@@ -64,8 +64,10 @@ export default function RefreshTicketSocketData() {
     currentAdminSelection,
   ]);
 
-  const updateSeller = (e: any) => {
-    const sellerId = parseInt(e.currentTarget.value);
+  const updateSeller = (sellerId: number) => {
+    if (!sellerId || isNaN(sellerId)) {
+      return;
+    }
     dispatch(setAdminSellerId(sellerId));
   };
 
@@ -103,7 +105,7 @@ export default function RefreshTicketSocketData() {
             id="refresh"
             Sellers={currentAdminSelection.allSellers}
             SellerId={currentAdminSelection.sellerId}
-            OnSellerChange={updateSeller}
+            OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
           />
           <ReportDatePicker
             onChange={onDateChange}

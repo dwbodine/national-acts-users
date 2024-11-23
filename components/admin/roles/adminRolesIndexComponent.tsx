@@ -41,8 +41,10 @@ export default function AdminRolesIndex() {
     }
   }, [getAllRoles, dispatch, currentAdminSelection, tableLoading]);
 
-  const editRole = (e: SyntheticEvent) => {
-    const roleId = parseInt(e.currentTarget.id);
+  const editRole = (roleId: number) => {
+    if (!roleId || isNaN(roleId)) {
+      return;
+    }
     let role = currentAdminSelection.roles?.find((x) => x.roleId == roleId);
     if (role) {
       dispatch(setSelectedRole(role));
@@ -62,20 +64,20 @@ export default function AdminRolesIndex() {
     router.push('/admin/roles/edit');
   };
 
-  const updateSelectedRoles = (e: any) => {
-    const roleId = parseInt(e.currentTarget.id);
-    const checked = e.currentTarget.checked;
-    if (!isNaN(roleId) && roleId > 0) {
-      if (checked && !selectedRoles.includes(roleId)) {
-        let rIds = [...selectedRoles];
-        rIds.push(roleId);
-        setSelectedRoles(rIds);
-      } else if (!checked && selectedRoles.includes(roleId)) {
-        let rIds = [...selectedRoles];
-        rIds = rIds.filter((x) => x != roleId);
-        setSelectedRoles(rIds);
-      }
+  const updateSelectedRoles = (roleId: number, isChecked: boolean) => {
+    if (!roleId || isNaN(roleId) || roleId <= 0) {
+      return;
     }
+    
+    if (isChecked && !selectedRoles.includes(roleId)) {
+      let rIds = [...selectedRoles];
+      rIds.push(roleId);
+      setSelectedRoles(rIds);
+    } else if (!isChecked && selectedRoles.includes(roleId)) {
+      let rIds = [...selectedRoles];
+      rIds = rIds.filter((x) => x != roleId);
+      setSelectedRoles(rIds);
+    }    
   };
 
   const deleteSelectedRoles = () => {
@@ -111,7 +113,7 @@ export default function AdminRolesIndex() {
                 <FormCheck
                   id={rowData.roleId}
                   checked={selectedRoles.includes(rowData.roleId)}
-                  onChange={updateSelectedRoles}
+                  onChange={(e) => updateSelectedRoles(parseInt(`${rowData.roleId}`), e.currentTarget.checked)}
                 />
               ) : (
                 ''
@@ -123,7 +125,7 @@ export default function AdminRolesIndex() {
           <HeaderCell>Role</HeaderCell>
           <Cell className="admin-click-cell">
             {(rowData) => (
-              <div id={rowData.roleId} onClick={editRole}>
+              <div id={rowData.roleId} onClick={() => editRole(parseInt(`${rowData.roleId}`))}>
                 {rowData.roleName}
               </div>
             )}

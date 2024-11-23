@@ -10,10 +10,8 @@ export default function AdminList() {
   const user = getUser();
   const isDennis = (user?.isAdmin ?? false) && (user?.username == 'dwbodine@gmail.com');
 
-  const goToAdminPage = (e: SyntheticEvent) => {
-    e.preventDefault();
-    const id = e.currentTarget.id;
-    switch (id) {
+  const goToAdminPage = (adminAction: string) => {
+    switch (adminAction) {
       case 'manage-roles':
         router.push('/admin/roles/');
         break;
@@ -42,27 +40,27 @@ export default function AdminList() {
     <div className="admin-container">
       <ul>
         <li hidden={!isDennis}>
-          <a id="view-log" className="admin-link" onClick={goToAdminPage}>
+          <a className="admin-link" onClick={() => goToAdminPage('view-log')}>
             View Logs
           </a>
         </li>
         <li>
-          <a id="manage-roles" className="admin-link" onClick={goToAdminPage}>
+          <a className="admin-link" onClick={() => goToAdminPage('manage-roles')}>
             Manage Roles
           </a>
         </li>
         <li>
-          <a id="manage-users" className="admin-link" onClick={goToAdminPage}>
+          <a className="admin-link" onClick={() => goToAdminPage('manage-users')}>
             Manage Users
           </a>
         </li>
         <li>
-          <a id="manage-refresh-data" className="admin-link" onClick={goToAdminPage}>
+          <a className="admin-link" onClick={() => goToAdminPage('manage-refresh-data')}>
             Refresh Data From TicketSocket
           </a>
         </li>
         <li>
-          <a id="manage-events" className="admin-link" onClick={goToAdminPage}>
+          <a className="admin-link" onClick={() => goToAdminPage('manage-events')}>
             Manage Events/Orders
           </a>
         </li>

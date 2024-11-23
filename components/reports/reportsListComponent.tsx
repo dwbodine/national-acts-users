@@ -6,10 +6,8 @@ import { setIsLoading } from '@/lib/globalSelectionSlice';
 
 export default function ReportsList() {
   const dispatch = useDispatch();
-  const goToReport = (e: SyntheticEvent) => {
-    e.preventDefault();
-    const id = e.currentTarget.id;
-    switch (id) {
+  const goToReport = (reportId: string) => {
+    switch (reportId) {
       case 'report-customer-export':
         router.push('/reports/customer-export/');
         break;
@@ -28,7 +26,7 @@ export default function ReportsList() {
         <Col>
           <ul>
             <li>
-              <a id="report-customer-export" className="admin-link" onClick={goToReport}>
+              <a id="report-customer-export" className="admin-link" onClick={() => goToReport('report-customer-export')}>
                 Export Customer Data
               </a>
             </li>

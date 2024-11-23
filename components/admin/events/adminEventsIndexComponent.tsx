@@ -71,8 +71,10 @@ export default function AdminEventsIndex() {
     };
   }, [dispatch, getSellers, currentAdminSelection, getAdminEvents, tableLoading]);
 
-  const updateSeller = (e: any) => {
-    const sellerId = parseInt(e.currentTarget.value);
+  const updateSeller = (sellerId: number) => {
+    if (!sellerId || isNaN(sellerId)) {
+      return;
+    }
     dispatch(setAdminSellerId(sellerId));
     dispatch(setReloadEvents(true));
   };
@@ -93,10 +95,10 @@ export default function AdminEventsIndex() {
     onDateChange(currentAdminSelection.start, undefined);
   };
 
-  const editEvent = (e: any) => {
-    const ticketSocketEventId = parseInt(e.currentTarget.id.replace('_event', ''));
+  const editEvent = (ticketSocketEventId: number) => {
     if (
       !ticketSocketEventId ||
+      isNaN(ticketSocketEventId) || 
       !currentAdminSelection.events ||
       currentAdminSelection.events.length == 0
     ) {
@@ -113,10 +115,10 @@ export default function AdminEventsIndex() {
     router.push('/admin/events/edit/');
   };
 
-  const viewOrders = (e: any) => {
-    const ticketSocketEventId = parseInt(e.currentTarget.id.replace('_orders', ''));
+  const viewOrders = (ticketSocketEventId: number) => {
     if (
       !ticketSocketEventId ||
+      isNaN(ticketSocketEventId) || 
       !currentAdminSelection.events ||
       currentAdminSelection.events.length == 0
     ) {
@@ -154,7 +156,7 @@ export default function AdminEventsIndex() {
             id="refresh"
             Sellers={currentAdminSelection.allSellers}
             SellerId={currentAdminSelection.sellerId}
-            OnSellerChange={updateSeller}
+            OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
           />
         </Col>
       </Row>
@@ -214,7 +216,7 @@ export default function AdminEventsIndex() {
                     <a
                       href="#"
                       id={`${rowData.ticketSocketEventId}_event`}
-                      onClick={editEvent}
+                      onClick={() => editEvent(parseInt(`${rowData.ticketSocketEventId}`))}
                     >
                       Edit
                     </a>
@@ -232,7 +234,7 @@ export default function AdminEventsIndex() {
                     <a
                       href="#"
                       id={`${rowData.ticketSocketEventId}_orders`}
-                      onClick={viewOrders}
+                      onClick={() => viewOrders(parseInt(`${rowData.ticketSocketEventId}`))}
                     >
                       Manage Orders
                     </a>

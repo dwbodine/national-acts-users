@@ -56,8 +56,7 @@ export default function AdminSellerSelect(props: any) {
       </span>
       <select
         hidden={sellerOptions.length == 0 || !onSellerChange}
-        id={`${id}_seller`}
-        onChange={onSellerChange}
+        onChange={(e) => onSellerChange(parseInt(e.currentTarget.value))}
         defaultValue={sellerId}
       >
         {' '}
@@ -65,8 +64,7 @@ export default function AdminSellerSelect(props: any) {
       </select>
       <select
         hidden={roleOptions.length == 0 || !onRoleChange}
-        id={`${id}_role`}
-        onChange={onRoleChange}
+        onChange={(e) => onRoleChange(parseInt(e.currentTarget.value))}
         defaultValue={roleId}
       >
         {' '}
