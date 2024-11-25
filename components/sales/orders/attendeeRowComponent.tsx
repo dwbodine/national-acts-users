@@ -4,14 +4,20 @@ import { Ticket } from '@/types/event';
 import { useSetTicketCheckedIn } from '@/hooks/order/useSetTicketCheckedIn';
 import router from 'next/router';
 import { FaCheck, FaX } from 'react-icons/fa6';
+import moment from 'moment';
 
 export default function AttendeeRow(props: any) {
   const dispatch = useDispatch();
   const canCheckInTickets = props.CanCheckInTickets as boolean;
   const ticket = props.Ticket as Ticket;
   const ticketId = ticket.ticketSocketOrderTicketId;
-  const attendeeName = `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
+  let attendeeName = `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
   const currentCheckIn = ticket.isCheckedIn;
+  const checkedInDate = currentCheckIn ? moment(ticket.checkedInDate).format('MM/DD/YYYY') : '';
+  const checkedInTime = currentCheckIn ? moment(ticket.checkedInDate).format('h:mm a') : '';
+  if (currentCheckIn) {
+    attendeeName += ` (${checkedInTime})`;
+  }
   const id = `ticket_${ticket.ticketSocketOrderTicketId}`;
   let className = '';
   if (canCheckInTickets) {
@@ -49,7 +55,7 @@ export default function AttendeeRow(props: any) {
   };
 
   if (canCheckInTickets) {
-    titleText = currentCheckIn ? `Check out ${attendeeName}` : `Check in ${attendeeName}`;
+    titleText = currentCheckIn ? `Checked in at ${checkedInTime} on ${checkedInDate}` : `Check in ${attendeeName}`;
   }
 
   let checkOutClass = 'check-out-hide';

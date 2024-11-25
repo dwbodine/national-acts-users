@@ -28,6 +28,7 @@ export interface Ticket {
   ticketTypeId?: number;
   serviceFee?: number;
   isCheckedIn?: boolean;
+  checkedInDate?: string;
   attendeeFirstName?: string;
   attendeeLastName?: string;
   attendeeEmail?: string;
