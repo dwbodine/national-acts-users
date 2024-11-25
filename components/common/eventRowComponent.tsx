@@ -8,6 +8,7 @@ export default function EventRow(props: any) {
   const hideRevItem = props.HideRevenue as boolean;
   const hideServiceFees = props.HideServiceFees as boolean;
   const showNotes = props.ShowNotes as boolean;
+  const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
   const id = `event_${vipEvent.ticketSocketEventId}`;
 
@@ -54,7 +55,7 @@ export default function EventRow(props: any) {
         {serviceFees}
       </td>
       <td hidden={!showNotes}>
-        Notes
+        <a onClick={() => showNoteDialog(vipEvent.ticketSocketEventId)}>Notes</a>
       </td>
     </tr>
   );
