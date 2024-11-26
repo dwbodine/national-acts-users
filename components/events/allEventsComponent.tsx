@@ -18,6 +18,7 @@ import debouce from 'lodash.debounce';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { Container } from 'react-bootstrap';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
+import { Button, Modal } from 'rsuite';
 
 export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -25,6 +26,9 @@ export default function AllEvents() {
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const { getAllEvents } = useGetAllEvents();
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const [note, setNote] = useState<string | undefined>(undefined);
+  const [noteEventId, setNoteEventId] = useState(0);
 
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
@@ -38,6 +42,18 @@ export default function AllEvents() {
   const debouncedResults = useMemo(() => {
     return debouce(setSearchTerm, 300);
   }, []);
+
+  const handleClose = () => setOpen(false);
+
+  const openNoteDialog = (ticketSocketEventId: number) => {
+    setNoteEventId(ticketSocketEventId);
+    setNote(undefined);
+    setOpen(true);
+  };
+
+  const addNote = () => {
+
+  };
 
   const getTicketData = (events: VipEvent[]): ITicketData | undefined => {
     if (!events || events.length == 0) {
@@ -156,7 +172,8 @@ export default function AllEvents() {
             HideRevenue={false}
             HideServiceFees={false}
             CanCheckInTickets={false}
-            ShowNotes={true}
+            ShowNotes={true} 
+            OnShowNoteDialog={openNoteDialog}
           />,
         );
       } else {
@@ -167,6 +184,7 @@ export default function AllEvents() {
             HideRevenue={false}
             HideServiceFees={false}
             ShowNotes={true}
+            OnShowNoteDialog={openNoteDialog}
           />,
         );
       }
@@ -260,6 +278,22 @@ export default function AllEvents() {
           </Col>
         </Row>
       </div>
+      <Modal size={'sm'} open={open} onClose={handleClose}>
+        <Modal.Header>
+          <Modal.Title>Add Note To Event # {noteEventId}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <textarea onChange={(e) => setNote(e.currentTarget.textContent ?? undefined)}>{note}</textarea>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleClose} appearance="subtle">
+            Cancel
+          </Button>
+          <Button onClick={addNote} appearance="primary">
+            Add Note
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

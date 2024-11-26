@@ -13,6 +13,7 @@ export default function EventMobileRow(props: any) {
   const hideServiceFees = props.HideServiceFees as boolean;
   const canCheckInTickets = props.CanCheckInTickets as boolean;
   const showNotes = props.ShowNotes as boolean;
+  const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const currentSellerType = currentReportSelection.seller.sellerType;
@@ -123,7 +124,7 @@ export default function EventMobileRow(props: any) {
           </Row>
           <Row hidden={!showNotes}>
             <Col>
-              <Button>Notes</Button>
+              <Button onClick={() => showNoteDialog(vipEvent.ticketSocketEventId)}>Notes</Button>
             </Col>
           </Row>
         </Container>
