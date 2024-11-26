@@ -508,6 +508,59 @@ input[type='number']:hover {
   margin: 10px;
 }
 
+.week-view {
+  width: 100%;
+  border: 0;
+  margin: 0;
+  padding: 5px
+}
+
+.week-view-action {
+  width: 100%;
+  border: 1px solid #CBDCF7;
+}
+
+.week-view-action-previous {
+  text-align: left;
+}
+
+.week-view-action-next {
+  text-align: right;
+}
+
+.week-view-calendar {
+  border: 0;
+  width: 100%;
+  border: 0;
+  padding: 0;
+}
+
+.week-day {
+  border: 1px solid #CBDCF7;
+  line-height: 25px;
+  vertical-align: top;
+  aspect-ratio: 1 / 1;
+}
+
+.week-day-name {
+  font-size: 11px;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 5px auto;
+}
+
+.week-day-number {
+  font-size: 26px;
+  text-align: center;
+  margin: 5px auto 10px auto;
+}
+
+.week-day-event {
+  background-color: rgb(27, 173, 248);
+  border-radius: 6px;
+  padding: 5px;
+}
+
 /* MOBILE CSS */
 
 .mobile-event-card-container {

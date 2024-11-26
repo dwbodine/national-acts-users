@@ -5,8 +5,8 @@ import { VipEvent } from '@/types/event';
 import moment from 'moment';
 
 const initialState: EventReportSelection = {
-  start: moment().unix(),
-  end: moment().unix() + 30 * 24 * 60 * 60,
+  start: moment().startOf('week').add(1, 'day').startOf('day').unix(),
+  end: moment().startOf('week').add(7, 'days').startOf('day').unix(),
   showDeleted: false,
   showInactive: false,
   reloadEvents: true,
@@ -55,8 +55,8 @@ export const adminEventsSelectionSlice = createSlice({
       return state;
     },
     resetAdminSelection: (state) => {
-      state.start = moment().unix();
-      state.end = moment().unix() + 30 * 24 * 60 * 60;
+      state.start = moment().startOf('week').add(1, 'day').startOf('day').unix();
+      state.end = moment().startOf('week').add(7, 'days').endOf('day').unix();
       state.showDeleted = false;
       state.showInactive = false;
       state.reloadEvents = true;
@@ -65,8 +65,8 @@ export const adminEventsSelectionSlice = createSlice({
       return state;
     },
     resetAllAdminEvents: (state) => {
-      state.start = moment().unix();
-      state.end = moment().unix() + 30 * 24 * 60 * 60;
+      state.start = moment().startOf('week').add(1, 'day').startOf('day').unix();
+      state.end = moment().startOf('week').add(7, 'days').endOf('day').unix();
       state.showDeleted = false;
       state.showInactive = false;
       state.reloadEvents = true;

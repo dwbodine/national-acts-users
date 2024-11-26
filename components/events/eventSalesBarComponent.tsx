@@ -11,13 +11,15 @@ import {
   setAdminDateRange,
   setReloadAdminEvents,
 } from '@/lib/adminEventsSelectionSlice';
-import { useEffect } from 'react';
+import { SyntheticEvent, useEffect } from 'react';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 import AdminHiddenCheck from './hiddenCheckComponent';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import router from 'next/router';
 import AdminInactiveCheck from './inactiveCheckComponent';
 import AdminDeletedCheck from './deletedCheckComponent';
+import moment from 'moment';
+import { DatePicker } from 'rsuite';
 
 export default function EventSalesBar() {
   const dispatch = useDispatch();
@@ -26,14 +28,13 @@ export default function EventSalesBar() {
   const windowSizeJson = JSON.stringify(windowSize);
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const hasEvents = currentReportSelection?.currentEvents?.length ?? 0 > 0;
-  const dateRangeTitle = 'Event date range';
 
   let pageTitle: string = 'Admin Events View';
 
-  const onDateChange = (selectedStart: number, selectedEnd: number) => {
+  const onDateChange = (date: Date, event?: SyntheticEvent<Element, Event> | undefined) => {
     let reportSelection = { ...currentReportSelection };
-    reportSelection.start = selectedStart;
-    reportSelection.end = selectedEnd;
+    reportSelection.start = moment(date).startOf('week').add(1, 'day').startOf('day').unix();
+    reportSelection.end = moment(date).startOf('week').add(7, 'days').startOf('day').unix();
     dispatch(setIsLoading(true));
     dispatch(setAdminDateRange(reportSelection));
     dispatch(setReloadAdminEvents(true));
@@ -50,6 +51,9 @@ export default function EventSalesBar() {
       router.push('/');
     }
   }, [windowSizeJson, getUser]);
+
+  const startDate = currentReportSelection.start ? moment.unix(currentReportSelection.start).toDate() : moment().startOf('week').toDate();
+
   return (
     <>
       <Row className="page-header">
@@ -57,12 +61,13 @@ export default function EventSalesBar() {
           <div className="title">{pageTitle}</div>
         </Col>
         <Col sm={6} xs={12} className="control-container no-print">
-          <DateRangeSelector
-            dateRangeTitle={dateRangeTitle}
-            selectedStart={currentReportSelection?.start}
-            selectedEnd={currentReportSelection?.end}
+          <DatePicker
             disabled={!hasEvents}
-            onDateChange={onDateChange}
+            format="M/d/yyyy"
+            onChangeCalendarDate={onDateChange}
+            value={startDate}
+            oneTap
+            cleanable={false}
           />
         </Col>
       </Row>

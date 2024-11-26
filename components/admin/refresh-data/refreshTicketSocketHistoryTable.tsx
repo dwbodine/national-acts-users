@@ -9,6 +9,14 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
   return results != undefined ? (
     <Table height={420} data={results} bordered cellBordered>
       <Column resizable>
+        <HeaderCell>Date</HeaderCell>
+        <Cell>
+          {(rowData) =>
+            rowData.startTimer ? moment.unix(rowData.startTimer).format('l') : 'n/a'
+          }
+        </Cell>
+      </Column>
+      <Column resizable>
         <HeaderCell>User</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -42,7 +50,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
         <HeaderCell>Start Timer</HeaderCell>
         <Cell>
           {(rowData) =>
-            rowData.startTimer ? moment.unix(rowData.startTimer).format('l LTS') : 'n/a'
+            rowData.startTimer ? moment.unix(rowData.startTimer).format('LTS') : 'n/a'
           }
         </Cell>
       </Column>
@@ -50,7 +58,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
         <HeaderCell>End Timer</HeaderCell>
         <Cell>
           {(rowData) =>
-            rowData.endTimer ? moment.unix(rowData.endTimer).format('l LTS') : 'n/a'
+            rowData.endTimer ? moment.unix(rowData.endTimer).format('LTS') : 'n/a'
           }
         </Cell>
       </Column>
