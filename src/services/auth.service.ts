@@ -44,6 +44,37 @@ export class AuthService {
       });
   };
 
+  getCronLogs = async (): Promise<LogResponse> => {
+    const url = `/cron_log`;
+
+    let logResponse: LogResponse = {
+      logs: undefined,
+      errorMessage: undefined,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        logResponse.logs = res.data as string;
+        return logResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while retrieving cron logs';
+        }
+        logResponse.errorMessage = errorMessage;
+        return logResponse;
+      });
+  };
+
   login = async (username: string, password: string): Promise<UserLoginResponse> => {
     const headers = {
       'Content-Type': 'application/json',

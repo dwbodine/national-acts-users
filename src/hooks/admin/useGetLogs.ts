@@ -11,5 +11,14 @@ export const useGetLogs = () => {
     return response;
   };
 
-  return { getAllLogs };
+  const getAllCronLogs = async (): Promise<LogResponse> => {
+    let response: LogResponse = {
+      logs: undefined,
+      errorMessage: undefined,
+    };
+    response = await authService.getCronLogs();
+    return response;
+  };
+
+  return { getAllLogs, getAllCronLogs };
 };
