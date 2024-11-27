@@ -61,6 +61,7 @@ export default function EventSalesBar() {
           <div className="title">{pageTitle}</div>
         </Col>
         <Col sm={6} xs={12} className="control-container no-print">
+          <label className="events-datepicker-label">Week beginning (Monday):</label>
           <DatePicker
             disabled={!hasEvents}
             format="M/d/yyyy"
@@ -69,28 +70,6 @@ export default function EventSalesBar() {
             oneTap
             cleanable={false}
           />
-        </Col>
-      </Row>
-      <Row className="admin-check-row">
-        <Col md={10} sm={12}>
-          <AdminInactiveCheck />
-          <AdminDeletedCheck />
-          <AdminHiddenCheck />
-        </Col>
-      </Row>
-      <Row
-        className="no-print admin-button-row"
-      >
-        <Col md={10} sm={12}>
-          <ResetButton
-            OnResetClick={onResetClick}
-          />
-          {!windowSize.isMobile &&
-            hasEvents ? (
-            <PrintButton />
-          ) : (
-            ''
-          )}
         </Col>
       </Row>
     </>

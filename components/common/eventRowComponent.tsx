@@ -2,6 +2,7 @@ import { VipEvent } from '@/types/event';
 import React from 'react';
 import moment from 'moment';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 
 export default function EventRow(props: any) {
   const vipEvent = props.VipEvent as VipEvent;
@@ -11,15 +12,7 @@ export default function EventRow(props: any) {
   const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
   const id = `event_${vipEvent.ticketSocketEventId}`;
-
-  let statusClass = '';
-  if (props.VipEvent.isDeleted) {
-    statusClass += 'event-deleted';
-  } else if (!props.VipEvent.isActive) {
-    statusClass += 'event-inactive';
-  } else if (props.VipEvent.isHidden) {
-    statusClass += 'event-hidden';
-  }
+  const { getEventStatusText, getEventStatusSlug } = useGetEventStatus();
 
   const venueName = vipEvent.venue?.name;
   let location = '';
@@ -31,6 +24,12 @@ export default function EventRow(props: any) {
   const revenue = new Number(vipEvent.totalRevenue - (vipEvent.revenueRefunded ?? 0)).toFixed(2);
   const serviceFees = new Number(vipEvent.totalServiceFees - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2);
   const url = `/event/?id=${vipEvent.ticketSocketEventId}`;
+
+  const statusSlug = getEventStatusSlug(vipEvent);
+  let statusClass = '';
+  if (statusSlug != 'active') {
+    statusClass = `event-${statusSlug}`
+  }
 
   return (
     <tr className={statusClass} id={id}>

@@ -96,6 +96,7 @@ export type EventReportSelection = {
   showHidden?: boolean;
   reloadEvents?: boolean;
   currentEvents?: VipEvent[];
+  expandedRows?: number[];
 };
 
 export interface ITopSeller {

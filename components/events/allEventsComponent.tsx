@@ -1,67 +1,88 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../src/lib/store';
-import { setAdminEvents, setAdminDateRange, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
-import { ITicketData, VipEvent } from '@/types/event';
-import { useEffect, useMemo, useState } from 'react';
+import { setAdminEvents, setReloadAdminEvents, setExpandedRows } from '@/lib/adminEventsSelectionSlice';
+import { VipEvent } from '@/types/event';
+import { useEffect } from 'react';
 import moment from 'moment';
-import { EventReportSelection, User } from '@/types/user';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { CirclesWithBar } from 'react-loader-spinner';
-import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
-import EventRow from '../common/eventRowComponent';
 import router from 'next/router';
-import WidgetBar from '../common/widgets/widgetBarComponent';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
-import EventMobileRow from '../common/eventMobileRowComponent';
-import debouce from 'lodash.debounce';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { Container } from 'react-bootstrap';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
-import { Button, Modal } from 'rsuite';
+import { IconButton } from 'rsuite';
+import WeekView from './calendar/weekViewComponent';
+import { Table } from 'rsuite';
+import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
+import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
+import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 
 export default function AllEvents() {
+  const { Column, HeaderCell, Cell } = Table;
+  const rowKey = 'ticketSocketEventId';
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const isLoading = globalSelection.isLoading;
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const { getAllEvents } = useGetAllEvents();
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const [note, setNote] = useState<string | undefined>(undefined);
-  const [noteEventId, setNoteEventId] = useState(0);
-
+  const expandedRowKeys = currentReportSelection.expandedRows ?? [];
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
-  const [searchTerm, setSearchTerm] = useState('');
+  const { getLocation } = useGetLocation();
+  const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
 
-  let ticketData: ITicketData | undefined = undefined;
   let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;
-  let visibleEvents: VipEvent[] = [];
-  let searchBarHidden = true;
 
-  const debouncedResults = useMemo(() => {
-    return debouce(setSearchTerm, 300);
-  }, []);
+  const ExpandCell = (props: any) => (
+    <Cell {...props} style={{ padding: 5 }}>
+      <IconButton
+        appearance="subtle"
+        onClick={() => {
+          if (props.onChange != undefined) {
+            props.onChange(props.rowData);
+          }
+        }}
+        icon={
+          expandedRowKeys.some(key => key === props.rowData[rowKey]) ? (
+            <CollaspedOutlineIcon />
+          ) : (
+            <ExpandOutlineIcon />
+          )
+        }
+      />
+    </Cell>
+  );
 
-  const handleClose = () => setOpen(false);
-
-  const openNoteDialog = (ticketSocketEventId: number) => {
-    setNoteEventId(ticketSocketEventId);
-    setNote(undefined);
-    setOpen(true);
+  const renderRowExpanded = (rowData: VipEvent | undefined) => {
+    return (
+      <div className="expanded-event-row">
+        <p>{rowData?.title}</p>
+      </div>
+    );
   };
 
-  const addNote = () => {
+  const handleExpanded = (rowData: VipEvent | undefined) => {
+    let open = false;
+    const nextExpandedRowKeys = [];
 
-  };
+    expandedRowKeys.forEach(key => {
+      if (rowData && key === rowData[rowKey]) {
+        open = true;
+      } else {
+        nextExpandedRowKeys.push(key);
+      }
+    });
 
-  const getTicketData = (events: VipEvent[]): ITicketData | undefined => {
-    if (!events || events.length == 0) {
-      return undefined;
+    if (!open && rowData) {
+      nextExpandedRowKeys.push(rowData[rowKey]);
     }
 
-    return getTicketDataFromEvents(events);
+    dispatch(
+      setExpandedRows(nextExpandedRowKeys)
+    );
   };
+
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -70,19 +91,6 @@ export default function AllEvents() {
         dispatch(setIsLoading(true));
         getAllEvents(currentReportSelection?.start ?? 0, currentReportSelection?.end ?? 0).then((response) => {
           if (!response.eventError && response.events) {
-            if (response.events.length > 0) {
-              const start = moment(response.events[0].eventDate).unix();
-              const end = moment(
-                response.events[response.events.length - 1].eventDate,
-              ).unix();
-              const selection: EventReportSelection = {
-                ...currentReportSelection,
-                start: start,
-                end: end,
-              };
-
-              dispatch(setAdminDateRange(selection));
-            }
             dispatch(setAdminEvents(response.events));
           } else if (response.statusCode == 401 || response.statusCode == 422) {
             router.push('/logout/');
@@ -92,208 +100,86 @@ export default function AllEvents() {
           dispatch(setIsLoading(false));
         });
       }
-    }, 300);    
+    }, 300);
     return () => {
-      debouncedResults.cancel();
       clearTimeout(timeoutId);
     };
   }, [
     currentReportSelection,
     dispatch,
     getAllEvents,
-    debouncedResults,
     windowSizeJson,
     isLoading
   ]);
 
-  const filterEvents = (events: VipEvent[]) => {
-    let filteredEvents: VipEvent[] = [];
-    visibleEvents = [];
-
-    if (events && events.length > 0) {
-      visibleEvents = events.filter((evt) => {
-        return (
-          (currentReportSelection.showDeleted && evt.isDeleted) ||
-          (currentReportSelection.showInactive && !evt.isActive && !evt.isDeleted) ||
-          (currentReportSelection.showHidden && evt.isHidden) ||
-          (!evt.isHidden &&
-            !currentReportSelection.showDeleted &&
-            !evt.isDeleted &&
-            !currentReportSelection.showInactive &&
-            evt.isActive)
-        );
-      });
-    }
-
-    if (visibleEvents.length > 0 && searchTerm && searchTerm.length >= 2) {
-      const srch = searchTerm.toLowerCase();
-      filteredEvents = visibleEvents.filter((evt) => {
-        return (
-          evt.title.toLowerCase().includes(srch) ||
-          evt.venue?.name?.toLowerCase().includes(srch) ||
-          evt.venue?.city?.toLowerCase().includes(srch) ||
-          evt.venue?.state?.toLowerCase().includes(srch) ||
-          evt.venue?.country?.toLowerCase().includes(srch)
-        );
-      });
-    } else {
-      filteredEvents = visibleEvents;
-    }
-    return filteredEvents;
-  };
-
-  const rows = [];
-  let totalEvents = 0;
-  let totalTickets = 0;
-  let totalRevenue = 0.0;
-  let totalOrders = 0;
-  let ticketsRefunded = 0;
-  let revenueRefunded = 0;
-  let totalServiceFees = 0;
-  let serviceFeesRefunded = 0;
-
-  if (vipEvents && vipEvents.length > 0) {
-    if (windowSize.isMobile || vipEvents.length > 10) {
-      searchBarHidden = false;
-    }
-    const filteredEvents = filterEvents(vipEvents);
-
-    totalEvents = filteredEvents.length;
-    ticketData = getTicketData(filteredEvents);
-
-    let i = 0;
-    for (const evt of filteredEvents) {
-      const key = `ev${i}`;
-      if (windowSize.isMobile) {
-        rows.push(
-          <EventMobileRow
-            key={key}
-            VipEvent={evt}
-            HideRevenue={false}
-            HideServiceFees={false}
-            CanCheckInTickets={false}
-            ShowNotes={true} 
-            OnShowNoteDialog={openNoteDialog}
-          />,
-        );
-      } else {
-        rows.push(
-          <EventRow
-            key={key}
-            VipEvent={evt}
-            HideRevenue={false}
-            HideServiceFees={false}
-            ShowNotes={true}
-            OnShowNoteDialog={openNoteDialog}
-          />,
-        );
-      }
-
-      if (!evt.isDeleted) {
-        totalTickets += evt.totalTickets;
-        revenueRefunded += evt.revenueRefunded ?? 0;
-        totalRevenue += evt.totalRevenue - (evt.revenueRefunded ?? 0);
-        ticketsRefunded += evt.numTicketsRefunded ?? 0;
-        
-        totalOrders += evt.orders?.filter(x => !x.isComped)?.length ?? 0;
-        serviceFeesRefunded += evt.serviceFeeRevenueRefunded ?? 0;
-        totalServiceFees += evt.totalServiceFees - (evt.serviceFeeRevenueRefunded ?? 0);        
-      }
-      i++;
-    }
-  }
+  const startOfWeek = currentReportSelection.start ? moment.unix(currentReportSelection.start).format('YYYY-MM-DD') : undefined;
 
   return (
     <>
-      <Container fluid hidden={!isLoading}>
-        <Row>
-          <Col className="spinner-container">
-            <CirclesWithBar height="100" width="100" color="#d12610" />
-          </Col>
-        </Row>
-      </Container>
-      <div hidden={isLoading}>
-        <input
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="form-control search-text-input no-print"
-          placeholder="Search for events..."
-          hidden={searchBarHidden || !visibleEvents || visibleEvents.length == 0}
-        />
-        <WidgetBar
-          TotalShows={totalEvents}
-          TicketData={ticketData}
-          TotalTickets={totalTickets}
-          TotalRevenue={totalRevenue}
-          HideRevenue={false}
-          TicketsRefunded={ticketsRefunded}
-          TotalServiceFees={totalServiceFees}
-          HideServiceFees={false}
-          RevenueRefunded={revenueRefunded}
-          ServiceFeesRefunded={serviceFeesRefunded}
-          HideTicketBreakDown={true}
-        />
-        <Row className="results-container">
-          <Col className="results-col">
-            {visibleEvents && visibleEvents.length > 0 ? (
-              <table className="resultsTable">
-                <thead hidden={windowSize.isMobile}>
-                  <tr>
-                    <th>Date</th>
-                    <th>Title</th>
-                    <th>Venue</th>
-                    <th>Location</th>
-                    <th>Tickets Sold</th>
-                    <th>Revenue (USD)</th>
-                    <th className="no-print">
-                      Service Fees
-                    </th>
-                    <th>Notes</th>
-                  </tr>
-                </thead>
-                <tbody>{rows}</tbody>
-                <tfoot hidden={windowSize.isMobile}>
-                  <tr>
-                    <td colSpan={4}>Total</td>
-                    <td className="pull-right">{totalTickets}</td>
-                    <td className="pull-right">
-                      {totalRevenue.toFixed(2)}
-                    </td>
-                    <td className="pull-right">
-                      {totalServiceFees.toFixed(2)}
-                    </td>
-                    <td></td>
-                  </tr>
-                </tfoot>
-              </table>
-            ) : (
-              ''
-            )}
-            {(!visibleEvents || visibleEvents.length == 0)
-             ? (
-              <Col className="no-events">No events found</Col>
-            ) : (
-              ''
-            )}
-          </Col>
-        </Row>
-      </div>
-      <Modal size={'sm'} open={open} onClose={handleClose}>
-        <Modal.Header>
-          <Modal.Title>Add Note To Event # {noteEventId}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <textarea onChange={(e) => setNote(e.currentTarget.textContent ?? undefined)}>{note}</textarea>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleClose} appearance="subtle">
-            Cancel
-          </Button>
-          <Button onClick={addNote} appearance="primary">
-            Add Note
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <Row>
+        <WeekView StartOfWeek={startOfWeek} Events={vipEvents} />
+      </Row>
+      <Row>
+        <Col>
+          <Table
+            shouldUpdateScroll={false} // Prevent the scrollbar from scrolling to the top after the table content area height changes.
+            autoHeight={true}
+            data={vipEvents}
+            rowKey={rowKey}
+            expandedRowKeys={expandedRowKeys}
+            rowExpandedHeight={260}
+            renderRowExpanded={renderRowExpanded}
+            rowClassName={(rowData: VipEvent) => {
+              return getEventStatusSlug(rowData);
+            }}
+          >
+            <Column flexGrow={1} minWidth={100}>
+              <HeaderCell>Date</HeaderCell>
+              <Cell>
+                {(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}
+              </Cell>
+            </Column>
+            <Column flexGrow={3}>
+              <HeaderCell>Title</HeaderCell>
+              <Cell>{(rowData: VipEvent) => rowData.title}</Cell>
+            </Column>
+            <Column flexGrow={2}>
+              <HeaderCell>Venue</HeaderCell>
+              <Cell>
+                {(rowData: VipEvent) => (rowData.venue ? rowData.venue.name : '')}
+              </Cell>
+            </Column>
+            <Column flexGrow={3}>
+              <HeaderCell>Location</HeaderCell>
+              <Cell>
+                {(rowData: VipEvent) => (rowData.venue ? getLocation(rowData.venue) : '')}
+              </Cell>
+            </Column>
+            <Column flexGrow={2}>
+              <HeaderCell>Event Status</HeaderCell>
+              <Cell>
+                {(rowData: VipEvent) => getEventStatusText(rowData as VipEvent)}
+              </Cell>
+            </Column>
+            <Column flexGrow={1}>
+              <HeaderCell>Tickets sold</HeaderCell>
+              <Cell>{(rowData: VipEvent) => rowData.totalTickets}</Cell>
+            </Column>
+            <Column flexGrow={1}>
+              <HeaderCell>Revenue</HeaderCell>
+              <Cell>{(rowData: VipEvent) => rowData.totalRevenue?.toFixed(2)}</Cell>
+            </Column>
+            <Column flexGrow={1}>
+              <HeaderCell>Service Fees</HeaderCell>
+              <Cell>{(rowData: VipEvent) => rowData.totalServiceFees?.toFixed(2)}</Cell>
+            </Column>
+            <Column width={70} align="center">
+              <HeaderCell>&nbsp;</HeaderCell>
+              <ExpandCell dataKey="id" expandedRowKeys={expandedRowKeys} onChange={handleExpanded} rowData={undefined} />
+            </Column>
+          </Table>
+        </Col>
+      </Row>
     </>
   );
 }

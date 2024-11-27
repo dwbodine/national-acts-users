@@ -5,6 +5,8 @@ import WeekDay from './weekDayComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { setAdminDateRange, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 
 export default function WeekView(props: any) {
     const startOfWeek = props.StartOfWeek ? moment(props.StartOfWeek).startOf('day') : undefined;
@@ -14,11 +16,27 @@ export default function WeekView(props: any) {
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
 
     const previousWeek = () => {
-
+        let reportSelection = { ...currentReportSelection };
+        if (!reportSelection || !reportSelection.start) {
+            return;
+        }
+        reportSelection.start = moment.unix(reportSelection.start).startOf('week').add(-6, 'day').startOf('day').unix();
+        reportSelection.end = moment(reportSelection.start).startOf('week').startOf('day').unix();
+        dispatch(setIsLoading(true));
+        dispatch(setAdminDateRange(reportSelection));
+        dispatch(setReloadAdminEvents(true));
     };
 
     const nextWeek = () => {
-
+        let reportSelection = { ...currentReportSelection };
+        if (!reportSelection || !reportSelection.start) {
+            return;
+        }
+        reportSelection.start = moment.unix(reportSelection.start).startOf('week').add(8, 'day').startOf('day').unix();
+        reportSelection.end = moment(reportSelection.start).startOf('week').add(14, 'days').startOf('day').unix();
+        dispatch(setIsLoading(true));
+        dispatch(setAdminDateRange(reportSelection));
+        dispatch(setReloadAdminEvents(true));
     };
 
     let weekdays: any[] = [];
@@ -33,14 +51,15 @@ export default function WeekView(props: any) {
                 WeekDate={displayDate.format('YYYY-MM-DD')}
                 Events={filteredEvents}
             />);
+            displayDate = displayDate.add(1, 'day');
         }
     }
 
     return (
         <Col className="week-view">
             <Row className="week-view-action">
-                <Col className="week-view-action-previous"><a onClick={previousWeek}><FaArrowLeft />Previous</a></Col>
-                <Col className="week-view-action-next"><a onClick={nextWeek}>Next<FaArrowRight /></a></Col>
+                <Col className="week-view-action-previous"><a href="#" onClick={previousWeek}><FaArrowLeft />Previous</a></Col>
+                <Col className="week-view-action-next"><a href="#" onClick={nextWeek}>Next<FaArrowRight /></a></Col>
             </Row>
             <Row className="week-view-calendar">
                 {weekdays}

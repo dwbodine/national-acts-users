@@ -313,6 +313,7 @@ export default function CurrentEvents() {
                     <th>Title</th>
                     <th>Venue</th>
                     <th>Location</th>
+                    <th>Status</th>
                     <th>Tickets Sold</th>
                     <th hidden={hideRevItem}>Revenue (USD)</th>
                     <th className="no-print" hidden={hideServiceFees}>
@@ -323,7 +324,7 @@ export default function CurrentEvents() {
                 <tbody>{rows}</tbody>
                 <tfoot hidden={windowSize.isMobile}>
                   <tr>
-                    <td colSpan={4}>Total</td>
+                    <td colSpan={5}>Total</td>
                     <td className="pull-right">{totalTickets}</td>
                     <td className="pull-right" hidden={hideRevItem}>
                       {totalRevenue.toFixed(2)}

@@ -6,6 +6,7 @@ import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { RootState } from '@/lib/store';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
+import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 
 export default function EventMobileRow(props: any) {
   const vipEvent = props.VipEvent as VipEvent;
@@ -18,19 +19,17 @@ export default function EventMobileRow(props: any) {
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const currentSellerType = currentReportSelection.seller.sellerType;
   const id = `event_${vipEvent.ticketSocketEventId}`;
+  const { getEventStatusText, getEventStatusSlug } = useGetEventStatus();
 
   const setDetailEvent = () => {
     const url = `/event/?id=${vipEvent.ticketSocketEventId}`;
     window.open(url, '_blank');
   };
 
+  const statusSlug = getEventStatusSlug(vipEvent);
   let statusClass = '';
-  if (props.VipEvent.isDeleted) {
-    statusClass += 'event-deleted';
-  } else if (!props.VipEvent.isActive) {
-    statusClass += 'event-inactive';
-  } else if (props.VipEvent.isHidden) {
-    statusClass += 'event-hidden';
+  if (statusSlug != 'active') {
+    statusClass = `event-${statusSlug}`
   }
 
   const venueName = vipEvent.venue?.name;
