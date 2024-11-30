@@ -19,6 +19,13 @@ export interface ShirtSales {
   total?: number;
 }
 
+export interface Note {
+  noteId: number;
+  ticketSocketEventId?: number;
+  note: string;
+  noteTimestamp: string;
+}
+
 export interface Ticket {
   ticketSocketOrderTicketId: number;
   ticketSocketOrderId?: number;
@@ -163,6 +170,15 @@ export interface VipEvent {
   isCancelled?: boolean;
   cancelledDate?: string;
   announceDate?: string;
+  doorsOpen?: string;
+  meetAndGreetTime?: string;
+  emailSentToVips?: boolean;
+  listSentToBand?: boolean;
+  listSentTime?: string;
+  listSentNumVips?: number;
+  checkInLocation?: string;
+  checkInNotes?: string;
+  notes?: Note[]
 }
 
 export interface TicketSocketRefreshHistory {
@@ -206,6 +222,12 @@ export interface GetEventsResponse {
   events?: VipEvent[];
   statusCode?: number;
   eventError?: string;
+}
+
+export interface GetNotesResponse {
+  notes?: Note[];
+  statusCode?: number;
+  noteError?: string;
 }
 
 export interface GetDashboardOrdersResponse {

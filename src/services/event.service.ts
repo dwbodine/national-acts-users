@@ -18,6 +18,8 @@ import {
   RefreshHistoryResponse,
   TicketSocketRefreshHistory,
   GetRefreshHistoryResponse,
+  GetNotesResponse,
+  Note,
 } from '../types/event';
 import {
   AdminDashboardSelection,
@@ -678,6 +680,44 @@ export class EventService {
             'Unknown error while fetching event refresh history from TicketSocket - please contact your administrator';
         }
         refreshResponse.refreshError = errorMessage;
+        return refreshResponse;
+      });
+  };
+
+  getCalendarNotes = async (): Promise<GetNotesResponse> => {
+    let url = `/admin/notes/calendar`;
+
+    let refreshResponse: GetNotesResponse = {
+      notes: undefined,
+      noteError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        refreshResponse.notes = res.data
+          ? (res.data as Note[])
+          : undefined;
+        return refreshResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          refreshResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching calendar notes from TicketSocket - please contact your administrator';
+        }
+        refreshResponse.noteError = errorMessage;
         return refreshResponse;
       });
   };
