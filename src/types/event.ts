@@ -178,7 +178,7 @@ export interface VipEvent {
   listSentNumVips?: number;
   checkInLocation?: string;
   checkInNotes?: string;
-  notes?: Note[]
+  notes?: Note[];
 }
 
 export interface TicketSocketRefreshHistory {

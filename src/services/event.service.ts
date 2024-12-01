@@ -700,9 +700,7 @@ export class EventService {
         headers: headers,
       })
       .then((res) => {
-        refreshResponse.notes = res.data
-          ? (res.data as Note[])
-          : undefined;
+        refreshResponse.notes = res.data ? (res.data as Note[]) : undefined;
         return refreshResponse;
       })
       .catch((err) => {

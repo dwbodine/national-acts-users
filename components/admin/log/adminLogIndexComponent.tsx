@@ -22,7 +22,7 @@ export default function AdminLogIndex() {
       if (cronLogs == undefined) {
         getAllCronLogs().then((response) => {
           if (response.logs && !response.errorMessage) {
-            setCronLogs(response.logs.split('\n'));
+            setCronLogs(response.logs.split('\r\n'));
           }
         });
       }

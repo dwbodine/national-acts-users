@@ -313,7 +313,6 @@ export default function CurrentEvents() {
                     <th>Title</th>
                     <th>Venue</th>
                     <th>Location</th>
-                    <th>Status</th>
                     <th>Tickets Sold</th>
                     <th hidden={hideRevItem}>Revenue (USD)</th>
                     <th className="no-print" hidden={hideServiceFees}>
