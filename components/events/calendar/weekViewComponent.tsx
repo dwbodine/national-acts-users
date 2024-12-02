@@ -47,7 +47,7 @@ export default function WeekView(props: any) {
             if (events && events.length > 0) {
                 filteredEvents = events.filter(x => moment(x.eventDate).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.eventDate).valueOf() < displayDate.endOf('day').valueOf());
             }
-            weekdays.push(<WeekDay
+            weekdays.push(<WeekDay key={i} WeekDayNumber={i}
                 WeekDate={displayDate.format('YYYY-MM-DD')}
                 Events={filteredEvents}
             />);

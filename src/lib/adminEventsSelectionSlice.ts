@@ -13,6 +13,7 @@ const initialState: EventReportSelection = {
   currentEvents: [],
   expandedRows: [],
   showHidden: false,
+  focusControl: '',
 };
 
 export const adminEventsSelectionSlice = createSlice({
@@ -59,6 +60,10 @@ export const adminEventsSelectionSlice = createSlice({
       state.expandedRows = action.payload;
       return state;
     },
+    setFocusControl: (state, action: PayloadAction<string>) => {
+      state.focusControl = action.payload;
+      return state;
+    },
     resetAdminSelection: (state) => {
       state.start = moment().startOf('week').add(1, 'day').startOf('day').unix();
       state.end = moment().startOf('week').add(7, 'days').endOf('day').unix();
@@ -68,6 +73,7 @@ export const adminEventsSelectionSlice = createSlice({
       state.currentEvents = [];
       state.showHidden = false;
       state.expandedRows = [];
+      state.focusControl = '';
       return state;
     },
     resetAllAdminEvents: (state) => {
@@ -79,6 +85,7 @@ export const adminEventsSelectionSlice = createSlice({
       state.currentEvents = [];
       state.showHidden = false;
       state.expandedRows = [];
+      state.focusControl = '';
       return state;
     },
   },
@@ -94,6 +101,7 @@ export const {
   resetAllAdminEvents,
   setShowHidden,
   setExpandedRows,
+  setFocusControl,
 } = adminEventsSelectionSlice.actions;
 
 export default adminEventsSelectionSlice.reducer;

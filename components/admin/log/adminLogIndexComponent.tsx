@@ -22,7 +22,7 @@ export default function AdminLogIndex() {
       if (cronLogs == undefined) {
         getAllCronLogs().then((response) => {
           if (response.logs && !response.errorMessage) {
-            setCronLogs(response.logs.split('\r\n'));
+            setCronLogs(response.logs.split('\\r\\n'));
           }
         });
       }
@@ -42,7 +42,7 @@ export default function AdminLogIndex() {
   let cronLogRows: any[] = [];
   if (cronLogs && cronLogs.length > 0) {
     for (const log of cronLogs) {
-      cronLogRows.push(<p>{log}</p>);
+      cronLogRows.push(<p>{log.replaceAll('"', '')}</p>);
     }
   }
 
@@ -50,7 +50,7 @@ export default function AdminLogIndex() {
     <>
       <Container fluid>
         <Row>
-          <h5>Cron Log - {moment().format('YYYY-DD-MM HH:mm:ss')}</h5>
+          <h5>Cron Log - {moment().format('YYYY-MM-DD HH:mm:ss')}</h5>
         </Row>
         <Row>
           <Col className="log-table">
@@ -58,7 +58,7 @@ export default function AdminLogIndex() {
           </Col>
         </Row>
         <Row>
-          <h5>API Error Log - {moment().format('YYYY-DD-MM HH:mm:ss')}</h5>
+          <h5>API Error Log - {moment().format('YYYY-MM-DD HH:mm:ss')}</h5>
         </Row>
         <Row>
           <Col className="log-table">

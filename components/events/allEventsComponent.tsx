@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../src/lib/store';
-import { setAdminEvents, setReloadAdminEvents, setExpandedRows } from '@/lib/adminEventsSelectionSlice';
+import { setAdminEvents, setReloadAdminEvents, setExpandedRows, setFocusControl } from '@/lib/adminEventsSelectionSlice';
 import { VipEvent } from '@/types/event';
 import { useEffect } from 'react';
 import moment from 'moment';
@@ -17,6 +17,8 @@ import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
+import setFocusToControl from '@/utils/setFocusToControl';
+import EventDataExpanded from '../common/eventDataExpandedComponent';
 
 export default function AllEvents() {
   const { Column, HeaderCell, Cell } = Table;
@@ -54,11 +56,9 @@ export default function AllEvents() {
     </Cell>
   );
 
-  const renderRowExpanded = (rowData: VipEvent | undefined) => {
+  const renderRowExpanded = (vipEvent: VipEvent | undefined) => {
     return (
-      <div className="expanded-event-row">
-        <p>{rowData?.title}</p>
-      </div>
+      <EventDataExpanded VipEvent={vipEvent} ShowEditButton={true} />
     );
   };
 
@@ -86,10 +86,11 @@ export default function AllEvents() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentReportSelection.reloadEvents) {
+      if (currentReportSelection && currentReportSelection.reloadEvents &&
+        currentReportSelection.start && currentReportSelection.end) {
         dispatch(setReloadAdminEvents(false));
         dispatch(setIsLoading(true));
-        getAllEvents(currentReportSelection?.start ?? 0, currentReportSelection?.end ?? 0).then((response) => {
+        getAllEvents(currentReportSelection.start, currentReportSelection.end).then((response) => {
           if (!response.eventError && response.events) {
             dispatch(setAdminEvents(response.events));
           } else if (response.statusCode == 401 || response.statusCode == 422) {
@@ -99,6 +100,16 @@ export default function AllEvents() {
           }
           dispatch(setIsLoading(false));
         });
+      }
+      if (
+        currentReportSelection.focusControl &&
+        currentReportSelection.focusControl != ''
+      ) {
+        const focusControl: string = currentReportSelection.focusControl;
+        setTimeout(() => {
+          setFocusToControl(focusControl);
+        }, 50);
+        dispatch(setFocusControl(''));
       }
     }, 300);
     return () => {
@@ -132,6 +143,7 @@ export default function AllEvents() {
             rowClassName={(rowData: VipEvent) => {
               return getEventStatusSlug(rowData);
             }}
+            
           >
             <Column flexGrow={1} minWidth={100}>
               <HeaderCell>Date</HeaderCell>
@@ -175,7 +187,7 @@ export default function AllEvents() {
             </Column>
             <Column width={70} align="center">
               <HeaderCell>&nbsp;</HeaderCell>
-              <ExpandCell dataKey="id" expandedRowKeys={expandedRowKeys} onChange={handleExpanded} rowData={undefined} />
+              <ExpandCell dataKey="id" expandedrowkeys={expandedRowKeys} onChange={handleExpanded} rowData={undefined} />
             </Column>
           </Table>
         </Col>
