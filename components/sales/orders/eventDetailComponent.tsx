@@ -20,7 +20,7 @@ import downloadFile from '@/utils/downloadFile';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { CirclesWithBar } from 'react-loader-spinner';
 import PrintButton from '../../common/printButtonComponent';
-import { useGetEventDetails } from '@/hooks/order/useGetEventDetails';
+import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import {
@@ -55,7 +55,7 @@ export default function EventDetail(props: any) {
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const [checkChanged, setCheckChanged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { getEventDetails } = useGetEventDetails();
+  const { getEventById } = useGetEventById();
   const { getUserSellerFromEventId } = useGetUserSeller();
   const dispatch = useDispatch();
   const [hideRevItem, setHideRevItem] = useState(true);
@@ -180,9 +180,9 @@ export default function EventDetail(props: any) {
           if (!viewInactiveOrders) {
             reportSelection.showInactiveOrders = false;
           }
-          const results = await getEventDetails(id);
-          if (results && results.events && results.events.length > 0) {
-            let newEvent: VipEvent = results.events[0];
+          const results = await getEventById(id);
+          if (results && results.event) {
+            let newEvent: VipEvent = results.event;
             if (newEvent) {
               if (newEvent.orders && newEvent.orders.length > 0) {
                 let orders: Order[] = [];
@@ -263,7 +263,7 @@ export default function EventDetail(props: any) {
     id,
     currentReportSelection,
     dispatch,
-    getEventDetails,
+    getEventById,
     alwaysShowRevenue,
     viewInactiveOrders,
     viewRevenueData,

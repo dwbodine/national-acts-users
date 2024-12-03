@@ -18,18 +18,37 @@ import { ModifyOrderResponse } from '@/types/event';
 import moment from 'moment';
 import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
 import { DatePicker } from 'rsuite';
+import { useGetOrderById } from '@/hooks/common/useGetOrderById';
 
-export default function AdminOrderEdit() {
+export default function AdminOrderEdit(props: any) {
+  const id: number | undefined = props.Id as number;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
   const { refundOrder } = useRefundOrder();
   const { refundTicket } = useRefundTicket();
   const { updateOrder } = useUpdateOrder();
+  const { getOrderById } = useGetOrderById();
   const { getOrderStatusText } = useGetOrderStatus();
   const [markChargeback, setMarkChargeback] = useState<boolean>(false);
   const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
 
-  useEffect(() => {}, [currentAdminSelection]);
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (currentAdminSelection.selectedOrder == undefined && id != undefined) {
+        getOrderById(id)
+          .then((response) => {
+            if (response.order && !response.orderError) {
+               dispatch(
+                  setAdminOrder(response.order)
+               );
+            }
+          })
+      }
+    }, 300);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [currentAdminSelection, dispatch, getOrderById, id]);
 
   const setPrice = (ticketId: number, newPrice: number): any => {
     if (
@@ -66,11 +85,15 @@ export default function AdminOrderEdit() {
   };
 
   const goBack = (dismissToast: boolean = true) => {
-    if (dismissToast) {
+    if (!id && dismissToast) {
       toast.dismiss();
     }
     dispatch(setMustSaveOrder(false));
-    router.push('/admin/events/orders/');
+    let path = '/admin/events/orders/';
+    if (id && currentAdminSelection.selectedOrder) {
+      path += `?id=${currentAdminSelection.selectedOrder.ticketSocketEventId}`;
+    } 
+    router.push(path);   
   };
 
   const confirmGoBack = () => {

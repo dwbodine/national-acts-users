@@ -17,8 +17,10 @@ import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
+import { useGetEventById } from '@/hooks/common/useGetEventById';
 
-export default function AdminOrdersIndex() {
+export default function AdminOrdersIndex(props: any) {
+  const id: number | undefined = props.Id as number;
   const { Column, HeaderCell, Cell } = Table;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const [tableLoading, setTableLoading] = useState(true);
@@ -27,10 +29,20 @@ export default function AdminOrdersIndex() {
   const { getOrderStatusSlug, getOrderStatusText } = useGetOrderStatus();
   const { getEventStatusText } = useGetEventStatus();
   const { getAdminEvents } = useGetAdminEvents();
+  const { getEventById } = useGetEventById();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.reloadEvents) {
+      if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
+        getEventById(id)
+          .then((response) => {
+            if (response.event && !response.eventError) {
+              dispatch(
+                setAdminEvent(response.event)
+              );
+            }
+          })
+      } else if (currentAdminSelection.reloadEvents) {
         let adminSelection = { ...currentAdminSelection };
         let selectedEventId = adminSelection.selectedEvent?.ticketSocketEventId;
         dispatch(setReloadEvents(false));
@@ -61,12 +73,12 @@ export default function AdminOrdersIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, tableLoading, dispatch, getAdminEvents]);
+  }, [currentAdminSelection, tableLoading, dispatch, getAdminEvents, getEventById, id]);
 
   const viewOrder = (ticketSocketOrderId: number) => {
     if (
       !ticketSocketOrderId ||
-      isNaN(ticketSocketOrderId) || 
+      isNaN(ticketSocketOrderId) ||
       !currentAdminSelection.selectedEvent ||
       !currentAdminSelection.selectedEvent.orders
     ) {
@@ -80,12 +92,20 @@ export default function AdminOrdersIndex() {
     }
     dispatch(setAdminOrder(order));
     setTableLoading(true);
-    router.push('/admin/events/orders/edit');
+    let path = '/admin/events/orders/edit/';
+    if (id) {
+      path += `?id=${order.ticketSocketOrderId}`;
+    }
+    router.push(path);        
   };
 
   const goBack = () => {
-    dispatch(setAdminEvent(undefined));
-    router.push('/admin/events/');
+    if (!id) {
+      dispatch(setAdminEvent(undefined));
+      router.push('/admin/events/');
+    } else {
+      router.push(`/admin/events/edit/?id=${id}`);
+    }    
   };
 
   const location =

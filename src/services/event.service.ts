@@ -20,6 +20,9 @@ import {
   GetRefreshHistoryResponse,
   GetNotesResponse,
   Note,
+  GetEventResponse,
+  GetOrderResponse,
+  ModifyNoteResponse,
 } from '../types/event';
 import {
   AdminDashboardSelection,
@@ -303,11 +306,11 @@ export class EventService {
       });
   };
 
-  getEventDetail = async (eventId: number): Promise<GetEventsResponse> => {
+  getEventById = async (eventId: number): Promise<GetEventResponse> => {
     let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&tsEventId=${eventId}`;
 
-    let eventResponse: GetEventsResponse = {
-      events: undefined,
+    let eventResponse: GetEventResponse = {
+      event: undefined,
       eventError: undefined,
       statusCode: 200,
     };
@@ -319,8 +322,8 @@ export class EventService {
         headers: headers,
       })
       .then((res) => {
-        const events = res.data;
-        eventResponse.events = events.length ? (events as VipEvent[]) : [];
+        const events = res.data as VipEvent[];
+        eventResponse.event = events.length ? events[0] : undefined;
         return eventResponse;
       })
       .catch((err) => {
@@ -333,10 +336,47 @@ export class EventService {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage =
-            'Unknown error while fetching events - please contact your administrator';
+            'Unknown error while fetching event - please contact your administrator';
         }
         eventResponse.eventError = errorMessage;
         return eventResponse;
+      });
+  };
+
+  getOrderById = async (orderId: number): Promise<GetOrderResponse> => {
+    let url = `/user/orderById?tsOrderId=${orderId}`;
+
+    let orderResponse: GetOrderResponse = {
+      order: undefined,
+      orderError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        const orders = res.data as Order[];
+        orderResponse.order = orders.length ? orders[0] : undefined;
+        return orderResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          orderResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching order - please contact your administrator';
+        }
+        orderResponse.orderError = errorMessage;
+        return orderResponse;
       });
   };
 
@@ -418,6 +458,51 @@ export class EventService {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage = 'Unknown error while issuing event refund';
+        }
+        eventResponse.eventError = errorMessage;
+        return eventResponse;
+      });
+  };
+
+  sendListToBand = async (
+    eventId: number,
+    isSent: boolean,
+  ): Promise<ModifyEventResponse> => {
+    let url = '/admin/events/sendListToBand';
+
+    let eventResponse: ModifyEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const eventData = {
+      eventId: eventId,
+      isSent: isSent ? 1 : 0,
+    };
+
+    const data = JSON.stringify(eventData);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        eventResponse.success = res.status == 200;
+        return eventResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          eventResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while marking list as sent to band';
         }
         eventResponse.eventError = errorMessage;
         return eventResponse;
@@ -681,6 +766,59 @@ export class EventService {
         }
         refreshResponse.refreshError = errorMessage;
         return refreshResponse;
+      });
+  };
+
+  addNote = async (
+    note: string,
+    eventId?: number,
+    calendarDate?: string,
+  ): Promise<ModifyNoteResponse> => {
+    const url = '/admin/notes/add';
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyNoteResponse = {
+      success: false,
+      noteError: undefined,
+      statusCode: 200,
+    };
+
+    if (eventId) {
+      calendarDate = undefined;
+    }
+
+    const data = {
+      note: note,
+      eventId: eventId,
+      calendarDate: calendarDate,
+    };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        if (!modifyResponse.success) {
+          modifyResponse.noteError =
+            'Unexpected error occurred while adding note - please contact your administrator';
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while adding note - please contact your administrator';
+        }
+        modifyResponse.noteError = errorMessage;
+        return modifyResponse;
       });
   };
 

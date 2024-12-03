@@ -173,6 +173,7 @@ export interface VipEvent {
   doorsOpen?: string;
   meetAndGreetTime?: string;
   emailSentToVips?: boolean;
+  textSentToVips?: boolean;
   listSentToBand?: boolean;
   listSentTime?: string;
   listSentNumVips?: number;
@@ -224,6 +225,12 @@ export interface GetEventsResponse {
   eventError?: string;
 }
 
+export interface GetEventResponse {
+  event?: VipEvent;
+  statusCode?: number;
+  eventError?: string;
+}
+
 export interface GetNotesResponse {
   notes?: Note[];
   statusCode?: number;
@@ -238,6 +245,12 @@ export interface GetDashboardOrdersResponse {
 
 export interface GetOrdersResponse {
   orders?: Order[];
+  statusCode?: number;
+  orderError?: string;
+}
+
+export interface GetOrderResponse {
+  order?: Order;
   statusCode?: number;
   orderError?: string;
 }
@@ -264,6 +277,12 @@ export interface ModifyOrderResponse {
   success: boolean;
   statusCode?: number;
   orderError?: string;
+}
+
+export interface ModifyNoteResponse {
+  success: boolean;
+  statusCode?: number;
+  noteError?: string;
 }
 
 export interface ModifyTicketResponse {

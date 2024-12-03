@@ -608,6 +608,35 @@ input[type='number']:hover {
   padding: 10px;
 }
 
+.expand-edit-notes {
+  text-align: left;
+}
+
+.expand-edit-notes button {
+  padding: 0 3px;
+  margin: 0 5px;
+}
+
+.expand-edit-event {
+  text-align: right;
+  padding: 0;
+}
+
+.expand-edit-event button {
+  padding: 0 3px;
+}
+
+.note-created {
+  font-size: 0.75em;
+  font-style: italic;
+  color: orange;
+  margin: 0 5px;
+}
+
+.modal-notes-footer button {
+  margin: 0 0 0 10px;
+}
+
 /* MOBILE CSS */
 
 .mobile-event-card-container {
