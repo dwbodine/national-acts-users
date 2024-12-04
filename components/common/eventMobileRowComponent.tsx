@@ -98,6 +98,10 @@ export default function EventMobileRow(props: any) {
             <Col>Tickets sold:</Col>
             <Col>{vipEvent.totalTickets}</Col>
           </Row>
+          <Row>
+            <Col>Tickets comped:</Col>
+            <Col>{vipEvent.numTicketsComped}</Col>
+          </Row>
           <Row hidden={!canCheckInTickets} className="no-print">
             <Col>Checked in:</Col>
             <Col>
@@ -105,7 +109,7 @@ export default function EventMobileRow(props: any) {
             </Col>
           </Row>
           <Row>
-            <Col>Ticket types sold:</Col>
+            <Col>Ticket type breakdown:</Col>
             <Col>{ticketBreakdownRows}</Col>
           </Row>
           <Row hidden={hideRevItem}>

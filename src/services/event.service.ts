@@ -825,6 +825,98 @@ export class EventService {
       });
   };
 
+  editNote = async (
+    noteId: number,
+    note: string,
+    noteTitle?: string,
+  ): Promise<ModifyNoteResponse> => {
+    const url = '/admin/notes/edit';
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyNoteResponse = {
+      success: false,
+      noteError: undefined,
+      statusCode: 200,
+    };
+
+    const data = {
+      noteId: noteId,
+      note: note,
+      noteTitle: noteTitle,
+    };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        if (!modifyResponse.success) {
+          modifyResponse.noteError =
+            'Unexpected error occurred while editing note - please contact your administrator';
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while editing note - please contact your administrator';
+        }
+        modifyResponse.noteError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  deleteNote = async (noteId: Number): Promise<ModifyNoteResponse> => {
+    const url = '/admin/notes/delete';
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyNoteResponse = {
+      success: false,
+      noteError: undefined,
+      statusCode: 200,
+    };
+
+    const data = {
+      noteId: noteId,
+    };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        if (!modifyResponse.success) {
+          modifyResponse.noteError =
+            'Unexpected error occurred while deleting note - please contact your administrator';
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while deleting note - please contact your administrator';
+        }
+        modifyResponse.noteError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
   getCalendarNotes = async (start: number, end: number): Promise<GetNotesResponse> => {
     let url = `/admin/notes/calendar?start=${start}&end=${end}`;
 
@@ -1533,7 +1625,7 @@ export class EventService {
     const ticketData: ITicketData = getTicketDataFromEvents(events);
     const ticketTypes = ticketData?.TicketTypes;
     if (ticketTypes?.length > 0) {
-      exportStr += '"Ticket Types sold:"\n';
+      exportStr += '"Ticket Type breakdown:"\n';
       let arr: any = [];
       ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
         ticketTypes.forEach((ticketType: TicketType) => {
@@ -1820,7 +1912,7 @@ export class EventService {
     const ticketData = getTicketDataFromEvents([vipEvent]);
     const ticketTypes = ticketData?.TicketTypes;
     if (ticketTypes?.length > 0) {
-      exportStr += '"Ticket Types Sold:"\n';
+      exportStr += '"Ticket Type breakdown:"\n';
       exportStr += '"Type","Number"\n';
       ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
         ticketTypes.forEach((ticketType: TicketType) => {

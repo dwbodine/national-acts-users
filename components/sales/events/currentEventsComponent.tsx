@@ -208,6 +208,7 @@ export default function CurrentEvents() {
   const rows = [];
   let totalEvents = 0;
   let totalTickets = 0;
+  let totalTicketsComped = 0;
   let totalRevenue = 0.0;
   let totalShirts = 0;
   let totalOrders = 0;
@@ -253,6 +254,7 @@ export default function CurrentEvents() {
 
       if (!evt.isDeleted) {
         totalTickets += evt.totalTickets;
+        totalTicketsComped += evt.numTicketsComped ?? 0;
         revenueRefunded += evt.revenueRefunded ?? 0;
         totalRevenue += evt.totalRevenue - (evt.revenueRefunded ?? 0);
         ticketsRefunded += evt.numTicketsRefunded ?? 0;
@@ -286,7 +288,7 @@ export default function CurrentEvents() {
         <WidgetBar
           TotalShows={totalEvents}
           TicketData={ticketData}
-          TotalTickets={totalTickets}
+          TotalTickets={totalTickets + totalTicketsComped}
           ShirtData={shirtData}
           TotalShirts={totalShirts}
           TotalRevenue={totalRevenue}
@@ -314,6 +316,7 @@ export default function CurrentEvents() {
                     <th>Venue</th>
                     <th>Location</th>
                     <th>Tickets Sold</th>
+                    <th>Tickets Comped</th>
                     <th hidden={hideRevItem}>Revenue (USD)</th>
                     <th className="no-print" hidden={hideServiceFees}>
                       Service Fees
@@ -325,6 +328,7 @@ export default function CurrentEvents() {
                   <tr>
                     <td colSpan={4}>Total</td>
                     <td className="pull-right">{totalTickets}</td>
+                    <td className="pull-right">{totalTicketsComped}</td>
                     <td className="pull-right" hidden={hideRevItem}>
                       {totalRevenue.toFixed(2)}
                     </td>

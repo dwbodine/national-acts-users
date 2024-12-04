@@ -120,7 +120,7 @@ export default function OrderMobileRow(props: any) {
             <Col>{eventName}</Col>
           </Row>
           <Row>
-            <Col className="mobile-bold">Ticket types sold:</Col>
+            <Col className="mobile-bold">Ticket type breakdown:</Col>
             <Col>{ticketTypeRows}</Col>
           </Row>
           <Row hidden={hideRev}>

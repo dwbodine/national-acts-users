@@ -604,6 +604,17 @@ input[type='number']:hover {
   background-color: rgb(254, 216, 0);
 }
 
+.week-day-note .note-text {
+  width: calc(100% - 20px);
+  display: inline-flex;
+}
+
+.week-day-note .note-x {
+  width: 20px;
+  text-align: right;
+  float: right;
+}
+
 .week-day-event + .inactive {
   background-color: red;
 }

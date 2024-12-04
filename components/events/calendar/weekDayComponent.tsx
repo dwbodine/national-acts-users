@@ -9,6 +9,10 @@ import { Modal } from 'rsuite';
 import { useState } from 'react';
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { toast } from 'react-toastify';
+import { useEditNote } from '@/hooks/admin/useEditNote';
+import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
+import { FaX } from 'react-icons/fa6';
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
 
 export default function WeekDay(props: any) {
     const dispatch = useDispatch();
@@ -22,18 +26,23 @@ export default function WeekDay(props: any) {
     const [displayNoteOpen, setDisplayNoteOpen] = useState(false);
     const [noteText, setNoteText] = useState('');
     const [noteTitle, setNoteTitle] = useState('');
+    const [noteId, setNoteId] = useState(0);
     const [displayNoteText, setDisplayNoteText] = useState('');
     const [displayNoteTitle, setDisplayNoteTitle] = useState('');
     const { addNote } = useAddNote();
+    const { editNote } = useEditNote();
+    const { deleteNote } = useDeleteNote();
 
     const handleNotesOpen = () => setNotesOpen(true);
-    const handleDisplayNoteOpen = (noteText: string, noteTitle: string) => {
+    const handleDisplayNoteOpen = (noteId: number, noteText: string, noteTitle: string) => {
+        setNoteId(noteId);
         setDisplayNoteTitle(noteTitle);
         setDisplayNoteText(noteText);
         setDisplayNoteOpen(true);
     };
     const handleNotesClose = () => setNotesOpen(false);
     const handleDisplayNoteClose = () => {
+        setNoteId(0);
         setDisplayNoteOpen(false);
         setDisplayNoteText('');
         setDisplayNoteTitle('');
@@ -58,6 +67,60 @@ export default function WeekDay(props: any) {
             });
     };
 
+    const editNewNote = () => {
+        if (!weekDate || !displayNoteText || !displayNoteTitle || noteId == 0) {
+            return;
+        }
+        editNote(noteId, displayNoteText, displayNoteTitle)
+            .then((response) => {
+                if (response.success && !response.noteError) {
+                    toast.success("Calendar note edited successfully");
+                    dispatch(setReloadAdminEvents(true));
+                } else {
+                    toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+                }
+                handleDisplayNoteClose();
+            });
+    };
+
+    const confirmDeleteNote = (noteId: number) => {
+        if (!noteId) {
+            return;
+        }
+    
+        let message: string =
+        'You are about to delete this note';
+        const toastId = toast.warning(
+        <ConfirmationDialog
+            Message={message}
+            ConfirmText="Yes"
+            CancelText="No"
+            OnConfirm={() => deleteSelectedNote(noteId)}
+            OnCancel={() => {
+                toast.dismiss();
+            }}
+        />,
+        {
+            position: 'top-center',
+            autoClose: false,
+            closeOnClick: false,
+        },
+        );
+    };
+    
+    const deleteSelectedNote = (noteId: number) => {
+        toast.dismiss();
+        deleteNote(noteId)
+            .then((response) => {
+                if (response.success && !response.noteError) {
+                    toast.success("Calendar note deleted");
+                    dispatch(setReloadAdminEvents(true));
+                } else {
+                    toast.error(response.noteError ?? "Unexpected error occurred while deleting note");
+                }
+            });
+    }
+
     const setRowExpanded = (ticketSocketEventId: number) => {
         let expandedRowKeys = currentReportSelection.expandedRows ? [...currentReportSelection.expandedRows] : [];
         let focusControlId = `expandedRow_${ticketSocketEventId}`;
@@ -66,7 +129,7 @@ export default function WeekDay(props: any) {
             focusControlId = '';
         } else {
             expandedRowKeys.push(ticketSocketEventId);
-        }        
+        }
         dispatch(
             setExpandedRows(expandedRowKeys)
         );
@@ -80,8 +143,11 @@ export default function WeekDay(props: any) {
         notes.forEach((note, i) => {
             if (!note.ticketSocketEventId) {
                 let noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
-                noteRows.push(<div key={`wdNote_${key}_${i}`} onClick={() => handleDisplayNoteOpen(note.note, note.noteTitle ?? '')} className="week-day-note">{noteText}</div>)
-            }            
+                noteRows.push(<div key={`wdNote_${key}_${i}`} className="week-day-note">
+                                    <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '')}>{noteText}</span>
+                                    <span className="note-x"><FaX onClick={() => confirmDeleteNote(note.noteId)} /></span>
+                            </div>)
+            }
         });
     }
 
@@ -110,43 +176,59 @@ export default function WeekDay(props: any) {
             {eventRows}
             <Modal id="addNoteModal" open={notesOpen} onClose={handleNotesClose}>
                 <Modal.Header>
-                <Modal.Title>Add New Note for {displayDate}:</Modal.Title>
+                    <Modal.Title>Add New Note for {displayDate}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <Form.Control
-                    id="addNoteTitle"
-                    onChange={(e) => setNoteTitle(e.currentTarget.value)}
-                    value={noteTitle}
-                    placeholder="Note title"
-                />
-                <Form.Control as="textarea"
-                    id="addNote"
-                    rows={5}
-                    onChange={(e) => setNoteText(e.currentTarget.value)}
-                    value={noteText}
-                    placeholder="Note text"
-                />
+                    <Form.Control
+                        id="addNoteTitle"
+                        onChange={(e) => setNoteTitle(e.currentTarget.value)}
+                        value={noteTitle}
+                        placeholder="Note title"
+                    />
+                    <Form.Control as="textarea"
+                        id="addNote"
+                        rows={5}
+                        onChange={(e) => setNoteText(e.currentTarget.value)}
+                        value={noteText}
+                        placeholder="Note text"
+                    />
                 </Modal.Body>
                 <Modal.Footer className="modal-notes-footer">
-                <Button onClick={addNewNote}>
-                    Ok
-                </Button>
-                <Button onClick={handleNotesClose}>
-                    Cancel
-                </Button>
+                    <Button onClick={addNewNote}>
+                        Ok
+                    </Button>
+                    <Button onClick={handleNotesClose}>
+                        Cancel
+                    </Button>
                 </Modal.Footer>
             </Modal>
             <Modal id="displayNoteModal" open={displayNoteOpen} onClose={handleDisplayNoteClose}>
                 <Modal.Header>
-                <Modal.Title>{displayNoteTitle}</Modal.Title>
+                    <Modal.Title>Edit Note for {displayDate}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {displayNoteText}
+                    <Form.Control
+                        id="editNoteTitle"
+                        onChange={(e) => setDisplayNoteTitle(e.currentTarget.value)}
+                        value={displayNoteTitle}
+                        placeholder="Note title"
+                    />
+                    <Form.Control as="textarea"
+                        id="editNote"
+                        rows={5}
+                        onChange={(e) => setDisplayNoteText(e.currentTarget.value)}
+                        value={displayNoteText}
+                        placeholder="Note text"
+                    />
+                    { }
                 </Modal.Body>
                 <Modal.Footer className="modal-notes-footer">
-                <Button onClick={handleDisplayNoteClose}>
-                    Ok
-                </Button>
+                    <Button onClick={editNewNote}>
+                        Save
+                    </Button>
+                    <Button onClick={handleDisplayNoteClose}>
+                        Cancel
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </Col>
