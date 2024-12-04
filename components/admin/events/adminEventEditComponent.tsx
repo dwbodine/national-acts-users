@@ -840,6 +840,7 @@ export default function AdminEventEdit(props: any) {
                 rows={5}
                 onChange={(e) => setNoteText(e.currentTarget.value)}
                 value={noteText}
+                placeholder="Note text"
               />
             </Modal.Body>
             <Modal.Footer className="modal-notes-footer">
