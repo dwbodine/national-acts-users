@@ -23,6 +23,7 @@ export interface Note {
   noteId: number;
   ticketSocketEventId?: number;
   note: string;
+  noteTitle?: string;
   noteTimestamp: string;
 }
 

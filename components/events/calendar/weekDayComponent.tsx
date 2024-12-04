@@ -21,11 +21,14 @@ export default function WeekDay(props: any) {
     const [notesOpen, setNotesOpen] = useState(false);
     const [displayNoteOpen, setDisplayNoteOpen] = useState(false);
     const [noteText, setNoteText] = useState('');
+    const [noteTitle, setNoteTitle] = useState('');
     const [displayNoteText, setDisplayNoteText] = useState('');
+    const [displayNoteTitle, setDisplayNoteTitle] = useState('');
     const { addNote } = useAddNote();
 
     const handleNotesOpen = () => setNotesOpen(true);
-    const handleDisplayNoteOpen = (noteText: string) => {
+    const handleDisplayNoteOpen = (noteText: string, noteTitle: string) => {
+        setDisplayNoteTitle(noteTitle);
         setDisplayNoteText(noteText);
         setDisplayNoteOpen(true);
     };
@@ -33,18 +36,20 @@ export default function WeekDay(props: any) {
     const handleDisplayNoteClose = () => {
         setDisplayNoteOpen(false);
         setDisplayNoteText('');
+        setDisplayNoteTitle('');
     };
 
     const addNewNote = () => {
-        if (!noteText || !weekDate) {
+        if (!weekDate || !noteText || !noteTitle) {
             return;
         }
         const calendarDate = weekDate.format('YYYY-MM-DD');
-        addNote(noteText, undefined, calendarDate)
+        addNote(noteText, undefined, calendarDate, noteTitle)
             .then((response) => {
                 if (response.success && !response.noteError) {
                     toast.success("Calendar note added successfully");
                     setNoteText('');
+                    setNoteTitle('');
                     dispatch(setReloadAdminEvents(true));
                 } else {
                     toast.error(response.noteError ?? "Unexpected error occurred while adding note");
@@ -74,8 +79,8 @@ export default function WeekDay(props: any) {
     if (notes && notes.length > 0) {
         notes.forEach((note, i) => {
             if (!note.ticketSocketEventId) {
-                let noteText = note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note;
-                noteRows.push(<div key={`wdNote_${key}_${i}`} onClick={() => handleDisplayNoteOpen(note.note)} className="week-day-note">Note: {noteText}</div>)
+                let noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
+                noteRows.push(<div key={`wdNote_${key}_${i}`} onClick={() => handleDisplayNoteOpen(note.note, note.noteTitle ?? '')} className="week-day-note">{noteText}</div>)
             }            
         });
     }
@@ -83,8 +88,8 @@ export default function WeekDay(props: any) {
     let eventRows: any[] = [];
     if (events && events.length > 0) {
         events.forEach((evt, i) => {
-            const statusSlug = getEventStatusSlug(evt);
-            const statusText = getEventStatusText(evt);
+            const statusSlug = getEventStatusSlug(evt, true);
+            const statusText = getEventStatusText(evt, true);
             let statusClass = "week-day-event";
             let title = '';
             if (statusSlug != "active") {
@@ -108,11 +113,18 @@ export default function WeekDay(props: any) {
                 <Modal.Title>Add New Note for {displayDate}:</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                <Form.Control
+                    id="addNoteTitle"
+                    onChange={(e) => setNoteTitle(e.currentTarget.value)}
+                    value={noteTitle}
+                    placeholder="Note title"
+                />
                 <Form.Control as="textarea"
                     id="addNote"
                     rows={5}
                     onChange={(e) => setNoteText(e.currentTarget.value)}
                     value={noteText}
+                    placeholder="Note text"
                 />
                 </Modal.Body>
                 <Modal.Footer className="modal-notes-footer">
@@ -126,7 +138,7 @@ export default function WeekDay(props: any) {
             </Modal>
             <Modal id="displayNoteModal" open={displayNoteOpen} onClose={handleDisplayNoteClose}>
                 <Modal.Header>
-                <Modal.Title>Note from {displayDate}:</Modal.Title>
+                <Modal.Title>{displayNoteTitle}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {displayNoteText}

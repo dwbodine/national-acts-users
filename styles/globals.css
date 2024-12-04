@@ -25,6 +25,11 @@ input[type='number'] {
   border: 1px lightgray solid;
 }
 
+input::placeholder, textarea::placeholder {
+  color: lightgray;
+  font-style: italic;
+}
+
 input[type='checkbox'] {
   border-radius: 6px;
   border: 1px lightgray solid;
@@ -352,7 +357,7 @@ input[type='number']:hover {
 }
 
 .resultsTable tr.event-deleted {
-  color: rgb(0, 220, 0) !important;
+  color: rgb(100, 100, 100) !important;
   font-weight: bold;
 }
 
@@ -461,7 +466,7 @@ input[type='number']:hover {
 }
 
 .vipTable .deleted {
-  color: rgb(0, 220, 0);
+  color: rgb(100, 100, 100);
   font-weight: bold;
 }
 
@@ -566,32 +571,37 @@ input[type='number']:hover {
 }
 
 .week-day-name {
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   text-align: center;
-  margin: 5px auto;
+  margin: 0 auto;
   cursor: pointer;
+  padding: 0;
+  height: 15px;
 }
 
 .week-day-number {
-  font-size: 26px;
+  font-size: 20px;
   text-align: center;
-  margin: 5px auto 10px auto;
+  margin: 5px auto;
   cursor: pointer;
+  padding: 0;
+}
+
+.week-day-event, .week-day-note {
+  border-radius: 6px;
+  padding: 0 5px;
+  margin: 3px 0;
+  cursor: pointer;
+  font-size: 13px;
 }
 
 .week-day-event {
   background-color: rgb(200, 225, 238);
-  border-radius: 6px;
-  padding: 5px;
-  cursor: pointer;
 }
 
 .week-day-note {
   background-color: rgb(254, 216, 0);
-  border-radius: 6px;
-  padding: 5px;
-  cursor: pointer;
 }
 
 .week-day-event + .inactive {
@@ -599,7 +609,8 @@ input[type='number']:hover {
 }
 
 .week-day-event + .deleted {
-  background-color: rgb(0, 220, 0);
+  color: white;
+  background-color: rgb(100, 100, 100);
 }
 
 .week-day-event + .hidden {
@@ -608,6 +619,12 @@ input[type='number']:hover {
 
 .week-day-event + .cancelled {
   background-color: rgb(0, 128, 255);
+}
+
+.week-day-event + .emailed {
+  color: white;
+  text-decoration: line-through;
+  background-color: green;
 }
 
 .expanded-event-row {
@@ -973,7 +990,8 @@ input[type='number']:hover {
 }
 
 .deleted .rs-table-cell {
-  color: rgb(0, 220, 0) !important;
+  color: white;
+  background-color: rgb(100, 100, 100) !important;
   font-weight: bold;
 }
 

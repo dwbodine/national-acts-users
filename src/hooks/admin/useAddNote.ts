@@ -6,12 +6,13 @@ export const useAddNote = () => {
     note: string,
     eventId?: number,
     calendarDate?: string,
+    noteTitle?: string,
   ): Promise<ModifyNoteResponse> => {
     let response: ModifyNoteResponse = {
       success: false,
       noteError: undefined,
     };
-    response = await eventService.addNote(note, eventId, calendarDate);
+    response = await eventService.addNote(note, eventId, calendarDate, noteTitle);
     return response;
   };
 

@@ -1,12 +1,17 @@
 import { VipEvent } from '@/types/event';
 
 export const useGetEventStatus = () => {
-  const getEventStatusSlug = (event: VipEvent | undefined): string => {
+  const getEventStatusSlug = (
+    event: VipEvent | undefined,
+    isAdmin: boolean = false,
+  ): string => {
     let statusSlug: string = '';
     if (!event) {
       return '';
     }
-    if (event.isDeleted) {
+    if (isAdmin && event.emailSentToVips) {
+      statusSlug = 'emailed';
+    } else if (event.isDeleted) {
       statusSlug = 'deleted';
     } else if (event.isCancelled) {
       statusSlug = 'cancelled';
@@ -20,8 +25,11 @@ export const useGetEventStatus = () => {
     return statusSlug;
   };
 
-  const getEventStatusText = (vipEvent: VipEvent | undefined): string => {
-    const slug = getEventStatusSlug(vipEvent);
+  const getEventStatusText = (
+    vipEvent: VipEvent | undefined,
+    isAdmin: boolean = false,
+  ): string => {
+    const slug = getEventStatusSlug(vipEvent, isAdmin);
     let statusText: string = '';
     switch (slug) {
       case 'deleted':
@@ -38,6 +46,9 @@ export const useGetEventStatus = () => {
         break;
       case 'active':
         statusText = 'Active';
+        break;
+      case 'emailed':
+        statusText = 'Email Sent';
         break;
       default:
         break;

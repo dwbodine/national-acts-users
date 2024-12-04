@@ -773,6 +773,7 @@ export class EventService {
     note: string,
     eventId?: number,
     calendarDate?: string,
+    noteTitle?: string,
   ): Promise<ModifyNoteResponse> => {
     const url = '/admin/notes/add';
     const headers = getAuthorizationHeader();
@@ -785,12 +786,14 @@ export class EventService {
 
     if (eventId) {
       calendarDate = undefined;
+      noteTitle = undefined;
     }
 
     const data = {
       note: note,
       eventId: eventId,
       calendarDate: calendarDate,
+      noteTitle: noteTitle,
     };
 
     return this.instance
