@@ -1,4 +1,4 @@
-import { ITicketSalesData, Order, Seller, SellerType, VipEvent } from './event';
+import { ITicketSalesData, Note, Order, Seller, SellerType, VipEvent } from './event';
 
 export type LoginResponse = {
   user?: User;
@@ -96,6 +96,7 @@ export type EventReportSelection = {
   showHidden?: boolean;
   reloadEvents?: boolean;
   currentEvents?: VipEvent[];
+  notes?: Note[];
   expandedRows?: number[];
   focusControl?: string;
 };

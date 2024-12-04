@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../src/lib/store';
-import { setAdminEvents, setReloadAdminEvents, setExpandedRows, setFocusControl } from '@/lib/adminEventsSelectionSlice';
+import { setAdminEvents, setReloadAdminEvents, setExpandedRows, setFocusControl, setAdminNotes } from '@/lib/adminEventsSelectionSlice';
 import { VipEvent } from '@/types/event';
 import { useEffect } from 'react';
 import moment from 'moment';
@@ -19,6 +19,7 @@ import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import setFocusToControl from '@/utils/setFocusToControl';
 import EventDataExpanded from '../common/eventDataExpandedComponent';
+import { useGetCalendarNotes } from '@/hooks/event/useGetCalendarNotes';
 
 export default function AllEvents() {
   const { Column, HeaderCell, Cell } = Table;
@@ -27,6 +28,7 @@ export default function AllEvents() {
   const isLoading = globalSelection.isLoading;
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const { getAllEvents } = useGetAllEvents();
+  const { getCalendarNotes } = useGetCalendarNotes();
   const dispatch = useDispatch();
   const expandedRowKeys = currentReportSelection.expandedRows ?? [];
   const windowSize = useWindowSize();
@@ -91,8 +93,20 @@ export default function AllEvents() {
         dispatch(setReloadAdminEvents(false));
         dispatch(setIsLoading(true));
         getAllEvents(currentReportSelection.start, currentReportSelection.end).then((response) => {
-          if (!response.eventError && response.events) {
-            dispatch(setAdminEvents(response.events));
+          if (!response.eventError) {
+            if (response.events) {
+              dispatch(setAdminEvents(response.events));
+            }
+            if (currentReportSelection.start && currentReportSelection.end) {
+              getCalendarNotes(currentReportSelection.start, currentReportSelection.end)
+              .then((resp) => {
+                if (!resp.noteError) {
+                  dispatch(
+                    setAdminNotes(resp.notes)
+                  );                  
+                };
+              });
+            }            
           } else if (response.statusCode == 401 || response.statusCode == 422) {
             router.push('/logout/');
           } else {
@@ -120,7 +134,8 @@ export default function AllEvents() {
     dispatch,
     getAllEvents,
     windowSizeJson,
-    isLoading
+    isLoading,
+    getCalendarNotes
   ]);
 
   const startOfWeek = currentReportSelection.start ? moment.unix(currentReportSelection.start).format('YYYY-MM-DD') : undefined;
@@ -128,7 +143,7 @@ export default function AllEvents() {
   return (
     <>
       <Row>
-        <WeekView StartOfWeek={startOfWeek} Events={vipEvents} />
+        <WeekView StartOfWeek={startOfWeek} Events={vipEvents} Notes={currentReportSelection?.notes} />
       </Row>
       <Row>
         <Col>

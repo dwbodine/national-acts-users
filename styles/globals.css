@@ -570,16 +570,25 @@ input[type='number']:hover {
   text-transform: uppercase;
   text-align: center;
   margin: 5px auto;
+  cursor: pointer;
 }
 
 .week-day-number {
   font-size: 26px;
   text-align: center;
   margin: 5px auto 10px auto;
+  cursor: pointer;
 }
 
 .week-day-event {
   background-color: rgb(200, 225, 238);
+  border-radius: 6px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.week-day-note {
+  background-color: rgb(254, 216, 0);
   border-radius: 6px;
   padding: 5px;
   cursor: pointer;

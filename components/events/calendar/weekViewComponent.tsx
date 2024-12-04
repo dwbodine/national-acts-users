@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { VipEvent } from '@/types/event';
+import { Note, VipEvent } from '@/types/event';
 import { Col, Row } from 'react-bootstrap';
 import WeekDay from './weekDayComponent';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import { setAdminDateRange, setReloadAdminEvents } from '@/lib/adminEventsSelect
 export default function WeekView(props: any) {
     const startOfWeek = props.StartOfWeek ? moment(props.StartOfWeek).startOf('day') : undefined;
     const events = props.Events as VipEvent[] | undefined;
+    const notes = props.Notes as Note[] | undefined;
 
     const dispatch = useDispatch();
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
@@ -44,12 +45,17 @@ export default function WeekView(props: any) {
         let displayDate = startOfWeek;
         for (let i = 0; i < 7; i++) {
             let filteredEvents: VipEvent[] = [];
+            let filteredNotes: Note[] = [];
             if (events && events.length > 0) {
                 filteredEvents = events.filter(x => moment(x.eventDate).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.eventDate).valueOf() < displayDate.endOf('day').valueOf());
+            }
+            if (notes && notes.length > 0) {
+                filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() < displayDate.endOf('day').valueOf())
             }
             weekdays.push(<WeekDay key={i} WeekDayNumber={i}
                 WeekDate={displayDate.format('YYYY-MM-DD')}
                 Events={filteredEvents}
+                Notes={filteredNotes}
             />);
             displayDate = displayDate.add(1, 'day');
         }

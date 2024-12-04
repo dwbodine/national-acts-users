@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { EventReportSelection } from '../types/user';
-import { VipEvent } from '@/types/event';
+import { Note, VipEvent } from '@/types/event';
 import moment from 'moment';
 
 const initialState: EventReportSelection = {
@@ -11,6 +11,7 @@ const initialState: EventReportSelection = {
   showInactive: false,
   reloadEvents: true,
   currentEvents: [],
+  notes: [],
   expandedRows: [],
   showHidden: false,
   focusControl: '',
@@ -50,6 +51,10 @@ export const adminEventsSelectionSlice = createSlice({
         state.reloadEvents = true;
       }
 
+      return state;
+    },
+    setAdminNotes: (state, action: PayloadAction<Note[] | undefined>) => {
+      state.notes = action.payload ?? [];
       return state;
     },
     setReloadAdminEvents: (state, action: PayloadAction<boolean>) => {
@@ -102,6 +107,7 @@ export const {
   setShowHidden,
   setExpandedRows,
   setFocusControl,
+  setAdminNotes,
 } = adminEventsSelectionSlice.actions;
 
 export default adminEventsSelectionSlice.reducer;

@@ -822,8 +822,8 @@ export class EventService {
       });
   };
 
-  getCalendarNotes = async (): Promise<GetNotesResponse> => {
-    let url = `/admin/notes/calendar`;
+  getCalendarNotes = async (start: number, end: number): Promise<GetNotesResponse> => {
+    let url = `/admin/notes/calendar?start=${start}&end=${end}`;
 
     let refreshResponse: GetNotesResponse = {
       notes: undefined,
