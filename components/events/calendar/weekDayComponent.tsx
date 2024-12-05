@@ -42,10 +42,12 @@ export default function WeekDay(props: any) {
     };
     const handleNotesClose = () => setNotesOpen(false);
     const handleDisplayNoteClose = () => {
-        setNoteId(0);
         setDisplayNoteOpen(false);
-        setDisplayNoteText('');
-        setDisplayNoteTitle('');
+        setTimeout(() => {
+            setNoteId(0);
+            setDisplayNoteText('');
+            setDisplayNoteTitle('');
+        }, 500);        
     };
 
     const addNewNote = () => {
@@ -55,6 +57,7 @@ export default function WeekDay(props: any) {
         const calendarDate = weekDate.format('YYYY-MM-DD');
         addNote(noteText, undefined, calendarDate, noteTitle)
             .then((response) => {
+                setNotesOpen(false);
                 if (response.success && !response.noteError) {
                     toast.success("Calendar note added successfully");
                     setNoteText('');
@@ -62,8 +65,7 @@ export default function WeekDay(props: any) {
                     dispatch(setReloadAdminEvents(true));
                 } else {
                     toast.error(response.noteError ?? "Unexpected error occurred while adding note");
-                }
-                setNotesOpen(false);
+                }                
             });
     };
 
@@ -73,13 +75,13 @@ export default function WeekDay(props: any) {
         }
         editNote(noteId, displayNoteText, displayNoteTitle)
             .then((response) => {
+                handleDisplayNoteClose();
                 if (response.success && !response.noteError) {
                     toast.success("Calendar note edited successfully");
                     dispatch(setReloadAdminEvents(true));
                 } else {
                     toast.error(response.noteError ?? "Unexpected error occurred while adding note");
-                }
-                handleDisplayNoteClose();
+                }                
             });
     };
 
@@ -162,7 +164,7 @@ export default function WeekDay(props: any) {
                 statusClass += ` ${statusSlug}`;
                 title = statusText;
             }
-            eventRows.push(<div key={`wdEvt_${key}_${i}`} onClick={() => setRowExpanded(evt.ticketSocketEventId)} title={title} className={statusClass}>{evt.title}</div>)
+            eventRows.push(<div key={`wdEvt_${key}_${i}`} onClick={() => setRowExpanded(evt.ticketSocketEventId)} title={title} className={statusClass}>{evt.sellerName}</div>)
         });
     }
 

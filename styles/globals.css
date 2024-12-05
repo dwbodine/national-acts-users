@@ -645,7 +645,7 @@ input[type='number']:hover {
   padding: 10px;
 }
 
-.expand-edit-notes {
+.expand-edit-notes, .expand-edit-doors {
   text-align: left;
 }
 
@@ -659,7 +659,7 @@ input[type='number']:hover {
   padding: 0;
 }
 
-.expand-edit-event button {
+.expand-edit-event button, .expand-edit-doors-data button {
   padding: 0 3px;
 }
 
