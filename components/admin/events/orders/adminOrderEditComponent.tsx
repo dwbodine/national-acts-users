@@ -668,7 +668,7 @@ export default function AdminOrderEdit(props: any) {
             <DatePicker
               id={`rcDate_${ticketId}`}
               format="M/d/yyyy"
-              onChange={(newDate: Date | null) => setRefundOrChargebackDate(parseInt(`${ticketId}`), newDate)}
+              onSelect={(newDate: Date | null) => setRefundOrChargebackDate(parseInt(`${ticketId}`), newDate)}
               value={refundDate}
               oneTap
               cleanable={false}

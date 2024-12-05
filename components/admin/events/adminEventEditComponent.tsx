@@ -658,7 +658,7 @@ export default function AdminEventEdit(props: any) {
           <DatePicker
             id="announceDate"
             format="M/d/yyyy"
-            onChange={onAnnounceDateChange}
+            onSelect={onAnnounceDateChange}
             value={announceDate}
             oneTap
             cleanable

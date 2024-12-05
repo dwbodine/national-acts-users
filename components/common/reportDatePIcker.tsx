@@ -69,7 +69,7 @@ export default function ReportDatePicker(props: any) {
           <DatePicker
             id="startDate"
             format="M/d/yyyy"
-            onChange={onStartChange}
+            onSelect={onStartChange}
             value={startDate}
             oneTap
             cleanable
@@ -83,7 +83,7 @@ export default function ReportDatePicker(props: any) {
           <DatePicker
             id="endDate"
             format="M/d/yyyy"
-            onChange={onEndChange}
+            onSelect={onEndChange}
             value={endDate}
             oneTap
             cleanable

@@ -65,7 +65,7 @@ export default function EventSalesBar() {
           <DatePicker
             disabled={!hasEvents}
             format="M/d/yyyy"
-            onChangeCalendarDate={onDateChange}
+            onSelect={onDateChange}
             value={startDate}
             oneTap
             cleanable={false}
