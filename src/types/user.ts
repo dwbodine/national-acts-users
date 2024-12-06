@@ -86,6 +86,8 @@ export type UserReportSelection = {
   focusControl?: string;
   showHidden?: boolean;
   isForAdmin?: boolean;
+  showOnlyEmails?: boolean;
+  showOnlyPhones?: boolean;
 };
 
 export type EventReportSelection = {
@@ -97,7 +99,7 @@ export type EventReportSelection = {
   reloadEvents?: boolean;
   currentEvents?: VipEvent[];
   notes?: Note[];
-  expandedRows?: number[];
+  expandedRow?: number;
   focusControl?: string;
 };
 

@@ -1705,40 +1705,49 @@ export class EventService {
     hasNonUsaOrders: boolean,
     currencyAbbrev?: string,
     hideCurrencyInHeaders: boolean = false,
+    showOnlyEmails: boolean = false,
+    showOnlyPhones: boolean = false,
   ): string => {
-    let exportStr =
-      '"Seller Name","Purchaser Name","Purchaser Zip","Purchaser IP Address","Attendee Name(s)","Purchase Date","Event Date","Event Name","Ticket Type","Number of tickets"';
-    if (hasNonUsaOrders) {
-      if (showRevenueData) {
-        if (hideCurrencyInHeaders) {
-          exportStr += `,"Original Price","Exchange Rate"`;
-        } else {
-          exportStr += `,"Original Price (${currencyAbbrev})","Exchange Rate (${currencyAbbrev} to USD)"`;
+    let exportStr = '';
+    if (showOnlyEmails) {
+      exportStr += '"Email"\n';
+    } else if (showOnlyPhones && hasPhoneData) {
+      exportStr += '"Phone"\n';
+    } else {
+      exportStr =
+        '"Seller Name","Purchaser Name","Purchaser Zip","Purchaser IP Address","Attendee Name(s)","Purchase Date","Event Date","Event Name","Ticket Type","Number of tickets"';
+      if (hasNonUsaOrders) {
+        if (showRevenueData) {
+          if (hideCurrencyInHeaders) {
+            exportStr += `,"Original Price","Exchange Rate"`;
+          } else {
+            exportStr += `,"Original Price (${currencyAbbrev})","Exchange Rate (${currencyAbbrev} to USD)"`;
+          }
+        }
+        if (viewServiceFees) {
+          if (hideCurrencyInHeaders) {
+            exportStr += `,"Original Service Fees"`;
+          } else {
+            exportStr += `,"Original Service Fees (${currencyAbbrev})"`;
+          }
         }
       }
       if (viewServiceFees) {
-        if (hideCurrencyInHeaders) {
-          exportStr += `,"Original Service Fees"`;
-        } else {
-          exportStr += `,"Original Service Fees (${currencyAbbrev})"`;
-        }
+        exportStr += ',"Service Fees (USD)"';
       }
+      if (showRevenueData) {
+        exportStr += ',"Revenue (USD)"';
+      }
+      exportStr += ',"Email"';
+      if (hasPhoneData) {
+        exportStr += ',"Phone"';
+      }
+      if (hasShirtData) {
+        exportStr += ',"Shirt Sizes"';
+      }
+      exportStr +=
+        ',"Venue","Event Address","Event City","Event State","Event Zip","Event Country"\n';
     }
-    if (viewServiceFees) {
-      exportStr += ',"Service Fees (USD)"';
-    }
-    if (showRevenueData) {
-      exportStr += ',"Revenue (USD)"';
-    }
-    exportStr += ',"Email"';
-    if (hasPhoneData) {
-      exportStr += ',"Phone"';
-    }
-    if (hasShirtData) {
-      exportStr += ',"Shirt Sizes"';
-    }
-    exportStr +=
-      ',"Venue","Event Address","Event City","Event State","Event Zip","Event Country"\n';
     return exportStr;
   };
 
@@ -1749,6 +1758,8 @@ export class EventService {
     hasPhoneData: boolean,
     hasShirtData: boolean,
     hasNonUsaOrders: boolean,
+    showOnlyEmails: boolean = false,
+    showOnlyPhones: boolean = false,
   ): string => {
     let exportStr = '';
     if (vipEvent.orders && vipEvent.orders.length > 0) {
@@ -1760,6 +1771,8 @@ export class EventService {
           hasPhoneData,
           hasShirtData,
           hasNonUsaOrders,
+          showOnlyEmails,
+          showOnlyPhones,
         );
       });
     }
@@ -1773,88 +1786,96 @@ export class EventService {
     hasPhoneData: boolean,
     hasShirtData: boolean,
     hasNonUsaOrders: boolean,
+    showOnlyEmails: boolean = false,
+    showOnlyPhones: boolean = false,
   ): string => {
     let exportStr = '';
-    const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
-    const purchaserZip = order.purchaserZipCode ?? '';
-    const purchaserIpAddress = order.purchaserIpAddress ?? '';
-    const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
-    const eventDate = moment(order.eventDate).format('MM/DD/YYYY');
-    const eventName = order.eventTitle;
-    const sellerName = order.sellerName;
-    const numTickets = order.numTickets;
-    const originalPrice = order.revenue?.toFixed(2) ?? 0;
-    const originalServiceFees = order.serviceFees?.toFixed(2) ?? 0;
-    const exchangeRate = order.exchangeRate;
-    const revenue = order.revenueUsd?.toFixed(2) ?? 0;
-    const serviceFees = order.serviceFeesUsd?.toFixed(2) ?? 0;
     const email = order.email;
     let phone = '';
     if (order.phone) {
       phone = order.phone;
     }
-    let shirts = '';
-    let ticketTypeStr = '';
-    let attendeeNames = '';
-    if (numTickets > 0) {
-      const ticketMap = new Map<string, number>();
-      order.tickets?.forEach((ticket) => {
-        if (attendeeNames.length > 0) {
-          attendeeNames += ' / ';
-        }
-        if (shirts.length > 0) {
-          shirts += ' / ';
-        }
-        attendeeNames += `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
-        if (ticket.shirtSize) {
-          shirts += ticket.shirtSize;
-        }
-        const item = ticketMap.get(ticket.ticketType);
-        let num: number = 1;
-        if (item && item > 0) {
-          num = item + 1;
-        }
-        ticketMap.set(ticket.ticketType, num);
-      });
-      ticketMap.forEach((value: Number, key: string) => {
-        if (ticketTypeStr.length > 0) {
-          ticketTypeStr += ' / ';
-        }
-        ticketTypeStr += `${key} (${value})`;
-      });
-    }
+    if (showOnlyEmails) {
+      exportStr += `"${email}"\n`;
+    } else if (hasPhoneData && showOnlyPhones) {
+      exportStr += `"${phone}"\n`;
+    } else {
+      const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
+      const purchaserZip = order.purchaserZipCode ?? '';
+      const purchaserIpAddress = order.purchaserIpAddress ?? '';
+      const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
+      const eventDate = moment(order.eventDate).format('MM/DD/YYYY');
+      const eventName = order.eventTitle;
+      const sellerName = order.sellerName;
+      const numTickets = order.numTickets;
+      const originalPrice = order.revenue?.toFixed(2) ?? 0;
+      const originalServiceFees = order.serviceFees?.toFixed(2) ?? 0;
+      const exchangeRate = order.exchangeRate;
+      const revenue = order.revenueUsd?.toFixed(2) ?? 0;
+      const serviceFees = order.serviceFeesUsd?.toFixed(2) ?? 0;
+      let shirts = '';
+      let ticketTypeStr = '';
+      let attendeeNames = '';
+      if (numTickets > 0) {
+        const ticketMap = new Map<string, number>();
+        order.tickets?.forEach((ticket) => {
+          if (attendeeNames.length > 0) {
+            attendeeNames += ' / ';
+          }
+          if (shirts.length > 0) {
+            shirts += ' / ';
+          }
+          attendeeNames += `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
+          if (ticket.shirtSize) {
+            shirts += ticket.shirtSize;
+          }
+          const item = ticketMap.get(ticket.ticketType);
+          let num: number = 1;
+          if (item && item > 0) {
+            num = item + 1;
+          }
+          ticketMap.set(ticket.ticketType, num);
+        });
+        ticketMap.forEach((value: Number, key: string) => {
+          if (ticketTypeStr.length > 0) {
+            ticketTypeStr += ' / ';
+          }
+          ticketTypeStr += `${key} (${value})`;
+        });
+      }
 
-    exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${purchaserIpAddress}","${attendeeNames}","${purchaseDate}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
-    if (hasNonUsaOrders) {
-      if (showRevenueData) {
-        if (order.currencyAbbrev != 'USD' && order.currencySymbol != '$') {
-          exportStr += `,"${originalPrice} ${order.currencySymbol}","${exchangeRate}"`;
-        } else {
-          exportStr += `,"${originalPrice}","${exchangeRate}"`;
+      exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${purchaserIpAddress}","${attendeeNames}","${purchaseDate}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
+      if (hasNonUsaOrders) {
+        if (showRevenueData) {
+          if (order.currencyAbbrev != 'USD' && order.currencySymbol != '$') {
+            exportStr += `,"${originalPrice} ${order.currencySymbol}","${exchangeRate}"`;
+          } else {
+            exportStr += `,"${originalPrice}","${exchangeRate}"`;
+          }
+        }
+        if (viewServiceFees) {
+          if (order.currencyAbbrev != 'USD' && order.currencySymbol != '$') {
+            exportStr += `,"${originalServiceFees} ${order.currencySymbol}"`;
+          } else {
+            exportStr += `,"${originalServiceFees}"`;
+          }
         }
       }
       if (viewServiceFees) {
-        if (order.currencyAbbrev != 'USD' && order.currencySymbol != '$') {
-          exportStr += `,"${originalServiceFees} ${order.currencySymbol}"`;
-        } else {
-          exportStr += `,"${originalServiceFees}"`;
-        }
+        exportStr += `,"${serviceFees}"`;
       }
+      if (showRevenueData) {
+        exportStr += `,"${revenue}"`;
+      }
+      exportStr += `,"${email}"`;
+      if (hasPhoneData) {
+        exportStr += `,"${phone}"`;
+      }
+      if (hasShirtData) {
+        exportStr += `,"${shirts}"`;
+      }
+      exportStr += `,${order.venue},${order.eventAddress},${order.eventCity},${order.eventState},${order.eventZip},${order.eventCountry}\n`;
     }
-    if (viewServiceFees) {
-      exportStr += `,"${serviceFees}"`;
-    }
-    if (showRevenueData) {
-      exportStr += `,"${revenue}"`;
-    }
-    exportStr += `,"${email}"`;
-    if (hasPhoneData) {
-      exportStr += `,"${phone}"`;
-    }
-    if (hasShirtData) {
-      exportStr += `,"${shirts}"`;
-    }
-    exportStr += `,${order.venue},${order.eventAddress},${order.eventCity},${order.eventState},${order.eventZip},${order.eventCountry}\n`;
     return exportStr;
   };
 
@@ -1901,6 +1922,8 @@ export class EventService {
     hasPhoneData: boolean,
     hasNonUsaOrders: boolean,
     currencyAbbrev?: string,
+    showOnlyEmails?: boolean,
+    showOnlyPhones?: boolean,
   ): string => {
     if (!vipEvent || !vipEvent?.orders || vipEvent.orders.length == 0) {
       return '';
@@ -1950,6 +1973,9 @@ export class EventService {
       hasShirtData,
       hasNonUsaOrders,
       currencyAbbrev,
+      false,
+      showOnlyEmails,
+      showOnlyPhones,
     );
     exportStr += this.getOrderExportTableFromEvent(
       vipEvent,
@@ -1958,6 +1984,8 @@ export class EventService {
       hasPhoneData,
       hasShirtData,
       hasNonUsaOrders,
+      showOnlyEmails,
+      showOnlyPhones,
     );
 
     return exportStr;

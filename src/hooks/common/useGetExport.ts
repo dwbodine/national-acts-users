@@ -18,6 +18,8 @@ export const useGetExport = () => {
     hasPhoneData: boolean,
     hasNonUsaOrders: boolean,
     currencySymbol?: string,
+    showOnlyEmails?: boolean,
+    showOnlyPhones?: boolean,
   ): string => {
     return eventService.exportEventCustomerDataToCsv(
       vipEvent,
@@ -26,6 +28,8 @@ export const useGetExport = () => {
       hasPhoneData,
       hasNonUsaOrders,
       currencySymbol,
+      showOnlyEmails,
+      showOnlyPhones,
     );
   };
 

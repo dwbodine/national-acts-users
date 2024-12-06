@@ -661,6 +661,7 @@ input[type='number']:hover {
 
 .expand-edit-event button, .expand-edit-doors-data button {
   padding: 0 3px;
+  margin: 0 2px;
 }
 
 .note-created {
@@ -1003,6 +1004,11 @@ input[type='number']:hover {
 .deleted .rs-table-cell {
   color: white;
   background-color: rgb(100, 100, 100) !important;
+  font-weight: bold;
+}
+
+.highlighted .rs-table-cell {
+  background-color: lightgray !important;
   font-weight: bold;
 }
 

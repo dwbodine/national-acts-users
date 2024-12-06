@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../src/lib/store';
-import { setAdminEvents, setReloadAdminEvents, setExpandedRows, setFocusControl, setAdminNotes } from '@/lib/adminEventsSelectionSlice';
+import { setAdminEvents, setReloadAdminEvents, setFocusControl, setAdminNotes, setExpandedRow } from '@/lib/adminEventsSelectionSlice';
 import { VipEvent } from '@/types/event';
 import { useEffect } from 'react';
 import moment from 'moment';
@@ -30,7 +30,7 @@ export default function AllEvents() {
   const { getAllEvents } = useGetAllEvents();
   const { getCalendarNotes } = useGetCalendarNotes();
   const dispatch = useDispatch();
-  const expandedRowKeys = currentReportSelection.expandedRows ?? [];
+  const expandedRowKey = currentReportSelection.expandedRow ?? undefined;
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
   const { getLocation } = useGetLocation();
@@ -48,7 +48,7 @@ export default function AllEvents() {
           }
         }}
         icon={
-          expandedRowKeys.some(key => key === props.rowData[rowKey]) ? (
+          (expandedRowKey === props.rowData[rowKey]) ? (
             <CollaspedOutlineIcon />
           ) : (
             <ExpandOutlineIcon />
@@ -65,24 +65,30 @@ export default function AllEvents() {
   };
 
   const handleExpanded = (rowData: VipEvent | undefined) => {
-    let open = false;
-    const nextExpandedRowKeys = [];
+    if (!rowData) {
+      return;
+    }
 
-    expandedRowKeys.forEach(key => {
-      if (rowData && key === rowData[rowKey]) {
-        open = true;
-      } else {
-        nextExpandedRowKeys.push(key);
-      }
-    });
-
-    if (!open && rowData) {
-      nextExpandedRowKeys.push(rowData[rowKey]);
+    let newExpandedRowKey = expandedRowKey;
+    let focusControlId = '';
+    if (expandedRowKey === rowData[rowKey]) {
+      newExpandedRowKey = undefined;
+    } else {
+      newExpandedRowKey = rowData[rowKey];
+      focusControlId = `expandedRow_${newExpandedRowKey}`;
     }
 
     dispatch(
-      setExpandedRows(nextExpandedRowKeys)
+      setExpandedRow(newExpandedRowKey)
+    );    
+
+    dispatch(
+      setFocusControl(focusControlId)
     );
+
+    if (focusControlId == '') {
+      window.scrollTo({ behavior: 'smooth', top: 0, left: 0});
+    }
   };
 
 
@@ -95,7 +101,8 @@ export default function AllEvents() {
         getAllEvents(currentReportSelection.start, currentReportSelection.end).then((response) => {
           if (!response.eventError) {
             if (response.events) {
-              dispatch(setAdminEvents(response.events));
+              const filteredEvents = response.events.filter(x => !x.isDeleted && (x.isActive || x.isHidden));
+              dispatch(setAdminEvents(filteredEvents));
             }
             if (currentReportSelection.start && currentReportSelection.end) {
               getCalendarNotes(currentReportSelection.start, currentReportSelection.end)
@@ -152,11 +159,11 @@ export default function AllEvents() {
             autoHeight={true}
             data={vipEvents}
             rowKey={rowKey}
-            expandedRowKeys={expandedRowKeys}
+            expandedRowKeys={expandedRowKey ? [expandedRowKey] : []}
             rowExpandedHeight={260}
             renderRowExpanded={renderRowExpanded}
             rowClassName={(rowData: VipEvent) => {
-              return getEventStatusSlug(rowData);
+              return (rowData && rowData.ticketSocketEventId == expandedRowKey) ? 'highlighted' : getEventStatusSlug(rowData);
             }}
             
           >
@@ -202,7 +209,7 @@ export default function AllEvents() {
             </Column>
             <Column width={70} align="center">
               <HeaderCell>&nbsp;</HeaderCell>
-              <ExpandCell dataKey="id" expandedrowkeys={expandedRowKeys} onChange={handleExpanded} rowData={undefined} />
+              <ExpandCell dataKey="id" expandedrowkeys={expandedRowKey ? [expandedRowKey] : []} onChange={handleExpanded} rowData={undefined} />
             </Column>
           </Table>
         </Col>

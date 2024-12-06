@@ -12,7 +12,7 @@ const initialState: EventReportSelection = {
   reloadEvents: true,
   currentEvents: [],
   notes: [],
-  expandedRows: [],
+  expandedRow: undefined,
   showHidden: false,
   focusControl: '',
 };
@@ -61,8 +61,8 @@ export const adminEventsSelectionSlice = createSlice({
       state.reloadEvents = action.payload;
       return state;
     },
-    setExpandedRows: (state, action: PayloadAction<number[]>) => {
-      state.expandedRows = action.payload;
+    setExpandedRow: (state, action: PayloadAction<number | undefined>) => {
+      state.expandedRow = action.payload;
       return state;
     },
     setFocusControl: (state, action: PayloadAction<string>) => {
@@ -77,7 +77,7 @@ export const adminEventsSelectionSlice = createSlice({
       state.reloadEvents = true;
       state.currentEvents = [];
       state.showHidden = false;
-      state.expandedRows = [];
+      state.expandedRow = undefined;
       state.focusControl = '';
       return state;
     },
@@ -89,7 +89,7 @@ export const adminEventsSelectionSlice = createSlice({
       state.reloadEvents = true;
       state.currentEvents = [];
       state.showHidden = false;
-      state.expandedRows = [];
+      state.expandedRow = undefined;
       state.focusControl = '';
       return state;
     },
@@ -105,7 +105,7 @@ export const {
   setAdminEvents,
   resetAllAdminEvents,
   setShowHidden,
-  setExpandedRows,
+  setExpandedRow,
   setFocusControl,
   setAdminNotes,
 } = adminEventsSelectionSlice.actions;

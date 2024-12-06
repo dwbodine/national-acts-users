@@ -125,6 +125,12 @@ export default function EventDataExpanded(props: any) {
         }
     };
 
+    const viewEvent = () => {
+        if (vipEvent != undefined) {
+            window.open(`/event/?id=${vipEvent.ticketSocketEventId}`)
+        }
+    };
+
     const editDoors = () => {
         if (vipEvent != undefined) {
             let currentEvent: VipEvent = { ...vipEvent };
@@ -269,6 +275,7 @@ export default function EventDataExpanded(props: any) {
                                         id="doorsOpen"
                                         format="hh:mm aa"
                                         showMeridiem={true}
+                                        hideMinutes={minute => minute % 15 !== 0}
                                         onChange={onDoorsOpenChange}
                                         value={modalDoorsOpenDate}
                                     />
@@ -283,6 +290,7 @@ export default function EventDataExpanded(props: any) {
                                         id="meetAndGreet"
                                         format="hh:mm aa"
                                         showMeridiem={true}
+                                        hideMinutes={minute => minute % 15 !== 0}
                                         onChange={onMeetAndGreetChange}
                                         value={modalMeetAndGreetDate}
                                     />
@@ -330,7 +338,10 @@ export default function EventDataExpanded(props: any) {
                 <Col>
                     <Row>
                         <Col className="expand-edit-notes">NOTES:<Button onClick={handleNotesOpen}>Add</Button></Col>
-                        <Col className="expand-edit-event" hidden={!showEditButton}><Button onClick={editEvent}>Edit</Button></Col>
+                        <Col className="expand-edit-event" hidden={!showEditButton}>
+                            <Button onClick={viewEvent} hidden={vipEvent.totalTickets == 0}>View</Button>
+                            <Button onClick={editEvent}>Edit</Button>
+                        </Col>
                     </Row>
                     {notes}
                     <Modal open={notesOpen} onClose={handleNotesClose}>

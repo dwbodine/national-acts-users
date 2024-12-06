@@ -13,6 +13,8 @@ export default function OrderRow(props: any) {
   const hideRev = props.HideRevenue as boolean;
   const hideServiceFees = props.HideServiceFees as boolean;
   const canCheckInTickets = props.CanCheckInTickets as boolean;
+  const showOnlyEmails = props.ShowOnlyEmails as boolean;
+  const showOnlyPhones = props.ShowOnlyPhones as boolean;
 
   let statusClass = '';
   if (order.isDeleted) {
@@ -96,22 +98,22 @@ export default function OrderRow(props: any) {
 
   return (
     <tr className={statusClass}>
-      <td>{purchaserName}</td>
-      <td>{attendeeNameRows}</td>
-      <td className="purchase-date no-print">{purchaseDate}</td>
-      <td>{moment(eventDate).format('MM/DD/YYYY')}</td>
-      <td>{eventName}</td>
-      <td>{ticketTypeRows}</td>
-      <td>{order.numTickets}</td>
-      <td className="pull-right" hidden={hideRev}>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{purchaserName}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{attendeeNameRows}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones} className="purchase-date no-print">{purchaseDate}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{moment(eventDate).format('MM/DD/YYYY')}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{eventName}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{ticketTypeRows}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{order.numTickets}</td>
+      <td className="pull-right" hidden={hideRev || showOnlyEmails || showOnlyPhones}>
         {revenue}
       </td>
-      <td className="pull-right no-print" hidden={hideServiceFees}>
+      <td className="pull-right no-print" hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}>
         {serviceFees}
       </td>
-      <td className="email">{order.email}</td>
-      {hasPhoneData ? <td>{order.phone}</td> : ''}
-      {hasShirtData ? <td>{shirtSizeRows}</td> : ''}
+      <td hidden={showOnlyPhones} className="email">{order.email}</td>
+      {hasPhoneData && !showOnlyEmails ? <td>{order.phone}</td> : ''}
+      {hasShirtData && !(showOnlyEmails || showOnlyPhones) ? <td>{shirtSizeRows}</td> : ''}
     </tr>
   );
 }

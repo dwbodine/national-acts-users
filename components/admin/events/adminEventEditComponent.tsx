@@ -676,6 +676,7 @@ export default function AdminEventEdit(props: any) {
             id="doorsOpen"
             format="hh:mm aa"
             showMeridiem={true}
+            hideMinutes={minute => minute % 15 !== 0}
             onChange={onDoorsOpenChange}
             value={doorsOpenTime}
           />
@@ -690,6 +691,7 @@ export default function AdminEventEdit(props: any) {
             id="meetAndGreet"
             format="hh:mm aa"
             showMeridiem={true}
+            hideMinutes={minute => minute % 15 !== 0}
             onChange={onMeetAndGreetChange}
             value={meetAndGreetTime}
           />

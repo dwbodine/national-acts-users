@@ -3,7 +3,7 @@ import { Button, Col, Form } from 'react-bootstrap';
 import moment from 'moment';
 import { Note, VipEvent } from '@/types/event';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { setExpandedRows, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Modal } from 'rsuite';
 import { useState } from 'react';
@@ -124,16 +124,16 @@ export default function WeekDay(props: any) {
     }
 
     const setRowExpanded = (ticketSocketEventId: number) => {
-        let expandedRowKeys = currentReportSelection.expandedRows ? [...currentReportSelection.expandedRows] : [];
+        let expandedRowKey = currentReportSelection.expandedRow;
         let focusControlId = `expandedRow_${ticketSocketEventId}`;
-        if (expandedRowKeys.includes(ticketSocketEventId)) {
-            expandedRowKeys = expandedRowKeys.filter(x => x != ticketSocketEventId);
+        if (expandedRowKey == ticketSocketEventId) {
+            expandedRowKey = undefined;
             focusControlId = '';
         } else {
-            expandedRowKeys.push(ticketSocketEventId);
+            expandedRowKey = ticketSocketEventId;
         }
         dispatch(
-            setExpandedRows(expandedRowKeys)
+            setExpandedRow(expandedRowKey)
         );
         dispatch(
             setFocusControl(focusControlId)
@@ -164,7 +164,11 @@ export default function WeekDay(props: any) {
                 statusClass += ` ${statusSlug}`;
                 title = statusText;
             }
-            eventRows.push(<div key={`wdEvt_${key}_${i}`} onClick={() => setRowExpanded(evt.ticketSocketEventId)} title={title} className={statusClass}>{evt.sellerName}</div>)
+
+            const sold = evt.totalTickets;
+            const available = evt.ticketTypes?.reduce((accumulator, current) => accumulator + current.totalAvailable, 0) ?? 0;
+
+            eventRows.push(<div key={`wdEvt_${key}_${i}`} onClick={() => setRowExpanded(evt.ticketSocketEventId)} title={title} className={statusClass}>{evt.sellerName} - {sold}/{available}</div>)
         });
     }
 

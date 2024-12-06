@@ -23,6 +23,8 @@ const initialState: UserReportSelection = {
   focusControl: '',
   showHidden: false,
   isForAdmin: false,
+  showOnlyEmails: false,
+  showOnlyPhones: false,
 };
 
 export const userReportSelectionSlice = createSlice({
@@ -117,6 +119,16 @@ export const userReportSelectionSlice = createSlice({
       }
       return state;
     },
+    setShowOnlyEmails: (state, action: PayloadAction<boolean>) => {
+      state.showOnlyEmails = action.payload;
+      state.reloadEvents = false;
+      return state;
+    },
+    setShowOnlyPhones: (state, action: PayloadAction<boolean>) => {
+      state.showOnlyPhones = action.payload;
+      state.reloadEvents = false;
+      return state;
+    },
     setHideServiceFees: (state, action: PayloadAction<boolean>) => {
       state.hideServiceFees = action.payload;
       state.reloadEvents = false;
@@ -172,6 +184,8 @@ export const userReportSelectionSlice = createSlice({
       state.currentEvents = [];
       state.currentDetailEvent = undefined;
       state.showHidden = state.isForAdmin;
+      state.showOnlyEmails = false;
+      state.showOnlyPhones = false;
       return state;
     },
     resetAll: (state) => {
@@ -189,6 +203,8 @@ export const userReportSelectionSlice = createSlice({
       state.currentEvents = [];
       state.currentDetailEvent = undefined;
       state.showHidden = state.isForAdmin;
+      state.showOnlyEmails = false;
+      state.showOnlyPhones = false;
       return state;
     },
   },
@@ -212,6 +228,8 @@ export const {
   setShowHidden,
   setCurrentDetailEvent,
   setForAdmin,
+  setShowOnlyEmails,
+  setShowOnlyPhones,
 } = userReportSelectionSlice.actions;
 
 export default userReportSelectionSlice.reducer;

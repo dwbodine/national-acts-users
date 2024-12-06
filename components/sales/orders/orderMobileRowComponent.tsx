@@ -14,6 +14,8 @@ export default function OrderMobileRow(props: any) {
   const hideRev = props.HideRevenue as boolean;
   const hideServiceFees = props.HideServiceFees as boolean;
   const canCheckInTickets = props.CanCheckInTickets as boolean;
+  const showOnlyEmails = props.ShowOnlyEmails as boolean;
+  const showOnlyPhones = props.ShowOnlyPhones as boolean;
 
   let statusClass = '';
   if (order.isDeleted) {
@@ -99,47 +101,47 @@ export default function OrderMobileRow(props: any) {
     <tr className={'mobile-event-card-container ' + statusClass}>
       <td>
         <Container className="mobile-event-card" id={id}>
-          <Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col className="mobile-bold">Purchaser Name:</Col>
             <Col>{purchaserName}</Col>
           </Row>
-          <Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col className="mobile-bold">Attendee Names:</Col>
             <Col>{attendeeNameRows}</Col>
           </Row>
-          <Row className="no-print">
+          <Row hidden={showOnlyEmails || showOnlyPhones} className="no-print">
             <Col className="mobile-bold">Purchase Date:</Col>
             <Col>{purchaseDate}</Col>
           </Row>
-          <Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col className="mobile-bold">Event Date:</Col>
             <Col>{moment(eventDate).format('MM/DD/YYYY')}</Col>
           </Row>
-          <Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col className="mobile-bold">Event Name:</Col>
             <Col>{eventName}</Col>
           </Row>
-          <Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col className="mobile-bold">Ticket type breakdown:</Col>
             <Col>{ticketTypeRows}</Col>
           </Row>
-          <Row hidden={hideRev}>
+          <Row hidden={hideRev || showOnlyEmails || showOnlyPhones}>
             <Col className="mobile-bold">Revenue:</Col>
             <Col>{revenue}</Col>
           </Row>
-          <Row hidden={hideServiceFees} className="no-print">
+          <Row hidden={hideServiceFees || showOnlyEmails || showOnlyPhones} className="no-print">
             <Col className="mobile-bold">Service Fees:</Col>
             <Col>{serviceFees}</Col>
           </Row>
-          <Row>
+          <Row hidden={showOnlyPhones}>
             <Col className="mobile-bold">Email:</Col>
             <Col>{order.email}</Col>
           </Row>
-          <Row hidden={!hasPhoneData}>
+          <Row hidden={!hasPhoneData || showOnlyEmails}>
             <Col className="mobile-bold">Phone:</Col>
             <Col>{order.phone}</Col>
           </Row>
-          <Row hidden={!hasShirtData}>
+          <Row hidden={!hasShirtData || showOnlyEmails || showOnlyPhones}>
             <Col className="mobile-bold">Shirts:</Col>
             <Col>{shirtSizeRows}</Col>
           </Row>
