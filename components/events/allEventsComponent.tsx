@@ -101,7 +101,7 @@ export default function AllEvents() {
         getAllEvents(currentReportSelection.start, currentReportSelection.end).then((response) => {
           if (!response.eventError) {
             if (response.events) {
-              const filteredEvents = response.events.filter(x => !x.isDeleted && (x.isActive || x.isHidden));
+              const filteredEvents = response.events.filter(x => !x.isDeleted && (x.isActive || x.isHidden || x.isCancelled));
               dispatch(setAdminEvents(filteredEvents));
             }
             if (currentReportSelection.start && currentReportSelection.end) {

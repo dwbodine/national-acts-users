@@ -183,7 +183,7 @@ export default function CurrentEvents() {
             !currentReportSelection.showDeleted &&
             !evt.isDeleted &&
             !currentReportSelection.showInactive &&
-            evt.isActive)
+            (evt.isActive || evt.isCancelled))
         );
       });
     }
@@ -315,6 +315,7 @@ export default function CurrentEvents() {
                     <th>Title</th>
                     <th>Venue</th>
                     <th>Location</th>
+                    <th>Event Status</th>
                     <th>Tickets Sold</th>
                     <th>Tickets Comped</th>
                     <th hidden={hideRevItem}>Revenue (USD)</th>

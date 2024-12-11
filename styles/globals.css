@@ -1139,6 +1139,10 @@ input[type='number']:hover {
   .refresh-results-header {
     font-size: 12px;
   }
+
+  .vipDetailsTable {
+    margin: 0;
+  }
 }
 
 /* Bootstrap sm */

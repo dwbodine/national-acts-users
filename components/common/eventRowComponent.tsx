@@ -26,6 +26,7 @@ export default function EventRow(props: any) {
   const url = `/event/?id=${vipEvent.ticketSocketEventId}`;
 
   const statusSlug = getEventStatusSlug(vipEvent);
+  const statusText = getEventStatusText(vipEvent);
   let statusClass = '';
   if (statusSlug != 'active') {
     statusClass = `event-${statusSlug}`
@@ -46,6 +47,7 @@ export default function EventRow(props: any) {
       </td>
       <td>{venueName}</td>
       <td>{location}</td>
+      <td>{statusText}</td>
       <td className="pull-right">{vipEvent.totalTickets}</td>
       <td className="pull-right">{vipEvent.numTicketsComped}</td>
       <td className="pull-right" hidden={hideRevItem}>

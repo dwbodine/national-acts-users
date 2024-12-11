@@ -516,7 +516,7 @@ export default function EventDetail(props: any) {
           <Row>
             <Col>
               <Row>
-                <Col xs={4}>
+                <Col>
                   <table className="vipDetailsTable">
                     <tbody>
                       <tr>
