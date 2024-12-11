@@ -16,7 +16,7 @@ const initialState: UserReportSelection = {
   showInactive: false,
   showInactiveOrders: false,
   reloadEvents: true,
-  hideRevenue: true,
+  hideRevenue: false,
   hideServiceFees: true,
   currentEvents: [],
   currentDetailEvent: undefined,
@@ -205,6 +205,8 @@ export const userReportSelectionSlice = createSlice({
       state.showHidden = state.isForAdmin;
       state.showOnlyEmails = false;
       state.showOnlyPhones = false;
+      state.hideRevenue = false;
+      state.hideServiceFees = true;
       return state;
     },
   },
