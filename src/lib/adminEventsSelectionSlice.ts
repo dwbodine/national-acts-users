@@ -15,6 +15,8 @@ const initialState: EventReportSelection = {
   expandedRow: undefined,
   showHidden: false,
   focusControl: '',
+  expandedEvent: undefined,
+  updateListStatus: false,
 };
 
 export const adminEventsSelectionSlice = createSlice({
@@ -65,8 +67,16 @@ export const adminEventsSelectionSlice = createSlice({
       state.expandedRow = action.payload;
       return state;
     },
+    setExpandedEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
+      state.expandedEvent = action.payload;
+      return state;
+    },
     setFocusControl: (state, action: PayloadAction<string>) => {
       state.focusControl = action.payload;
+      return state;
+    },
+    setUpdateListStatus: (state, action: PayloadAction<boolean>) => {
+      state.updateListStatus = action.payload;
       return state;
     },
     resetAdminSelection: (state) => {
@@ -78,7 +88,9 @@ export const adminEventsSelectionSlice = createSlice({
       state.currentEvents = [];
       state.showHidden = false;
       state.expandedRow = undefined;
+      state.expandedEvent = undefined;
       state.focusControl = '';
+      state.updateListStatus = false;
       return state;
     },
     resetAllAdminEvents: (state) => {
@@ -90,7 +102,9 @@ export const adminEventsSelectionSlice = createSlice({
       state.currentEvents = [];
       state.showHidden = false;
       state.expandedRow = undefined;
+      state.expandedEvent = undefined;
       state.focusControl = '';
+      state.updateListStatus = false;
       return state;
     },
   },
@@ -106,8 +120,10 @@ export const {
   resetAllAdminEvents,
   setShowHidden,
   setExpandedRow,
+  setExpandedEvent,
   setFocusControl,
   setAdminNotes,
+  setUpdateListStatus,
 } = adminEventsSelectionSlice.actions;
 
 export default adminEventsSelectionSlice.reducer;

@@ -101,6 +101,8 @@ export type EventReportSelection = {
   notes?: Note[];
   expandedRow?: number;
   focusControl?: string;
+  expandedEvent?: VipEvent;
+  updateListStatus?: boolean;
 };
 
 export interface ITopSeller {

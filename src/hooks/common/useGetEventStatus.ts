@@ -9,8 +9,13 @@ export const useGetEventStatus = () => {
     if (!event) {
       return '';
     }
-    if (isAdmin && event.emailSentToVips) {
-      statusSlug = 'emailed';
+    if (
+      isAdmin &&
+      event.emailSentToVips &&
+      event.textSentToVips &&
+      event.listSentToBand
+    ) {
+      statusSlug = 'taskscomplete';
     } else if (event.isDeleted) {
       statusSlug = 'deleted';
     } else if (event.isCancelled) {
@@ -47,8 +52,8 @@ export const useGetEventStatus = () => {
       case 'active':
         statusText = 'Active';
         break;
-      case 'emailed':
-        statusText = 'Email Sent';
+      case 'taskscomplete':
+        statusText = 'All Tasks Complete';
         break;
       default:
         break;

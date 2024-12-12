@@ -615,25 +615,25 @@ input[type='number']:hover {
   float: right;
 }
 
-.week-day-event + .inactive {
+.week-day-event-inactive {
   background-color: red;
 }
 
-.week-day-event + .deleted {
+.week-day-event-deleted {
   color: white;
   background-color: rgb(100, 100, 100);
 }
 
-.week-day-event + .hidden {
+.week-day-event-hidden {
   background-color: orange;
 }
 
-.week-day-event + .cancelled {
+.week-day-event-cancelled {
   background-color: rgb(0, 128, 255);
 }
 
-.week-day-event + .emailed {
-  color: white;
+.week-day-event-taskscomplete {
+  color: rgb(255, 255, 255);
   text-decoration: line-through;
   background-color: green;
 }
@@ -643,6 +643,11 @@ input[type='number']:hover {
   width: 100%;
   min-height: 250px;
   padding: 10px;
+}
+
+.update-tasks-button {
+  padding: 0 3px;
+  margin: 5px 5px 5px 0;
 }
 
 .expand-edit-notes, .expand-edit-doors {
@@ -1035,6 +1040,12 @@ input[type='number']:hover {
 .comped .rs-table-cell {
   color: indigo !important;
   font-weight: bold;
+}
+
+.week-day-event-alert {
+  margin-right: 5px;
+  color: #CF142B;
+  font-size: 1.2em;
 }
 
 /* MOBILE QUERIES */

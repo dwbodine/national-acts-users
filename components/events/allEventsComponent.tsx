@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../src/lib/store';
-import { setAdminEvents, setReloadAdminEvents, setFocusControl, setAdminNotes, setExpandedRow } from '@/lib/adminEventsSelectionSlice';
+import { setAdminEvents, setReloadAdminEvents, setFocusControl, setAdminNotes, setExpandedRow, setExpandedEvent } from '@/lib/adminEventsSelectionSlice';
 import { VipEvent } from '@/types/event';
 import { useEffect } from 'react';
 import moment from 'moment';
@@ -58,9 +58,9 @@ export default function AllEvents() {
     </Cell>
   );
 
-  const renderRowExpanded = (vipEvent: VipEvent | undefined) => {
+  const renderRowExpanded = () => {
     return (
-      <EventDataExpanded VipEvent={vipEvent} ShowEditButton={true} />
+      <EventDataExpanded />
     );
   };
 
@@ -70,9 +70,11 @@ export default function AllEvents() {
     }
 
     let newExpandedRowKey = expandedRowKey;
+    let newExpandedEvent: VipEvent | undefined = rowData;
     let focusControlId = '';
     if (expandedRowKey === rowData[rowKey]) {
       newExpandedRowKey = undefined;
+      newExpandedEvent = undefined;
     } else {
       newExpandedRowKey = rowData[rowKey];
       focusControlId = `expandedRow_${newExpandedRowKey}`;
@@ -81,6 +83,10 @@ export default function AllEvents() {
     dispatch(
       setExpandedRow(newExpandedRowKey)
     );    
+
+    dispatch(
+      setExpandedEvent(newExpandedEvent)
+    );
 
     dispatch(
       setFocusControl(focusControlId)
@@ -99,7 +105,7 @@ export default function AllEvents() {
         dispatch(setReloadAdminEvents(false));
         dispatch(setIsLoading(true));
         getAllEvents(currentReportSelection.start, currentReportSelection.end).then((response) => {
-          if (!response.eventError) {
+          if (!response.eventError) {            
             if (response.events) {
               const filteredEvents = response.events.filter(x => !x.isDeleted && (x.isActive || x.isHidden || x.isCancelled));
               dispatch(setAdminEvents(filteredEvents));

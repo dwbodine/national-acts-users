@@ -474,6 +474,7 @@ export class EventService {
       success: false,
       eventError: undefined,
       statusCode: 200,
+      updatedEvent: undefined,
     };
 
     const eventData = {
@@ -491,6 +492,7 @@ export class EventService {
       })
       .then((res) => {
         eventResponse.success = res.status == 200;
+        eventResponse.updatedEvent = res.data as VipEvent;
         return eventResponse;
       })
       .catch((err) => {

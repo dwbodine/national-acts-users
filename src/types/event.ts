@@ -260,6 +260,7 @@ export interface ModifyEventResponse {
   success: boolean;
   statusCode?: number;
   eventError?: string;
+  updatedEvent?: VipEvent;
 }
 
 export interface RefreshHistoryResponse {

@@ -327,7 +327,7 @@ export default function CurrentEvents() {
                 <tbody>{rows}</tbody>
                 <tfoot hidden={windowSize.isMobile}>
                   <tr>
-                    <td colSpan={4}>Total</td>
+                    <td colSpan={5}>Total</td>
                     <td className="pull-right">{totalTickets}</td>
                     <td className="pull-right">{totalTicketsComped}</td>
                     <td className="pull-right" hidden={hideRevItem}>

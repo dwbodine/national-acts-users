@@ -3,7 +3,7 @@ import { Button, Col, Form } from 'react-bootstrap';
 import moment from 'moment';
 import { Note, VipEvent } from '@/types/event';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Modal } from 'rsuite';
 import { useState } from 'react';
@@ -13,6 +13,7 @@ import { useEditNote } from '@/hooks/admin/useEditNote';
 import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
 import { FaX } from 'react-icons/fa6';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import { FaExclamation, FaExclamationTriangle } from 'react-icons/fa';
 
 export default function WeekDay(props: any) {
     const dispatch = useDispatch();
@@ -123,17 +124,23 @@ export default function WeekDay(props: any) {
             });
     }
 
-    const setRowExpanded = (ticketSocketEventId: number) => {
+    const setRowExpanded = (vipEvent: VipEvent) => {
+        const ticketSocketEventId = vipEvent.ticketSocketEventId;
         let expandedRowKey = currentReportSelection.expandedRow;
+        let expandedEvent: VipEvent | undefined = vipEvent;
         let focusControlId = `expandedRow_${ticketSocketEventId}`;
         if (expandedRowKey == ticketSocketEventId) {
             expandedRowKey = undefined;
+            expandedEvent = undefined;
             focusControlId = '';
         } else {
             expandedRowKey = ticketSocketEventId;
         }
         dispatch(
             setExpandedRow(expandedRowKey)
+        );
+        dispatch(
+            setExpandedEvent(expandedEvent)
         );
         dispatch(
             setFocusControl(focusControlId)
@@ -161,14 +168,24 @@ export default function WeekDay(props: any) {
             let statusClass = "week-day-event";
             let title = '';
             if (statusSlug != "active") {
-                statusClass += ` ${statusSlug}`;
+                statusClass += ` week-day-event-${statusSlug}`;
                 title = statusText;
             }
 
             const sold = evt.totalTickets;
             const available = evt.ticketTypes?.reduce((accumulator, current) => accumulator + current.totalAvailable, 0) ?? 0;
 
-            eventRows.push(<div key={`wdEvt_${key}_${i}`} onClick={() => setRowExpanded(evt.ticketSocketEventId)} title={title} className={statusClass}>{evt.sellerName} - {sold}/{available}</div>)
+            let listSent = (evt.listSentToBand ?? false);
+            const listSentVips = evt.listSentNumVips ?? 0;
+            const currentVips = evt.totalTickets ?? 0;
+            const showVipAlert = (listSent && (listSentVips != currentVips));
+            
+            let alertIcon: any = '';
+            if (showVipAlert) {
+                alertIcon = <FaExclamationTriangle className="week-day-event-alert" title={`Current total of ${currentVips} differs from the count of ${listSentVips} when the list was sent to the band`}></FaExclamationTriangle>
+            }
+
+            eventRows.push(<div key={`wdEvt_${key}_${i}`} onClick={() => setRowExpanded(evt)} title={title} className={statusClass}>{alertIcon}{evt.sellerName} - {sold}/{available}</div>)
         });
     }
 

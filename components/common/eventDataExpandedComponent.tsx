@@ -1,18 +1,20 @@
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { useSendListToBand } from '@/hooks/admin/useSendListToBand';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
-import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { setExpandedEvent, setReloadAdminEvents, setUpdateListStatus } from '@/lib/adminEventsSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
 import { Note, VipEvent } from '@/types/event';
 import moment from 'moment';
 import { useState } from 'react';
 import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Modal, TimePicker } from 'rsuite';
 
-export default function EventDataExpanded(props: any) {
-    const vipEvent = props.VipEvent as VipEvent | undefined;
-    const showEditButton = props.ShowEditButton as boolean;
+export default function EventDataExpanded() {
+    const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
+    const vipEvent = currentReportSelection?.expandedEvent;
     const dispatch = useDispatch();
     const { updateEvent } = useUpdateEvent();
     const { sendListToBand } = useSendListToBand();
@@ -62,62 +64,8 @@ export default function EventDataExpanded(props: any) {
                     toast.error(response.noteError ?? "Unexpected error occurred while adding note");
                 }                
             });
-    };
-
-    const setEmailSentToVips = (isSent: boolean) => {
-        if (vipEvent != undefined) {
-            let currentEvent: VipEvent = { ...vipEvent };
-            currentEvent.emailSentToVips = isSent;
-            updateEvent(currentEvent)
-                .then((response) => {
-                    if (response.success && !response.eventError) {
-                        toast.success("Marked emails sent to VIPs");
-                        dispatch(
-                            setReloadAdminEvents(true)
-                        );
-                    } else {
-                        const errMsg = response.eventError ?? "unknown error";
-                        toast.error(`Event update failed - ${errMsg}`);
-                    }
-                });
-        }        
-    };
-
-    const setTextSentToVips = (isSent: boolean) => {
-        if (vipEvent != undefined) {
-            let currentEvent: VipEvent = { ...vipEvent };
-            currentEvent.textSentToVips = isSent;
-            updateEvent(currentEvent)
-                .then((response) => {
-                    if (response.success && !response.eventError) {
-                        toast.success("Marked texts sent to VIPs");
-                        dispatch(
-                            setReloadAdminEvents(true)
-                        );
-                    } else {
-                        const errMsg = response.eventError ?? "unknown error";
-                        toast.error(`Event update failed - ${errMsg}`);
-                    }
-                });
-        }        
-    };
-
-    const setListSentToBand = (isSent: boolean) => {
-        if (vipEvent != undefined) {
-            sendListToBand(vipEvent.ticketSocketEventId, isSent)
-                .then((response) => {
-                    if (response.success && !response.eventError) {
-                        toast.success("VIP list marked as sent to band");
-                        dispatch(
-                            setReloadAdminEvents(true)
-                        );
-                    } else {
-                        const errMsg = response.eventError ?? "unknown error";
-                        toast.error(`Send list failed - ${errMsg}`);
-                    }
-                });
-        }        
-    };
+    };  
+    
 
     const editEvent = () => {
         if (vipEvent != undefined) {
@@ -128,6 +76,100 @@ export default function EventDataExpanded(props: any) {
     const viewEvent = () => {
         if (vipEvent != undefined) {
             window.open(`/event/?id=${vipEvent.ticketSocketEventId}`)
+        }
+    };
+
+    const setSentEmail = (isSent: boolean) => {
+        if (vipEvent != undefined) {
+            let currentEvent = { ...vipEvent };
+            currentEvent.emailSentToVips = isSent;
+            dispatch(
+                setExpandedEvent(currentEvent)
+            );
+        }
+    };
+
+    const setSentText = (isSent: boolean) => {
+        if (vipEvent != undefined) {
+            let currentEvent = { ...vipEvent };
+            currentEvent.textSentToVips = isSent;
+            dispatch(
+                setExpandedEvent(currentEvent)
+            );
+        }
+    };
+
+    const setSentList = (isSent: boolean) => {
+        if (vipEvent != undefined) {
+            let currentEvent = { ...vipEvent };
+            if (isSent != currentEvent.listSentToBand) {
+                dispatch(
+                    setUpdateListStatus(true)
+                );
+            }
+            currentEvent.listSentToBand = isSent;
+            dispatch(
+                setExpandedEvent(currentEvent)
+            );
+        }
+    };
+
+    const updateTasks = (completeAll: boolean = false) => {
+        if (vipEvent != undefined) {
+            let updateListStatus = currentReportSelection.updateListStatus ?? false;
+            dispatch(
+                setIsLoading(true)
+            );
+            let currentEvent = { ...vipEvent };
+            if (completeAll) {
+                currentEvent.emailSentToVips = true;
+                currentEvent.textSentToVips = true;
+                if (!currentEvent.listSentToBand) {
+                    updateListStatus = true;
+                    currentEvent.listSentToBand = true;
+                }
+            }
+            updateEvent(currentEvent)
+                .then((response) => {
+                    if (response.success && !response.eventError) {
+                        if (updateListStatus) {
+                            sendListToBand(vipEvent.ticketSocketEventId, currentEvent.listSentToBand ?? false)
+                                .then((response) => {
+                                    if (response.success && !response.eventError) {
+                                        toast.success("Event updated successfully");
+                                        if (response.updatedEvent != undefined) {
+                                            dispatch(
+                                                setExpandedEvent(response.updatedEvent)
+                                            );
+                                        }                                        
+                                        dispatch(
+                                            setReloadAdminEvents(true)
+                                        );
+                                    } else {
+                                        dispatch(
+                                            setIsLoading(false)
+                                        );
+                                        const errMsg = response.eventError ?? "unknown error";
+                                        toast.error(`Send list failed - ${errMsg}`);
+                                    }
+                                    dispatch (
+                                        setUpdateListStatus(false)
+                                    );
+                                });                
+                        } else {
+                            toast.success("Event updated successfully");
+                            dispatch(
+                                setReloadAdminEvents(true)
+                            );
+                        }
+                    } else {
+                        dispatch(
+                            setIsLoading(false)
+                        );
+                        const errMsg = response.eventError ?? "unknown error";
+                        toast.error(`Event update failed - ${errMsg}`);
+                    }
+                });
         }
     };
 
@@ -196,12 +238,13 @@ export default function EventDataExpanded(props: any) {
         setModalMeetAndGreetDate(meetAndGreet.toDate());
       };
     
-    const listSent = vipEvent?.listSentTime ? moment.utc(vipEvent.listSentTime).format('MM/DD/YYYY h:m A') : 'n/a';
-    const numVips = (vipEvent?.listSentToBand ?? false) ? (vipEvent?.listSentNumVips ?? 0).toString() : 'n/a';
+    const listSent = (vipEvent?.listSentTime != undefined) ? moment.utc(vipEvent.listSentTime).format('MM/DD/YYYY h:mm A') : 'n/a';
+    const numVips = (vipEvent?.listSentNumVips ?? 0 > 0) ? (vipEvent?.listSentNumVips ?? 0).toString() : 'n/a';
     const doorsOpenTime = (vipEvent?.doorsOpen) ? moment(vipEvent.doorsOpen).format('h:mm A') : 'n/a';
     const meetAndGreetTime = (vipEvent?.meetAndGreetTime) ? moment(vipEvent.meetAndGreetTime).format('h:mm A') : 'n/a';
     const checkInLocation = (vipEvent?.checkInLocation) ? vipEvent.checkInLocation : 'n/a';
     const checkInNotes = (vipEvent?.checkInNotes) ? vipEvent.checkInNotes : 'n/a';
+    const hasVips = (vipEvent?.totalTickets ?? 0 > 0);
 
     let notes: any[] = [];
     if (vipEvent?.notes) {
@@ -211,31 +254,33 @@ export default function EventDataExpanded(props: any) {
     }
 
     if (notes.length == 0) {
-        notes.push(<div>n/a</div>)
+        notes.push(<div key={`note_${vipEvent?.ticketSocketEventId ?? 0}`}>n/a</div>)
     }
 
     return (
         (vipEvent != undefined) ?
-            <Row className="expanded-event-row" id={`expandedRow_${vipEvent.ticketSocketEventId}`}>
+            <Row className="expanded-event-row" key={`expandedRow_${vipEvent.ticketSocketEventId}`} id={`expandedRow_${vipEvent.ticketSocketEventId}`}>
                 <Col>
                     <FormCheck
-                        checked={vipEvent.emailSentToVips}
-                        disabled={!vipEvent.isActive}
-                        onChange={(e) => setEmailSentToVips(e.currentTarget.checked)}
+                        checked={vipEvent?.emailSentToVips ?? false}
+                        disabled={!vipEvent.isActive || !hasVips}
+                        onChange={(e) => setSentEmail(e.currentTarget.checked)}
                         label="Email Sent To VIPs?"
                     />
                     <FormCheck
-                        checked={vipEvent.textSentToVips}
-                        disabled={!vipEvent.isActive}
-                        onChange={(e) => setTextSentToVips(e.currentTarget.checked)}
+                        checked={vipEvent?.textSentToVips ?? false}
+                        disabled={!vipEvent.isActive || !hasVips}
+                        onChange={(e) => setSentText(e.currentTarget.checked)}
                         label="Text Sent To VIPs?"
                     />
                     <FormCheck
-                        checked={vipEvent.listSentToBand}
-                        disabled={!vipEvent.isActive}
-                        onChange={(e) => setListSentToBand(e.currentTarget.checked)}
+                        checked={vipEvent?.listSentToBand ?? false}
+                        disabled={!vipEvent.isActive || !hasVips}
+                        onChange={(e) => setSentList(e.currentTarget.checked)}
                         label="List Sent To Band?"
                     />
+                    <Button disabled={!vipEvent.isActive || !hasVips} className="update-tasks-button" onClick={() => updateTasks(false)}>Update</Button>
+                    <Button disabled={!vipEvent.isActive || !hasVips} className="update-tasks-button" onClick={() => updateTasks(true)}>Complete</Button>
                     <div>
                         Date/Time List sent to band: {listSent}
                     </div>
@@ -259,7 +304,7 @@ export default function EventDataExpanded(props: any) {
                                 Check-in notes: {checkInNotes}
                             </div>
                         </Col>
-                        <Col className="expand-edit-doors-data" hidden={!showEditButton}>
+                        <Col className="expand-edit-doors-data">
                             <Button onClick={handleDoorsOpen}>Edit</Button>
                             <Modal size="calc(50%)" open={doorsModalOpen} onClose={handleDoorsClose}>
                                 <Modal.Header>
@@ -338,7 +383,7 @@ export default function EventDataExpanded(props: any) {
                 <Col>
                     <Row>
                         <Col className="expand-edit-notes">NOTES:<Button onClick={handleNotesOpen}>Add</Button></Col>
-                        <Col className="expand-edit-event" hidden={!showEditButton}>
+                        <Col className="expand-edit-event">
                             <Button onClick={viewEvent} hidden={vipEvent.totalTickets == 0}>View</Button>
                             <Button onClick={editEvent}>Edit</Button>
                         </Col>
