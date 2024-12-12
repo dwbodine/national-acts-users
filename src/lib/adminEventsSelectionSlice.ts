@@ -10,7 +10,7 @@ const initialState: EventReportSelection = {
   showDeleted: false,
   showInactive: false,
   reloadEvents: true,
-  currentEvents: [],
+  currentEvents: undefined,
   notes: [],
   expandedRow: undefined,
   showHidden: false,
@@ -45,14 +45,7 @@ export const adminEventsSelectionSlice = createSlice({
       return state;
     },
     setAdminEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
-      if (action.payload) {
-        state.currentEvents = action.payload;
-        state.reloadEvents = false;
-      } else {
-        state.currentEvents = [];
-        state.reloadEvents = true;
-      }
-
+      state.currentEvents = action.payload;
       return state;
     },
     setAdminNotes: (state, action: PayloadAction<Note[] | undefined>) => {
@@ -85,7 +78,7 @@ export const adminEventsSelectionSlice = createSlice({
       state.showDeleted = false;
       state.showInactive = false;
       state.reloadEvents = true;
-      state.currentEvents = [];
+      state.currentEvents = undefined;
       state.showHidden = false;
       state.expandedRow = undefined;
       state.expandedEvent = undefined;
@@ -99,7 +92,7 @@ export const adminEventsSelectionSlice = createSlice({
       state.showDeleted = false;
       state.showInactive = false;
       state.reloadEvents = true;
-      state.currentEvents = [];
+      state.currentEvents = undefined;
       state.showHidden = false;
       state.expandedRow = undefined;
       state.expandedEvent = undefined;

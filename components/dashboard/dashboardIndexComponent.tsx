@@ -34,6 +34,7 @@ import AverageSalesWidget from './widgets/averageSalesWidgetComponent';
 
 export default function DashboardIndex() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
+  const isLoading = globalSelection.isLoading;
   const currentDashboardSelection = useSelector(
     (state: RootState) => state.dashboardSelecton,
   );
@@ -60,17 +61,20 @@ export default function DashboardIndex() {
                 response.totals,
               );
               dispatch(setCurrentDashboardData(dashData));
+              dispatch(setIsLoading(false));
+              setChartsHidden(false);
+            } else {
+              dispatch(setIsLoading(false));
+              setChartsHidden(false);
             }
-            dispatch(setIsLoading(false));
-            setChartsHidden(false);
           },
         );
       } else {
-        if (chartsHidden) {
+        if (chartsHidden && !isLoading) {
           setChartsHidden(false);
         }
       }
-    }, 200);
+    }, 500);
     return () => {
       clearTimeout(timeoutId);
     };
@@ -80,6 +84,7 @@ export default function DashboardIndex() {
     getDashboardData,
     windowSizeJson,
     chartsHidden,
+    isLoading,
   ]);
 
   const totalTickets = currentDashboardSelection.currentDashboardData?.tickets ?? 0;
@@ -129,7 +134,7 @@ export default function DashboardIndex() {
   return (
     <>
       <DashboardBar />
-      <Container fluid hidden={globalSelection.isLoading}>
+      <Container fluid hidden={isLoading}>
         <Row>
           <Col>
             <h5>Current Period</h5>
