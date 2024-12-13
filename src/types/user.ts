@@ -69,6 +69,11 @@ export type User = {
   lastUpdate?: string;
 };
 
+export type DateRange = {
+  start: number;
+  end: number;
+}
+
 export type UserReportSelection = {
   seller: UserSeller;
   start?: number;
@@ -90,6 +95,12 @@ export type UserReportSelection = {
   showOnlyPhones?: boolean;
 };
 
+export enum EventTabView {
+  Week = 1,
+  Month = 2,
+  Agenda = 3
+};
+
 export type EventReportSelection = {
   start?: number;
   end?: number;
@@ -103,6 +114,7 @@ export type EventReportSelection = {
   focusControl?: string;
   expandedEvent?: VipEvent;
   updateListStatus?: boolean;
+  eventTabView?: EventTabView;
 };
 
 export interface ITopSeller {

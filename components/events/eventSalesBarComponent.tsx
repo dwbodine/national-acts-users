@@ -3,16 +3,14 @@ import type { RootState } from '../../src/lib/store';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import {
-  setAdminDateRange,
-  setReloadAdminEvents,
-} from '@/lib/adminEventsSelectionSlice';
+import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
 import { useEffect } from 'react';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
 import router from 'next/router';
 import moment from 'moment';
 import { DatePicker } from 'rsuite';
+import { EventTabView, DateRange } from '@/types/user';
+import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 
 export default function EventSalesBar() {
   const dispatch = useDispatch();
@@ -20,25 +18,39 @@ export default function EventSalesBar() {
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
-  
+
   let pageTitle: string = 'Admin Events View';
 
   const onDateChange = (date: Date) => {
-    let reportSelection = { ...currentReportSelection };
-    reportSelection.start = moment(date).startOf('week').add(1, 'day').startOf('day').unix();
-    reportSelection.end = moment(date).startOf('week').add(7, 'days').startOf('day').unix();
-    dispatch(setAdminDateRange(reportSelection));
-    dispatch(setReloadAdminEvents(true));
+    const selectedDate = moment(date).unix();
+    const tabView = currentReportSelection.eventTabView ?? EventTabView.Week;
+    const dateRange = getSelectedAdminEventDateRange(selectedDate, tabView)
+    dispatch(setAdminDateRange(dateRange));
   };
 
   useEffect(() => {
     const user = getUser();
     if (!user?.isAdmin) {
       router.push('/');
+    } else if (currentReportSelection.start == undefined) {
+      const selectedDate = moment().unix();
+      const tabView = currentReportSelection.eventTabView ?? EventTabView.Week;
+      const dateRange = getSelectedAdminEventDateRange(selectedDate, tabView)
+      dispatch(setAdminDateRange(dateRange));
     }
-  }, [windowSizeJson, getUser]);
+  }, [windowSizeJson, getUser, currentReportSelection, dispatch]);
 
-  const startDate = currentReportSelection.start ? moment.unix(currentReportSelection.start).toDate() : moment().startOf('week').toDate();
+  const startDate = currentReportSelection.start ? moment.unix(currentReportSelection.start).toDate() : null;
+  let datePickerlabel = '';
+  switch (currentReportSelection.eventTabView) {
+    case EventTabView.Agenda:
+    case EventTabView.Month:
+      datePickerlabel = "Month beginning";
+      break;
+    default:
+      datePickerlabel = "Week beginning (Monday)";
+      break;
+  }
 
   return (
     <>
@@ -47,7 +59,7 @@ export default function EventSalesBar() {
           <div className="title">{pageTitle}</div>
         </Col>
         <Col sm={6} xs={12} className="control-container no-print">
-          <label className="events-datepicker-label">Week beginning (Monday):</label>
+          <label className="events-datepicker-label">{datePickerlabel}:</label>
           <DatePicker
             format="M/d/yyyy"
             onSelect={onDateChange}

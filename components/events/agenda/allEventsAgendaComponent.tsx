@@ -1,18 +1,37 @@
 import { setIsLoading } from "@/lib/globalSelectionSlice";
-import { useEffect } from "react"
-import { useDispatch } from "react-redux";
-
+import { RootState } from "@/lib/store";
+import { VipEvent } from "@/types/event";
+import { useEffect, useState } from "react"
+import { Col, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import AgendaView from "./agendaViewComponent";
+import moment from "moment";
 
 export default function AllEventsAgenda() {
     const dispatch = useDispatch();
+    const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
+    const [vipEvents, setVipEvents] = useState<VipEvent[] | undefined>(undefined);
 
     useEffect(() => {
-        dispatch(
-            setIsLoading(false)
-        );
-    }, [dispatch]);
+        if (currentReportSelection.currentEvents != undefined) {
+            setVipEvents(currentReportSelection.currentEvents);
+            dispatch(
+                setIsLoading(false)
+            );
+        }
+    }, [dispatch, currentReportSelection]);
+
+    const startOfWeek = currentReportSelection.start ? moment.unix(currentReportSelection.start).format('YYYY-MM-DD') : undefined;
 
     return (
-        <div>Agenda</div>
+        (vipEvents != undefined) ?
+        <Row>
+            <Col>
+                <AgendaView StartOfWeek={startOfWeek} Events={vipEvents} Notes={currentReportSelection?.notes} /> 
+            </Col>
+        </Row> :
+        <Row>
+            <Col>No data returned</Col>
+        </Row>
     )
 }

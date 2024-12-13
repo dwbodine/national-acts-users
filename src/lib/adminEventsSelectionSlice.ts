@@ -1,12 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { EventReportSelection } from '../types/user';
+import { DateRange, EventReportSelection, EventTabView } from '../types/user';
 import { Note, VipEvent } from '@/types/event';
-import moment from 'moment';
 
 const initialState: EventReportSelection = {
-  start: moment().startOf('week').add(1, 'day').startOf('day').unix(),
-  end: moment().startOf('week').add(7, 'days').startOf('day').unix(),
+  start: undefined,
+  end: undefined,
   showDeleted: false,
   showInactive: false,
   reloadEvents: true,
@@ -17,15 +16,22 @@ const initialState: EventReportSelection = {
   focusControl: '',
   expandedEvent: undefined,
   updateListStatus: false,
+  eventTabView: undefined
 };
 
 export const adminEventsSelectionSlice = createSlice({
   name: 'adminEventReportSelection',
   initialState,
   reducers: {
-    setAdminDateRange: (state, action: PayloadAction<EventReportSelection>) => {
+    setActiveEventTab: (state, action: PayloadAction<EventTabView>) => {
+      state.eventTabView = action.payload;
+      return state;
+    },
+    setAdminDateRange: (state, action: PayloadAction<DateRange>) => {
       state.start = action.payload.start;
       state.end = action.payload.end;
+      state.currentEvents = undefined;
+      state.reloadEvents = true;
       return state;
     },
     setShowInactive: (state, action: PayloadAction<boolean>) => {
@@ -73,8 +79,9 @@ export const adminEventsSelectionSlice = createSlice({
       return state;
     },
     resetAdminSelection: (state) => {
-      state.start = moment().startOf('week').add(1, 'day').startOf('day').unix();
-      state.end = moment().startOf('week').add(7, 'days').endOf('day').unix();
+      state.start = undefined;
+      state.end = undefined;
+      state.eventTabView = undefined;
       state.showDeleted = false;
       state.showInactive = false;
       state.reloadEvents = true;
@@ -87,8 +94,9 @@ export const adminEventsSelectionSlice = createSlice({
       return state;
     },
     resetAllAdminEvents: (state) => {
-      state.start = moment().startOf('week').add(1, 'day').startOf('day').unix();
-      state.end = moment().startOf('week').add(7, 'days').endOf('day').unix();
+      state.start = 0;
+      state.end = 0;
+      state.eventTabView = undefined;
       state.showDeleted = false;
       state.showInactive = false;
       state.reloadEvents = true;
@@ -105,6 +113,7 @@ export const adminEventsSelectionSlice = createSlice({
 
 export const {
   setAdminDateRange,
+  setActiveEventTab,
   setReloadAdminEvents,
   setShowInactive,
   setShowDeleted,

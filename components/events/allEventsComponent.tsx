@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../src/lib/store';
-import { setAdminEvents, setReloadAdminEvents, setAdminNotes } from '@/lib/adminEventsSelectionSlice';
+import { setAdminEvents, setReloadAdminEvents, setAdminNotes, setActiveEventTab, setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
 import { useEffect, useState } from 'react';
 import router from 'next/router';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
@@ -13,6 +13,9 @@ import { Button, ButtonGroup } from 'rsuite';
 import AllEventsAgenda from './agenda/allEventsAgendaComponent';
 import AllEventsMonth from './month/allEventsMonthComponent';
 import { Col, Row } from 'react-bootstrap';
+import { EventTabView } from '@/types/user';
+import moment from 'moment';
+import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 
 export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -24,16 +27,23 @@ export default function AllEvents() {
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
 
-  const allEventsViews: string[] = ['Week', 'Agenda']; // ['Week', 'Month', 'Agenda'];
-  const [activeKey, setActiveKey] = useState<string | undefined>(undefined);
+  const allEventsViews: EventTabView[] = [EventTabView.Week, EventTabView.Agenda]; // ['Week', 'Month', 'Agenda'];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentReportSelection && currentReportSelection.reloadEvents &&
-        currentReportSelection.start && currentReportSelection.end) {
-        if (!activeKey && !windowSize.isMobile) {
-          setActiveKey('Week');
-        }
+      if (!currentReportSelection.eventTabView) {
+        const defaultTabView = (windowSize.isMobile) ? EventTabView.Agenda : EventTabView.Week;
+        dispatch(
+          setActiveEventTab(defaultTabView)
+        );
+      } else if (windowSize.isMobile && currentReportSelection.eventTabView != EventTabView.Agenda) {
+        dispatch(
+          setActiveEventTab(EventTabView.Agenda)
+        );
+      } else if (currentReportSelection &&
+        currentReportSelection.reloadEvents &&
+        currentReportSelection.start && 
+        currentReportSelection.end) {
         dispatch(setReloadAdminEvents(false));
         dispatch(setAdminEvents(undefined));
         dispatch(setIsLoading(true));
@@ -75,25 +85,53 @@ export default function AllEvents() {
     windowSizeJson,
     isLoading,
     getCalendarNotes,
-    activeKey,
     windowSize.isMobile
   ]);
 
-  const switchView = (key: string) => {
-    if (key != activeKey) {
+  const switchView = (key: EventTabView) => {
+    if (key != currentReportSelection.eventTabView) {
       dispatch(
         setIsLoading(true)
       );
-      setActiveKey(key);
+      const reloadEvents = (
+        ((key == EventTabView.Agenda || key == EventTabView.Month) && currentReportSelection.eventTabView == EventTabView.Week) ||
+        (key == EventTabView.Week && (currentReportSelection.eventTabView == EventTabView.Month || currentReportSelection.eventTabView == EventTabView.Agenda))
+      );
+      if (reloadEvents) {
+        const currentUnixDate = currentReportSelection.start ?? moment().unix();
+        const dateRange = getSelectedAdminEventDateRange(currentUnixDate, key);
+        dispatch(
+          setAdminDateRange(dateRange)
+        );
+      }
+      dispatch(
+        setActiveEventTab(key)
+      );
     }
   };
 
+  const getTabViewText = (key: EventTabView) => {
+    let text = '';
+    switch (key) {
+      case EventTabView.Month:
+        text = "Month";
+        break;
+      case EventTabView.Agenda:
+        text = "Agenda";
+        break;
+      default:
+        text = "Week";
+        break;
+    }
+    return text;
+  };
+
   let activeComponent: any = undefined;
-  switch (activeKey) {
-    case 'Month':
+  switch (currentReportSelection.eventTabView) {
+    case EventTabView.Month:
       activeComponent = <AllEventsMonth />;
       break;
-    case 'Agenda':
+    case EventTabView.Agenda:
       activeComponent = <AllEventsAgenda />;
       break;
     default:
@@ -107,8 +145,8 @@ export default function AllEvents() {
         <Col className="all-events-buttons">
           <ButtonGroup hidden={windowSize.isMobile}>
             {allEventsViews.map(key => (
-              <Button key={key} active={key == activeKey} onClick={() => switchView(key)}>
-                {key}
+              <Button key={key} active={key.valueOf() == currentReportSelection.eventTabView?.valueOf()} onClick={() => switchView(key)}>
+                {getTabViewText(key)}
               </Button>
             ))}
           </ButtonGroup>
