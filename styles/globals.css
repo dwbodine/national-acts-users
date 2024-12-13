@@ -1124,6 +1124,23 @@ input[type='number']:hover {
   .refresh-results-header-col {
     margin-bottom: 25px;
   }
+
+  .expanded-event-panel {
+    padding: 0;
+  }
+
+  .expand-edit-doors-container, .expand-edit-notes, .expand-edit-event {
+    margin: 15px 0;
+  }
+
+  .expand-edit-doors, .expand-edit-doors-data {
+    padding: 0;
+  }
+
+  .expand-edit-event {
+    padding: 0 10px;
+    text-align: left;
+  }
 }
 
 /* Bootstrap lg */
@@ -1156,7 +1173,7 @@ input[type='number']:hover {
   .sales-stat-block {
     padding: 5px;
     font-size: 10px;
-  }
+  }  
 }
 
 /* custom desktop/tablet width */
@@ -1362,6 +1379,8 @@ input[type='number']:hover {
   .refresh-results-header {
     font-size: 10px;
   }
+
+  
 }
 
 /* custom mobile width */

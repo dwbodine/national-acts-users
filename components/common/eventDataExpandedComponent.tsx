@@ -260,7 +260,7 @@ export default function EventDataExpanded() {
     return (
         (vipEvent != undefined) ?
             <Row className="expanded-event-row" key={`expandedRow_${vipEvent.ticketSocketEventId}`} id={`expandedRow_${vipEvent.ticketSocketEventId}`}>
-                <Col>
+                <Col xl={4} lg={12} className="expanded-event-panel">
                     <FormCheck
                         checked={vipEvent?.emailSentToVips ?? false}
                         disabled={!vipEvent.isActive || !hasVips}
@@ -279,18 +279,18 @@ export default function EventDataExpanded() {
                         onChange={(e) => setSentList(e.currentTarget.checked)}
                         label="List Sent To Band?"
                     />
-                    <Button disabled={!vipEvent.isActive || !hasVips} className="update-tasks-button" onClick={() => updateTasks(false)}>Update</Button>
-                    <Button disabled={!vipEvent.isActive || !hasVips} className="update-tasks-button" onClick={() => updateTasks(true)}>Complete</Button>
                     <div>
                         Date/Time List sent to band: {listSent}
                     </div>
                     <div>
                         # of VIPs at time email was sent: {numVips}
                     </div>
+                    <Button disabled={!vipEvent.isActive || !hasVips} className="update-tasks-button" onClick={() => updateTasks(false)}>Update</Button>
+                    <Button disabled={!vipEvent.isActive || !hasVips} className="update-tasks-button" onClick={() => updateTasks(true)}>Complete</Button>
                 </Col>
-                <Col>
-                    <Row>
-                        <Col className="expand-edit-doors">
+                <Col xl={4} lg={12} className="expanded-event-panel">
+                    <Row className="expand-edit-doors-container">
+                        <Col className="expand-edit-doors" xl={10} lg={12}>
                             <div>
                                 Doors Open: {doorsOpenTime}
                             </div>
@@ -304,7 +304,7 @@ export default function EventDataExpanded() {
                                 Check-in notes: {checkInNotes}
                             </div>
                         </Col>
-                        <Col className="expand-edit-doors-data">
+                        <Col className="expand-edit-doors-data" xl={2} lg={12}>
                             <Button onClick={handleDoorsOpen}>Edit</Button>
                             <Modal size="calc(50%)" open={doorsModalOpen} onClose={handleDoorsClose}>
                                 <Modal.Header>
@@ -315,7 +315,7 @@ export default function EventDataExpanded() {
                                     <Col xs={2}>
                                     Doors Open:
                                     </Col>
-                                    <Col>
+                                    <Col xs={10}>
                                     <TimePicker
                                         id="doorsOpen"
                                         format="hh:mm aa"
@@ -330,7 +330,7 @@ export default function EventDataExpanded() {
                                     <Col xs={2}>
                                     Meet and Greet Time:
                                     </Col>
-                                    <Col>
+                                    <Col xs={10}>
                                     <TimePicker
                                         id="meetAndGreet"
                                         format="hh:mm aa"
@@ -345,7 +345,7 @@ export default function EventDataExpanded() {
                                     <Col xs={2}>
                                     Check-in location:
                                     </Col>
-                                    <Col xs={5}>
+                                    <Col xs={10}>
                                     <Form.Control as="textarea"
                                         rows={3}
                                         id="checkInLocation"
@@ -358,7 +358,7 @@ export default function EventDataExpanded() {
                                     <Col xs={2}>
                                     Check-in notes:
                                     </Col>
-                                    <Col xs={5}>
+                                    <Col xs={10}>
                                     <Form.Control as="textarea"
                                         id="checkInNotes"
                                         rows={5}
@@ -380,15 +380,17 @@ export default function EventDataExpanded() {
                         </Col>
                     </Row>                    
                 </Col>
-                <Col>
+                <Col xl={4} lg={12} className="expanded-event-panel">
                     <Row>
-                        <Col className="expand-edit-notes">NOTES:<Button onClick={handleNotesOpen}>Add</Button></Col>
-                        <Col className="expand-edit-event">
+                        <Col xl={9} lg={12} className="expand-edit-notes">
+                            NOTES:<Button onClick={handleNotesOpen}>Add</Button>
+                            {notes}
+                        </Col>
+                        <Col xl={3} lg={12}  className="expand-edit-event">
                             <Button onClick={viewEvent} hidden={vipEvent.totalTickets == 0}>View</Button>
                             <Button onClick={editEvent}>Edit</Button>
                         </Col>
-                    </Row>
-                    {notes}
+                    </Row>                    
                     <Modal open={notesOpen} onClose={handleNotesClose}>
                         <Modal.Header>
                         <Modal.Title>Add New Note</Modal.Title>
