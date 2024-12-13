@@ -72,7 +72,7 @@ export type User = {
 export type DateRange = {
   start: number;
   end: number;
-}
+};
 
 export type UserReportSelection = {
   seller: UserSeller;
@@ -98,8 +98,8 @@ export type UserReportSelection = {
 export enum EventTabView {
   Week = 1,
   Month = 2,
-  Agenda = 3
-};
+  Agenda = 3,
+}
 
 export type EventReportSelection = {
   start?: number;

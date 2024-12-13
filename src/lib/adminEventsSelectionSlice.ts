@@ -16,7 +16,7 @@ const initialState: EventReportSelection = {
   focusControl: '',
   expandedEvent: undefined,
   updateListStatus: false,
-  eventTabView: undefined
+  eventTabView: undefined,
 };
 
 export const adminEventsSelectionSlice = createSlice({
