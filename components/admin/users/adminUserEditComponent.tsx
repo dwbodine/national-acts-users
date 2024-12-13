@@ -82,7 +82,7 @@ export default function AdminUserEdit() {
   };
 
   const updateSeller = (sellerId: number, newSellerId: number) => {
-    if (!sellerId || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
+    if (isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
       return;
     }
     if (currentAdminSelection.selectedUser) {
@@ -210,6 +210,9 @@ export default function AdminUserEdit() {
       userToUpdate.sellers.find((x) => x.sellerId == 0) != undefined;
     if (sellersInvalid) {
       toast.warning('Seller selection invalid, please correct before submitting');
+      dispatch(
+        setIsLoading(false)
+      );
       return false;
     }
 
