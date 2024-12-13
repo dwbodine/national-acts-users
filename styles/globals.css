@@ -532,40 +532,46 @@ input[type='number']:hover {
   margin-right: 10px;
 }
 
-.week-view {
+.week-view, .agenda-view {
   width: 100%;
   border: 0;
   margin: 0;
   padding: 5px;
 }
 
-.week-view-action {
+.week-view-action, .agenda-view-action {
   width: 100%;
   border: 0;
   padding-bottom: 10px;
 }
 
-.week-view-action a {
+.week-view-action a, .agenda-view-action a {
   color: black;
 }
 
-.week-view-action-previous {
+.week-view-action-previous, .agenda-view-action-previous {
   text-align: left;
 }
 
-.week-view-action-next {
+.week-view-action-next, .agenda-view-action-next {
   text-align: right;
 }
 
-.week-view-action-previous svg, .week-view-action-next svg {
+.week-view-action-previous svg, 
+.week-view-action-next svg,
+.agenda-view-action-previous svg,
+.agenda-view-action-next svg {
   margin: 0 10px;
 }
 
-.week-view-calendar {
+.week-view-calendar, .agenda-day-row {
   border: 0;
   width: 100%;
-  border: 0;
   padding: 0;
+}
+
+.agenda-day-row {
+  margin: 5px 0 15px 0;
 }
 
 .week-day {
@@ -573,6 +579,13 @@ input[type='number']:hover {
   line-height: 25px;
   vertical-align: top;
   aspect-ratio: 1 / 1;
+  padding-bottom: 10px;
+}
+
+.agenda-day {
+  width: 100%;
+  line-height: 25px;
+  vertical-align: top;
   padding-bottom: 10px;
 }
 
@@ -586,6 +599,17 @@ input[type='number']:hover {
   height: 15px;
 }
 
+.agenda-day-name {
+  font-size: 20px;
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
+  cursor: pointer;
+  height: 15px;
+  padding: 5px;
+  background-color: lightgray;
+  height: fit-content;
+}
+
 .week-day-number {
   font-size: 20px;
   text-align: center;
@@ -594,7 +618,10 @@ input[type='number']:hover {
   padding: 0;
 }
 
-.week-day-event, .week-day-note {
+.week-day-event,
+.week-day-note,
+.agenda-day-event,
+.agenda-day-note {
   border-radius: 6px;
   padding: 0 5px;
   margin: 3px 0;
@@ -602,43 +629,55 @@ input[type='number']:hover {
   font-size: 13px;
 }
 
-.week-day-event {
+.agenda-day-event,
+.agenda-day-note {
+  max-width: 50%;
+}
+
+.week-day-event, .agenda-day-event {
   background-color: rgb(200, 225, 238);
 }
 
-.week-day-note {
+.week-day-note, .agenda-day-note {
   background-color: rgb(254, 216, 0);
 }
 
-.week-day-note .note-text {
+.week-day-note .note-text, 
+.agenda-day-note .note-text {
   width: calc(100% - 20px);
   display: inline-flex;
 }
 
-.week-day-note .note-x {
+.week-day-note .note-x, 
+.agenda-day-note .note-x {
   width: 20px;
   text-align: right;
   float: right;
 }
 
-.week-day-event-inactive {
+.week-day-event-inactive, 
+.agenda-day-event-inactive {
   background-color: red;
 }
 
-.week-day-event-deleted {
+.week-day-event-deleted, 
+.agenda-day-event-deleted {
   color: white;
   background-color: rgb(100, 100, 100);
 }
 
-.week-day-event-hidden {
+.week-day-event-hidden, 
+.agenda-day-event-hidden {
   background-color: orange;
 }
 
-.week-day-event-cancelled {
+.week-day-event-cancelled, 
+.agenda-day-event-cancelled {
   background-color: rgb(0, 128, 255);
 }
 
-.week-day-event-taskscomplete {
+.week-day-event-taskscomplete,
+.agenda-day-event-taskscomplete {
   color: rgb(255, 255, 255);
   text-decoration: line-through;
   background-color: green;
@@ -649,6 +688,10 @@ input[type='number']:hover {
   width: 100%;
   min-height: 250px;
   padding: 10px;
+}
+
+.agenda-view .expanded-event-row {
+  margin-left: 0;
 }
 
 .update-tasks-button {
@@ -1048,8 +1091,8 @@ input[type='number']:hover {
   font-weight: bold;
 }
 
-.week-day-event-alert {
-  margin-right: 5px;
+.week-day-event-alert, .agenda-day-event-alert {
+  margin: 1px 5px 4px 3px;
   color: #CF142B;
   font-size: 1.2em;
 }
@@ -1159,6 +1202,11 @@ input[type='number']:hover {
 
   .vipDetailsTable {
     margin: 0;
+  }
+
+  .agenda-day-event,
+  .agenda-day-note {
+    max-width: 360px;
   }
 }
 

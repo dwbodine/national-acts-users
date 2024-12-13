@@ -6,6 +6,7 @@ import { Col, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import AgendaView from "./agendaViewComponent";
 import moment from "moment";
+import setFocusToControl from "@/utils/setFocusToControl";
 
 export default function AllEventsAgenda() {
     const dispatch = useDispatch();
@@ -18,16 +19,25 @@ export default function AllEventsAgenda() {
             dispatch(
                 setIsLoading(false)
             );
-        }
+            if (
+                currentReportSelection.focusControl &&
+                currentReportSelection.focusControl != ''
+              ) {
+                const focusControl: string = currentReportSelection.focusControl;
+                setTimeout(() => {
+                  setFocusToControl(focusControl);
+                }, 50);
+              }
+        }        
     }, [dispatch, currentReportSelection]);
 
-    const startOfWeek = currentReportSelection.start ? moment.unix(currentReportSelection.start).format('YYYY-MM-DD') : undefined;
+    const startOfMonth = currentReportSelection.start ? moment.unix(currentReportSelection.start).format('YYYY-MM-DD') : undefined;
 
     return (
         (vipEvents != undefined) ?
         <Row>
             <Col>
-                <AgendaView StartOfWeek={startOfWeek} Events={vipEvents} Notes={currentReportSelection?.notes} /> 
+                <AgendaView StartOfMonth={startOfMonth} Events={vipEvents} Notes={currentReportSelection?.notes} /> 
             </Col>
         </Row> :
         <Row>

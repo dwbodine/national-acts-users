@@ -7,6 +7,7 @@ import { RootState } from '@/lib/store';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setAdminDateRange, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { DateRange } from '@/types/user';
 
 export default function WeekView(props: any) {
     const startOfWeek = props.StartOfWeek ? moment(props.StartOfWeek).startOf('day') : undefined;
@@ -21,11 +22,14 @@ export default function WeekView(props: any) {
         if (!reportSelection || !reportSelection.start) {
             return;
         }
-        reportSelection.start = moment.unix(reportSelection.start).startOf('week').add(-6, 'day').startOf('day').unix();
-        reportSelection.end = moment(reportSelection.start).startOf('week').startOf('day').unix();
+        let dateRange: DateRange = {
+            start: 0,
+            end: 0
+        };
+        dateRange.start = moment.unix(reportSelection.start).startOf('week').add(-6, 'day').startOf('day').unix();
+        dateRange.end = moment(reportSelection.start).startOf('week').startOf('day').unix();
         dispatch(setIsLoading(true));
-        dispatch(setAdminDateRange(reportSelection));
-        dispatch(setReloadAdminEvents(true));
+        dispatch(setAdminDateRange(dateRange));
     };
 
     const nextWeek = () => {
@@ -33,11 +37,14 @@ export default function WeekView(props: any) {
         if (!reportSelection || !reportSelection.start) {
             return;
         }
-        reportSelection.start = moment.unix(reportSelection.start).startOf('week').add(8, 'day').startOf('day').unix();
-        reportSelection.end = moment(reportSelection.start).startOf('week').add(14, 'days').startOf('day').unix();
+        let dateRange: DateRange = {
+            start: 0,
+            end: 0
+        };
+        dateRange.start = moment.unix(reportSelection.start).startOf('week').add(8, 'day').startOf('day').unix();
+        dateRange.end = moment(reportSelection.start).startOf('week').add(14, 'days').startOf('day').unix();
         dispatch(setIsLoading(true));
-        dispatch(setAdminDateRange(reportSelection));
-        dispatch(setReloadAdminEvents(true));
+        dispatch(setAdminDateRange(dateRange));
     };
 
     let weekdays: any[] = [];
@@ -64,8 +71,8 @@ export default function WeekView(props: any) {
     return (
         <Col className="week-view">
             <Row className="week-view-action">
-                <Col className="week-view-action-previous"><a href="#" onClick={previousWeek}><FaArrowLeft />Previous</a></Col>
-                <Col className="week-view-action-next"><a href="#" onClick={nextWeek}>Next<FaArrowRight /></a></Col>
+                <Col className="week-view-action-previous"><a href="#" onClick={previousWeek}><FaArrowLeft />Previous Week</a></Col>
+                <Col className="week-view-action-next"><a href="#" onClick={nextWeek}>Next Week<FaArrowRight /></a></Col>
             </Row>
             <Row className="week-view-calendar">
                 {weekdays}

@@ -74,7 +74,7 @@ export default function AllEvents() {
 
         });
       }
-    }, 300);
+    }, 500);
     return () => {
       clearTimeout(timeoutId);
     };
@@ -98,8 +98,7 @@ export default function AllEvents() {
         (key == EventTabView.Week && (currentReportSelection.eventTabView == EventTabView.Month || currentReportSelection.eventTabView == EventTabView.Agenda))
       );
       if (reloadEvents) {
-        const currentUnixDate = currentReportSelection.start ?? moment().unix();
-        const dateRange = getSelectedAdminEventDateRange(currentUnixDate, key);
+        const dateRange = getSelectedAdminEventDateRange(moment().unix(), key);
         dispatch(
           setAdminDateRange(dateRange)
         );
