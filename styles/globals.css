@@ -520,6 +520,12 @@ input[type='number']:hover {
   margin: 10px;
 }
 
+.all-events-buttons {
+  text-align: right;
+  margin: 0 0 15px 0;
+  padding: 0 12px 0 0;
+}
+
 .events-datepicker-label {
   white-space: nowrap;
   display: inline-block;

@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../src/lib/store';
 import { setAdminEvents, setReloadAdminEvents, setAdminNotes } from '@/lib/adminEventsSelectionSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import router from 'next/router';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
@@ -9,6 +9,10 @@ import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
 import { useGetCalendarNotes } from '@/hooks/event/useGetCalendarNotes';
 import AllEventsWeek from './week/allEventsWeekComponent';
 import { toast } from 'react-toastify';
+import { Button, ButtonGroup } from 'rsuite';
+import AllEventsAgenda from './agenda/allEventsAgendaComponent';
+import AllEventsMonth from './month/allEventsMonthComponent';
+import { Col, Row } from 'react-bootstrap';
 
 export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -20,10 +24,16 @@ export default function AllEvents() {
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
 
+  const allEventsViews: string[] = ['Week', 'Agenda']; // ['Week', 'Month', 'Agenda'];
+  const [activeKey, setActiveKey] = useState<string | undefined>(undefined);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentReportSelection && currentReportSelection.reloadEvents &&
         currentReportSelection.start && currentReportSelection.end) {
+        if (!activeKey && !windowSize.isMobile) {
+          setActiveKey('Week');
+        }
         dispatch(setReloadAdminEvents(false));
         dispatch(setAdminEvents(undefined));
         dispatch(setIsLoading(true));
@@ -38,7 +48,7 @@ export default function AllEvents() {
                     dispatch(
                       setAdminNotes(resp.notes)
                     );
-                  };                  
+                  };
                 });
             } else {
               dispatch(setAdminEvents(filteredEvents));
@@ -64,12 +74,51 @@ export default function AllEvents() {
     getAllEvents,
     windowSizeJson,
     isLoading,
-    getCalendarNotes
+    getCalendarNotes,
+    activeKey,
+    windowSize.isMobile
   ]);
+
+  const switchView = (key: string) => {
+    if (key != activeKey) {
+      dispatch(
+        setIsLoading(true)
+      );
+      setActiveKey(key);
+    }
+  };
+
+  let activeComponent: any = undefined;
+  switch (activeKey) {
+    case 'Month':
+      activeComponent = <AllEventsMonth />;
+      break;
+    case 'Agenda':
+      activeComponent = <AllEventsAgenda />;
+      break;
+    default:
+      activeComponent = <AllEventsWeek />;
+      break;
+  }
 
   return (
     <>
-      <AllEventsWeek />
+      <Row>
+        <Col className="all-events-buttons">
+          <ButtonGroup hidden={windowSize.isMobile}>
+            {allEventsViews.map(key => (
+              <Button key={key} active={key == activeKey} onClick={() => switchView(key)}>
+                {key}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          {windowSize.isMobile ? <AllEventsAgenda /> : activeComponent}
+        </Col>
+      </Row>
     </>
   );
 }
