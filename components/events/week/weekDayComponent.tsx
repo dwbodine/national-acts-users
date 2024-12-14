@@ -28,6 +28,7 @@ export default function WeekDay(props: any) {
     const [noteText, setNoteText] = useState('');
     const [noteTitle, setNoteTitle] = useState('');
     const [noteId, setNoteId] = useState(0);
+    const [noteIsCompleted, setNoteIsCompleted] = useState(false);
     const [displayNoteText, setDisplayNoteText] = useState('');
     const [displayNoteTitle, setDisplayNoteTitle] = useState('');
     const { addNote } = useAddNote();
@@ -35,10 +36,11 @@ export default function WeekDay(props: any) {
     const { deleteNote } = useDeleteNote();
 
     const handleNotesOpen = () => setNotesOpen(true);
-    const handleDisplayNoteOpen = (noteId: number, noteText: string, noteTitle: string) => {
+    const handleDisplayNoteOpen = (noteId: number, noteText: string, noteTitle: string, isCompleted: boolean) => {
         setNoteId(noteId);
         setDisplayNoteTitle(noteTitle);
         setDisplayNoteText(noteText);
+        setNoteIsCompleted(isCompleted);
         setDisplayNoteOpen(true);
     };
     const handleNotesClose = () => setNotesOpen(false);
@@ -47,7 +49,8 @@ export default function WeekDay(props: any) {
         setTimeout(() => {
             setNoteId(0);
             setDisplayNoteText('');
-            setDisplayNoteTitle('');
+            setNoteIsCompleted(false);
+            setDisplayNoteTitle('');            
         }, 500);        
     };
 
@@ -70,11 +73,27 @@ export default function WeekDay(props: any) {
             });
     };
 
+    const editNewNoteAndMarkComplete = () => {
+        if (!weekDate || !displayNoteText || !displayNoteTitle || noteId == 0) {
+            return;
+        }
+        editNote(noteId, displayNoteText, displayNoteTitle, true)
+            .then((response) => {
+                handleDisplayNoteClose();
+                if (response.success && !response.noteError) {
+                    toast.success("Calendar note edited successfully");
+                    dispatch(setReloadAdminEvents(true));
+                } else {
+                    toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+                }
+            });
+    };
+
     const editNewNote = () => {
         if (!weekDate || !displayNoteText || !displayNoteTitle || noteId == 0) {
             return;
         }
-        editNote(noteId, displayNoteText, displayNoteTitle)
+        editNote(noteId, displayNoteText, displayNoteTitle, noteIsCompleted)
             .then((response) => {
                 handleDisplayNoteClose();
                 if (response.success && !response.noteError) {
@@ -152,8 +171,9 @@ export default function WeekDay(props: any) {
         notes.forEach((note, i) => {
             if (!note.ticketSocketEventId) {
                 let noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
-                noteRows.push(<div key={`wdNote_${key}_${i}`} className="week-day-note">
-                                    <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '')}>{noteText}</span>
+                const noteClass = note.isCompleted ? "week-day-note-completed" : "week-day-note";
+                noteRows.push(<div key={`wdNote_${key}_${i}`} className={noteClass}>
+                                    <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '', note.isCompleted ?? false)}>{noteText}</span>
                                     <span className="note-x"><FaX onClick={() => confirmDeleteNote(note.noteId)} /></span>
                             </div>)
             }
@@ -227,11 +247,12 @@ export default function WeekDay(props: any) {
             </Modal>
             <Modal id="displayNoteModal" open={displayNoteOpen} onClose={handleDisplayNoteClose}>
                 <Modal.Header>
-                    <Modal.Title>Edit Note for {displayDate}</Modal.Title>
+                    <Modal.Title>{!noteIsCompleted ? `View/Edit Note for ${displayDate}` : `View Note for ${displayDate}`}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form.Control
                         id="editNoteTitle"
+                        disabled={noteIsCompleted}
                         onChange={(e) => setDisplayNoteTitle(e.currentTarget.value)}
                         value={displayNoteTitle}
                         placeholder="Note title"
@@ -239,15 +260,18 @@ export default function WeekDay(props: any) {
                     <Form.Control as="textarea"
                         id="editNote"
                         rows={5}
+                        disabled={noteIsCompleted}
                         onChange={(e) => setDisplayNoteText(e.currentTarget.value)}
                         value={displayNoteText}
                         placeholder="Note text"
                     />
-                    { }
                 </Modal.Body>
                 <Modal.Footer className="modal-notes-footer">
-                    <Button onClick={editNewNote}>
+                    <Button hidden={noteIsCompleted} onClick={editNewNote}>
                         Save
+                    </Button>
+                    <Button hidden={noteIsCompleted} onClick={editNewNoteAndMarkComplete}>
+                        Mark Complete
                     </Button>
                     <Button onClick={handleDisplayNoteClose}>
                         Cancel

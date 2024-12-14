@@ -831,6 +831,7 @@ export class EventService {
     noteId: number,
     note: string,
     noteTitle?: string,
+    isCompleted?: boolean,
   ): Promise<ModifyNoteResponse> => {
     const url = '/admin/notes/edit';
     const headers = getAuthorizationHeader();
@@ -845,6 +846,7 @@ export class EventService {
       noteId: noteId,
       note: note,
       noteTitle: noteTitle,
+      isCompleted: isCompleted,
     };
 
     return this.instance

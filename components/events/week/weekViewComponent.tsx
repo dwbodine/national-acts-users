@@ -7,7 +7,8 @@ import { RootState } from '@/lib/store';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setAdminDateRange, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
-import { DateRange } from '@/types/user';
+import { DateRange, EventTabView } from '@/types/user';
+import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 
 export default function WeekView(props: any) {
     const startOfWeek = props.StartOfWeek ? moment(props.StartOfWeek).startOf('day') : undefined;
@@ -22,12 +23,8 @@ export default function WeekView(props: any) {
         if (!reportSelection || !reportSelection.start) {
             return;
         }
-        let dateRange: DateRange = {
-            start: 0,
-            end: 0
-        };
-        dateRange.start = moment.unix(reportSelection.start).startOf('week').add(-6, 'day').startOf('day').unix();
-        dateRange.end = moment(reportSelection.start).startOf('week').startOf('day').unix();
+        let previousMonday = moment.unix(reportSelection.start).subtract(7, 'days').startOf('day').unix();
+        const dateRange = getSelectedAdminEventDateRange(previousMonday, EventTabView.Week);
         dispatch(setIsLoading(true));
         dispatch(setAdminDateRange(dateRange));
     };
@@ -37,12 +34,8 @@ export default function WeekView(props: any) {
         if (!reportSelection || !reportSelection.start) {
             return;
         }
-        let dateRange: DateRange = {
-            start: 0,
-            end: 0
-        };
-        dateRange.start = moment.unix(reportSelection.start).startOf('week').add(8, 'day').startOf('day').unix();
-        dateRange.end = moment(reportSelection.start).startOf('week').add(14, 'days').startOf('day').unix();
+        let nextMonday = moment.unix(reportSelection.start).add(7, 'days').startOf('day').unix();
+        const dateRange = getSelectedAdminEventDateRange(nextMonday, EventTabView.Week);
         dispatch(setIsLoading(true));
         dispatch(setAdminDateRange(dateRange));
     };
@@ -54,10 +47,10 @@ export default function WeekView(props: any) {
             let filteredEvents: VipEvent[] = [];
             let filteredNotes: Note[] = [];
             if (events && events.length > 0) {
-                filteredEvents = events.filter(x => moment(x.eventDate).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.eventDate).valueOf() < displayDate.endOf('day').valueOf());
+                filteredEvents = events.filter(x => moment(x.eventDate).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.eventDate).valueOf() <= displayDate.endOf('day').valueOf());
             }
             if (notes && notes.length > 0) {
-                filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() < displayDate.endOf('day').valueOf())
+                filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= displayDate.endOf('day').valueOf())
             }
             weekdays.push(<WeekDay key={i} WeekDayNumber={i}
                 WeekDate={displayDate.format('YYYY-MM-DD')}

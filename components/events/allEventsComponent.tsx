@@ -16,6 +16,7 @@ import { Col, Row } from 'react-bootstrap';
 import { EventTabView } from '@/types/user';
 import moment from 'moment';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
+import { Note } from '@/types/event';
 
 export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -36,9 +37,17 @@ export default function AllEvents() {
         dispatch(
           setActiveEventTab(defaultTabView)
         );
+        const dateRange = getSelectedAdminEventDateRange(moment().unix(), defaultTabView);
+        dispatch(
+          setAdminDateRange(dateRange)
+        );
       } else if (windowSize.isMobile && currentReportSelection.eventTabView != EventTabView.Agenda) {
         dispatch(
           setActiveEventTab(EventTabView.Agenda)
+        );
+        const dateRange = getSelectedAdminEventDateRange(moment().unix(), EventTabView.Agenda);
+        dispatch(
+          setAdminDateRange(dateRange)
         );
       } else if (currentReportSelection &&
         currentReportSelection.reloadEvents &&
@@ -46,6 +55,7 @@ export default function AllEvents() {
         currentReportSelection.end) {
         dispatch(setReloadAdminEvents(false));
         dispatch(setAdminEvents(undefined));
+        dispatch(setAdminNotes(undefined));
         dispatch(setIsLoading(true));
         getAllEvents(currentReportSelection.start, currentReportSelection.end).then((response) => {
           if (!response.eventError && response.events) {
@@ -53,15 +63,20 @@ export default function AllEvents() {
             if (currentReportSelection.start && currentReportSelection.end) {
               getCalendarNotes(currentReportSelection.start, currentReportSelection.end)
                 .then((resp) => {
-                  dispatch(setAdminEvents(filteredEvents));
                   if (!resp.noteError) {
+                    dispatch(setAdminEvents(filteredEvents));
+                    const notes: Note[] = resp.notes ? resp.notes : [];
                     dispatch(
-                      setAdminNotes(resp.notes)
+                      setAdminNotes(notes)
                     );
-                  };
+                  } else {
+                    dispatch(setAdminEvents(filteredEvents));
+                    dispatch(setAdminNotes([]));
+                  }
                 });
             } else {
               dispatch(setAdminEvents(filteredEvents));
+              dispatch(setAdminNotes([]));
             }
           } else if (response.statusCode == 401 || response.statusCode == 422) {
             dispatch(setIsLoading(false));
@@ -69,6 +84,7 @@ export default function AllEvents() {
           } else {
             dispatch(setIsLoading(false));
             dispatch(setAdminEvents(undefined));
+            dispatch(setAdminNotes(undefined));
             toast.error(response.eventError);
           }
 
@@ -93,18 +109,12 @@ export default function AllEvents() {
       dispatch(
         setIsLoading(true)
       );
-      const reloadEvents = (
-        ((key == EventTabView.Agenda || key == EventTabView.Month) && currentReportSelection.eventTabView == EventTabView.Week) ||
-        (key == EventTabView.Week && (currentReportSelection.eventTabView == EventTabView.Month || currentReportSelection.eventTabView == EventTabView.Agenda))
-      );
-      if (reloadEvents) {
-        const dateRange = getSelectedAdminEventDateRange(moment().unix(), key);
-        dispatch(
-          setAdminDateRange(dateRange)
-        );
-      }
       dispatch(
         setActiveEventTab(key)
+      );
+      const dateRange = getSelectedAdminEventDateRange(moment().unix(), key);
+      dispatch(
+        setAdminDateRange(dateRange)
       );
     }
   };

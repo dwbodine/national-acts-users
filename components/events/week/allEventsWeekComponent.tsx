@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '@/lib/store';
 import { setFocusControl, setExpandedRow, setExpandedEvent } from '@/lib/adminEventsSelectionSlice';
-import { VipEvent } from '@/types/event';
+import { Note, VipEvent } from '@/types/event';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import Row from 'react-bootstrap/Row';
@@ -30,6 +30,7 @@ export default function AllEventsWeek() {
   const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
 
   const [vipEvents, setVipEvents] = useState<VipEvent[] | undefined>(undefined);
+  const [notes, setNotes] = useState<Note[] | undefined>(undefined);
 
   const ExpandCell = (props: any) => (
     <Cell {...props} style={{ padding: 5 }}>
@@ -92,8 +93,9 @@ export default function AllEventsWeek() {
 
 
   useEffect(() => {
-    if (currentReportSelection.currentEvents != undefined) {
+    if (currentReportSelection.currentEvents != undefined && currentReportSelection.notes != undefined) {
       setVipEvents(currentReportSelection.currentEvents);
+      setNotes(currentReportSelection.notes);
       dispatch (
         setIsLoading(false)
       );
@@ -120,7 +122,7 @@ export default function AllEventsWeek() {
     (vipEvents != undefined) ?
     <>
       <Row>
-        <WeekView StartOfWeek={startOfWeek} Events={vipEvents} Notes={currentReportSelection?.notes} />
+        <WeekView StartOfWeek={startOfWeek} Events={vipEvents} Notes={notes} />
       </Row>
       <Row>
         <Col>

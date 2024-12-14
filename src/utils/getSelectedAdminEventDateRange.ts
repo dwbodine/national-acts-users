@@ -17,7 +17,7 @@ export default function getSelectedAdminEventDateRange(
         .startOf('month')
         .startOf('day')
         .unix();
-      dateRange.end = moment.unix(selectedUnixDate).endOf('month').endOf('day').unix();
+      dateRange.end = moment.unix(dateRange.start).endOf('month').endOf('day').unix();
       break;
     default:
       dateRange.start = moment
@@ -27,10 +27,10 @@ export default function getSelectedAdminEventDateRange(
         .startOf('day')
         .unix();
       dateRange.end = moment
-        .unix(selectedUnixDate)
-        .startOf('week')
-        .add(7, 'days')
-        .startOf('day')
+        .unix(dateRange.start)
+        .endOf('week')
+        .add(1, 'day')
+        .endOf('day')
         .unix();
       break;
   }

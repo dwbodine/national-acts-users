@@ -94,8 +94,8 @@ export const adminEventsSelectionSlice = createSlice({
       return state;
     },
     resetAllAdminEvents: (state) => {
-      state.start = 0;
-      state.end = 0;
+      state.start = undefined;
+      state.end = undefined;
       state.eventTabView = undefined;
       state.showDeleted = false;
       state.showInactive = false;

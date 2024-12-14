@@ -621,7 +621,9 @@ input[type='number']:hover {
 .week-day-event,
 .week-day-note,
 .agenda-day-event,
-.agenda-day-note {
+.agenda-day-note,
+.week-day-note-completed,
+.agenda-day-note-completed {
   border-radius: 6px;
   padding: 0 5px;
   margin: 3px 0;
@@ -638,18 +640,32 @@ input[type='number']:hover {
   background-color: rgb(200, 225, 238);
 }
 
-.week-day-note, .agenda-day-note {
+.week-day-note, 
+.agenda-day-note,
+.week-day-note-completed,
+.agenda-day-note-completed {
   background-color: rgb(254, 216, 0);
 }
 
 .week-day-note .note-text, 
-.agenda-day-note .note-text {
+.agenda-day-note .note-text,
+.week-day-note-completed .note-text,
+.agenda-day-note-completed .note-text
+ {
   width: calc(100% - 20px);
   display: inline-flex;
 }
 
+.week-day-note-completed .note-text,
+.agenda-day-note-completed .note-text {
+  text-decoration: line-through;
+}
+
+
 .week-day-note .note-x, 
-.agenda-day-note .note-x {
+.agenda-day-note .note-x,
+.week-day-note-completed .note-x, 
+.agenda-day-note-completed .note-x {
   width: 20px;
   text-align: right;
   float: right;

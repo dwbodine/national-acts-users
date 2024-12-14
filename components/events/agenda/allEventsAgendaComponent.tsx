@@ -14,7 +14,7 @@ export default function AllEventsAgenda() {
     const [vipEvents, setVipEvents] = useState<VipEvent[] | undefined>(undefined);
 
     useEffect(() => {
-        if (currentReportSelection.currentEvents != undefined) {
+        if (currentReportSelection.currentEvents != undefined && currentReportSelection.notes != undefined) {
             setVipEvents(currentReportSelection.currentEvents);
             dispatch(
                 setIsLoading(false)

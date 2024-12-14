@@ -25,6 +25,7 @@ export interface Note {
   note: string;
   noteTitle?: string;
   noteTimestamp: string;
+  isCompleted?: boolean;
 }
 
 export interface Ticket {
