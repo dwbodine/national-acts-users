@@ -72,6 +72,7 @@ export type User = {
 export type DateRange = {
   start: number;
   end: number;
+  periodStart?: number;
 };
 
 export type UserReportSelection = {
@@ -104,6 +105,7 @@ export enum EventTabView {
 export type EventReportSelection = {
   start?: number;
   end?: number;
+  periodStart?: number;
   showInactive?: boolean;
   showDeleted?: boolean;
   showHidden?: boolean;

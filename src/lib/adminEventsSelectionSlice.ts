@@ -30,7 +30,10 @@ export const adminEventsSelectionSlice = createSlice({
     setAdminDateRange: (state, action: PayloadAction<DateRange>) => {
       state.start = action.payload.start;
       state.end = action.payload.end;
+      state.periodStart = action.payload.periodStart;
       state.currentEvents = undefined;
+      state.expandedEvent = undefined;
+      state.expandedRow = undefined;
       state.reloadEvents = true;
       return state;
     },

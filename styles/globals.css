@@ -532,39 +532,41 @@ input[type='number']:hover {
   margin-right: 10px;
 }
 
-.week-view, .agenda-view {
+.week-view, .agenda-view, .month-view {
   width: 100%;
   border: 0;
   margin: 0;
   padding: 5px;
 }
 
-.week-view-action, .agenda-view-action {
+.week-view-action, .agenda-view-action, .month-view-action {
   width: 100%;
   border: 0;
   padding-bottom: 10px;
 }
 
-.week-view-action a, .agenda-view-action a {
+.week-view-action a, .agenda-view-action a, .month-view-action a {
   color: black;
 }
 
-.week-view-action-previous, .agenda-view-action-previous {
+.week-view-action-previous, .agenda-view-action-previous, .month-view-action-previous {
   text-align: left;
 }
 
-.week-view-action-next, .agenda-view-action-next {
+.week-view-action-next, .agenda-view-action-next, .month-view-action-next {
   text-align: right;
 }
 
 .week-view-action-previous svg, 
 .week-view-action-next svg,
 .agenda-view-action-previous svg,
-.agenda-view-action-next svg {
+.agenda-view-action-next svg,
+.month-view-action-previous svg,
+.month-view-action-next svg {
   margin: 0 10px;
 }
 
-.week-view-calendar, .agenda-day-row {
+.week-view-calendar, .agenda-day-row, .month-day-calendar {
   border: 0;
   width: 100%;
   padding: 0;
@@ -582,6 +584,25 @@ input[type='number']:hover {
   padding-bottom: 10px;
 }
 
+.month-view-month-name {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.month-day {
+  border: 1px solid #CBDCF7;
+  line-height: 25px;
+  vertical-align: top;
+  padding-bottom: 10px;
+  min-height: 300px;
+}
+
+.month-week-container {
+  width: 100%;
+  clear: both;
+}
+
 .agenda-day {
   width: 100%;
   line-height: 25px;
@@ -589,7 +610,7 @@ input[type='number']:hover {
   padding-bottom: 10px;
 }
 
-.week-day-name {
+.week-day-name, .month-day-name {
   font-size: 10px;
   text-transform: uppercase;
   text-align: center;
@@ -610,7 +631,7 @@ input[type='number']:hover {
   height: fit-content;
 }
 
-.week-day-number {
+.week-day-number, .month-day-number {
   font-size: 20px;
   text-align: center;
   margin: 5px auto;
@@ -622,8 +643,11 @@ input[type='number']:hover {
 .week-day-note,
 .agenda-day-event,
 .agenda-day-note,
+.month-day-event,
+.month-day-note,
 .week-day-note-completed,
-.agenda-day-note-completed {
+.agenda-day-note-completed,
+.month-day-note-completed {
   border-radius: 6px;
   padding: 0 5px;
   margin: 3px 0;
@@ -636,64 +660,76 @@ input[type='number']:hover {
   max-width: 50%;
 }
 
-.week-day-event, .agenda-day-event {
+.week-day-event, .agenda-day-event, .month-day-event {
   background-color: rgb(200, 225, 238);
 }
 
 .week-day-note, 
 .agenda-day-note,
+.month-day-note,
 .week-day-note-completed,
-.agenda-day-note-completed {
+.agenda-day-note-completed,
+.month-day-note-completed {
   background-color: rgb(254, 216, 0);
 }
 
 .week-day-note .note-text, 
 .agenda-day-note .note-text,
+.month-day-note .note-text,
 .week-day-note-completed .note-text,
-.agenda-day-note-completed .note-text
+.agenda-day-note-completed .note-text,
+.month-day-note-completed .note-text
  {
   width: calc(100% - 20px);
   display: inline-flex;
 }
 
 .week-day-note-completed .note-text,
-.agenda-day-note-completed .note-text {
+.agenda-day-note-completed .note-text,
+.month-day-note-completed .note-text {
   text-decoration: line-through;
 }
 
 
 .week-day-note .note-x, 
 .agenda-day-note .note-x,
+.month-day-note .note-x,
 .week-day-note-completed .note-x, 
-.agenda-day-note-completed .note-x {
+.agenda-day-note-completed .note-x,
+.month-day-note-completed .note-x {
   width: 20px;
   text-align: right;
   float: right;
 }
 
 .week-day-event-inactive, 
-.agenda-day-event-inactive {
+.agenda-day-event-inactive,
+.month-day-event-inactive {
   background-color: red;
 }
 
 .week-day-event-deleted, 
-.agenda-day-event-deleted {
+.agenda-day-event-deleted,
+.month-day-event-deleted {
   color: white;
   background-color: rgb(100, 100, 100);
 }
 
 .week-day-event-hidden, 
-.agenda-day-event-hidden {
+.agenda-day-event-hidden,
+.month-day-event-hidden {
   background-color: orange;
 }
 
 .week-day-event-cancelled, 
-.agenda-day-event-cancelled {
+.agenda-day-event-cancelled,
+.month-day-event-cancelled {
   background-color: rgb(0, 128, 255);
 }
 
 .week-day-event-taskscomplete,
-.agenda-day-event-taskscomplete {
+.agenda-day-event-taskscomplete,
+.month-day-event-taskscomplete {
   color: rgb(255, 255, 255);
   text-decoration: line-through;
   background-color: green;
@@ -708,6 +744,12 @@ input[type='number']:hover {
 
 .agenda-view .expanded-event-row {
   margin-left: 0;
+}
+
+.expanded-event-title-row {
+  padding: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .update-tasks-button {

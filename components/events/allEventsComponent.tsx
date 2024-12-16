@@ -28,7 +28,7 @@ export default function AllEvents() {
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
 
-  const allEventsViews: EventTabView[] = [EventTabView.Week, EventTabView.Agenda]; // ['Week', 'Month', 'Agenda'];
+  const allEventsViews: EventTabView[] = [EventTabView.Week, EventTabView.Month, EventTabView.Agenda];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

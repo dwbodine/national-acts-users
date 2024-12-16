@@ -40,7 +40,13 @@ export default function EventSalesBar() {
     }
   }, [windowSizeJson, getUser, currentReportSelection, dispatch]);
 
-  const startDate = currentReportSelection.start ? moment.unix(currentReportSelection.start).toDate() : null;
+  let startDate = undefined;
+  if (currentReportSelection.eventTabView == EventTabView.Month) {
+    startDate = currentReportSelection.periodStart ? moment.unix(currentReportSelection.periodStart).toDate() : null;
+  } else {
+    startDate = currentReportSelection.start ? moment.unix(currentReportSelection.start).toDate() : null;
+  }
+
   let datePickerlabel = '';
   switch (currentReportSelection.eventTabView) {
     case EventTabView.Agenda:
