@@ -9,7 +9,7 @@ export default function OrderRow(props: any) {
   const eventName = props.EventName as string;
   const order = props.Order as Order;
   const hasPhoneData = props.HasPhoneData as boolean;
-  const hasShirtData = order.totalShirts ?? 0 > 0;
+  const hasShirtData = ((order.totalShirts ?? 0) > 0);
   const hideRev = props.HideRevenue as boolean;
   const hideServiceFees = props.HideServiceFees as boolean;
   const canCheckInTickets = props.CanCheckInTickets as boolean;

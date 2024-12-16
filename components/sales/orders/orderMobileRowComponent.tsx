@@ -10,7 +10,7 @@ export default function OrderMobileRow(props: any) {
   const eventName = props.EventName as string;
   const order = props.Order as Order;
   const hasPhoneData = props.HasPhoneData as boolean;
-  const hasShirtData = props.HasShirtData as boolean;
+  const hasShirtData = ((order.totalShirts ?? 0) > 0);
   const hideRev = props.HideRevenue as boolean;
   const hideServiceFees = props.HideServiceFees as boolean;
   const canCheckInTickets = props.CanCheckInTickets as boolean;
@@ -102,47 +102,47 @@ export default function OrderMobileRow(props: any) {
       <td>
         <Container className="mobile-event-card" id={id}>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col className="mobile-bold">Purchaser Name:</Col>
+            <Col xs={5} className="mobile-bold">Purchaser Name:</Col>
             <Col>{purchaserName}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col className="mobile-bold">Attendee Names:</Col>
+            <Col xs={5} className="mobile-bold">Attendee Names:</Col>
             <Col>{attendeeNameRows}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones} className="no-print">
-            <Col className="mobile-bold">Purchase Date:</Col>
+            <Col xs={5} className="mobile-bold">Purchase Date:</Col>
             <Col>{purchaseDate}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col className="mobile-bold">Event Date:</Col>
+            <Col xs={5} className="mobile-bold">Event Date:</Col>
             <Col>{moment(eventDate).format('MM/DD/YYYY')}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col className="mobile-bold">Event Name:</Col>
+            <Col xs={5} className="mobile-bold">Event Name:</Col>
             <Col>{eventName}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col className="mobile-bold">Ticket type breakdown:</Col>
+            <Col xs={5} className="mobile-bold">Ticket breakdown:</Col>
             <Col>{ticketTypeRows}</Col>
           </Row>
           <Row hidden={hideRev || showOnlyEmails || showOnlyPhones}>
-            <Col className="mobile-bold">Revenue:</Col>
+            <Col xs={5} className="mobile-bold">Revenue:</Col>
             <Col>{revenue}</Col>
           </Row>
           <Row hidden={hideServiceFees || showOnlyEmails || showOnlyPhones} className="no-print">
-            <Col className="mobile-bold">Service Fees:</Col>
+            <Col xs={5} className="mobile-bold">Service Fees:</Col>
             <Col>{serviceFees}</Col>
           </Row>
           <Row hidden={showOnlyPhones}>
-            <Col className="mobile-bold">Email:</Col>
+            <Col xs={5} className="mobile-bold">Email:</Col>
             <Col>{order.email}</Col>
           </Row>
           <Row hidden={!hasPhoneData || showOnlyEmails}>
-            <Col className="mobile-bold">Phone:</Col>
+            <Col xs={5} className="mobile-bold">Phone:</Col>
             <Col>{order.phone}</Col>
           </Row>
-          <Row hidden={!hasShirtData || showOnlyEmails || showOnlyPhones}>
-            <Col className="mobile-bold">Shirts:</Col>
+          <Row hidden={!hasShirtData || (showOnlyEmails || showOnlyPhones)}>
+            <Col xs={5} className="mobile-bold">Shirts:</Col>
             <Col>{shirtSizeRows}</Col>
           </Row>
         </Container>

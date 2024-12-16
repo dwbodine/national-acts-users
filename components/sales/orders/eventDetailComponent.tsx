@@ -373,7 +373,6 @@ export default function EventDetail(props: any) {
             Order={order}
             ChangeOrderStatus={changeOrderStatus}
             HasPhoneData={hasPhoneData}
-            HasShirtData={hasShirtData}
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFeeDisplay}
             CanCheckInTickets={canCheckInTickets}
@@ -391,7 +390,6 @@ export default function EventDetail(props: any) {
             Order={order}
             ChangeOrderStatus={changeOrderStatus}
             HasPhoneData={hasPhoneData}
-            HasShirtData={hasShirtData}
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFeeDisplay}
             CanCheckInTickets={canCheckInTickets}
