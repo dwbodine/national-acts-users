@@ -4,8 +4,8 @@ import { UserActivity, UserActivitySelection } from '../types/user';
 import moment from 'moment';
 
 const initialState: UserActivitySelection = {
-  start: moment().startOf('month').unix(),
-  end: moment().endOf('day').unix(),
+  start: undefined,
+  end: undefined,
   reloadActivities: true,
   filterAdmins: true,
   currentLogins: 0,
@@ -41,8 +41,8 @@ export const userActivitySelectionSlice = createSlice({
       return state;
     },
     resetUserActivity: (state) => {
-      state.start = moment().startOf('month').unix();
-      state.end = moment().endOf('day').unix();
+      state.start = undefined;
+      state.end = undefined;
       state.reloadActivities = true;
       state.filterAdmins = true;
       state.currentLogins = 0;

@@ -3,6 +3,7 @@ import {
   setCurrentActivities,
   setFilterAdmins,
   setReloadActivities,
+  setUserActivityDateRange,
 } from '@/lib/userActivitySelectionSlice';
 import { RootState } from '@/lib/store';
 import { GetActivityResponse, UserActivity } from '@/types/user';
@@ -28,29 +29,41 @@ export default function UserActivityTable() {
   };
 
   useEffect(() => {
-    if (currentUserActivitySelection.reloadActivities) {
-      setTableLoading(true);
-      dispatch(setIsLoading(true));
-      getActivityData(
-        currentUserActivitySelection.start,
-        currentUserActivitySelection.end,
-        undefined,
-        undefined,
-        currentUserActivitySelection.filterAdmins,
-      ).then((response: GetActivityResponse) => {
-        if (!response.logActivityError && response.activities) {
-          dispatch(setCurrentActivities(response.activities));
-        }
-        dispatch(setReloadActivities(false));
+    const timeoutId = setTimeout(() => {
+      if (currentUserActivitySelection.start == undefined || currentUserActivitySelection.end == undefined) {
+        let userActivitySelection = {...currentUserActivitySelection};
+        userActivitySelection.start = moment().startOf('month').unix();
+        userActivitySelection.end = moment().endOf('day').unix();
+        dispatch(
+          setUserActivityDateRange(userActivitySelection)
+        );
+      } else if (currentUserActivitySelection.start && currentUserActivitySelection.end && currentUserActivitySelection.reloadActivities) {
+        setTableLoading(true);
+        dispatch(setIsLoading(true));
+        getActivityData(
+          currentUserActivitySelection.start,
+          currentUserActivitySelection.end,
+          undefined,
+          undefined,
+          currentUserActivitySelection.filterAdmins,
+        ).then((response: GetActivityResponse) => {
+          if (!response.logActivityError && response.activities) {
+            dispatch(setCurrentActivities(response.activities));
+          }
+          dispatch(setReloadActivities(false));
+          dispatch(setIsLoading(false));
+          setTableLoading(false);
+        });
+      } else if (tableLoading) {
         dispatch(setIsLoading(false));
-        setTableLoading(false);
-      });
-    } else if (tableLoading) {
-      dispatch(setIsLoading(false));
-      setTimeout(() => {
-        setTableLoading(false);
-      }, 300);
-    }
+        setTimeout(() => {
+          setTableLoading(false);
+        }, 300);
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timeoutId);
+    };    
   }, [currentUserActivitySelection, getActivityData, dispatch, tableLoading]);
 
   return (

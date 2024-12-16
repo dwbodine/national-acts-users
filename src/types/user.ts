@@ -250,8 +250,8 @@ export type AdminDashboardSelection = {
 };
 
 export type UserActivitySelection = {
-  start: number;
-  end: number;
+  start?: number;
+  end?: number;
   reloadActivities: boolean;
   filterAdmins: boolean;
   currentLogins?: number;
