@@ -6,7 +6,7 @@ import router from "next/router";
 import { Col, Container, Row } from "react-bootstrap";
 import { CirclesWithBar } from "react-loader-spinner";
 import { useDispatch } from "react-redux";
-import { Tabs } from "rsuite";
+import { Button, ButtonGroup } from "rsuite";
 
 
 export default function AdminTabsMobile(props: any) {
@@ -14,6 +14,9 @@ export default function AdminTabsMobile(props: any) {
   const isLoading = props.IsLoading as boolean;
   const notAdmin = props.NotAdmin as boolean;
   const dispatch = useDispatch();
+
+  const allTabsTop: ActivePageKey[] = [ActivePageKey.Dashboard, ActivePageKey.Events, ActivePageKey.SalesOverview];
+  const allTabsBottom: ActivePageKey[] = [ActivePageKey.Admin, ActivePageKey.Reports, ActivePageKey.Users];
 
   const onSelectTab = (eventKey: string | number | undefined) => {
     let key: ActivePageKey = activeKey;
@@ -48,145 +51,95 @@ export default function AdminTabsMobile(props: any) {
     }
   };
 
+  let activeComponent: any = undefined;
+  switch (activeKey) {
+    case ActivePageKey.Dashboard:
+      activeComponent = props.DashboardComponent;
+      break;
+    case ActivePageKey.Events:
+      activeComponent = props.EventsComponent;
+      break;
+    case ActivePageKey.Admin:
+      activeComponent = props.AdminComponent;
+      break;
+    case ActivePageKey.Reports:
+      activeComponent = props.ReportComponent;
+      break;
+    case ActivePageKey.Users:
+      activeComponent = props.UsersComponent;
+      break;
+    default:
+      activeComponent = props.SalesComponent;
+      break;
+  }
+
+  const getTabViewText = (key: ActivePageKey) => {
+    let text = '';
+    switch (key) {
+      case ActivePageKey.Dashboard:
+        text = "HOME";
+        break;
+      case ActivePageKey.Events:
+        text = "EVENTS";
+        break;
+      case ActivePageKey.Admin:
+        text = "ADMIN";
+        break;
+      case ActivePageKey.Reports:
+        text = "REPORTS";
+        break;
+      case ActivePageKey.Users:
+        text = "USERS";
+        break;
+      default:
+        text = "SALES OVERVIEW";
+        break;
+    }
+    return text;
+  };
+
   return (
     <>
-      <Tabs
-        hidden={notAdmin}
-        defaultActiveKey={activeKey.toString()}
-        onSelect={onSelectTab}
-        className="admin-tabs"
-      >
-        <Tabs.Tab eventKey={ActivePageKey.Dashboard.toString()} title="HOME">
-          {activeKey == ActivePageKey.Dashboard && (
-            <>
-              <Container fluid hidden={!isLoading || !props.DashboardComponent}>
-                <Row>
-                  <Col className="spinner-container">
-                    <CirclesWithBar height="100" width="100" color="#d12610" />
-                  </Col>
-                </Row>
-              </Container>
-              <Container
-                className="tab-container"
-                fluid
-                hidden={isLoading || !props.DashboardComponent}
-              >
-                {props.DashboardComponent}
-              </Container>
-            </>
-          )}
-        </Tabs.Tab>
-        <Tabs.Tab eventKey={ActivePageKey.Events.toString()} title="EVENTS">
-          {activeKey == ActivePageKey.Events && (
-            <>
-              <Container fluid hidden={!isLoading || !props.EventsComponent}>
-                <Row>
-                  <Col className="spinner-container">
-                    <CirclesWithBar height="100" width="100" color="#d12610" />
-                  </Col>
-                </Row>
-              </Container>
-              <Container
-                className="tab-container"
-                fluid
-                hidden={isLoading || !props.EventsComponent}
-              >
-                {props.EventsComponent}
-              </Container>
-            </>
-          )}
-        </Tabs.Tab>
-        <Tabs.Tab
-          eventKey={ActivePageKey.SalesOverview.toString()}
-          title="SALES OVERVIEW"
+      <Row>
+        <ButtonGroup
+          hidden={notAdmin}
+          justified
         >
-          {activeKey == ActivePageKey.SalesOverview && (
-            <>
-              <Container fluid hidden={!isLoading || !props.SalesComponent}>
-                <Row>
-                  <Col className="spinner-container">
-                    <CirclesWithBar height="100" width="100" color="#d12610" />
-                  </Col>
-                </Row>
-              </Container>
-              <Container
-                className="tab-container"
-                fluid
-                hidden={isLoading || !props.SalesComponent}
-              >
-                {props.SalesComponent}
-              </Container>
-            </>
-          )}
-        </Tabs.Tab>
-      </Tabs>
-      <Tabs
-        hidden={notAdmin}
-        defaultActiveKey={activeKey.toString()}
-        onSelect={onSelectTab}
-        className="admin-tabs"
-      >
-        <Tabs.Tab eventKey={ActivePageKey.Admin.toString()} title="ADMIN">
-          {activeKey == ActivePageKey.Admin && (
-            <>
-              <Container fluid hidden={!isLoading || !props.AdminComponent}>
-                <Row>
-                  <Col className="spinner-container">
-                    <CirclesWithBar height="100" width="100" color="#d12610" />
-                  </Col>
-                </Row>
-              </Container>
-              <Container
-                className="tab-container"
-                fluid
-                hidden={isLoading || !props.AdminComponent}
-              >
-                {props.AdminComponent}
-              </Container>
-            </>
-          )}
-        </Tabs.Tab>
-        <Tabs.Tab eventKey={ActivePageKey.Reports.toString()} title="REPORTS">
-          {activeKey == ActivePageKey.Reports && (
-            <>
-              <Container fluid hidden={!isLoading || !props.ReportComponent}>
-                <Row>
-                  <Col className="spinner-container">
-                    <CirclesWithBar height="100" width="100" color="#d12610" />
-                  </Col>
-                </Row>
-              </Container>
-              <Container
-                className="tab-container"
-                fluid
-                hidden={isLoading || !props.ReportComponent}
-              >
-                {props.ReportComponent}
-              </Container>
-            </>
-          )}
-        </Tabs.Tab>
-        <Tabs.Tab eventKey={ActivePageKey.Users.toString()} title="USERS">
-          {activeKey == ActivePageKey.Users && (
-            <>
-              <Container fluid hidden={!isLoading || !props.UsersComponent}>
-                <Row>
-                  <Col className="spinner-container">
-                    <CirclesWithBar height="100" width="100" color="#d12610" />
-                  </Col>
-                </Row>
-              </Container>
-              <Container
-                className="tab-container"
-                fluid
-                hidden={isLoading || !props.UsersComponent}
-              >
-                {props.UsersComponent}
-              </Container>
-            </>
-          )}
-        </Tabs.Tab>
-      </Tabs>
+          {allTabsTop.map(key => (
+            <Button appearance="subtle" key={key} active={key.valueOf() == activeKey?.valueOf()} onClick={() => onSelectTab(key)}>
+              {getTabViewText(key)}
+            </Button>
+          ))}
+        </ButtonGroup>
+        <ButtonGroup
+          hidden={notAdmin}
+          justified
+        >
+          {allTabsBottom.map(key => (
+            <Button appearance="subtle" key={key} active={key.valueOf() == activeKey?.valueOf()} onClick={() => onSelectTab(key)}>
+              {getTabViewText(key)}
+            </Button>
+          ))}
+        </ButtonGroup>
+      </Row>
+      <Row>
+        <Col>
+          <Container fluid hidden={!isLoading || !activeComponent}>
+            <Row>
+              <Col className="spinner-container">
+                <CirclesWithBar height="100" width="100" color="#d12610" />
+              </Col>
+            </Row>
+          </Container>
+          <Container
+            className="tab-container"
+            fluid
+            hidden={isLoading || !activeComponent}
+          >
+            {activeComponent}
+          </Container>
+        </Col>
+      </Row>
     </>
   )
 }

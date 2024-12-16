@@ -1396,7 +1396,10 @@ input[type='number']:hover {
     font-size: 10px;
   }
 
-  
+  .rs-btn-subtle {
+    border: 1px solid darkgray;
+    border-radius: 6px 6px 0 0;
+  }
 }
 
 /* custom mobile width */

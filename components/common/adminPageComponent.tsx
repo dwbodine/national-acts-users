@@ -53,6 +53,19 @@ export default function AdminPage(props: any) {
       <CheckAuth />
       <NavBar hidden={notAdmin} />
       <Container fluid hidden={notAdmin} className="vipContainer">
+        {windowSize.isMobile ? 
+        <AdminTabsMobile
+          ActiveKey={activeKey}
+          IsLoading={isLoading}
+          NotAdmin={notAdmin}
+          DashboardComponent={props.dashboardComponent}
+          EventsComponent={props.eventsComponent}
+          SalesComponent={props.salesComponent}
+          AdminComponent={props.adminComponent}
+          ReportComponent={props.reportComponent}
+          UsersComponent={props.usersComponent}
+        />
+        :
         <AdminTabs
           ActiveKey={activeKey}
           IsLoading={isLoading}
@@ -64,6 +77,7 @@ export default function AdminPage(props: any) {
           ReportComponent={props.reportComponent}
           UsersComponent={props.usersComponent}
          /> 
+         }
       </Container>
     </>
   );
