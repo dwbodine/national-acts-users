@@ -215,6 +215,10 @@ export default function AgendaDay(props: any) {
         });
     }
 
+    if (eventRows.length == 0 && noteRows.length == 0) {
+        eventRows.push(<div key={`adEvt_${key}_0`}>No events</div>)
+    }
+
     const displayDate = agendaDate ? `${agendaDate.format('ddd')} ${agendaDate.format('MM/DD/YYYY')}` : '';
 
     return (

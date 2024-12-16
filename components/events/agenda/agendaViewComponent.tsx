@@ -2,7 +2,7 @@ import { setAdminDateRange } from "@/lib/adminEventsSelectionSlice";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { RootState } from "@/lib/store";
 import { Note, VipEvent } from "@/types/event";
-import { DateRange, EventTabView } from "@/types/user";
+import { EventTabView } from "@/types/user";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import AgendaDay from "./agendaDayComponent";
@@ -13,7 +13,7 @@ import getSelectedAdminEventDateRange from "@/utils/getSelectedAdminEventDateRan
 
 export default function AgendaView(props: any) {
     const startOfMonth = props.StartOfMonth ? moment(props.StartOfMonth).startOf('day') : undefined;
-    const endOfMonth = (startOfMonth != undefined) ? moment(props.StartOfMonth).endOf('month').endOf('day') : undefined;
+    const endOfMonth = props.EndOfMonth ? moment(props.EndOfMonth).endOf('day') : undefined;
     const events = props.Events as VipEvent[] | undefined;
     const notes = props.Notes as Note[] | undefined;
 
@@ -55,14 +55,12 @@ export default function AgendaView(props: any) {
             if (notes && notes.length > 0) {
                 filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= displayDate.endOf('day').valueOf())
             }
-            if (filteredEvents.length > 0 || filteredNotes.length > 0) {
-                agendaDays.push(<AgendaDay key={i} AgendaDayNumber={i}
-                    AgendaDate={displayDate.format('YYYY-MM-DD')}
-                    Events={filteredEvents}
-                    Notes={filteredNotes}
-                />);    
-                i++;
-            }            
+            agendaDays.push(<AgendaDay key={i} AgendaDayNumber={i}
+                AgendaDate={displayDate.format('YYYY-MM-DD')}
+                Events={filteredEvents}
+                Notes={filteredNotes}
+            />);    
+            i++;
             displayDate = displayDate.add(1, 'day');
         }
     }
