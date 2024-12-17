@@ -332,7 +332,7 @@ export class UserService {
     activityData: string | undefined = undefined,
     token: string | undefined = undefined,
   ): Promise<LogActivityResponse> => {
-    let url = '/internal/logUserActivity';
+    let url = '/user/logUserActivity';
 
     let activityResponse: LogActivityResponse = {
       statusCode: 200,

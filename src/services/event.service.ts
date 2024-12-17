@@ -13,8 +13,6 @@ import {
   ModifyTicketResponse,
   GetOrdersResponse,
   GetDashboardOrdersResponse,
-  GetSellersResponse,
-  Seller,
   RefreshHistoryResponse,
   TicketSocketRefreshHistory,
   GetRefreshHistoryResponse,
@@ -53,7 +51,7 @@ export class EventService {
   getEvents = async (
     reportSelection: UserReportSelection,
   ): Promise<GetEventsResponse> => {
-    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&sellerId=${reportSelection.seller.sellerId}`;
+    let url = `/events/getEventsAndOrders?excludeExternal=1&sellerId=${reportSelection.seller.sellerId}`;
 
     if (reportSelection.showInactive) {
       url += '&inactive=1';
@@ -112,7 +110,7 @@ export class EventService {
   getAdminEvents = async (
     reportSelection: AdminSelection,
   ): Promise<GetEventsResponse> => {
-    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
+    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
 
     if (reportSelection.start) {
       url += `&start=${reportSelection.start}`;
@@ -157,7 +155,7 @@ export class EventService {
   };
 
   getAllOrders = async (start: number, end: number): Promise<GetOrdersResponse> => {
-    let url = `/user/ordersSecured?start=${start}&end=${end}&ignoreFlags=1`;
+    let url = `/events/getOrders?start=${start}&end=${end}&ignoreFlags=1`;
 
     let ordersResponse: GetOrdersResponse = {
       orders: undefined,
@@ -254,7 +252,7 @@ export class EventService {
       end = start + 7 * 24 * 60 * 60;
     }
 
-    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1`;
+    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1`;
 
     if (start > 0) {
       url += `&start=${start}`;
@@ -307,7 +305,7 @@ export class EventService {
   };
 
   getEventById = async (eventId: number): Promise<GetEventResponse> => {
-    let url = `/user/eventsAndOrdersSecured?excludeExternal=1&ignoreFlags=1&tsEventId=${eventId}`;
+    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&tsEventId=${eventId}`;
 
     let eventResponse: GetEventResponse = {
       event: undefined,
@@ -344,7 +342,7 @@ export class EventService {
   };
 
   getOrderById = async (orderId: number): Promise<GetOrderResponse> => {
-    let url = `/user/orderById?tsOrderId=${orderId}`;
+    let url = `/events/getOrderById?tsOrderId=${orderId}`;
 
     let orderResponse: GetOrderResponse = {
       order: undefined,
@@ -688,7 +686,7 @@ export class EventService {
     start?: number,
     end?: number,
   ): Promise<RefreshHistoryResponse> => {
-    let url = `/internal/refreshEventsFromService/${sellerId}`;
+    let url = `/events/refreshEventsFromService/${sellerId}`;
 
     if (start && end) {
       url += `?start=${start}&end=${end}`;
@@ -734,7 +732,7 @@ export class EventService {
   };
 
   getTicketSocketRefreshHistory = async (): Promise<GetRefreshHistoryResponse> => {
-    let url = `/internal/getUpdateHistory`;
+    let url = `/events/getRefreshHistory`;
 
     let refreshResponse: GetRefreshHistoryResponse = {
       history: undefined,
@@ -957,11 +955,11 @@ export class EventService {
       });
   };
 
-  setEventInactive = async (
-    eventId: number,
+  setEventsInactive = async (
+    eventIdList: number[],
     isActive: boolean,
   ): Promise<ModifyEventResponse> => {
-    const url = '/user/setEventInactiveSecured';
+    const url = '/events/setEventsInactive';
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyEventResponse = {
@@ -971,7 +969,7 @@ export class EventService {
     };
 
     const data = {
-      eventId: eventId,
+      eventIdList: eventIdList,
       isActive: isActive ? 0 : 1,
     };
 
@@ -1004,58 +1002,11 @@ export class EventService {
       });
   };
 
-  setEventListInactive = async (
+  setEventsDeleted = async (
     eventIdList: number[],
-    isActive: boolean,
-  ): Promise<ModifyEventResponse> => {
-    const url = '/user/setEventInactiveSecured';
-    const headers = getAuthorizationHeader();
-
-    let modifyResponse: ModifyEventResponse = {
-      success: false,
-      eventError: undefined,
-      statusCode: 200,
-    };
-
-    const data = JSON.stringify({
-      eventIdList: eventIdList,
-      isActive: isActive ? 0 : 1,
-    });
-
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        if (!modifyResponse.success) {
-          modifyResponse.eventError =
-            'Unexpected error occurred while modifying events - please contact your administrator';
-        }
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        var errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while modifying events - please contact your administrator';
-        }
-        modifyResponse.eventError = errorMessage;
-        return modifyResponse;
-      });
-  };
-
-  setEventDeleted = async (
-    eventId: number,
     isDeleted: boolean,
   ): Promise<ModifyEventResponse> => {
-    const url = '/user/setEventDeletedSecured';
+    const url = '/events/setEventsDeleted';
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyEventResponse = {
@@ -1065,7 +1016,7 @@ export class EventService {
     };
 
     const data = {
-      eventId: eventId,
+      eventIdList: eventIdList,
       isDeleted: isDeleted ? 0 : 1,
     };
 
@@ -1098,58 +1049,11 @@ export class EventService {
       });
   };
 
-  setEventListDeleted = async (
+  setEventsHidden = async (
     eventIdList: number[],
-    isDeleted: boolean,
-  ): Promise<ModifyEventResponse> => {
-    const url = '/user/setEventDeletedSecured';
-    const headers = getAuthorizationHeader();
-
-    let modifyResponse: ModifyEventResponse = {
-      success: false,
-      eventError: undefined,
-      statusCode: 200,
-    };
-
-    const data = JSON.stringify({
-      eventIdList: eventIdList,
-      isDeleted: isDeleted ? 0 : 1,
-    });
-
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        if (!modifyResponse.success) {
-          modifyResponse.eventError =
-            'Unexpected error occurred while modifying events - please contact your administrator';
-        }
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        var errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while modifying events - please contact your administrator';
-        }
-        modifyResponse.eventError = errorMessage;
-        return modifyResponse;
-      });
-  };
-
-  setEventHidden = async (
-    eventId: number,
     isHidden: boolean,
   ): Promise<ModifyEventResponse> => {
-    const url = '/user/setEventHiddenSecured';
+    const url = '/events/setEventsHidden';
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyEventResponse = {
@@ -1159,56 +1063,9 @@ export class EventService {
     };
 
     const data = {
-      eventId: eventId,
-      isHidden: isHidden ? 0 : 1,
-    };
-
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        if (!modifyResponse.success) {
-          modifyResponse.eventError =
-            'Unexpected error occurred while modifying event - please contact your administrator';
-        }
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        var errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while modifying event - please contact your administrator';
-        }
-        modifyResponse.eventError = errorMessage;
-        return modifyResponse;
-      });
-  };
-
-  setEventListHidden = async (
-    eventIdList: number[],
-    isHidden: boolean,
-  ): Promise<ModifyEventResponse> => {
-    const url = '/user/setEventHiddenSecured';
-    const headers = getAuthorizationHeader();
-
-    let modifyResponse: ModifyEventResponse = {
-      success: false,
-      eventError: undefined,
-      statusCode: 200,
-    };
-
-    const data = JSON.stringify({
       eventIdList: eventIdList,
       isHidden: isHidden ? 0 : 1,
-    });
+    };
 
     return this.instance
       .post(url, data, {
@@ -1239,11 +1096,11 @@ export class EventService {
       });
   };
 
-  setOrderInactive = async (
-    orderId: number,
+  setOrdersInactive = async (
+    orderIdList: number[],
     isActive: boolean,
   ): Promise<ModifyOrderResponse> => {
-    const url = '/user/setOrderInactiveSecured';
+    const url = '/events/setOrdersInactive';
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyOrderResponse = {
@@ -1253,7 +1110,7 @@ export class EventService {
     };
 
     const data = {
-      orderId: orderId,
+      orderIdList: orderIdList,
       isActive: isActive ? 0 : 1,
     };
 
@@ -1286,58 +1143,11 @@ export class EventService {
       });
   };
 
-  setOrderListInactive = async (
+  setOrdersDeleted = async (
     orderIdList: number[],
-    isActive: boolean,
-  ): Promise<ModifyOrderResponse> => {
-    const url = '/user/setOrderInactiveSecured';
-    const headers = getAuthorizationHeader();
-
-    let modifyResponse: ModifyOrderResponse = {
-      success: false,
-      orderError: undefined,
-      statusCode: 200,
-    };
-
-    const data = JSON.stringify({
-      orderIdList: orderIdList,
-      isActive: isActive ? 0 : 1,
-    });
-
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        if (!modifyResponse.success) {
-          modifyResponse.orderError =
-            'Unexpected error occurred while modifying orders - please contact your administrator';
-        }
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        var errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while modifying orders - please contact your administrator';
-        }
-        modifyResponse.orderError = errorMessage;
-        return modifyResponse;
-      });
-  };
-
-  setOrderDeleted = async (
-    orderId: number,
     isDeleted: boolean,
   ): Promise<ModifyOrderResponse> => {
-    const url = '/user/setOrderDeletedSecured';
+    const url = '/events/setOrdersDeleted';
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyOrderResponse = {
@@ -1347,7 +1157,7 @@ export class EventService {
     };
 
     const data = {
-      orderId: orderId,
+      orderIdList: orderIdList,
       isDeleted: isDeleted ? 0 : 1,
     };
 
@@ -1380,58 +1190,11 @@ export class EventService {
       });
   };
 
-  setOrderListDeleted = async (
+  setOrdersHidden = async (
     orderIdList: number[],
-    isDeleted: boolean,
-  ): Promise<ModifyOrderResponse> => {
-    const url = '/user/setOrderDeletedSecured';
-    const headers = getAuthorizationHeader();
-
-    let modifyResponse: ModifyOrderResponse = {
-      success: false,
-      orderError: undefined,
-      statusCode: 200,
-    };
-
-    const data = JSON.stringify({
-      orderIdList: orderIdList,
-      isDeleted: isDeleted ? 0 : 1,
-    });
-
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        if (!modifyResponse.success) {
-          modifyResponse.orderError =
-            'Unexpected error occurred while modifying orders - please contact your administrator';
-        }
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        var errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while modifying orders - please contact your administrator';
-        }
-        modifyResponse.orderError = errorMessage;
-        return modifyResponse;
-      });
-  };
-
-  setOrderHidden = async (
-    orderId: number,
     isHidden: boolean,
   ): Promise<ModifyOrderResponse> => {
-    const url = '/user/setOrderHiddenSecured';
+    const url = '/events/setOrdersHidden';
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyOrderResponse = {
@@ -1441,7 +1204,7 @@ export class EventService {
     };
 
     const data = {
-      orderId: orderId,
+      orderIdList: orderIdList,
       isHidden: isHidden ? 0 : 1,
     };
 
@@ -1474,58 +1237,11 @@ export class EventService {
       });
   };
 
-  setOrderListHidden = async (
-    orderIdList: number[],
-    isHidden: boolean,
-  ): Promise<ModifyOrderResponse> => {
-    const url = '/user/setOrderHiddenSecured';
-    const headers = getAuthorizationHeader();
-
-    let modifyResponse: ModifyOrderResponse = {
-      success: false,
-      orderError: undefined,
-      statusCode: 200,
-    };
-
-    const data = JSON.stringify({
-      orderIdList: orderIdList,
-      isHidden: isHidden ? 0 : 1,
-    });
-
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        if (!modifyResponse.success) {
-          modifyResponse.orderError =
-            'Unexpected error occurred while modifying orders - please contact your administrator';
-        }
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        var errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while modifying orders - please contact your administrator';
-        }
-        modifyResponse.orderError = errorMessage;
-        return modifyResponse;
-      });
-  };
-
-  setTicketCheckedIn = async (
-    ticketId: number,
+  setTicketsCheckedIn = async (
+    ticketIdList: number[],
     isCheckedIn: boolean,
   ): Promise<ModifyTicketResponse> => {
-    const url = '/user/setTicketCheckinSecured';
+    const url = '/events/setTicketsCheckin';
     const headers = getAuthorizationHeader();
 
     let modifyResponse: ModifyTicketResponse = {
@@ -1535,7 +1251,7 @@ export class EventService {
     };
 
     const data = {
-      ticketId: ticketId,
+      ticketIdList: ticketIdList,
       isCheckedIn: isCheckedIn ? 1 : 0,
     };
 
@@ -1562,53 +1278,6 @@ export class EventService {
         } else {
           errorMessage =
             'Unknown error while modifying ticket - please contact your administrator';
-        }
-        modifyResponse.ticketError = errorMessage;
-        return modifyResponse;
-      });
-  };
-
-  setTicketListCheckedIn = async (
-    ticketIdList: number[],
-    isCheckedIn: boolean,
-  ): Promise<ModifyTicketResponse> => {
-    const url = '/user/setTicketCheckinSecured';
-    const headers = getAuthorizationHeader();
-
-    let modifyResponse: ModifyTicketResponse = {
-      success: false,
-      ticketError: undefined,
-      statusCode: 200,
-    };
-
-    const data = JSON.stringify({
-      ticketIdList: ticketIdList,
-      isCheckedIn: isCheckedIn ? 1 : 0,
-    });
-
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        if (!modifyResponse.success) {
-          modifyResponse.ticketError =
-            'Unexpected error occurred while modifying tickets - please contact your administrator';
-        }
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        var errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while modifying tickets - please contact your administrator';
         }
         modifyResponse.ticketError = errorMessage;
         return modifyResponse;

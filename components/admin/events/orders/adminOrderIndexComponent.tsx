@@ -43,9 +43,9 @@ export default function AdminOrdersIndex(props: any) {
             }
           })
       } else if (currentAdminSelection.reloadEvents) {
+        dispatch(setReloadEvents(false));
         let adminSelection = { ...currentAdminSelection };
         let selectedEventId = adminSelection.selectedEvent?.ticketSocketEventId;
-        dispatch(setReloadEvents(false));
         if (!adminSelection.sellerId || !selectedEventId) {
           setTableLoading(false);
           return;
@@ -69,7 +69,7 @@ export default function AdminOrdersIndex(props: any) {
           setTableLoading(false);
         }, 300);
       }
-    }, 200);
+    }, 500);
     return () => {
       clearTimeout(timeoutId);
     };

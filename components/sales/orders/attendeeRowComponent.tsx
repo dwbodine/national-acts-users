@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { setReloadEvents, setFocusControl } from '@/lib/reportSelectionSlice';
 import { Ticket } from '@/types/event';
-import { useSetTicketCheckedIn } from '@/hooks/order/useSetTicketCheckedIn';
+import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 import router from 'next/router';
 import { FaCheck, FaX } from 'react-icons/fa6';
 import moment from 'moment';
@@ -25,11 +25,11 @@ export default function AttendeeRow(props: any) {
   } else {
     className = currentCheckIn ? 'attendee-highlight' : 'attendee';
   }
-  const { setTicketCheckedIn } = useSetTicketCheckedIn();
+  const { setTicketsCheckedIn } = useSetTicketsCheckedIn();
   let titleText: string = '';
 
   const checkIn = (checkedIn: boolean) => {
-    setTicketCheckedIn(ticketId, checkedIn)
+    setTicketsCheckedIn([ticketId], checkedIn)
       .then((response) => {
         if (!response.success) {
           if (response.statusCode == 401 || response.statusCode == 422) {

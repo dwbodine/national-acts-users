@@ -46,6 +46,7 @@ export default function AdminEventsIndex() {
           setTableLoading(false);
         });
       } else if (currentAdminSelection.reloadEvents) {
+        dispatch(setReloadEvents(false));
         let adminSelection = { ...currentAdminSelection };
         if (!adminSelection.sellerId) {
           setTableLoading(false);
@@ -65,7 +66,7 @@ export default function AdminEventsIndex() {
           setTableLoading(false);
         }, 300);
       }
-    }, 200);
+    }, 500);
     return () => {
       clearTimeout(timeoutId);
     };
