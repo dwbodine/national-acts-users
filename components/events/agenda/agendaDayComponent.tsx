@@ -188,7 +188,7 @@ export default function AgendaDay(props: any) {
             const statusSlug = getEventStatusSlug(evt, true);
             const statusText = getEventStatusText(evt, true);
             let statusClass = "agenda-day-event";
-            let title = '';
+            let title = ''; 
             if (statusSlug != "active") {
                 statusClass += ` agenda-day-event-${statusSlug}`;
                 title = statusText;

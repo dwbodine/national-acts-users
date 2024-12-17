@@ -1442,6 +1442,12 @@ input[type='number']:hover {
     border: 1px solid darkgray;
     border-radius: 6px 6px 0 0;
   }
+
+  .agenda-day-event,
+  .agenda-day-note {
+    max-width: unset;
+    width: 100%;
+  }
 }
 
 /* custom mobile width */
