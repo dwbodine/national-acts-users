@@ -19,6 +19,8 @@ import moment from 'moment';
 import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
 import { DatePicker } from 'rsuite';
 import { useGetOrderById } from '@/hooks/common/useGetOrderById';
+import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
+import { FaArrowTurnDown } from 'react-icons/fa6';
 
 export default function AdminOrderEdit(props: any) {
   const id: number | undefined = props.Id as number;
@@ -31,12 +33,16 @@ export default function AdminOrderEdit(props: any) {
   const { getOrderStatusText } = useGetOrderStatus();
   const [markChargeback, setMarkChargeback] = useState<boolean>(false);
   const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
+  const { setTicketsCheckedIn } = useSetTicketsCheckedIn();
+  const [ ticketIdList, setTicketIdList ] = useState<number[]>([]);
+  const allTicketIds: number[] = currentAdminSelection.selectedOrder?.tickets?.map(t => { return t.ticketSocketOrderTicketId }) ?? [];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.selectedOrder == undefined && id != undefined) {
         getOrderById(id)
           .then((response) => {
+            setTicketIdList([]);
             if (response.order && !response.orderError) {
                dispatch(
                   setAdminOrder(response.order)
@@ -548,6 +554,27 @@ export default function AdminOrderEdit(props: any) {
     });
   };
 
+  const updateTicketIdList = (ticketId: number, addToList: boolean) => {
+    let idList: number[] = ticketIdList ? [ ...ticketIdList ] : [];
+    if (!addToList && idList.includes(ticketId)) {
+      idList = idList.filter(id => id != ticketId);
+    } else if (addToList && !idList.includes(ticketId)) {
+      idList.push(ticketId);
+    }
+    setTicketIdList(idList);
+  };
+
+  const selectAllTickets = (addToList: boolean) => {
+    if (!allTicketIds) {
+      return;
+    }
+    if (addToList) {
+      setTicketIdList(allTicketIds);
+    } else {
+      setTicketIdList([]);
+    }
+  };
+
   const pageHeader = 'Edit Order';
   const currentOrder = currentAdminSelection.selectedOrder;
   const purchaseDate =
@@ -588,6 +615,13 @@ export default function AdminOrderEdit(props: any) {
       }
       const ticketRow = (
         <tr key={`row_${ticketId}`}>
+          <td>
+            <FormCheck 
+                id={`tId_${ticketId}`}
+                checked={ticketIdList.includes(ticketId)}
+                onChange={(e) => updateTicketIdList(ticketId, e.currentTarget.checked)}
+              />
+          </td>
           <td>{ticket.ticketSocketOrderTicketId}</td>
           <td>
             {isComped ? 
@@ -825,6 +859,13 @@ export default function AdminOrderEdit(props: any) {
           <table className="ticket-table">
             <thead>
               <tr>
+                <th>
+                  <FormCheck 
+                    id={`tId_selectAll`}
+                    checked={allTicketIds.length > 0 && (ticketIdList.length == allTicketIds.length)}
+                    onChange={(e) => selectAllTickets(e.currentTarget.checked)}
+                  />
+                </th>
                 <th>Ticket Id</th>
                 <th>Attendee First Name</th>
                 <th>Attendee Last Name</th>

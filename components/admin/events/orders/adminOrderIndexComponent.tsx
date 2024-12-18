@@ -8,7 +8,7 @@ import {
   setAdminOrder,
   setReloadEvents,
 } from '@/lib/adminSelectionSlice';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { GetEventsResponse, Order } from '@/types/event';
 import router from 'next/router';
@@ -18,6 +18,8 @@ import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
+import { useSetOrdersInactive } from '@/hooks/order/useSetOrdersInactive';
+import { useSetOrdersDeleted } from '@/hooks/order/useSetOrdersDeleted';
 
 export default function AdminOrdersIndex(props: any) {
   const id: number | undefined = props.Id as number;
@@ -30,12 +32,17 @@ export default function AdminOrdersIndex(props: any) {
   const { getEventStatusText } = useGetEventStatus();
   const { getAdminEvents } = useGetAdminEvents();
   const { getEventById } = useGetEventById();
+  const { setOrdersInactive } = useSetOrdersInactive();
+  const { setOrdersDeleted } = useSetOrdersDeleted();
+  const [ orderIdList, setOrderIdList ] = useState<number[]>([]);
+  const allOrderIds: number[] = currentAdminSelection.selectedEvent?.orders?.map(o => {return o.ticketSocketOrderId}) ?? [];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
         getEventById(id)
           .then((response) => {
+            setOrderIdList([]);
             if (response.event && !response.eventError) {
               dispatch(
                 setAdminEvent(response.event)
@@ -44,6 +51,7 @@ export default function AdminOrdersIndex(props: any) {
           })
       } else if (currentAdminSelection.reloadEvents) {
         dispatch(setReloadEvents(false));
+        setOrderIdList([]);
         let adminSelection = { ...currentAdminSelection };
         let selectedEventId = adminSelection.selectedEvent?.ticketSocketEventId;
         if (!adminSelection.sellerId || !selectedEventId) {
@@ -108,6 +116,27 @@ export default function AdminOrdersIndex(props: any) {
     }    
   };
 
+  const updateOrderIdList = (ticketSocketOrderId: number, addToList: boolean) => {
+    let idList: number[] = orderIdList ? [ ...orderIdList ] : [];
+    if (!addToList && idList.includes(ticketSocketOrderId)) {
+      idList = idList.filter(id => id != ticketSocketOrderId);
+    } else if (addToList && !idList.includes(ticketSocketOrderId)) {
+      idList.push(ticketSocketOrderId);
+    }
+    setOrderIdList(idList);
+  };
+
+  const selectAllOrders = (addToList: boolean) => {
+    if (!allOrderIds) {
+      return;
+    }
+    if (addToList) {
+      setOrderIdList(allOrderIds);
+    } else {
+      setOrderIdList([]);
+    }
+  };
+
   const location =
     currentAdminSelection.selectedEvent?.venue != undefined
       ? getLocation(currentAdminSelection.selectedEvent.venue)
@@ -153,6 +182,24 @@ export default function AdminOrdersIndex(props: any) {
               return getOrderStatusSlug(rowData);
             }}
           >
+            <Column width={50}>
+            <HeaderCell>
+                <FormCheck 
+                    id={`oId_selectAll`}
+                    checked={allOrderIds.length > 0 && (orderIdList.length == allOrderIds.length)}
+                    onChange={(e) => selectAllOrders(e.currentTarget.checked)}
+                  />
+              </HeaderCell>
+              <Cell>
+                {(rowData: Order) => 
+                  <FormCheck 
+                    id={`oId_${rowData.ticketSocketOrderId}`}
+                    checked={orderIdList.includes(rowData.ticketSocketOrderId)}
+                    onChange={(e) => updateOrderIdList(rowData.ticketSocketOrderId, e.currentTarget.checked)}
+                  />
+                }
+              </Cell>
+            </Column>
             <Column flexGrow={1}>
               <HeaderCell>Purchase Date</HeaderCell>
               <Cell>

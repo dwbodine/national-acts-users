@@ -1155,6 +1155,40 @@ input[type='number']:hover {
   font-size: 1.2em;
 }
 
+.bulk-arrow-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+}
+
+.bulk-arrow-row div {
+  display: flex; 
+  height: 40px; 
+  padding: 0;
+}
+
+.bulk-arrow-row button {
+  padding: 0 3px;
+  margin: 5px 5px 5px 0;
+}
+
+.bulk-arrow {
+  margin: 10px;
+  font-size: 1em;
+  -webkit-transform:rotateY(180deg);
+  -moz-transform:rotateY(180deg);
+  -o-transform:rotateY(180deg);
+  -ms-transform:rotateY(180deg);
+  transform:rotateY(180deg);
+}
+
+.bulk-select {
+  display: flex;
+  margin: 0 10px;
+  height: 35px;
+}
+
+
 /* MOBILE QUERIES */
 /* Bootstrap xxl */
 @media (max-width: 1400px) {

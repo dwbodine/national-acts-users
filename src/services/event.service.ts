@@ -970,7 +970,7 @@ export class EventService {
 
     const data = {
       eventIdList: eventIdList,
-      isActive: isActive ? 0 : 1,
+      isActive: isActive ? 1 : 0,
     };
 
     return this.instance
@@ -1017,7 +1017,7 @@ export class EventService {
 
     const data = {
       eventIdList: eventIdList,
-      isDeleted: isDeleted ? 0 : 1,
+      isDeleted: isDeleted ? 1 : 0,
     };
 
     return this.instance
@@ -1064,7 +1064,7 @@ export class EventService {
 
     const data = {
       eventIdList: eventIdList,
-      isHidden: isHidden ? 0 : 1,
+      isHidden: isHidden ? 1 : 0,
     };
 
     return this.instance
@@ -1111,7 +1111,7 @@ export class EventService {
 
     const data = {
       orderIdList: orderIdList,
-      isActive: isActive ? 0 : 1,
+      isActive: isActive ? 1 : 0,
     };
 
     return this.instance
@@ -1158,54 +1158,7 @@ export class EventService {
 
     const data = {
       orderIdList: orderIdList,
-      isDeleted: isDeleted ? 0 : 1,
-    };
-
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        if (!modifyResponse.success) {
-          modifyResponse.orderError =
-            'Unexpected error occurred while modifying order - please contact your administrator';
-        }
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        var errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while modifying order - please contact your administrator';
-        }
-        modifyResponse.orderError = errorMessage;
-        return modifyResponse;
-      });
-  };
-
-  setOrdersHidden = async (
-    orderIdList: number[],
-    isHidden: boolean,
-  ): Promise<ModifyOrderResponse> => {
-    const url = '/events/setOrdersHidden';
-    const headers = getAuthorizationHeader();
-
-    let modifyResponse: ModifyOrderResponse = {
-      success: false,
-      orderError: undefined,
-      statusCode: 200,
-    };
-
-    const data = {
-      orderIdList: orderIdList,
-      isHidden: isHidden ? 0 : 1,
+      isDeleted: isDeleted ? 1 : 0,
     };
 
     return this.instance
