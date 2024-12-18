@@ -22,14 +22,24 @@ export default function ShirtSizesWidget(props: any) {
     });
 
     var sSizes = [];
+    var sSizesTwo = [];
     let i = 0;
     for (const shirtSize of shirtSizes) {
       const key = `ssw${i}`;
-      sSizes.push(
-        <div key={key}>
-          {shirtSize} ({arr[shirtSize]})
-        </div>,
-      );
+      if (i > 2) {
+        sSizesTwo.push(
+          <div key={key}>
+            {shirtSize} ({arr[shirtSize]})
+          </div>,
+        );
+      } else {
+        sSizes.push(
+          <div key={key}>
+            {shirtSize} ({arr[shirtSize]})
+          </div>,
+        );
+      }
+      
       i++;
     }
 
@@ -37,7 +47,14 @@ export default function ShirtSizesWidget(props: any) {
       <>
         <FaShirtsinbulk size="2em" />
         <div>Shirt sizes sold:</div>
-        {sSizes}
+        <div className="shirt-size-container">
+          <div className="shirt-sizes">
+            {sSizes}
+          </div>
+          <div className="shirt-sizes">
+            {sSizesTwo}
+          </div>        
+        </div>
         <span>Total: {totalShirts}</span>
       </>
     );

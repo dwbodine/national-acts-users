@@ -698,6 +698,7 @@ export default function AdminOrderEdit(props: any) {
           <td>
             <FormCheck
               id={`tId_${ticketId}`}
+              key={`tId_${ticketId}`}
               checked={ticketIdList.includes(ticketId)}
               onChange={(e) => updateTicketIdList(ticketId, e.currentTarget.checked)}
             />
@@ -707,7 +708,8 @@ export default function AdminOrderEdit(props: any) {
             {isComped ?
               <input
                 id={`fName_${ticketId}`}
-                value={ticket.attendeeFirstName}
+                key={`fName_${ticketId}`}
+                value={ticket.attendeeFirstName ?? ''}
                 type="text"
                 onChange={(e) => setFirstName(parseInt(`${ticketId}`), e.currentTarget.value)}
               />
@@ -718,7 +720,8 @@ export default function AdminOrderEdit(props: any) {
             {isComped ?
               <input
                 id={`lName_${ticketId}`}
-                value={ticket.attendeeLastName}
+                key={`lName_${ticketId}`}
+                value={ticket.attendeeLastName ?? ''}
                 type="text"
                 onChange={(e) => setLastName(parseInt(`${ticketId}`), e.currentTarget.value)}
               />
@@ -728,7 +731,8 @@ export default function AdminOrderEdit(props: any) {
           <td hidden={!isComped}>
             <input
               id={`phone_${ticketId}`}
-              value={ticket.attendeePhone}
+              key={`phone_${ticketId}`}
+              value={ticket.attendeePhone ?? ''}
               type="text"
               onChange={(e) => setPhone(parseInt(`${ticketId}`), e.currentTarget.value)}
             />
@@ -736,7 +740,8 @@ export default function AdminOrderEdit(props: any) {
           <td hidden={!isComped}>
             <input
               id={`email_${ticketId}`}
-              value={ticket.attendeeEmail}
+              key={`email_${ticketId}`}
+              value={ticket.attendeeEmail ?? ''}
               type="text"
               onChange={(e) => setEmail(parseInt(`${ticketId}`), e.currentTarget.value)}
             />
@@ -745,6 +750,7 @@ export default function AdminOrderEdit(props: any) {
             {isComped ?
               <select
                 id={`shirt_${ticketId}`}
+                key={`shirt_${ticketId}`}
                 defaultValue={ticket.shirtSize}
                 onChange={(e) => setShirtSize(parseInt(`${ticketId}`), e.currentTarget.value)}>
                 <option value="XS">XS</option>
@@ -761,6 +767,7 @@ export default function AdminOrderEdit(props: any) {
           <td hidden={isComped}>
             <input
               id={`price_${ticketId}`}
+              key={`price_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               value={ticket.price?.toFixed(2)}
               type="number"
@@ -771,6 +778,7 @@ export default function AdminOrderEdit(props: any) {
           <td hidden={isComped}>
             <input
               id={`serviceFee_${ticketId}`}
+              key={`serviceFee_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               value={ticket.serviceFee?.toFixed(2)}
               type="number"
@@ -781,6 +789,7 @@ export default function AdminOrderEdit(props: any) {
           <td hidden={isComped || (!hasChargebacks && !hasRefunds)}>
             <DatePicker
               id={`rcDate_${ticketId}`}
+              key={`rcDate_${ticketId}`}
               format="M/d/yyyy"
               onSelect={(newDate: Date | null) => setRefundOrChargebackDate(parseInt(`${ticketId}`), newDate)}
               value={refundDate}
@@ -791,6 +800,7 @@ export default function AdminOrderEdit(props: any) {
           <td style={{ textAlign: 'center' }} hidden={isComped}>
             <input
               id={`checkin_${ticketId}`}
+              key={`checkin_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               type="checkbox"
               defaultChecked={ticket.isActive && ticket.isCheckedIn}
@@ -800,6 +810,7 @@ export default function AdminOrderEdit(props: any) {
           <td style={{ textAlign: 'center' }} hidden={isComped}>
             <input
               id={`active_${ticketId}`}
+              key={`active_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               type="checkbox"
               defaultChecked={ticket.isActive}
@@ -811,6 +822,7 @@ export default function AdminOrderEdit(props: any) {
               title={`Refund ticket # ${ticket.ticketSocketOrderTicketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               id={`refund_${ticketId}`}
+              key={`refund_${ticketId}`}
               onClick={(e) => confirmRefundTicket(parseInt(`${ticketId}`))}
             >
               Refund Ticket
@@ -819,6 +831,7 @@ export default function AdminOrderEdit(props: any) {
               title={`Refund ticket # ${ticket.ticketSocketOrderTicketId} with service fees`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               id={`refundSf_${ticketId}`}
+              key={`refundSf_${ticketId}`}
               onClick={(e) => confirmRefundTicketWithServiceFees(parseInt(`${ticketId}`))}
             >
               Refund Ticket With Service Fees

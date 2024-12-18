@@ -288,10 +288,11 @@ input[type='number']:hover {
 
 .stat-block div.second {
   margin-top: 25px;
+  margin-bottom: 0;
 }
 
 .stat-block span {
-  margin-top: 15px;
+  margin-top: 10px;
   display: table;
   font-weight: bold;
 }
@@ -656,7 +657,8 @@ input[type='number']:hover {
 }
 
 .agenda-day-event,
-.agenda-day-note {
+.agenda-day-note, 
+.agenda-day-note-completed {
   max-width: 50%;
 }
 
@@ -1188,6 +1190,17 @@ input[type='number']:hover {
   height: 35px;
 }
 
+.shirt-size-container {
+  width: 100%;
+  clear: both;
+  margin: 10px 0;
+}
+
+.shirt-sizes {
+  width: 50%;
+  float: left;
+}
+
 
 /* MOBILE QUERIES */
 /* Bootstrap xxl */
@@ -1292,6 +1305,7 @@ input[type='number']:hover {
   }
 
   .stat-block {
+    min-height: 200px;
     font-size: 12px;
   }
 
@@ -1345,8 +1359,8 @@ input[type='number']:hover {
 
   .stat-block-container {
     padding: 10px;
-    min-height: 150px;
     min-width: 150px;
+    max-width: 50%;
   }
 
   .stat-block {
@@ -1481,6 +1495,14 @@ input[type='number']:hover {
   .agenda-day-note {
     max-width: unset;
     width: 100%;
+  }
+
+  .bulk-arrow-row {
+    font-size: 10px;
+  }
+
+  .bulk-arrow {
+    font-size: 14px;
   }
 }
 
