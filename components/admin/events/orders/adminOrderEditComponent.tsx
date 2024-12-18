@@ -34,7 +34,9 @@ export default function AdminOrderEdit(props: any) {
   const [markChargeback, setMarkChargeback] = useState<boolean>(false);
   const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
   const { setTicketsCheckedIn } = useSetTicketsCheckedIn();
-  const [ ticketIdList, setTicketIdList ] = useState<number[]>([]);
+
+  const [selectedAction, setSelectedAction] = useState('');
+  const [ticketIdList, setTicketIdList] = useState<number[]>([]);
   const allTicketIds: number[] = currentAdminSelection.selectedOrder?.tickets?.map(t => { return t.ticketSocketOrderTicketId }) ?? [];
 
   useEffect(() => {
@@ -98,8 +100,8 @@ export default function AdminOrderEdit(props: any) {
     let path = '/admin/events/orders/';
     if (id && currentAdminSelection.selectedOrder) {
       path += `?id=${currentAdminSelection.selectedOrder.ticketSocketEventId}`;
-    } 
-    router.push(path);   
+    }
+    router.push(path);
   };
 
   const confirmGoBack = () => {
@@ -555,7 +557,7 @@ export default function AdminOrderEdit(props: any) {
   };
 
   const updateTicketIdList = (ticketId: number, addToList: boolean) => {
-    let idList: number[] = ticketIdList ? [ ...ticketIdList ] : [];
+    let idList: number[] = ticketIdList ? [...ticketIdList] : [];
     if (!addToList && idList.includes(ticketId)) {
       idList = idList.filter(id => id != ticketId);
     } else if (addToList && !idList.includes(ticketId)) {
@@ -575,35 +577,113 @@ export default function AdminOrderEdit(props: any) {
     }
   };
 
+  const bulkEditConfirm = () => {
+    if (ticketIdList.length == 0 || !selectedAction) {
+      return;
+    }
+
+    let message = '';
+    switch (selectedAction) {
+      case "checkin":
+        message = `You are about to check in ${ticketIdList.length} tickets`;
+        break;
+      case "checkout":
+        message = `You are about to undo check-in for ${ticketIdList.length} tickets`;
+        break;
+    }
+
+    if (!message) {
+      return;
+    }
+
+    const toastId = toast.warning(
+      <ConfirmationDialog
+        Message={message}
+        ConfirmText="Yes"
+        CancelText="No"
+        OnConfirm={handleBulkEdit}
+        OnCancel={() => {
+          toast.dismiss();
+        }}
+      />,
+      {
+        position: 'top-center',
+        autoClose: false,
+        closeOnClick: false,
+      },
+    );
+  };
+
+  const handleBulkEdit = () => {
+    toast.dismiss();
+    if (ticketIdList.length == 0 || !selectedAction) {
+      return;
+    }
+
+    switch (selectedAction) {
+      case "checkin":
+        checkInTickets(true);
+        break;
+      case "checkout":
+        checkInTickets(false);
+        break;
+    }
+  };
+
+  const checkInTickets = (isCheckedIn: boolean) => {
+    if (ticketIdList.length == 0) {
+      return;
+    }
+    setTicketsCheckedIn(ticketIdList, isCheckedIn)
+      .then((response) => {
+        if (response.success && !response.ticketError) {
+          const successMessage = isCheckedIn ? "Tickets checked in successfully" : "Tickets unchecked successfully";
+          toast.success(successMessage);
+          setTicketIdList([]);
+          setSelectedAction('');
+          dispatch(setAdminOrder(undefined));
+          dispatch(setReloadEvents(true));
+          setTimeout(() => {
+            goBack(false);
+          }, 500);
+        } else {
+          let errorMessage = response.ticketError;
+          if (!errorMessage) {
+            errorMessage = isCheckedIn ? 'Unexpected error occurred while checking in tickets' : 'Unexpected error occurred while unchecking tickets';
+          }
+          toast.error(errorMessage);
+        }
+      });
+  };
+
   const pageHeader = 'Edit Order';
-  const currentOrder = currentAdminSelection.selectedOrder;
-  const purchaseDate =
-    currentOrder?.purchaseDate != undefined
-      ? moment(currentOrder.purchaseDate).format('MM/DD/YYYY')
+    const purchaseDate =
+    currentAdminSelection.selectedOrder?.purchaseDate != undefined
+      ? moment(currentAdminSelection.selectedOrder.purchaseDate).format('MM/DD/YYYY')
       : '';
-  const purchaserName = `${currentOrder?.purchaserFirstName} ${currentOrder?.purchaserLastName}`;
-  const eventDate = currentOrder?.eventDate
-    ? moment(currentOrder.eventDate).format('MM/DD/YYYY')
+  const purchaserName = `${currentAdminSelection.selectedOrder?.purchaserFirstName} ${currentAdminSelection.selectedOrder?.purchaserLastName}`;
+  const eventDate = currentAdminSelection.selectedOrder?.eventDate
+    ? moment(currentAdminSelection.selectedOrder.eventDate).format('MM/DD/YYYY')
     : '';
   const refundsDisabled =
-    currentOrder?.numTickets == 0 ||
-    (currentOrder?.hasRefunds &&
-      currentOrder?.tickets?.find((x) => !x.isRefunded) == undefined);
+  currentAdminSelection.selectedOrder?.numTickets == 0 ||
+    (currentAdminSelection.selectedOrder?.hasRefunds &&
+      currentAdminSelection.selectedOrder?.tickets?.find((x) => !x.isRefunded) == undefined);
   const chargebackDisabled =
-    currentOrder?.numTickets == 0 ||
-    (currentOrder?.hasChargebacks &&
-      currentOrder?.tickets?.find((x) => !x.isChargedBack) == undefined);
+  currentAdminSelection.selectedOrder?.numTickets == 0 ||
+    (currentAdminSelection.selectedOrder?.hasChargebacks &&
+      currentAdminSelection.selectedOrder?.tickets?.find((x) => !x.isChargedBack) == undefined);
   const chargebackTitle = chargebackDisabled ? 'Order has already been charged back' : '';
-  const currencyAbbrev = currentOrder?.currencyAbbrev;
-  const isActive = currentOrder?.isActive ?? false;
-  const isDeleted = currentOrder?.isDeleted ?? false;
-  const isComped = currentOrder?.isComped ?? false;
+  const currencyAbbrev = currentAdminSelection.selectedOrder?.currencyAbbrev;
+  const isActive = currentAdminSelection.selectedOrder?.isActive ?? false;
+  const isDeleted = currentAdminSelection.selectedOrder?.isDeleted ?? false;
+  const isComped = currentAdminSelection.selectedOrder?.isComped ?? false;
 
   let ticketRows: any[] = [];
   let hasRefunds = false;
   let hasChargebacks = false;
-  if (currentOrder && currentOrder.tickets && currentOrder.tickets.length > 0) {
-    currentOrder.tickets.forEach((ticket) => {
+  if (currentAdminSelection.selectedOrder && currentAdminSelection.selectedOrder.tickets && currentAdminSelection.selectedOrder.tickets.length > 0) {
+    currentAdminSelection.selectedOrder.tickets.forEach((ticket) => {
       const ticketId = ticket.ticketSocketOrderTicketId;
       let refundDate = undefined;
       if (ticket.isChargedBack) {
@@ -616,65 +696,65 @@ export default function AdminOrderEdit(props: any) {
       const ticketRow = (
         <tr key={`row_${ticketId}`}>
           <td>
-            <FormCheck 
-                id={`tId_${ticketId}`}
-                checked={ticketIdList.includes(ticketId)}
-                onChange={(e) => updateTicketIdList(ticketId, e.currentTarget.checked)}
-              />
+            <FormCheck
+              id={`tId_${ticketId}`}
+              checked={ticketIdList.includes(ticketId)}
+              onChange={(e) => updateTicketIdList(ticketId, e.currentTarget.checked)}
+            />
           </td>
           <td>{ticket.ticketSocketOrderTicketId}</td>
           <td>
-            {isComped ? 
-              <input 
+            {isComped ?
+              <input
                 id={`fName_${ticketId}`}
                 value={ticket.attendeeFirstName}
                 type="text"
                 onChange={(e) => setFirstName(parseInt(`${ticketId}`), e.currentTarget.value)}
-               /> 
+              />
               : ticket.attendeeFirstName
             }
           </td>
           <td>
-            {isComped ? 
-              <input 
+            {isComped ?
+              <input
                 id={`lName_${ticketId}`}
                 value={ticket.attendeeLastName}
                 type="text"
                 onChange={(e) => setLastName(parseInt(`${ticketId}`), e.currentTarget.value)}
-              /> 
+              />
               : ticket.attendeeLastName
             }
           </td>
           <td hidden={!isComped}>
-              <input 
-                id={`phone_${ticketId}`}
-                value={ticket.attendeePhone}
-                type="text"
-                onChange={(e) => setPhone(parseInt(`${ticketId}`), e.currentTarget.value)}
-              /> 
+            <input
+              id={`phone_${ticketId}`}
+              value={ticket.attendeePhone}
+              type="text"
+              onChange={(e) => setPhone(parseInt(`${ticketId}`), e.currentTarget.value)}
+            />
           </td>
           <td hidden={!isComped}>
-              <input 
-                id={`email_${ticketId}`}
-                value={ticket.attendeeEmail}
-                type="text"
-                onChange={(e) => setEmail(parseInt(`${ticketId}`), e.currentTarget.value)}
-              /> 
+            <input
+              id={`email_${ticketId}`}
+              value={ticket.attendeeEmail}
+              type="text"
+              onChange={(e) => setEmail(parseInt(`${ticketId}`), e.currentTarget.value)}
+            />
           </td>
           <td>
-            {isComped ? 
-              <select 
+            {isComped ?
+              <select
                 id={`shirt_${ticketId}`}
                 defaultValue={ticket.shirtSize}
                 onChange={(e) => setShirtSize(parseInt(`${ticketId}`), e.currentTarget.value)}>
-                  <option value="XS">XS</option>
-                  <option value="S">S</option>
-                  <option value="M">M</option>
-                  <option value="L">L</option>
-                  <option value="XL">XL</option>
-                  <option value="XXL">XXL</option>
-                  <option value="XXXL">XXXL</option>
-                </select>
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
+                <option value="XXXL">XXXL</option>
+              </select>
               : (ticket.shirtSize ? ticket.shirtSize : 'n/a')
             }
           </td>
@@ -752,7 +832,7 @@ export default function AdminOrderEdit(props: any) {
 
   if (ticketRows.length == 0) {
     ticketRows.push(
-      <tr>
+      <tr key="tr-empty">
         <td colSpan={2}>n/a</td>
       </tr>,
     );
@@ -770,7 +850,7 @@ export default function AdminOrderEdit(props: any) {
       </Row>
       <Row className="form-group">
         <Col className="form-header">
-          <span className="title">Event:</span> {currentOrder?.eventTitle}
+          <span className="title">Event:</span> {currentAdminSelection.selectedOrder?.eventTitle}
           <br />
           <span className="title">Event Date:</span> {eventDate}
           <br />
@@ -785,45 +865,45 @@ export default function AdminOrderEdit(props: any) {
           <br />
           <span className="title">Purchaser Name:</span> {purchaserName}
           <br />
-          <span className="title">Number Tickets Sold:</span> {currentOrder?.numTickets}
+          <span className="title">Number Tickets Sold:</span> {currentAdminSelection.selectedOrder?.numTickets}
           <br />
-          <div hidden={!currentOrder || currencyAbbrev == 'USD'}>
-            <span className="title">Exchange Rate:</span> {currentOrder?.exchangeRate}{' '}
+          <div hidden={!currentAdminSelection.selectedOrder || currencyAbbrev == 'USD'}>
+            <span className="title">Exchange Rate:</span> {currentAdminSelection.selectedOrder?.exchangeRate}{' '}
             <br />
             <span className="title">Ticket Revenue {currencyAbbrev}:</span>{' '}
-            {(currentOrder?.revenue ?? 0).toFixed(2)} <br />
+            {(currentAdminSelection.selectedOrder?.revenue ?? 0).toFixed(2)} <br />
             <span className="title">Service Fee Revenue {currencyAbbrev}:</span>{' '}
-            {(currentOrder?.serviceFees ?? 0).toFixed(2)} <br />
+            {(currentAdminSelection.selectedOrder?.serviceFees ?? 0).toFixed(2)} <br />
           </div>
           <span className="title">Ticket Revenue (USD):</span>{' '}
-          {(currentOrder?.revenueUsd ?? 0).toFixed(2)}
+          {(currentAdminSelection.selectedOrder?.revenueUsd ?? 0).toFixed(2)}
           <br />
           <span className="title">Service Fee Revenue (USD):</span>{' '}
-          {(currentOrder?.serviceFeesUsd ?? 0).toFixed(2)}
+          {(currentAdminSelection.selectedOrder?.serviceFeesUsd ?? 0).toFixed(2)}
           <br />
         </Col>
       </Row>
       <Row
         className="form-group"
         hidden={
-          !currentOrder || !(currentOrder.hasRefunds || currentOrder.hasChargebacks)
+          !currentAdminSelection.selectedOrder || !(currentAdminSelection.selectedOrder.hasRefunds || currentAdminSelection.selectedOrder.hasChargebacks)
         }
       >
         <Col className="form-header">
           <span className="title">Number Tickets Refunded:</span>{' '}
-          {currentOrder?.numTicketsRefunded}
+          {currentAdminSelection.selectedOrder?.numTicketsRefunded}
           <br />
-          <div hidden={!currentOrder || currentOrder.currencyAbbrev == 'USD'}>
+          <div hidden={!currentAdminSelection.selectedOrder || currentAdminSelection.selectedOrder.currencyAbbrev == 'USD'}>
             <span className="title">Ticket Revenue Refunded:</span>{' '}
-            {(currentOrder?.revenueRefunded ?? 0).toFixed(2)} <br />
+            {(currentAdminSelection.selectedOrder?.revenueRefunded ?? 0).toFixed(2)} <br />
             <span className="title">Service Fee Revenue Refunded:</span>{' '}
-            {(currentOrder?.serviceFeeRevenueRefunded ?? 0).toFixed(2)} <br />
+            {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefunded ?? 0).toFixed(2)} <br />
           </div>
           <span className="title">Ticket Revenue Refunded (USD):</span>{' '}
-          {(currentOrder?.revenueRefundedUsd ?? 0).toFixed(2)}
+          {(currentAdminSelection.selectedOrder?.revenueRefundedUsd ?? 0).toFixed(2)}
           <br />
           <span className="title">Service Fee Revenue Refunded (USD):</span>{' '}
-          {(currentOrder?.serviceFeeRevenueRefundedUsd ?? 0).toFixed(2)}
+          {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefundedUsd ?? 0).toFixed(2)}
           <br />
         </Col>
       </Row>
@@ -854,13 +934,29 @@ export default function AdminOrderEdit(props: any) {
           <h5>Tickets</h5>
         </Col>
       </Row>
+      <Row hidden={allTicketIds.length == 0}>
+        <Col className="bulk-arrow-row">
+          <div><FaArrowTurnDown className="bulk-arrow" /></div>
+          <div>With selected:</div>
+          <div>
+            <select onChange={(e) => setSelectedAction(e.currentTarget.value)} className="bulk-select" defaultValue={selectedAction}>
+              <option value="">-- Select One --</option>
+              <option value="checkin">Check In</option>
+              <option value="checkout">Undo Check-in</option>
+            </select>
+          </div>
+          <div>
+            <Button onClick={bulkEditConfirm}>Update</Button>
+          </div>
+        </Col>
+      </Row>
       <Row>
         <Col>
           <table className="ticket-table">
             <thead>
               <tr>
                 <th>
-                  <FormCheck 
+                  <FormCheck
                     id={`tId_selectAll`}
                     checked={allTicketIds.length > 0 && (ticketIdList.length == allTicketIds.length)}
                     onChange={(e) => selectAllTickets(e.currentTarget.checked)}
@@ -876,7 +972,7 @@ export default function AdminOrderEdit(props: any) {
                 <th hidden={isComped}>Service Fees</th>
                 <th hidden={isComped || (!hasChargebacks && !hasRefunds)}>{hasChargebacks ? "Chargeback Date" : "Refund Date"}</th>
                 <th hidden={isComped}>Checked-in</th>
-                <th hidden={isComped}>Active</th>                
+                <th hidden={isComped}>Active</th>
                 <th hidden={isComped}>&nbsp;</th>
               </tr>
             </thead>
