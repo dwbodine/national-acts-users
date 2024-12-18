@@ -20,6 +20,9 @@ import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useSetOrdersInactive } from '@/hooks/order/useSetOrdersInactive';
 import { useSetOrdersDeleted } from '@/hooks/order/useSetOrdersDeleted';
+import { FaArrowTurnDown } from 'react-icons/fa6';
+import { toast } from 'react-toastify';
+import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 
 export default function AdminOrdersIndex(props: any) {
   const id: number | undefined = props.Id as number;
@@ -34,8 +37,10 @@ export default function AdminOrdersIndex(props: any) {
   const { getEventById } = useGetEventById();
   const { setOrdersInactive } = useSetOrdersInactive();
   const { setOrdersDeleted } = useSetOrdersDeleted();
-  const [ orderIdList, setOrderIdList ] = useState<number[]>([]);
-  const allOrderIds: number[] = currentAdminSelection.selectedEvent?.orders?.map(o => {return o.ticketSocketOrderId}) ?? [];
+
+  const [ selectedAction, setSelectedAction ] = useState('');
+  const [orderIdList, setOrderIdList] = useState<number[]>([]);
+  const allOrderIds: number[] = currentAdminSelection.selectedEvent?.orders?.map(o => { return o.ticketSocketOrderId }) ?? [];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -104,7 +109,7 @@ export default function AdminOrdersIndex(props: any) {
     if (id) {
       path += `?id=${order.ticketSocketOrderId}`;
     }
-    router.push(path);        
+    router.push(path);
   };
 
   const goBack = () => {
@@ -113,11 +118,11 @@ export default function AdminOrdersIndex(props: any) {
       router.push('/admin/events/');
     } else {
       router.push(`/admin/events/edit/?id=${id}`);
-    }    
+    }
   };
 
   const updateOrderIdList = (ticketSocketOrderId: number, addToList: boolean) => {
-    let idList: number[] = orderIdList ? [ ...orderIdList ] : [];
+    let idList: number[] = orderIdList ? [...orderIdList] : [];
     if (!addToList && idList.includes(ticketSocketOrderId)) {
       idList = idList.filter(id => id != ticketSocketOrderId);
     } else if (addToList && !idList.includes(ticketSocketOrderId)) {
@@ -135,6 +140,115 @@ export default function AdminOrdersIndex(props: any) {
     } else {
       setOrderIdList([]);
     }
+  };
+
+  const bulkEditConfirm = () => {
+    if (orderIdList.length == 0 || !selectedAction) {
+      return;
+    }
+
+    let message = '';
+    switch (selectedAction) {
+      case "inactive":
+        message = `You are about to deactivate ${orderIdList.length} orders`;
+        break;
+      case "active":
+        message = `You are about to activate ${orderIdList.length} orders`;
+        break;
+      case "delete":
+        message = `You are about to delete ${orderIdList.length} orders`;
+        break;
+      case "undelete":
+        message = `You are about to undelete ${orderIdList.length} orders`;
+        break;
+    }
+
+    if (!message) {
+      return;
+    }
+
+    const toastId = toast.warning(
+      <ConfirmationDialog
+        Message={message}
+        ConfirmText="Yes"
+        CancelText="No"
+        OnConfirm={handleBulkEdit}
+        OnCancel={() => {
+          toast.dismiss();
+        }}
+      />,
+      {
+        position: 'top-center',
+        autoClose: false,
+        closeOnClick: false,
+      },
+    );
+  };
+
+  const handleBulkEdit = () => {
+    toast.dismiss();
+    if (orderIdList.length == 0 || !selectedAction) {
+      return;
+    }
+
+    switch (selectedAction) {
+      case "inactive":
+        deactivateOrders(false);
+        break;
+      case "active":
+        deactivateOrders(true);
+        break;
+      case "delete":
+        deleteOrders(true);
+        break;
+      case "undelete":
+        deleteOrders(false);
+        break;
+    }
+  };
+
+  const deactivateOrders = (isActive: boolean) => {
+    if (orderIdList.length == 0) {
+      return;
+    }
+    setOrdersInactive(orderIdList, isActive)
+      .then((response) => {
+        if (response.success && !response.orderError) {
+          const successMessage = isActive ? "Orders activated successfully" : "Orders deactivated successfully";
+          toast.success(successMessage);
+          setOrderIdList([]);
+          setSelectedAction('');
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.orderError;
+          if (!errorMessage) {
+            errorMessage = isActive ? 'Unexpected error occurred while activating orders' : 'Unexpected error occurred while deactivating orders';
+          }
+          toast.error(errorMessage);
+        }
+      });
+  };
+
+  const deleteOrders = (setDeleted: boolean) => {
+    if (orderIdList.length == 0) {
+      return;
+    }
+    setOrdersDeleted(orderIdList, setDeleted)
+      .then((response) => {
+        if (response.success && !response.orderError) {
+          const successMessage = setDeleted ? "Orders deleted successfully" : "Orders undeleted successfully";
+          toast.success(successMessage);
+          setOrderIdList([]);
+          setSelectedAction('');
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.orderError;
+          if (!errorMessage) {
+            errorMessage = setDeleted ? 'Unexpected error occurred while deleting orders' : 'Unexpected error occurred while undeleting orders';
+          }
+          toast.error(errorMessage);
+        }
+      });
   };
 
   const location =
@@ -170,6 +284,24 @@ export default function AdminOrdersIndex(props: any) {
           <h5>Orders</h5>
         </Col>
       </Row>
+      <Row hidden={allOrderIds.length == 0}>
+        <Col className="bulk-arrow-row">
+          <div><FaArrowTurnDown className="bulk-arrow" /></div>
+          <div>With selected:</div>
+          <div>
+            <select onChange={(e) => setSelectedAction(e.currentTarget.value)} className="bulk-select" defaultValue={selectedAction}>
+              <option value="">-- Select One --</option>
+              <option value="inactive">Deactivate</option>
+              <option value="active">Activate</option>
+              <option value="delete">Delete</option>
+              <option value="undelete">Undelete</option>
+            </select>
+          </div>
+          <div>
+            <Button onClick={bulkEditConfirm}>Update</Button>
+          </div>
+        </Col>
+      </Row>
       <Row>
         <Col>
           <Table
@@ -183,16 +315,16 @@ export default function AdminOrdersIndex(props: any) {
             }}
           >
             <Column width={50}>
-            <HeaderCell>
-                <FormCheck 
-                    id={`oId_selectAll`}
-                    checked={allOrderIds.length > 0 && (orderIdList.length == allOrderIds.length)}
-                    onChange={(e) => selectAllOrders(e.currentTarget.checked)}
-                  />
+              <HeaderCell>
+                <FormCheck
+                  id={`oId_selectAll`}
+                  checked={allOrderIds.length > 0 && (orderIdList.length == allOrderIds.length)}
+                  onChange={(e) => selectAllOrders(e.currentTarget.checked)}
+                />
               </HeaderCell>
               <Cell>
-                {(rowData: Order) => 
-                  <FormCheck 
+                {(rowData: Order) =>
+                  <FormCheck
                     id={`oId_${rowData.ticketSocketOrderId}`}
                     checked={orderIdList.includes(rowData.ticketSocketOrderId)}
                     onChange={(e) => updateOrderIdList(rowData.ticketSocketOrderId, e.currentTarget.checked)}
