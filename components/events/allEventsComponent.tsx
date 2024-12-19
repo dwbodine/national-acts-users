@@ -17,6 +17,7 @@ import { EventTabView } from '@/types/user';
 import moment from 'moment';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 import { Note } from '@/types/event';
+import { EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
 
 export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -27,13 +28,14 @@ export default function AllEvents() {
   const dispatch = useDispatch();
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
+  const agendaOnly = windowSize.width < EVENTS_AGENDA_VIEW_BREAKPOINT;
 
   const allEventsViews: EventTabView[] = [EventTabView.Week, EventTabView.Month, EventTabView.Agenda];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (!currentReportSelection.eventTabView) {
-        const defaultTabView = (windowSize.isMobile) ? EventTabView.Agenda : EventTabView.Week;
+        const defaultTabView = agendaOnly ? EventTabView.Agenda : EventTabView.Week;
         dispatch(
           setActiveEventTab(defaultTabView)
         );
@@ -41,7 +43,7 @@ export default function AllEvents() {
         dispatch(
           setAdminDateRange(dateRange)
         );
-      } else if (windowSize.isMobile && currentReportSelection.eventTabView != EventTabView.Agenda) {
+      } else if (agendaOnly && currentReportSelection.eventTabView != EventTabView.Agenda) {
         dispatch(
           setActiveEventTab(EventTabView.Agenda)
         );
@@ -101,7 +103,7 @@ export default function AllEvents() {
     windowSizeJson,
     isLoading,
     getCalendarNotes,
-    windowSize.isMobile
+    agendaOnly
   ]);
 
   const switchView = (key: EventTabView) => {
@@ -152,7 +154,7 @@ export default function AllEvents() {
     <>
       <Row>
         <Col className="all-events-buttons">
-          <ButtonGroup hidden={windowSize.isMobile}>
+          <ButtonGroup hidden={agendaOnly}>
             {allEventsViews.map(key => (
               <Button key={key} active={key.valueOf() == currentReportSelection.eventTabView?.valueOf()} onClick={() => switchView(key)}>
                 {getTabViewText(key)}
@@ -163,7 +165,7 @@ export default function AllEvents() {
       </Row>
       <Row>
         <Col>
-          {windowSize.isMobile ? <AllEventsAgenda /> : activeComponent}
+          {agendaOnly ? <AllEventsAgenda /> : activeComponent}
         </Col>
       </Row>
     </>
