@@ -578,28 +578,33 @@ export default function EventDetail(props: any) {
                     </tbody>
                   </table>
                 </Col>
-                <Col>
+                <Col hidden={
+                  !currentReportSelection.currentDetailEvent.doorsOpen &&
+                  !currentReportSelection.currentDetailEvent.meetAndGreetTime && 
+                  !currentReportSelection.currentDetailEvent.checkInLocation && 
+                  !currentReportSelection.currentDetailEvent.checkInNotes
+                }>
                   <table className="vipDetailsTable">
                     <tbody>
-                      <tr>
+                      <tr hidden={!currentReportSelection.currentDetailEvent.doorsOpen}>
                         <td className="vipLabel">Doors Open:</td>
                         <td>
                           {currentReportSelection.currentDetailEvent.doorsOpen ? moment(currentReportSelection.currentDetailEvent.doorsOpen).format('h:mm A') : 'n/a'}
                         </td>
                       </tr>
-                      <tr>
+                      <tr hidden={!currentReportSelection.currentDetailEvent.meetAndGreetTime}>
                         <td className="vipLabel">Meet & Greet Time:</td>
                         <td>
                           {currentReportSelection.currentDetailEvent.meetAndGreetTime ? moment(currentReportSelection.currentDetailEvent.meetAndGreetTime).format('h:mm A') : 'n/a'}
                         </td>
                       </tr>
-                      <tr>
+                      <tr hidden={!currentReportSelection.currentDetailEvent.checkInLocation}>
                         <td className="vipLabel">Check-in Location:</td>
                         <td>
                           {currentReportSelection.currentDetailEvent.checkInLocation ?? 'n/a'}
                         </td>
                       </tr>
-                      <tr>
+                      <tr hidden={!currentReportSelection.currentDetailEvent.checkInNotes}>
                         <td className="vipLabel">Check-in Notes:</td>
                         <td>{currentReportSelection.currentDetailEvent.checkInNotes ?? 'n/a'}</td>
                       </tr>
