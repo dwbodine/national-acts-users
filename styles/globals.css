@@ -260,13 +260,13 @@ input[type='number']:hover {
   height: 100%;
 }
 
-.stat-block-container {
+.stat-block-container, .widget-stat-block-container {
   padding: 15px;
   min-height: 265px;
   min-width: 265px;
 }
 
-.stat-block {
+.stat-block, .widget-stat-block {
   padding: 15px;
   background-color: #efefef;
   border: 1px solid #dedede;
@@ -277,27 +277,27 @@ input[type='number']:hover {
   height: 100%;
 }
 
-.stat-block svg {
+.stat-block svg, .widget-stat-block svg {
   display: block;
   margin: 0 5px 10px 0;
 }
 
-.stat-block div {
+.stat-block div, .widget-stat-block div {
   margin-bottom: 5px;
 }
 
-.stat-block div.second {
+.stat-block div.second, .widget-stat-block div.second {
   margin-top: 25px;
   margin-bottom: 0;
 }
 
-.stat-block span {
+.stat-block span, .widget-stat-block span {
   margin-top: 10px;
   display: table;
   font-weight: bold;
 }
 
-.stat-block .totalSpan {
+.stat-block .totalSpan, .widget-stat-block .totalSpan {
   margin-top: 15px;
 }
 
@@ -1212,12 +1212,12 @@ input[type='number']:hover {
 
 /* Bootstrap xl */
 @media (max-width: 1200px) {
-  .stat-block-container {
+  .stat-block-container, .widget-stat-block-container {
     min-height: 300px;
     min-width: 200px;
   }
 
-  .stat-block {
+  .stat-block, .widget-stat-block {
     font-size: 13px;
   }
 
@@ -1304,12 +1304,12 @@ input[type='number']:hover {
     padding: 2px;
   }
 
-  .stat-block {
+  .stat-block, .widget-stat-block {
     min-height: 200px;
     font-size: 12px;
   }
 
-  .stat-block-container {
+  .stat-block-container, .widget-stat-block-container {
     min-height: unset;
     height: fit-content;
   }
@@ -1357,13 +1357,16 @@ input[type='number']:hover {
     display: none;
   }
 
-  .stat-block-container {
-    padding: 10px;
+  .stat-block-container, .widget-stat-block-container {
+    padding: 10px 10px 10px 5px;
     min-width: 150px;
+  }
+
+  .widget-stat-block-container {
     max-width: 50%;
   }
 
-  .stat-block {
+  .stat-block, .widget-stat-block {
     padding: 10px;
     font-size: 10px;
   }
@@ -1401,10 +1404,6 @@ input[type='number']:hover {
   .admin-button-row button {
     font-size: 0.8rem;
     margin-left: 0;
-  }
-
-  .stat-block-container {
-    padding-left: 5px;
   }
 
   .results-container {

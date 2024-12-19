@@ -183,7 +183,7 @@ export default function CurrentEvents() {
             !currentReportSelection.showDeleted &&
             !evt.isDeleted &&
             !currentReportSelection.showInactive &&
-            (evt.isActive || evt.isCancelled))
+            evt.isActive)
         );
       });
     }

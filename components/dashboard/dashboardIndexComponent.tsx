@@ -141,8 +141,8 @@ export default function DashboardIndex() {
           </Col>
         </Row>
         <Row className="dashboard-widget-table">
-          <Col className="col-lg-4 col-md-6 stat-block-container">
-            <div className="stat-block">
+          <Col className="col-lg-4 col-md-6 widget-stat-block-container">
+            <div className="widget-stat-block">
               <FaDollarSign size="2em" />
               <div>Transactions:</div>
               <span>{totalPurchases}</span>
@@ -152,8 +152,8 @@ export default function DashboardIndex() {
               </div>
             </div>
           </Col>
-          <Col className="col-lg-4 col-md-6 stat-block-container">
-            <div className="stat-block">
+          <Col className="col-lg-4 col-md-6 widget-stat-block-container">
+            <div className="widget-stat-block">
               <FaTicketAlt size="2em" />
               <div>Tickets:</div>
               <span>{totalTickets}</span>
@@ -163,8 +163,8 @@ export default function DashboardIndex() {
               </div>
             </div>
           </Col>
-          <Col className="col-lg-4 col-md-6 stat-block-container">
-            <div className="stat-block">
+          <Col className="col-lg-4 col-md-6 widget-stat-block-container">
+            <div className="widget-stat-block">
               <FaMoneyBillAlt size="2em" />
               <div>Revenue:</div>
               <span>${totalTicketRevenue.toFixed(2)}</span>
