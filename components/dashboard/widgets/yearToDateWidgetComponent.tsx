@@ -1,9 +1,12 @@
 import { IDashboardTotals, ITopSeller } from '@/types/user';
+import moment from 'moment';
 import { Col, Row } from 'react-bootstrap';
 
 export default function YearToDateWidget(props: any) {
   const totals = props.totals as IDashboardTotals | undefined;
   const projectedYearTotalRevenue = props.projectedYearTotalRevenue as number | undefined;
+  const currentYear = moment().year();
+  const selectedYear = props.selectedYear as number | undefined;
 
   let ticketsPerTransaction = 0;
   let averagePurchaseAmount = 0;
@@ -12,11 +15,13 @@ export default function YearToDateWidget(props: any) {
     averagePurchaseAmount = (totals?.totalRevenueUsd ?? 0) / totals.orders;
   }
 
+  const title = (selectedYear != currentYear) ? `${selectedYear} Yearly Stats` : "Year-to-Date stats";
+
   return (
     <Row className="sales-stat-block">
       <Col>
         <Row>
-          <Col className="sales-stat-block-title">Year-to-Date stats</Col>
+          <Col className="sales-stat-block-title">{title}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Transactions:</Col>
@@ -86,7 +91,7 @@ export default function YearToDateWidget(props: any) {
             ${totals?.serviceFeePerTicket?.toFixed(2) ?? 'n/a'}
           </Col>
         </Row>
-        <Row>
+        <Row hidden={selectedYear != currentYear}>
           <Col className="sales-stat-block-name">Yearly Proj.:</Col>
           <Col className="sales-stat-block-value">
             ${projectedYearTotalRevenue?.toFixed(2) ?? 'n/a'}

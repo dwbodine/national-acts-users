@@ -1,10 +1,10 @@
 import { ITicketSalesData } from '@/types/event';
-import { IDashboardTotals, ITopSeller } from '@/types/user';
 import { Col, Row } from 'react-bootstrap';
 
 export default function SalesByAccountWidget(props: any) {
   const accountName = props.accountName as string | undefined;
   const accountTotals = props.accountTotals as ITicketSalesData | undefined;
+  const selectedYear = props.selectedYear as number | undefined;
 
   let ticketsPerTransaction = 0;
   let averagePurchaseAmount = 0;
@@ -24,7 +24,7 @@ export default function SalesByAccountWidget(props: any) {
     <Row className="sales-stat-block">
       <Col>
         <Row>
-          <Col className="sales-stat-block-title">Summary By Account</Col>
+          <Col className="sales-stat-block-title">Summary By Account {selectedYear ? selectedYear : ''}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-subtitle">{accountName}</Col>

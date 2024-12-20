@@ -87,6 +87,9 @@ export default function DashboardIndex() {
     isLoading,
   ]);
 
+  const currentYear = moment().year();
+  const selectedYear = moment.unix(currentDashboardSelection.start).year();
+  
   const totalTickets = currentDashboardSelection.currentDashboardData?.tickets ?? 0;
   const totalTicketsRefunded =
     currentDashboardSelection.currentDashboardData?.ticketsRefunded ?? 0;
@@ -125,7 +128,7 @@ export default function DashboardIndex() {
       const key = `accountTotal${i}`;
       accountTotalWidgets.push(
         <Col key={key} xl={3} lg={4} md={6} className="stat-block-container">
-          <SalesByAccountWidget accountName={accountName} accountTotals={accountTotals} />
+          <SalesByAccountWidget selectedYear={selectedYear} accountName={accountName} accountTotals={accountTotals} />
         </Col>,
       );
     });
@@ -198,12 +201,12 @@ export default function DashboardIndex() {
               dateRange={dateRange}
             />
           </Col>
-          <Col xl={3} lg={4} md={6} className="stat-block-container">
+          <Col xl={3} lg={4} md={6} className="stat-block-container" hidden={selectedYear != currentYear}>
             <MonthToDateWidget
               DashBoardData={currentDashboardSelection.currentDashboardData}
             />
           </Col>
-          <Col xl={3} lg={4} md={6} className="stat-block-container">
+          <Col xl={3} lg={4} md={6} className="stat-block-container" hidden={selectedYear != currentYear}>
             <RevenueGoalsWidget
               percentTitle="Monthly Goal"
               amount={
@@ -219,6 +222,7 @@ export default function DashboardIndex() {
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <YearToDateWidget
+              selectedYear={selectedYear}
               totals={currentDashboardSelection.currentDashboardData?.totals}
               projectedYearTotalRevenue={
                 currentDashboardSelection.currentDashboardData?.projectedYearTotalRevenue
@@ -227,7 +231,7 @@ export default function DashboardIndex() {
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <RevenueGoalsWidget
-              percentTitle="Yearly Goal"
+              percentTitle={`Yearly Goal ${selectedYear}`}
               amount={
                 currentDashboardSelection.currentDashboardData?.totals?.totalRevenueUsd
               }
@@ -241,6 +245,7 @@ export default function DashboardIndex() {
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <SalesPerMonthWidget
+              selectedYear={selectedYear}
               salesPerMonth={
                 currentDashboardSelection.currentDashboardData?.salesPerMonth
               }
@@ -248,6 +253,7 @@ export default function DashboardIndex() {
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <SalesPerDayOfWeekWidget
+              selectedYear={selectedYear}
               salesPerDayMonth={
                 currentDashboardSelection.currentDashboardData?.salesPerDayMonth
               }
@@ -258,6 +264,7 @@ export default function DashboardIndex() {
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <AverageSalesWidget
+              selectedYear={selectedYear}
               monthlyAverages={
                 currentDashboardSelection.currentDashboardData?.monthlyAverages
               }

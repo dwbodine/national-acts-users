@@ -193,18 +193,13 @@ export class EventService {
   getDashboardOrderData = async (
     currentDashboardSelection: AdminDashboardSelection,
   ): Promise<GetDashboardOrdersResponse> => {
-    let year = '0';
-    let selectedYear = moment.unix(currentDashboardSelection.start).year();
     const currentYear = moment().year();
-    if (
-      selectedYear != currentYear &&
-      selectedYear >= 2022 &&
-      selectedYear < currentYear
-    ) {
-      year = currentYear.toString();
+    let year = moment.unix(currentDashboardSelection.start).year();
+    if (year >= currentYear || year < 2022) {
+      year = 0;
     }
 
-    let url = `/dashboard/getDashboardDataSecured/${year}`;
+    const url = `/dashboard/getDashboardDataSecured/${year}`;
 
     let dashResponse: GetDashboardOrdersResponse = {
       totals: undefined,

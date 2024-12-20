@@ -4,9 +4,10 @@ import { Col, Row } from 'react-bootstrap';
 
 export default function SalesPerMonthWidget(props: any) {
   const salesPerMonth = props.salesPerMonth as ISalesData[] | undefined;
+  const selectedYear = props.selectedYear as number | undefined;
 
   let salesRows: any[] = [];
-  const currentYear = moment().year();
+  const currentYear = selectedYear ? selectedYear : moment().year();
 
   if (salesPerMonth != undefined) {
     for (let i = 0; i < 12; i++) {

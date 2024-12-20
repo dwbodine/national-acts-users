@@ -3,16 +3,34 @@ import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
 import moment from 'moment';
 import { FaCalendar } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
 
 export default function DateRangeSelector(props: any) {
-  const dispatch = useDispatch();
   const title = props.dateRangeTitle;
   const onDateChange = props.onDateChange;
   const selectedStart = props.selectedStart;
   const selectedEnd = props.selectedEnd;
   const disabled = props.disabled;
+
+  const defaultRanges = [
+    {
+      label: 'Today',
+      value: [moment().startOf('day').toDate(), moment().endOf('day').toDate()]
+    },
+    {
+      label: 'This Week',
+      value: [moment().startOf('week').add(1, 'day').startOf('day').toDate(), moment().endOf('week').add(1, 'day').endOf('day').toDate()]
+    },
+    {
+      label: 'This Month',
+      value: [moment().startOf('month').startOf('day').toDate(), moment().endOf('month').endOf('day').toDate()]
+    },
+    {
+      label: 'Last Month',
+      value: [moment().startOf('month').subtract(1, 'month').startOf('day').toDate(), moment().startOf('month').subtract(1, 'month').endOf('month').endOf('day').toDate()]
+    }
+  ];
+
+  const ranges = props.Ranges ? props.Ranges : defaultRanges;
 
   const [dateValues, setDateValues] = useState<DateRange | undefined>(undefined);
 
@@ -35,7 +53,6 @@ export default function DateRangeSelector(props: any) {
   ) => {
     const selectedStart = value ? moment(value[0]).unix() : 0;
     const selectedEnd = value ? moment(value[1]).unix() : 0;
-    dispatch(setIsLoading(true));
     if (onDateChange) {
       onDateChange(selectedStart, selectedEnd);
     }
@@ -53,6 +70,7 @@ export default function DateRangeSelector(props: any) {
         onChange={handleChange}
         value={dateValues}
         disabled={disabled}
+        ranges={ranges}
       />
     </>
   );

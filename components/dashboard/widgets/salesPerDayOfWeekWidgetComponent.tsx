@@ -5,9 +5,10 @@ import { Col, Row } from 'react-bootstrap';
 export default function SalesPerDayOfWeekWidget(props: any) {
   const salesPerDayMonth = props.salesPerDayMonth as ISalesData[] | undefined;
   const salesPerDayYear = props.salesPerDayYear as ISalesData[] | undefined;
+  const selectedYear = props.selectedYear as number | undefined;
+  const currentYear = moment().year();
 
   const today = moment();
-  const currentYear = today.year();
   const currentDay = today.day();
   const firstDayOfMonthDate = moment([currentYear, today.month(), 1]);
   const firstDayOfMonth = firstDayOfMonthDate.day();
@@ -40,25 +41,35 @@ export default function SalesPerDayOfWeekWidget(props: any) {
     }
 
     const key = `salePerDay${i}`;
-    salesRows.push(
-      <Row key={key}>
-        <Col>
-          {dayName} ${monthVal.toFixed(2)}
-        </Col>
-        <Col>
-          {dayName} ${yearVal.toFixed(2)}
-        </Col>
-      </Row>,
-    );
+    if (currentYear != selectedYear) {
+      salesRows.push(
+        <Row key={key}>
+          <Col>
+            {dayName} ${yearVal.toFixed(2)}
+          </Col>
+        </Row>,
+      );
+    } else {
+      salesRows.push(
+        <Row key={key}>
+          <Col>
+            {dayName} ${monthVal.toFixed(2)}
+          </Col>
+          <Col>
+            {dayName} ${yearVal.toFixed(2)}
+          </Col>
+        </Row>,
+      );
+    }    
   }
 
   return (
     <Row className="sales-stat-block">
       <Col>
         <Row>
-          <Col className="sales-stat-block-title">Average Sales by Day of Week</Col>
+          <Col className="sales-stat-block-title">Average Sales by Day of Week {(currentYear != selectedYear) ? selectedYear : ''}</Col>
         </Row>
-        <Row>
+        <Row hidden={currentYear != selectedYear}>
           <Col className="sales-stat-block-subtitle">Current Month</Col>
           <Col className="sales-stat-block-subtitle">Average For Year</Col>
         </Row>

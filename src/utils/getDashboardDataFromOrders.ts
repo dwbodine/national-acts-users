@@ -48,13 +48,11 @@ export function getDashboardDataFromOrders(
   let topSellingLocationsMap = new Map<string, ITopSellingLocation>();
   let topSellingVenuesMap = new Map<string, ITopSellingLocation>();
 
-  const startDate = moment.unix(currentDashboardSelection.start);
-  const endEnd = moment.unix(currentDashboardSelection.end);
+  const startDate = moment.unix(currentDashboardSelection.start).startOf('day');
+  const endEnd = moment.unix(currentDashboardSelection.end).endOf('day');
 
-  const currentDateMomentstr = undefined;
-
-  const startOfMonth = moment(currentDateMomentstr).startOf('month').startOf('day');
-  const endOfMonth = moment(currentDateMomentstr).endOf('month').endOf('day');
+  const startOfMonth = moment().startOf('month').startOf('day');
+  const endOfMonth = moment().endOf('month').endOf('day');
 
   let orderMap = new Map<string, ITicketSalesData>();
   let totalsByAccountMap = new Map<number, ITicketSalesData>();
