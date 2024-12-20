@@ -13,7 +13,6 @@ import { toast } from 'react-toastify';
 import { Modal, TimePicker } from 'rsuite';
 
 export default function EventDataExpanded(props: any) {
-    const showCloseButton = props.ShowCloseButton as boolean | undefined;
     const focusControl = props.FocusControl as string | undefined;
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
     const vipEvent = currentReportSelection?.expandedEvent;
@@ -283,7 +282,7 @@ export default function EventDataExpanded(props: any) {
                         <Col className="expand-edit-event">
                             <Button onClick={viewEvent} hidden={vipEvent.totalTickets == 0}>View</Button>
                             <Button onClick={editEvent}>Edit</Button>
-                            <Button hidden={!showCloseButton} onClick={closeEvent}>Close</Button>
+                            <Button onClick={closeEvent}>Close</Button>
                         </Col>
                     </Row>
                     <Row>
@@ -439,7 +438,7 @@ export default function EventDataExpanded(props: any) {
                         </Col>
                     </Row>
                 </Col>
-            </Row>  
-        : ''
+            </Row>
+            : ''
     );
 }

@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../src/lib/store';
-import { setAdminEvents, setReloadAdminEvents, setAdminNotes, setActiveEventTab, setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
+import { setAdminEvents, setReloadAdminEvents, setAdminNotes, setActiveEventTab, setAdminDateRange, setExpandedEvent } from '@/lib/adminEventsSelectionSlice';
 import { useEffect, useState } from 'react';
 import router from 'next/router';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
@@ -62,6 +62,14 @@ export default function AllEvents() {
         getAllEvents(currentReportSelection.start, currentReportSelection.end).then((response) => {
           if (!response.eventError && response.events) {
             const filteredEvents = response.events.filter(x => !x.isDeleted && (x.isActive || x.isHidden || x.isCancelled));
+            if (currentReportSelection.expandedEvent != undefined) {
+              const updatedEvent = filteredEvents.find(x => x.ticketSocketEventId == currentReportSelection.expandedEvent?.ticketSocketEventId);
+              if (updatedEvent) {
+                dispatch(
+                  setExpandedEvent(updatedEvent)
+                );
+              }
+            }
             if (currentReportSelection.start && currentReportSelection.end) {
               getCalendarNotes(currentReportSelection.start, currentReportSelection.end)
                 .then((resp) => {

@@ -97,7 +97,7 @@ export default function MonthView(props: any) {
             </Row>    
             <Row>
                 <Col>
-                    <EventDataExpanded ShowCloseButton={true} FocusControl="month-view-name" />
+                    <EventDataExpanded FocusControl="month-view-name" />
                 </Col>
             </Row>        
         </Col>

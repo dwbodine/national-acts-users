@@ -14,6 +14,8 @@ import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
 import { FaX } from 'react-icons/fa6';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { FaExclamationTriangle } from 'react-icons/fa';
+import AddNoteModal from '../common/addNoteModalComponent';
+import EditNoteModal from '../common/editNoteModalComponent';
 
 export default function WeekDay(props: any) {
     const dispatch = useDispatch();
@@ -31,15 +33,17 @@ export default function WeekDay(props: any) {
     const [noteIsCompleted, setNoteIsCompleted] = useState(false);
     const [displayNoteText, setDisplayNoteText] = useState('');
     const [displayNoteTitle, setDisplayNoteTitle] = useState('');
+    const [displayNoteDate, setDisplayNoteDate] = useState<Date>();
     const { addNote } = useAddNote();
     const { editNote } = useEditNote();
     const { deleteNote } = useDeleteNote();
 
     const handleNotesOpen = () => setNotesOpen(true);
-    const handleDisplayNoteOpen = (noteId: number, noteText: string, noteTitle: string, isCompleted: boolean) => {
+    const handleDisplayNoteOpen = (noteId: number, noteText: string, noteTitle: string, noteDate: Date, isCompleted: boolean) => {
         setNoteId(noteId);
         setDisplayNoteTitle(noteTitle);
         setDisplayNoteText(noteText);
+        setDisplayNoteDate(noteDate);
         setNoteIsCompleted(isCompleted);
         setDisplayNoteOpen(true);
     };
@@ -50,8 +54,13 @@ export default function WeekDay(props: any) {
             setNoteId(0);
             setDisplayNoteText('');
             setNoteIsCompleted(false);
-            setDisplayNoteTitle('');            
+            setDisplayNoteTitle('');     
+            setDisplayNoteDate(undefined);
         }, 500);        
+    };
+
+    const onNoteDateChange = (date: Date) => {
+        setDisplayNoteDate(date);
     };
 
     const addNewNote = () => {
@@ -74,10 +83,10 @@ export default function WeekDay(props: any) {
     };
 
     const editNewNoteAndMarkComplete = () => {
-        if (!weekDate || !displayNoteText || !displayNoteTitle || noteId == 0) {
+        if (!weekDate || !displayNoteText || !displayNoteTitle || noteId == 0 || !displayNoteDate) {
             return;
         }
-        editNote(noteId, displayNoteText, displayNoteTitle, true)
+        editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true)
             .then((response) => {
                 handleDisplayNoteClose();
                 if (response.success && !response.noteError) {
@@ -90,10 +99,10 @@ export default function WeekDay(props: any) {
     };
 
     const editNewNote = () => {
-        if (!weekDate || !displayNoteText || !displayNoteTitle || noteId == 0) {
+        if (!weekDate || !displayNoteText || !displayNoteTitle || noteId == 0 || !displayNoteDate) {
             return;
         }
-        editNote(noteId, displayNoteText, displayNoteTitle, noteIsCompleted)
+        editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, noteIsCompleted)
             .then((response) => {
                 handleDisplayNoteClose();
                 if (response.success && !response.noteError) {
@@ -173,7 +182,7 @@ export default function WeekDay(props: any) {
                 let noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
                 const noteClass = note.isCompleted ? "week-day-note-completed" : "week-day-note";
                 noteRows.push(<div key={`wdNote_${key}_${i}`} className={noteClass}>
-                                    <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '', note.isCompleted ?? false)}>{noteText}</span>
+                                    <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '', moment(note.noteTimestamp).toDate(), note.isCompleted ?? false)}>{noteText}</span>
                                     <span className="note-x"><FaX onClick={() => confirmDeleteNote(note.noteId)} /></span>
                             </div>)
             }
@@ -217,67 +226,30 @@ export default function WeekDay(props: any) {
             <div title={`Add a note for ${displayDate}`} onClick={handleNotesOpen} className="week-day-number">{weekDate?.format('D')}</div>
             {noteRows}
             {eventRows}
-            <Modal id="addNoteModal" open={notesOpen} onClose={handleNotesClose}>
-                <Modal.Header>
-                    <Modal.Title>Add New Note for {displayDate}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form.Control
-                        id="addNoteTitle"
-                        onChange={(e) => setNoteTitle(e.currentTarget.value)}
-                        value={noteTitle}
-                        placeholder="Note title"
-                    />
-                    <Form.Control as="textarea"
-                        id="addNote"
-                        rows={5}
-                        onChange={(e) => setNoteText(e.currentTarget.value)}
-                        value={noteText}
-                        placeholder="Note text"
-                    />
-                </Modal.Body>
-                <Modal.Footer className="modal-notes-footer">
-                    <Button onClick={addNewNote}>
-                        Ok
-                    </Button>
-                    <Button onClick={handleNotesClose}>
-                        Cancel
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal id="displayNoteModal" open={displayNoteOpen} onClose={handleDisplayNoteClose}>
-                <Modal.Header>
-                    <Modal.Title>{!noteIsCompleted ? `View/Edit Note for ${displayDate}` : `View Note for ${displayDate}`}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form.Control
-                        id="editNoteTitle"
-                        disabled={noteIsCompleted}
-                        onChange={(e) => setDisplayNoteTitle(e.currentTarget.value)}
-                        value={displayNoteTitle}
-                        placeholder="Note title"
-                    />
-                    <Form.Control as="textarea"
-                        id="editNote"
-                        rows={5}
-                        disabled={noteIsCompleted}
-                        onChange={(e) => setDisplayNoteText(e.currentTarget.value)}
-                        value={displayNoteText}
-                        placeholder="Note text"
-                    />
-                </Modal.Body>
-                <Modal.Footer className="modal-notes-footer">
-                    <Button hidden={noteIsCompleted} onClick={editNewNote}>
-                        Save
-                    </Button>
-                    <Button hidden={noteIsCompleted} onClick={editNewNoteAndMarkComplete}>
-                        Mark Complete
-                    </Button>
-                    <Button onClick={handleDisplayNoteClose}>
-                        Cancel
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <AddNoteModal 
+                Id="addNoteModal"
+                NotesOpen={notesOpen}
+                HandleNotesClose={handleNotesClose}
+                DisplayDate={displayDate}
+                SetNoteTitle={setNoteTitle}
+                SetNoteText={setNoteText}
+                AddNewNote={addNewNote}
+            />
+            <EditNoteModal
+                Id="displayNoteModal"
+                NotesOpen={displayNoteOpen}
+                HandleNotesClose={handleDisplayNoteClose}
+                DisplayDate={displayDate}
+                NoteIsCompleted={noteIsCompleted}
+                NoteTitle={displayNoteTitle}
+                SetNoteTitle={setDisplayNoteTitle}
+                NoteText={displayNoteText}
+                SetNoteText={setDisplayNoteText}
+                EditNewNote={editNewNote}
+                NoteDate={displayNoteDate}
+                OnNoteDateChange={onNoteDateChange}
+                EditNewNoteAndMarkComplete={editNewNoteAndMarkComplete}
+            />
         </Col>
     );
 }

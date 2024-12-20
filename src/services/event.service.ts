@@ -829,6 +829,7 @@ export class EventService {
     noteId: number,
     note: string,
     noteTitle?: string,
+    noteDate?: Date,
     isCompleted?: boolean,
   ): Promise<ModifyNoteResponse> => {
     const url = '/admin/notes/edit';
@@ -844,6 +845,7 @@ export class EventService {
       noteId: noteId,
       note: note,
       noteTitle: noteTitle,
+      noteDate: moment(noteDate).format('YYYY-MM-DD'),
       isCompleted: isCompleted,
     };
 

@@ -6,13 +6,20 @@ export const useEditNote = () => {
     noteId: number,
     note: string,
     noteTitle?: string,
+    noteDate?: Date,
     isCompleted?: boolean,
   ): Promise<ModifyNoteResponse> => {
     let response: ModifyNoteResponse = {
       success: false,
       noteError: undefined,
     };
-    response = await eventService.editNote(noteId, note, noteTitle, isCompleted);
+    response = await eventService.editNote(
+      noteId,
+      note,
+      noteTitle,
+      noteDate,
+      isCompleted,
+    );
     return response;
   };
 
