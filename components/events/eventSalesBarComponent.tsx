@@ -11,6 +11,7 @@ import moment from 'moment';
 import { DatePicker } from 'rsuite';
 import { EventTabView, DateRange } from '@/types/user';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
+import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
 
 export default function EventSalesBar() {
   const dispatch = useDispatch();
@@ -18,12 +19,13 @@ export default function EventSalesBar() {
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
+  const agendaOnly = windowSize.width < EVENTS_AGENDA_VIEW_BREAKPOINT;
 
   let pageTitle: string = 'Admin Events View';
 
   const onDateChange = (date: Date) => {
     const selectedDate = moment(date).unix();
-    const tabView = currentReportSelection.eventTabView ?? EventTabView.Week;
+    const tabView = currentReportSelection.eventTabView ?? (agendaOnly ? EventTabView.Agenda : DEFAULT_EVENT_TAB_VIEW);
     const dateRange = getSelectedAdminEventDateRange(selectedDate, tabView)
     dispatch(setAdminDateRange(dateRange));
   };
@@ -34,11 +36,11 @@ export default function EventSalesBar() {
       router.push('/');
     } else if (currentReportSelection.start == undefined) {
       const selectedDate = moment().unix();
-      const tabView = currentReportSelection.eventTabView ?? EventTabView.Week;
+      const tabView = currentReportSelection.eventTabView ?? (agendaOnly ? EventTabView.Agenda : DEFAULT_EVENT_TAB_VIEW);
       const dateRange = getSelectedAdminEventDateRange(selectedDate, tabView)
       dispatch(setAdminDateRange(dateRange));
     }
-  }, [windowSizeJson, getUser, currentReportSelection, dispatch]);
+  }, [windowSizeJson, getUser, currentReportSelection, dispatch, agendaOnly]);
 
   let startDate = undefined;
   if (currentReportSelection.eventTabView == EventTabView.Month) {

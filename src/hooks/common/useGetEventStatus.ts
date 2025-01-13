@@ -1,4 +1,5 @@
 import { VipEvent } from '@/types/event';
+import moment from 'moment';
 
 export const useGetEventStatus = () => {
   const getEventStatusSlug = (
@@ -16,6 +17,12 @@ export const useGetEventStatus = () => {
       event.listSentToBand
     ) {
       statusSlug = 'taskscomplete';
+    } else if (
+      isAdmin &&
+      event.totalTickets == 0 &&
+      moment(event.eventDate).valueOf() <= moment().valueOf()
+    ) {
+      statusSlug = 'zerovips';
     } else if (event.isDeleted) {
       statusSlug = 'deleted';
     } else if (event.isCancelled) {
@@ -54,6 +61,9 @@ export const useGetEventStatus = () => {
         break;
       case 'taskscomplete':
         statusText = 'All Tasks Complete';
+        break;
+      case 'zerovips':
+        statusText = 'No VIPs Sold';
         break;
       default:
         break;

@@ -17,7 +17,7 @@ import { EventTabView } from '@/types/user';
 import moment from 'moment';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 import { Note } from '@/types/event';
-import { EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
+import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
 
 export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -35,7 +35,7 @@ export default function AllEvents() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (!currentReportSelection.eventTabView) {
-        const defaultTabView = agendaOnly ? EventTabView.Agenda : EventTabView.Week;
+        const defaultTabView = agendaOnly ? EventTabView.Agenda : DEFAULT_EVENT_TAB_VIEW;
         dispatch(
           setActiveEventTab(defaultTabView)
         );

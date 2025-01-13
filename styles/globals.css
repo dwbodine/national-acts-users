@@ -737,6 +737,12 @@ input[type='number']:hover {
   background-color: green;
 }
 
+.week-day-event-zerovips,
+.agenda-day-event-zerovips,
+.month-day-event-zerovips {
+  text-decoration: line-through;
+}
+
 .expanded-event-row {
   border: 2px solid black;
   width: 100%;
