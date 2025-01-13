@@ -202,7 +202,34 @@ export default function AdminEventEdit(props: any) {
 
     const announceDate = moment(date).startOf('day');
     let currentEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.announceDate = announceDate.format('YYYY-MM-DD');
+    currentEvent.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
+  const onAnnounceTimeChange = (date: Date | null) => {
+    if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+
+    if (date <= new Date()) {
+      onCleanAnnounceTime();
+      return;
+    }
+
+    const eventDate = moment(currentAdminSelection.selectedEvent.eventDate).toDate();
+    if (date >= eventDate) {
+      onCleanAnnounceTime();
+      return;
+    }
+
+    const announceTime = moment(date);
+    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    let announceDate = moment(currentEvent.announceDate);
+    announceDate = announceDate.hours(announceTime.hours());
+    announceDate = announceDate.minutes(announceTime.minutes());
+    announceDate = announceDate.seconds(0);
+    currentEvent.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -213,6 +240,22 @@ export default function AdminEventEdit(props: any) {
     }
     let currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.announceDate = undefined;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
+  const onCleanAnnounceTime = () => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    if (currentEvent.announceDate) {
+      let announceDate = moment(currentEvent.announceDate);
+      announceDate = announceDate.hours(0);
+      announceDate = announceDate.minutes(0);
+      announceDate = announceDate.seconds(0);
+      currentEvent.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');;
+    }    
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -520,6 +563,9 @@ export default function AdminEventEdit(props: any) {
     currentAdminSelection.selectedEvent != undefined && eventDate != undefined
       ? moment(eventDate).toDate() < new Date()
       : false;
+
+  const announceTimeDisabled = !announceDateDisabled && !announceDate;
+
   const doorsOpenTime =
     currentAdminSelection.selectedEvent != undefined &&
       currentAdminSelection.selectedEvent.doorsOpen != null
@@ -662,8 +708,19 @@ export default function AdminEventEdit(props: any) {
             value={announceDate}
             oneTap
             cleanable
+            showMeridiem
             onClean={onCleanAnnounceDate}
             disabled={announceDateDisabled}
+          />
+          <TimePicker
+            id="announceTime"
+            format="hh:mm aa"
+            onSelect={onAnnounceTimeChange}
+            value={announceDate}
+            cleanable
+            showMeridiem
+            onClean={onCleanAnnounceTime}
+            disabled={announceTimeDisabled}
           />
         </Col>
       </Row>
