@@ -64,6 +64,7 @@ export function getDashboardDataFromOrders(
     totals.dailyOrderData.forEach((dailyOrderData: IDailyOrderData) => {
       const purchaseDate = moment(dailyOrderData.purchaseDate);
 
+      // get stats per TicketSocket account (keyed by ticketSocketId)
       let accountOrderData: ITicketSalesData | undefined = totalsByAccountMap.get(
         dailyOrderData.ticketSocketId,
       );
@@ -108,6 +109,7 @@ export function getDashboardDataFromOrders(
       }
       totalsByAccountMap.set(dailyOrderData.ticketSocketId, accountOrderData);
 
+      // get stats for sales per month
       const purchaseMonth = parseInt(purchaseDate.format('M'));
       let salesPerMonth = salesPerMonthMap.get(purchaseMonth);
       if (!salesPerMonth) {
@@ -117,6 +119,7 @@ export function getDashboardDataFromOrders(
         salesPerMonthMap.set(purchaseMonth, salesPerMonth);
       }
 
+      // get stats for sales per day of week
       const purchaseDayOfWeek = parseInt(purchaseDate.format('d'));
       let salesPerDayYear = salesPerDayYearMap.get(purchaseDayOfWeek);
       if (salesPerDayYear == undefined) {
@@ -126,6 +129,7 @@ export function getDashboardDataFromOrders(
         salesPerDayYearMap.set(purchaseDayOfWeek, salesPerDayYear);
       }
 
+      // compile data for current month
       if (
         purchaseDate.valueOf() >= startOfMonth.valueOf() &&
         purchaseDate.valueOf() <= endOfMonth.valueOf()
@@ -153,10 +157,12 @@ export function getDashboardDataFromOrders(
           dailyOrderData.serviceFeeRevenueChargedBack ?? 0;
       }
 
+      // compile data for current selected date range
       if (
         purchaseDate.valueOf() >= startDate.valueOf() &&
         purchaseDate.valueOf() <= endEnd.valueOf()
       ) {
+        // totals for current time period
         totalPurchases += dailyOrderData.orders;
         totalTickets += dailyOrderData.tickets;
         totalTicketRevenue += dailyOrderData.ticketRevenueUsd;
@@ -170,6 +176,7 @@ export function getDashboardDataFromOrders(
         totalServiceFeeRevenueChargedBack +=
           dailyOrderData.serviceFeeRevenueChargedBack ?? 0;
 
+        // compile data for top sellers for current time period
         if (dailyOrderData.sellerId) {
           var topSeller = topSellersMap.get(dailyOrderData.sellerId);
           if (topSeller) {
@@ -191,6 +198,7 @@ export function getDashboardDataFromOrders(
           .getLocationInfoFromDailyOrderData(dailyOrderData)
           ?.trim();
 
+        // compile data per venue for selected time period
         if (location && dailyOrderData.zip && dailyOrderData.venue) {
           var topVenue = topSellingVenuesMap.get(dailyOrderData.zip);
           if (topVenue) {
@@ -205,6 +213,7 @@ export function getDashboardDataFromOrders(
           topSellingVenuesMap.set(dailyOrderData.zip, topVenue);
         }
 
+        // compile data per location for selected time period
         if (location) {
           var topCity = topSellingLocationsMap.get(location);
           if (topCity) {
@@ -219,6 +228,7 @@ export function getDashboardDataFromOrders(
           topSellingLocationsMap.set(location, topCity);
         }
 
+        // START - complile data for dashboard ticket sales drill-down table
         const esd: ITicketEventSalesData = {
           EventId: dailyOrderData.ticketSocketEventId,
           SellerName: sellerName,
@@ -237,7 +247,7 @@ export function getDashboardDataFromOrders(
           const data: ITicketSalesData = {
             PurchaseDate: moment(key).format('M/D/YYYY'),
             Tickets: dailyOrderData.tickets,
-            Purchases: 1,
+            Purchases: dailyOrderData.orders,
             Revenue: dailyOrderData.ticketRevenueUsd,
             ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
             TotalRevenue: dailyOrderData.totalRevenueUsd,
@@ -277,7 +287,7 @@ export function getDashboardDataFromOrders(
                   seller.Tickets += dailyOrderData.tickets;
                   seller.Revenue += dailyOrderData.ticketRevenueUsd;
                   seller.ServiceFees += dailyOrderData.serviceFeesRevenueUsd;
-                  seller.Purchases += 1;
+                  seller.Purchases += dailyOrderData.orders;
                   seller.TotalRevenue += dailyOrderData.totalRevenueUsd;
                   seller.RevenueRefunded =
                     (seller.RevenueRefunded ?? 0) + (dailyOrderData.revenueRefunded ?? 0);
@@ -300,7 +310,7 @@ export function getDashboardDataFromOrders(
                           evt.Tickets += dailyOrderData.tickets;
                           evt.Revenue += dailyOrderData.ticketRevenueUsd;
                           evt.ServiceFees += dailyOrderData.serviceFeesRevenueUsd;
-                          evt.Purchases += 1;
+                          evt.Purchases += dailyOrderData.orders;
                           evt.TotalRevenue += dailyOrderData.totalRevenueUsd;
                           evt.RevenueRefunded =
                             (evt.RevenueRefunded ?? 0) +
@@ -354,6 +364,7 @@ export function getDashboardDataFromOrders(
           }
           orderMap.set(key, salesData);
         }
+        // END - complile data for dashboard ticket sales drill-down table
       }
     });
   }

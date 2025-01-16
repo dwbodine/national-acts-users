@@ -17,50 +17,52 @@ export default function SalesPerDayOfWeekWidget(props: any) {
 
   let salesRows: any[] = [];
 
-  for (let i = 1; i <= 7; i++) {
-    const dayNumber = i % 7;
-    const dayName = moment().day(dayNumber).format('ddd');
+  if (salesPerDayMonth != undefined || salesPerDayYear != undefined) {
+    for (let i = 1; i <= 7; i++) {
+      const dayNumber = i % 7;
+      const dayName = moment().day(dayNumber).format('ddd');
 
-    let numberOfDaysInYear = today.week();
-    if (dayNumber >= firstDayOfYear && dayNumber <= currentDay) {
-      numberOfDaysInYear += 1;
-    }
+      let numberOfWeeksInYear = today.week();
+      if (dayNumber >= firstDayOfYear && dayNumber <= currentDay) {
+        numberOfWeeksInYear += 1;
+      }
 
-    let numberOfDaysInMonth = today.week() - firstWeekOfMonth;
-    if (dayNumber >= firstDayOfMonth && dayNumber <= currentDay) {
-      numberOfDaysInMonth += 1;
-    }
+      let numberOfWeeksInMonth = today.week() - firstWeekOfMonth + 1;
+      if (dayNumber >= firstDayOfMonth && dayNumber <= currentDay) {
+        numberOfWeeksInMonth += 1;
+      }
 
-    let monthVal = salesPerDayMonth?.find((x) => x.key == dayNumber)?.value ?? 0;
-    if (monthVal > 0 && numberOfDaysInMonth > 0) {
-      monthVal = monthVal / numberOfDaysInMonth;
-    }
-    let yearVal = salesPerDayYear?.find((x) => x.key == dayNumber)?.value ?? 0;
-    if (yearVal > 0 && numberOfDaysInYear) {
-      yearVal = yearVal / numberOfDaysInYear;
-    }
+      let monthVal = salesPerDayMonth?.find((x) => x.key == dayNumber)?.value ?? 0;
+      if (monthVal > 0 && numberOfWeeksInMonth > 0) {
+        monthVal = monthVal / numberOfWeeksInMonth;
+      }
+      let yearVal = salesPerDayYear?.find((x) => x.key == dayNumber)?.value ?? 0;
+      if (yearVal > 0 && numberOfWeeksInYear > 0) {
+        yearVal = yearVal / numberOfWeeksInYear;
+      }
 
-    const key = `salePerDay${i}`;
-    if (currentYear != selectedYear) {
-      salesRows.push(
-        <Row key={key}>
-          <Col>
-            {dayName} ${yearVal.toFixed(2)}
-          </Col>
-        </Row>,
-      );
-    } else {
-      salesRows.push(
-        <Row key={key}>
-          <Col>
-            {dayName} ${monthVal.toFixed(2)}
-          </Col>
-          <Col>
-            {dayName} ${yearVal.toFixed(2)}
-          </Col>
-        </Row>,
-      );
-    }    
+      const key = `salePerDay${i}`;
+      if (currentYear != selectedYear) {
+        salesRows.push(
+          <Row key={key}>
+            <Col>
+              {dayName} ${yearVal.toFixed(2)}
+            </Col>
+          </Row>,
+        );
+      } else {
+        salesRows.push(
+          <Row key={key}>
+            <Col>
+              {dayName} ${monthVal.toFixed(2)}
+            </Col>
+            <Col>
+              {dayName} ${yearVal.toFixed(2)}
+            </Col>
+          </Row>,
+        );
+      }    
+    }
   }
 
   return (
