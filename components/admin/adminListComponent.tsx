@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect } from 'react';
+import { useEffect } from 'react';
 import router from 'next/router';
 import { useDispatch } from 'react-redux';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
@@ -26,6 +26,9 @@ export default function AdminList() {
         break;
       case 'view-log':
         router.push('/admin/log/');
+        break;
+      case 'manage-tours':
+        router.push('/admin/tour');
         break;
       default:
         break;
@@ -62,6 +65,11 @@ export default function AdminList() {
         <li>
           <a className="admin-link" onClick={() => goToAdminPage('manage-events')}>
             Manage Events/Orders
+          </a>
+        </li>
+        <li>
+          <a className="admin-link" onClick={() => goToAdminPage('manage-tours')}>
+            Manage Tours
           </a>
         </li>
       </ul>

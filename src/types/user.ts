@@ -1,4 +1,4 @@
-import { ITicketSalesData, Note, Order, Seller, SellerType, VipEvent } from './event';
+import { ITicketSalesData, Note, Order, Seller, SellerType, Tour, VipEvent } from './event';
 
 export type LoginResponse = {
   user?: User;
@@ -311,16 +311,20 @@ export type AdminSelection = {
   reloadUsers?: boolean;
   reloadRoles?: boolean;
   reloadEvents?: boolean;
+  reloadTours?: boolean;
   selectedUser?: User | undefined;
   selectedRole?: Role | undefined;
   selectedEvent?: VipEvent | undefined;
+  selectedTour?: Tour | undefined;
   selectedOrder?: Order | undefined;
   mustSaveOrder?: boolean;
   mustSaveEvent?: boolean;
+  mustSaveTour?: boolean;
   allSellers?: Seller[] | undefined;
   roles?: Role[] | undefined;
   users?: User[] | undefined;
   events?: VipEvent[] | undefined;
+  tours?: Tour[] | undefined;
 };
 
 export type AdminReportsSelection = {

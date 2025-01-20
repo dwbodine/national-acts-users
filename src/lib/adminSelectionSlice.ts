@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { AdminSelection, Role, User } from '../types/user';
-import { Order, Seller, VipEvent } from '@/types/event';
+import { Order, Seller, Tour, VipEvent } from '@/types/event';
 
 const initialState: AdminSelection = {
   sellerId: undefined,
@@ -10,16 +10,20 @@ const initialState: AdminSelection = {
   reloadUsers: true,
   reloadEvents: true,
   reloadRoles: true,
+  reloadTours: true,
   selectedEvent: undefined,
   selectedOrder: undefined,
   selectedUser: undefined,
   selectedRole: undefined,
+  selectedTour: undefined,
   allSellers: undefined,
   roles: undefined,
   users: undefined,
   events: undefined,
+  tours: undefined,
   mustSaveEvent: false,
   mustSaveOrder: false,
+  mustSaveTour: false,
 };
 
 export const adminSelectionSlice = createSlice({
@@ -47,11 +51,23 @@ export const adminSelectionSlice = createSlice({
       state.selectedOrder = action.payload;
       return state;
     },
+    setAdminTour: (state, action: PayloadAction<Tour | undefined>) => {
+      state.selectedTour = action.payload;
+      return state;
+    },
     setReloadUsers: (state, action: PayloadAction<boolean>) => {
       state.reloadUsers = action.payload;
       if (state.reloadUsers) {
         state.selectedUser = undefined;
         state.users = undefined;
+      }
+      return state;
+    },
+    setReloadTours: (state, action: PayloadAction<boolean>) => {
+      state.reloadTours = action.payload;
+      if (state.reloadTours) {
+        state.selectedTour = undefined;
+        state.tours = undefined;
       }
       return state;
     },
@@ -62,6 +78,11 @@ export const adminSelectionSlice = createSlice({
     setUsers: (state, action: PayloadAction<User[]>) => {
       state.users = action.payload;
       state.reloadUsers = false;
+      return state;
+    },
+    setTours: (state, action: PayloadAction<Tour[]>) => {
+      state.tours = action.payload;
+      state.reloadTours = false;
       return state;
     },
     setReloadRoles: (state, action: PayloadAction<boolean>) => {
@@ -100,6 +121,10 @@ export const adminSelectionSlice = createSlice({
       state.mustSaveOrder = action.payload;
       return state;
     },
+    setMustSaveTour: (state, action: PayloadAction<boolean>) => {
+      state.mustSaveTour = action.payload;
+      return state;
+    },
     resetAdmin: (state) => {
       state.sellerId = undefined;
       state.start = undefined;
@@ -107,15 +132,19 @@ export const adminSelectionSlice = createSlice({
       state.reloadUsers = true;
       state.reloadRoles = true;
       state.reloadEvents = true;
+      state.reloadTours = true;
       state.selectedUser = undefined;
       state.selectedRole = undefined;
       state.selectedEvent = undefined;
       state.selectedOrder = undefined;
+      state.selectedTour = undefined;
       state.roles = undefined;
       state.users = undefined;
       state.events = undefined;
+      state.tours = undefined;
       state.mustSaveEvent = false;
       state.mustSaveOrder = false;
+      state.mustSaveTour = false;
       return state;
     },
   },
@@ -138,6 +167,10 @@ export const {
   setAdminEvents,
   setMustSaveEvent,
   setMustSaveOrder,
+  setTours,
+  setAdminTour,
+  setReloadTours,
+  setMustSaveTour,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

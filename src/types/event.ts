@@ -221,10 +221,25 @@ export interface TicketSocketRefreshHistory {
   totalDuration?: number;
 }
 
+export interface Tour {
+  tourId: number;
+  sellers?: Seller[];
+  tourName: string;
+  isActive: boolean;
+  announceDate: string;
+  events?: VipEvent[];
+}
+
 export interface GetEventsResponse {
   events?: VipEvent[];
   statusCode?: number;
   eventError?: string;
+}
+
+export interface GetToursResponse {
+  tours?: Tour[];
+  statusCode?: number;
+  tourError?: string;
 }
 
 export interface GetEventResponse {
@@ -262,6 +277,13 @@ export interface ModifyEventResponse {
   statusCode?: number;
   eventError?: string;
   updatedEvent?: VipEvent;
+}
+
+export interface ModifyTourResponse {
+  success: boolean;
+  statusCode?: number;
+  tourError?: string;
+  updatedTour?: Tour;
 }
 
 export interface RefreshHistoryResponse {
