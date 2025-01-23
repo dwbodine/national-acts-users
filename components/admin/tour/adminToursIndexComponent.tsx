@@ -1,42 +1,33 @@
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Modal, Table } from 'rsuite';
+import { Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import {
-  setAdminDates,
-  setAdminEvent,
   setAdminEvents,
   setAdminSellerId,
   setAdminTour,
   setAllSellers,
-  setReloadEvents,
   setReloadTours,
   setTours,
 } from '@/lib/adminSelectionSlice';
-import { Button, Col, FormCheck, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import { GetEventsResponse, GetSellersResponse, GetToursResponse, Seller, Tour, VipEvent } from '@/types/event';
+import { GetEventsResponse, GetSellersResponse, GetToursResponse, Tour } from '@/types/event';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import moment from 'moment';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
 import router from 'next/router';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
-import { useSetEventsDeleted } from '@/hooks/event/useSetEventsDeleted';
-import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
-import { FaArrowTurnDown } from 'react-icons/fa6';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { toast } from 'react-toastify';
 import { useGetTours } from '@/hooks/admin/useGetTours';
+import { toast } from 'react-toastify';
+import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 
 export default function AdminToursIndex() {
   const { Column, HeaderCell, Cell } = Table;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const { getSellers } = useGetSellers();
   const { getTours } = useGetTours();
+  const { getAdminSellerEvents } = useGetAdminSellerEvents();
   const dispatch = useDispatch();
   const [tableLoading, setTableLoading] = useState(true);
 
@@ -62,11 +53,30 @@ export default function AdminToursIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getTours(adminSelection).then((response: GetToursResponse) => {
-          if (response.tours && !response.tourError) {
-            dispatch(setTours(response.tours));
-          }
-          dispatch(setIsLoading(false));
-          setTableLoading(false);
+          if (!response.tourError) {
+            if (response.tours) {
+              dispatch(setTours(response.tours));
+            }            
+            if (currentAdminSelection.sellerId) {
+              getAdminSellerEvents([currentAdminSelection.sellerId])
+              .then((response: GetEventsResponse) => {
+                if (response.events && !response.eventError) {
+                  const filteredEvents = response.events.filter(x => !x.isDeleted && x.isActive && moment(x.eventDate).valueOf() >= moment().valueOf());
+                  if (filteredEvents) {
+                    dispatch(setAdminEvents(filteredEvents));
+                  }                  
+                }
+                dispatch(setIsLoading(false));
+                setTableLoading(false);
+              });
+            } else {
+              dispatch(setIsLoading(false));
+              setTableLoading(false);
+            }            
+          } else {
+            dispatch(setIsLoading(false));
+            setTableLoading(false);
+          }          
         });
       } else if (currentAdminSelection.tours != undefined && tableLoading) {
         setTimeout(() => {
@@ -77,20 +87,18 @@ export default function AdminToursIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [dispatch, getSellers, currentAdminSelection, getTours, tableLoading]);
+  }, [dispatch, getSellers, currentAdminSelection, getTours, tableLoading, getAdminSellerEvents]);
 
   const updateSeller = (sellerId: number) => {
-    if (!sellerId || isNaN(sellerId)) {
-      return;
-    }
-    dispatch(setAdminSellerId(sellerId));
+    const updateSellerId = sellerId && !isNaN(sellerId) ? sellerId : undefined;
+    dispatch(setAdminSellerId(updateSellerId));
     dispatch(setReloadTours(true));
   };
 
   const editTour = (tourId: number) => {
     if (
       !tourId ||
-      isNaN(tourId) || 
+      isNaN(tourId) ||
       !currentAdminSelection.tours ||
       currentAdminSelection.tours.length == 0
     ) {
@@ -108,6 +116,14 @@ export default function AdminToursIndex() {
   };
 
   const addTour = () => {
+    if (!currentAdminSelection.sellerId) {
+      toast.error('Must select a seller first');
+      return;
+    } else if (!currentAdminSelection.events || currentAdminSelection.events.length == 0) {
+      toast.error('No future events to add to a tour');
+      return;
+    }
+
     const seller = currentAdminSelection.allSellers?.find(x => x.sellerId == currentAdminSelection.sellerId);
 
     if (!seller) {
@@ -158,10 +174,32 @@ export default function AdminToursIndex() {
               <HeaderCell>Tour Name</HeaderCell>
               <Cell>{(rowData: Tour) => rowData.tourName}</Cell>
             </Column>
+            <Column flexGrow={1}>
+              <HeaderCell># of shows</HeaderCell>
+              <Cell>
+                {(rowData: Tour) => rowData.events ? rowData.events.length : 0}
+              </Cell>
+            </Column>
             <Column flexGrow={1} minWidth={100}>
               <HeaderCell>Announce Date</HeaderCell>
               <Cell>
-                {(rowData: Tour) => rowData.announceDate ? moment(rowData.announceDate).format('MM/DD/YYYY') : ''}
+                {(rowData: Tour) => rowData.announceDate ? moment(rowData.announceDate).format('M/DD/YYYY h:mm A') : ''}
+              </Cell>
+            </Column>
+            <Column flexGrow={1}>
+              <HeaderCell>First show</HeaderCell>
+              <Cell>
+                {(rowData: Tour) => rowData.events && rowData.events.length > 0 
+                  ? `${moment(rowData.events[0].eventDate).format('M/DD/YYYY')} (${rowData.events[0].venue?.city}, ${rowData.events[0].venue?.state})` 
+                  : ''}
+              </Cell>
+            </Column>
+            <Column flexGrow={1}>
+              <HeaderCell>Last show</HeaderCell>
+              <Cell>
+              {(rowData: Tour) => rowData.events && rowData.events.length > 0 
+                  ? `${moment(rowData.events[rowData.events.length-1].eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length-1].venue?.city}, ${rowData.events[rowData.events.length-1].venue?.state})` 
+                  : ''}
               </Cell>
             </Column>
             <Column flexGrow={2}>
@@ -189,7 +227,7 @@ export default function AdminToursIndex() {
               </Cell>
             </Column>
           </Table>
-          <Button disabled={!currentAdminSelection.sellerId} onClick={addTour}>Add</Button>
+          <Button onClick={addTour}>Add</Button>
         </Col>
       </Row>
     </div>

@@ -1,4 +1,12 @@
-import { ITicketSalesData, Note, Order, Seller, SellerType, Tour, VipEvent } from './event';
+import {
+  ITicketSalesData,
+  Note,
+  Order,
+  Seller,
+  SellerType,
+  Tour,
+  VipEvent,
+} from './event';
 
 export type LoginResponse = {
   user?: User;

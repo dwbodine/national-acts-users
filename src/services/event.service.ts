@@ -110,9 +110,7 @@ export class EventService {
       });
   };
 
-  getTours = async (
-    reportSelection: AdminSelection,
-  ): Promise<GetToursResponse> => {
+  getTours = async (reportSelection: AdminSelection): Promise<GetToursResponse> => {
     let url = `/admin/tours/${reportSelection.sellerId}`;
 
     let tourResponse: GetToursResponse = {
@@ -161,6 +159,43 @@ export class EventService {
     if (reportSelection.end) {
       url += `&end=${reportSelection.end}`;
     }
+
+    let eventResponse: GetEventsResponse = {
+      events: undefined,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        const events = res.data;
+        eventResponse.events = events.length ? (events as VipEvent[]) : [];
+        return eventResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          eventResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching events - please contact your administrator';
+        }
+        eventResponse.eventError = errorMessage;
+        return eventResponse;
+      });
+  };
+
+  getAdminSellerEvents = async (sellerIds: number[]): Promise<GetEventsResponse> => {
+    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&start=${moment().unix()}&sellerIds=${sellerIds.join(',')}`;
 
     let eventResponse: GetEventsResponse = {
       events: undefined,
@@ -453,7 +488,7 @@ export class EventService {
   };
 
   updateTour = async (tourToUpdate: Tour): Promise<ModifyTourResponse> => {
-    let url = `/admin/tour/update`;
+    let url = `/admin/tours/update`;
 
     let tourResponse: ModifyTourResponse = {
       success: false,

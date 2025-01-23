@@ -172,6 +172,7 @@ export interface VipEvent {
   isCancelled?: boolean;
   cancelledDate?: string;
   announceDate?: string;
+  tourAnnounceDate?: string;
   doorsOpen?: string;
   meetAndGreetTime?: string;
   emailSentToVips?: boolean;
