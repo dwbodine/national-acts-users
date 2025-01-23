@@ -21,6 +21,9 @@ import {
   GetEventResponse,
   GetOrderResponse,
   ModifyNoteResponse,
+  GetToursResponse,
+  Tour,
+  ModifyTourResponse,
 } from '../types/event';
 import {
   AdminDashboardSelection,
@@ -107,6 +110,43 @@ export class EventService {
       });
   };
 
+  getTours = async (reportSelection: AdminSelection): Promise<GetToursResponse> => {
+    let url = `/admin/tours/${reportSelection.sellerId}`;
+
+    let tourResponse: GetToursResponse = {
+      tours: undefined,
+      tourError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        const tours = res.data;
+        tourResponse.tours = tours.length ? (tours as Tour[]) : [];
+        return tourResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          tourResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching tours - please contact your administrator';
+        }
+        tourResponse.tourError = errorMessage;
+        return tourResponse;
+      });
+  };
+
   getAdminEvents = async (
     reportSelection: AdminSelection,
   ): Promise<GetEventsResponse> => {
@@ -119,6 +159,43 @@ export class EventService {
     if (reportSelection.end) {
       url += `&end=${reportSelection.end}`;
     }
+
+    let eventResponse: GetEventsResponse = {
+      events: undefined,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        const events = res.data;
+        eventResponse.events = events.length ? (events as VipEvent[]) : [];
+        return eventResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          eventResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching events - please contact your administrator';
+        }
+        eventResponse.eventError = errorMessage;
+        return eventResponse;
+      });
+  };
+
+  getAdminSellerEvents = async (sellerIds: number[]): Promise<GetEventsResponse> => {
+    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&start=${moment().unix()}&sellerIds=${sellerIds.join(',')}`;
 
     let eventResponse: GetEventsResponse = {
       events: undefined,
@@ -407,6 +484,43 @@ export class EventService {
         }
         eventResponse.eventError = errorMessage;
         return eventResponse;
+      });
+  };
+
+  updateTour = async (tourToUpdate: Tour): Promise<ModifyTourResponse> => {
+    let url = `/admin/tours/update`;
+
+    let tourResponse: ModifyTourResponse = {
+      success: false,
+      tourError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify(tourToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        tourResponse.success = res.status == 200;
+        return tourResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          tourResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while adding/updating tour';
+        }
+        tourResponse.tourError = errorMessage;
+        return tourResponse;
       });
   };
 
