@@ -10,12 +10,14 @@ import {
   setAdminSellerId,
   setAllSellers,
   setReloadEvents,
+  setReloadTours,
+  setTours,
 } from '@/lib/adminSelectionSlice';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import ReportDatePicker from '../../common/reportDatePIcker';
-import { GetEventsResponse, GetSellersResponse, Seller, VipEvent } from '@/types/event';
+import { GetEventsResponse, GetSellersResponse, GetToursResponse, Seller, VipEvent } from '@/types/event';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import moment from 'moment';
@@ -28,6 +30,7 @@ import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
 import { FaArrowTurnDown } from 'react-icons/fa6';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { toast } from 'react-toastify';
+import { useGetTours } from '@/hooks/admin/useGetTours';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -41,9 +44,11 @@ export default function AdminEventsIndex() {
   const { setEventsInactive } = useSetEventsInactive();
   const { setEventsDeleted } = useSetEventsDeleted();
   const { setEventsHidden } = useSetEventsHidden();
+  const { getTours } = useGetTours();
 
   const [ selectedAction, setSelectedAction ] = useState('');
   const [ eventIdList, setEventIdList ] = useState<number[]>([]);
+  const [ tourId, setTourId ] = useState<number>(0);
   const allEventIds: number[] = currentAdminSelection.events?.map(evt => {return evt.ticketSocketEventId}) ?? [];
 
   useEffect(() => {
@@ -65,18 +70,31 @@ export default function AdminEventsIndex() {
         setSelectedAction('');
         dispatch(setReloadEvents(false));
         let adminSelection = { ...currentAdminSelection };
+        let sellerId: number = 0;
         if (!adminSelection.sellerId) {
           setTableLoading(false);
           return;
+        } else {
+          sellerId = adminSelection.sellerId;
         }
+
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
           if (response.events && !response.eventError) {
             dispatch(setAdminEvents(response.events));
-          }
-          dispatch(setIsLoading(false));
-          setTableLoading(false);
+            getTours(sellerId)
+              .then((tourResponse: GetToursResponse) => {
+                  if (!tourResponse.tourError && tourResponse.tours) {
+                    dispatch(setTours(tourResponse.tours));
+                  }
+                  dispatch(setIsLoading(false));
+                  setTableLoading(false);
+              });
+          } else {
+            dispatch(setIsLoading(false));
+            setTableLoading(false);
+          }          
         });
       } else if (currentAdminSelection.events != undefined && tableLoading) {
         setTimeout(() => {
@@ -87,13 +105,15 @@ export default function AdminEventsIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [dispatch, getSellers, currentAdminSelection, getAdminEvents, tableLoading]);
+  }, [dispatch, getSellers, currentAdminSelection, getAdminEvents, tableLoading, getTours]);
 
   const updateSeller = (sellerId: number) => {
     if (!sellerId || isNaN(sellerId)) {
       return;
     }
     dispatch(setAdminSellerId(sellerId));
+    setTourId(0);
+    dispatch(setReloadTours(true));
     dispatch(setReloadEvents(true));
   };
 
@@ -317,6 +337,33 @@ export default function AdminEventsIndex() {
       });
   };
 
+  const setSelectedTour = (tourIdStr: string) => {
+    let selectedTourId = parseInt(tourIdStr);
+    if (isNaN(selectedTourId) || selectedTourId <= 0) {
+      selectedTourId = 0;
+    }
+    setTourId(selectedTourId);
+  };
+
+  let tourOptions: any[] = [];
+  if (currentAdminSelection.tours && currentAdminSelection.tours.length > 0) {
+    tourOptions.push(<option value="0"> -- Select One --</option>)
+    currentAdminSelection.tours.forEach((tour) => {
+      tourOptions.push(<option value={tour.tourId}>{tour.tourName}</option>);
+    })
+  }
+
+  let filteredEvents = currentAdminSelection.events;
+  if (tourId > 0 && currentAdminSelection.tours && filteredEvents && filteredEvents.length > 0) {
+    const tour = currentAdminSelection.tours.find(x => x.tourId == tourId);
+    if (tour && tour.events && tour.events.length > 0) {
+      const tourEventIds = tour.events.map((x) => { return x.ticketSocketEventId });
+      filteredEvents = filteredEvents.filter((x) => {
+        return tourEventIds.includes(x.ticketSocketEventId);
+      });
+    }
+  }
+
   return (
     <div className="admin-container">
       <Row className="refresh-results-header">
@@ -340,6 +387,14 @@ export default function AdminEventsIndex() {
             SellerId={currentAdminSelection.sellerId}
             OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
           />
+          <div className="admin-select" hidden={(currentAdminSelection.tours?.length ?? 0) == 0}>
+          <span className="admin-seller-select-label">
+            Tour:
+          </span>
+            <select onChange={(e) => setSelectedTour(e.currentTarget.value)} defaultValue={tourId}>
+              {tourOptions}
+            </select>
+          </div>
         </Col>
       </Row>
       <Row hidden={allEventIds.length == 0}>
@@ -366,7 +421,7 @@ export default function AdminEventsIndex() {
         <Col>
           <Table
             autoHeight={true}
-            data={currentAdminSelection.events}
+            data={filteredEvents}
             bordered
             cellBordered
             loading={tableLoading}

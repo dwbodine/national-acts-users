@@ -73,7 +73,7 @@ export default function AdminTourEdit() {
     getAdminSellerEvents(sellerIds)
       .then((response: GetEventsResponse) => {
         if (!response.eventError && response.events) {
-          let adminEvents = response.events;
+          let adminEvents = response.events.filter(x => !x.isDeleted);
           if (adminEvents && adminEvents.length > 0) {
             adminEvents.sort((a, b) =>
               moment(a.eventDate).valueOf() < moment(b.eventDate).valueOf() ? -1 : moment(a.eventDate).valueOf() > moment(b.eventDate).valueOf() ? 1 : 0,
@@ -127,8 +127,15 @@ export default function AdminTourEdit() {
       selectedEvents.sort((a, b) =>
         moment(a.eventDate).valueOf() < moment(b.eventDate).valueOf() ? -1 : moment(a.eventDate).valueOf() > moment(b.eventDate).valueOf() ? 1 : 0,
       );
+
+      const firstEvent = moment(selectedEvents[0].eventDate);
+      if (!selectedTour.announceDate || moment(selectedTour.announceDate).valueOf() >= firstEvent.valueOf()) {
+        selectedTour.announceDate = firstEvent.subtract('days', 1).format('YYYY-MM-DD HH:mm');
+      }
     }
     selectedTour.events = selectedEvents;
+    
+
     dispatch(setAdminTour(selectedTour));
   };
 
@@ -179,14 +186,9 @@ export default function AdminTourEdit() {
       return;
     }
 
-    if (moment(currentAdminSelection.selectedTour.announceDate).valueOf() <= moment().valueOf()) {
-      toast.error("Announce date must be in the future");
-      return;
-    }
-
     const firstEvent = currentAdminSelection.selectedTour.events[0];
     if (moment(currentAdminSelection.selectedTour.announceDate).valueOf() >= moment(firstEvent.eventDate).valueOf()) {
-      toast.error("Announce date must be before the first event date");
+      toast.error("Announce date must be before the first selected event date");
       return;
     }
 
@@ -307,23 +309,8 @@ export default function AdminTourEdit() {
 
   let eventData: VipEvent[] = currentAdminSelection.events && currentAdminSelection.events.length > 0  ? currentAdminSelection.events : [];
   let selectedEvents: number[] = [];
-  let disabledEvents: number[] = [];
   if (currentAdminSelection.selectedTour?.events && currentAdminSelection.selectedTour?.events.length > 0) {
     selectedEvents = currentAdminSelection.selectedTour.events.map((evt) => { return evt.ticketSocketEventId });
-    currentAdminSelection.selectedTour.events.forEach((evt: VipEvent) => {
-      if (evt) {
-        const existingEvent = eventData.find(x => x.ticketSocketEventId == evt.ticketSocketEventId);
-        if (!existingEvent) {
-          disabledEvents.push(evt.ticketSocketEventId);
-          eventData.push(evt);
-        }
-      }      
-    });    
-    if (disabledEvents.length > 0) {
-      eventData.sort((a, b) =>
-        moment(a.eventDate).valueOf() < moment(b.eventDate).valueOf() ? -1 : moment(a.eventDate).valueOf() > moment(b.eventDate).valueOf() ? 1 : 0,
-      );
-    }    
   }
 
   const announceDate =
@@ -375,7 +362,6 @@ export default function AdminTourEdit() {
           valueKey="ticketSocketEventId"
           renderMenuItem={renderEventItem}
           value={selectedEvents} 
-          disabledItemValues={disabledEvents}
           style={{ width: 500 }} 
           onChange={onEventChange} 
           onClean={onEventClean} 

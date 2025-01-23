@@ -110,8 +110,8 @@ export class EventService {
       });
   };
 
-  getTours = async (reportSelection: AdminSelection): Promise<GetToursResponse> => {
-    let url = `/admin/tours/${reportSelection.sellerId}`;
+  getTours = async (sellerId: number): Promise<GetToursResponse> => {
+    let url = `/admin/tours/${sellerId}`;
 
     let tourResponse: GetToursResponse = {
       tours: undefined,
@@ -195,7 +195,7 @@ export class EventService {
   };
 
   getAdminSellerEvents = async (sellerIds: number[]): Promise<GetEventsResponse> => {
-    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&start=${moment().unix()}&sellerIds=${sellerIds.join(',')}`;
+    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&omitOrders=1&sellerIds=${sellerIds.join(',')}`;
 
     let eventResponse: GetEventsResponse = {
       events: undefined,

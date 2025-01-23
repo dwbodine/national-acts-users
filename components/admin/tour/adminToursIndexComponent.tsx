@@ -52,7 +52,7 @@ export default function AdminToursIndex() {
         }
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getTours(adminSelection).then((response: GetToursResponse) => {
+        getTours(adminSelection.sellerId).then((response: GetToursResponse) => {
           if (!response.tourError) {
             if (response.tours) {
               dispatch(setTours(response.tours));
@@ -61,7 +61,7 @@ export default function AdminToursIndex() {
               getAdminSellerEvents([currentAdminSelection.sellerId])
               .then((response: GetEventsResponse) => {
                 if (response.events && !response.eventError) {
-                  const filteredEvents = response.events.filter(x => !x.isDeleted && x.isActive && moment(x.eventDate).valueOf() >= moment().valueOf());
+                  const filteredEvents = response.events.filter(x => !x.isDeleted);
                   if (filteredEvents) {
                     dispatch(setAdminEvents(filteredEvents));
                   }                  
