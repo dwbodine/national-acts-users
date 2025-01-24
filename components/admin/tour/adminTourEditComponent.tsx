@@ -227,11 +227,6 @@ export default function AdminTourEdit() {
       return;
     }
 
-    if (date <= new Date()) {
-      onCleanAnnounceDate();
-      return;
-    }
-
     const announceDate = moment(date).startOf('day');
     let currentTour = { ...currentAdminSelection.selectedTour };
     currentTour.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');
@@ -240,11 +235,6 @@ export default function AdminTourEdit() {
 
   const onAnnounceTimeChange = (date: Date | null) => {
     if (!date || !currentAdminSelection || !currentAdminSelection.selectedTour) {
-      return;
-    }
-
-    if (date <= new Date()) {
-      onCleanAnnounceTime();
       return;
     }
 
