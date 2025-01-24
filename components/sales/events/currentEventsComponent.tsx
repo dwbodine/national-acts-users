@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../../src/lib/store';
 import { useGetEvents } from '@/hooks/event/useGetEvents';
-import { setEvents, setDateRange, setReloadEvents } from '@/lib/reportSelectionSlice';
-import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
+import { setEvents, setDateRange, setReloadEvents, setTours, setSelectedTourId } from '@/lib/reportSelectionSlice';
+import { GetToursResponse, IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
 import { useEffect, useMemo, useState } from 'react';
 import moment from 'moment';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
@@ -24,6 +24,7 @@ import debouce from 'lodash.debounce';
 import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { Container } from 'react-bootstrap';
+import { useGetTours } from '@/hooks/admin/useGetTours';
 
 export default function CurrentEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -33,6 +34,7 @@ export default function CurrentEvents() {
   const { userHasPermission } = useHasPermission();
   const { getEvents } = useGetEvents();
   const dispatch = useDispatch();
+  const { getTours } = useGetTours();
 
   const [chartsHidden, setChartsHidden] = useState(true);
   const [hideRevItem, setHideRevItem] = useState(true);
@@ -124,6 +126,7 @@ export default function CurrentEvents() {
         getEvents(currentReportSelection).then((response) => {
           if (!response.eventError && response.events) {
             if (response.events.length > 0) {
+              dispatch(setEvents(response.events));
               const start = moment(response.events[0].eventDate).unix();
               const end = moment(
                 response.events[response.events.length - 1].eventDate,
@@ -133,12 +136,23 @@ export default function CurrentEvents() {
                 start: start,
                 end: end,
               };
-              setChartsHidden(false);
-
               dispatch(setDateRange(selection));
-            }
-            dispatch(setEvents(response.events));
-            dispatch(setIsLoading(false));
+              getTours(currentReportSelection.seller.sellerId)
+                .then((tourResponse: GetToursResponse) => {
+                    dispatch(setSelectedTourId(0));
+                    if (!tourResponse.tourError && tourResponse.tours) {
+                      dispatch(setTours(tourResponse.tours));
+                    } else {
+                      dispatch(setTours([]));
+                    }
+                    dispatch(setIsLoading(false));
+                    setChartsHidden(false);
+                });
+              
+            } else {
+              dispatch(setEvents([]));
+              dispatch(setIsLoading(false));
+            }            
           } else if (response.statusCode == 401 || response.statusCode == 422) {
             router.push('/logout/');
           } else {
@@ -167,6 +181,7 @@ export default function CurrentEvents() {
     getUser,
     userHasPermission,
     viewRevenueControls,
+    getTours,
   ]);
 
   const filterEvents = (events: VipEvent[]) => {
@@ -186,6 +201,16 @@ export default function CurrentEvents() {
             evt.isActive)
         );
       });
+    }
+
+    if (visibleEvents.length > 0 && (currentReportSelection.selectedTourId ?? 0) > 0 && currentReportSelection.tours && currentReportSelection.tours.length > 0) {
+      const tour = currentReportSelection.tours.find(x => x.tourId == currentReportSelection.selectedTourId);
+      if (tour && tour.events && tour.events.length > 0) {
+        const tourEventIds = tour.events.map((x) => { return x.ticketSocketEventId });
+        visibleEvents = visibleEvents.filter((x) => {
+          return tourEventIds.includes(x.ticketSocketEventId);
+        });
+      }
     }
 
     if (visibleEvents.length > 0 && searchTerm && searchTerm.length >= 2) {

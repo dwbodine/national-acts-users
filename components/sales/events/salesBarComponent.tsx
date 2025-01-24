@@ -18,6 +18,7 @@ import {
   resetSelection,
   setDateRange,
   setReloadEvents,
+  setSelectedTourId,
 } from '@/lib/reportSelectionSlice';
 import { EnumPermission } from '@/types/user';
 import ServiceFeesCheck from './serviceFeesCheckComponent';
@@ -150,6 +151,23 @@ export default function SalesBar() {
     dispatch(resetSelection());
   };
 
+  const setSelectedTour = (tourIdStr: string) => {
+    let selectedTourId = parseInt(tourIdStr);
+    if (isNaN(selectedTourId) || selectedTourId <= 0) {
+      selectedTourId = 0;
+    }
+    dispatch(setSelectedTourId(selectedTourId));
+  };
+
+  let tourOptions: any[] = [];
+  if (currentReportSelection.currentEvents && currentReportSelection.currentEvents.length > 0 && currentReportSelection.tours && currentReportSelection.tours.length > 0) {
+    const selectedTourId = currentReportSelection.selectedTourId ?? 0;
+    tourOptions.push(<option key={0} value="0"> -- Select One --</option>)
+    currentReportSelection.tours.forEach((tour) => {
+      tourOptions.push(<option key={tour.tourId} value={tour.tourId}>{tour.tourName}</option>);
+    })
+  }
+
   useEffect(() => {
     const user = getUser();
     if (user) {
@@ -185,6 +203,14 @@ export default function SalesBar() {
       <Row className="no-print admin-seller-row">
         <Col>
           <SelectSeller />
+        </Col>
+      </Row>
+      <Row className="no-print admin-tour-row" hidden={tourOptions.length == 0}>
+        <Col>
+          <span className="tour-title">Tour:</span>
+          <select onChange={(e) => setSelectedTour(e.currentTarget.value)} value={currentReportSelection.selectedTourId ?? 0}>
+            {tourOptions}
+          </select>
         </Col>
       </Row>
       <Row className="admin-check-row">

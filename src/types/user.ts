@@ -102,6 +102,8 @@ export type UserReportSelection = {
   isForAdmin?: boolean;
   showOnlyEmails?: boolean;
   showOnlyPhones?: boolean;
+  selectedTourId?: number;
+  tours?: Tour[] | undefined;
 };
 
 export enum EventTabView {
@@ -327,7 +329,6 @@ export type AdminSelection = {
   selectedOrder?: Order | undefined;
   mustSaveOrder?: boolean;
   mustSaveEvent?: boolean;
-  mustSaveTour?: boolean;
   allSellers?: Seller[] | undefined;
   roles?: Role[] | undefined;
   users?: User[] | undefined;

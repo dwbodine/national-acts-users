@@ -23,7 +23,6 @@ const initialState: AdminSelection = {
   tours: undefined,
   mustSaveEvent: false,
   mustSaveOrder: false,
-  mustSaveTour: false,
 };
 
 export const adminSelectionSlice = createSlice({
@@ -123,10 +122,6 @@ export const adminSelectionSlice = createSlice({
       state.mustSaveOrder = action.payload;
       return state;
     },
-    setMustSaveTour: (state, action: PayloadAction<boolean>) => {
-      state.mustSaveTour = action.payload;
-      return state;
-    },
     resetAdmin: (state) => {
       state.sellerId = undefined;
       state.start = undefined;
@@ -146,7 +141,6 @@ export const adminSelectionSlice = createSlice({
       state.tours = undefined;
       state.mustSaveEvent = false;
       state.mustSaveOrder = false;
-      state.mustSaveTour = false;
       return state;
     },
   },
@@ -172,7 +166,6 @@ export const {
   setTours,
   setAdminTour,
   setReloadTours,
-  setMustSaveTour,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

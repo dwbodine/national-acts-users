@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { User, UserReportSelection, UserSeller } from '../types/user';
-import { SellerType, VipEvent } from '@/types/event';
+import { SellerType, Tour, VipEvent } from '@/types/event';
 
 const initialState: UserReportSelection = {
   seller: {
@@ -19,6 +19,8 @@ const initialState: UserReportSelection = {
   hideRevenue: false,
   hideServiceFees: true,
   currentEvents: [],
+  selectedTourId: 0,
+  tours: undefined,
   currentDetailEvent: undefined,
   focusControl: '',
   showHidden: false,
@@ -57,6 +59,8 @@ export const userReportSelectionSlice = createSlice({
       if (state.reloadEvents) {
         state.currentDetailEvent = undefined;
         state.currentEvents = [];
+        state.tours = [];
+        state.selectedTourId = 0;
       }
       return state;
     },
@@ -151,6 +155,14 @@ export const userReportSelectionSlice = createSlice({
 
       return state;
     },
+    setSelectedTourId: (state, action: PayloadAction<number>) => {
+      state.selectedTourId = action.payload;
+      return state;
+    },
+    setTours: (state, action: PayloadAction<Tour[]>) => {
+      state.tours = action.payload;
+      return state;
+    },
     setCurrentDetailEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
       if (action.payload) {
         state.currentDetailEvent = action.payload;
@@ -186,6 +198,8 @@ export const userReportSelectionSlice = createSlice({
       state.showHidden = state.isForAdmin;
       state.showOnlyEmails = false;
       state.showOnlyPhones = false;
+      state.tours = undefined;
+      state.selectedTourId = 0;
       return state;
     },
     resetAll: (state) => {
@@ -207,6 +221,8 @@ export const userReportSelectionSlice = createSlice({
       state.showOnlyPhones = false;
       state.hideRevenue = false;
       state.hideServiceFees = true;
+      state.tours = undefined;
+      state.selectedTourId = 0;
       return state;
     },
   },
@@ -232,6 +248,8 @@ export const {
   setForAdmin,
   setShowOnlyEmails,
   setShowOnlyPhones,
+  setTours,
+  setSelectedTourId,
 } = userReportSelectionSlice.actions;
 
 export default userReportSelectionSlice.reducer;

@@ -347,9 +347,9 @@ export default function AdminEventsIndex() {
 
   let tourOptions: any[] = [];
   if (currentAdminSelection.tours && currentAdminSelection.tours.length > 0) {
-    tourOptions.push(<option value="0"> -- Select One --</option>)
+    tourOptions.push(<option key={0} value="0"> -- Select One --</option>)
     currentAdminSelection.tours.forEach((tour) => {
-      tourOptions.push(<option value={tour.tourId}>{tour.tourName}</option>);
+      tourOptions.push(<option key={tour.tourId} value={tour.tourId}>{tour.tourName}</option>);
     })
   }
 
@@ -391,7 +391,7 @@ export default function AdminEventsIndex() {
           <span className="admin-seller-select-label">
             Tour:
           </span>
-            <select onChange={(e) => setSelectedTour(e.currentTarget.value)} defaultValue={tourId}>
+            <select onChange={(e) => setSelectedTour(e.currentTarget.value)} value={tourId}>
               {tourOptions}
             </select>
           </div>

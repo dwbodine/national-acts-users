@@ -193,6 +193,10 @@ input[type='number']:hover {
   margin: 0 0 10px 0;
 }
 
+.admin-tour-row {
+  margin: 0 0 10px 6px;
+}
+
 .admin-check-row {
   margin: 5px 0;
 }
@@ -206,6 +210,10 @@ input[type='number']:hover {
 }
 
 .seller-title {
+  margin: 0 15px;
+}
+
+.tour-title {
   margin: 0 15px;
 }
 
@@ -1388,11 +1396,15 @@ input[type='number']:hover {
     margin-right: 5px;
   }
 
-  .admin-seller-row .col {
+  .admin-seller-row .col, .admin-tour-row .col {
     padding: 0;
   }
 
   .admin-seller-row .seller-title {
+    margin: 0 5px;
+  }
+
+  .tour-title  {
     margin: 0 5px;
   }
 
