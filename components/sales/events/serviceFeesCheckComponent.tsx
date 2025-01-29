@@ -17,7 +17,7 @@ export default function ServiceFeesCheck() {
       <FormCheck
         checked={currentReportSelection.hideServiceFees}
         onChange={handleChange}
-        disabled={currentReportSelection.seller.sellerId <= 0}
+        disabled={currentReportSelection.seller.sellerId <= 0 || currentReportSelection.hideRevenue}
         label="Hide service fees?"
       />
     </span>

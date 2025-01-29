@@ -94,6 +94,7 @@ export type UserReportSelection = {
   hideServiceFees?: boolean;
   showDeletedOrders?: boolean;
   reloadEvents?: boolean;
+  reloadTours?: boolean;
   retainDateSelection?: boolean;
   currentEvents?: VipEvent[];
   currentDetailEvent?: VipEvent;

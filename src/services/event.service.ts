@@ -37,6 +37,7 @@ import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
 import moment from 'moment';
 import { getShirtDataFromEvents } from '@/utils/getShirtData';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
+import { report } from 'process';
 
 export class EventService {
   protected readonly instance: AxiosInstance;
@@ -55,6 +56,10 @@ export class EventService {
     reportSelection: UserReportSelection,
   ): Promise<GetEventsResponse> => {
     let url = `/events/getEventsAndOrders?excludeExternal=1&sellerId=${reportSelection.seller.sellerId}`;
+
+    if (reportSelection.selectedTourId && reportSelection.selectedTourId > 0) {
+      url += `&tourId=${reportSelection.selectedTourId}`;
+    }
 
     if (reportSelection.showInactive) {
       url += '&inactive=1';

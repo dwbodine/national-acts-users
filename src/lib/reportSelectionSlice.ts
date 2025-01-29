@@ -16,6 +16,7 @@ const initialState: UserReportSelection = {
   showInactive: false,
   showInactiveOrders: false,
   reloadEvents: true,
+  reloadTours: true,
   hideRevenue: false,
   hideServiceFees: true,
   currentEvents: [],
@@ -59,7 +60,7 @@ export const userReportSelectionSlice = createSlice({
       if (state.reloadEvents) {
         state.currentDetailEvent = undefined;
         state.currentEvents = [];
-        state.tours = [];
+        state.tours = undefined;
         state.selectedTourId = 0;
       }
       return state;
@@ -115,10 +116,14 @@ export const userReportSelectionSlice = createSlice({
     setHideRevenue: (state, action: PayloadAction<boolean>) => {
       state.hideRevenue = action.payload;
       state.reloadEvents = false;
+      if (state.hideRevenue) {
+        state.hideServiceFees = true;
+      }
       const currentUserStr = localStorage.getItem('currentUser') || undefined;
       if (currentUserStr) {
         let currentUser = JSON.parse(currentUserStr) as User;
         currentUser.selectedHideRevenue = action.payload;
+        currentUser.selectedHideServiceFees = state.hideServiceFees;
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
       }
       return state;
@@ -155,12 +160,16 @@ export const userReportSelectionSlice = createSlice({
 
       return state;
     },
-    setSelectedTourId: (state, action: PayloadAction<number>) => {
+    setSelectedTourId: (state, action: PayloadAction<number | undefined>) => {
       state.selectedTourId = action.payload;
+      state.showDeleted = false;
+      state.showHidden = false;
+      state.showInactive = false;
       return state;
     },
-    setTours: (state, action: PayloadAction<Tour[]>) => {
+    setTours: (state, action: PayloadAction<Tour[] | undefined>) => {
       state.tours = action.payload;
+      state.reloadTours = false;
       return state;
     },
     setCurrentDetailEvent: (state, action: PayloadAction<VipEvent | undefined>) => {

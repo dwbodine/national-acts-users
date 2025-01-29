@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../../src/lib/store';
-import { setSeller } from '@/lib/reportSelectionSlice';
+import { setSelectedTourId, setSeller } from '@/lib/reportSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { User } from '@/types/user';
@@ -54,8 +54,8 @@ export default function SelectSeller() {
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const sellerId = parseInt(event.currentTarget.value);
     const seller = getSelectedSeller(sellerId);
-    dispatch(setIsLoading(true));
     dispatch(setSeller(seller));
+    dispatch(setIsLoading(true));
   };
 
   if (user && user.sellers && user.sellers.length > 0) {

@@ -124,8 +124,8 @@ export default function CurrentEvents() {
         setChartsHidden(true);
         dispatch(setReloadEvents(false));
         getEvents(currentReportSelection).then((response) => {
-          if (!response.eventError && response.events) {
-            if (response.events.length > 0) {
+          if (!response.eventError) {
+            if (response.events && response.events.length > 0) {
               dispatch(setEvents(response.events));
               const start = moment(response.events[0].eventDate).unix();
               const end = moment(
@@ -137,22 +137,24 @@ export default function CurrentEvents() {
                 end: end,
               };
               dispatch(setDateRange(selection));
-              getTours(currentReportSelection.seller.sellerId)
-                .then((tourResponse: GetToursResponse) => {
-                    dispatch(setSelectedTourId(0));
-                    if (!tourResponse.tourError && tourResponse.tours) {
-                      dispatch(setTours(tourResponse.tours));
-                    } else {
-                      dispatch(setTours([]));
-                    }
-                    dispatch(setIsLoading(false));
-                    setChartsHidden(false);
-                });
-              
             } else {
               dispatch(setEvents([]));
-              dispatch(setIsLoading(false));
             }            
+            if (currentReportSelection.reloadTours) {
+              getTours(currentReportSelection.seller.sellerId)
+                  .then((tourResponse: GetToursResponse) => {
+                      if (!tourResponse.tourError && tourResponse.tours) {
+                        dispatch(setTours(tourResponse.tours));
+                      } else {
+                        dispatch(setTours(undefined));
+                      }
+                      dispatch(setIsLoading(false));
+                      setChartsHidden(false);
+                  });
+            } else {
+              dispatch(setIsLoading(false));
+              setChartsHidden(false);
+            }
           } else if (response.statusCode == 401 || response.statusCode == 422) {
             router.push('/logout/');
           } else {
@@ -189,28 +191,26 @@ export default function CurrentEvents() {
     visibleEvents = [];
 
     if (events && events.length > 0) {
-      visibleEvents = events.filter((evt) => {
-        return (
-          (currentReportSelection.showDeleted && evt.isDeleted) ||
-          (currentReportSelection.showInactive && !evt.isActive && !evt.isDeleted) ||
-          (currentReportSelection.showHidden && evt.isHidden) ||
-          (!evt.isHidden &&
-            !currentReportSelection.showDeleted &&
-            !evt.isDeleted &&
-            !currentReportSelection.showInactive &&
-            evt.isActive)
-        );
-      });
-    }
-
-    if (visibleEvents.length > 0 && (currentReportSelection.selectedTourId ?? 0) > 0 && currentReportSelection.tours && currentReportSelection.tours.length > 0) {
-      const tour = currentReportSelection.tours.find(x => x.tourId == currentReportSelection.selectedTourId);
-      if (tour && tour.events && tour.events.length > 0) {
-        const tourEventIds = tour.events.map((x) => { return x.ticketSocketEventId });
-        visibleEvents = visibleEvents.filter((x) => {
-          return tourEventIds.includes(x.ticketSocketEventId);
+      if (currentReportSelection.selectedTourId && currentReportSelection.selectedTourId > 0) {
+        visibleEvents = events.filter((evt) => {
+          return (
+            (!evt.isDeleted)
+          );
         });
-      }
+      } else {
+        visibleEvents = events.filter((evt) => {
+          return (
+            (currentReportSelection.showDeleted && evt.isDeleted) ||
+            (currentReportSelection.showInactive && !evt.isActive && !evt.isDeleted) ||
+            (currentReportSelection.showHidden && evt.isHidden) ||
+            (!evt.isHidden &&
+              !currentReportSelection.showDeleted &&
+              !evt.isDeleted &&
+              !currentReportSelection.showInactive &&
+              evt.isActive)
+          );
+        });
+      }      
     }
 
     if (visibleEvents.length > 0 && searchTerm && searchTerm.length >= 2) {

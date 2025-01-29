@@ -141,9 +141,9 @@ export default function SalesBar() {
     reportSelection.start = selectedStart;
     reportSelection.end = selectedEnd;
     reportSelection.retainDateSelection = true;
-    dispatch(setIsLoading(true));
     dispatch(setDateRange(reportSelection));
     dispatch(setReloadEvents(true));
+    dispatch(setIsLoading(true));
   };
 
   const onResetClick = () => {
@@ -152,15 +152,17 @@ export default function SalesBar() {
   };
 
   const setSelectedTour = (tourIdStr: string) => {
-    let selectedTourId = parseInt(tourIdStr);
+    let selectedTourId: number | undefined = parseInt(tourIdStr);
     if (isNaN(selectedTourId) || selectedTourId <= 0) {
-      selectedTourId = 0;
+      selectedTourId = undefined;
     }
     dispatch(setSelectedTourId(selectedTourId));
+    dispatch(setReloadEvents(true));
+    dispatch(setIsLoading(true));
   };
 
   let tourOptions: any[] = [];
-  if (currentReportSelection.currentEvents && currentReportSelection.currentEvents.length > 0 && currentReportSelection.tours && currentReportSelection.tours.length > 0) {
+  if (currentReportSelection.tours && currentReportSelection.tours.length > 0) {
     const activeTours = currentReportSelection.tours.filter(x => x.isActive);
     if (activeTours && activeTours.length > 0) {
       tourOptions.push(<option key={0} value="0"> -- Select One --</option>)
@@ -217,17 +219,17 @@ export default function SalesBar() {
       </Row>
       <Row className="admin-check-row">
         <Col md={10} sm={12}>
-          {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 ? (
+          {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) == 0  ? (
             <InactiveCheck />
           ) : (
             ''
           )}
-          {viewDeletedEvents && currentReportSelection.seller.sellerId > 0 ? (
+          {viewDeletedEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) == 0 ? (
             <DeletedCheck />
           ) : (
             ''
           )}
-          {viewHiddenEvents && currentReportSelection.seller.sellerId > 0 ? (
+          {viewHiddenEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) == 0 ? (
             <HiddenCheck />
           ) : (
             ''
