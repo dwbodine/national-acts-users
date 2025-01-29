@@ -1,6 +1,6 @@
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { DatePicker } from 'rsuite';
 
@@ -8,10 +8,13 @@ export default function ReportDatePicker(props: any) {
   const onChange = props.onChange;
   const onStartClear = props.onStartClear;
   const onEndClear = props.onEndClear;
-  const [start, setStart] = useState<number | undefined>(props.start);
-  const [end, setEnd] = useState<number | undefined>(props.end);
+  const [start, setStart] = useState<number | undefined>();
+  const [end, setEnd] = useState<number | undefined>();
 
-  const minStart = MINIMUM_UNIX_TIMESTAMP;
+  useEffect(() => {
+    setStart(props.start);
+    setEnd(props.end);
+  }, [props.start, props.end]);
 
   const onStartChange = (date: Date | null) => {
     if (!date) {
@@ -19,12 +22,12 @@ export default function ReportDatePicker(props: any) {
     }
     const startDate = moment(date).startOf('day');
     let newStart = startDate.unix();
-    if (newStart < minStart) {
-      newStart = minStart;
+    if (newStart < MINIMUM_UNIX_TIMESTAMP) {
+      newStart = MINIMUM_UNIX_TIMESTAMP;
     }
 
     setStart(newStart);
-    if (onChange) {
+    if (onChange && end && newStart <= end) {
       onChange(newStart, end);
     }
   };
@@ -35,11 +38,11 @@ export default function ReportDatePicker(props: any) {
     }
     const endDate = moment(date).startOf('day');
     let newEnd = endDate.unix();
-    if (newEnd < minStart) {
-      newEnd = minStart;
+    if (newEnd < MINIMUM_UNIX_TIMESTAMP) {
+      newEnd = MINIMUM_UNIX_TIMESTAMP;
     }
     setEnd(newEnd);
-    if (onChange) {
+    if (onChange && start && start <= newEnd) {
       onChange(start, newEnd);
     }
   };

@@ -152,6 +152,10 @@ export class EventService {
   ): Promise<GetEventsResponse> => {
     let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
 
+    if (reportSelection.selectedTour) {
+      url += `&tourId=${reportSelection.selectedTour.tourId}`
+    }
+
     if (reportSelection.start) {
       url += `&start=${reportSelection.start}`;
     }

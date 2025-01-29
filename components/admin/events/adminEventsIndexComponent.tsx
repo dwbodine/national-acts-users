@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Modal, Table } from 'rsuite';
+import { Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import {
@@ -8,6 +8,7 @@ import {
   setAdminEvent,
   setAdminEvents,
   setAdminSellerId,
+  setAdminTour,
   setAllSellers,
   setReloadEvents,
   setReloadTours,
@@ -17,7 +18,7 @@ import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import ReportDatePicker from '../../common/reportDatePIcker';
-import { GetEventsResponse, GetSellersResponse, GetToursResponse, Seller, VipEvent } from '@/types/event';
+import { GetEventsResponse, GetSellersResponse, GetToursResponse, VipEvent } from '@/types/event';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import moment from 'moment';
@@ -31,6 +32,7 @@ import { FaArrowTurnDown } from 'react-icons/fa6';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { toast } from 'react-toastify';
 import { useGetTours } from '@/hooks/admin/useGetTours';
+import { AdminSelection } from '@/types/user';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -46,10 +48,9 @@ export default function AdminEventsIndex() {
   const { setEventsHidden } = useSetEventsHidden();
   const { getTours } = useGetTours();
 
-  const [ selectedAction, setSelectedAction ] = useState('');
-  const [ eventIdList, setEventIdList ] = useState<number[]>([]);
-  const [ tourId, setTourId ] = useState<number>(0);
-  const allEventIds: number[] = currentAdminSelection.events?.map(evt => {return evt.ticketSocketEventId}) ?? [];
+  const [selectedAction, setSelectedAction] = useState('');
+  const [eventIdList, setEventIdList] = useState<number[]>([]);
+  const allEventIds: number[] = currentAdminSelection.events?.map(evt => { return evt.ticketSocketEventId }) ?? [];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -59,6 +60,7 @@ export default function AdminEventsIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         dispatch(setAdminSellerId(undefined));
+        dispatch(setAdminTour(undefined));
         dispatch(setReloadEvents(true));
         getSellers().then((response: GetSellersResponse) => {
           dispatch(setAllSellers(response.sellers));
@@ -83,18 +85,30 @@ export default function AdminEventsIndex() {
         getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
           if (response.events && !response.eventError) {
             dispatch(setAdminEvents(response.events));
+            if (adminSelection.selectedTour) {
+              const start = moment(response.events[0].eventDate).unix();
+              const end = moment(
+                response.events[response.events.length - 1].eventDate,
+              ).unix();
+              const selection: AdminSelection = {
+                ...adminSelection,
+                start: start,
+                end: end,
+              };
+              dispatch(setAdminDates(selection));
+            }
             getTours(sellerId)
               .then((tourResponse: GetToursResponse) => {
-                  if (!tourResponse.tourError && tourResponse.tours) {
-                    dispatch(setTours(tourResponse.tours));
-                  }
-                  dispatch(setIsLoading(false));
-                  setTableLoading(false);
+                if (!tourResponse.tourError && tourResponse.tours) {
+                  dispatch(setTours(tourResponse.tours));
+                }
+                dispatch(setIsLoading(false));
+                setTableLoading(false);
               });
           } else {
             dispatch(setIsLoading(false));
             setTableLoading(false);
-          }          
+          }
         });
       } else if (currentAdminSelection.events != undefined && tableLoading) {
         setTimeout(() => {
@@ -112,7 +126,7 @@ export default function AdminEventsIndex() {
       return;
     }
     dispatch(setAdminSellerId(sellerId));
-    setTourId(0);
+    dispatch(setAdminTour(undefined));
     dispatch(setReloadTours(true));
     dispatch(setReloadEvents(true));
   };
@@ -136,7 +150,7 @@ export default function AdminEventsIndex() {
   const editEvent = (ticketSocketEventId: number) => {
     if (
       !ticketSocketEventId ||
-      isNaN(ticketSocketEventId) || 
+      isNaN(ticketSocketEventId) ||
       !currentAdminSelection.events ||
       currentAdminSelection.events.length == 0
     ) {
@@ -156,7 +170,7 @@ export default function AdminEventsIndex() {
   const viewOrders = (ticketSocketEventId: number) => {
     if (
       !ticketSocketEventId ||
-      isNaN(ticketSocketEventId) || 
+      isNaN(ticketSocketEventId) ||
       !currentAdminSelection.events ||
       currentAdminSelection.events.length == 0
     ) {
@@ -174,7 +188,7 @@ export default function AdminEventsIndex() {
   };
 
   const updateEventIdList = (ticketSocketEventId: number, addToList: boolean) => {
-    let idList: number[] = eventIdList ? [ ...eventIdList ] : [];
+    let idList: number[] = eventIdList ? [...eventIdList] : [];
     if (!addToList && idList.includes(ticketSocketEventId)) {
       idList = idList.filter(id => id != ticketSocketEventId);
     } else if (addToList && !idList.includes(ticketSocketEventId)) {
@@ -226,21 +240,21 @@ export default function AdminEventsIndex() {
     }
 
     const toastId = toast.warning(
-          <ConfirmationDialog
-            Message={message}
-            ConfirmText="Yes"
-            CancelText="No"
-            OnConfirm={handleBulkEdit}
-            OnCancel={() => {
-              toast.dismiss();
-            }}
-          />,
-          {
-            position: 'top-center',
-            autoClose: false,
-            closeOnClick: false,
-          },
-        );
+      <ConfirmationDialog
+        Message={message}
+        ConfirmText="Yes"
+        CancelText="No"
+        OnConfirm={handleBulkEdit}
+        OnCancel={() => {
+          toast.dismiss();
+        }}
+      />,
+      {
+        position: 'top-center',
+        autoClose: false,
+        closeOnClick: false,
+      },
+    );
   };
 
   const handleBulkEdit = () => {
@@ -342,7 +356,9 @@ export default function AdminEventsIndex() {
     if (isNaN(selectedTourId) || selectedTourId <= 0) {
       selectedTourId = 0;
     }
-    setTourId(selectedTourId);
+    const tour = currentAdminSelection.tours?.find(x => x.tourId == selectedTourId);
+    dispatch(setAdminTour(tour));
+    dispatch(setReloadEvents(true));
   };
 
   let tourOptions: any[] = [];
@@ -353,16 +369,7 @@ export default function AdminEventsIndex() {
     })
   }
 
-  let filteredEvents = currentAdminSelection.events;
-  if (tourId > 0 && currentAdminSelection.tours && filteredEvents && filteredEvents.length > 0) {
-    const tour = currentAdminSelection.tours.find(x => x.tourId == tourId);
-    if (tour && tour.events && tour.events.length > 0) {
-      const tourEventIds = tour.events.map((x) => { return x.ticketSocketEventId });
-      filteredEvents = filteredEvents.filter((x) => {
-        return tourEventIds.includes(x.ticketSocketEventId);
-      });
-    }
-  }
+  const selectedTourId = currentAdminSelection.selectedTour?.tourId ?? 0;
 
   return (
     <div className="admin-container">
@@ -388,10 +395,10 @@ export default function AdminEventsIndex() {
             OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
           />
           <div className="admin-select" hidden={(currentAdminSelection.tours?.length ?? 0) == 0}>
-          <span className="admin-seller-select-label">
-            Tour:
-          </span>
-            <select onChange={(e) => setSelectedTour(e.currentTarget.value)} value={tourId}>
+            <span className="admin-seller-select-label">
+              Tour:
+            </span>
+            <select onChange={(e) => setSelectedTour(e.currentTarget.value)} value={selectedTourId}>
               {tourOptions}
             </select>
           </div>
@@ -421,7 +428,7 @@ export default function AdminEventsIndex() {
         <Col>
           <Table
             autoHeight={true}
-            data={filteredEvents}
+            data={currentAdminSelection.events}
             bordered
             cellBordered
             loading={tableLoading}
@@ -431,15 +438,15 @@ export default function AdminEventsIndex() {
           >
             <Column width={50}>
               <HeaderCell>
-                <FormCheck 
-                    id={`evtId_selectAll`}
-                    checked={allEventIds.length > 0 && (eventIdList.length == allEventIds.length)}
-                    onChange={(e) => selectAllEvents(e.currentTarget.checked)}
-                  />
+                <FormCheck
+                  id={`evtId_selectAll`}
+                  checked={allEventIds.length > 0 && (eventIdList.length == allEventIds.length)}
+                  onChange={(e) => selectAllEvents(e.currentTarget.checked)}
+                />
               </HeaderCell>
               <Cell>
-                {(rowData: VipEvent) => 
-                  <FormCheck 
+                {(rowData: VipEvent) =>
+                  <FormCheck
                     id={`evtId_${rowData.ticketSocketEventId}`}
                     checked={eventIdList.includes(rowData.ticketSocketEventId)}
                     onChange={(e) => updateEventIdList(rowData.ticketSocketEventId, e.currentTarget.checked)}

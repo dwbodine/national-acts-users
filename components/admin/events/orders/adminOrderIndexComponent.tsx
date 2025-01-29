@@ -6,6 +6,7 @@ import {
   setAdminEvent,
   setAdminEvents,
   setAdminOrder,
+  setAdminTour,
   setReloadEvents,
 } from '@/lib/adminSelectionSlice';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
@@ -63,6 +64,7 @@ export default function AdminOrdersIndex(props: any) {
           setTableLoading(false);
           return;
         }
+        dispatch(setAdminTour(undefined));
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
