@@ -161,11 +161,13 @@ export default function SalesBar() {
 
   let tourOptions: any[] = [];
   if (currentReportSelection.currentEvents && currentReportSelection.currentEvents.length > 0 && currentReportSelection.tours && currentReportSelection.tours.length > 0) {
-    const selectedTourId = currentReportSelection.selectedTourId ?? 0;
-    tourOptions.push(<option key={0} value="0"> -- Select One --</option>)
-    currentReportSelection.tours.forEach((tour) => {
-      tourOptions.push(<option key={tour.tourId} value={tour.tourId}>{tour.tourName}</option>);
-    })
+    const activeTours = currentReportSelection.tours.filter(x => x.isActive);
+    if (activeTours && activeTours.length > 0) {
+      tourOptions.push(<option key={0} value="0"> -- Select One --</option>)
+      currentReportSelection.tours.forEach((tour) => {
+        tourOptions.push(<option key={tour.tourId} value={tour.tourId}>{tour.tourName}</option>);
+      })
+    }    
   }
 
   useEffect(() => {
