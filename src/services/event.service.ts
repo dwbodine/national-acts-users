@@ -116,7 +116,7 @@ export class EventService {
   };
 
   getTours = async (sellerId: number): Promise<GetToursResponse> => {
-    let url = `/admin/tours/${sellerId}`;
+    let url = `/events/tours/${sellerId}`;
 
     let tourResponse: GetToursResponse = {
       tours: undefined,

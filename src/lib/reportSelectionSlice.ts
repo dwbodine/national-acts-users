@@ -20,7 +20,7 @@ const initialState: UserReportSelection = {
   hideRevenue: false,
   hideServiceFees: true,
   currentEvents: [],
-  selectedTourId: 0,
+  selectedTourId: undefined,
   tours: undefined,
   currentDetailEvent: undefined,
   focusControl: '',
@@ -40,6 +40,7 @@ export const userReportSelectionSlice = createSlice({
       if (previousSellerId != newSellerId) {
         state.seller = action.payload;
         state.reloadEvents = true;
+        state.reloadTours = true;
         const currentUserStr = localStorage.getItem('currentUser') || undefined;
         if (currentUserStr) {
           let currentUser = JSON.parse(currentUserStr) as User;
@@ -47,6 +48,7 @@ export const userReportSelectionSlice = createSlice({
           localStorage.setItem('currentUser', JSON.stringify(currentUser));
         }
       } else {
+        state.reloadTours = false;
         state.reloadEvents = false;
       }
       state.start = 0;
@@ -60,8 +62,10 @@ export const userReportSelectionSlice = createSlice({
       if (state.reloadEvents) {
         state.currentDetailEvent = undefined;
         state.currentEvents = [];
+      }
+      if (state.reloadTours) {
         state.tours = undefined;
-        state.selectedTourId = 0;
+        state.selectedTourId = undefined;
       }
       return state;
     },
@@ -201,6 +205,7 @@ export const userReportSelectionSlice = createSlice({
       state.showDeleted = false;
       state.showInactive = false;
       state.reloadEvents = true;
+      state.reloadTours = true;
       state.retainDateSelection = false;
       state.currentEvents = [];
       state.currentDetailEvent = undefined;
@@ -208,7 +213,7 @@ export const userReportSelectionSlice = createSlice({
       state.showOnlyEmails = false;
       state.showOnlyPhones = false;
       state.tours = undefined;
-      state.selectedTourId = 0;
+      state.selectedTourId = undefined;
       return state;
     },
     resetAll: (state) => {
@@ -222,6 +227,7 @@ export const userReportSelectionSlice = createSlice({
       state.showDeleted = false;
       state.showInactive = false;
       state.reloadEvents = true;
+      state.reloadTours = true;
       state.retainDateSelection = false;
       state.currentEvents = [];
       state.currentDetailEvent = undefined;
@@ -231,7 +237,7 @@ export const userReportSelectionSlice = createSlice({
       state.hideRevenue = false;
       state.hideServiceFees = true;
       state.tours = undefined;
-      state.selectedTourId = 0;
+      state.selectedTourId = undefined;
       return state;
     },
   },

@@ -51,6 +51,7 @@ export default function SalesBar() {
   const [viewPrintButton, setViewPrintButton] = useState(false);
   const [viewRevenueData, setViewRevenueData] = useState(false);
   const [viewHiddenEvents, setViewHiddenEvents] = useState(false);
+  const [viewTourSelect, setViewTourSelect] = useState(false);
 
   const exportEventData = () => {
     if (
@@ -186,6 +187,7 @@ export default function SalesBar() {
       setViewPrintButton(userHasPermission(user, EnumPermission.ViewPrintButton));
       setViewRevenueData(userHasPermission(user, EnumPermission.ViewRevenueData));
       setViewHiddenEvents(userHasPermission(user, EnumPermission.ViewHiddenEvents));
+      setViewTourSelect(userHasPermission(user, EnumPermission.ViewTourSelect));
     }
   }, [windowSizeJson, getUser, userHasPermission]);
   return (
@@ -209,7 +211,7 @@ export default function SalesBar() {
           <SelectSeller />
         </Col>
       </Row>
-      <Row className="no-print admin-tour-row" hidden={tourOptions.length == 0}>
+      <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourOptions.length == 0}>
         <Col>
           <span className="tour-title">Tour:</span>
           <select onChange={(e) => setSelectedTour(e.currentTarget.value)} value={currentReportSelection.selectedTourId ?? 0}>
