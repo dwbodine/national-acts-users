@@ -77,7 +77,6 @@ export default function EventDetail(props: any) {
   const [viewRevenueControls, setViewRevenueControls] = useState(false);
   const [canExportCustomerData, setCanExportCustomerData] = useState(false);
   const [viewPrintButton, setViewPrintButton] = useState(false);
-  const [changeOrderStatus, setChangeOrderStatus] = useState(false);
   const [canCheckInTickets, setCanCheckInTickets] = useState(false);
   const [alwaysShowRevenue, setAlwaysShowRevenue] = useState(false);
 
@@ -127,7 +126,6 @@ export default function EventDetail(props: any) {
         userHasPermission(user, EnumPermission.ExportCustomerData),
       );
       setViewPrintButton(userHasPermission(user, EnumPermission.ViewPrintButton));
-      setChangeOrderStatus(userHasPermission(user, EnumPermission.ChangeOrderStatus));
       setCanCheckInTickets(
         !user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers),
       );
@@ -371,7 +369,6 @@ export default function EventDetail(props: any) {
             EventDate={currentReportSelection.currentDetailEvent?.eventDate}
             EventName={currentReportSelection.currentDetailEvent?.title}
             Order={order}
-            ChangeOrderStatus={changeOrderStatus}
             HasPhoneData={hasPhoneData}
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFeeDisplay}
@@ -388,7 +385,6 @@ export default function EventDetail(props: any) {
             EventDate={currentReportSelection.currentDetailEvent?.eventDate}
             EventName={currentReportSelection.currentDetailEvent?.title}
             Order={order}
-            ChangeOrderStatus={changeOrderStatus}
             HasPhoneData={hasPhoneData}
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFeeDisplay}

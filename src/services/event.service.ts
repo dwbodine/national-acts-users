@@ -158,7 +158,7 @@ export class EventService {
     let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
 
     if (reportSelection.selectedTour) {
-      url += `&tourId=${reportSelection.selectedTour.tourId}`
+      url += `&tourId=${reportSelection.selectedTour.tourId}`;
     }
 
     if (reportSelection.start) {

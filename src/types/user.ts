@@ -49,7 +49,7 @@ export enum EnumPermission {
   CheckInUsers = 8,
   ExportCustomerData = 11,
   ViewHiddenEvents = 12,
-  ViewTourSelect = 13
+  ViewTourSelect = 13,
 }
 
 export type User = {
