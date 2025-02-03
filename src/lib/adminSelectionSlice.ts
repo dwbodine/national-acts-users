@@ -52,6 +52,8 @@ export const adminSelectionSlice = createSlice({
     },
     setAdminTour: (state, action: PayloadAction<Tour | undefined>) => {
       state.selectedTour = action.payload;
+      state.start = undefined;
+      state.end = undefined;
       return state;
     },
     setReloadUsers: (state, action: PayloadAction<boolean>) => {

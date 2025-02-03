@@ -3,7 +3,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
 import { Button, FormCheck } from 'react-bootstrap';
-import { setAdminEvents, setAdminSellerId, setAdminTour, setReloadTours } from '@/lib/adminSelectionSlice';
+import { setAdminEvents, setAdminTour, setReloadTours } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useUpdateTour } from '@/hooks/admin/useUpdateTour';
