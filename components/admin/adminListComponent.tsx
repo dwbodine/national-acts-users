@@ -30,6 +30,9 @@ export default function AdminList() {
       case 'manage-tours':
         router.push('/admin/tour');
         break;
+      case 'manage-site-settings':
+        router.push('/admin/settings');
+        break;
       default:
         break;
     }
@@ -45,6 +48,11 @@ export default function AdminList() {
         <li hidden={!isDennis}>
           <a className="admin-link" onClick={() => goToAdminPage('view-log')}>
             View Logs
+          </a>
+        </li>
+        <li>
+          <a className="admin-link" onClick={() => goToAdminPage('manage-site-settings')}>
+            Manage Site Settings
           </a>
         </li>
         <li>

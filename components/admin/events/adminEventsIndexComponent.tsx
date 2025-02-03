@@ -363,7 +363,7 @@ export default function AdminEventsIndex() {
 
   let tourOptions: any[] = [];
   if (currentAdminSelection.tours && currentAdminSelection.tours.length > 0) {
-    tourOptions.push(<option key={0} value="0"> -- Select One --</option>)
+    tourOptions.push(<option key={0} value="0"> -- Current Events --</option>)
     currentAdminSelection.tours.forEach((tour) => {
       tourOptions.push(<option key={tour.tourId} value={tour.tourId}>{tour.tourName}</option>);
     })
