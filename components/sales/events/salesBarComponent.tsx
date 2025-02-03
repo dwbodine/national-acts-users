@@ -166,7 +166,7 @@ export default function SalesBar() {
   if (currentReportSelection.tours && currentReportSelection.tours.length > 0) {
     const activeTours = currentReportSelection.tours.filter(x => x.isActive);
     if (activeTours && activeTours.length > 0) {
-      tourOptions.push(<option key={0} value="0"> -- Current Events --</option>)
+      tourOptions.push(<option key={0} value="0">Current Events (No Tour Selected) </option>)
       currentReportSelection.tours.forEach((tour) => {
         tourOptions.push(<option key={tour.tourId} value={tour.tourId}>{tour.tourName}</option>);
       })

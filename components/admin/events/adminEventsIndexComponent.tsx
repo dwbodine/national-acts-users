@@ -85,18 +85,16 @@ export default function AdminEventsIndex() {
         getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
           if (response.events && !response.eventError) {
             dispatch(setAdminEvents(response.events));
-            if (adminSelection.selectedTour) {
-              const start = moment(response.events[0].eventDate).unix();
-              const end = moment(
-                response.events[response.events.length - 1].eventDate,
-              ).unix();
-              const selection: AdminSelection = {
-                ...adminSelection,
-                start: start,
-                end: end,
-              };
-              dispatch(setAdminDates(selection));
-            }
+            const start = moment(response.events[0].eventDate).unix();
+            const end = moment(
+              response.events[response.events.length - 1].eventDate,
+            ).unix();
+            const selection: AdminSelection = {
+              ...adminSelection,
+              start: start,
+              end: end,
+            };
+            dispatch(setAdminDates(selection));
             getTours(sellerId)
               .then((tourResponse: GetToursResponse) => {
                 if (!tourResponse.tourError && tourResponse.tours) {
@@ -363,7 +361,7 @@ export default function AdminEventsIndex() {
 
   let tourOptions: any[] = [];
   if (currentAdminSelection.tours && currentAdminSelection.tours.length > 0) {
-    tourOptions.push(<option key={0} value="0"> -- Current Events --</option>)
+    tourOptions.push(<option key={0} value="0">Current Events (No Tour Selected) </option>)
     currentAdminSelection.tours.forEach((tour) => {
       tourOptions.push(<option key={tour.tourId} value={tour.tourId}>{tour.tourName}</option>);
     })
@@ -381,13 +379,6 @@ export default function AdminEventsIndex() {
       <Row className="refresh-results-header">
         <Col>
           <h3>Event Admin</h3>
-          <ReportDatePicker
-            onChange={onDateChange}
-            onStartClear={onStartClear}
-            onEndClear={onEndClear}
-            start={currentAdminSelection.start}
-            end={currentAdminSelection.end}
-          />
           <AdminSellerSelect
             id="refresh"
             Sellers={currentAdminSelection.allSellers}
@@ -402,6 +393,13 @@ export default function AdminEventsIndex() {
               {tourOptions}
             </select>
           </div>
+          <ReportDatePicker
+            onChange={onDateChange}
+            onStartClear={onStartClear}
+            onEndClear={onEndClear}
+            start={currentAdminSelection.start}
+            end={currentAdminSelection.end}
+          />
         </Col>
       </Row>
       <Row hidden={allEventIds.length == 0}>
