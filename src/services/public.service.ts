@@ -84,4 +84,40 @@ export class PublicService {
         return settingsResponse;
       });
   };
+
+  uploadTempFile = async (file: any): Promise<string | undefined> => {
+    let url = `/public/uploadFile`;
+
+    if (!file || !file.name) {
+      return undefined;
+    }
+
+    const formData = new FormData();
+    formData.append('tempFile', file);
+
+    const headers = {
+      'Content-Type': 'multipart/form-data'
+    };
+
+    return this.instance
+      .post(url, formData, {
+        headers: headers,
+      })
+      .then((res) => {
+        const filename = res.data;
+        return filename;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while updating event';
+        }
+        console.log(errorMessage);
+        return undefined;
+      });
+   
+  };
 }

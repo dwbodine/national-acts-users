@@ -8,6 +8,7 @@ export enum SiteSettingType {
 export interface SiteSetting {
     settingId: number;
     name: string;
+    displayName: string;
     type: SiteSettingType;
     value: string;
     dirty?: boolean;

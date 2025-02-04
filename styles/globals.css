@@ -939,6 +939,18 @@ input[type='number']:hover {
   margin: 10px 0;
 }
 
+.admin-setting-item {
+  margin: 10px 0;
+}
+
+.admin-setting-title {
+  font-weight: bold;
+}
+
+.admin-current-file-title {
+  font-size: 11px;
+}
+
 .admin-report-datepicker-label,
 .admin-seller-select-label {
   width: 100px;
