@@ -7,6 +7,8 @@ export default function AdminFileUpload(props: any) {
     const currentFileTitle: string = props?.CurrentFileTitle ?? 'Current file: ';
     const fileUploadName: string = props?.FileUploadName ?? '';
     const onUpload = props?.OnUpLoad;
+    const onUploadStart = props?.OnUploadStart;
+    const onUploadComplete = props?.OnUploadComplete;
     const currentFileName: string | undefined = props?.CurrentFileName;
     const isDirty = props?.IsDirty ?? false;
     const baseUrl = props?.BaseUrl ?? '';
@@ -20,6 +22,9 @@ export default function AdminFileUpload(props: any) {
         if (event.target && event.target.files && event.target.files.length > 0) {
             const file: File = event.target.files[0];
             if (file) {
+                if (onUploadStart) {
+                    onUploadStart();
+                }
                 setIsUploaded(false);
                 setIsUploading(true);
                 uploadTempFile(file)
@@ -30,6 +35,9 @@ export default function AdminFileUpload(props: any) {
                         setIsUploading(false);
                         setIsUploaded(true);
                         event.target.value = '';
+                        if (onUploadComplete) {
+                            onUploadComplete(filename);
+                        }
                     });
             }
         }

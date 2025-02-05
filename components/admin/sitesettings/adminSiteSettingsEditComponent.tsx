@@ -3,13 +3,14 @@ import { setAllSettings, setReloadSettings } from "@/lib/adminSelectionSlice";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { RootState } from "@/lib/store";
 import { GetSettingsResponse, SiteSetting, UpdateSettingResponse } from "@/types/public";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AdminFileUpload from "../common/adminFileUploadComponent";
 import { Button, Col, Row } from "react-bootstrap";
 import AdminListHomeButton from "../adminListHomeButton";
 import { useUpdateSiteSetting } from "@/hooks/admin/useUpdateSiteSetting";
 import { toast } from "react-toastify";
+import router from "next/router";
 
 
 export default function AdminSiteSettingsEdit() {
@@ -17,6 +18,7 @@ export default function AdminSiteSettingsEdit() {
     const dispatch = useDispatch();
     const { getAllSettings } = useGetSiteSettings();
     const { updateSiteSettings } = useUpdateSiteSetting();
+    const [ isUploading, setIsUploading ] = useState(false);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -57,6 +59,19 @@ export default function AdminSiteSettingsEdit() {
                 break;
             default:
                 break;
+        }
+    };
+
+    const onUploadStart = () => {
+        setIsUploading(true);
+    };
+
+    const onUploadComplete = (filename: string | undefined) => {
+        setIsUploading(false);
+        if (filename) {
+            toast.success('File uploaded successfully - click submit to save');
+        } else {
+            toast.error('File upload failed!');
         }
     };
 
@@ -112,6 +127,7 @@ export default function AdminSiteSettingsEdit() {
                 if (response.success) {
                     toast.success('Settings saved successfully');
                     clearDirty();
+                    router.push('/admin/');
                 } else {
                     const err = response.settingsError ? response.settingsError : 'Errors occurred while saving settings';
                     toast.error(err);
@@ -162,6 +178,8 @@ export default function AdminSiteSettingsEdit() {
                                     IsDirty={setting.dirty}
                                     CurrentFileTitle={currentFileTitle}
                                     BaseUrl={baseUrl}
+                                    OnUploadStart={onUploadStart}
+                                    OnUploadComplete={onUploadComplete}
                                 />
                             </Col>
                         </Row>)
@@ -212,7 +230,7 @@ export default function AdminSiteSettingsEdit() {
             {settingRows}
             <Row>
                 <Col>
-                    <Button disabled={!hasDirtySettings} onClick={onSubmit}>Submit</Button>
+                    <Button disabled={!hasDirtySettings && isUploading} onClick={onSubmit}>Submit</Button>
                     <AdminListHomeButton />
                 </Col>
             </Row>
