@@ -3,13 +3,13 @@ import AdminIndexBar from './adminIndexBarComponent';
 import AdminList from './adminListComponent';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { resetAdminSelection } from '@/lib/adminEventsSelectionSlice';
+import { resetAdmin } from '@/lib/adminSelectionSlice';
 
 export default function AdminIndex() {
   const dispatch = useDispatch();
   useEffect(() => {
       const timeoutId = setTimeout(() => {
-        dispatch(resetAdminSelection());
+        dispatch(resetAdmin());
       }, 300);
     return () => {
       clearTimeout(timeoutId);

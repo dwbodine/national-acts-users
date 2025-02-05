@@ -11,6 +11,7 @@ export interface SiteSetting {
     displayName: string;
     type: SiteSettingType;
     value: string;
+    filePath?: string;
     dirty?: boolean;
 }
 
@@ -23,5 +24,4 @@ export interface UpdateSettingResponse {
     success: boolean;
     statusCode?: number;
     settingsError?: string;
-    updatedSetting?: SiteSetting;
 }

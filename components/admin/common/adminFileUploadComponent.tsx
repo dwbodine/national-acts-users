@@ -1,5 +1,5 @@
 import { useUploadFile } from "@/hooks/common/useUploadFile";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 
 export default function AdminFileUpload(props: any) {
@@ -12,13 +12,15 @@ export default function AdminFileUpload(props: any) {
     const baseUrl = props?.BaseUrl ?? '';
 
     const [isUploading, setIsUploading] = useState(false);
+    const [isUploaded, setIsUploaded] = useState(false);
     
     const { uploadTempFile } = useUploadFile();
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target && event.target.files && event.target.files.length > 0) {
-            const file = event.target.files[0];
+            const file: File = event.target.files[0];
             if (file) {
+                setIsUploaded(false);
                 setIsUploading(true);
                 uploadTempFile(file)
                     .then((filename: string | undefined) => {
@@ -26,14 +28,14 @@ export default function AdminFileUpload(props: any) {
                             onUpload(fileUploadName, filename);
                         }
                         setIsUploading(false);
-                        event.target.value = '';                   
+                        setIsUploaded(true);
+                        event.target.value = '';
                     });
             }
         }
-
     };
 
-    const currentFileLink = baseUrl && currentFileName ? 
+    const currentFileLink = !isDirty && baseUrl && currentFileName ? 
         <a target="_blank" href={`${baseUrl}/${currentFileName}`}>{currentFileName}</a> : 
         currentFileName;
 
@@ -42,6 +44,7 @@ export default function AdminFileUpload(props: any) {
             <div className="admin-setting-title">{title}</div>
             <input type="file" onChange={handleFileChange} />
             <span className="danger" hidden={!isUploading}>Uploading...</span>
+            <span className="success" hidden={!isUploaded && !isDirty}>Uploaded!</span>
             <div className="admin-current-file-title" hidden={!currentFileName && !isDirty}>{currentFileTitle} {currentFileLink}</div>
         </div>
     );
