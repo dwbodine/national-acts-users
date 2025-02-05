@@ -7,6 +7,7 @@ import {
   Tour,
   VipEvent,
 } from './event';
+import { SiteSetting } from './public';
 
 export type LoginResponse = {
   user?: User;
@@ -322,6 +323,7 @@ export type AdminSelection = {
   reloadRoles?: boolean;
   reloadEvents?: boolean;
   reloadTours?: boolean;
+  reloadSettings?: boolean;
   selectedUser?: User | undefined;
   selectedRole?: Role | undefined;
   selectedEvent?: VipEvent | undefined;
@@ -330,10 +332,12 @@ export type AdminSelection = {
   mustSaveOrder?: boolean;
   mustSaveEvent?: boolean;
   allSellers?: Seller[] | undefined;
+  allSettings?: SiteSetting[] | undefined;
   roles?: Role[] | undefined;
   users?: User[] | undefined;
   events?: VipEvent[] | undefined;
   tours?: Tour[] | undefined;
+  uploadedFile?: string;
 };
 
 export type AdminReportsSelection = {

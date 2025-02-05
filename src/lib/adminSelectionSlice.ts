@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { AdminSelection, Role, User } from '../types/user';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
+import { SiteSetting } from '@/types/public';
 
 const initialState: AdminSelection = {
   sellerId: undefined,
@@ -11,18 +12,21 @@ const initialState: AdminSelection = {
   reloadEvents: true,
   reloadRoles: true,
   reloadTours: true,
+  reloadSettings: true,
   selectedEvent: undefined,
   selectedOrder: undefined,
   selectedUser: undefined,
   selectedRole: undefined,
   selectedTour: undefined,
   allSellers: undefined,
+  allSettings: undefined,
   roles: undefined,
   users: undefined,
   events: undefined,
   tours: undefined,
   mustSaveEvent: false,
   mustSaveOrder: false,
+  uploadedFile: undefined,
 };
 
 export const adminSelectionSlice = createSlice({
@@ -40,6 +44,10 @@ export const adminSelectionSlice = createSlice({
     },
     setAllSellers: (state, action: PayloadAction<Seller[] | undefined>) => {
       state.allSellers = action.payload;
+      return state;
+    },
+    setAllSettings: (state, action: PayloadAction<SiteSetting[] | undefined>) => {
+      state.allSettings = action.payload;
       return state;
     },
     setAdminEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
@@ -69,6 +77,13 @@ export const adminSelectionSlice = createSlice({
       if (state.reloadTours) {
         state.selectedTour = undefined;
         state.tours = undefined;
+      }
+      return state;
+    },
+    setReloadSettings: (state, action: PayloadAction<boolean>) => {
+      state.reloadSettings = action.payload;
+      if (state.reloadSettings) {
+        state.allSettings = undefined;
       }
       return state;
     },
@@ -122,6 +137,10 @@ export const adminSelectionSlice = createSlice({
       state.mustSaveOrder = action.payload;
       return state;
     },
+    setUploadedFile: (state, action: PayloadAction<string | undefined>) => {
+      state.uploadedFile = action.payload;
+      return state;
+    },
     resetAdmin: (state) => {
       state.sellerId = undefined;
       state.start = undefined;
@@ -141,6 +160,9 @@ export const adminSelectionSlice = createSlice({
       state.tours = undefined;
       state.mustSaveEvent = false;
       state.mustSaveOrder = false;
+      state.allSettings = undefined;
+      state.reloadSettings = true;
+      state.uploadedFile = undefined;
       return state;
     },
   },
@@ -166,6 +188,8 @@ export const {
   setTours,
   setAdminTour,
   setReloadTours,
+  setReloadSettings,
+  setAllSettings,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

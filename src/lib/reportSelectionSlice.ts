@@ -166,6 +166,8 @@ export const userReportSelectionSlice = createSlice({
     },
     setSelectedTourId: (state, action: PayloadAction<number | undefined>) => {
       state.selectedTourId = action.payload;
+      state.start = 0;
+      state.end = 0;
       state.showDeleted = false;
       state.showHidden = false;
       state.showInactive = false;
