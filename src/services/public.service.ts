@@ -96,7 +96,7 @@ export class PublicService {
     formData.append('tempFile', file);
 
     const headers = {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'multipart/form-data',
     };
 
     return this.instance
@@ -118,6 +118,5 @@ export class PublicService {
         console.log(errorMessage);
         return undefined;
       });
-   
   };
 }

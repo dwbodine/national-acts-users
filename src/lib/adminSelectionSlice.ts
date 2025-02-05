@@ -26,7 +26,7 @@ const initialState: AdminSelection = {
   tours: undefined,
   mustSaveEvent: false,
   mustSaveOrder: false,
-  uploadedFile: undefined
+  uploadedFile: undefined,
 };
 
 export const adminSelectionSlice = createSlice({

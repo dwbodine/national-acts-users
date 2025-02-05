@@ -1,4 +1,4 @@
-import { GetSettingsResponse } from '@/types/public'; 
+import { GetSettingsResponse } from '@/types/public';
 import { publicService } from '../../services';
 
 export const useGetSiteSettings = () => {
