@@ -51,4 +51,6 @@ export class AdminService {
         return settingResponse;
       });
   };
+
+  getAllVenues = async(): Promise<
 }
