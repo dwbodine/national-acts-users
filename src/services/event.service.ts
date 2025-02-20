@@ -1842,6 +1842,9 @@ export class EventService {
       case 4:
         accountName = 'USA Concert tickets';
         break;
+      case 5:
+        accountName = 'Japanese VIP Tickets';
+        break;
       default:
         accountName = 'USA VIP Tickets';
         break;
