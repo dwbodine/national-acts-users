@@ -3,9 +3,12 @@ import { SiteSetting, UpdateSettingResponse } from '@/types/public';
 import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
 import {
   ExternalVenue,
+  GetExternalEventsResponse,
   GetExternalVenuesResponse,
+  ModifyExternalEventResponse,
   ModifyExternalVenueResponse,
 } from '@/types/admin';
+import { ModifyEventResponse, VipEvent } from '@/types/event';
 
 export class AdminService {
   protected readonly instance: AxiosInstance;
@@ -169,6 +172,269 @@ export class AdminService {
             'Unknown error while deleting venue - please contact your administrator';
         }
         modifyResponse.venueError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  getExternalEvents = async (sellerId: number): Promise<GetExternalEventsResponse> => {
+    let url = `/admin/external_events/${sellerId}`;
+
+    let eventsResponse: GetExternalEventsResponse = {
+      events: undefined,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        eventsResponse.events = res.data ? (res.data as VipEvent[]) : undefined;
+        return eventsResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          eventsResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching external events - please contact your administrator';
+        }
+        eventsResponse.eventError = errorMessage;
+        return eventsResponse;
+      });
+  };
+
+  updateExternalEvent = async (
+    sellerId: number,
+    eventToUpdate: VipEvent,
+  ): Promise<ModifyExternalEventResponse> => {
+    let url = `/admin/external_events/update/${sellerId}`;
+
+    let modifyResponse: ModifyExternalEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify(eventToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        modifyResponse.updatedEvent = res.data ? (res.data as VipEvent) : undefined;
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while updating external event';
+        }
+        modifyResponse.eventError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setExternalEventsInactive = async (
+    eventIdList: number[],
+    isActive: boolean,
+  ): Promise<ModifyExternalEventResponse> => {
+    const url = '/admin/external_events/setEventsInactive';
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyExternalEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const data = {
+      eventIdList: eventIdList,
+      isActive: isActive ? 1 : 0,
+    };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        if (!modifyResponse.success) {
+          modifyResponse.eventError =
+            'Unexpected error occurred while modifying external events - please contact your administrator';
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while modifying external events - please contact your administrator';
+        }
+        modifyResponse.eventError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setExternalEventsDeleted = async (
+    eventIdList: number[],
+  ): Promise<ModifyExternalEventResponse> => {
+    const url = '/admin/external_events/setEventsDeleted';
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyExternalEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const data = {
+      eventIdList: eventIdList,
+    };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        if (!modifyResponse.success) {
+          modifyResponse.eventError =
+            'Unexpected error occurred while modifying external events - please contact your administrator';
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while modifying external events - please contact your administrator';
+        }
+        modifyResponse.eventError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setExternalEventsHidden = async (
+    eventIdList: number[],
+    isHidden: boolean,
+  ): Promise<ModifyExternalEventResponse> => {
+    const url = '/admin/external_events/setEventsHidden';
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyExternalEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const data = {
+      eventIdList: eventIdList,
+      isHidden: isHidden ? 1 : 0,
+    };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        if (!modifyResponse.success) {
+          modifyResponse.eventError =
+            'Unexpected error occurred while modifying external events - please contact your administrator';
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while modifying external events - please contact your administrator';
+        }
+        modifyResponse.eventError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  setExternalEventsCancelled = async (
+    eventIdList: number[],
+    isCancelled: boolean,
+  ): Promise<ModifyExternalEventResponse> => {
+    const url = '/admin/external_events/setEventsCancelled';
+    const headers = getAuthorizationHeader();
+
+    let modifyResponse: ModifyExternalEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const data = {
+      eventIdList: eventIdList,
+      isCancelled: isCancelled ? 1 : 0,
+    };
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        if (!modifyResponse.success) {
+          modifyResponse.eventError =
+            'Unexpected error occurred while modifying external events - please contact your administrator';
+        }
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while modifying external events - please contact your administrator';
+        }
+        modifyResponse.eventError = errorMessage;
         return modifyResponse;
       });
   };

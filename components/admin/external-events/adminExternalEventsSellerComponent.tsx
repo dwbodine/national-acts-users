@@ -4,70 +4,48 @@ import { Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import {
-  setAdminDates,
   setAdminEvent,
   setAdminEvents,
   setAdminSellerId,
-  setAdminTour,
-  setAllSellers,
   setReloadEvents,
-  setReloadTours,
-  setTours,
 } from '@/lib/adminSelectionSlice';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import ReportDatePicker from '../../common/reportDatePIcker';
-import { GetEventsResponse, GetSellersResponse, GetToursResponse, VipEvent } from '@/types/event';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
+import { Seller, VipEvent } from '@/types/event';
 import moment from 'moment';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import router from 'next/router';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
-import { useSetEventsDeleted } from '@/hooks/event/useSetEventsDeleted';
-import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
 import { FaArrowTurnDown } from 'react-icons/fa6';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { toast } from 'react-toastify';
-import { useGetTours } from '@/hooks/admin/useGetTours';
-import { AdminSelection } from '@/types/user';
+import { useGetExternalEvents } from '@/hooks/admin/useGetExternalEvents';
+import { GetExternalEventsResponse } from '@/types/admin';
+import { useSetExternalEventsInactive } from '@/hooks/admin/useSetExternalEventsInactive';
+import { useSetExternalEventsHidden } from '@/hooks/admin/useSetExternalEventsHidden';
+import { useSetExternalEventsCancelled } from '@/hooks/admin/useSetExternalEventsCancelled';
+import { useSetExternalEventsDeleted } from '@/hooks/admin/useSetExternalEventsDeleted';
 
 export default function AdminExternalEventsSeller() {
   const { Column, HeaderCell, Cell } = Table;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
-  const { getSellers } = useGetSellers();
-  const { getAdminEvents } = useGetAdminEvents();
-  const { getLocation } = useGetLocation();
-  const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
+  const { getExternalEvents } = useGetExternalEvents();
+  const { getEventStatusSlug } = useGetEventStatus();
   const dispatch = useDispatch();
   const [tableLoading, setTableLoading] = useState(true);
-  const { setEventsInactive } = useSetEventsInactive();
-  const { setEventsDeleted } = useSetEventsDeleted();
-  const { setEventsHidden } = useSetEventsHidden();
-  const { getTours } = useGetTours();
+  const { setExternalEventsInactive } = useSetExternalEventsInactive();
+  const { setExternalEventsHidden } = useSetExternalEventsHidden();
+  const { setExternalEventsCancelled } = useSetExternalEventsCancelled();
+  const { setExternalEventsDeleted } = useSetExternalEventsDeleted();
 
   const [selectedAction, setSelectedAction] = useState('');
   const [eventIdList, setEventIdList] = useState<number[]>([]);
-  const allEventIds: number[] = currentAdminSelection.events?.map(evt => { return evt.ticketSocketEventId }) ?? [];
+  const allEventIds: number[] = currentAdminSelection.events?.map(evt => { return evt.externalEventId ?? 0 }).filter(x => x > 0) ?? [];
+  const currentSeller: Seller | undefined = currentAdminSelection.allSellers?.find(x => x.sellerId == currentAdminSelection.sellerId);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.allSellers == undefined) {
-        setEventIdList([]);
-        setSelectedAction('');
-        setTableLoading(true);
-        dispatch(setIsLoading(true));
-        dispatch(setAdminSellerId(undefined));
-        dispatch(setAdminTour(undefined));
-        dispatch(setReloadEvents(true));
-        getSellers().then((response: GetSellersResponse) => {
-          dispatch(setAllSellers(response.sellers));
-          dispatch(setIsLoading(false));
-          setTableLoading(false);
-        });
-      } else if (currentAdminSelection.reloadEvents) {
+      if (currentAdminSelection.reloadEvents) {
         setEventIdList([]);
         setSelectedAction('');
         dispatch(setReloadEvents(false));
@@ -82,31 +60,12 @@ export default function AdminExternalEventsSeller() {
 
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
+        getExternalEvents(sellerId).then((response: GetExternalEventsResponse) => {
           if (response.events && !response.eventError) {
             dispatch(setAdminEvents(response.events));
-            const start = moment(response.events[0].eventDate).unix();
-            const end = moment(
-              response.events[response.events.length - 1].eventDate,
-            ).unix();
-            const selection: AdminSelection = {
-              ...adminSelection,
-              start: start,
-              end: end,
-            };
-            dispatch(setAdminDates(selection));
-            getTours(sellerId)
-              .then((tourResponse: GetToursResponse) => {
-                if (!tourResponse.tourError && tourResponse.tours) {
-                  dispatch(setTours(tourResponse.tours));
-                }
-                dispatch(setIsLoading(false));
-                setTableLoading(false);
-              });
-          } else {
-            dispatch(setIsLoading(false));
-            setTableLoading(false);
           }
+          dispatch(setIsLoading(false));
+          setTableLoading(false);
         });
       } else if (currentAdminSelection.events != undefined && tableLoading) {
         setTimeout(() => {
@@ -117,80 +76,37 @@ export default function AdminExternalEventsSeller() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [dispatch, getSellers, currentAdminSelection, getAdminEvents, tableLoading, getTours]);
+  }, [dispatch, currentAdminSelection, getExternalEvents, tableLoading]);
 
-  const updateSeller = (sellerId: number) => {
-    if (!sellerId || isNaN(sellerId)) {
-      return;
-    }
-    dispatch(setAdminSellerId(sellerId));
-    dispatch(setAdminTour(undefined));
-    dispatch(setReloadTours(true));
-    dispatch(setReloadEvents(true));
-  };
-
-  const onDateChange = (newStart: number | undefined, newEnd: number | undefined) => {
-    let adminSelection = { ...currentAdminSelection };
-    adminSelection.start = newStart;
-    adminSelection.end = newEnd;
-    dispatch(setAdminDates(adminSelection));
-    dispatch(setReloadEvents(true));
-  };
-
-  const onStartClear = () => {
-    onDateChange(undefined, currentAdminSelection.end);
-  };
-
-  const onEndClear = () => {
-    onDateChange(currentAdminSelection.start, undefined);
-  };
-
-  const editEvent = (ticketSocketEventId: number) => {
+  const editEvent = (externalEventId: number) => {
     if (
-      !ticketSocketEventId ||
-      isNaN(ticketSocketEventId) ||
+      !externalEventId ||
+      isNaN(externalEventId) ||
       !currentAdminSelection.events ||
       currentAdminSelection.events.length == 0
     ) {
       return;
     }
     const vipEvent = currentAdminSelection.events.find(
-      (x) => x.ticketSocketEventId == ticketSocketEventId,
+      (x) => x.externalEventId == externalEventId,
     );
     if (!vipEvent) {
       return;
     }
     dispatch(setAdminEvent(vipEvent));
     setTableLoading(true);
-    router.push('/admin/events/edit/');
+    router.push('/admin/external-events/edit/');
   };
 
-  const viewOrders = (ticketSocketEventId: number) => {
-    if (
-      !ticketSocketEventId ||
-      isNaN(ticketSocketEventId) ||
-      !currentAdminSelection.events ||
-      currentAdminSelection.events.length == 0
-    ) {
+  const updateEventIdList = (externalEventId: number | undefined, addToList: boolean) => {
+    if (!externalEventId) {
       return;
     }
-    const vipEvent = currentAdminSelection.events.find(
-      (x) => x.ticketSocketEventId == ticketSocketEventId,
-    );
-    if (!vipEvent) {
-      return;
-    }
-    dispatch(setAdminEvent(vipEvent));
-    setTableLoading(true);
-    router.push('/admin/events/orders/');
-  };
-
-  const updateEventIdList = (ticketSocketEventId: number, addToList: boolean) => {
     let idList: number[] = eventIdList ? [...eventIdList] : [];
-    if (!addToList && idList.includes(ticketSocketEventId)) {
-      idList = idList.filter(id => id != ticketSocketEventId);
-    } else if (addToList && !idList.includes(ticketSocketEventId)) {
-      idList.push(ticketSocketEventId);
+    if (!addToList && idList.includes(externalEventId)) {
+      idList = idList.filter(id => id != externalEventId);
+    } else if (addToList && !idList.includes(externalEventId)) {
+      idList.push(externalEventId);
     }
     setEventIdList(idList);
   };
@@ -220,10 +136,13 @@ export default function AdminExternalEventsSeller() {
         message = `You are about to activate ${eventIdList.length} events`;
         break;
       case "delete":
-        message = `You are about to delete ${eventIdList.length} events`;
+        message = `You are about to delete ${eventIdList.length} events - NOTE: THIS CANNOT BE UNDONE`;
         break;
-      case "undelete":
-        message = `You are about to undelete ${eventIdList.length} events`;
+      case "cancel":
+        message = `You are about to cancel ${eventIdList.length} events`;
+        break;
+      case "uncancel":
+        message = `You are about to un-cancel ${eventIdList.length} events`;
         break;
       case "hidden":
         message = `You are about to hide ${eventIdList.length} events`;
@@ -269,10 +188,13 @@ export default function AdminExternalEventsSeller() {
         deactivateEvents(true);
         break;
       case "delete":
-        deleteEvents(true);
+        deleteEvents();
         break;
-      case "undelete":
-        deleteEvents(false);
+      case "cancel":
+        cancelEvents(true);
+        break;
+      case "uncancel":
+        cancelEvents(false);
         break;
       case "hidden":
         hideEvents(true);
@@ -287,7 +209,7 @@ export default function AdminExternalEventsSeller() {
     if (eventIdList.length == 0) {
       return;
     }
-    setEventsInactive(eventIdList, isActive)
+    setExternalEventsInactive(eventIdList, isActive)
       .then((response) => {
         if (response.success && !response.eventError) {
           const successMessage = isActive ? "Events activated successfully" : "Events deactivated successfully";
@@ -305,14 +227,35 @@ export default function AdminExternalEventsSeller() {
       });
   };
 
-  const deleteEvents = (setDeleted: boolean) => {
+  const deleteEvents = () => {
     if (eventIdList.length == 0) {
       return;
     }
-    setEventsDeleted(eventIdList, setDeleted)
+    setExternalEventsDeleted(eventIdList)
       .then((response) => {
         if (response.success && !response.eventError) {
-          const successMessage = setDeleted ? "Events deleted successfully" : "Events undeleted successfully";
+          toast.success("Events deleted successfully");
+          setEventIdList([]);
+          setSelectedAction('');
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.eventError;
+          if (!errorMessage) {
+            errorMessage = 'Unexpected error occurred while deleting events';
+          }
+          toast.error(errorMessage);
+        }
+      });
+  };
+
+  const cancelEvents = (setCancelled: boolean) => {
+    if (eventIdList.length == 0) {
+      return;
+    }
+    setExternalEventsCancelled(eventIdList, setCancelled)
+      .then((response) => {
+        if (response.success && !response.eventError) {
+          const successMessage = setCancelled ? "Events cancelled successfully" : "Events cancelled successfully";
           toast.success(successMessage);
           setEventIdList([]);
           setSelectedAction('');
@@ -320,7 +263,7 @@ export default function AdminExternalEventsSeller() {
         } else {
           let errorMessage = response.eventError;
           if (!errorMessage) {
-            errorMessage = setDeleted ? 'Unexpected error occurred while deleting events' : 'Unexpected error occurred while undeleting events';
+            errorMessage = setCancelled ? 'Unexpected error occurred while cancelling events' : 'Unexpected error occurred while cancelling events';
           }
           toast.error(errorMessage);
         }
@@ -331,7 +274,7 @@ export default function AdminExternalEventsSeller() {
     if (eventIdList.length == 0) {
       return;
     }
-    setEventsHidden(eventIdList, setHidden)
+    setExternalEventsHidden(eventIdList, setHidden)
       .then((response) => {
         if (response.success && !response.eventError) {
           const successMessage = setHidden ? "Events hidden successfully" : "Events unhidden successfully";
@@ -349,57 +292,21 @@ export default function AdminExternalEventsSeller() {
       });
   };
 
-  const setSelectedTour = (tourIdStr: string) => {
-    let selectedTourId = parseInt(tourIdStr);
-    if (isNaN(selectedTourId) || selectedTourId <= 0) {
-      selectedTourId = 0;
-    }
-    const tour = currentAdminSelection.tours?.find(x => x.tourId == selectedTourId);
-    dispatch(setAdminTour(tour));
-    dispatch(setReloadEvents(true));
+  const goBack = () => {
+    dispatch(setAdminSellerId(undefined));
+    router.push('/admin/external-events/');
   };
-
-  let tourOptions: any[] = [];
-  if (currentAdminSelection.tours && currentAdminSelection.tours.length > 0) {
-    tourOptions.push(<option key={0} value="0">All Events</option>)
-    currentAdminSelection.tours.forEach((tour) => {
-      tourOptions.push(<option key={tour.tourId} value={tour.tourId}>{tour.tourName}</option>);
-    })
-  }
-
-  const selectedTourId = currentAdminSelection.selectedTour?.tourId ?? 0;
 
   return (
     <div className="admin-container">
       <Row className="refresh-results-header">
         <Col>
-          <AdminListHomeButton />
+          <Button onClick={goBack}>Back</Button>
         </Col>
       </Row>
       <Row className="refresh-results-header">
         <Col>
-          <h3>Event Admin</h3>
-          <AdminSellerSelect
-            id="refresh"
-            Sellers={currentAdminSelection.allSellers}
-            SellerId={currentAdminSelection.sellerId}
-            OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
-          />
-          <div className="admin-select" hidden={(currentAdminSelection.tours?.length ?? 0) == 0}>
-            <span className="admin-seller-select-label">
-              Tour:
-            </span>
-            <select onChange={(e) => setSelectedTour(e.currentTarget.value)} value={selectedTourId}>
-              {tourOptions}
-            </select>
-          </div>
-          <ReportDatePicker
-            onChange={onDateChange}
-            onStartClear={onStartClear}
-            onEndClear={onEndClear}
-            start={currentAdminSelection.start}
-            end={currentAdminSelection.end}
-          />
+          <h3>External Event Admin for {currentSeller?.name}</h3>
         </Col>
       </Row>
       <Row hidden={allEventIds.length == 0}>
@@ -412,7 +319,8 @@ export default function AdminExternalEventsSeller() {
               <option value="inactive">Deactivate</option>
               <option value="active">Activate</option>
               <option value="delete">Delete</option>
-              <option value="undelete">Undelete</option>
+              <option value="cancel">Cancel</option>
+              <option value="uncancel">Un-Cancel</option>
               <option value="hidden">Hide</option>
               <option value="unhide">Unhide</option>
             </select>
@@ -445,9 +353,9 @@ export default function AdminExternalEventsSeller() {
               <Cell>
                 {(rowData: VipEvent) =>
                   <FormCheck
-                    id={`evtId_${rowData.ticketSocketEventId}`}
-                    checked={eventIdList.includes(rowData.ticketSocketEventId)}
-                    onChange={(e) => updateEventIdList(rowData.ticketSocketEventId, e.currentTarget.checked)}
+                    id={`evtId_${rowData.externalEventId}`}
+                    checked={rowData.externalEventId ? eventIdList.includes(rowData.externalEventId) : false}
+                    onChange={(e) => updateEventIdList(rowData.externalEventId, e.currentTarget.checked)}
                   />
                 }
               </Cell>
@@ -462,61 +370,17 @@ export default function AdminExternalEventsSeller() {
               <HeaderCell>Title</HeaderCell>
               <Cell>{(rowData: VipEvent) => rowData.title}</Cell>
             </Column>
-            <Column flexGrow={2}>
-              <HeaderCell>Venue</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => (rowData.venue ? rowData.venue.name : '')}
-              </Cell>
-            </Column>
-            <Column flexGrow={3}>
-              <HeaderCell>Location</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => (rowData.venue ? getLocation(rowData.venue) : '')}
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>Tickets sold</HeaderCell>
-              <Cell>{(rowData: VipEvent) => rowData.totalTickets}</Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>Tickets comped</HeaderCell>
-              <Cell>{(rowData: VipEvent) => rowData.numTicketsComped}</Cell>
-            </Column>
-            <Column flexGrow={2}>
-              <HeaderCell>Event Status</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => getEventStatusText(rowData as VipEvent)}
-              </Cell>
-            </Column>
             <Column flexGrow={1}>
               <HeaderCell>&nbsp;</HeaderCell>
               <Cell>
                 {(rowData: VipEvent) =>
-                  rowData.ticketSocketEventId ? (
+                  rowData.externalEventId ? (
                     <a
                       href="#"
-                      id={`${rowData.ticketSocketEventId}_event`}
-                      onClick={() => editEvent(parseInt(`${rowData.ticketSocketEventId}`))}
+                      id={`${rowData.externalEventId}_event`}
+                      onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
                     >
                       Edit
-                    </a>
-                  ) : (
-                    ''
-                  )
-                }
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>&nbsp;</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) =>
-                  rowData.ticketSocketEventId && rowData.orders && rowData.orders.length > 0 ? (
-                    <a
-                      href="#"
-                      id={`${rowData.ticketSocketEventId}_orders`}
-                      onClick={() => viewOrders(parseInt(`${rowData.ticketSocketEventId}`))}
-                    >
-                      Manage Orders
                     </a>
                   ) : (
                     ''

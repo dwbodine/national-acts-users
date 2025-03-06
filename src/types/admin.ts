@@ -1,3 +1,5 @@
+import { VipEvent } from './event';
+
 export interface ExternalVenue {
   venueId: number;
   venue: string;
@@ -20,4 +22,17 @@ export interface ModifyExternalVenueResponse {
   venueError?: string;
   success: boolean;
   updatedVenue?: ExternalVenue;
+}
+
+export interface GetExternalEventsResponse {
+  events?: VipEvent[];
+  statusCode?: number;
+  eventError?: string;
+}
+
+export interface ModifyExternalEventResponse {
+  statusCode?: number;
+  eventError?: string;
+  success: boolean;
+  updatedEvent?: VipEvent;
 }
