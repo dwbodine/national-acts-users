@@ -962,6 +962,15 @@ input[type='number']:hover {
   cursor: pointer;
 }
 
+.admin-command-link {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.admin-command-link:hover {
+  text-decoration: underline;
+}
+
 .dashboard-widget-table {
   margin: 0 0 15px 0;
 }

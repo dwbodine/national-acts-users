@@ -1,191 +1,180 @@
 import { useEffect, useMemo, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { GetRolesResponse, GetUsersResponse, Role, User } from '@/types/user';
 import { Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
-import { setSelectedUser, setUsers } from '@/lib/adminSelectionSlice';
+import { setAdminVenue, setReloadVenues, setVenues } from '@/lib/adminSelectionSlice';
 import router from 'next/router';
-import { useGetAllUsers } from '@/hooks/admin/useGetAllUsers';
 import debouce from 'lodash.debounce';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
 import React from 'react';
+import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
+import { ExternalVenue, GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/admin';
+import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useDeleteVenue } from '@/hooks/admin/useDeleteVenue';
+import { toast } from 'react-toastify';
+import { Button } from 'react-bootstrap';
 
 export default function AdminVenuesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
-  const { getAllUsers } = useGetAllUsers();
-  const { getAllRoles } = useGetAllRoles();
-  const [allRoles, setAllRoles] = useState<Role[] | undefined>(undefined);
+  const { getAllVenues } = useGetAllVenues();
+  const { deleteVenue } = useDeleteVenue();
+  const { getExternalVenueLocation } = useGetLocation();
   const { Column, HeaderCell, Cell } = Table;
   const [searchTerm, setSearchTerm] = useState('');
   const [tableLoading, setTableLoading] = useState(true);
 
   const debouncedResults = useMemo(() => {
-    return debouce(setSearchTerm, 300);
+    return debouce(setSearchTerm, 250);
   }, []);
 
   useEffect(() => {
-    if (
-      allRoles == undefined
-    ) {
-      setTableLoading(true);
-      dispatch(setIsLoading(true));
-      getAllRoles().then((resp: GetRolesResponse) => {
-        const roles = resp.roles;
-        setAllRoles(roles);
-        dispatch(setIsLoading(false));
-        setTableLoading(false);
-      }); 
-    } else if (!currentAdminSelection.users || currentAdminSelection.reloadUsers) {
-      setTableLoading(true);
-      dispatch(setIsLoading(true));
-      getAllUsers().then((response: GetUsersResponse) => {
-        if (!response.userError && response.users) {
-          dispatch(setUsers(response.users));
-        }
-        dispatch(setIsLoading(false));
-        setTableLoading(false);
-      });
-    } else if (tableLoading) {
-      setTimeout(() => {
-        setTableLoading(false);
-      }, 300);
-    }
+    const timeoutId = setTimeout(() => {
+      if (currentAdminSelection.reloadVenues) {
+        dispatch(setIsLoading(true));
+        dispatch(setReloadVenues(false));
+        setTableLoading(true);
+        getAllVenues().then((response: GetExternalVenuesResponse) => {
+          if (!response.venueError && response.venues) {
+            dispatch(setIsLoading(false));
+            dispatch(setVenues(response.venues));            
+            setTimeout(() => {              
+              setTableLoading(false);  
+            }, 300);
+          } else {
+            setTableLoading(false);  
+          }          
+        });
+      } else if (tableLoading) {
+        setTimeout(() => {
+          setTableLoading(false);
+        }, 300);
+      }
+    }, 500);
     return () => {
+      clearTimeout(timeoutId);
       debouncedResults.cancel();
     };
-  }, [getAllUsers, dispatch, currentAdminSelection, debouncedResults, tableLoading, allRoles, getAllRoles]);
+  }, [getAllVenues, dispatch, currentAdminSelection, debouncedResults, tableLoading]);
 
-  const editUser = (userId: number) => {
-    if (!userId || isNaN(userId)) {
+  const editVenue = (venueId: number) => {
+    if (!venueId || isNaN(venueId)) {
       return;
     }
-    let user = currentAdminSelection.users?.find((x) => x.userId == userId);
-    if (user) {
-      dispatch(setSelectedUser(user));
-      setTableLoading(true);
-      router.push('/admin/users/edit');
+    let venue = currentAdminSelection.venues?.find((x) => x.venueId == venueId);
+    if (venue) {
+      dispatch(setAdminVenue(venue));
+      setIsLoading(true);
+      router.push('/admin/venues/edit');
     }
   };
 
-  const filterUsers = (users: User[] | undefined) => {
-    let filteredUsers: User[] | undefined = users;
-    if (searchTerm && searchTerm.length >= 2 && users && users.length > 0) {
+  const addVenue = () => {
+    let venue: ExternalVenue = {
+      venueId: 0,
+      venue: '',
+      address: '',
+      city: '',
+    };
+    
+    dispatch(setAdminVenue(venue));
+    setIsLoading(true);
+    router.push('/admin/venues/edit');    
+  };
+
+  const deleteSelectedVenue = (venueId: number) => {
+    if (!venueId || isNaN(venueId)) {
+      return;
+    }
+    let venue = currentAdminSelection.venues?.find((x) => x.venueId == venueId);
+    if (venue) {
+      deleteVenue(venue.venueId).then((response: ModifyExternalVenueResponse) => {
+        if (response.success) {
+          dispatch(setAdminVenue(undefined));
+          setSearchTerm('');
+          toast.success('Venue deleted successfully');
+          dispatch(setReloadVenues(true));
+        } else {
+          toast.error(response.venueError);
+        }
+      });
+    }
+  };
+
+  const filterVenues = (venues: ExternalVenue[] | undefined) => {
+    let filteredVenues: ExternalVenue[] | undefined = venues;
+    if (searchTerm && searchTerm.length >= 2 && venues && venues.length > 0) {
       const srch = searchTerm.toLowerCase();
-      filteredUsers = users.filter((user) => {
+      filteredVenues = venues.filter((venue) => {
         return (
-          user.firstName?.toLowerCase().includes(srch) ||
-          user.lastName?.toLowerCase().includes(srch) ||
-          user.username.toLowerCase().includes(srch) ||
-          (!user.isAdmin && user.sellers?.find(x => x.sellerName.toLowerCase().includes(srch)) != undefined)
+          venue.venue?.toLowerCase().includes(srch) ||
+          venue.address?.toLowerCase().includes(srch) ||
+          venue.city?.toLowerCase().includes(srch) ||
+          venue.state?.toLowerCase().includes(srch) ||
+          venue.country?.toLowerCase().includes(srch)
         );
       });
     }
-    return filteredUsers;
+    return filteredVenues;
   };
 
-  const getRoleName = (roleId: number) => {
-    let roleName = '';
-    const role = allRoles?.find(x => x.roleId == roleId);
-    if (role) {
-      roleName = role.roleName;
-    }
-    return roleName;
-  };
-
-  const filteredUsers = filterUsers(currentAdminSelection.users);
+  const filteredVenues = filterVenues(currentAdminSelection.venues);
 
   return (
     <div className="admin-container">
-      <h3>Users Admin</h3>
+      <h3>External Event Venues Admin</h3>
       <input
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="form-control search-text-input no-print"
-        placeholder="Search for users by name, username or client name..."
-        hidden={currentAdminSelection.users == undefined}
+        placeholder="Search for venues by name or address..."
+        hidden={currentAdminSelection.venues == undefined}
       />
+      <Button onClick={addVenue}>Add</Button>
       <Table
         height={500}
-        data={filteredUsers}
+        data={filteredVenues}
         bordered
         cellBordered
         loading={tableLoading}
         wordWrap={true}
       >
-        <Column flexGrow={1}>
-          <HeaderCell>First Name</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData) => {
-              const name = `${rowData.firstName}`;
-              const className = rowData.isActive ? '' : 'admin-inactive';
-              return (
-                <div className={className} id={rowData.userId} onClick={() => editUser(parseInt(`${rowData.userId}`))}>
-                  {name}
-                </div>
-              );
-            }}
-          </Cell>
-        </Column>
-        <Column flexGrow={1}>
-          <HeaderCell>Last Name</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData) => {
-              const name = `${rowData.lastName}`;
-              const className = rowData.isActive ? '' : 'admin-inactive';
-              return (
-                <div className={className} id={rowData.userId} onClick={() => editUser(parseInt(`${rowData.userId}`))}>
-                  {name}
-                </div>
-              );
-            }}
-          </Cell>
-        </Column>        
         <Column flexGrow={2}>
-          <HeaderCell>Email</HeaderCell>
+          <HeaderCell>Venue</HeaderCell>
           <Cell className="admin-click-cell">
             {(rowData) => {
-              const name = `${rowData.username}`;
-              const className = rowData.isActive ? '' : 'admin-inactive';
               return (
-                <div className={className} id={rowData.userId} onClick={() => editUser(parseInt(`${rowData.userId}`))}>
-                  {name}
+                <div id={rowData.venueId} onClick={() => editVenue(parseInt(`${rowData.venueId}`))}>
+                  {rowData.venue}
                 </div>
               );
             }}
           </Cell>
         </Column>
         <Column flexGrow={4}>
-          <HeaderCell>Seller(s)</HeaderCell>
+          <HeaderCell>Address</HeaderCell>
           <Cell className="admin-click-cell">
-            {(rowData: User) => {
-              let seller = '';
-              if (rowData.isAdmin) {
-                seller = 'System Admin';
-              } else if (rowData.sellers && rowData.sellers.length > 1) {
-                const length = rowData.sellers.length;
-                seller = rowData.sellers.reduce((accumulator, currentValue, index) => {
-                  let name = currentValue.sellerName;
-                  if (currentValue.roleId && currentValue.roleId > 0) {
-                    name += ` (${getRoleName(currentValue.roleId)})`;
-                  }
-                  if (index === length - 1) {
-                    return accumulator + name;
-                  } else {
-                    return accumulator + name + ',  ';
-                  }
-                }, '');
-              } else if (rowData.sellers && rowData.sellers.length > 0) {
-                seller = `${rowData.sellers[0].sellerName} (${getRoleName(rowData.sellers[0].roleId ?? 0)})`;
-              }
-              const className = rowData.isActive ? '' : 'admin-inactive';
+            {(rowData) => {
+              let venue = rowData as ExternalVenue;
               return (
-                <div className={className} id={rowData.userId.toString()} onClick={() => editUser(parseInt(`${rowData.userId}`))}>
-                  {seller}
+                <div id={rowData.venueId} onClick={() => editVenue(parseInt(`${rowData.venueId}`))}>
+                  {getExternalVenueLocation(venue)}
                 </div>
               );
+            }}
+          </Cell>
+        </Column>
+        <Column flexGrow={1}>
+          <HeaderCell> </HeaderCell>
+          <Cell>
+            {(rowData) => {
+              return !rowData.hasEvents ?
+                (
+                  <a className="admin-command-link" id={rowData.venueId} onClick={() => deleteSelectedVenue(parseInt(`${rowData.venueId}`))}>
+                    Delete
+                  </a>
+                ) : ''
             }}
           </Cell>
         </Column>

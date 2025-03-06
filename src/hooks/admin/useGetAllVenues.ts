@@ -1,15 +1,15 @@
-import { GetUsersResponse } from '@/types/user';
-import { userService } from '../../services';
+import { adminService } from '../../services';
+import { GetExternalVenuesResponse } from '@/types/admin';
 
 export const useGetAllVenues = () => {
-  const getAllVenues = async (): Promise<GetUsersResponse> => {
-    let response: GetUsersResponse = {
-      users: [],
-      userError: undefined,
+  const getAllVenues = async (): Promise<GetExternalVenuesResponse> => {
+    let response: GetExternalVenuesResponse = {
+      venues: [],
+      venueError: undefined,
     };
-    response = await userService.getUsers();
+    response = await adminService.getAllVenues();
     return response;
   };
 
-  return { getAllUsers };
+  return { getAllVenues };
 };

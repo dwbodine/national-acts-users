@@ -1,4 +1,3 @@
-import AdminUserEdit from '../../../components/admin/users/adminUserEditComponent';
 import { ActivePageKey } from '@/constants';
 import AdminPage from '../../../components/common/adminPageComponent';
 import AdminVenueEdit from '../../../components/admin/venues/adminVenueEditComponent';

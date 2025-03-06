@@ -1,348 +1,168 @@
 import { RootState } from '@/lib/store';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
-import { GetRolesResponse, Role, UpdateUserResponse, User } from '@/types/user';
-import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
-import { setReloadUsers, setSelectedUser } from '@/lib/adminSelectionSlice';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { GetSellersResponse, Seller, SellerType } from '@/types/event';
-import { useUpdateUser } from '@/hooks/admin/useUpdateUser';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import { FaPlus } from 'react-icons/fa';
-import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
-import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
-import { current } from '@reduxjs/toolkit';
-import { CirclesWithBar } from 'react-loader-spinner';
+import { Button } from 'react-bootstrap';
+import { setAdminVenue, setReloadVenues } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
+import { ExternalVenue, ModifyExternalVenueResponse } from '@/types/admin';
 
 export default function AdminVenueEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
-  const { getSellers } = useGetSellers();
-  const { getAllRoles } = useGetAllRoles();
-  const { updateUser } = useUpdateUser();
-  const { deleteUser } = useDeleteUser();
-  const [allSellers, setAllSellers] = useState<Seller[] | undefined>(undefined);
-  const [allRoles, setAllRoles] = useState<Role[] | undefined>(undefined);
-  const [username, setUsername] = useState<string | undefined>(undefined);
-  const [firstName, setFirstName] = useState<string | undefined>(undefined);
-  const [lastName, setLastName] = useState<string | undefined>(undefined);
-  const [mobile, setMobile] = useState<string | undefined>(undefined);
-  const [notes, setNotes] = useState<string | undefined>(undefined);
-  const [isActive, setIsActive] = useState<boolean>(false);
-  const [requireResetPassword, setRequireResetPassword] = useState<boolean>(false);
-  const [sendEmailReset, setSendEmailReset] = useState<boolean>(false);
-  const [sendTextReset, setSendTextReset] = useState<boolean>(false);
-  const [disableCheckIn, setDisableCheckIn] = useState<boolean>(false);
+  const { updateVenue } = useUpdateVenue();
+  const [venueName, setVenueName] = useState<string | undefined>(undefined);
+  const [address, setAddress] = useState<string | undefined>(undefined);
+  const [city, setCity] = useState<string | undefined>(undefined);
+  const [state, setState] = useState<string | undefined>(undefined);
+  const [zipCode, setZipCode] = useState<string | undefined>(undefined);
+  const [country, setCountry] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (currentAdminSelection.selectedUser == undefined) {
+    if (currentAdminSelection.selectedVenue == undefined) {
       goBack();
     } else if (
-      username == undefined ||
-      allSellers == undefined ||
-      allRoles == undefined
+      venueName == undefined
     ) {
       dispatch(setIsLoading(true));
-      setUsername(currentAdminSelection.selectedUser.username);
-      setFirstName(currentAdminSelection.selectedUser.firstName);
-      setLastName(currentAdminSelection.selectedUser.lastName);
-      setMobile(currentAdminSelection.selectedUser.mobile);
-      setNotes(currentAdminSelection.selectedUser.notes);
-      setIsActive(currentAdminSelection.selectedUser.isActive);
-      setRequireResetPassword(
-        currentAdminSelection.selectedUser.requireResetPassword ?? false,
-      );
-      setSendEmailReset(currentAdminSelection.selectedUser.sendEmailReset ?? false);
-      setSendTextReset(currentAdminSelection.selectedUser.sendTextReset ?? false);
-      setDisableCheckIn(currentAdminSelection.selectedUser.disableCheckIn ?? false);
-      getSellers().then((response: GetSellersResponse) => {
-        setAllSellers(response.sellers);
-        getAllRoles().then((resp: GetRolesResponse) => {
-          const roles = resp.roles?.filter((x) => x.roleId != 1);
-          setAllRoles(roles);
-          dispatch(setIsLoading(false));
-        });
-      });
+      setVenueName(currentAdminSelection.selectedVenue.venue);
+      setAddress(currentAdminSelection.selectedVenue.address);
+      setCity(currentAdminSelection.selectedVenue.city);
+      setState(currentAdminSelection.selectedVenue.state);
+      setZipCode(currentAdminSelection.selectedVenue.zipCode);
+      setCountry(currentAdminSelection.selectedVenue.country);
+      dispatch(setIsLoading(false));
     }
   }, [
     currentAdminSelection,
-    username,
-    allSellers,
-    getSellers,
-    allRoles,
-    getAllRoles,
+    venueName,
     dispatch,
   ]);
 
   const goBack = () => {
-    router.push('/admin/users/');
-  };
-
-  const updateSeller = (sellerId: number, newSellerId: number) => {
-    if (isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
-      return;
-    }
-    if (currentAdminSelection.selectedUser) {
-      let user: User = { ...currentAdminSelection.selectedUser };
-      let userSellers = user.sellers ? [...user.sellers] : [];
-      const newSeller = allSellers?.find((x) => x.sellerId == newSellerId);
-      if (newSeller) {
-        for (let i = 0; i < userSellers.length; i++) {
-          if (userSellers[i].sellerId == sellerId) {
-            let userSeller = { ...userSellers[i] };
-            userSeller.sellerId = newSellerId;
-            userSeller.sellerName = newSeller.name;
-            userSeller.sellerType = newSeller.sellerType;
-            userSellers[i] = userSeller;
-            break;
-          }
-        }
-        user.sellers = userSellers;
-        dispatch(setSelectedUser(user));
-      }
-    } else {
-      goBack();
-    }
-  };
-
-  const updateRole = (sellerId: number, newRoleId: number) => {
-    if (!sellerId || isNaN(sellerId) || !newRoleId || isNaN(newRoleId)) {
-      return;
-    }
-    if (currentAdminSelection.selectedUser) {
-      let user: User = { ...currentAdminSelection.selectedUser };
-      const newRole = allRoles?.find((x) => x.roleId == newRoleId);
-      if (newRole && user.sellers) {
-        user.sellers = user.sellers.map((us) => {
-          let userSeller = {...us};
-          if (userSeller.sellerId == sellerId) {
-            userSeller.roleId = newRoleId;
-          }
-          return userSeller;
-        });
-        dispatch(setSelectedUser(user));
-      }
-    } else {
-      goBack();
-    }
-  };
-
-  const addSeller = (e: any) => {
-    if (currentAdminSelection.selectedUser) {
-      let user: User = { ...currentAdminSelection.selectedUser };
-      let userSellers = user.sellers ? [...user.sellers] : [];
-      const existingAdd = userSellers.find((x) => x.sellerId == 0);
-      if (!existingAdd) {
-        userSellers.push({
-          sellerId: 0,
-          sellerName: '',
-          sellerType: SellerType.Artist,
-        });
-        user.sellers = userSellers;
-        dispatch(setSelectedUser(user));
-      }
-    } else {
-      goBack();
-    }
-  };
-
-  const removeSeller = (sellerId: number) => {
-    if (!sellerId || isNaN(sellerId)) {
-      return;
-    }
-    if (currentAdminSelection.selectedUser) {
-      let user: User = { ...currentAdminSelection.selectedUser };
-      let userSellers = user.sellers ? [...user.sellers] : [];
-      userSellers = userSellers.filter((x) => x.sellerId != sellerId);
-      user.sellers = userSellers;
-      dispatch(setSelectedUser(user));
-    } else {
-      goBack();
-    }
-  };
-
-  const deleteCurrentUser = () => {
-    if (!currentAdminSelection.selectedUser) {
-      return false;
-    }
-
-    let userId = currentAdminSelection.selectedUser.userId;
-
-    var result = confirm('Are you sure you want to delete this user?');
-
-    if (result) {
-      deleteUser(userId).then((response: UpdateUserResponse) => {
-        if (response.success) {
-          dispatch(setReloadUsers(true));
-          toast.success('User deleted successfully');
-          router.push('/admin/users/');
-        } else {
-          toast.error(response.userError);
-        }
-      });
-    }
+    router.push('/admin/venues/');
   };
 
   const onSubmit = () => {
-    dispatch(setIsLoading(true));
-    if (!currentAdminSelection.selectedUser) {
+    if (!currentAdminSelection.selectedVenue) {
       return false;
     }
-    let userToUpdate: User = {
-      ...currentAdminSelection.selectedUser,
-      firstName: firstName || '',
-      lastName: lastName || '',
-      mobile: mobile || '',
-      notes: notes || '',
-      isActive: isActive || false,
-      requireResetPassword: requireResetPassword || false,
-      sendEmailReset: sendEmailReset || false,
-      sendTextReset: sendTextReset || false,
-      disableCheckIn: disableCheckIn || false,
+
+    const isUpdate = (currentAdminSelection.selectedVenue.venueId > 0);
+
+    if (!venueName) {
+      toast.error("Venue name is required");
+      return;
+    }
+
+    if (!address) {
+      toast.error("Address is required");
+      return;
+    }
+
+    if (!city) {
+      toast.error("City is required");
+      return;
+    }
+
+    if (!state && !zipCode && !country) {
+      toast.error("Must provide at least one of state, zip or country");
+      return;
+    }
+
+    dispatch(setIsLoading(true));
+
+    let venueToUpdate: ExternalVenue = {
+      ...currentAdminSelection.selectedVenue,
+      venue: venueName,
+      address: address,
+      city: city,
+      state: state,
+      zipCode: zipCode,
+      country: country,
     };
 
-    const sellersInvalid =
-      userToUpdate.sellers == undefined ||
-      userToUpdate.sellers.length == 0 ||
-      userToUpdate.sellers.find((x) => x.sellerId == 0) != undefined;
-    if (sellersInvalid) {
-      toast.warning('Seller selection invalid, please correct before submitting');
-      dispatch(
-        setIsLoading(false)
-      );
-      return false;
-    }
-
-    updateUser(userToUpdate).then((response: UpdateUserResponse) => {
+    updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
       if (response.success) {
-        dispatch(setReloadUsers(true));
-        toast.success('User updated successfully');
-        router.push('/admin/users/');
+        dispatch(setReloadVenues(true));
+        dispatch(setAdminVenue(undefined))
+        const message = isUpdate ? 'Venue updated successfully' : 'Venue added successfully';
+        toast.success(message);
+        router.push('/admin/venues/');
       } else {
-        toast.error(response.userError ?? 'Error occurred while saving user');
+        toast.error(response.venueError ?? 'Error occurred while saving venue');
+        dispatch(setIsLoading(false));
       }
-      dispatch(setIsLoading(false));
     });
   };
 
-  let sellerRows: any[] = [];
-  if (
-    allSellers != undefined &&
-    allRoles != undefined &&
-    currentAdminSelection.selectedUser &&
-    !currentAdminSelection.selectedUser.isAdmin &&
-    currentAdminSelection.selectedUser.sellers &&
-    currentAdminSelection.selectedUser.sellers.length > 0
-  ) {
-    currentAdminSelection.selectedUser.sellers.map((item, index) => {
-      sellerRows.push(
-        <AdminSellerSelect
-          id={item.sellerId}
-          key={item.sellerId}
-          Number={index + 1}
-          Sellers={allSellers}
-          Roles={allRoles}
-          SellerId={item.sellerId}
-          RoleId={item.roleId}
-          OnSellerChange={(newSellerId: number) => updateSeller(parseInt(`${item.sellerId}`), newSellerId)}
-          OnRoleChange={(newRoleId: number) => updateRole(parseInt(`${item.sellerId}`), newRoleId)}
-          OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
-        />,
-      );
-    });
-    sellerRows.push(
-      <div
-        title="Add Seller"
-        key="addSeller"
-        className="admin-click-cell"
-        onClick={addSeller}
-      >
-        <FaPlus></FaPlus> Add Seller
-      </div>,
-    );
-  }
-
-  return currentAdminSelection.selectedUser &&
-    (sellerRows != null || currentAdminSelection.selectedUser.isAdmin) ? (
+  return currentAdminSelection.selectedVenue ? (
     <div className="admin-container">
-      <h1>Edit User</h1>
+      <h1>Edit Venue</h1>
       <div className="form-group">
-        <label className="mt-4">Username: {username}</label>
-      </div>
-      <div className="form-group">
-        <label className="mt-4">First Name</label>
+        <label className="mt-4">Venue name</label>
         <input
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
+          value={venueName}
+          onChange={(e) => setVenueName(e.target.value)}
           className="form-control"
-          placeholder="first name"
+          placeholder="venue name"
           type="text"
         />
       </div>
       <div className="form-group">
-        <label className="mt-4">Last Name</label>
+        <label className="mt-4">Address</label>
         <input
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
           className="form-control"
-          placeholder="last name"
+          placeholder="address"
           type="text"
         />
       </div>
       <div className="form-group">
-        <label className="mt-4">Mobile number</label>
+        <label className="mt-4">City</label>
         <input
-          value={mobile}
-          onChange={(e) => setMobile(e.target.value)}
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
           className="form-control"
-          placeholder="mobile number"
+          placeholder="city"
           type="text"
         />
       </div>
       <div className="form-group">
-        <FormCheck
-          checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
-          label="Is Active?"
+        <label className="mt-4">State</label>
+        <input
+          value={state}
+          onChange={(e) => setState(e.target.value)}
+          className="form-control"
+          placeholder="state"
+          type="text"
         />
-        <FormCheck
-          checked={requireResetPassword}
-          onChange={(e) => setRequireResetPassword(e.target.checked)}
-          label="Require Reset Password?"
-        />
-        <FormCheck
-          checked={sendEmailReset}
-          onChange={(e) => setSendEmailReset(e.target.checked)}
-          label="Send Password Reset by Email?"
-        />
-        <FormCheck
-          checked={sendTextReset}
-          onChange={(e) => setSendTextReset(e.target.checked)}
-          label="Send Password Reset by Text?"
-        />
-        <FormCheck
-          checked={disableCheckIn}
-          onChange={(e) => setDisableCheckIn(e.target.checked)}
-          label="Disable check-in permission?"
-        />
-      </div>
-      <div className="form-group" hidden={currentAdminSelection.selectedUser.isAdmin}>
-        <label className="mt-4">Sellers:</label>
-        {sellerRows}
       </div>
       <div className="form-group">
-        <label className="mt-4">Notes:</label>
-        <textarea onChange={(e) => setNotes(e.target.value)} value={notes} />
+        <label className="mt-4">Postal Code</label>
+        <input
+          value={zipCode}
+          onChange={(e) => setZipCode(e.target.value)}
+          className="form-control"
+          placeholder="postal code"
+          type="text"
+        />
+      </div>
+      <div className="form-group">
+        <label className="mt-4">Country</label>
+        <input
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          className="form-control"
+          placeholder="country"
+          type="text"
+        />
       </div>
       <div className="admin-button-group">
-        <Button onClick={onSubmit}>Submit</Button>{' '}
-        <Button onClick={deleteCurrentUser}>Delete User</Button>
-      </div>
-      <div className="admin-button-group">
-        <Button onClick={goBack}>Back</Button>
+        <Button onClick={onSubmit}>Submit</Button>{' '}<Button onClick={goBack}>Back</Button>
       </div>
     </div>
   ) : (

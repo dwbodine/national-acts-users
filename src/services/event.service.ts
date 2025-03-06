@@ -38,6 +38,7 @@ import moment from 'moment';
 import { getShirtDataFromEvents } from '@/utils/getShirtData';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { report } from 'process';
+import { ExternalVenue } from '@/types/admin';
 
 export class EventService {
   protected readonly instance: AxiosInstance;
@@ -1808,6 +1809,20 @@ export class EventService {
       venue.state &&
       venue.country.trim() != venue.state.trim()
     ) {
+      location += ', ' + venue.country;
+    }
+    return location;
+  };
+
+  getAddressFromExternalVenue = (venue: ExternalVenue): string => {
+    let location = `${venue.address}, ${venue.city}`;
+    if (venue.state && venue.state.trim() != '') {
+      location += `, ${venue.state}`;
+    }
+    if (venue.zipCode && venue.zipCode.trim() != '') {
+      location += ` ${venue.zipCode}`;
+    }
+    if (venue.country && venue.country != 'United States' && venue.country != 'USA') {
       location += ', ' + venue.country;
     }
     return location;

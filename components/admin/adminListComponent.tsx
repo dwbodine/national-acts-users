@@ -33,6 +33,12 @@ export default function AdminList() {
       case 'manage-site-settings':
         router.push('/admin/settings');
         break;
+      case 'manage-venues':
+        router.push('/admin/venues');
+        break;
+      case 'manage-external-events':
+        router.push('/admin/external-events/');
+        break;
       default:
         break;
     }
@@ -78,6 +84,16 @@ export default function AdminList() {
         <li>
           <a className="admin-link" onClick={() => goToAdminPage('manage-tours')}>
             Manage Tours
+          </a>
+        </li>
+        <li>
+          <a className="admin-link" onClick={() => goToAdminPage('manage-venues')}>
+            Manage Venues
+          </a>
+        </li>
+        <li>
+          <a className="admin-link" onClick={() => goToAdminPage('manage-external-events')}>
+            Manage External Events
           </a>
         </li>
       </ul>
