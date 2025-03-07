@@ -98,6 +98,27 @@ export default function AdminExternalEventsSeller() {
     router.push('/admin/external-events/edit/');
   };
 
+  const addEvent = () => {
+    if (
+      !currentAdminSelection.sellerId
+    ) {
+      return;
+    }
+    const vipEvent: VipEvent = {
+      ticketSocketEventId: 0,
+      eventId: 0,
+      externalEventId: 0,
+      isExternal: true,
+      title: '',
+      eventDate: '',
+      isActive: true,
+      isDeleted: false,
+    };
+    dispatch(setAdminEvent(vipEvent));
+    setTableLoading(true);
+    router.push('/admin/external-events/edit/');
+  };
+
   const updateEventIdList = (externalEventId: number | undefined, addToList: boolean) => {
     if (!externalEventId) {
       return;
@@ -308,6 +329,9 @@ export default function AdminExternalEventsSeller() {
         <Col>
           <h3>External Event Admin for {currentSeller?.name}</h3>
         </Col>
+      </Row>
+      <Row>
+        <Col><Button onClick={addEvent}>Add</Button></Col>
       </Row>
       <Row hidden={allEventIds.length == 0}>
         <Col className="bulk-arrow-row">
