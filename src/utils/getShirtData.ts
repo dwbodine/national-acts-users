@@ -13,7 +13,7 @@ export function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefin
   let eventsHaveShirtData: boolean = false;
   events?.forEach((evt: VipEvent) => {
     const key = moment(evt.eventDate).format('MM/DD/YYYY');
-    if (evt.totalShirts > 0) {
+    if (evt.totalShirts ?? 0 > 0) {
       eventsHaveShirtData = true;
       evt.shirtSales?.forEach((shirt) => {
         if (!shirtSizes.find((x) => x == shirt.size)) {

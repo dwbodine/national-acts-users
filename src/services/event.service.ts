@@ -1416,16 +1416,16 @@ export class EventService {
         location = this.getLocationInfoFromVenue(vipEvent.venue);
       }
       const ticketsSold = vipEvent.totalTickets;
-      totalTcketsSold += ticketsSold;
+      totalTcketsSold += ticketsSold ?? 0;
       const revenue = vipEvent.totalRevenue;
       const serviceFees = vipEvent.totalServiceFees;
-      totalRevenue += revenue;
+      totalRevenue += revenue ?? 0;
       exportStr += `"${sellerName}","${eventDate}","${title}","${venue}","${location}","${ticketsSold}",`;
       if (showRevenueData) {
-        exportStr += `"${revenue.toFixed(2)}",`;
+        exportStr += `"${(revenue ?? 0).toFixed(2)}",`;
       }
       if (viewServiceFees) {
-        exportStr += `"${serviceFees.toFixed(2)}"\n`;
+        exportStr += `"${(serviceFees ?? 0).toFixed(2)}"\n`;
       } else {
         exportStr += '\n';
       }

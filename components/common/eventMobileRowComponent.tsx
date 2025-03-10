@@ -72,8 +72,8 @@ export default function EventMobileRow(props: any) {
   }
 
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
-  const revenue = `$${new Number(vipEvent.totalRevenue - (vipEvent.revenueRefunded ?? 0)).toFixed(2)}`;
-  const serviceFees = `$${new Number(vipEvent.totalServiceFees - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2)}`;
+  const revenue = `$${new Number(vipEvent.totalRevenue ?? 0 - (vipEvent.revenueRefunded ?? 0)).toFixed(2)}`;
+  const serviceFees = `$${new Number(vipEvent.totalServiceFees ?? 0 - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2)}`;
   const buttonText = currentSellerType == SellerType.Venue ? 'Customer List' : 'VIP List';
   const noOrders = (!vipEvent.orders || vipEvent.orders.length == 0);
 
