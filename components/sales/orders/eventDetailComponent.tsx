@@ -376,6 +376,7 @@ export default function EventDetail(props: any) {
             TicketTypes={currentReportSelection.currentDetailEvent?.ticketTypes}
             ShowOnlyEmails={showOnlyEmailsDisplay}
             ShowOnlyPhones={showOnlyPhonesDisplay}
+            IsAdmin={user?.isAdmin ?? false}
           />,
         );
       } else {

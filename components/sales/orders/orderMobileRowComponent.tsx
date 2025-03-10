@@ -16,6 +16,7 @@ export default function OrderMobileRow(props: any) {
   const canCheckInTickets = props.CanCheckInTickets as boolean;
   const showOnlyEmails = props.ShowOnlyEmails as boolean;
   const showOnlyPhones = props.ShowOnlyPhones as boolean;
+  const isAdmin = props.IsAdmin as boolean;
 
   let statusClass = '';
   if (order.isDeleted) {
@@ -49,13 +50,15 @@ export default function OrderMobileRow(props: any) {
       ticketMap.set(ticketTypeName, num);
     });
     let i = 0;
-    ticketMap.forEach((tickets: Number, ticketType: string) => {
+    ticketMap.forEach((tickets: number, ticketType: string) => {
       const key = `ttr${i}`;
-      ticketTypeRows.push(
-        <div key={key}>
-          {ticketType} ({tickets.toString()})
-        </div>,
-      );
+      if (tickets > 0 || isAdmin) {
+        ticketTypeRows.push(
+          <div key={key}>
+            {ticketType} ({tickets.toString()})
+          </div>,
+        );
+      }      
       i++;
     });
   }
@@ -74,7 +77,7 @@ export default function OrderMobileRow(props: any) {
       }      
     });
     let i = 0;
-    shirtMap.forEach((numShirts: Number, shirtSize: string) => {
+    shirtMap.forEach((numShirts: number, shirtSize: string) => {
       const key = `sm${i}`;
       shirtSizeRows.push(
         <div key={key}>
@@ -121,7 +124,7 @@ export default function OrderMobileRow(props: any) {
             <Col xs={5} className="mobile-bold">Event Name:</Col>
             <Col>{eventName}</Col>
           </Row>
-          <Row hidden={showOnlyEmails || showOnlyPhones}>
+          <Row hidden={ticketTypeRows.length == 0 || showOnlyEmails || showOnlyPhones}>
             <Col xs={5} className="mobile-bold">Ticket breakdown:</Col>
             <Col>{ticketTypeRows}</Col>
           </Row>
