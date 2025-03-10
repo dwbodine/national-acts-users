@@ -17,6 +17,7 @@ export default function WidgetBar(props: any) {
   const ticketsRefunded: number = props.TicketsRefunded as number;
   const totalServiceFees: number = props.TotalServiceFees as number;
   const hideTicketBreakdown: boolean = props.HideTicketBreakDown as boolean;
+  const isAdmin: boolean = props.IsAdmin as boolean;
 
   const hideTickets = !ticketData || totalTickets == 0;
   const hideShirts = !shirtData || totalShirts == 0;
@@ -35,6 +36,7 @@ export default function WidgetBar(props: any) {
             TotalTickets={totalTickets}
             TicketsRefunded={ticketsRefunded}
             HideTicketBreakDown={hideTicketBreakdown}
+            IsAdmin={isAdmin}
           />
         </div>
       </Col>
