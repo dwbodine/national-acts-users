@@ -419,12 +419,14 @@ export default function EventDetail(props: any) {
           if (ticketType.totalAvailable > 0) {
             total = `/${ticketType.totalAvailable}`;
           }
-          ticketBreakdownRows.push(
-            <div key={key}>
-              {ticketType.ticketTypeName} ({number}
-              {total})
-            </div>,
-          );
+          if (number > 0 || user?.isAdmin) {
+            ticketBreakdownRows.push(
+              <div key={key}>
+                {ticketType.ticketTypeName} ({number}
+                {total})
+              </div>,
+            );
+          }          
           i++;
         });
       });

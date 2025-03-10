@@ -323,6 +323,7 @@ export default function CurrentEvents() {
           HideServiceFees={hideServiceFees}
           RevenueRefunded={revenueRefunded}
           ServiceFeesRefunded={serviceFeesRefunded}
+          IsAdmin={user?.isAdmin ?? false}
         />
         <TicketSalesChart
           TicketSalesData={ticketSalesData}

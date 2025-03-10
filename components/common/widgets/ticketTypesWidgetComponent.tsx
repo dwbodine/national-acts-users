@@ -7,6 +7,7 @@ export default function TicketTypesWidget(props: any) {
   const totalTickets: number = props.TotalTickets as number;
   const ticketsRefunded: number = props.TicketsRefunded as number;
   const hideTicketBreakdown: boolean = props.HideTicketBreakDown as boolean;
+  const isAdmin: boolean = props.IsAdmin as boolean;
 
   const ticketTypes: TicketType[] | undefined = ticketPropData?.TicketTypes;
 
@@ -32,9 +33,13 @@ export default function TicketTypesWidget(props: any) {
       let i = 0;
       for (const ticketType of ticketTypes) {
         const key = `ttw${i}`;
+        const numSold = arr[ticketType.ticketTypeName];
+        if (!isAdmin && numSold == 0) {
+          continue;
+        }
         ttypes.push(
           <div key={key}>
-            {ticketType.ticketTypeName} ({arr[ticketType.ticketTypeName]})
+            {ticketType.ticketTypeName} ({numSold})
           </div>,
         );
         i++;
