@@ -20,6 +20,7 @@ export default function EventMobileRow(props: any) {
   const currentSellerType = currentReportSelection.seller.sellerType;
   const id = `event_${vipEvent.ticketSocketEventId}`;
   const { getEventStatusText, getEventStatusSlug } = useGetEventStatus();
+  const isAdmin = props.IsAdmin as boolean;
 
   const setDetailEvent = () => {
     const url = `/event/?id=${vipEvent.ticketSocketEventId}`;
@@ -57,12 +58,14 @@ export default function EventMobileRow(props: any) {
         if (ticketType.totalAvailable > 0) {
           total = `/${ticketType.totalAvailable}`;
         }
-        ticketBreakdownRows.push(
-          <div className="ticket-type" key={key}>
-            {ticketType.ticketTypeName} ({number}
-            {total})
-          </div>,
-        );
+        if (number > 0 || isAdmin) {
+          ticketBreakdownRows.push(
+            <div className="ticket-type" key={key}>
+              {ticketType.ticketTypeName} ({number}
+              {total})
+            </div>,
+          );
+        }        
         i++;
       });
     });
@@ -108,7 +111,7 @@ export default function EventMobileRow(props: any) {
               {vipEvent.totalCheckedIn} / {vipEvent.totalTickets}
             </Col>
           </Row>
-          <Row>
+          <Row hidden={ticketBreakdownRows.length == 0}>
             <Col>Ticket type breakdown:</Col>
             <Col>{ticketBreakdownRows}</Col>
           </Row>

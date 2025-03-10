@@ -997,7 +997,7 @@ export class EventService {
       });
   };
 
-  deleteNote = async (noteId: Number): Promise<ModifyNoteResponse> => {
+  deleteNote = async (noteId: number): Promise<ModifyNoteResponse> => {
     const url = '/admin/notes/delete';
     const headers = getAuthorizationHeader();
 
@@ -1583,7 +1583,7 @@ export class EventService {
           }
           ticketMap.set(ticket.ticketType, num);
         });
-        ticketMap.forEach((value: Number, key: string) => {
+        ticketMap.forEach((value: number, key: string) => {
           if (ticketTypeStr.length > 0) {
             ticketTypeStr += ' / ';
           }

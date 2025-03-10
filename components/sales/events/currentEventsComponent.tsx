@@ -264,6 +264,7 @@ export default function CurrentEvents() {
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFees}
             CanCheckInTickets={canCheckInTickets}
+            IsAdmin={user?.isAdmin ?? false}
           />,
         );
       } else {

@@ -49,7 +49,7 @@ export default function OrderRow(props: any) {
       ticketMap.set(ticketTypeName, num);
     });
     let i = 0;
-    ticketMap.forEach((tickets: Number, ticketType: string) => {
+    ticketMap.forEach((tickets: number, ticketType: string) => {
       const key = `ttr${i}`;
       ticketTypeRows.push(
         <div key={key}>
@@ -75,7 +75,7 @@ export default function OrderRow(props: any) {
     });
     let i = 0;
     
-    shirtMap.forEach((numShirts: Number, shirtSize: string) => {
+    shirtMap.forEach((numShirts: number, shirtSize: string) => {
       const key = `sm${i}`;
       shirtSizeRows.push(
         <div key={key}>
