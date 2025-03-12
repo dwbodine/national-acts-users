@@ -313,7 +313,7 @@ export default function AdminExternalEventEdit() {
     let currentEvent = { ...currentAdminSelection.selectedEvent };
     switch (fileUploadName) {
       case 'Thumbnail':
-        currentEvent.thumbnail = filename;
+        currentEvent.externalThumbnail = filename;
         dispatch(setAdminEvent(currentEvent));
         setIsThumbnailDirty(true);
         markDirty();
@@ -366,7 +366,7 @@ export default function AdminExternalEventEdit() {
   const isAddedToBandsInTown =
     currentAdminSelection?.selectedEvent?.isAddedToBandsInTown ?? false;
 
-  const thumbnail = currentAdminSelection?.selectedEvent?.thumbnail ?? undefined;
+  const thumbnail = currentAdminSelection?.selectedEvent?.externalThumbnail ?? undefined;
   const externalEventVenueId = currentAdminSelection?.selectedEvent?.externalEventVenueId ?? 0;
 
   const externalUrl = currentAdminSelection?.selectedEvent?.externalUrl ?? undefined;
@@ -415,6 +415,7 @@ export default function AdminExternalEventEdit() {
             value={eventDate}
             oneTap
             showMeridiem
+            disabled={eventDate != null}
           />
 
           <label className="mt-4">Event venue</label>

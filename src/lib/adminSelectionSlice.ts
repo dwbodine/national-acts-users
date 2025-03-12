@@ -184,6 +184,7 @@ export const adminSelectionSlice = createSlice({
       state.venues = undefined;
       state.mustSaveEvent = false;
       state.mustSaveOrder = false;
+      state.allSellers = undefined;
       state.allSettings = undefined;
       state.reloadSettings = true;
       state.uploadedFile = undefined;
