@@ -50,12 +50,22 @@ export default function AdminExternalEventEdit() {
     };
   }, [currentAdminSelection, dispatch, getAllVenues]);
 
+  const onEventVenueChange =  (value: number | null, event: React.SyntheticEvent) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.externalEventVenueId = value ?? undefined;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
   const setEventTitle = (title: string) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
     let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.title = title;
+    currentEvent.externalTitle = title;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -338,9 +348,14 @@ export default function AdminExternalEventEdit() {
 
   const pageHeader = 'Edit external event';
 
+  const eventId =
+    currentAdminSelection.selectedEvent?.eventId != undefined 
+      ? currentAdminSelection.selectedEvent.eventId
+      : 0;
+
   const eventTitle =
     currentAdminSelection.selectedEvent != undefined
-      ? currentAdminSelection.selectedEvent.title
+      ? currentAdminSelection.selectedEvent.externalTitle
       : '';
 
   const eventDate =
@@ -415,11 +430,18 @@ export default function AdminExternalEventEdit() {
             value={eventDate}
             oneTap
             showMeridiem
-            disabled={eventDate != null}
+            disabled={eventId > 0}
           />
 
           <label className="mt-4">Event venue</label>
-          <SelectPicker value={externalEventVenueId} data={venueList} size="lg" block />
+          <SelectPicker 
+            value={externalEventVenueId} 
+            data={venueList} 
+            size="lg" 
+            block 
+            disabled={eventId > 0} 
+            onChange={onEventVenueChange}
+          />
 
           <label className="mt-4">Announce Date</label>
           <DatePicker

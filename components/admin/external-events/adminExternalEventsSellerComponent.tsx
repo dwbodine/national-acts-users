@@ -113,6 +113,7 @@ export default function AdminExternalEventsSeller() {
       eventDate: '',
       isActive: true,
       isDeleted: false,
+      externalSellerId: currentAdminSelection.sellerId,
     };
     dispatch(setAdminEvent(vipEvent));
     setTableLoading(true);

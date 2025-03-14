@@ -147,6 +147,7 @@ export interface VipEvent {
   externalEventId?: number;
   externalSellerId?: number;
   externalThumbnail?: string;
+  externalTitle?: string;
   externalUrl?: string;
   externalVenue?: Venue;
   externalEventVenueId?: number;

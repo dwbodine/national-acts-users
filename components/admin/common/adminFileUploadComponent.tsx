@@ -1,5 +1,5 @@
 import { useUploadFile } from "@/hooks/common/useUploadFile";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 
 export default function AdminFileUpload(props: any) {
