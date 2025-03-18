@@ -3,6 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { AdminSelection, Role, User } from '../types/user';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
 import { SiteSetting } from '@/types/public';
+import { ExternalVenue } from '@/types/admin';
 
 const initialState: AdminSelection = {
   sellerId: undefined,
@@ -13,11 +14,13 @@ const initialState: AdminSelection = {
   reloadRoles: true,
   reloadTours: true,
   reloadSettings: true,
+  reloadVenues: true,
   selectedEvent: undefined,
   selectedOrder: undefined,
   selectedUser: undefined,
   selectedRole: undefined,
   selectedTour: undefined,
+  selectedVenue: undefined,
   allSellers: undefined,
   allSettings: undefined,
   roles: undefined,
@@ -27,6 +30,7 @@ const initialState: AdminSelection = {
   mustSaveEvent: false,
   mustSaveOrder: false,
   uploadedFile: undefined,
+  venues: undefined,
 };
 
 export const adminSelectionSlice = createSlice({
@@ -64,6 +68,10 @@ export const adminSelectionSlice = createSlice({
       state.end = undefined;
       return state;
     },
+    setAdminVenue: (state, action: PayloadAction<ExternalVenue | undefined>) => {
+      state.selectedVenue = action.payload;
+      return state;
+    },
     setReloadUsers: (state, action: PayloadAction<boolean>) => {
       state.reloadUsers = action.payload;
       if (state.reloadUsers) {
@@ -77,6 +85,14 @@ export const adminSelectionSlice = createSlice({
       if (state.reloadTours) {
         state.selectedTour = undefined;
         state.tours = undefined;
+      }
+      return state;
+    },
+    setReloadVenues: (state, action: PayloadAction<boolean>) => {
+      state.reloadVenues = action.payload;
+      if (state.reloadVenues) {
+        state.selectedVenue = undefined;
+        state.venues = undefined;
       }
       return state;
     },
@@ -99,6 +115,11 @@ export const adminSelectionSlice = createSlice({
     setTours: (state, action: PayloadAction<Tour[]>) => {
       state.tours = action.payload;
       state.reloadTours = false;
+      return state;
+    },
+    setVenues: (state, action: PayloadAction<ExternalVenue[]>) => {
+      state.venues = action.payload;
+      state.reloadVenues = false;
       return state;
     },
     setReloadRoles: (state, action: PayloadAction<boolean>) => {
@@ -149,17 +170,21 @@ export const adminSelectionSlice = createSlice({
       state.reloadRoles = true;
       state.reloadEvents = true;
       state.reloadTours = true;
+      state.reloadVenues = true;
       state.selectedUser = undefined;
       state.selectedRole = undefined;
       state.selectedEvent = undefined;
       state.selectedOrder = undefined;
       state.selectedTour = undefined;
+      state.selectedVenue = undefined;
       state.roles = undefined;
       state.users = undefined;
       state.events = undefined;
       state.tours = undefined;
+      state.venues = undefined;
       state.mustSaveEvent = false;
       state.mustSaveOrder = false;
+      state.allSellers = undefined;
       state.allSettings = undefined;
       state.reloadSettings = true;
       state.uploadedFile = undefined;
@@ -190,6 +215,9 @@ export const {
   setReloadTours,
   setReloadSettings,
   setAllSettings,
+  setReloadVenues,
+  setAdminVenue,
+  setVenues,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

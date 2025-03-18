@@ -1,5 +1,5 @@
 import { useUploadFile } from "@/hooks/common/useUploadFile";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 
 export default function AdminFileUpload(props: any) {
@@ -9,7 +9,7 @@ export default function AdminFileUpload(props: any) {
     const onUpload = props?.OnUpLoad;
     const onUploadStart = props?.OnUploadStart;
     const onUploadComplete = props?.OnUploadComplete;
-    const currentFileName: string | undefined = props?.CurrentFileName;
+    let currentFileName: string | undefined = props?.CurrentFileName;
     const isDirty = props?.IsDirty ?? false;
     const baseUrl = props?.BaseUrl ?? '';
 
@@ -46,6 +46,10 @@ export default function AdminFileUpload(props: any) {
     const currentFileLink = !isDirty && baseUrl && currentFileName ? 
         <a target="_blank" href={`${baseUrl}/${currentFileName}`}>{currentFileName}</a> : 
         currentFileName;
+
+    if (currentFileName == 'None') {
+        currentFileName = undefined;
+    }
 
     return (
         <div>

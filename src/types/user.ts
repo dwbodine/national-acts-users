@@ -1,3 +1,4 @@
+import { ExternalVenue } from './admin';
 import {
   ITicketSalesData,
   Note,
@@ -323,11 +324,13 @@ export type AdminSelection = {
   reloadRoles?: boolean;
   reloadEvents?: boolean;
   reloadTours?: boolean;
+  reloadVenues?: boolean;
   reloadSettings?: boolean;
   selectedUser?: User | undefined;
   selectedRole?: Role | undefined;
   selectedEvent?: VipEvent | undefined;
   selectedTour?: Tour | undefined;
+  selectedVenue?: ExternalVenue | undefined;
   selectedOrder?: Order | undefined;
   mustSaveOrder?: boolean;
   mustSaveEvent?: boolean;
@@ -338,6 +341,7 @@ export type AdminSelection = {
   events?: VipEvent[] | undefined;
   tours?: Tour[] | undefined;
   uploadedFile?: string;
+  venues?: ExternalVenue[] | undefined;
 };
 
 export type AdminReportsSelection = {

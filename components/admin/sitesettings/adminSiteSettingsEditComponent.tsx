@@ -10,7 +10,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import AdminListHomeButton from "../adminListHomeButton";
 import { useUpdateSiteSetting } from "@/hooks/admin/useUpdateSiteSetting";
 import { toast } from "react-toastify";
-import router from "next/router";
+import router   from "next/router";
 
 
 export default function AdminSiteSettingsEdit() {

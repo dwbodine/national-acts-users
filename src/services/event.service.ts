@@ -38,6 +38,7 @@ import moment from 'moment';
 import { getShirtDataFromEvents } from '@/utils/getShirtData';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { report } from 'process';
+import { ExternalVenue } from '@/types/admin';
 
 export class EventService {
   protected readonly instance: AxiosInstance;
@@ -1415,16 +1416,16 @@ export class EventService {
         location = this.getLocationInfoFromVenue(vipEvent.venue);
       }
       const ticketsSold = vipEvent.totalTickets;
-      totalTcketsSold += ticketsSold;
+      totalTcketsSold += ticketsSold ?? 0;
       const revenue = vipEvent.totalRevenue;
       const serviceFees = vipEvent.totalServiceFees;
-      totalRevenue += revenue;
+      totalRevenue += revenue ?? 0;
       exportStr += `"${sellerName}","${eventDate}","${title}","${venue}","${location}","${ticketsSold}",`;
       if (showRevenueData) {
-        exportStr += `"${revenue.toFixed(2)}",`;
+        exportStr += `"${(revenue ?? 0).toFixed(2)}",`;
       }
       if (viewServiceFees) {
-        exportStr += `"${serviceFees.toFixed(2)}"\n`;
+        exportStr += `"${(serviceFees ?? 0).toFixed(2)}"\n`;
       } else {
         exportStr += '\n';
       }
@@ -1808,6 +1809,20 @@ export class EventService {
       venue.state &&
       venue.country.trim() != venue.state.trim()
     ) {
+      location += ', ' + venue.country;
+    }
+    return location;
+  };
+
+  getAddressFromExternalVenue = (venue: ExternalVenue): string => {
+    let location = `${venue.address}, ${venue.city}`;
+    if (venue.state && venue.state.trim() != '') {
+      location += `, ${venue.state}`;
+    }
+    if (venue.zipCode && venue.zipCode.trim() != '') {
+      location += ` ${venue.zipCode}`;
+    }
+    if (venue.country && venue.country != 'United States' && venue.country != 'USA') {
       location += ', ' + venue.country;
     }
     return location;
