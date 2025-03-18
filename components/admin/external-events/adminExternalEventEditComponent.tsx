@@ -14,23 +14,33 @@ import {
   setReloadEvents,
   setMustSaveEvent,
   setVenues,
+  setAdminVenue,
 } from '@/lib/adminSelectionSlice';
-import { DatePicker, SelectPicker, TimePicker } from 'rsuite';
+import { DatePicker, Modal, SelectPicker, TimePicker } from 'rsuite';
 import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
 import { useUpdateExternalEvent } from '@/hooks/admin/useUpdateExternalEvent';
-import { ModifyExternalEventResponse } from '@/types/admin';
+import { ExternalVenue, ModifyExternalEventResponse, ModifyExternalVenueResponse } from '@/types/admin';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import AdminFileUpload from '../common/adminFileUploadComponent';
+import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 
 export default function AdminExternalEventEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
+  const { updateVenue } = useUpdateVenue();
   const { getExternalVenueLocation } = useGetLocation();
   const { updateExternalEvent } = useUpdateExternalEvent();
   const { getAllVenues } = useGetAllVenues();
   const [isUploading, setIsUploading] = useState(false);
   const [isThumbnailDirty, setIsThumbnailDirty] = useState(false);
   const thumbNailBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/thumbnails`;
+  const [venueOpen, setVenueOpen] = useState(false);
+  const [venueName, setVenueName] = useState<string | undefined>(undefined);
+  const [address, setAddress] = useState<string | undefined>(undefined);
+  const [city, setCity] = useState<string | undefined>(undefined);
+  const [state, setState] = useState<string | undefined>(undefined);
+  const [zipCode, setZipCode] = useState<string | undefined>(undefined);
+  const [country, setCountry] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -50,7 +60,7 @@ export default function AdminExternalEventEdit() {
     };
   }, [currentAdminSelection, dispatch, getAllVenues]);
 
-  const onEventVenueChange =  (value: number | null, event: React.SyntheticEvent) => {
+  const onEventVenueChange = (value: number | null, event: React.SyntheticEvent) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
@@ -308,6 +318,7 @@ export default function AdminExternalEventEdit() {
         toast.success('Event updated successfully');
         dispatch(setReloadEvents(true));
         dispatch(setAdminEvent(undefined));
+        dispatch(setAdminVenue(undefined));
         goBack(false);
       } else {
         toast.error(response.eventError ?? 'Error occurred while updating event');
@@ -346,10 +357,93 @@ export default function AdminExternalEventEdit() {
     }
   };
 
+  const handleVenueOpen = () => {
+    let venue: ExternalVenue = {
+      venueId: 0,
+      venue: '',
+      address: '',
+      city: '',
+    };
+
+    dispatch(setAdminVenue(venue));
+    setVenueOpen(true);
+  };
+
+  const addVenue = () => {
+    if (!currentAdminSelection.selectedVenue) {
+      return false;
+    }
+
+    if (!venueName) {
+      toast.error("Venue name is required");
+      return;
+    }
+
+    if (!address) {
+      toast.error("Address is required");
+      return;
+    }
+
+    if (!city) {
+      toast.error("City is required");
+      return;
+    }
+
+    if (!state && !zipCode && !country) {
+      toast.error("Must provide at least one of state, zip or country");
+      return;
+    }
+
+    handleVenueClose();
+
+    let venueToUpdate: ExternalVenue = {
+      ...currentAdminSelection.selectedVenue,
+      venue: venueName,
+      address: address,
+      city: city,
+      state: state,
+      zipCode: zipCode,
+      country: country,
+    };
+
+    updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
+      if (response.success) {
+        const newVenue = response.updatedVenue;
+        let adminSelection = { ...currentAdminSelection };
+        if (newVenue != undefined && 
+            adminSelection.venues != undefined && 
+            adminSelection.selectedEvent != undefined && 
+            !adminSelection.venues.find(x => x.venueId == newVenue.venueId)) {
+          dispatch(setAdminVenue(undefined));
+          let venueList = [ ...adminSelection.venues ];
+          venueList.push(newVenue);
+          venueList.sort((a, b) =>
+            a.venue < b.venue ? -1 : a.venue > b.venue ? 1 : 0,
+          );
+          dispatch(
+            setVenues(venueList)
+          );
+          let currentEvent = { ...adminSelection.selectedEvent };
+          currentEvent.externalEventVenueId = newVenue.venueId;
+          dispatch(
+            setAdminEvent(currentEvent)
+          );
+          toast.success('Venue added successfully');
+        } else {
+          toast.error('Error occurred while saving venue');
+        }
+      } else {
+        toast.error(response.venueError ?? 'Error occurred while saving venue');
+      }
+    });
+  };
+
+  const handleVenueClose = () => setVenueOpen(false);
+
   const pageHeader = 'Edit external event';
 
   const eventId =
-    currentAdminSelection.selectedEvent?.eventId != undefined 
+    currentAdminSelection.selectedEvent?.eventId != undefined
       ? currentAdminSelection.selectedEvent.eventId
       : 0;
 
@@ -434,15 +528,94 @@ export default function AdminExternalEventEdit() {
           />
 
           <label className="mt-4">Event venue</label>
-          <SelectPicker 
-            value={externalEventVenueId} 
-            data={venueList} 
-            size="lg" 
-            block 
-            disabled={eventId > 0} 
+          <SelectPicker
+            value={externalEventVenueId}
+            data={venueList}
+            size="lg"
+            block
+            disabled={eventId > 0}
             onChange={onEventVenueChange}
           />
-
+          <Button disabled={externalEventVenueId > 0} onClick={handleVenueOpen}>Add New Venue</Button>
+          <Modal open={venueOpen} onClose={handleVenueClose}>
+            <Modal.Header>
+              <Modal.Title>Add New Venue:</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="form-group">
+                <label className="mt-4">Venue name</label>
+                <input
+                  value={venueName}
+                  onChange={(e) => setVenueName(e.target.value)}
+                  className="form-control"
+                  placeholder="venue name"
+                  type="text"
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">Address</label>
+                <input
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="form-control"
+                  placeholder="address"
+                  type="text"
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">City</label>
+                <input
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="form-control"
+                  placeholder="city"
+                  type="text"
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">State</label>
+                <input
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="form-control"
+                  placeholder="state"
+                  type="text"
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">Postal Code</label>
+                <input
+                  value={zipCode}
+                  onChange={(e) => setZipCode(e.target.value)}
+                  className="form-control"
+                  placeholder="postal code"
+                  type="text"
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">Country</label>
+                <input
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="form-control"
+                  placeholder="country"
+                  type="text"
+                />
+              </div>
+            </Modal.Body>
+            <Modal.Footer className="modal-notes-footer">
+              <Button onClick={addVenue}>
+                Ok
+              </Button>
+              <Button onClick={handleVenueClose}>
+                Cancel
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
           <label className="mt-4">Announce Date</label>
           <DatePicker
             id="announceDate"

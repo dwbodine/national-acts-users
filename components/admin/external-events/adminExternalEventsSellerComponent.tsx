@@ -315,8 +315,8 @@ export default function AdminExternalEventsSeller() {
   };
 
   const goBack = () => {
-    dispatch(setAdminSellerId(undefined));
     router.push('/admin/external-events/');
+    dispatch(setAdminSellerId(undefined));
   };
 
   return (
@@ -331,8 +331,8 @@ export default function AdminExternalEventsSeller() {
           <h3>External Event Admin for {currentSeller?.name}</h3>
         </Col>
       </Row>
-      <Row>
-        <Col><Button onClick={addEvent}>Add</Button></Col>
+      <Row className="refresh-results-header">
+        <Col><Button onClick={addEvent}>Add New External Event</Button></Col>
       </Row>
       <Row hidden={allEventIds.length == 0}>
         <Col className="bulk-arrow-row">
