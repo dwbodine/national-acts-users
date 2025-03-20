@@ -135,7 +135,7 @@ export default function AdminExternalEventEdit() {
       return;
     }
     let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.disableLinkReason = reason;
+    currentEvent.disableLinkReason = reason.trim().length > 0 ? reason : undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -155,7 +155,7 @@ export default function AdminExternalEventEdit() {
       return;
     }
     let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.disableVipLinkReason = reason;
+    currentEvent.disableVipLinkReason = reason.trim().length > 0 ? reason : undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -165,7 +165,7 @@ export default function AdminExternalEventEdit() {
       return;
     }
     let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.externalVipLink = url;
+    currentEvent.externalVipLink = url.trim().length > 0 ? url : undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -175,7 +175,7 @@ export default function AdminExternalEventEdit() {
       return;
     }
     let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.externalUrl = url;
+    currentEvent.externalUrl = url.trim().length > 0 ? url : undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -197,13 +197,9 @@ export default function AdminExternalEventEdit() {
       return;
     }
 
-    if (date <= new Date()) {
-      onCleanAnnounceDate();
-      return;
-    }
-
     const eventDate = moment(currentAdminSelection.selectedEvent.eventDate).toDate();
     if (date >= eventDate) {
+      toast.warn('Announce date must be before event date');
       onCleanAnnounceDate();
       return;
     }
@@ -220,13 +216,9 @@ export default function AdminExternalEventEdit() {
       return;
     }
 
-    if (date <= new Date()) {
-      onCleanAnnounceTime();
-      return;
-    }
-
     const eventDate = moment(currentAdminSelection.selectedEvent.eventDate).toDate();
     if (date >= eventDate) {
+      toast.warn('Announce date must be before event date');
       onCleanAnnounceTime();
       return;
     }
@@ -313,6 +305,27 @@ export default function AdminExternalEventEdit() {
     dispatch(setIsLoading(true));
 
     let eventToUpdate: VipEvent = { ...currentAdminSelection.selectedEvent };
+
+    if (!eventToUpdate.announceDate) {
+      eventToUpdate.announceDate = undefined;
+    }
+
+    if (!eventToUpdate.disableLinkReason) {
+      eventToUpdate.disableLinkReason = undefined;
+    }
+
+    if (!eventToUpdate.disableVipLinkReason) {
+      eventToUpdate.disableVipLinkReason = undefined;
+    }
+
+    if (!eventToUpdate.externalUrl) {
+      eventToUpdate.externalUrl = undefined;
+    }
+
+    if (!eventToUpdate.externalVipLink) {
+      eventToUpdate.externalVipLink = undefined;
+    }
+
     updateExternalEvent(currentAdminSelection.sellerId, eventToUpdate).then((response: ModifyExternalEventResponse) => {
       if (response.success) {
         toast.success('Event updated successfully');
@@ -615,32 +628,6 @@ export default function AdminExternalEventEdit() {
         </Col>
       </Row>
       <Row>
-        <Col>
-          <label className="mt-4">Announce Date</label>
-          <DatePicker
-            id="announceDate"
-            format="M/d/yyyy"
-            onSelect={onAnnounceDateChange}
-            value={announceDate}
-            oneTap
-            cleanable
-            showMeridiem
-            onClean={onCleanAnnounceDate}
-            disabled={announceDateDisabled}
-          />
-          <TimePicker
-            id="announceTime"
-            format="hh:mm aa"
-            onSelect={onAnnounceTimeChange}
-            value={announceDate}
-            cleanable
-            showMeridiem
-            onClean={onCleanAnnounceTime}
-            disabled={announceTimeDisabled}
-          />
-        </Col>
-      </Row>
-      <Row>
         <Col className="form-group">
           <AdminFileUpload
             Title="Thumbnail (square, no wider than 100px x 100px)"
@@ -663,6 +650,7 @@ export default function AdminExternalEventEdit() {
             id="externalUrl"
             onChange={(e) => setExternalUrl(e.currentTarget.value)}
             value={externalUrl}
+            placeholder='External Ticket/Website Link (regular tickets)'
           />
         </Col>
       </Row>
@@ -674,6 +662,7 @@ export default function AdminExternalEventEdit() {
             id="externalVipLink"
             onChange={(e) => setExternalVipLink(e.currentTarget.value)}
             value={externalVipLink}
+            placeholder='External VIP/Website Link (VIP tickets)'
           />
         </Col>
       </Row>
@@ -689,7 +678,7 @@ export default function AdminExternalEventEdit() {
             value={disableLinkReason}
             onChange={(e) => setDisableLinkReason(e.target.value)}
             className="form-control"
-            placeholder="event title"
+            placeholder="Alternate text for Tickets button"
             type="text"
           />
         </Col>
@@ -706,8 +695,43 @@ export default function AdminExternalEventEdit() {
             value={disableVipLinkReason}
             onChange={(e) => setDisableVipLinkReason(e.target.value)}
             className="form-control"
-            placeholder="event title"
+            placeholder="Alternate text for VIP button"
             type="text"
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col className="form-group">
+          <label className="mt-4">
+            <span className="danger">NOTE:</span> The following settings will only have an effect if this is an external event without a matching event in TicketSocket.
+            <br />
+            <br />
+          </label>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <label className="mt-4">Announce Date</label>
+          <DatePicker
+            id="announceDate"
+            format="M/d/yyyy"
+            onSelect={onAnnounceDateChange}
+            value={announceDate}
+            oneTap
+            cleanable
+            showMeridiem
+            onClean={onCleanAnnounceDate}
+            disabled={announceDateDisabled}
+          />
+          <TimePicker
+            id="announceTime"
+            format="hh:mm aa"
+            onSelect={onAnnounceTimeChange}
+            value={announceDate}
+            cleanable
+            showMeridiem
+            onClean={onCleanAnnounceTime}
+            disabled={announceTimeDisabled}
           />
         </Col>
       </Row>

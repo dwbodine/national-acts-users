@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
 import { Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { GetSellersResponse, Seller, SellerType } from '@/types/event';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import router from 'next/router';
+import debouce from 'lodash.debounce';
 
 export default function AdminExternalEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -20,6 +21,11 @@ export default function AdminExternalEventsIndex() {
   const { getSellers } = useGetSellers();
   const dispatch = useDispatch();
   const [tableLoading, setTableLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const debouncedResults = useMemo(() => {
+    return debouce(setSearchTerm, 250);
+  }, []);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -40,8 +46,9 @@ export default function AdminExternalEventsIndex() {
     }, 500);
     return () => {
       clearTimeout(timeoutId);
+      debouncedResults.cancel();
     };
-  }, [dispatch, getSellers, currentAdminSelection, tableLoading]);
+  }, [dispatch, getSellers, currentAdminSelection, tableLoading, debouncedResults]);
 
   const manageSellerEvents = (sellerId: number) => {
     if (
@@ -63,6 +70,21 @@ export default function AdminExternalEventsIndex() {
     router.push('/admin/external-events/seller/');
   };
 
+  const filterSellers = (sellers: Seller[] | undefined) => {
+      let filteredSellers: Seller[] | undefined = sellers;
+      if (searchTerm && searchTerm.length >= 2 && sellers && sellers.length > 0) {
+        const srch = searchTerm.toLowerCase();
+        filteredSellers = sellers.filter((seller) => {
+          return (
+            seller.name.toLowerCase().includes(srch)
+          );
+        });
+      }
+      return filteredSellers;
+    };
+
+  const filteredSellers = filterSellers(currentAdminSelection.allSellers);
+
   return (
     <div className="admin-container">
       <Row className="refresh-results-header">
@@ -77,9 +99,16 @@ export default function AdminExternalEventsIndex() {
       </Row>
       <Row>
         <Col>
+        <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="form-control search-text-input no-print"
+            placeholder="Search for sellers by name..."
+            hidden={currentAdminSelection.allSellers == undefined}
+          />
           <Table
             autoHeight={true}
-            data={currentAdminSelection.allSellers}
+            data={filteredSellers}
             bordered
             cellBordered
             loading={tableLoading}

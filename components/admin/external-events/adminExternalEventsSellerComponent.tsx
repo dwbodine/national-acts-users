@@ -114,6 +114,13 @@ export default function AdminExternalEventsSeller() {
       isActive: true,
       isDeleted: false,
       externalSellerId: currentAdminSelection.sellerId,
+      disableLinkButton: false,
+      disableLinkReason: undefined,
+      disableVipLinkButton: false,
+      disableVipLinkReason: undefined,
+      externalUrl: undefined,
+      externalVipLink: undefined,
+      announceDate: undefined,
     };
     dispatch(setAdminEvent(vipEvent));
     setTableLoading(true);
