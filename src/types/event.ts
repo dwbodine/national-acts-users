@@ -6,6 +6,14 @@ export enum SellerType {
   Promoter = 3,
 }
 
+export interface SellerEventCategory {
+  sellerId: number;
+  ticketSocketId: number;
+  eventCategoryId?: number;
+  sellerEventCategoryId?: number;
+  hasEvents?: boolean;
+}
+
 export interface Seller {
   sellerId: number;
   name: string;
@@ -13,6 +21,7 @@ export interface Seller {
   isActive?: boolean;
   sellerType: SellerType;
   numExternalEvents?: number;
+  sellerEventCategories?: SellerEventCategory[];
 }
 
 export interface ShirtSales {
@@ -321,6 +330,11 @@ export interface ModifyTicketResponse {
   success: boolean;
   statusCode?: number;
   ticketError?: string;
+}
+
+export interface GetSellerResponse {
+  seller?: Seller;
+  sellerError?: string;
 }
 
 export interface GetSellersResponse {

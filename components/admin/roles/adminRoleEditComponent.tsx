@@ -26,16 +26,21 @@ export default function AdminRoleEdit() {
   const [roleName, setRoleName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (currentAdminSelection.selectedRole == undefined) {
-      goBack();
-    } else if (allPermissions == undefined && roleName == undefined) {
-      dispatch(setIsLoading(true));
-      setRoleName(currentAdminSelection.selectedRole.roleName);
-      getAllPermissions().then((response: GetPermissionsResponse) => {
-        setAllPermissions(response.permissions);
-        dispatch(setIsLoading(false));
-      });
-    }
+    const timeoutId = setTimeout(() => {
+      if (currentAdminSelection.selectedRole == undefined) {
+        goBack();
+      } else if (allPermissions == undefined && roleName == undefined) {
+        dispatch(setIsLoading(true));
+        setRoleName(currentAdminSelection.selectedRole.roleName);
+        getAllPermissions().then((response: GetPermissionsResponse) => {
+          setAllPermissions(response.permissions);
+          dispatch(setIsLoading(false));
+        });
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [currentAdminSelection, roleName, allPermissions, getAllPermissions, dispatch]);
 
   const goBack = () => {

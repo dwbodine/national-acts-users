@@ -5,10 +5,16 @@ import {
   ExternalVenue,
   GetExternalEventsResponse,
   GetExternalVenuesResponse,
+  GetTicketSocketAccountsResponse,
   ModifyExternalEventResponse,
   ModifyExternalVenueResponse,
+  ModifySellerResponse,
+  TicketSocketAccount,
 } from '@/types/admin';
-import { ModifyEventResponse, VipEvent } from '@/types/event';
+import {
+  Seller,
+  VipEvent,
+} from '@/types/event';
 
 export class AdminService {
   protected readonly instance: AxiosInstance;
@@ -212,6 +218,44 @@ export class AdminService {
       });
   };
 
+  getTicketSocketAccounts = async (): Promise<GetTicketSocketAccountsResponse> => {
+    let url = `/admin/ticketSocketAccounts`;
+
+    let accountsResponse: GetTicketSocketAccountsResponse = {
+      accounts: undefined,
+      accountError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        accountsResponse.accounts = res.data
+          ? (res.data as TicketSocketAccount[])
+          : undefined;
+        return accountsResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          accountsResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching ticket socket accounts - please contact your administrator';
+        }
+        accountsResponse.accountError = errorMessage;
+        return accountsResponse;
+      });
+  };
+
   updateExternalEvent = async (
     sellerId: number,
     eventToUpdate: VipEvent,
@@ -249,6 +293,44 @@ export class AdminService {
           errorMessage = 'Unknown error while updating external event';
         }
         modifyResponse.eventError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  updateSeller = async (sellerToUpdate: Seller): Promise<ModifyExternalEventResponse> => {
+    let url = `/admin/seller/update`;
+
+    let modifyResponse: ModifySellerResponse = {
+      success: false,
+      sellerError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify(sellerToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        modifyResponse.updatedSeller = res.data ? (res.data as Seller) : undefined;
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while updating seller';
+        }
+        modifyResponse.sellerError = errorMessage;
         return modifyResponse;
       });
   };

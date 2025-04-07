@@ -927,6 +927,10 @@ input.rs-input:hover {
   display: none;
 }
 
+.form-control-half {
+  max-width: 50%;  
+}
+
 .admin-container {
   padding: 0;
   width: 100%;
@@ -944,7 +948,7 @@ input.rs-input:hover {
 
 .admin-container ul {
   list-style-type: none;
-  margin: 0;
+  margin: 0 0 50px 0;
   padding: 0;
 }
 
@@ -1370,6 +1374,10 @@ input.rs-input:hover {
 
 /* Bootstrap md */
 @media (max-width: 768px) {
+  .form-control-half {
+    max-width: unset;  
+  }
+
   .wrapper {
     width: 368px;
   }
