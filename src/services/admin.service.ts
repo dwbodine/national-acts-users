@@ -12,6 +12,7 @@ import {
   TicketSocketAccount,
 } from '@/types/admin';
 import {
+  GetSellersResponse,
   Seller,
   VipEvent,
 } from '@/types/event';
@@ -296,6 +297,39 @@ export class AdminService {
         return modifyResponse;
       });
   };
+
+  getSellers = async (): Promise<GetSellersResponse> => {
+      let url = `/admin/sellers`;
+  
+      let sellersResponse: GetSellersResponse = {
+        sellers: undefined,
+        sellersError: undefined,
+      };
+  
+      const headers = getAuthorizationHeader();
+  
+      return this.instance
+        .get(url, {
+          headers: headers,
+        })
+        .then((res) => {
+          const sellers = res.data;
+          sellersResponse.sellers = sellers.length ? (sellers as Seller[]) : [];
+          return sellersResponse;
+        })
+        .catch((err) => {
+          console.log(err);
+          var errorMessage = '';
+          if (err?.response?.data?.msg) {
+            errorMessage = err.response.data.msg;
+          } else {
+            errorMessage =
+              'Unknown error while fetching sellers - please contact your administrator';
+          }
+          sellersResponse.sellersError = errorMessage;
+          return sellersResponse;
+        });
+    };
 
   updateSeller = async (sellerToUpdate: Seller): Promise<ModifyExternalEventResponse> => {
     let url = `/admin/seller/update`;

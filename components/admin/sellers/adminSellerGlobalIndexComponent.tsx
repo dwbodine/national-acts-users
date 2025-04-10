@@ -6,19 +6,22 @@ import { RootState } from '@/lib/store';
 import { setAdminSeller, setAllSellers, setReloadSellers, setTicketSocketAccounts } from '@/lib/adminSelectionSlice';
 import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { GetSellersResponse, Seller } from '@/types/event';
+import { GetSellersResponse, Seller, SellerType } from '@/types/event';
 import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
 import { GetTicketSocketAccountsResponse } from '@/types/admin';
+import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
+import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
+import { Button } from 'react-bootstrap';
 
 export default function AdminSellerGlobalIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
-  const { getSellers } = useGetSellers();
+  const { getAdminSellers } = useGetAdminSellers();
   const { getTicketSocketAccounts } = useGetTicketSocketAccounts();
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const { getSellerStatusSlug } = useGetEventStatus();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -35,7 +38,7 @@ export default function AdminSellerGlobalIndex() {
         dispatch(setReloadSellers(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getSellers().then((response: GetSellersResponse) => {
+        getAdminSellers().then((response: GetSellersResponse) => {
           if (!response.sellersError && response.sellers) {
             dispatch(setAllSellers(response.sellers));
           }
@@ -51,7 +54,19 @@ export default function AdminSellerGlobalIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [getSellers, getTicketSocketAccounts, dispatch, currentAdminSelection, tableLoading]);
+  }, [getAdminSellers, getTicketSocketAccounts, dispatch, currentAdminSelection, tableLoading]);
+
+  const addSeller = () => {
+    const seller: Seller = {
+      sellerId: 0,
+      name: '',
+      sellerType: SellerType.Artist,
+      isActive: true,
+    };
+    dispatch(setAdminSeller(seller));
+    setTableLoading(true);
+    router.push('/admin/sellers/edit');    
+  };
 
   const editSeller = (sellerId: number) => {
     if (!sellerId || isNaN(sellerId)) {
@@ -82,7 +97,7 @@ export default function AdminSellerGlobalIndex() {
 
   return (
     <div className="admin-container">
-      <h3>Manage Global Seller Settings</h3>
+      <h3>Manage Sellers</h3>
       <input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -90,12 +105,16 @@ export default function AdminSellerGlobalIndex() {
             placeholder="Search for sellers by name..."
             hidden={currentAdminSelection.allSellers == undefined}
           />
+      <Button onClick={addSeller}>Add Seller</Button>
       <Table
         height={600}
         data={filteredSellers}
         bordered
         cellBordered
         loading={tableLoading}
+        rowClassName={(rowData: Seller) => {
+          return getSellerStatusSlug(rowData);
+        }}
       >
         <Column width={300}>
           <HeaderCell>Seller Name</HeaderCell>

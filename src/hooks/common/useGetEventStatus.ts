@@ -1,4 +1,4 @@
-import { VipEvent } from '@/types/event';
+import { Seller, VipEvent } from '@/types/event';
 import moment from 'moment';
 
 export const useGetEventStatus = () => {
@@ -31,6 +31,21 @@ export const useGetEventStatus = () => {
       statusSlug = 'inactive';
     } else if (event.isHidden) {
       statusSlug = 'hidden';
+    } else {
+      statusSlug = 'active';
+    }
+    return statusSlug;
+  };
+
+  const getSellerStatusSlug = (
+    seller: Seller | undefined
+  ): string => {
+    let statusSlug: string = '';
+    if (!seller) {
+      return '';
+    }
+    if (!seller.isActive) {
+      statusSlug = 'inactive';
     } else {
       statusSlug = 'active';
     }
@@ -71,5 +86,5 @@ export const useGetEventStatus = () => {
     return statusText;
   };
 
-  return { getEventStatusSlug, getEventStatusText };
+  return { getEventStatusSlug, getEventStatusText, getSellerStatusSlug };
 };
