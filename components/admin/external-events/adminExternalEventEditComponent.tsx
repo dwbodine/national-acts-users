@@ -537,7 +537,6 @@ export default function AdminExternalEventEdit() {
             value={eventDate}
             oneTap
             showMeridiem
-            disabled={eventId > 0}
           />
 
           <label className="mt-4">Event venue</label>
@@ -546,7 +545,6 @@ export default function AdminExternalEventEdit() {
             data={venueList}
             size="lg"
             block
-            disabled={eventId > 0}
             onChange={onEventVenueChange}
           />
           <Button disabled={externalEventVenueId > 0} onClick={handleVenueOpen}>Add New Venue</Button>
