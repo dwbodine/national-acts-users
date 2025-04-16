@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
 import { ModifySellerResponse } from '@/types/admin';
+import { setEngine } from 'crypto';
 
 export default function AdminSellerGlobalEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -37,6 +38,160 @@ export default function AdminSellerGlobalEdit() {
     let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.name != sellerName) {
       sellerToUpdate.name = sellerName;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setAddress = (address: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.address != address) {
+      sellerToUpdate.address = address;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setCity = (city: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.city != city) {
+      sellerToUpdate.city = city;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setState = (state: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.state != state) {
+      sellerToUpdate.state = state;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setZip = (zip: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.zip != zip) {
+      sellerToUpdate.zip = zip;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setCountry = (country: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.country != country) {
+      sellerToUpdate.country = country;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setPhone = (phone: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.phone != phone) {
+      sellerToUpdate.phone = phone;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setEmail = (email: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.email != email) {
+      sellerToUpdate.email = email;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setTwitter = (twitter: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.twitter != twitter) {
+      sellerToUpdate.twitter = twitter;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setFacebook = (facebook: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.facebook != facebook) {
+      sellerToUpdate.facebook = facebook;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setInstagram = (instagram: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.instagram != instagram) {
+      sellerToUpdate.instagram = instagram;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setYouTube = (youtube: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.youtube != youtube) {
+      sellerToUpdate.youtube = youtube;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setSpotify = (spotify: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.spotify != spotify) {
+      sellerToUpdate.spotify = spotify;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setWebsite = (website: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.website != website) {
+      sellerToUpdate.website = website;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }    
+  }
+
+  const setWebsiteDisplayText = (websiteDisplayText: string) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.websiteDisplayText != websiteDisplayText) {
+      sellerToUpdate.websiteDisplayText = websiteDisplayText;
       dispatch(setAdminSeller(sellerToUpdate));
     }    
   }
@@ -203,7 +358,9 @@ export default function AdminSellerGlobalEdit() {
   const pageHeader =
     (currentAdminSelection.selectedSeller?.sellerId ?? 0 > 0) ? 'Edit seller' : 'Add seller';
 
-  const selectedSellerType = Number(currentAdminSelection.selectedSeller?.sellerType ?? 0);
+  const selectedSellerType = Number(currentAdminSelection.selectedSeller?.sellerType ?? 1);
+
+  const isArtist = selectedSellerType == SellerType.Artist;
   
   return (
     <Row
@@ -259,6 +416,179 @@ export default function AdminSellerGlobalEdit() {
               checked={!(currentAdminSelection.selectedSeller?.isActive ?? false)}
               onChange={(e) => setIsActive(!e.target.checked)}
               label={'Set to inactive'}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h2>Set Default Values</h2>
+          </Col>
+        </Row>
+        <Row className="form-group" hidden={isArtist}>
+          <Col xs={2}><label className="mt-4">Address</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="address"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group" hidden={isArtist}>
+          <Col xs={2}><label className="mt-4">City</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.city}
+            onChange={(e) => setCity(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="city"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group" hidden={isArtist}>
+          <Col xs={2}><label className="mt-4">State</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.state}
+            onChange={(e) => setState(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="state"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group" hidden={isArtist}>
+          <Col xs={2}><label className="mt-4">Postal Code</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.zip}
+            onChange={(e) => setZip(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="postal code"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group" hidden={isArtist}>
+          <Col xs={2}><label className="mt-4">Country</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.country}
+            onChange={(e) => setCountry(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="country (leave blank for USA)"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col xs={2}><label className="mt-4">Phone</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="phone"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col xs={2}><label className="mt-4">Email</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="email"
+            type="email"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col xs={2}><label className="mt-4">Twitter</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.twitter}
+            onChange={(e) => setTwitter(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="Twitter (X) url"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col xs={2}><label className="mt-4">Facebook</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.facebook}
+            onChange={(e) => setFacebook(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="Facebook url"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col xs={2}><label className="mt-4">Instagram</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.instagram}
+            onChange={(e) => setInstagram(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="Instagram url"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col xs={2}><label className="mt-4">YouTube</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.youtube}
+            onChange={(e) => setYouTube(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="YouTube url"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col xs={2}><label className="mt-4">Spotify</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.spotify}
+            onChange={(e) => setSpotify(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="Spotify url"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col xs={2}><label className="mt-4">Website</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.website}
+            onChange={(e) => setWebsite(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="Website url"
+            type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col xs={2}><label className="mt-4">Website Display Text</label></Col>
+          <Col>
+            <input
+            value={currentAdminSelection.selectedSeller?.phone}
+            onChange={(e) => setWebsiteDisplayText(e.target.value)}
+            className="form-control form-control-half"
+            placeholder="Website display text (shown instead of url)"
+            type="text"
             />
           </Col>
         </Row>

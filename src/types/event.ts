@@ -17,6 +17,20 @@ export interface SellerEventCategory {
 export interface Seller {
   sellerId: number;
   name: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
+  twitter?: string;
+  facebook?: string;
+  instagram?: string;
+  youtube?: string;
+  spotify?: string;
+  website?: string;
+  websiteDisplayText?: string;
   hideInList?: boolean;
   isActive?: boolean;
   sellerType: SellerType;
