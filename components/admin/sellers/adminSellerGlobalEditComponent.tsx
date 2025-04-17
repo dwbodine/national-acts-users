@@ -484,7 +484,7 @@ export default function AdminSellerGlobalEdit() {
             />
           </Col>
         </Row>
-        <Row className="form-group">
+        <Row className="form-group" hidden={isArtist}>
           <Col xs={2}><label className="mt-4">Phone</label></Col>
           <Col>
             <input
@@ -496,7 +496,7 @@ export default function AdminSellerGlobalEdit() {
             />
           </Col>
         </Row>
-        <Row className="form-group">
+        <Row className="form-group" hidden={isArtist}>
           <Col xs={2}><label className="mt-4">Email</label></Col>
           <Col>
             <input

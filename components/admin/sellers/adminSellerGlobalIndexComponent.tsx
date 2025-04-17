@@ -61,6 +61,7 @@ export default function AdminSellerGlobalIndex() {
       sellerId: 0,
       name: '',
       sellerType: SellerType.Artist,
+      hideInList: true,
       isActive: true,
     };
     dispatch(setAdminSeller(seller));
