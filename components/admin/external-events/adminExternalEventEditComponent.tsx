@@ -302,9 +302,23 @@ export default function AdminExternalEventEdit() {
     if (!currentAdminSelection.selectedEvent || !currentAdminSelection.sellerId) {
       return false;
     }
-    dispatch(setIsLoading(true));
 
     let eventToUpdate: VipEvent = { ...currentAdminSelection.selectedEvent };
+
+    if (!eventToUpdate.title) {
+      toast.warning("Title must be set");
+      return;
+    }
+
+    if (!eventToUpdate.eventDate) {
+      toast.warning("Event date must be set");
+      return;
+    }
+
+    if (!eventToUpdate.externalEventVenueId) {
+      toast.warning("Event venue must be set");
+      return;
+    }
 
     if (!eventToUpdate.announceDate) {
       eventToUpdate.announceDate = undefined;
@@ -325,6 +339,8 @@ export default function AdminExternalEventEdit() {
     if (!eventToUpdate.externalVipLink) {
       eventToUpdate.externalVipLink = undefined;
     }
+
+    dispatch(setIsLoading(true));
 
     updateExternalEvent(currentAdminSelection.sellerId, eventToUpdate).then((response: ModifyExternalEventResponse) => {
       if (response.success) {
