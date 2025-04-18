@@ -8,7 +8,7 @@ import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import moment from 'moment';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { VipEvent } from '@/types/event';
+import { Seller, VipEvent } from '@/types/event';
 import {
   setAdminEvent,
   setReloadEvents,
@@ -41,6 +41,8 @@ export default function AdminExternalEventEdit() {
   const [state, setState] = useState<string | undefined>(undefined);
   const [zipCode, setZipCode] = useState<string | undefined>(undefined);
   const [country, setCountry] = useState<string | undefined>(undefined);
+
+  const currentSeller: Seller | undefined = currentAdminSelection.allSellers?.find(x => x.sellerId == currentAdminSelection.sellerId);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -305,7 +307,7 @@ export default function AdminExternalEventEdit() {
 
     let eventToUpdate: VipEvent = { ...currentAdminSelection.selectedEvent };
 
-    if (!eventToUpdate.title) {
+    if (!eventToUpdate.externalTitle) {
       toast.warning("Title must be set");
       return;
     }
@@ -315,8 +317,21 @@ export default function AdminExternalEventEdit() {
       return;
     }
 
+    const evtDate = moment(eventToUpdate.eventDate).unix();
+    const today = moment().endOf('day').unix();
+
+    if (evtDate < today) {
+      toast.warning("Event date must be greater than today's date");
+      return;
+    }
+
     if (!eventToUpdate.externalEventVenueId) {
       toast.warning("Event venue must be set");
+      return;
+    }
+
+    if (!eventToUpdate.externalUrl) {
+      toast.warning("External Ticket/Website Link must be set");
       return;
     }
 
@@ -469,12 +484,12 @@ export default function AdminExternalEventEdit() {
 
   const handleVenueClose = () => setVenueOpen(false);
 
-  const pageHeader = 'Edit external event';
-
   const eventId =
     currentAdminSelection.selectedEvent?.eventId != undefined
       ? currentAdminSelection.selectedEvent.eventId
       : 0;
+
+  const pageHeader = (eventId > 0) ? `Edit external event for ${currentSeller?.name}` : `Add external event for ${currentSeller?.name}`;
 
   const eventTitle =
     currentAdminSelection.selectedEvent != undefined
