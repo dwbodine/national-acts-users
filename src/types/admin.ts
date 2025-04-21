@@ -1,4 +1,5 @@
 import { Seller, SellerEventCategory, VipEvent } from './event';
+import { Page } from './public';
 
 export interface ExternalVenue {
   venueId: number;
@@ -26,6 +27,19 @@ export interface TicketSocketAccount {
   mulitiplier?: number;
   currencySymbol?: string;
   categories?: TicketSocketCategory[];
+}
+
+export interface GetPagesResponse {
+  pages?: Page[];
+  statusCode?: number;
+  pageError?: string;
+}
+
+export interface ModifyPageResponse {
+  statusCode?: number;
+  pageError?: string;
+  success: boolean;
+  updatedPage?: Page;
 }
 
 export interface GetExternalVenuesResponse {

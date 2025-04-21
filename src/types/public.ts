@@ -50,20 +50,20 @@ export interface Page {
   pageType: PageType;
   image?: string;
   thumbnail?: string;
-  link_preview_image?: string;
-  logo_only_image?: string;
+  linkPreviewImage?: string;
+  logoOnlyImage?: string;
   title1?: string;
   subtitle1?: string;
   title2?: string;
   subtitle2?: string;
-  html_text?: string;
-  is_active: boolean;
-  include_start?: string;
-  include_end?: string;
-  exclude_start?: string;
-  exclude_end?: string;
-  google_analytics_id?: string;
-  page_order?: number;
+  htmlText?: string;
+  isActive: boolean;
+  includeStart?: string;
+  includeEnd?: string;
+  excludeStart?: string;
+  excludeEnd?: string;
+  googleAnalyticsId?: string;
+  pageOrder?: number;
   sellers?: PageSeller[];
 }
 

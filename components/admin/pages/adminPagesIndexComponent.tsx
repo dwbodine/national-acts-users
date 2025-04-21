@@ -3,44 +3,35 @@ import AdminListHomeButton from '../adminListHomeButton';
 import { Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
-import { setAdminSeller, setAllSellers, setReloadSellers, setTicketSocketAccounts } from '@/lib/adminSelectionSlice';
+import { setAdminSeller, setAllPages, setAllSellers, setReloadPages, setReloadSellers, setSelectedPage, setTicketSocketAccounts } from '@/lib/adminSelectionSlice';
 import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { GetSellersResponse, Seller, SellerType } from '@/types/event';
 import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
-import { GetTicketSocketAccountsResponse } from '@/types/admin';
+import { GetPagesResponse, GetTicketSocketAccountsResponse } from '@/types/admin';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { Button } from 'react-bootstrap';
+import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
+import { Page } from '@/types/public';
 
 export default function AdminPagesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
-  const { getAdminSellers } = useGetAdminSellers();
-  const { getTicketSocketAccounts } = useGetTicketSocketAccounts();
+  const { getAllPages } = useGetAllPages();
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const { getSellerStatusSlug } = useGetEventStatus();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (!currentAdminSelection.ticketSocketAccounts) {
+      if (currentAdminSelection.reloadPages) {
+        dispatch(setReloadPages(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        dispatch(setAllSellers(undefined));
-        getTicketSocketAccounts().then((response: GetTicketSocketAccountsResponse) => {
-          if (!response.accountError && response.accounts) {
-            dispatch(setTicketSocketAccounts(response.accounts));
-          }
-        });
-      } else if (currentAdminSelection.reloadSellers) {
-        dispatch(setReloadSellers(false));
-        setTableLoading(true);
-        dispatch(setIsLoading(true));
-        getAdminSellers().then((response: GetSellersResponse) => {
-          if (!response.sellersError && response.sellers) {
-            dispatch(setAllSellers(response.sellers));
+        getAllPages().then((response: GetPagesResponse) => {
+          if (!response.pageError && response.pages) {
+            dispatch(setAllPages(response.pages));
           }
           dispatch(setIsLoading(false));
           setTableLoading(false);
@@ -54,74 +45,76 @@ export default function AdminPagesIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [getAdminSellers, getTicketSocketAccounts, dispatch, currentAdminSelection, tableLoading]);
+  }, [getAllPages, dispatch, currentAdminSelection, tableLoading]);
 
-  const addSeller = () => {
-    const seller: Seller = {
-      sellerId: 0,
-      name: '',
-      sellerType: SellerType.Artist,
+  const addPage = () => {
+    const page: Page = {
+      pageId: 0,
+      route: '',
+      title: '',
+      pageType: {
+        pageTypeId: 1,
+        pageTypeName: '',
+        pageTypeTemplate: ''
+      },
       isActive: true,
     };
-    dispatch(setAdminSeller(seller));
+    dispatch(setSelectedPage(page));
     setTableLoading(true);
-    router.push('/admin/sellers/edit');    
+    router.push('/admin/pages/edit');    
   };
 
-  const editSeller = (sellerId: number) => {
-    if (!sellerId || isNaN(sellerId)) {
+  const editPage = (pageId: number) => {
+    if (!pageId || isNaN(pageId)) {
       return;
     }
-    let seller = currentAdminSelection.allSellers?.find((x) => x.sellerId == sellerId);
-    if (seller) {
-      dispatch(setAdminSeller(seller));
+    let page = currentAdminSelection.allPages?.find((x) => x.pageId == pageId);
+    if (page) {
+      dispatch(setSelectedPage(page));
       setTableLoading(true);
-      router.push('/admin/sellers/edit');
+      router.push('/admin/pages/edit');
     }
   };
 
-  const filterSellers = (sellers: Seller[] | undefined) => {
-        let filteredSellers: Seller[] | undefined = sellers;
-        if (searchTerm && searchTerm.length >= 2 && sellers && sellers.length > 0) {
+  const filterPages = (pages: Page[] | undefined) => {
+        let filteredPages: Page[] | undefined = pages;
+        if (searchTerm && searchTerm.length >= 2 && pages && pages.length > 0) {
           const srch = searchTerm.toLowerCase();
-          filteredSellers = sellers.filter((seller) => {
+          filteredPages = pages.filter((page) => {
             return (
-              seller.name.toLowerCase().includes(srch)
+              page.title.toLowerCase().includes(srch)
             );
           });
         }
-        return filteredSellers;
+        return filteredPages;
       };
   
-  const filteredSellers = filterSellers(currentAdminSelection.allSellers);
+  const filteredPages = filterPages(currentAdminSelection.allPages);
 
   return (
     <div className="admin-container">
-      <h3>Manage Sellers</h3>
+      <h3>Manage Pages</h3>
       <input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="form-control search-text-input no-print"
-            placeholder="Search for sellers by name..."
-            hidden={currentAdminSelection.allSellers == undefined}
+            placeholder="Search for pages by title..."
+            hidden={currentAdminSelection.allPages == undefined}
           />
-      <Button onClick={addSeller}>Add Seller</Button>
+      <Button onClick={addPage}>Add Page</Button>
       <Table
         height={600}
-        data={filteredSellers}
+        data={filteredPages}
         bordered
         cellBordered
         loading={tableLoading}
-        rowClassName={(rowData: Seller) => {
-          return getSellerStatusSlug(rowData);
-        }}
       >
         <Column width={300}>
-          <HeaderCell>Seller Name</HeaderCell>
+          <HeaderCell>Page Title</HeaderCell>
           <Cell className="admin-click-cell">
             {(rowData) => (
-              <div id={rowData.sellerId} onClick={() => editSeller(parseInt(`${rowData.sellerId}`))}>
-                {rowData.name}
+              <div id={rowData.pageId} onClick={() => editPage(parseInt(`${rowData.pageId}`))}>
+                {rowData.title}
               </div>
             )}
           </Cell>
