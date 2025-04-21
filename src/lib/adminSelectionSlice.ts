@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { AdminSelection, Role, User } from '../types/user';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
-import { Page, SiteSetting } from '@/types/public';
+import { Page, PageType, SiteSetting } from '@/types/public';
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 
 const initialState: AdminSelection = {
@@ -28,6 +28,7 @@ const initialState: AdminSelection = {
   allSellers: undefined,
   allSettings: undefined,
   allPages: undefined,
+  pageTypes: undefined,
   roles: undefined,
   users: undefined,
   events: undefined,
@@ -146,6 +147,10 @@ export const adminSelectionSlice = createSlice({
       state.reloadTours = false;
       return state;
     },
+    setPageTypes: (state, action: PayloadAction<PageType[]>) => {
+      state.pageTypes = action.payload;
+      return state;
+    },
     setVenues: (state, action: PayloadAction<ExternalVenue[]>) => {
       state.venues = action.payload;
       state.reloadVenues = false;
@@ -218,6 +223,7 @@ export const adminSelectionSlice = createSlice({
       state.selectedSeller = undefined;
       state.selectedTour = undefined;
       state.selectedVenue = undefined;
+      state.pageTypes = undefined;
       state.roles = undefined;
       state.users = undefined;
       state.events = undefined;
@@ -266,6 +272,7 @@ export const {
   setReloadPages,
   setSelectedPage,
   setAllPages,
+  setPageTypes,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

@@ -8,7 +8,7 @@ import {
   Tour,
   VipEvent,
 } from './event';
-import { Page, SiteSetting } from './public';
+import { Page, PageType, SiteSetting } from './public';
 
 export type LoginResponse = {
   user?: User;
@@ -341,6 +341,7 @@ export type AdminSelection = {
   allSellers?: Seller[] | undefined;
   allSettings?: SiteSetting[] | undefined;
   allPages?: Page[] | undefined;
+  pageTypes?: PageType[] | undefined;
   roles?: Role[] | undefined;
   users?: User[] | undefined;
   events?: VipEvent[] | undefined;

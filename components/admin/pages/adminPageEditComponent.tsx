@@ -3,21 +3,25 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
-import { setAdminSeller, setReloadSellers } from '@/lib/adminSelectionSlice';
+import { setAdminSeller, setReloadPages, setReloadSellers, setSelectedPage } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
-import { ModifySellerResponse } from '@/types/admin';
+import { ModifyPageResponse, ModifySellerResponse } from '@/types/admin';
+import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
+import { Page } from '@/types/public';
+import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
-  const { updateSeller } = useUpdateSeller();
+  const { updatePage } = useUpdatePage();
+  const pageSellerTypeIds: number[] = [7, 14, 15, 16, 17, 18, 19];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.ticketSocketAccounts == undefined || currentAdminSelection.selectedSeller == undefined) {
+      if (currentAdminSelection.allSellers == undefined || currentAdminSelection.selectedPage == undefined) {
         goBack();
       }
     }, 500);
@@ -27,7 +31,7 @@ export default function AdminPageEdit() {
   }, [currentAdminSelection, dispatch]);
 
   const goBack = () => {
-    router.push('/admin/sellers/');
+    router.push('/admin/pages/');
   };
 
   const setSellerName = (sellerName: string) => {
@@ -121,47 +125,57 @@ export default function AdminPageEdit() {
   };
 
   const onSubmit = () => {
-    if (!currentAdminSelection.selectedSeller) {
+    if (!currentAdminSelection.selectedPage) {
       return false;
     }
 
-    let sellerToUpdate: Seller = {
-      ...currentAdminSelection.selectedSeller
+    let pageToUpdate: Page = {
+      ...currentAdminSelection.selectedPage
     };
 
-    if (!sellerToUpdate.name) {
-      toast.error('Seller name cannot be blank');
+    if (!pageToUpdate.route) {
+      toast.error('Route cannot be blank');
       return;
     }
 
-    const sellerEventCategories = sellerToUpdate.sellerEventCategories?.filter(x => x.eventCategoryId ?? 0 > 0);
-
-    if (!sellerEventCategories || sellerEventCategories.length == 0) {
-      toast.error('Must select a category for at least one Ticket Socket account');
+    if (!pageToUpdate.title) {
+      toast.error('Title cannot be blank');
       return;
     }
+
+    if (!pageToUpdate.pageType) {
+      toast.error('Must select a page type');
+      return;
+    }
+
+    if (pageSellerTypeIds.includes(pageToUpdate.pageType.pageTypeId)) {
+      const pageSellers = pageToUpdate.sellers?.filter(x => x.sellerId ?? 0 > 0);
+
+      if (!pageSellers || pageSellers.length == 0) {
+        toast.error('Must select at least one seller for this page');
+        return;
+      }
+    }    
 
     dispatch(setIsLoading(true));
 
-    updateSeller(sellerToUpdate).then((response: ModifySellerResponse) => {
+    updatePage(pageToUpdate).then((response: ModifyPageResponse) => {
       if (response.success) {
-        dispatch(setReloadSellers(true));
-        toast.success('Save seller succeeded');
-        dispatch(setAdminSeller(undefined));
-        router.push('/admin/sellers/');
+        dispatch(setReloadPages(true));
+        toast.success('Save page succeeded');
+        router.push('/admin/pages/');
       } else {
-        toast.error(response.sellerError ?? 'Error occurred while saving seller');
+        toast.error(response.pageError ?? 'Error occurred while saving page');
       }
       dispatch(setIsLoading(false));
     });
   };
 
-  const allAccounts = currentAdminSelection.ticketSocketAccounts;
-  let categoryRows: any[] = [];
-  if (allAccounts && allAccounts.length > 0 && currentAdminSelection.selectedSeller) {
-    allAccounts.map((account, index) => {
-      const selectedCategory = currentAdminSelection.selectedSeller?.sellerEventCategories?.find(x => x.ticketSocketId == account.ticketSocketId);
-      const disabled = selectedCategory && selectedCategory.hasEvents;
+  const allSellers = currentAdminSelection.allSellers;
+  let pageSellerRows: any[] = [];
+  if (allSellers && allSellers.length > 0 && currentAdminSelection.selectedPage) {
+    allSellers.map((seller, index) => {
+      const selectedSeller = currentAdminSelection.selectedPage?.sellers?.find(x => x.sellerId == seller.sellerId);
       let options: any[] = [];
       options.push(<option key={`a${index}_00`} value={0}>
         {' '}
@@ -171,7 +185,7 @@ export default function AdminPageEdit() {
         options.push(<option key={`a${index}_${i}`} value={x.eventCategoryId}>{x.name}</option>);
       });
       const key = `account${index}`;
-      categoryRows.push(
+      pageSellerRows.push(
         <Row className="form-group">
           <Col xs={2}><label className="mt-4">Category for {account.name}</label></Col>
           <Col>

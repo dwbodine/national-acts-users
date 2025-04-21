@@ -1,3 +1,4 @@
+import { PageType } from './public';
 import { IDashboardTotals } from './user';
 
 export enum SellerType {
@@ -354,6 +355,11 @@ export interface GetSellerResponse {
 export interface GetSellersResponse {
   sellers?: Seller[];
   sellersError?: string;
+}
+
+export interface GetPageTypesResponse {
+  pageTypes?: PageType[];
+  pageTypeError?: string;
 }
 
 export interface IRevenueKeys {

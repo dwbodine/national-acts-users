@@ -3,29 +3,51 @@ import AdminListHomeButton from '../adminListHomeButton';
 import { Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
-import { setAdminSeller, setAllPages, setAllSellers, setReloadPages, setReloadSellers, setSelectedPage, setTicketSocketAccounts } from '@/lib/adminSelectionSlice';
+import { setAllPages, setAllSellers, setPageTypes, setReloadPages, setReloadSellers, setSelectedPage } from '@/lib/adminSelectionSlice';
 import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { GetSellersResponse, Seller, SellerType } from '@/types/event';
-import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
-import { GetPagesResponse, GetTicketSocketAccountsResponse } from '@/types/admin';
-import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
+import { GetPagesResponse } from '@/types/admin';
 import { Button } from 'react-bootstrap';
 import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
 import { Page } from '@/types/public';
+import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
+import { GetPageTypesResponse, GetSellersResponse } from '@/types/event';
+import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 
 export default function AdminPagesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
   const { getAllPages } = useGetAllPages();
+  const { getPageTypes } = useGetPageTypes();
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const { getAdminSellers } = useGetAdminSellers();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.reloadPages) {
+      if (currentAdminSelection.pageTypes == undefined) {
+        setTableLoading(true);
+        dispatch(setIsLoading(true));
+        getPageTypes().then((response: GetPageTypesResponse) => {
+          if (!response.pageTypeError && response.pageTypes) {
+            dispatch(setPageTypes(response.pageTypes));
+          }
+          dispatch(setIsLoading(false));
+          setTableLoading(false);
+        });
+      } else if (currentAdminSelection.reloadSellers) {
+        dispatch(setReloadSellers(false));
+        setTableLoading(true);
+        dispatch(setIsLoading(true));
+        getAdminSellers().then((response: GetSellersResponse) => {
+          if (!response.sellersError && response.sellers) {
+            dispatch(setAllSellers(response.sellers));
+          }
+          dispatch(setIsLoading(false));
+          setTableLoading(false);
+        });
+      } else if (currentAdminSelection.reloadPages) {
         dispatch(setReloadPages(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
@@ -45,7 +67,7 @@ export default function AdminPagesIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [getAllPages, dispatch, currentAdminSelection, tableLoading]);
+  }, [getAllPages, dispatch, currentAdminSelection, tableLoading, getAdminSellers, getPageTypes]);
 
   const addPage = () => {
     const page: Page = {
