@@ -13,6 +13,7 @@ const initialState: AdminSelection = {
   reloadEvents: true,
   reloadRoles: true,
   reloadTours: true,
+  reloadSellers: true,
   reloadSettings: true,
   reloadVenues: true,
   selectedEvent: undefined,
@@ -103,6 +104,14 @@ export const adminSelectionSlice = createSlice({
       }
       return state;
     },
+    setReloadSellers: (state, action: PayloadAction<boolean>) => {
+      state.reloadSellers = action.payload;
+      if (state.reloadSellers) {
+        state.allSellers = undefined;
+        state.sellerId = undefined;
+      }
+      return state;
+    },
     setSelectedUser: (state, action: PayloadAction<User>) => {
       state.selectedUser = action.payload;
       return state;
@@ -188,6 +197,7 @@ export const adminSelectionSlice = createSlice({
       state.allSettings = undefined;
       state.reloadSettings = true;
       state.uploadedFile = undefined;
+      state.reloadSellers = true;
       return state;
     },
   },
@@ -218,6 +228,7 @@ export const {
   setReloadVenues,
   setAdminVenue,
   setVenues,
+  setReloadSellers,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

@@ -325,6 +325,7 @@ export type AdminSelection = {
   reloadEvents?: boolean;
   reloadTours?: boolean;
   reloadVenues?: boolean;
+  reloadSellers?: boolean;
   reloadSettings?: boolean;
   selectedUser?: User | undefined;
   selectedRole?: Role | undefined;

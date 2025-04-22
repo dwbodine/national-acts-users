@@ -11,6 +11,7 @@ import {
   setAdminTour,
   setAllSellers,
   setReloadEvents,
+  setReloadSellers,
   setReloadTours,
   setTours,
 } from '@/lib/adminSelectionSlice';
@@ -54,7 +55,8 @@ export default function AdminEventsIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.allSellers == undefined) {
+      if (currentAdminSelection.reloadSellers) {
+        dispatch(setReloadSellers(false));
         setEventIdList([]);
         setSelectedAction('');
         setTableLoading(true);
