@@ -236,6 +236,22 @@ export default function AdminExternalEventEdit() {
     markDirty();
   };
 
+  const onEventTimeChange = (date: Date | null) => {
+      if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+        return;
+      }
+  
+      const eventTime = moment(date);
+      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      let eventDate = moment(currentEvent.eventDate);
+      eventDate = eventDate.hours(eventTime.hours());
+      eventDate = eventDate.minutes(eventTime.minutes());
+      eventDate = eventDate.seconds(0);
+      currentEvent.externalEventTime = eventDate.format('YYYY-MM-DD HH:mm:ss');
+      dispatch(setAdminEvent(currentEvent));
+      markDirty();
+  };
+
   const onCleanAnnounceDate = () => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
@@ -244,6 +260,16 @@ export default function AdminExternalEventEdit() {
     currentEvent.announceDate = undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
+  };
+
+  const onCleanEventTime = () => {
+      if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+        return;
+      }
+      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      currentEvent.externalEventTime = undefined;    
+      dispatch(setAdminEvent(currentEvent));
+      markDirty();
   };
 
   const onCleanAnnounceTime = () => {
@@ -500,6 +526,13 @@ export default function AdminExternalEventEdit() {
     currentAdminSelection.selectedEvent?.eventDate != undefined
       ? moment(currentAdminSelection.selectedEvent.eventDate).toDate()
       : null;
+
+  const eventTime =
+        currentAdminSelection.selectedEvent != undefined &&
+          currentAdminSelection.selectedEvent.externalEventTime != null
+          ? moment(currentAdminSelection.selectedEvent.externalEventTime).toDate()
+          : null; 
+
   const announceDate =
     currentAdminSelection.selectedEvent != undefined &&
       currentAdminSelection.selectedEvent.announceDate != null
@@ -569,6 +602,17 @@ export default function AdminExternalEventEdit() {
             oneTap
             showMeridiem
           />
+
+          <label className="mt-4">Event time (local)</label>
+          <TimePicker
+            id="eventTime"
+            format="hh:mm aa"
+            onSelect={onEventTimeChange}
+            value={eventTime}
+            cleanable
+            showMeridiem
+            onClean={onCleanEventTime}
+          />        
 
           <label className="mt-4">Event venue</label>
           <SelectPicker

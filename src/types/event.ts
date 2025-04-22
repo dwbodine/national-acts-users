@@ -145,6 +145,7 @@ export interface VipEvent {
   isActive: boolean;
   orders?: Order[];
   externalEventId?: number;
+  externalEventTime?: string;
   externalSellerId?: number;
   externalThumbnail?: string;
   externalTitle?: string;

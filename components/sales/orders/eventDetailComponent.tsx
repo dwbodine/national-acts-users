@@ -506,6 +506,11 @@ export default function EventDetail(props: any) {
     }
   };
 
+  let eventDate = currentReportSelection.currentDetailEvent ? moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY') : '';
+  if (currentReportSelection.currentDetailEvent && currentReportSelection.currentDetailEvent.externalEventTime) {
+    eventDate += ` ${moment(currentReportSelection.currentDetailEvent.externalEventTime).format('h:mm A')}`;
+  }
+
   return (
     <>
       {currentReportSelection.currentDetailEvent != undefined ? (
@@ -532,9 +537,7 @@ export default function EventDetail(props: any) {
                       <tr>
                         <td className="vipLabel">Date:</td>
                         <td>
-                          {moment(
-                            currentReportSelection.currentDetailEvent.eventDate,
-                          ).format('MM/DD/YYYY')}
+                          {eventDate}
                         </td>
                       </tr>
                       <tr>
