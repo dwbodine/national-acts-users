@@ -146,6 +146,11 @@ export const adminSelectionSlice = createSlice({
       state.reloadEvents = false;
       return state;
     },
+    setAdminEventsOnly: (state, action: PayloadAction<VipEvent[]>) => {
+      state.events = action.payload;
+      state.reloadEvents = false;
+      return state;
+    },
     setReloadEvents: (state, action: PayloadAction<boolean>) => {
       state.reloadEvents = action.payload;
       return state;
@@ -229,6 +234,7 @@ export const {
   setAdminVenue,
   setVenues,
   setReloadSellers,
+  setAdminEventsOnly,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

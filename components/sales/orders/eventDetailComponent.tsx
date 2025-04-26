@@ -507,8 +507,8 @@ export default function EventDetail(props: any) {
   };
 
   let eventDate = currentReportSelection.currentDetailEvent ? moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY') : '';
-  if (currentReportSelection.currentDetailEvent && currentReportSelection.currentDetailEvent.externalEventTime) {
-    eventDate += ` ${moment(currentReportSelection.currentDetailEvent.externalEventTime).format('h:mm A')}`;
+  if (currentReportSelection.currentDetailEvent && currentReportSelection.currentDetailEvent.eventTime) {
+    eventDate += ` ${moment(currentReportSelection.currentDetailEvent.eventTime).format('h:mm A')}`;
   }
 
   return (

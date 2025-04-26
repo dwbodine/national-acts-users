@@ -163,7 +163,7 @@ export default function AdminEventsIndex() {
       return;
     }
     dispatch(setAdminEvent(vipEvent));
-    setTableLoading(true);
+    dispatch(setIsLoading(true));
     router.push('/admin/events/edit/');
   };
 
@@ -183,7 +183,7 @@ export default function AdminEventsIndex() {
       return;
     }
     dispatch(setAdminEvent(vipEvent));
-    setTableLoading(true);
+    dispatch(setIsLoading(true));
     router.push('/admin/events/orders/');
   };
 

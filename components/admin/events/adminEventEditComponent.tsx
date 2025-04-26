@@ -26,6 +26,7 @@ import { useAddNote } from '@/hooks/admin/useAddNote';
 export default function AdminEventEdit(props: any) {
   const id: number | undefined = props.Id as number;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const dispatch = useDispatch();
   const { getLocation } = useGetLocation();
   const { refundEvent } = useRefundEvent();
@@ -49,6 +50,7 @@ export default function AdminEventEdit(props: any) {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
+        dispatch(setIsLoading(true));
         getEventById(id)
           .then((response) => {
             if (response.event && !response.eventError) {
@@ -56,13 +58,16 @@ export default function AdminEventEdit(props: any) {
                 setAdminEvent(response.event)
               );
             }
+            dispatch(setIsLoading(false));
           })
+      } else if (globalSelection.isLoading) {
+        dispatch(setIsLoading(false));
       }
     }, 300);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, id, getEventById]);
+  }, [currentAdminSelection, dispatch, id, getEventById, globalSelection]);
 
   const handleNotesOpen = () => setNotesOpen(true);
   const handleNotesClose = () => setNotesOpen(false);
@@ -256,38 +261,6 @@ export default function AdminEventEdit(props: any) {
       announceDate = announceDate.seconds(0);
       currentEvent.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');;
     }    
-    dispatch(setAdminEvent(currentEvent));
-    markDirty();
-  };
-
-  const onDoorsOpenChange = (date: Date | null) => {
-    if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
-      return;
-    }
-
-    let doorsOpen = moment(currentAdminSelection.selectedEvent.eventDate)
-      .startOf('day')
-      .add(date.getHours(), 'hours')
-      .add(date.getMinutes(), 'minutes');
-
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.doorsOpen = doorsOpen.format('YYYY-MM-DD HH:mm:ss');
-    dispatch(setAdminEvent(currentEvent));
-    markDirty();
-  };
-
-  const onMeetAndGreetChange = (date: Date | null) => {
-    if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
-      return;
-    }
-
-    let meetAndGreet = moment(currentAdminSelection.selectedEvent.eventDate)
-      .startOf('day')
-      .add(date.getHours(), 'hours')
-      .add(date.getMinutes(), 'minutes');
-
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.meetAndGreetTime = meetAndGreet.format('YYYY-MM-DD HH:mm:ss');
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -566,16 +539,7 @@ export default function AdminEventEdit(props: any) {
 
   const announceTimeDisabled = !announceDateDisabled && !announceDate;
 
-  const doorsOpenTime =
-    currentAdminSelection.selectedEvent != undefined &&
-      currentAdminSelection.selectedEvent.doorsOpen != null
-      ? moment(currentAdminSelection.selectedEvent.doorsOpen).toDate()
-      : null;
-  const meetAndGreetTime =
-    currentAdminSelection.selectedEvent != undefined &&
-      currentAdminSelection.selectedEvent.meetAndGreetTime != null
-      ? moment(currentAdminSelection.selectedEvent.meetAndGreetTime).toDate()
-      : null;
+  
   const isActive = currentAdminSelection?.selectedEvent?.isActive ?? false;
   const isDeleted = currentAdminSelection?.selectedEvent?.isDeleted ?? false;
   const isHidden = currentAdminSelection?.selectedEvent?.isHidden ?? false;
@@ -724,36 +688,7 @@ export default function AdminEventEdit(props: any) {
           />
         </Col>
       </Row>
-      <Row className="form-group">
-        <Col xs={1}>
-          Doors Open:
-        </Col>
-        <Col>
-          <TimePicker
-            id="doorsOpen"
-            format="hh:mm aa"
-            showMeridiem={true}
-            hideMinutes={minute => minute % 15 !== 0}
-            onChange={onDoorsOpenChange}
-            value={doorsOpenTime}
-          />
-        </Col>
-      </Row>
-      <Row className="form-group">
-        <Col xs={1}>
-          Meet and Greet Time:
-        </Col>
-        <Col>
-          <TimePicker
-            id="meetAndGreet"
-            format="hh:mm aa"
-            showMeridiem={true}
-            hideMinutes={minute => minute % 15 !== 0}
-            onChange={onMeetAndGreetChange}
-            value={meetAndGreetTime}
-          />
-        </Col>
-      </Row>
+      
       <Row className="form-group">
         <Col xs={1}>
           Check-in location:

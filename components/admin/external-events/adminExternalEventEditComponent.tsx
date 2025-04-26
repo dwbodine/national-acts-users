@@ -15,6 +15,9 @@ import {
   setMustSaveEvent,
   setVenues,
   setAdminVenue,
+  setAdminEvents,
+  setReloadVenues,
+  setAdminEventsOnly,
 } from '@/lib/adminSelectionSlice';
 import { DatePicker, Modal, SelectPicker, TimePicker } from 'rsuite';
 import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
@@ -23,6 +26,8 @@ import { ExternalVenue, ModifyExternalEventResponse, ModifyExternalVenueResponse
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import AdminFileUpload from '../common/adminFileUploadComponent';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
+import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
+import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 
 export default function AdminExternalEventEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -31,6 +36,7 @@ export default function AdminExternalEventEdit() {
   const { getExternalVenueLocation } = useGetLocation();
   const { updateExternalEvent } = useUpdateExternalEvent();
   const { getAllVenues } = useGetAllVenues();
+  const { getAdminSellerEvents } = useGetAdminSellerEvents();
   const [isUploading, setIsUploading] = useState(false);
   const [isThumbnailDirty, setIsThumbnailDirty] = useState(false);
   const thumbNailBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/thumbnails`;
@@ -46,13 +52,23 @@ export default function AdminExternalEventEdit() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.venues == undefined) {
+      if (currentAdminSelection.reloadVenues) {
+        dispatch(setIsLoading(true));
+        dispatch(setReloadVenues(false));
         getAllVenues()
           .then((response) => {
             if (response.venues && !response.venueError) {
               dispatch(
                 setVenues(response.venues)
               );
+              if (currentSeller != undefined && currentSeller.sellerId != undefined) {
+                getAdminSellerEvents([currentSeller.sellerId]).then((response) => {
+                  if (response.events && !response.eventError) {
+                    dispatch(setAdminEventsOnly(response.events));
+                  }
+                  dispatch(setIsLoading(false));
+                });
+              }      
             }
           })
       }
@@ -60,7 +76,7 @@ export default function AdminExternalEventEdit() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, getAllVenues]);
+  }, [currentAdminSelection, dispatch, getAllVenues, currentSeller, getAdminSellerEvents]);
 
   const onEventVenueChange = (value: number | null, event: React.SyntheticEvent) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
@@ -72,12 +88,22 @@ export default function AdminExternalEventEdit() {
     markDirty();
   };
 
+  const onEventChange = (value: number | null, event: React.SyntheticEvent) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.ticketSocketEventId = value ?? 0;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
   const setEventTitle = (title: string) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
     let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.externalTitle = title;
+    currentEvent.title = title;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -247,7 +273,7 @@ export default function AdminExternalEventEdit() {
       eventDate = eventDate.hours(eventTime.hours());
       eventDate = eventDate.minutes(eventTime.minutes());
       eventDate = eventDate.seconds(0);
-      currentEvent.externalEventTime = eventDate.format('YYYY-MM-DD HH:mm:ss');
+      currentEvent.eventTime = eventDate.format('YYYY-MM-DD HH:mm:ss');
       dispatch(setAdminEvent(currentEvent));
       markDirty();
   };
@@ -267,7 +293,7 @@ export default function AdminExternalEventEdit() {
         return;
       }
       let currentEvent = { ...currentAdminSelection.selectedEvent };
-      currentEvent.externalEventTime = undefined;    
+      currentEvent.eventTime = undefined;    
       dispatch(setAdminEvent(currentEvent));
       markDirty();
   };
@@ -287,6 +313,62 @@ export default function AdminExternalEventEdit() {
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
+
+  const onDoorsOpenChange = (date: Date | null) => {
+      if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+        return;
+      }
+  
+      let doorsOpen = moment(currentAdminSelection.selectedEvent.eventDate)
+        .startOf('day')
+        .add(date.getHours(), 'hours')
+        .add(date.getMinutes(), 'minutes');
+  
+      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      currentEvent.doorsOpen = doorsOpen.format('YYYY-MM-DD HH:mm:ss');
+      dispatch(setAdminEvent(currentEvent));
+      markDirty();
+    };
+
+    const onCleanDoorsOpen = () => {
+      if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+        return;
+      }
+      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      if (currentEvent) {
+        currentEvent.doorsOpen = undefined;
+      }    
+      dispatch(setAdminEvent(currentEvent));
+      markDirty();
+    };
+  
+    const onMeetAndGreetChange = (date: Date | null) => {
+      if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+        return;
+      }
+  
+      let meetAndGreet = moment(currentAdminSelection.selectedEvent.eventDate)
+        .startOf('day')
+        .add(date.getHours(), 'hours')
+        .add(date.getMinutes(), 'minutes');
+  
+      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      currentEvent.meetAndGreetTime = meetAndGreet.format('YYYY-MM-DD HH:mm:ss');
+      dispatch(setAdminEvent(currentEvent));
+      markDirty();
+    };
+
+  const onCleanMeetAndGreet = () => {
+      if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+        return;
+      }
+      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      if (currentEvent) {
+        currentEvent.meetAndGreetTime = undefined;
+      }    
+      dispatch(setAdminEvent(currentEvent));
+      markDirty();
+    };
 
   const goBack = (dismissToast: boolean = true) => {
     if (dismissToast) {
@@ -333,7 +415,7 @@ export default function AdminExternalEventEdit() {
 
     let eventToUpdate: VipEvent = { ...currentAdminSelection.selectedEvent };
 
-    if (!eventToUpdate.externalTitle) {
+    if (!eventToUpdate.title) {
       toast.warning("Title must be set");
       return;
     }
@@ -404,7 +486,7 @@ export default function AdminExternalEventEdit() {
     let currentEvent = { ...currentAdminSelection.selectedEvent };
     switch (fileUploadName) {
       case 'Thumbnail':
-        currentEvent.externalThumbnail = filename;
+        currentEvent.thumbnail = filename;
         dispatch(setAdminEvent(currentEvent));
         setIsThumbnailDirty(true);
         markDirty();
@@ -519,7 +601,7 @@ export default function AdminExternalEventEdit() {
 
   const eventTitle =
     currentAdminSelection.selectedEvent != undefined
-      ? currentAdminSelection.selectedEvent.externalTitle
+      ? currentAdminSelection.selectedEvent.title
       : '';
 
   const eventDate =
@@ -529,9 +611,21 @@ export default function AdminExternalEventEdit() {
 
   const eventTime =
         currentAdminSelection.selectedEvent != undefined &&
-          currentAdminSelection.selectedEvent.externalEventTime != null
-          ? moment(currentAdminSelection.selectedEvent.externalEventTime).toDate()
+          currentAdminSelection.selectedEvent.eventTime != null
+          ? moment(currentAdminSelection.selectedEvent.eventTime).toDate()
           : null; 
+
+  const doorsOpenTime =
+    currentAdminSelection.selectedEvent != undefined &&
+      currentAdminSelection.selectedEvent.doorsOpen != null
+      ? moment(currentAdminSelection.selectedEvent.doorsOpen).toDate()
+      : null;
+
+  const meetAndGreetTime =
+    currentAdminSelection.selectedEvent != undefined &&
+      currentAdminSelection.selectedEvent.meetAndGreetTime != null
+      ? moment(currentAdminSelection.selectedEvent.meetAndGreetTime).toDate()
+      : null;
 
   const announceDate =
     currentAdminSelection.selectedEvent != undefined &&
@@ -552,8 +646,9 @@ export default function AdminExternalEventEdit() {
   const isAddedToBandsInTown =
     currentAdminSelection?.selectedEvent?.isAddedToBandsInTown ?? false;
 
-  const thumbnail = currentAdminSelection?.selectedEvent?.externalThumbnail ?? undefined;
+  const thumbnail = currentAdminSelection?.selectedEvent?.thumbnail ?? undefined;
   const externalEventVenueId = currentAdminSelection?.selectedEvent?.externalEventVenueId ?? 0;
+  const ticketSocketEventId = currentAdminSelection?.selectedEvent?.ticketSocketEventId ?? 0;
 
   const externalUrl = currentAdminSelection?.selectedEvent?.externalUrl ?? undefined;
   const externalVipLink = currentAdminSelection?.selectedEvent?.externalVipLink ?? undefined;
@@ -569,6 +664,14 @@ export default function AdminExternalEventEdit() {
       return {
         label: `${venue.venue} ${getExternalVenueLocation(venue)}`,
         value: venue.venueId
+      }
+    }) : [];
+
+  const eventList: ItemDataType<number>[] = currentAdminSelection?.events ?
+    currentAdminSelection?.events?.map((evt) => {
+      return {
+        label: `${moment(evt.eventDate).format('MM/DD/YYYY')} - ${evt.title}`,
+        value: evt.ticketSocketEventId
       }
     }) : [];
 
@@ -602,6 +705,42 @@ export default function AdminExternalEventEdit() {
             oneTap
             showMeridiem
           />
+
+          <label className="mt-4">Associated Ticket Socket Event</label>
+          <SelectPicker
+            value={ticketSocketEventId}
+            data={eventList}
+            size="lg"
+            block
+            onChange={onEventChange}
+          />
+          
+          <label className="mt-4">Doors Open (local)</label>
+                  
+          <TimePicker
+            id="doorsOpen"
+            format="hh:mm aa"
+            showMeridiem={true}
+            hideMinutes={minute => minute % 15 !== 0}
+            onChange={onDoorsOpenChange}
+            value={doorsOpenTime}
+            cleanable
+            onClean={onCleanDoorsOpen}
+          />
+
+          <label className="mt-4">Meet and Greet Time (local)</label>  
+                  
+          <TimePicker
+            id="meetAndGreet"
+            format="hh:mm aa"
+            showMeridiem={true}
+            hideMinutes={minute => minute % 15 !== 0}
+            onChange={onMeetAndGreetChange}
+            value={meetAndGreetTime}
+            cleanable
+            onClean={onCleanMeetAndGreet}
+          />
+                  
 
           <label className="mt-4">Event time (local)</label>
           <TimePicker

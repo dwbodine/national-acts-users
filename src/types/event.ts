@@ -145,12 +145,9 @@ export interface VipEvent {
   isActive: boolean;
   orders?: Order[];
   externalEventId?: number;
-  externalEventTime?: string;
-  externalSellerId?: number;
-  externalThumbnail?: string;
-  externalTitle?: string;
+  eventTime?: string;
+  sellerId?: number;
   externalUrl?: string;
-  externalVenue?: Venue;
   externalEventVenueId?: number;
   disableLinkButton?: boolean;
   disableLinkReason?: string;

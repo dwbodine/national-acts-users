@@ -8,6 +8,7 @@ import {
   setAdminEvents,
   setAdminSellerId,
   setReloadEvents,
+  setReloadVenues,
 } from '@/lib/adminSelectionSlice';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
@@ -25,6 +26,7 @@ import { useSetExternalEventsInactive } from '@/hooks/admin/useSetExternalEvents
 import { useSetExternalEventsHidden } from '@/hooks/admin/useSetExternalEventsHidden';
 import { useSetExternalEventsCancelled } from '@/hooks/admin/useSetExternalEventsCancelled';
 import { useSetExternalEventsDeleted } from '@/hooks/admin/useSetExternalEventsDeleted';
+import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 
 export default function AdminExternalEventsSeller() {
   const { Column, HeaderCell, Cell } = Table;
@@ -93,6 +95,8 @@ export default function AdminExternalEventsSeller() {
     if (!vipEvent) {
       return;
     }
+    dispatch(setReloadAdminEvents(false));
+    dispatch(setReloadVenues(true));
     dispatch(setAdminEvent(vipEvent));
     setTableLoading(true);
     router.push('/admin/external-events/edit/');
@@ -113,7 +117,7 @@ export default function AdminExternalEventsSeller() {
       eventDate: '',
       isActive: true,
       isDeleted: false,
-      externalSellerId: currentAdminSelection.sellerId,
+      sellerId: currentAdminSelection.sellerId,
       disableLinkButton: false,
       disableLinkReason: undefined,
       disableVipLinkButton: false,
@@ -122,6 +126,8 @@ export default function AdminExternalEventsSeller() {
       externalVipLink: undefined,
       announceDate: undefined,
     };
+    dispatch(setReloadAdminEvents(false));
+    dispatch(setReloadVenues(true));
     dispatch(setAdminEvent(vipEvent));
     setTableLoading(true);
     router.push('/admin/external-events/edit/');
