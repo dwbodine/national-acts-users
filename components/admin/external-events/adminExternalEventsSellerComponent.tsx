@@ -9,6 +9,7 @@ import {
   setAdminSellerId,
   setReloadEvents,
   setReloadVenues,
+  setTicketSocketEventsOnly,
 } from '@/lib/adminSelectionSlice';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
@@ -96,6 +97,7 @@ export default function AdminExternalEventsSeller() {
       return;
     }
     dispatch(setReloadAdminEvents(false));
+    dispatch(setTicketSocketEventsOnly(undefined));
     dispatch(setReloadVenues(true));
     dispatch(setAdminEvent(vipEvent));
     setTableLoading(true);

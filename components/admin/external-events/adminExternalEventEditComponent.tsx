@@ -15,9 +15,8 @@ import {
   setMustSaveEvent,
   setVenues,
   setAdminVenue,
-  setAdminEvents,
   setReloadVenues,
-  setAdminEventsOnly,
+  setTicketSocketEventsOnly,
 } from '@/lib/adminSelectionSlice';
 import { DatePicker, Modal, SelectPicker, TimePicker } from 'rsuite';
 import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
@@ -26,8 +25,7 @@ import { ExternalVenue, ModifyExternalEventResponse, ModifyExternalVenueResponse
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import AdminFileUpload from '../common/adminFileUploadComponent';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
-import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
-import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
 
 export default function AdminExternalEventEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -36,7 +34,7 @@ export default function AdminExternalEventEdit() {
   const { getExternalVenueLocation } = useGetLocation();
   const { updateExternalEvent } = useUpdateExternalEvent();
   const { getAllVenues } = useGetAllVenues();
-  const { getAdminSellerEvents } = useGetAdminSellerEvents();
+  const { getTicketSocketEventsOnly } = useGetTicketSocketEventsOnly();
   const [isUploading, setIsUploading] = useState(false);
   const [isThumbnailDirty, setIsThumbnailDirty] = useState(false);
   const thumbNailBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/thumbnails`;
@@ -62,9 +60,9 @@ export default function AdminExternalEventEdit() {
                 setVenues(response.venues)
               );
               if (currentSeller != undefined && currentSeller.sellerId != undefined) {
-                getAdminSellerEvents([currentSeller.sellerId]).then((response) => {
+                getTicketSocketEventsOnly(currentSeller.sellerId).then((response) => {
                   if (response.events && !response.eventError) {
-                    dispatch(setAdminEventsOnly(response.events));
+                    dispatch(setTicketSocketEventsOnly(response.events));
                   }
                   dispatch(setIsLoading(false));
                 });
@@ -76,7 +74,7 @@ export default function AdminExternalEventEdit() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, getAllVenues, currentSeller, getAdminSellerEvents]);
+  }, [currentAdminSelection, dispatch, getAllVenues, currentSeller, getTicketSocketEventsOnly]);
 
   const onEventVenueChange = (value: number | null, event: React.SyntheticEvent) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
@@ -374,6 +372,8 @@ export default function AdminExternalEventEdit() {
     if (dismissToast) {
       toast.dismiss();
     }
+    dispatch(setTicketSocketEventsOnly(undefined));
+    dispatch(setAdminEvent(undefined));
     dispatch(setMustSaveEvent(false));
     router.push('/admin/external-events/seller/');
   };
@@ -438,8 +438,8 @@ export default function AdminExternalEventEdit() {
       return;
     }
 
-    if (!eventToUpdate.externalUrl) {
-      toast.warning("External Ticket/Website Link must be set");
+    if (!eventToUpdate.externalUrl && !eventToUpdate.externalVipLink) {
+      toast.warning("One of the links must be set");
       return;
     }
 
@@ -592,72 +592,74 @@ export default function AdminExternalEventEdit() {
 
   const handleVenueClose = () => setVenueOpen(false);
 
+  const selectedEvent = currentAdminSelection.selectedEvent;
+
   const eventId =
-    currentAdminSelection.selectedEvent?.eventId != undefined
-      ? currentAdminSelection.selectedEvent.eventId
+    selectedEvent?.eventId != undefined
+      ? selectedEvent.eventId
       : 0;
 
   const pageHeader = (eventId > 0) ? `Edit external event for ${currentSeller?.name}` : `Add external event for ${currentSeller?.name}`;
 
   const eventTitle =
-    currentAdminSelection.selectedEvent != undefined
-      ? currentAdminSelection.selectedEvent.title
+    selectedEvent != undefined
+      ? selectedEvent.title
       : '';
 
   const eventDate =
-    currentAdminSelection.selectedEvent?.eventDate != undefined
-      ? moment(currentAdminSelection.selectedEvent.eventDate).toDate()
+    selectedEvent?.eventDate != undefined
+      ? moment(selectedEvent.eventDate).toDate()
       : null;
 
   const eventTime =
-        currentAdminSelection.selectedEvent != undefined &&
-          currentAdminSelection.selectedEvent.eventTime != null
-          ? moment(currentAdminSelection.selectedEvent.eventTime).toDate()
+    selectedEvent != undefined &&
+    selectedEvent.eventTime != null
+          ? moment(selectedEvent.eventTime).toDate()
           : null; 
 
   const doorsOpenTime =
-    currentAdminSelection.selectedEvent != undefined &&
-      currentAdminSelection.selectedEvent.doorsOpen != null
-      ? moment(currentAdminSelection.selectedEvent.doorsOpen).toDate()
+    selectedEvent != undefined &&
+      selectedEvent.doorsOpen != null
+      ? moment(selectedEvent.doorsOpen).toDate()
       : null;
 
   const meetAndGreetTime =
-    currentAdminSelection.selectedEvent != undefined &&
-      currentAdminSelection.selectedEvent.meetAndGreetTime != null
-      ? moment(currentAdminSelection.selectedEvent.meetAndGreetTime).toDate()
+    selectedEvent != undefined &&
+      selectedEvent.meetAndGreetTime != null
+      ? moment(selectedEvent.meetAndGreetTime).toDate()
       : null;
 
   const announceDate =
-    currentAdminSelection.selectedEvent != undefined &&
-      currentAdminSelection.selectedEvent.announceDate != null
-      ? moment(currentAdminSelection.selectedEvent.announceDate).toDate()
+    selectedEvent != undefined &&
+      selectedEvent.announceDate != null
+      ? moment(selectedEvent.announceDate).toDate()
       : null;
   const announceDateDisabled =
-    currentAdminSelection.selectedEvent != undefined && eventDate != undefined
+    selectedEvent != undefined && eventDate != undefined
       ? moment(eventDate).toDate() < new Date()
       : false;
 
   const announceTimeDisabled = !announceDateDisabled && !announceDate;
 
-  const isCancelled = currentAdminSelection?.selectedEvent?.isCancelled ?? false;
-  const isActive = currentAdminSelection?.selectedEvent?.isActive ?? false;
-  const isDeleted = currentAdminSelection?.selectedEvent?.isDeleted ?? false;
-  const isHidden = currentAdminSelection?.selectedEvent?.isHidden ?? false;
+  const isCancelled = selectedEvent?.isCancelled ?? false;
+  const isActive = selectedEvent?.isActive ?? false;
+  const isDeleted = selectedEvent?.isDeleted ?? false;
+  const isHidden = selectedEvent?.isHidden ?? false;
   const isAddedToBandsInTown =
-    currentAdminSelection?.selectedEvent?.isAddedToBandsInTown ?? false;
+    selectedEvent?.isAddedToBandsInTown ?? false;
 
-  const thumbnail = currentAdminSelection?.selectedEvent?.thumbnail ?? undefined;
-  const externalEventVenueId = currentAdminSelection?.selectedEvent?.externalEventVenueId ?? 0;
-  const ticketSocketEventId = currentAdminSelection?.selectedEvent?.ticketSocketEventId ?? 0;
+  const thumbnail = selectedEvent?.thumbnail ?? undefined;
+  const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;
+  const ticketSocketEventId = selectedEvent?.ticketSocketEventId ?? 0;
 
-  const externalUrl = currentAdminSelection?.selectedEvent?.externalUrl ?? undefined;
-  const externalVipLink = currentAdminSelection?.selectedEvent?.externalVipLink ?? undefined;
+  const externalUrl = selectedEvent?.externalUrl ?? undefined;
+  const externalVipLink = selectedEvent?.externalVipLink ?? undefined;
 
-  const disableLinkButton = currentAdminSelection?.selectedEvent?.disableLinkButton ?? false;
-  const disableLinkReason = currentAdminSelection?.selectedEvent?.disableLinkReason ?? undefined;
+  const disableLinkButton = selectedEvent?.disableLinkButton ?? false;
+  const disableLinkReason = selectedEvent?.disableLinkReason ?? undefined;
 
-  const disableVipLinkButton = currentAdminSelection?.selectedEvent?.disableVipLinkButton ?? false;
-  const disableVipLinkReason = currentAdminSelection?.selectedEvent?.disableVipLinkReason ?? undefined;
+  const disableVipLinkButton = selectedEvent?.disableVipLinkButton ?? false;
+  const disableVipLinkReason = selectedEvent?.disableVipLinkReason ?? undefined;
 
   const venueList: ItemDataType<number>[] = currentAdminSelection?.venues ?
     currentAdminSelection?.venues?.map((venue) => {
@@ -667,8 +669,8 @@ export default function AdminExternalEventEdit() {
       }
     }) : [];
 
-  const eventList: ItemDataType<number>[] = currentAdminSelection?.events ?
-    currentAdminSelection?.events?.map((evt) => {
+  const eventList: ItemDataType<number>[] = currentAdminSelection?.ticketSocketEvents ?
+    currentAdminSelection?.ticketSocketEvents?.map((evt) => {
       return {
         label: `${moment(evt.eventDate).format('MM/DD/YYYY')} - ${evt.title}`,
         value: evt.ticketSocketEventId
@@ -678,7 +680,7 @@ export default function AdminExternalEventEdit() {
   return (
     <Col
       className="admin-container"
-      hidden={currentAdminSelection.selectedEvent == undefined}
+      hidden={selectedEvent == undefined}
     >
       <Row>
         <Col>

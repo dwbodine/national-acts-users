@@ -340,6 +340,7 @@ export type AdminSelection = {
   roles?: Role[] | undefined;
   users?: User[] | undefined;
   events?: VipEvent[] | undefined;
+  ticketSocketEvents?: VipEvent[] | undefined;
   tours?: Tour[] | undefined;
   uploadedFile?: string;
   venues?: ExternalVenue[] | undefined;

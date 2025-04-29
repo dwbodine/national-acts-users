@@ -146,9 +146,8 @@ export const adminSelectionSlice = createSlice({
       state.reloadEvents = false;
       return state;
     },
-    setAdminEventsOnly: (state, action: PayloadAction<VipEvent[]>) => {
-      state.events = action.payload;
-      state.reloadEvents = false;
+    setTicketSocketEventsOnly: (state, action: PayloadAction<VipEvent[] | undefined>) => {
+      state.ticketSocketEvents = action.payload;
       return state;
     },
     setReloadEvents: (state, action: PayloadAction<boolean>) => {
@@ -194,6 +193,7 @@ export const adminSelectionSlice = createSlice({
       state.roles = undefined;
       state.users = undefined;
       state.events = undefined;
+      state.ticketSocketEvents = undefined;
       state.tours = undefined;
       state.venues = undefined;
       state.mustSaveEvent = false;
@@ -234,7 +234,7 @@ export const {
   setAdminVenue,
   setVenues,
   setReloadSellers,
-  setAdminEventsOnly,
+  setTicketSocketEventsOnly,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;
