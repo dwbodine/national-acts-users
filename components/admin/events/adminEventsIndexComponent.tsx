@@ -13,6 +13,7 @@ import {
   setReloadEvents,
   setReloadSellers,
   setReloadTours,
+  setReloadVenues,
   setTours,
 } from '@/lib/adminSelectionSlice';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
@@ -34,6 +35,7 @@ import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { toast } from 'react-toastify';
 import { useGetTours } from '@/hooks/admin/useGetTours';
 import { AdminSelection } from '@/types/user';
+import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -51,7 +53,7 @@ export default function AdminEventsIndex() {
 
   const [selectedAction, setSelectedAction] = useState('');
   const [eventIdList, setEventIdList] = useState<number[]>([]);
-  const allEventIds: number[] = currentAdminSelection.events?.map(evt => { return evt.ticketSocketEventId }) ?? [];
+  const allEventIds: number[] = currentAdminSelection.events?.map(evt => { return evt.eventId }) ?? [];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -147,17 +149,48 @@ export default function AdminEventsIndex() {
     onDateChange(currentAdminSelection.start, undefined);
   };
 
-  const editEvent = (ticketSocketEventId: number) => {
+  const addEvent = () => {
     if (
-      !ticketSocketEventId ||
-      isNaN(ticketSocketEventId) ||
+      !currentAdminSelection.sellerId
+    ) {
+      return;
+    }
+    const vipEvent: VipEvent = {
+      ticketSocketEventId: undefined,
+      eventId: 0,
+      externalEventId: 0,
+      isExternal: true,
+      title: '',
+      eventDate: '',
+      isActive: true,
+      isDeleted: false,
+      sellerId: currentAdminSelection.sellerId,
+      disableLinkButton: false,
+      disableLinkReason: undefined,
+      disableVipLinkButton: false,
+      disableVipLinkReason: undefined,
+      externalUrl: undefined,
+      externalVipLink: undefined,
+      announceDate: undefined,
+    };
+    dispatch(setReloadAdminEvents(false));
+    dispatch(setReloadVenues(true));
+    dispatch(setAdminEvent(vipEvent));
+    setTableLoading(true);
+    router.push('/admin/events/edit/');
+  };
+
+  const editEvent = (eventId: number) => {
+    if (
+      !eventId ||
+      isNaN(eventId) ||
       !currentAdminSelection.events ||
       currentAdminSelection.events.length == 0
     ) {
       return;
     }
     const vipEvent = currentAdminSelection.events.find(
-      (x) => x.ticketSocketEventId == ticketSocketEventId,
+      (x) => x.externalEventId == eventId,
     );
     if (!vipEvent) {
       return;
@@ -187,12 +220,12 @@ export default function AdminEventsIndex() {
     router.push('/admin/events/orders/');
   };
 
-  const updateEventIdList = (ticketSocketEventId: number, addToList: boolean) => {
+  const updateEventIdList = (eventId: number, addToList: boolean) => {
     let idList: number[] = eventIdList ? [...eventIdList] : [];
-    if (!addToList && idList.includes(ticketSocketEventId)) {
-      idList = idList.filter(id => id != ticketSocketEventId);
-    } else if (addToList && !idList.includes(ticketSocketEventId)) {
-      idList.push(ticketSocketEventId);
+    if (!addToList && idList.includes(eventId)) {
+      idList = idList.filter(id => id != eventId);
+    } else if (addToList && !idList.includes(eventId)) {
+      idList.push(eventId);
     }
     setEventIdList(idList);
   };
@@ -370,13 +403,15 @@ export default function AdminEventsIndex() {
   }
 
   const selectedTourId = currentAdminSelection.selectedTour?.tourId ?? 0;
+  const sellectedSellerId = currentAdminSelection.sellerId;
 
   return (
     <div className="admin-container">
       <Row className="refresh-results-header">
         <Col>
           <AdminListHomeButton />
-        </Col>
+          <Button hidden={sellectedSellerId == undefined} onClick={addEvent}>Add New Event</Button>
+        </Col>        
       </Row>
       <Row className="refresh-results-header">
         <Col>
@@ -447,9 +482,9 @@ export default function AdminEventsIndex() {
               <Cell>
                 {(rowData: VipEvent) =>
                   <FormCheck
-                    id={`evtId_${rowData.ticketSocketEventId}`}
-                    checked={eventIdList.includes(rowData.ticketSocketEventId)}
-                    onChange={(e) => updateEventIdList(rowData.ticketSocketEventId, e.currentTarget.checked)}
+                    id={`evtId_${rowData.eventId}`}
+                    checked={eventIdList.includes(rowData.eventId)}
+                    onChange={(e) => updateEventIdList(rowData.eventId, e.currentTarget.checked)}
                   />
                 }
               </Cell>

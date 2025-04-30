@@ -128,7 +128,7 @@ export interface TicketType {
 }
 
 export interface VipEvent {
-  ticketSocketEventId: number;
+  ticketSocketEventId?: number;
   eventId: number;
   title: string;
   venue?: Venue;
