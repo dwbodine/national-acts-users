@@ -128,7 +128,7 @@ export default function AdminEventEdit(props: any) {
       return;
     }
     let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.ticketSocketEventId = value ?? 0;
+    currentEvent.ticketSocketEventId = value ?? undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -147,7 +147,7 @@ export default function AdminEventEdit(props: any) {
   const handleNotesClose = () => setNotesOpen(false);
 
   const addNewNote = () => {
-    if (!noteText || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+    if (!noteText || !currentAdminSelection || !currentAdminSelection.selectedEvent || !currentAdminSelection.selectedEvent.ticketSocketEventId) {
       return;
     }
     addNote(noteText, currentAdminSelection.selectedEvent.ticketSocketEventId)
@@ -299,10 +299,10 @@ export default function AdminEventEdit(props: any) {
   };
 
   const setListSentToBand = (isSent: boolean) => {
-    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent || !currentAdminSelection.selectedEvent.ticketSocketEventId) {
       return;
     }
-    sendListToBand(currentAdminSelection.selectedEvent.eventId, isSent)
+    sendListToBand(currentAdminSelection.selectedEvent.ticketSocketEventId, isSent)
       .then((response) => {
         if (response.success && !response.eventError) {
           toast.success("VIP list marked as sent to band");
@@ -640,11 +640,11 @@ const onCleanMeetAndGreet = () => {
 
   const handleRefund = () => {
     toast.dismiss();
-    if (!currentAdminSelection.selectedEvent) {
+    if (!currentAdminSelection.selectedEvent || !currentAdminSelection.selectedEvent.ticketSocketEventId) {
       return false;
     }
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.eventId;
+    const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
     refundEvent(eventId, markCancelled, refundServiceFees).then(
       (response: ModifyEventResponse) => {
         const success = response.success;
@@ -662,11 +662,11 @@ const onCleanMeetAndGreet = () => {
   };
 
   const compOrder = () => {
-    if (!currentAdminSelection.selectedEvent || numCompedTickets == 0) {
+    if (!currentAdminSelection.selectedEvent || !currentAdminSelection.selectedEvent.ticketSocketEventId || numCompedTickets == 0) {
       return false;
     }
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.eventId;
+    const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
     addCompedOrder(eventId, numCompedTickets).then(
       (response: ModifyOrderResponse) => {
         const success = response.success;
@@ -684,11 +684,11 @@ const onCleanMeetAndGreet = () => {
   };
 
   const cancelEvent = () => {
-    if (!currentAdminSelection.selectedEvent) {
+    if (!currentAdminSelection.selectedEvent || !currentAdminSelection.selectedEvent.ticketSocketEventId) {
       return false;
     }
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.eventId;
+    const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
     refundEvent(eventId, true, false).then((response: ModifyEventResponse) => {
       const success = response.success;
       dispatch(setIsLoading(false));
