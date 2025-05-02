@@ -156,7 +156,7 @@ export class EventService {
   getAdminEvents = async (
     reportSelection: AdminSelection,
   ): Promise<GetEventsResponse> => {
-    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
+    let url = `/events/getEventsAndOrders?ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
 
     if (reportSelection.selectedTour) {
       url += `&tourId=${reportSelection.selectedTour.tourId}`;
@@ -205,7 +205,7 @@ export class EventService {
   };
 
   getAdminSellerEvents = async (sellerIds: number[]): Promise<GetEventsResponse> => {
-    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&omitOrders=1&sellerIds=${sellerIds.join(',')}`;
+    let url = `/events/getEventsAndOrders?ignoreFlags=1&omitOrders=1&sellerIds=${sellerIds.join(',')}`;
 
     let eventResponse: GetEventsResponse = {
       events: undefined,
@@ -626,7 +626,7 @@ export class EventService {
 
   sendListToBand = async (
     eventId: number,
-    isSent: boolean,
+    isSent: boolean
   ): Promise<ModifyEventResponse> => {
     let url = '/admin/events/sendListToBand';
 
