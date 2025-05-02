@@ -199,7 +199,7 @@ export default function EventDetail(props: any) {
                 for (const order of newEvent.orders) {
                   if (order.isComped && order.tickets) {
                     for (const ticket of order.tickets) {
-                      if (ticket.ticketTypeId != 0) {
+                      if (ticket.ticketTypeId != 0 || !newEvent.ticketSocketEventId) {
                         continue;
                       }
                       let newOrder: Order = {
