@@ -626,7 +626,7 @@ export class EventService {
 
   sendListToBand = async (
     eventId: number,
-    isSent: boolean,
+    isSent: boolean
   ): Promise<ModifyEventResponse> => {
     let url = '/admin/events/sendListToBand';
 

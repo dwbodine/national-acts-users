@@ -3,14 +3,14 @@ import { ModifyEventResponse } from '@/types/event';
 
 export const useSendListToBand = () => {
   const sendListToBand = async (
-    ticketSocketEventId: number,
+    eventId: number,
     isSent: boolean,
   ): Promise<ModifyEventResponse> => {
     let response: ModifyEventResponse = {
       success: false,
       eventError: undefined,
     };
-    response = await eventService.sendListToBand(ticketSocketEventId, isSent);
+    response = await eventService.sendListToBand(eventId, isSent);
     return response;
   };
 

@@ -14,6 +14,7 @@ import {
   setReloadSellers,
   setReloadTours,
   setReloadVenues,
+  setTicketSocketEventsOnly,
   setTours,
 } from '@/lib/adminSelectionSlice';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
@@ -36,6 +37,7 @@ import { toast } from 'react-toastify';
 import { useGetTours } from '@/hooks/admin/useGetTours';
 import { AdminSelection } from '@/types/user';
 import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -50,6 +52,7 @@ export default function AdminEventsIndex() {
   const { setEventsDeleted } = useSetEventsDeleted();
   const { setEventsHidden } = useSetEventsHidden();
   const { getTours } = useGetTours();
+  const { getTicketSocketEventsOnly } = useGetTicketSocketEventsOnly();
 
   const [selectedAction, setSelectedAction] = useState('');
   const [eventIdList, setEventIdList] = useState<number[]>([]);
@@ -103,9 +106,17 @@ export default function AdminEventsIndex() {
               .then((tourResponse: GetToursResponse) => {
                 if (!tourResponse.tourError && tourResponse.tours) {
                   dispatch(setTours(tourResponse.tours));
+                  getTicketSocketEventsOnly(adminSelection.sellerId).then((response) => {
+                    if (response.events && !response.eventError) {
+                      dispatch(setTicketSocketEventsOnly(response.events));
+                    }
+                    dispatch(setIsLoading(false));
+                    setTableLoading(false);
+                  }); 
+                } else {
+                  dispatch(setIsLoading(false));
+                  setTableLoading(false);
                 }
-                dispatch(setIsLoading(false));
-                setTableLoading(false);
               });
           } else {
             dispatch(setIsLoading(false));
@@ -129,6 +140,7 @@ export default function AdminEventsIndex() {
     }
     dispatch(setAdminSellerId(sellerId));
     dispatch(setAdminTour(undefined));
+    dispatch(setTicketSocketEventsOnly(undefined));
     dispatch(setReloadTours(true));
     dispatch(setReloadEvents(true));
   };
@@ -529,17 +541,13 @@ export default function AdminEventsIndex() {
               <HeaderCell>&nbsp;</HeaderCell>
               <Cell>
                 {(rowData: VipEvent) =>
-                  rowData.ticketSocketEventId ? (
                     <a
                       href="#"
-                      id={`${rowData.ticketSocketEventId}_event`}
-                      onClick={() => editEvent(parseInt(`${rowData.ticketSocketEventId}`))}
+                      id={`${rowData.eventId}_event`}
+                      onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
                     >
                       Edit
                     </a>
-                  ) : (
-                    ''
-                  )
                 }
               </Cell>
             </Column>
@@ -567,3 +575,4 @@ export default function AdminEventsIndex() {
     </div>
   );
 }
+

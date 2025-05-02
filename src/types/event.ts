@@ -144,7 +144,7 @@ export interface VipEvent {
   shirtSales?: ShirtSales[];
   isActive: boolean;
   orders?: Order[];
-  externalEventId?: number;
+  externalEventId: number;
   eventTime?: string;
   sellerId?: number;
   externalUrl?: string;
