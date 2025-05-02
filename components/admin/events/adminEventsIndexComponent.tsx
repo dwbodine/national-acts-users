@@ -56,7 +56,14 @@ export default function AdminEventsIndex() {
 
   const [selectedAction, setSelectedAction] = useState('');
   const [eventIdList, setEventIdList] = useState<number[]>([]);
-  const allEventIds: number[] = currentAdminSelection.events?.map(evt => { return evt.eventId }) ?? [];
+  const allEventIds: number[] = [];
+  if (currentAdminSelection.events) {
+    for (const evt of currentAdminSelection.events) {
+      if (evt.ticketSocketEventId) {
+        allEventIds.push(evt.ticketSocketEventId);
+      }
+    }
+  }  
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -232,11 +239,11 @@ export default function AdminEventsIndex() {
     router.push('/admin/events/orders/');
   };
 
-  const updateEventIdList = (eventId: number, addToList: boolean) => {
+  const updateEventIdList = (eventId: number | undefined, addToList: boolean) => {
     let idList: number[] = eventIdList ? [...eventIdList] : [];
-    if (!addToList && idList.includes(eventId)) {
+    if (!addToList && eventId && idList.includes(eventId)) {
       idList = idList.filter(id => id != eventId);
-    } else if (addToList && !idList.includes(eventId)) {
+    } else if (addToList && eventId && !idList.includes(eventId)) {
       idList.push(eventId);
     }
     setEventIdList(idList);
@@ -495,8 +502,8 @@ export default function AdminEventsIndex() {
                 {(rowData: VipEvent) =>
                   <FormCheck
                     id={`evtId_${rowData.eventId}`}
-                    checked={eventIdList.includes(rowData.eventId)}
-                    onChange={(e) => updateEventIdList(rowData.eventId, e.currentTarget.checked)}
+                    checked={eventIdList.includes(rowData.ticketSocketEventId ?? 0)}
+                    onChange={(e) => updateEventIdList(rowData.ticketSocketEventId, e.currentTarget.checked)}
                   />
                 }
               </Cell>
