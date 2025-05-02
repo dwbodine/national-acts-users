@@ -70,7 +70,7 @@ export default function AdminEventEdit(props: any) {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentSeller?.sellerId == undefined) {
-        goBack();
+        router.push('/admin/events/');
       } else if (currentAdminSelection.reloadVenues) {
         dispatch(setIsLoading(true));
         dispatch(setReloadVenues(false));
@@ -100,7 +100,7 @@ export default function AdminEventEdit(props: any) {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, id, getEventById, globalSelection, getAllVenues]);
+  }, [currentAdminSelection, dispatch, id, getEventById, globalSelection, getAllVenues, currentSeller]);
 
   const onEventVenueChange = (value: number | null, event: React.SyntheticEvent) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {

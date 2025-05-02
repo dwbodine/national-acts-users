@@ -145,7 +145,7 @@ export default function EventDataExpanded(props: any) {
             updateEvent(currentEvent)
                 .then((response) => {
                     if (response.success && !response.eventError) {
-                        if (updateListStatus) {
+                        if (updateListStatus && vipEvent.ticketSocketEventId) {
                             sendListToBand(vipEvent.ticketSocketEventId, currentEvent.listSentToBand ?? false)
                                 .then((response) => {
                                     if (response.success && !response.eventError) {
