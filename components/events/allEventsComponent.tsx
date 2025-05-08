@@ -63,7 +63,7 @@ export default function AllEvents() {
           if (!response.eventError && response.events) {
             const filteredEvents = response.events.filter(x => !x.isDeleted && (x.isActive || x.isHidden || x.isCancelled));
             if (currentReportSelection.expandedEvent != undefined) {
-              const updatedEvent = filteredEvents.find(x => x.ticketSocketEventId == currentReportSelection.expandedEvent?.ticketSocketEventId);
+              const updatedEvent = filteredEvents.find(x => x.externalEventId == currentReportSelection.expandedEvent?.externalEventId);
               if (updatedEvent) {
                 dispatch(
                   setExpandedEvent(updatedEvent)

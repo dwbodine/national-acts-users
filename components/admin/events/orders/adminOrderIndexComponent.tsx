@@ -62,7 +62,7 @@ export default function AdminOrdersIndex(props: any) {
         dispatch(setReloadEvents(false));
         setOrderIdList([]);
         let adminSelection = { ...currentAdminSelection };
-        let selectedEventId = adminSelection.selectedEvent?.ticketSocketEventId;
+        let selectedEventId = adminSelection.selectedEvent?.externalEventId;
         if (!adminSelection.sellerId || !selectedEventId) {
           setTableLoading(false);
           return;
@@ -74,7 +74,7 @@ export default function AdminOrdersIndex(props: any) {
           if (response.events && !response.eventError) {
             dispatch(setAdminEvents(response.events));
             const currentEvent = response.events.find(
-              (x) => x.ticketSocketEventId == selectedEventId,
+              (x) => x.externalEventId == selectedEventId,
             );
             if (currentEvent) {
               dispatch(setAdminEvent(currentEvent));

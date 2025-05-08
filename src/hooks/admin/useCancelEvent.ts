@@ -1,19 +1,18 @@
 import { eventService } from '../../services';
 import { ModifyEventResponse } from '@/types/event';
 
-export const useRefundEvent = () => {
-  const refundEvent = async (
+export const useCancelEvent = () => {
+  const cancelEvent = async (
     eventId: number,
-    markCancelled: boolean,
-    refundServiceFees: boolean,
+    isCancelled: boolean,
   ): Promise<ModifyEventResponse> => {
     let response: ModifyEventResponse = {
       success: false,
       eventError: undefined,
     };
-    response = await eventService.refundEvent(eventId, markCancelled, refundServiceFees);
+    response = await eventService.cancelEvent(eventId, isCancelled);
     return response;
   };
 
-  return { refundEvent };
+  return { cancelEvent };
 };

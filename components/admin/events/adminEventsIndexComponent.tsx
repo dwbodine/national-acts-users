@@ -59,9 +59,7 @@ export default function AdminEventsIndex() {
   const allEventIds: number[] = [];
   if (currentAdminSelection.events) {
     for (const evt of currentAdminSelection.events) {
-      if (evt.ticketSocketEventId) {
-        allEventIds.push(evt.ticketSocketEventId);
-      }
+      allEventIds.push(evt.externalEventId);
     }
   }  
 
@@ -175,8 +173,6 @@ export default function AdminEventsIndex() {
       return;
     }
     const vipEvent: VipEvent = {
-      ticketSocketEventId: undefined,
-      eventId: 0,
       externalEventId: 0,
       isExternal: true,
       title: '',
@@ -219,17 +215,16 @@ export default function AdminEventsIndex() {
     router.push('/admin/events/edit/');
   };
 
-  const viewOrders = (ticketSocketEventId: number) => {
+  const viewOrders = (eventId: number) => {
     if (
-      !ticketSocketEventId ||
-      isNaN(ticketSocketEventId) ||
+      isNaN(eventId) ||
       !currentAdminSelection.events ||
       currentAdminSelection.events.length == 0
     ) {
       return;
     }
     const vipEvent = currentAdminSelection.events.find(
-      (x) => x.ticketSocketEventId == ticketSocketEventId,
+      (x) => x.externalEventId == eventId,
     );
     if (!vipEvent) {
       return;
@@ -501,9 +496,9 @@ export default function AdminEventsIndex() {
               <Cell>
                 {(rowData: VipEvent) =>
                   <FormCheck
-                    id={`evtId_${rowData.eventId}`}
-                    checked={eventIdList.includes(rowData.ticketSocketEventId ?? 0)}
-                    onChange={(e) => updateEventIdList(rowData.ticketSocketEventId, e.currentTarget.checked)}
+                    id={`evtId_${rowData.externalEventId}`}
+                    checked={eventIdList.includes(rowData.externalEventId)}
+                    onChange={(e) => updateEventIdList(rowData.externalEventId, e.currentTarget.checked)}
                   />
                 }
               </Cell>
@@ -550,7 +545,7 @@ export default function AdminEventsIndex() {
                 {(rowData: VipEvent) =>
                     <a
                       href="#"
-                      id={`${rowData.eventId}_event`}
+                      id={`${rowData.externalEventId}_event`}
                       onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
                     >
                       Edit
@@ -562,11 +557,11 @@ export default function AdminEventsIndex() {
               <HeaderCell>&nbsp;</HeaderCell>
               <Cell>
                 {(rowData: VipEvent) =>
-                  rowData.ticketSocketEventId && rowData.orders && rowData.orders.length > 0 ? (
+                  rowData.orders && rowData.orders.length > 0 ? (
                     <a
                       href="#"
-                      id={`${rowData.ticketSocketEventId}_orders`}
-                      onClick={() => viewOrders(parseInt(`${rowData.ticketSocketEventId}`))}
+                      id={`${rowData.externalEventId}_orders`}
+                      onClick={() => viewOrders(parseInt(`${rowData.externalEventId}`))}
                     >
                       Manage Orders
                     </a>

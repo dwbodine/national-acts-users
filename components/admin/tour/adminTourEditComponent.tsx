@@ -106,19 +106,19 @@ export default function AdminTourEdit() {
     closeSellers();
   };
 
-  const onEventChange = (ticketSocketEventIds: number[]) => {
+  const onEventChange = (eventIds: number[]) => {
     if (!currentAdminSelection || 
       !currentAdminSelection.events || 
       !currentAdminSelection.selectedTour || 
-      !ticketSocketEventIds || 
-      ticketSocketEventIds.length == 0) {
+      !eventIds || 
+      eventIds.length == 0) {
       return;
     }
 
     let selectedTour = {...currentAdminSelection.selectedTour}
     let selectedEvents: VipEvent[] = [];
-    ticketSocketEventIds.forEach((ticketSocketEventId) => {
-      const evt = currentAdminSelection.events?.find(x => x.ticketSocketEventId == ticketSocketEventId);
+    eventIds.forEach((eventId) => {
+      const evt = currentAdminSelection.events?.find(x => x.externalEventId == eventId);
       if (evt) {
         selectedEvents.push(evt);
       }
@@ -301,9 +301,7 @@ export default function AdminTourEdit() {
   let selectedEvents: number[] = [];
   if (currentAdminSelection.selectedTour?.events && currentAdminSelection.selectedTour?.events.length > 0) {
     for (const evt of currentAdminSelection.selectedTour.events) {
-      if (evt.ticketSocketEventId != undefined) {
-        selectedEvents.push(evt.ticketSocketEventId);
-      }
+        selectedEvents.push(evt.externalEventId);
     }
   }
 
@@ -353,7 +351,7 @@ export default function AdminTourEdit() {
         <CheckPicker 
           data={eventData} 
           labelKey="title"
-          valueKey="ticketSocketEventId"
+          valueKey="externalEventId"
           renderMenuItem={renderEventItem}
           value={selectedEvents} 
           style={{ width: 500 }} 

@@ -154,16 +154,16 @@ export default function AgendaDay(props: any) {
     }
 
     const setRowExpanded = (vipEvent: VipEvent) => {
-        const ticketSocketEventId = vipEvent.ticketSocketEventId;
+        const eventId = vipEvent.externalEventId;
         let expandedRowKey = currentReportSelection.expandedRow;
         let expandedEvent: VipEvent | undefined = vipEvent;
-        let focusControlId = `expandedRow_${ticketSocketEventId}`;
-        if (expandedRowKey == ticketSocketEventId) {
+        let focusControlId = `expandedRow_${eventId}`;
+        if (expandedRowKey == eventId) {
             expandedRowKey = undefined;
             expandedEvent = undefined;
             focusControlId = '';
         } else {
-            expandedRowKey = ticketSocketEventId;
+            expandedRowKey = eventId;
         }
         dispatch(
             setExpandedRow(expandedRowKey)

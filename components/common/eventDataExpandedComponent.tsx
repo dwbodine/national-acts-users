@@ -2,6 +2,7 @@ import { useAddNote } from '@/hooks/admin/useAddNote';
 import { useSendListToBand } from '@/hooks/admin/useSendListToBand';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
 import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents, setUpdateListStatus } from '@/lib/adminEventsSelectionSlice';
+import { resetAdmin, setAdminSellerId, setReloadEvents, setReloadSellers, setReloadVenues } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Note, VipEvent } from '@/types/event';
@@ -54,7 +55,7 @@ export default function EventDataExpanded(props: any) {
         if (!noteText || !vipEvent) {
             return;
         }
-        addNote(noteText, vipEvent.ticketSocketEventId)
+        addNote(noteText, vipEvent.externalEventId)
             .then((response) => {
                 setNotesOpen(false);
                 if (response.success && !response.noteError) {
@@ -70,13 +71,14 @@ export default function EventDataExpanded(props: any) {
 
     const editEvent = () => {
         if (vipEvent != undefined) {
-            window.open(`/admin/events/edit?id=${vipEvent.ticketSocketEventId}`)
+            dispatch(resetAdmin());
+            window.open(`/admin/events/edit?id=${vipEvent.externalEventId}`)
         }
     };
 
     const viewEvent = () => {
         if (vipEvent != undefined) {
-            window.open(`/event/?id=${vipEvent.ticketSocketEventId}`)
+            window.open(`/event/?id=${vipEvent.externalEventId}`)
         }
     };
 
@@ -145,8 +147,8 @@ export default function EventDataExpanded(props: any) {
             updateEvent(currentEvent)
                 .then((response) => {
                     if (response.success && !response.eventError) {
-                        if (updateListStatus && vipEvent.ticketSocketEventId) {
-                            sendListToBand(vipEvent.ticketSocketEventId, currentEvent.listSentToBand ?? false)
+                        if (updateListStatus) {
+                            sendListToBand(vipEvent.externalEventId, currentEvent.listSentToBand ?? false)
                                 .then((response) => {
                                     if (response.success && !response.eventError) {
                                         toast.success("Event updated successfully");
@@ -267,7 +269,7 @@ export default function EventDataExpanded(props: any) {
     }
 
     if (notes.length == 0) {
-        notes.push(<div key={`note_${vipEvent?.ticketSocketEventId ?? 0}`}>n/a</div>)
+        notes.push(<div key={`note_${vipEvent?.externalEventId ?? 0}`}>n/a</div>)
     }
 
     const eventTitle = vipEvent?.title ?? '';
@@ -275,7 +277,7 @@ export default function EventDataExpanded(props: any) {
 
     return (
         (vipEvent != undefined) ?
-            <Row className="expanded-event-row" key={`expandedRow_${vipEvent.ticketSocketEventId}`} id={`expandedRow_${vipEvent.ticketSocketEventId}`}>
+            <Row className="expanded-event-row" key={`expandedRow_${vipEvent.externalEventId}`} id={`expandedRow_${vipEvent.externalEventId}`}>
                 <Col>
                     <Row className="expanded-event-title-row">
                         <Col>{eventTitle} - {eventDate}</Col>

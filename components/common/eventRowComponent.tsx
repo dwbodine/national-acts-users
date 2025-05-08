@@ -11,7 +11,7 @@ export default function EventRow(props: any) {
   const showNotes = props.ShowNotes as boolean;
   const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
-  const id = `event_${vipEvent.ticketSocketEventId}`;
+  const id = `event_${vipEvent.externalEventId}`;
   const { getEventStatusText, getEventStatusSlug } = useGetEventStatus();
 
   const venueName = vipEvent.venue?.name;
@@ -23,7 +23,7 @@ export default function EventRow(props: any) {
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
   const revenue = new Number(vipEvent.totalRevenue ?? 0 - (vipEvent.revenueRefunded ?? 0)).toFixed(2);
   const serviceFees = new Number(vipEvent.totalServiceFees ?? 0 - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2);
-  const url = `/event/?id=${vipEvent.ticketSocketEventId}`;
+  const url = `/event/?id=${vipEvent.externalEventId}`;
 
   const statusSlug = getEventStatusSlug(vipEvent);
   const statusText = getEventStatusText(vipEvent);
@@ -58,7 +58,7 @@ export default function EventRow(props: any) {
         {serviceFees}
       </td>
       <td hidden={!showNotes}>
-        <a onClick={() => showNoteDialog(vipEvent.ticketSocketEventId)}>Notes</a>
+        <a onClick={() => showNoteDialog(vipEvent.externalEventId)}>Notes</a>
       </td>
     </tr>
   );

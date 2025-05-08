@@ -203,6 +203,7 @@ export default function CurrentEvents() {
             (currentReportSelection.showDeleted && evt.isDeleted) ||
             (currentReportSelection.showInactive && !evt.isActive && !evt.isDeleted) ||
             (currentReportSelection.showHidden && evt.isHidden) ||
+            (!currentReportSelection.showInactive && evt.isCancelled) ||
             (!evt.isHidden &&
               !currentReportSelection.showDeleted &&
               !evt.isDeleted &&

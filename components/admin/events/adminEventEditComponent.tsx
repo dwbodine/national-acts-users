@@ -10,7 +10,7 @@ import { useGetLocation } from '@/hooks/common/useGetLocation';
 import moment from 'moment';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { useRefundEvent } from '@/hooks/admin/useRefundEvent';
-import { ModifyEventResponse, ModifyOrderResponse, Note, Seller, VipEvent } from '@/types/event';
+import { GetSellersResponse, GetToursResponse, ModifyEventResponse, ModifyOrderResponse, Note, Seller, VipEvent } from '@/types/event';
 import {
   setAdminEvent,
   setReloadEvents,
@@ -19,6 +19,10 @@ import {
   setVenues,
   setAdminVenue,
   setAdminDates,
+  setReloadSellers,
+  setAllSellers,
+  setTicketSocketEventsOnly,
+  setAdminSellerId,
 } from '@/lib/adminSelectionSlice';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
 import { DatePicker, Modal, SelectPicker, TimePicker } from 'rsuite';
@@ -29,6 +33,9 @@ import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
 import { ExternalVenue, ModifyExternalVenueResponse } from '@/types/admin';
 import AdminFileUpload from '../common/adminFileUploadComponent';
+import { useCancelEvent } from '@/hooks/admin/useCancelEvent';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
 
 export default function AdminEventEdit(props: any) {
   const id: number | undefined = props.Id as number;
@@ -40,12 +47,15 @@ export default function AdminEventEdit(props: any) {
   const { getAllVenues } = useGetAllVenues();
   
   const { refundEvent } = useRefundEvent();
+  const { cancelEvent } = useCancelEvent();
   const { updateEvent } = useUpdateEvent();
   const [markCancelled, setMarkCancelled] = useState<boolean>(true);
   const [numCompedTickets, setNumCompedTickets] = useState<number>(0);
   const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
   const { addCompedOrder } = useAddCompedOrder();
   const { getEventById } = useGetEventById();
+  const { getSellers } = useGetSellers();
+  const { getTicketSocketEventsOnly } = useGetTicketSocketEventsOnly();
   const [notesOpen, setNotesOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
   const { addNote } = useAddNote();
@@ -69,8 +79,13 @@ export default function AdminEventEdit(props: any) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentSeller?.sellerId == undefined) {
-        router.push('/admin/events/');
+      if (currentAdminSelection.reloadSellers) {
+          dispatch(setReloadSellers(false));
+          dispatch(setIsLoading(true));
+          getSellers().then((response: GetSellersResponse) => {
+            dispatch(setAllSellers(response.sellers));
+            dispatch(setIsLoading(false));
+          });
       } else if (currentAdminSelection.reloadVenues) {
         dispatch(setIsLoading(true));
         dispatch(setReloadVenues(false));
@@ -90,8 +105,18 @@ export default function AdminEventEdit(props: any) {
               dispatch(
                 setAdminEvent(response.event)
               );
-            }
-            dispatch(setIsLoading(false));
+              dispatch(
+                setAdminSellerId(response.event.sellerId)
+              );
+              getTicketSocketEventsOnly(response.event.sellerId).then((response) => {
+                if (response.events && !response.eventError) {
+                  dispatch(setTicketSocketEventsOnly(response.events));
+                }
+                dispatch(setIsLoading(false));
+              });
+            } else {
+              dispatch(setIsLoading(false));
+            }            
           })
       } else if (globalSelection.isLoading) {
         dispatch(setIsLoading(false));
@@ -100,7 +125,7 @@ export default function AdminEventEdit(props: any) {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, id, getEventById, globalSelection, getAllVenues, currentSeller]);
+  }, [currentAdminSelection, dispatch, id, getEventById, globalSelection, getAllVenues, currentSeller, getSellers, getTicketSocketEventsOnly]);
 
   const onEventVenueChange = (value: number | null, event: React.SyntheticEvent) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
@@ -136,10 +161,10 @@ export default function AdminEventEdit(props: any) {
   const handleNotesClose = () => setNotesOpen(false);
 
   const addNewNote = () => {
-    if (!noteText || !currentAdminSelection || !currentAdminSelection.selectedEvent || !currentAdminSelection.selectedEvent.ticketSocketEventId) {
+    if (!noteText || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    addNote(noteText, currentAdminSelection.selectedEvent.ticketSocketEventId)
+    addNote(noteText, currentAdminSelection.selectedEvent.externalEventId)
       .then((response) => {
         if (response.success && !response.noteError) {
           toast.success("Note added successfully");
@@ -378,62 +403,6 @@ export default function AdminEventEdit(props: any) {
       markDirty();
   };
 
-  const onDoorsOpenChange = (date: Date | null) => {
-    if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
-      return;
-    }
-
-    let doorsOpen = moment(currentAdminSelection.selectedEvent.eventDate)
-      .startOf('day')
-      .add(date.getHours(), 'hours')
-      .add(date.getMinutes(), 'minutes');
-
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.doorsOpen = doorsOpen.format('YYYY-MM-DD HH:mm:ss');
-    dispatch(setAdminEvent(currentEvent));
-    markDirty();
-  };
-
-  const onCleanDoorsOpen = () => {
-    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
-      return;
-    }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
-    if (currentEvent) {
-      currentEvent.doorsOpen = undefined;
-    }    
-    dispatch(setAdminEvent(currentEvent));
-    markDirty();
-  };
-
-  const onMeetAndGreetChange = (date: Date | null) => {
-    if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
-      return;
-    }
-
-    let meetAndGreet = moment(currentAdminSelection.selectedEvent.eventDate)
-      .startOf('day')
-      .add(date.getHours(), 'hours')
-      .add(date.getMinutes(), 'minutes');
-
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.meetAndGreetTime = meetAndGreet.format('YYYY-MM-DD HH:mm:ss');
-    dispatch(setAdminEvent(currentEvent));
-    markDirty();
-  };
-
-const onCleanMeetAndGreet = () => {
-    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
-      return;
-    }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
-    if (currentEvent) {
-      currentEvent.meetAndGreetTime = undefined;
-    }    
-    dispatch(setAdminEvent(currentEvent));
-    markDirty();
-  };
-
   const onCheckInLocationChange = (location: string | undefined) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
@@ -580,11 +549,11 @@ const onCleanMeetAndGreet = () => {
 
   const handleRefund = () => {
     toast.dismiss();
-    if (!currentAdminSelection.selectedEvent || !currentAdminSelection.selectedEvent.ticketSocketEventId) {
+    if (!currentAdminSelection.selectedEvent) {
       return false;
     }
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
+    const eventId = currentAdminSelection.selectedEvent.externalEventId;
     refundEvent(eventId, markCancelled, refundServiceFees).then(
       (response: ModifyEventResponse) => {
         const success = response.success;
@@ -602,11 +571,19 @@ const onCleanMeetAndGreet = () => {
   };
 
   const compOrder = () => {
-    if (!currentAdminSelection.selectedEvent || !currentAdminSelection.selectedEvent.ticketSocketEventId || numCompedTickets == 0) {
+    if (!currentAdminSelection.selectedEvent) {
+      return false;
+    }
+    if (!currentAdminSelection.selectedEvent.ticketSocketEventId) {
+      toast.warn("Cannot currently comp orders for an event without tickets on sale");
+      return false;
+    }
+    if (numCompedTickets == 0) {
+      toast.warn("Must enter a number for comped tickets for the order");
       return false;
     }
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
+    const eventId = currentAdminSelection.selectedEvent.externalEventId;
     addCompedOrder(eventId, numCompedTickets).then(
       (response: ModifyOrderResponse) => {
         const success = response.success;
@@ -623,22 +600,28 @@ const onCleanMeetAndGreet = () => {
     );
   };
 
-  const cancelEvent = () => {
-    if (!currentAdminSelection.selectedEvent || !currentAdminSelection.selectedEvent.ticketSocketEventId) {
+  const cancelTicketSocketEvent = () => {
+    if (!currentAdminSelection.selectedEvent) {
       return false;
     }
+
+    const eventId = currentAdminSelection.selectedEvent.externalEventId;
+    const isCancelled = !currentAdminSelection.selectedEvent.isCancelled;
+
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
-    refundEvent(eventId, true, false).then((response: ModifyEventResponse) => {
+    
+    cancelEvent(eventId, isCancelled).then((response: ModifyEventResponse) => {
       const success = response.success;
       dispatch(setIsLoading(false));
       if (success) {
-        toast.success('Refund succeeded');
+        const message = isCancelled ? 'Cancellation succeeded' : 'Uncancellation succeeded';
+        toast.success(message);
         dispatch(setReloadEvents(true));
         dispatch(setAdminEvent(undefined));
         goBack(false);
       } else {
-        toast.error('Cancellation failed');
+        const message = isCancelled ? 'Cancellation failed' : 'Uncancellation failed';
+        toast.error(message);
       }
     });
   };
@@ -840,9 +823,11 @@ const onCleanMeetAndGreet = () => {
   const selectedEvent = currentAdminSelection.selectedEvent;
 
   const eventId =
-    selectedEvent?.eventId != undefined
-      ? selectedEvent.eventId
+    selectedEvent?.externalEventId != undefined
+      ? selectedEvent.externalEventId
       : 0;
+
+  const ticketSocketEventId = selectedEvent?.ticketSocketEventId ?? 0;
 
   const pageHeader = (eventId > 0) ? `Edit event for ${currentSeller?.name}` : `Add event for ${currentSeller?.name}`;
 
@@ -862,18 +847,6 @@ const onCleanMeetAndGreet = () => {
             ? moment(selectedEvent.eventTime).toDate()
             : null; 
   
-  const doorsOpenTime =
-    selectedEvent != undefined &&
-      selectedEvent.doorsOpen != null
-      ? moment(selectedEvent.doorsOpen).toDate()
-      : null;
-
-  const meetAndGreetTime =
-    selectedEvent != undefined &&
-      selectedEvent.meetAndGreetTime != null
-      ? moment(selectedEvent.meetAndGreetTime).toDate()
-      : null;
-
   const announceDate =
     selectedEvent != undefined &&
       selectedEvent.announceDate != null
@@ -882,9 +855,13 @@ const onCleanMeetAndGreet = () => {
   
   const refundsDisabled =
     selectedEvent == undefined ||
-    selectedEvent.totalTickets == 0;
-  const cancelDisabled = (selectedEvent?.isCancelled);
-  const cancelTitle = cancelDisabled ? 'Event has already been cancelled' : '';
+    selectedEvent.totalTickets == 0 ||
+    ticketSocketEventId == 0;
+
+  const isCancelled = (selectedEvent?.isCancelled ?? false)
+  const cancelButtonText = isCancelled ? 'Uncancel Event' : 'Mark Cancelled';
+  const refundCancelDisabled = isCancelled;
+  const refundCancelTitle = refundCancelDisabled ? 'Event has already been cancelled' : '';
   
   const isActive = selectedEvent?.isActive ?? false;
   const isDeleted = selectedEvent?.isDeleted ?? false;
@@ -893,8 +870,7 @@ const onCleanMeetAndGreet = () => {
     selectedEvent?.isAddedToBandsInTown ?? false;
 
   const thumbnail = selectedEvent?.thumbnail ?? undefined;
-  const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;
-  const ticketSocketEventId = selectedEvent?.ticketSocketEventId ?? 0;
+  const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;  
 
   const externalUrl = selectedEvent?.externalUrl ?? undefined;
   const externalVipLink = selectedEvent?.externalVipLink ?? undefined;
@@ -1009,7 +985,7 @@ const onCleanMeetAndGreet = () => {
       }
     }) : [];
 
-  const isExternalEvent = selectedEvent?.isExternal ?? false;
+  const isExternalEvent = (selectedEvent?.isExternal ?? false) && (ticketSocketEventId == 0);
 
   return (
     <Col
@@ -1163,32 +1139,8 @@ const onCleanMeetAndGreet = () => {
       </Row>
       <Row className="form-group">
         <Col>
-          <label className="mt-4">Meet and Greet Time (local)</label>  
-                  
-          <TimePicker
-            id="meetAndGreet"
-            format="hh:mm aa"
-            showMeridiem={true}
-            hideMinutes={minute => minute % 15 !== 0}
-            onChange={onMeetAndGreetChange}
-            value={meetAndGreetTime}
-            cleanable
-            onClean={onCleanMeetAndGreet}
-          />
-          <label className="mt-4">Doors Open (local)</label>
-          
-          <TimePicker
-            id="doorsOpen"
-            format="hh:mm aa"
-            showMeridiem={true}
-            hideMinutes={minute => minute % 15 !== 0}
-            onChange={onDoorsOpenChange}
-            value={doorsOpenTime}
-            cleanable
-            onClean={onCleanDoorsOpen}
-          />      
-
           <label className="mt-4">Event time (local)</label>
+
           <TimePicker
             id="eventTime"
             format="hh:mm aa"
@@ -1382,8 +1334,8 @@ const onCleanMeetAndGreet = () => {
             Refund All Tickets
           </Button>
           <FormCheck
-            disabled={cancelDisabled}
-            title={cancelTitle}
+            disabled={refundCancelDisabled}
+            title={refundCancelTitle}
             className="form-control-float"
             checked={markCancelled}
             onChange={(e) => setMarkCancelled(e.target.checked)}
@@ -1410,12 +1362,9 @@ const onCleanMeetAndGreet = () => {
           <Button className="comp-button" onClick={compOrder}>Comp</Button>
         </Col>
       </Row>
-      <Row
-        className="refund-section"
-        hidden={isExternalEvent || (currentAdminSelection?.selectedEvent?.orders?.length ?? 0) > 0}
-      >
+      <Row className="refund-section">
         <Col>
-          <Button onClick={cancelEvent}>Mark Cancelled</Button><br /><br />
+          <Button onClick={cancelTicketSocketEvent}>{cancelButtonText}</Button><br /><br />
           <Button onClick={handleNotesOpen}>Add Note</Button>
           <Modal open={notesOpen} onClose={handleNotesClose}>
             <Modal.Header>
@@ -1441,13 +1390,13 @@ const onCleanMeetAndGreet = () => {
           </Modal>
         </Col>
       </Row>
-      <Row hidden={isExternalEvent}>
+      <Row>
           <Col>
             <div>NOTES:</div>
             {notes}
           </Col>
       </Row>
-      <Row className="refund-section" hidden={isExternalEvent}>
+      <Row className="refund-section" hidden={isExternalEvent || (currentAdminSelection?.selectedEvent?.orders?.length ?? 0) <= 0}>
         <Col>
           <Button onClick={manageOrders}>Manage Orders</Button>
         </Col>

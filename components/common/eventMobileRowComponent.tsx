@@ -18,12 +18,12 @@ export default function EventMobileRow(props: any) {
   const { getLocation } = useGetLocation();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const currentSellerType = currentReportSelection.seller.sellerType;
-  const id = `event_${vipEvent.ticketSocketEventId}`;
-  const { getEventStatusText, getEventStatusSlug } = useGetEventStatus();
+  const id = `event_${vipEvent.externalEventId}`;
+  const { getEventStatusSlug } = useGetEventStatus();
   const isAdmin = props.IsAdmin as boolean;
 
   const setDetailEvent = () => {
-    const url = `/event/?id=${vipEvent.ticketSocketEventId}`;
+    const url = `/event/?id=${vipEvent.externalEventId}`;
     window.open(url, '_blank');
   };
 
@@ -134,7 +134,7 @@ export default function EventMobileRow(props: any) {
           </Row>
           <Row hidden={!showNotes}>
             <Col>
-              <Button onClick={() => showNoteDialog(vipEvent.ticketSocketEventId)}>Notes</Button>
+              <Button onClick={() => showNoteDialog(vipEvent.externalEventId)}>Notes</Button>
             </Col>
           </Row>
         </Container>
