@@ -191,7 +191,6 @@ export default function AdminEventsIndex() {
     dispatch(setReloadAdminEvents(false));
     dispatch(setReloadVenues(true));
     dispatch(setAdminEvent(vipEvent));
-    setTableLoading(true);
     router.push('/admin/events/edit/');
   };
 
@@ -211,11 +210,10 @@ export default function AdminEventsIndex() {
       return;
     }
     dispatch(setAdminEvent(vipEvent));
-    dispatch(setIsLoading(true));
     router.push('/admin/events/edit/');
   };
 
-  const viewOrders = (eventId: number) => {
+  const manageOrders = (eventId: number) => {
     if (
       isNaN(eventId) ||
       !currentAdminSelection.events ||
@@ -226,11 +224,11 @@ export default function AdminEventsIndex() {
     const vipEvent = currentAdminSelection.events.find(
       (x) => x.externalEventId == eventId,
     );
-    if (!vipEvent) {
+    if (!vipEvent || !vipEvent.orders || vipEvent.orders.length == 0) {
       return;
     }
     dispatch(setAdminEvent(vipEvent));
-    dispatch(setIsLoading(true));
+    setTableLoading(true);
     router.push('/admin/events/orders/');
   };
 
@@ -561,7 +559,7 @@ export default function AdminEventsIndex() {
                     <a
                       href="#"
                       id={`${rowData.externalEventId}_orders`}
-                      onClick={() => viewOrders(parseInt(`${rowData.externalEventId}`))}
+                      onClick={() => manageOrders(parseInt(`${rowData.externalEventId}`))}
                     >
                       Manage Orders
                     </a>

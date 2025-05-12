@@ -96,6 +96,7 @@ export default function AdminEventEdit(props: any) {
                 setVenues(response.venues)
               );
             }
+            dispatch(setIsLoading(false));
           })
       } else if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
         dispatch(setIsLoading(true));
@@ -118,8 +119,6 @@ export default function AdminEventEdit(props: any) {
               dispatch(setIsLoading(false));
             }            
           })
-      } else if (globalSelection.isLoading) {
-        dispatch(setIsLoading(false));
       }
     }, 300);
     return () => {

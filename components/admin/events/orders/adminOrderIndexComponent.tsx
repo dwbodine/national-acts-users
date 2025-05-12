@@ -82,9 +82,8 @@ export default function AdminOrdersIndex(props: any) {
           }
           dispatch(setIsLoading(false));
         });
-      } else if (tableLoading || globalSelection.isLoading) {
+      } else if (tableLoading) {
         setTimeout(() => {
-          dispatch(setIsLoading(false));
           setTableLoading(false);
         }, 300);
       }
@@ -110,7 +109,7 @@ export default function AdminOrdersIndex(props: any) {
       return;
     }
     dispatch(setAdminOrder(order));
-    dispatch(setIsLoading(true));
+    setTableLoading(true);
     let path = '/admin/events/orders/edit/';
     if (id) {
       path += `?id=${order.ticketSocketOrderId}`;
