@@ -300,9 +300,7 @@ export default function AdminTourEdit() {
   let eventData: VipEvent[] = currentAdminSelection.events && currentAdminSelection.events.length > 0  ? currentAdminSelection.events : [];
   let selectedEvents: number[] = [];
   if (currentAdminSelection.selectedTour?.events && currentAdminSelection.selectedTour?.events.length > 0) {
-    for (const evt of currentAdminSelection.selectedTour.events) {
-        selectedEvents.push(evt.externalEventId);
-    }
+    selectedEvents = currentAdminSelection.selectedTour.events.map((evt) => { return evt.externalEventId });
   }
 
   const announceDate =

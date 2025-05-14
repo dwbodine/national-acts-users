@@ -133,6 +133,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'multipart/form-data',
+      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
     return this.instance

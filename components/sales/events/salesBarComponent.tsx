@@ -61,6 +61,7 @@ export default function SalesBar() {
       currentReportSelection.seller &&
       currentReportSelection.seller.sellerId > 0
     ) {
+      dispatch(setIsLoading(true));
       getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
         (response: GetEventsResponse) => {
           if (response && !response.eventError && response.events != undefined) {
@@ -76,6 +77,7 @@ export default function SalesBar() {
             const fileName = getFileNameFromReportSelection(currentReportSelection);
             downloadFile(fileName, csvData);
           }
+          dispatch(setIsLoading(false));
         },
       );
     }
@@ -89,6 +91,7 @@ export default function SalesBar() {
       currentReportSelection.seller &&
       currentReportSelection.seller.sellerId > 0
     ) {
+      dispatch(setIsLoading(true));
       getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
         (response: GetEventsResponse) => {
           if (response && !response.eventError && response.events != undefined) {
@@ -127,6 +130,7 @@ export default function SalesBar() {
             );
             downloadFile(fileName, csvData);
           }
+          dispatch(setIsLoading(false));
         },
       );
     }

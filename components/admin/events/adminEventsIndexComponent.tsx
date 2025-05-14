@@ -56,12 +56,7 @@ export default function AdminEventsIndex() {
 
   const [selectedAction, setSelectedAction] = useState('');
   const [eventIdList, setEventIdList] = useState<number[]>([]);
-  const allEventIds: number[] = [];
-  if (currentAdminSelection.events) {
-    for (const evt of currentAdminSelection.events) {
-      allEventIds.push(evt.externalEventId);
-    }
-  }  
+  const allEventIds: number[] = currentAdminSelection.events?.map(evt => { return evt.externalEventId }) ?? [];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

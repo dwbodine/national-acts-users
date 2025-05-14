@@ -1709,7 +1709,7 @@ export class EventService {
       if (hasShirtData) {
         exportStr += `,"${shirts}"`;
       }
-      exportStr += `,${order.venue},${order.eventAddress},${order.eventCity},${order.eventState},${order.eventZip},${order.eventCountry}\n`;
+      exportStr += `,"${order.venue ?? ''}","${order.eventAddress ?? ''}","${order.eventCity ?? ''}","${order.eventState ?? ''}","${order.eventZip ?? ''}","${order.eventCountry ?? ''}"\n`;
     }
     return exportStr;
   };
