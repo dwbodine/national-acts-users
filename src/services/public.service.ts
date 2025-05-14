@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
-import { GetSellersResponse, Seller } from '../types/event';
-import { GetSettingsResponse, SiteSetting } from '@/types/public';
+import { GetPageTypesResponse, GetSellersResponse, Seller } from '../types/event';
+import { GetSettingsResponse, PageType, SiteSetting } from '@/types/public';
 
 export class PublicService {
   protected readonly instance: AxiosInstance;
@@ -46,6 +46,42 @@ export class PublicService {
         }
         sellersResponse.sellersError = errorMessage;
         return sellersResponse;
+      });
+  };
+
+  getPageTypes = async (): Promise<GetPageTypesResponse> => {
+    let url = `/public/page_types`;
+
+    let pageTypeResponse: GetPageTypesResponse = {
+      pageTypes: undefined,
+      pageTypeError: undefined,
+    };
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+    };
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        const pageTypes = res.data;
+        pageTypeResponse.pageTypes = pageTypes.length ? (pageTypes as PageType[]) : [];
+        return pageTypeResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching page types - please contact your administrator';
+        }
+        pageTypeResponse.pageTypeError = errorMessage;
+        return pageTypeResponse;
       });
   };
 
@@ -97,6 +133,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'multipart/form-data',
+      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
     return this.instance

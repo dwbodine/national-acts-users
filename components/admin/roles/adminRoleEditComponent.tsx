@@ -26,16 +26,21 @@ export default function AdminRoleEdit() {
   const [roleName, setRoleName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (currentAdminSelection.selectedRole == undefined) {
-      goBack();
-    } else if (allPermissions == undefined && roleName == undefined) {
-      dispatch(setIsLoading(true));
-      setRoleName(currentAdminSelection.selectedRole.roleName);
-      getAllPermissions().then((response: GetPermissionsResponse) => {
-        setAllPermissions(response.permissions);
-        dispatch(setIsLoading(false));
-      });
-    }
+    const timeoutId = setTimeout(() => {
+      if (currentAdminSelection.selectedRole == undefined) {
+        goBack();
+      } else if (allPermissions == undefined && roleName == undefined) {
+        dispatch(setIsLoading(true));
+        setRoleName(currentAdminSelection.selectedRole.roleName);
+        getAllPermissions().then((response: GetPermissionsResponse) => {
+          setAllPermissions(response.permissions);
+          dispatch(setIsLoading(false));
+        });
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [currentAdminSelection, roleName, allPermissions, getAllPermissions, dispatch]);
 
   const goBack = () => {
@@ -88,12 +93,20 @@ export default function AdminRoleEdit() {
     if (!currentAdminSelection.selectedRole) {
       return false;
     }
-    dispatch(setIsLoading(true));
     const newRoleName: string = roleName ? roleName : '';
+
+    if (!newRoleName)
+    {
+      toast.warn("Role name cannot be blank");
+      return;
+    }
+
     let roleToUpdate: Role = {
       ...currentAdminSelection.selectedRole,
       roleName: newRoleName,
     };
+
+    dispatch(setIsLoading(true));
     updateRole(roleToUpdate).then((response: UpdateRoleResponse) => {
       if (response.success) {
         dispatch(setReloadRoles(true));

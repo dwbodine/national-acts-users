@@ -187,10 +187,20 @@ export default function AdminUserEdit() {
   };
 
   const onSubmit = () => {
-    dispatch(setIsLoading(true));
     if (!currentAdminSelection.selectedUser) {
       return false;
     }
+
+    if (!firstName) {
+      toast.warn("First name cannot be blank");
+      return;
+    }
+
+    if (!lastName) {
+      toast.warn("Last name cannot be blank");
+      return;
+    }
+
     let userToUpdate: User = {
       ...currentAdminSelection.selectedUser,
       firstName: firstName || '',
@@ -210,12 +220,10 @@ export default function AdminUserEdit() {
       userToUpdate.sellers.find((x) => x.sellerId == 0) != undefined;
     if (sellersInvalid) {
       toast.warning('Seller selection invalid, please correct before submitting');
-      dispatch(
-        setIsLoading(false)
-      );
       return false;
     }
 
+    dispatch(setIsLoading(true));
     updateUser(userToUpdate).then((response: UpdateUserResponse) => {
       if (response.success) {
         dispatch(setReloadUsers(true));

@@ -1,3 +1,4 @@
+import { PageType } from './public';
 import { IDashboardTotals } from './user';
 
 export enum SellerType {
@@ -6,13 +7,35 @@ export enum SellerType {
   Promoter = 3,
 }
 
+export interface SellerEventCategory {
+  sellerId: number;
+  ticketSocketId: number;
+  eventCategoryId?: number;
+  sellerEventCategoryId?: number;
+  hasEvents?: boolean;
+}
+
 export interface Seller {
   sellerId: number;
   name: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
+  twitter?: string;
+  facebook?: string;
+  instagram?: string;
+  youtube?: string;
+  spotify?: string;
+  website?: string;
+  websiteDisplayText?: string;
   hideInList?: boolean;
   isActive?: boolean;
   sellerType: SellerType;
-  numExternalEvents?: number;
+  sellerEventCategories?: SellerEventCategory[];
 }
 
 export interface ShirtSales {
@@ -320,9 +343,19 @@ export interface ModifyTicketResponse {
   ticketError?: string;
 }
 
+export interface GetSellerResponse {
+  seller?: Seller;
+  sellerError?: string;
+}
+
 export interface GetSellersResponse {
   sellers?: Seller[];
   sellersError?: string;
+}
+
+export interface GetPageTypesResponse {
+  pageTypes?: PageType[];
+  pageTypeError?: string;
 }
 
 export interface IRevenueKeys {

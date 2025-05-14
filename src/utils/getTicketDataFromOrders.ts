@@ -33,6 +33,7 @@ export function getTicketDataFromOrders(
     order.tickets?.forEach((ticket) => {
       if (ticket.isActive) {
         if (
+          evt.ticketSocketEventId &&
           !eventHasTicketTypes &&
           !ticketTypes.find(
             (x) => x.ticketTypeName.toLowerCase() == ticket.ticketType.toLowerCase(),

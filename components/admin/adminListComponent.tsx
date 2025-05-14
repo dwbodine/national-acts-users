@@ -3,6 +3,7 @@ import router from 'next/router';
 import { useDispatch } from 'react-redux';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { Col, Row } from 'react-bootstrap';
 
 export default function AdminList() {
   const dispatch = useDispatch();
@@ -36,6 +37,12 @@ export default function AdminList() {
       case 'manage-venues':
         router.push('/admin/venues');
         break;
+      case 'manage-global-seller-settings':
+        router.push('/admin/sellers/');
+        break;
+      case 'manage-pages':
+        router.push('/admin/pages');
+        break;
       default:
         break;
     }
@@ -46,49 +53,88 @@ export default function AdminList() {
   }, [dispatch]);
 
   return (
-    <div className="admin-container">
-      <ul>
-        <li hidden={!isDennis}>
-          <a className="admin-link" onClick={() => goToAdminPage('view-log')}>
-            View Logs
-          </a>
-        </li>
-        <li>
-          <a className="admin-link" onClick={() => goToAdminPage('manage-site-settings')}>
-            Manage Site Settings
-          </a>
-        </li>
-        <li>
-          <a className="admin-link" onClick={() => goToAdminPage('manage-roles')}>
-            Manage Roles
-          </a>
-        </li>
-        <li>
-          <a className="admin-link" onClick={() => goToAdminPage('manage-users')}>
-            Manage Users
-          </a>
-        </li>
-        <li>
-          <a className="admin-link" onClick={() => goToAdminPage('manage-refresh-data')}>
-            Refresh Data From TicketSocket
-          </a>
-        </li>
-        <li>
-          <a className="admin-link" onClick={() => goToAdminPage('manage-events')}>
-            Manage Events/Orders
-          </a>
-        </li>
-        <li>
-          <a className="admin-link" onClick={() => goToAdminPage('manage-tours')}>
-            Manage Tours
-          </a>
-        </li>
-        <li>
-          <a className="admin-link" onClick={() => goToAdminPage('manage-venues')}>
-            Manage Venues
-          </a>
-        </li>
-      </ul>
-    </div>
+    <Row className='admin-container'>
+      <Col>
+        <Row hidden={!isDennis}>
+          <Col>
+            <h5>DevOps Only</h5>
+            <ul>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('view-log')}>
+                  View Logs</a>
+              </li>
+            </ul>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h5>Site Admin</h5>
+            <ul>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-site-settings')}>
+                  Manage Site Settings (global values)
+                </a>
+              </li>
+{/*
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-global-seller-settings')}>
+                  Manage Sellers
+                </a>
+              </li>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-pages')}>
+                  Manage Pages
+                </a>
+              </li>
+*/}
+            </ul>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h5>User Admin</h5>
+            <ul>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-roles')}>
+                  Manage Roles
+                </a>
+              </li>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-users')}>
+                  Manage Users
+                </a>
+              </li>
+            </ul>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h5>Event/Order Admin</h5>
+            <ul>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-refresh-data')}>
+                  Refresh Data from TicketSocket
+                </a>
+              </li>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-events')}>
+                  Manage Events/Orders
+                </a>
+              </li>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-tours')}>
+                  Manage Tours
+                </a>
+              </li>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-venues')}>
+                  Manage Venues
+                </a>
+              </li>
+            </ul>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
   );
 }

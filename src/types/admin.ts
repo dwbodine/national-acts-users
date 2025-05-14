@@ -1,4 +1,5 @@
-import { VipEvent } from './event';
+import { Seller, SellerEventCategory, VipEvent } from './event';
+import { Page } from './public';
 
 export interface ExternalVenue {
   venueId: number;
@@ -9,6 +10,36 @@ export interface ExternalVenue {
   zipCode?: string;
   country?: string;
   hasEvents?: boolean;
+}
+
+export interface TicketSocketCategory {
+  name: string;
+  eventCategoryId: number;
+}
+
+export interface TicketSocketAccount {
+  ticketSocketId: number;
+  name: string;
+  serviceUrl: string;
+  utcOffsetHours?: number;
+  exchangeRateId?: number;
+  exchangeRateSlug?: string;
+  mulitiplier?: number;
+  currencySymbol?: string;
+  categories?: TicketSocketCategory[];
+}
+
+export interface GetPagesResponse {
+  pages?: Page[];
+  statusCode?: number;
+  pageError?: string;
+}
+
+export interface ModifyPageResponse {
+  statusCode?: number;
+  pageError?: string;
+  success: boolean;
+  updatedPage?: Page;
 }
 
 export interface GetExternalVenuesResponse {
@@ -35,4 +66,17 @@ export interface ModifyExternalEventResponse {
   eventError?: string;
   success: boolean;
   updatedEvent?: VipEvent;
+}
+
+export interface GetTicketSocketAccountsResponse {
+  accounts?: TicketSocketAccount[];
+  statusCode?: number;
+  accountError?: string;
+}
+
+export interface ModifySellerResponse {
+  statusCode?: number;
+  sellerError?: string;
+  success: boolean;
+  updatedSeller?: Seller;
 }

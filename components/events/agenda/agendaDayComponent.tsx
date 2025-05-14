@@ -218,7 +218,7 @@ export default function AgendaDay(props: any) {
 
             eventRows.push(<div key={`adEvt_${key}_${i}`} onClick={() => setRowExpanded(evt)} title={title} className={statusClass}>{alertIcon}{evt.sellerName} - {sold}/{available}</div>)
 
-            if (currentReportSelection.expandedRow && currentReportSelection.expandedEvent && currentReportSelection.expandedRow == evt.ticketSocketEventId) {
+            if (currentReportSelection.expandedRow && currentReportSelection.expandedEvent && currentReportSelection.expandedRow == evt.externalEventId) {
                 eventRows.push(<EventDataExpanded />)
             }
         });

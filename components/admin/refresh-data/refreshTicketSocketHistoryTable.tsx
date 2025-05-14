@@ -93,7 +93,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
       <Column>
         <HeaderCell>Order Data Update</HeaderCell>
         <Cell>
-          {(rowData) => (rowData.orderDataUpdateSucceeded ? 'suceeded' : 'failed')}
+          {(rowData) => (rowData.orderDataUpdateSucceeded ? 'succeeded' : 'failed')}
         </Cell>
       </Column>
       <Column resizable>

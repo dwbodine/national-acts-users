@@ -1,14 +1,19 @@
 import axios, { AxiosInstance } from 'axios';
-import { SiteSetting, UpdateSettingResponse } from '@/types/public';
+import { Page, SiteSetting, UpdateSettingResponse } from '@/types/public';
 import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
 import {
   ExternalVenue,
   GetExternalEventsResponse,
   GetExternalVenuesResponse,
+  GetPagesResponse,
+  GetTicketSocketAccountsResponse,
   ModifyExternalEventResponse,
   ModifyExternalVenueResponse,
+  ModifyPageResponse,
+  ModifySellerResponse,
+  TicketSocketAccount,
 } from '@/types/admin';
-import { ModifyEventResponse, VipEvent } from '@/types/event';
+import { GetSellersResponse, Seller, VipEvent } from '@/types/event';
 
 export class AdminService {
   protected readonly instance: AxiosInstance;
@@ -20,6 +25,80 @@ export class AdminService {
       timeoutErrorMessage: 'Time out!',
     });
   }
+
+  getAllPages = async (): Promise<GetPagesResponse> => {
+    let url = `/admin/pages`;
+
+    let pagesResponse: GetPagesResponse = {
+      pages: undefined,
+      pageError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        pagesResponse.pages = res.data ? (res.data as Page[]) : undefined;
+        return pagesResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          pagesResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching pages - please contact your administrator';
+        }
+        pagesResponse.pageError = errorMessage;
+        return pagesResponse;
+      });
+  };
+
+  updatePage = async (pageToUpdate: Page): Promise<ModifyPageResponse> => {
+    let url = `/admin/pages/update`;
+
+    let modifyResponse: ModifyPageResponse = {
+      success: false,
+      pageError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify(pageToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        modifyResponse.updatedPage = res.data ? (res.data as Page) : undefined;
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while updating page';
+        }
+        modifyResponse.pageError = errorMessage;
+        return modifyResponse;
+      });
+  };
 
   updateSiteSettings = async (
     settingsToUpdate: SiteSetting[],
@@ -172,6 +251,115 @@ export class AdminService {
             'Unknown error while deleting venue - please contact your administrator';
         }
         modifyResponse.venueError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  getTicketSocketAccounts = async (): Promise<GetTicketSocketAccountsResponse> => {
+    let url = `/admin/ticketSocketAccounts`;
+
+    let accountsResponse: GetTicketSocketAccountsResponse = {
+      accounts: undefined,
+      accountError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        accountsResponse.accounts = res.data
+          ? (res.data as TicketSocketAccount[])
+          : undefined;
+        return accountsResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          accountsResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching ticket socket accounts - please contact your administrator';
+        }
+        accountsResponse.accountError = errorMessage;
+        return accountsResponse;
+      });
+  };
+
+  getSellers = async (): Promise<GetSellersResponse> => {
+    let url = `/admin/sellers`;
+
+    let sellersResponse: GetSellersResponse = {
+      sellers: undefined,
+      sellersError: undefined,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        const sellers = res.data;
+        sellersResponse.sellers = sellers.length ? (sellers as Seller[]) : [];
+        return sellersResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching sellers - please contact your administrator';
+        }
+        sellersResponse.sellersError = errorMessage;
+        return sellersResponse;
+      });
+  };
+
+  updateSeller = async (sellerToUpdate: Seller): Promise<ModifyExternalEventResponse> => {
+    let url = `/admin/seller/update`;
+
+    let modifyResponse: ModifySellerResponse = {
+      success: false,
+      sellerError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify(sellerToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        modifyResponse.updatedSeller = res.data ? (res.data as Seller) : undefined;
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while updating seller';
+        }
+        modifyResponse.sellerError = errorMessage;
         return modifyResponse;
       });
   };

@@ -1,4 +1,4 @@
-import { ExternalVenue } from './admin';
+import { ExternalVenue, TicketSocketAccount } from './admin';
 import {
   ITicketSalesData,
   Note,
@@ -8,7 +8,7 @@ import {
   Tour,
   VipEvent,
 } from './event';
-import { SiteSetting } from './public';
+import { Page, PageType, SiteSetting } from './public';
 
 export type LoginResponse = {
   user?: User;
@@ -323,6 +323,7 @@ export type AdminSelection = {
   reloadUsers?: boolean;
   reloadRoles?: boolean;
   reloadEvents?: boolean;
+  reloadPages?: boolean;
   reloadTours?: boolean;
   reloadVenues?: boolean;
   reloadSellers?: boolean;
@@ -330,16 +331,21 @@ export type AdminSelection = {
   selectedUser?: User | undefined;
   selectedRole?: Role | undefined;
   selectedEvent?: VipEvent | undefined;
+  selectedPage?: Page | undefined;
   selectedTour?: Tour | undefined;
   selectedVenue?: ExternalVenue | undefined;
   selectedOrder?: Order | undefined;
+  selectedSeller?: Seller | undefined;
   mustSaveOrder?: boolean;
   mustSaveEvent?: boolean;
   allSellers?: Seller[] | undefined;
   allSettings?: SiteSetting[] | undefined;
+  allPages?: Page[] | undefined;
+  pageTypes?: PageType[] | undefined;
   roles?: Role[] | undefined;
   users?: User[] | undefined;
   events?: VipEvent[] | undefined;
+  ticketSocketAccounts?: TicketSocketAccount[] | undefined;
   ticketSocketEvents?: VipEvent[] | undefined;
   tours?: Tour[] | undefined;
   uploadedFile?: string;

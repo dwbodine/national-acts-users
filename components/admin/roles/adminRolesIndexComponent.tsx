@@ -23,22 +23,27 @@ export default function AdminRolesIndex() {
   const [tableLoading, setTableLoading] = useState(true);
 
   useEffect(() => {
-    if (!currentAdminSelection.roles || currentAdminSelection.reloadRoles) {
-      setTableLoading(true);
-      dispatch(setIsLoading(true));
-      setSelectedRoles([]);
-      getAllRoles().then((response: GetRolesResponse) => {
-        if (!response.roleError && response.roles) {
-          dispatch(setRoles(response.roles));
-        }
-        dispatch(setIsLoading(false));
-        setTableLoading(false);
-      });
-    } else if (tableLoading) {
-      setTimeout(() => {
-        setTableLoading(false);
-      }, 300);
-    }
+    const timeoutId = setTimeout(() => {
+      if (!currentAdminSelection.roles || currentAdminSelection.reloadRoles) {
+        setTableLoading(true);
+        dispatch(setIsLoading(true));
+        setSelectedRoles([]);
+        getAllRoles().then((response: GetRolesResponse) => {
+          if (!response.roleError && response.roles) {
+            dispatch(setRoles(response.roles));
+          }
+          dispatch(setIsLoading(false));
+          setTableLoading(false);
+        });
+      } else if (tableLoading) {
+        setTimeout(() => {
+          setTableLoading(false);
+        }, 300);
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [getAllRoles, dispatch, currentAdminSelection, tableLoading]);
 
   const editRole = (roleId: number) => {
