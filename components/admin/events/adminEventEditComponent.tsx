@@ -965,7 +965,7 @@ export default function AdminEventEdit(props: any) {
   }
 
   if (notes.length == 0) {
-    notes.push(<div>n/a</div>)
+    notes.push(<div key="note_00">n/a</div>)
   }
 
   const venueList: ItemDataType<number>[] = currentAdminSelection?.venues ?

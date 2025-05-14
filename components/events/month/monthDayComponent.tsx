@@ -201,17 +201,25 @@ export default function MonthDay(props: any) {
                 title = statusText;
             }
 
-            const sold = evt.totalTickets;
+            let sold = 0;
+            evt.orders?.forEach((order) => {
+                if (order.tickets && order.tickets.length > 0 && !order.isDeleted) {
+                    order.tickets.forEach((ticket) => {
+                        if (ticket.isActive && !ticket.isRefunded && !ticket.isChargedBack) {
+                            sold += 1;
+                        }
+                    });
+                }
+            });
             const available = evt.ticketTypes?.reduce((accumulator, current) => accumulator + current.totalAvailable, 0) ?? 0;
 
             let listSent = (evt.listSentToBand ?? false);
             const listSentVips = evt.listSentNumVips ?? 0;
-            const currentVips = evt.totalTickets ?? 0;
-            const showVipAlert = (listSent && (listSentVips != currentVips));
+            const showVipAlert = (listSent && (listSentVips != sold));
             
             let alertIcon: any = '';
             if (showVipAlert) {
-                alertIcon = <FaExclamationTriangle className="month-day-event-alert" title={`Current total of ${currentVips} differs from the count of ${listSentVips} when the list was sent to the band`}></FaExclamationTriangle>
+                alertIcon = <FaExclamationTriangle className="month-day-event-alert" title={`Current total of ${sold} differs from the count of ${listSentVips} when the list was sent to the band`}></FaExclamationTriangle>
             }
 
             eventRows.push(<div key={`mdEvt_${key}_${i}`} onClick={() => setRowExpanded(evt)} title={title} className={statusClass}>{alertIcon}{evt.sellerName} - {sold}/{available}</div>)
