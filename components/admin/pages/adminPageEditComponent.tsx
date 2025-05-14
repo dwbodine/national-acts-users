@@ -181,6 +181,7 @@ export default function AdminPageEdit() {
         {' '}
         -- Select one --
       </option>)
+      /*
       account.categories?.map((x, i) => {
         options.push(<option key={`a${index}_${i}`} value={x.eventCategoryId}>{x.name}</option>);
       });
@@ -200,7 +201,7 @@ export default function AdminPageEdit() {
             </select>
         </Col>
         </Row>
-      );
+      );*/
     });
   }
 
@@ -222,9 +223,6 @@ export default function AdminPageEdit() {
   return (
     <Row
       className="admin-container"
-      hidden={
-        !((allAccounts?.length ?? 0) > 0 && currentAdminSelection.selectedSeller != undefined)
-      }
     >
       <Col>
         <Row>
@@ -255,7 +253,6 @@ export default function AdminPageEdit() {
             </select>
           </Col>
         </Row>
-        {categoryRows}
         <Row className="form-group">
           <Col xs={2}></Col>
           <Col>
