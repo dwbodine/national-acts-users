@@ -32,8 +32,8 @@ export default function AdminVenuesIndex() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.reloadVenues) {
-        dispatch(setIsLoading(true));
         dispatch(setReloadVenues(false));
+        dispatch(setIsLoading(true));
         setTableLoading(true);
         getAllVenues().then((response: GetExternalVenuesResponse) => {
           if (!response.venueError && response.venues) {
@@ -46,10 +46,6 @@ export default function AdminVenuesIndex() {
             setTableLoading(false);  
           }          
         });
-      } else if (tableLoading) {
-        setTimeout(() => {
-          setTableLoading(false);
-        }, 300);
       }
     }, 500);
     return () => {

@@ -355,18 +355,21 @@ export default function AdminSellerGlobalEdit() {
     sellerTypeOptions.push(<option key={`st_${i}`} value={x}>{SellerType[Number(x)]}</option>);
   })
 
+
+  const currentSeller = currentAdminSelection.selectedSeller;
+
   const pageHeader =
-    (currentAdminSelection.selectedSeller?.sellerId ?? 0 > 0) ? 'Edit seller' : 'Add seller';
+    (currentSeller?.sellerId ?? 0 > 0) ? 'Edit seller' : 'Add seller';
 
-  const selectedSellerType = Number(currentAdminSelection.selectedSeller?.sellerType ?? 1);
+  const selectedSellerType = Number(currentSeller?.sellerType ?? 1);
 
-  const isArtist = selectedSellerType == SellerType.Artist;
+  const isArtist = selectedSellerType == SellerType.Artist;  
   
   return (
     <Row
       className="admin-container"
       hidden={
-        !((allAccounts?.length ?? 0) > 0 && currentAdminSelection.selectedSeller != undefined)
+        !((allAccounts?.length ?? 0) > 0 && currentSeller != undefined)
       }
     >
       <Col>
@@ -377,7 +380,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Seller Name</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.name}
+            value={currentSeller?.name}
             onChange={(e) => setSellerName(e.target.value)}
             className="form-control form-control-half"
             placeholder="seller name"
@@ -403,7 +406,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}></Col>
           <Col>
             <FormCheck
-              checked={currentAdminSelection.selectedSeller?.hideInList ?? false}
+              checked={currentSeller?.hideInList ?? false}
               onChange={(e) => setHideInList(e.target.checked)}
               label={'Hide in order tickets screen'}
             />
@@ -413,7 +416,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}></Col>
           <Col>
             <FormCheck
-              checked={!(currentAdminSelection.selectedSeller?.isActive ?? false)}
+              checked={!(currentSeller?.isActive ?? false)}
               onChange={(e) => setIsActive(!e.target.checked)}
               label={'Set to inactive'}
             />
@@ -428,7 +431,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Address</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.address}
+            value={currentSeller?.address}
             onChange={(e) => setAddress(e.target.value)}
             className="form-control form-control-half"
             placeholder="address"
@@ -440,7 +443,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">City</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.city}
+            value={currentSeller?.city}
             onChange={(e) => setCity(e.target.value)}
             className="form-control form-control-half"
             placeholder="city"
@@ -452,7 +455,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">State</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.state}
+            value={currentSeller?.state}
             onChange={(e) => setState(e.target.value)}
             className="form-control form-control-half"
             placeholder="state"
@@ -464,7 +467,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Postal Code</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.zip}
+            value={currentSeller?.zip}
             onChange={(e) => setZip(e.target.value)}
             className="form-control form-control-half"
             placeholder="postal code"
@@ -476,7 +479,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Country</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.country}
+            value={currentSeller?.country}
             onChange={(e) => setCountry(e.target.value)}
             className="form-control form-control-half"
             placeholder="country (leave blank for USA)"
@@ -488,7 +491,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Phone</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.phone}
+            value={currentSeller?.phone}
             onChange={(e) => setPhone(e.target.value)}
             className="form-control form-control-half"
             placeholder="phone"
@@ -500,7 +503,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Email</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.email}
+            value={currentSeller?.email}
             onChange={(e) => setEmail(e.target.value)}
             className="form-control form-control-half"
             placeholder="email"
@@ -512,7 +515,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Twitter</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.twitter}
+            value={currentSeller?.twitter}
             onChange={(e) => setTwitter(e.target.value)}
             className="form-control form-control-half"
             placeholder="Twitter (X) url"
@@ -524,7 +527,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Facebook</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.facebook}
+            value={currentSeller?.facebook}
             onChange={(e) => setFacebook(e.target.value)}
             className="form-control form-control-half"
             placeholder="Facebook url"
@@ -536,7 +539,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Instagram</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.instagram}
+            value={currentSeller?.instagram}
             onChange={(e) => setInstagram(e.target.value)}
             className="form-control form-control-half"
             placeholder="Instagram url"
@@ -548,7 +551,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">YouTube</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.youtube}
+            value={currentSeller?.youtube}
             onChange={(e) => setYouTube(e.target.value)}
             className="form-control form-control-half"
             placeholder="YouTube url"
@@ -560,7 +563,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Spotify</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.spotify}
+            value={currentSeller?.spotify}
             onChange={(e) => setSpotify(e.target.value)}
             className="form-control form-control-half"
             placeholder="Spotify url"
@@ -572,7 +575,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Website</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.website}
+            value={currentSeller?.website}
             onChange={(e) => setWebsite(e.target.value)}
             className="form-control form-control-half"
             placeholder="Website url"
@@ -584,7 +587,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Website Display Text</label></Col>
           <Col>
             <input
-            value={currentAdminSelection.selectedSeller?.phone}
+            value={currentSeller?.websiteDisplayText}
             onChange={(e) => setWebsiteDisplayText(e.target.value)}
             className="form-control form-control-half"
             placeholder="Website display text (shown instead of url)"

@@ -93,12 +93,20 @@ export default function AdminRoleEdit() {
     if (!currentAdminSelection.selectedRole) {
       return false;
     }
-    dispatch(setIsLoading(true));
     const newRoleName: string = roleName ? roleName : '';
+
+    if (!newRoleName)
+    {
+      toast.warn("Role name cannot be blank");
+      return;
+    }
+
     let roleToUpdate: Role = {
       ...currentAdminSelection.selectedRole,
       roleName: newRoleName,
     };
+
+    dispatch(setIsLoading(true));
     updateRole(roleToUpdate).then((response: UpdateRoleResponse) => {
       if (response.success) {
         dispatch(setReloadRoles(true));

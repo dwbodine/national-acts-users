@@ -35,7 +35,6 @@ export interface Seller {
   hideInList?: boolean;
   isActive?: boolean;
   sellerType: SellerType;
-  numExternalEvents?: number;
   sellerEventCategories?: SellerEventCategory[];
 }
 
