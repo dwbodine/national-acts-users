@@ -1,18 +1,18 @@
 import { eventService } from '../../services';
 import { ModifyEventResponse } from '@/types/event';
 
-export const useSendListToBand = () => {
-  const sendListToBand = async (
+export const useCancelEvent = () => {
+  const cancelEvent = async (
     eventId: number,
-    isSent: boolean,
+    isCancelled: boolean,
   ): Promise<ModifyEventResponse> => {
     let response: ModifyEventResponse = {
       success: false,
       eventError: undefined,
     };
-    response = await eventService.sendListToBand(eventId, isSent);
+    response = await eventService.cancelEvent(eventId, isCancelled);
     return response;
   };
 
-  return { sendListToBand };
+  return { cancelEvent };
 };

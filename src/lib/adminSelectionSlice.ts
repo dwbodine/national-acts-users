@@ -171,6 +171,10 @@ export const adminSelectionSlice = createSlice({
       state.reloadEvents = false;
       return state;
     },
+    setTicketSocketEventsOnly: (state, action: PayloadAction<VipEvent[] | undefined>) => {
+      state.ticketSocketEvents = action.payload;
+      return state;
+    },
     setReloadEvents: (state, action: PayloadAction<boolean>) => {
       state.reloadEvents = action.payload;
       return state;
@@ -228,6 +232,7 @@ export const adminSelectionSlice = createSlice({
       state.users = undefined;
       state.events = undefined;
       state.allPages = undefined;
+      state.ticketSocketEvents = undefined;
       state.tours = undefined;
       state.venues = undefined;
       state.mustSaveEvent = false;
@@ -236,6 +241,7 @@ export const adminSelectionSlice = createSlice({
       state.allSettings = undefined;
       state.reloadSettings = true;
       state.uploadedFile = undefined;
+      state.reloadSellers = true;
       return state;
     },
   },
@@ -273,6 +279,7 @@ export const {
   setSelectedPage,
   setAllPages,
   setPageTypes,
+  setTicketSocketEventsOnly,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

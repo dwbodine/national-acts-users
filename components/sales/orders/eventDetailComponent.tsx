@@ -199,7 +199,7 @@ export default function EventDetail(props: any) {
                 for (const order of newEvent.orders) {
                   if (order.isComped && order.tickets) {
                     for (const ticket of order.tickets) {
-                      if (ticket.ticketTypeId != 0) {
+                      if (ticket.ticketTypeId != 0 || !newEvent.ticketSocketEventId) {
                         continue;
                       }
                       let newOrder: Order = {
@@ -242,7 +242,7 @@ export default function EventDetail(props: any) {
               if (currentReportSelection.currentEvents != undefined) {
                 document.title = newEvent.title;
                 currentReportSelection.currentEvents.map((evt) => {
-                  return evt.ticketSocketEventId == newEvent.ticketSocketEventId
+                  return evt.externalEventId == newEvent.externalEventId
                     ? newEvent
                     : evt;
                 });
@@ -506,6 +506,11 @@ export default function EventDetail(props: any) {
     }
   };
 
+  let eventDate = currentReportSelection.currentDetailEvent ? moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY') : '';
+  if (currentReportSelection.currentDetailEvent && currentReportSelection.currentDetailEvent.eventTime) {
+    eventDate += ` ${moment(currentReportSelection.currentDetailEvent.eventTime).format('h:mm A')}`;
+  }
+
   return (
     <>
       {currentReportSelection.currentDetailEvent != undefined ? (
@@ -532,9 +537,7 @@ export default function EventDetail(props: any) {
                       <tr>
                         <td className="vipLabel">Date:</td>
                         <td>
-                          {moment(
-                            currentReportSelection.currentDetailEvent.eventDate,
-                          ).format('MM/DD/YYYY')}
+                          {eventDate}
                         </td>
                       </tr>
                       <tr>
@@ -552,7 +555,7 @@ export default function EventDetail(props: any) {
                         <td className="vipLabel">Total Revenue:</td>
                         <td>
                           $
-                          {((currentReportSelection.currentDetailEvent.totalRevenue ?? 0) - (currentReportSelection.currentDetailEvent.revenueRefunded ?? 0)).toFixed(
+                          {((currentReportSelection.currentDetailEvent.totalRevenue ?? 0)).toFixed(
                             2,
                           )}
                         </td>
@@ -561,7 +564,7 @@ export default function EventDetail(props: any) {
                         <td className="vipLabel">Total Service Fees:</td>
                         <td>
                           $
-                          {((currentReportSelection.currentDetailEvent.totalServiceFees ?? 0) - (currentReportSelection.currentDetailEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(
+                          {((currentReportSelection.currentDetailEvent.totalServiceFees ?? 0)).toFixed(
                             2,
                           )}
                         </td>

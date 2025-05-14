@@ -156,7 +156,7 @@ export class EventService {
   getAdminEvents = async (
     reportSelection: AdminSelection,
   ): Promise<GetEventsResponse> => {
-    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
+    let url = `/events/getEventsAndOrders?ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
 
     if (reportSelection.selectedTour) {
       url += `&tourId=${reportSelection.selectedTour.tourId}`;
@@ -205,7 +205,50 @@ export class EventService {
   };
 
   getAdminSellerEvents = async (sellerIds: number[]): Promise<GetEventsResponse> => {
-    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&omitOrders=1&sellerIds=${sellerIds.join(',')}`;
+    let url = `/events/getEventsAndOrders?ignoreFlags=1&omitOrders=1&sellerIds=${sellerIds.join(',')}`;
+
+    let eventResponse: GetEventsResponse = {
+      events: undefined,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        const events = res.data;
+        eventResponse.events = events.length ? (events as VipEvent[]) : [];
+        return eventResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          eventResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching events - please contact your administrator';
+        }
+        eventResponse.eventError = errorMessage;
+        return eventResponse;
+      });
+  };
+
+  getTicketSocketEventsOnly = async (
+    sellerId: number | undefined,
+  ): Promise<GetEventsResponse> => {
+    let url = `/admin/events/ticketSocketOnly`;
+
+    if (sellerId) {
+      url += `?sellerId=${sellerId}`;
+    }
 
     let eventResponse: GetEventsResponse = {
       events: undefined,
@@ -387,7 +430,7 @@ export class EventService {
   };
 
   getEventById = async (eventId: number): Promise<GetEventResponse> => {
-    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&tsEventId=${eventId}`;
+    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&eventId=${eventId}`;
 
     let eventResponse: GetEventResponse = {
       event: undefined,
@@ -539,7 +582,7 @@ export class EventService {
     markCancelled: boolean,
     refundServiceFees: boolean,
   ): Promise<ModifyEventResponse> => {
-    let url = markCancelled ? '/admin/events/cancel' : 'admin/events/refund';
+    let url = 'admin/events/refund';
 
     let eventResponse: ModifyEventResponse = {
       success: false,
@@ -549,7 +592,7 @@ export class EventService {
 
     const eventData = {
       eventId: eventId,
-      refundOrders: true,
+      markCancelled: markCancelled,
       refundServiceFees: refundServiceFees,
     };
 
@@ -575,6 +618,51 @@ export class EventService {
           errorMessage = err.response.data.msg;
         } else {
           errorMessage = 'Unknown error while issuing event refund';
+        }
+        eventResponse.eventError = errorMessage;
+        return eventResponse;
+      });
+  };
+
+  cancelEvent = async (
+    eventId: number,
+    isCancelled: boolean,
+  ): Promise<ModifyEventResponse> => {
+    let url = '/admin/events/cancel';
+
+    let eventResponse: ModifyEventResponse = {
+      success: false,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const eventData = {
+      eventId: eventId,
+      cancelled: isCancelled,
+    };
+
+    const data = JSON.stringify(eventData);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        eventResponse.success = res.status == 200;
+        return eventResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          eventResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while modifying isCancelled';
         }
         eventResponse.eventError = errorMessage;
         return eventResponse;

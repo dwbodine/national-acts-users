@@ -152,8 +152,8 @@ export interface TicketType {
 }
 
 export interface VipEvent {
-  ticketSocketEventId: number;
-  eventId: number;
+  externalEventId: number;
+  ticketSocketEventId?: number;
   title: string;
   venue?: Venue;
   eventDate: string;
@@ -168,12 +168,9 @@ export interface VipEvent {
   shirtSales?: ShirtSales[];
   isActive: boolean;
   orders?: Order[];
-  externalEventId?: number;
-  externalSellerId?: number;
-  externalThumbnail?: string;
-  externalTitle?: string;
+  eventTime?: string;
+  sellerId?: number;
   externalUrl?: string;
-  externalVenue?: Venue;
   externalEventVenueId?: number;
   disableLinkButton?: boolean;
   disableLinkReason?: string;

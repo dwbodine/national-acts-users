@@ -3,7 +3,7 @@ import { ModifyEventResponse } from '@/types/event';
 
 export const useRefundEvent = () => {
   const refundEvent = async (
-    ticketSocketEventId: number,
+    eventId: number,
     markCancelled: boolean,
     refundServiceFees: boolean,
   ): Promise<ModifyEventResponse> => {
@@ -11,11 +11,7 @@ export const useRefundEvent = () => {
       success: false,
       eventError: undefined,
     };
-    response = await eventService.refundEvent(
-      ticketSocketEventId,
-      markCancelled,
-      refundServiceFees,
-    );
+    response = await eventService.refundEvent(eventId, markCancelled, refundServiceFees);
     return response;
   };
 

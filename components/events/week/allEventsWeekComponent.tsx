@@ -135,7 +135,7 @@ export default function AllEventsWeek() {
             rowExpandedHeight={260}
             renderRowExpanded={renderRowExpanded}
             rowClassName={(rowData: VipEvent) => {
-              return (rowData && rowData.ticketSocketEventId == expandedRowKey) ? 'highlighted' : getEventStatusSlug(rowData);
+              return (rowData && rowData.externalEventId == expandedRowKey) ? 'highlighted' : getEventStatusSlug(rowData);
             }}
 
           >

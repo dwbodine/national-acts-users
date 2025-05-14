@@ -1,6 +1,7 @@
 import { RootState } from '@/lib/store';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ItemDataType } from 'rsuite/esm/internals/types';
 import router from 'next/router';
 import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
 import { toast } from 'react-toastify';
@@ -9,37 +10,67 @@ import { useGetLocation } from '@/hooks/common/useGetLocation';
 import moment from 'moment';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { useRefundEvent } from '@/hooks/admin/useRefundEvent';
-import { ModifyEventResponse, ModifyOrderResponse, Note, VipEvent } from '@/types/event';
+import { GetSellersResponse, GetToursResponse, ModifyEventResponse, ModifyOrderResponse, Note, Seller, VipEvent } from '@/types/event';
 import {
   setAdminEvent,
   setReloadEvents,
   setMustSaveEvent,
+  setReloadVenues,
+  setVenues,
+  setAdminVenue,
+  setAdminDates,
+  setReloadSellers,
+  setAllSellers,
+  setTicketSocketEventsOnly,
+  setAdminSellerId,
 } from '@/lib/adminSelectionSlice';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { DatePicker, Modal, TimePicker } from 'rsuite';
+import { DatePicker, Modal, SelectPicker, TimePicker } from 'rsuite';
 import { useAddCompedOrder } from '@/hooks/admin/useAddCompOrder';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
-import { useSendListToBand } from '@/hooks/admin/useSendListToBand';
 import { useAddNote } from '@/hooks/admin/useAddNote';
+import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
+import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
+import { ExternalVenue, ModifyExternalVenueResponse } from '@/types/admin';
+import AdminFileUpload from '../common/adminFileUploadComponent';
+import { useCancelEvent } from '@/hooks/admin/useCancelEvent';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
 
 export default function AdminEventEdit(props: any) {
   const id: number | undefined = props.Id as number;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const dispatch = useDispatch();
-  const { getLocation } = useGetLocation();
+  const { updateVenue } = useUpdateVenue();
+  const { getExternalVenueLocation } = useGetLocation();
+  const { getAllVenues } = useGetAllVenues();
+  
   const { refundEvent } = useRefundEvent();
+  const { cancelEvent } = useCancelEvent();
   const { updateEvent } = useUpdateEvent();
-  const { getEventStatusText } = useGetEventStatus();
   const [markCancelled, setMarkCancelled] = useState<boolean>(true);
   const [numCompedTickets, setNumCompedTickets] = useState<number>(0);
   const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
   const { addCompedOrder } = useAddCompedOrder();
   const { getEventById } = useGetEventById();
-  const { sendListToBand } = useSendListToBand();
+  const { getSellers } = useGetSellers();
+  const { getTicketSocketEventsOnly } = useGetTicketSocketEventsOnly();
   const [notesOpen, setNotesOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
   const { addNote } = useAddNote();
+  const [isUploading, setIsUploading] = useState(false);
+  const [isThumbnailDirty, setIsThumbnailDirty] = useState(false);
+  const thumbNailBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/thumbnails`;
+  const [venueOpen, setVenueOpen] = useState(false);
+  const [venueName, setVenueName] = useState<string | undefined>(undefined);
+  const [address, setAddress] = useState<string | undefined>(undefined);
+  const [city, setCity] = useState<string | undefined>(undefined);
+  const [state, setState] = useState<string | undefined>(undefined);
+  const [zipCode, setZipCode] = useState<string | undefined>(undefined);
+  const [country, setCountry] = useState<string | undefined>(undefined);
+  
+  const currentSeller: Seller | undefined = currentAdminSelection.allSellers?.find(x => x.sellerId == currentAdminSelection.sellerId);
 
   const beforeOnUnload = (ev: BeforeUnloadEvent) => {
     ev.preventDefault();
@@ -48,21 +79,82 @@ export default function AdminEventEdit(props: any) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
+      if (currentAdminSelection.reloadSellers) {
+          dispatch(setReloadSellers(false));
+          dispatch(setIsLoading(true));
+          getSellers().then((response: GetSellersResponse) => {
+            dispatch(setAllSellers(response.sellers));
+            dispatch(setIsLoading(false));
+          });
+      } else if (currentAdminSelection.reloadVenues) {
+        dispatch(setIsLoading(true));
+        dispatch(setReloadVenues(false));
+        getAllVenues()
+          .then((response) => {
+            if (response.venues && !response.venueError) {
+              dispatch(
+                setVenues(response.venues)
+              );
+            }
+            dispatch(setIsLoading(false));
+          })
+      } else if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
+        dispatch(setIsLoading(true));
         getEventById(id)
           .then((response) => {
             if (response.event && !response.eventError) {
               dispatch(
                 setAdminEvent(response.event)
               );
-            }
+              dispatch(
+                setAdminSellerId(response.event.sellerId)
+              );
+              getTicketSocketEventsOnly(response.event.sellerId).then((response) => {
+                if (response.events && !response.eventError) {
+                  dispatch(setTicketSocketEventsOnly(response.events));
+                }
+                dispatch(setIsLoading(false));
+              });
+            } else {
+              dispatch(setIsLoading(false));
+            }            
           })
       }
     }, 300);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, id, getEventById]);
+  }, [currentAdminSelection, dispatch, id, getEventById, globalSelection, getAllVenues, currentSeller, getSellers, getTicketSocketEventsOnly]);
+
+  const onEventVenueChange = (value: number | null, event: React.SyntheticEvent) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.externalEventVenueId = value ?? undefined;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
+  const onEventChange = (value: number | null, event: React.SyntheticEvent) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.ticketSocketEventId = value ?? undefined;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
+  const setEventTitle = (title: string) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.title = title;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
 
   const handleNotesOpen = () => setNotesOpen(true);
   const handleNotesClose = () => setNotesOpen(false);
@@ -71,7 +163,7 @@ export default function AdminEventEdit(props: any) {
     if (!noteText || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    addNote(noteText, currentAdminSelection.selectedEvent.ticketSocketEventId)
+    addNote(noteText, currentAdminSelection.selectedEvent.externalEventId)
       .then((response) => {
         if (response.success && !response.noteError) {
           toast.success("Note added successfully");
@@ -127,43 +219,76 @@ export default function AdminEventEdit(props: any) {
     markDirty();
   };
 
-  const setEmailSentToVips = (isSent: boolean) => {
+  const setDisableLinkButton = (isDisabled: boolean) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
     let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.emailSentToVips = isSent;
+    currentEvent.disableLinkButton = isDisabled;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
 
-  const setTextSentToVips = (isSent: boolean) => {
+  const setDisableLinkReason = (reason: string) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
     let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.textSentToVips = isSent;
+    currentEvent.disableLinkReason = reason.trim().length > 0 ? reason : undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
 
-  const setListSentToBand = (isSent: boolean) => {
+  const setDisableVipLinkButton = (isDisabled: boolean) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    sendListToBand(currentAdminSelection.selectedEvent.ticketSocketEventId, isSent)
-      .then((response) => {
-        if (response.success && !response.eventError) {
-          toast.success("VIP list marked as sent to band");
-          dispatch(setReloadEvents(true));
-          dispatch(setAdminEvent(undefined));
-          goBack(false);
-        } else {
-          const errMsg = response.eventError ?? "unknown error";
-          toast.error(`Send list failed - ${errMsg}`);
-        }
-      });
+    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.disableVipLinkButton = isDisabled;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
 
+  const setDisableVipLinkReason = (reason: string) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.disableVipLinkReason = reason.trim().length > 0 ? reason : undefined;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
+  const setExternalVipLink = (url: string) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.externalVipLink = url.trim().length > 0 ? url : undefined;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
+  const setExternalUrl = (url: string) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.externalUrl = url.trim().length > 0 ? url : undefined;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
+  const onEventDateChange = (date: Date | null) => {
+    if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+
+    const eventDate = moment(date).startOf('day');
+    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.eventDate = eventDate.format('YYYY-MM-DD HH:mm:ss');
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
   };
 
   const setCompTicketTypeName = (ticketTypeName: string) => {
@@ -189,13 +314,9 @@ export default function AdminEventEdit(props: any) {
       return;
     }
 
-    if (date <= new Date()) {
-      onCleanAnnounceDate();
-      return;
-    }
-
     const eventDate = moment(currentAdminSelection.selectedEvent.eventDate).toDate();
     if (date >= eventDate) {
+      toast.warn("Announce date must be before event date");
       onCleanAnnounceDate();
       return;
     }
@@ -209,11 +330,6 @@ export default function AdminEventEdit(props: any) {
 
   const onAnnounceTimeChange = (date: Date | null) => {
     if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
-      return;
-    }
-
-    if (date <= new Date()) {
-      onCleanAnnounceTime();
       return;
     }
 
@@ -260,40 +376,34 @@ export default function AdminEventEdit(props: any) {
     markDirty();
   };
 
-  const onDoorsOpenChange = (date: Date | null) => {
-    if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
-      return;
-    }
-
-    let doorsOpen = moment(currentAdminSelection.selectedEvent.eventDate)
-      .startOf('day')
-      .add(date.getHours(), 'hours')
-      .add(date.getMinutes(), 'minutes');
-
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.doorsOpen = doorsOpen.format('YYYY-MM-DD HH:mm:ss');
-    dispatch(setAdminEvent(currentEvent));
-    markDirty();
+  const onEventTimeChange = (date: Date | null) => {
+      if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+        return;
+      }
+  
+      const eventTime = moment(date);
+      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      let eventDate = moment(currentEvent.eventDate);
+      eventDate = eventDate.hours(eventTime.hours());
+      eventDate = eventDate.minutes(eventTime.minutes());
+      eventDate = eventDate.seconds(0);
+      currentEvent.eventTime = eventDate.format('YYYY-MM-DD HH:mm:ss');
+      dispatch(setAdminEvent(currentEvent));
+      markDirty();
   };
 
-  const onMeetAndGreetChange = (date: Date | null) => {
-    if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
-      return;
-    }
-
-    let meetAndGreet = moment(currentAdminSelection.selectedEvent.eventDate)
-      .startOf('day')
-      .add(date.getHours(), 'hours')
-      .add(date.getMinutes(), 'minutes');
-
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.meetAndGreetTime = meetAndGreet.format('YYYY-MM-DD HH:mm:ss');
-    dispatch(setAdminEvent(currentEvent));
-    markDirty();
+  const onCleanEventTime = () => {
+      if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+        return;
+      }
+      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      currentEvent.eventTime = undefined;    
+      dispatch(setAdminEvent(currentEvent));
+      markDirty();
   };
 
   const onCheckInLocationChange = (location: string | undefined) => {
-    if (!location || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
     let currentEvent = { ...currentAdminSelection.selectedEvent };
@@ -303,7 +413,7 @@ export default function AdminEventEdit(props: any) {
   };
 
   const onCheckInNotesChange = (notes: string | undefined) => {
-    if (!notes || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
     let currentEvent = { ...currentAdminSelection.selectedEvent };
@@ -316,6 +426,7 @@ export default function AdminEventEdit(props: any) {
     if (!id && dismissToast) {
       toast.dismiss();
     }
+    dispatch(setAdminEvent(undefined));
     dispatch(setMustSaveEvent(false));
     if (!id) {
       router.push('/admin/events/');
@@ -393,7 +504,7 @@ export default function AdminEventEdit(props: any) {
 
     let hasMissingPrices = false;
     for (const order of currentAdminSelection.selectedEvent.orders) {
-      if (order.tickets && order.tickets.length > 0) {
+      if (!order.isComped && order.tickets && order.tickets.length > 0) {
         const missingOrderTicket = order.tickets.find((x) => (x.price ?? 0) == 0);
         if (missingOrderTicket != undefined) {
           hasMissingPrices = true;
@@ -441,7 +552,7 @@ export default function AdminEventEdit(props: any) {
       return false;
     }
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
+    const eventId = currentAdminSelection.selectedEvent.externalEventId;
     refundEvent(eventId, markCancelled, refundServiceFees).then(
       (response: ModifyEventResponse) => {
         const success = response.success;
@@ -459,11 +570,19 @@ export default function AdminEventEdit(props: any) {
   };
 
   const compOrder = () => {
-    if (!currentAdminSelection.selectedEvent || numCompedTickets == 0) {
+    if (!currentAdminSelection.selectedEvent) {
+      return false;
+    }
+    if (!currentAdminSelection.selectedEvent.ticketSocketEventId) {
+      toast.warn("Cannot currently comp orders for an event without tickets on sale");
+      return false;
+    }
+    if (numCompedTickets == 0) {
+      toast.warn("Must enter a number for comped tickets for the order");
       return false;
     }
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
+    const eventId = currentAdminSelection.selectedEvent.externalEventId;
     addCompedOrder(eventId, numCompedTickets).then(
       (response: ModifyOrderResponse) => {
         const success = response.success;
@@ -480,27 +599,31 @@ export default function AdminEventEdit(props: any) {
     );
   };
 
-  const cancelEvent = () => {
+  const cancelTicketSocketEvent = () => {
     if (!currentAdminSelection.selectedEvent) {
       return false;
     }
+
+    const eventId = currentAdminSelection.selectedEvent.externalEventId;
+    const isCancelled = !currentAdminSelection.selectedEvent.isCancelled;
+
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.ticketSocketEventId;
-    refundEvent(eventId, true, false).then((response: ModifyEventResponse) => {
+    
+    cancelEvent(eventId, isCancelled).then((response: ModifyEventResponse) => {
       const success = response.success;
       dispatch(setIsLoading(false));
       if (success) {
-        toast.success('Refund succeeded');
+        const message = isCancelled ? 'Cancellation succeeded' : 'Uncancellation succeeded';
+        toast.success(message);
         dispatch(setReloadEvents(true));
         dispatch(setAdminEvent(undefined));
         goBack(false);
       } else {
-        toast.error('Cancellation failed');
+        const message = isCancelled ? 'Cancellation failed' : 'Uncancellation failed';
+        toast.error(message);
       }
     });
   };
-
-
 
   const markDirty = () => {
     dispatch(setMustSaveEvent(true));
@@ -509,18 +632,179 @@ export default function AdminEventEdit(props: any) {
     }
   };
 
-  const onSubmit = () => {
-    if (!currentAdminSelection.selectedEvent) {
+  const onFileUpload = (fileUploadName: string, filename: string) => {
+    if (!currentAdminSelection.selectedEvent || !fileUploadName || !filename) {
+      return;
+    }
+    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    switch (fileUploadName) {
+      case 'Thumbnail':
+        currentEvent.thumbnail = filename;
+        dispatch(setAdminEvent(currentEvent));
+        setIsThumbnailDirty(true);
+        markDirty();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const onUploadStart = () => {
+    setIsUploading(true);
+  };
+
+  const onUploadComplete = (filename: string | undefined) => {
+    setIsUploading(false);
+    if (filename) {
+      toast.success('File uploaded successfully - click submit to save');
+    } else {
+      toast.error('File upload failed!');
+    }
+  };
+
+  const handleVenueOpen = () => {
+    let venue: ExternalVenue = {
+      venueId: 0,
+      venue: '',
+      address: '',
+      city: '',
+    };
+
+    dispatch(setAdminVenue(venue));
+    setVenueOpen(true);
+  };
+
+  const addVenue = () => {
+    if (!currentAdminSelection.selectedVenue) {
       return false;
     }
-    dispatch(setIsLoading(true));
+
+    if (!venueName) {
+      toast.error("Venue name is required");
+      return;
+    }
+
+    if (!address) {
+      toast.error("Address is required");
+      return;
+    }
+
+    if (!city) {
+      toast.error("City is required");
+      return;
+    }
+
+    if (!state && !zipCode && !country) {
+      toast.error("Must provide at least one of state, zip or country");
+      return;
+    }
+
+    handleVenueClose();
+
+    let venueToUpdate: ExternalVenue = {
+      ...currentAdminSelection.selectedVenue,
+      venue: venueName,
+      address: address,
+      city: city,
+      state: state,
+      zipCode: zipCode,
+      country: country,
+    };
+
+    updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
+      if (response.success) {
+        const newVenue = response.updatedVenue;
+        let adminSelection = { ...currentAdminSelection };
+        if (newVenue != undefined && 
+            adminSelection.venues != undefined && 
+            adminSelection.selectedEvent != undefined && 
+            !adminSelection.venues.find(x => x.venueId == newVenue.venueId)) {
+          dispatch(setAdminVenue(undefined));
+          let venueList = [ ...adminSelection.venues ];
+          venueList.push(newVenue);
+          venueList.sort((a, b) =>
+            a.venue < b.venue ? -1 : a.venue > b.venue ? 1 : 0,
+          );
+          dispatch(
+            setVenues(venueList)
+          );
+          let currentEvent = { ...adminSelection.selectedEvent };
+          currentEvent.externalEventVenueId = newVenue.venueId;
+          dispatch(
+            setAdminEvent(currentEvent)
+          );
+          toast.success('Venue added successfully');
+        } else {
+          toast.error('Error occurred while saving venue');
+        }
+      } else {
+        toast.error(response.venueError ?? 'Error occurred while saving venue');
+      }
+    });
+  };
+
+  const handleVenueClose = () => setVenueOpen(false);
+  
+
+  const onSubmit = () => {
+    if (!currentAdminSelection.selectedEvent || !currentAdminSelection.sellerId) {
+      return false;
+    }    
 
     let eventToUpdate: VipEvent = { ...currentAdminSelection.selectedEvent };
+
+    if (!eventToUpdate.title) {
+      toast.warning("Title must be set");
+      return;
+    }
+
+    if (!eventToUpdate.eventDate) {
+      toast.warning("Event date must be set");
+      return;
+    }
+
+    if (!eventToUpdate.externalEventVenueId) {
+      toast.warning("Event venue must be set");
+      return;
+    }
+
+    if (!eventToUpdate.externalUrl && !eventToUpdate.externalVipLink) {
+      toast.warning("Either vip or ticket link must be set");
+      return;
+    }
+
+    if (!eventToUpdate.announceDate) {
+      eventToUpdate.announceDate = undefined;
+    }
+
+    if (!eventToUpdate.disableLinkReason) {
+      eventToUpdate.disableLinkReason = undefined;
+    }
+
+    if (!eventToUpdate.disableVipLinkReason) {
+      eventToUpdate.disableVipLinkReason = undefined;
+    }
+
+    if (!eventToUpdate.externalUrl) {
+      eventToUpdate.externalUrl = undefined;
+    }
+
+    if (!eventToUpdate.externalVipLink) {
+      eventToUpdate.externalVipLink = undefined;
+    }
+
+    dispatch(setIsLoading(true));
+
     updateEvent(eventToUpdate).then((response: ModifyEventResponse) => {
       if (response.success) {
+        let adminSelection = { ...currentAdminSelection };
+        adminSelection.start = undefined;
+        adminSelection.end = undefined;
         toast.success('Event updated successfully');
         dispatch(setReloadEvents(true));
+        dispatch(setAdminDates(adminSelection));
         dispatch(setAdminEvent(undefined));
+        dispatch(setAdminVenue(undefined));
         goBack(false);
         if (id) {
           window.removeEventListener("beforeunload", beforeOnUnload);
@@ -535,77 +819,90 @@ export default function AdminEventEdit(props: any) {
     });
   };
 
-  const pageHeader = 'Edit event';
+  const selectedEvent = currentAdminSelection.selectedEvent;
+
+  const eventId =
+    selectedEvent?.externalEventId != undefined
+      ? selectedEvent.externalEventId
+      : 0;
+
+  const ticketSocketEventId = selectedEvent?.ticketSocketEventId ?? 0;
+
+  const pageHeader = (eventId > 0) ? `Edit event for ${currentSeller?.name}` : `Add event for ${currentSeller?.name}`;
 
   const eventTitle =
-    currentAdminSelection.selectedEvent != undefined
-      ? currentAdminSelection.selectedEvent.title
-      : '';
-  const location =
-    currentAdminSelection.selectedEvent?.venue != undefined
-      ? getLocation(currentAdminSelection.selectedEvent.venue)
-      : '';
+      selectedEvent != undefined
+        ? selectedEvent.title
+        : '';
+  
   const eventDate =
-    currentAdminSelection.selectedEvent?.eventDate != undefined
-      ? moment(currentAdminSelection.selectedEvent.eventDate).format('MM/DD/YYYY')
-      : '';
-  const refundsDisabled =
-    currentAdminSelection.selectedEvent == undefined ||
-    currentAdminSelection.selectedEvent.totalTickets == 0;
-  const cancelDisabled = (currentAdminSelection.selectedEvent?.isCancelled);
-  const cancelTitle = cancelDisabled ? 'Event has already been cancelled' : '';
+    selectedEvent?.eventDate != undefined
+      ? moment(selectedEvent.eventDate).toDate()
+      : null;
+
+  const eventTime =
+      selectedEvent != undefined &&
+      selectedEvent.eventTime != null
+            ? moment(selectedEvent.eventTime).toDate()
+            : null; 
+  
   const announceDate =
-    currentAdminSelection.selectedEvent != undefined &&
-      currentAdminSelection.selectedEvent.announceDate != null
-      ? moment(currentAdminSelection.selectedEvent.announceDate).toDate()
+    selectedEvent != undefined &&
+      selectedEvent.announceDate != null
+      ? moment(selectedEvent.announceDate).toDate()
       : null;
-  const announceDateDisabled =
-    currentAdminSelection.selectedEvent != undefined && eventDate != undefined
-      ? moment(eventDate).toDate() < new Date()
-      : false;
+  
+  const refundsDisabled =
+    selectedEvent == undefined ||
+    selectedEvent.totalTickets == 0 ||
+    ticketSocketEventId == 0;
 
-  const announceTimeDisabled = !announceDateDisabled && !announceDate;
-
-  const doorsOpenTime =
-    currentAdminSelection.selectedEvent != undefined &&
-      currentAdminSelection.selectedEvent.doorsOpen != null
-      ? moment(currentAdminSelection.selectedEvent.doorsOpen).toDate()
-      : null;
-  const meetAndGreetTime =
-    currentAdminSelection.selectedEvent != undefined &&
-      currentAdminSelection.selectedEvent.meetAndGreetTime != null
-      ? moment(currentAdminSelection.selectedEvent.meetAndGreetTime).toDate()
-      : null;
-  const isActive = currentAdminSelection?.selectedEvent?.isActive ?? false;
-  const isDeleted = currentAdminSelection?.selectedEvent?.isDeleted ?? false;
-  const isHidden = currentAdminSelection?.selectedEvent?.isHidden ?? false;
+  const isCancelled = (selectedEvent?.isCancelled ?? false)
+  const cancelButtonText = isCancelled ? 'Uncancel Event' : 'Mark Cancelled';
+  const refundCancelDisabled = isCancelled;
+  const refundCancelTitle = refundCancelDisabled ? 'Event has already been cancelled' : '';
+  
+  const isActive = selectedEvent?.isActive ?? false;
+  const isDeleted = selectedEvent?.isDeleted ?? false;
+  const isHidden = selectedEvent?.isHidden ?? false;
   const isAddedToBandsInTown =
-    currentAdminSelection?.selectedEvent?.isAddedToBandsInTown ?? false;
+    selectedEvent?.isAddedToBandsInTown ?? false;
 
-  const emailSentToVips = currentAdminSelection?.selectedEvent?.emailSentToVips ?? false;
-  const textSentToVips = currentAdminSelection?.selectedEvent?.textSentToVips ?? false;
-  const listSentToBand = currentAdminSelection?.selectedEvent?.listSentToBand ?? false;
-  const listSentTime = currentAdminSelection?.selectedEvent?.listSentTime ? moment.utc(currentAdminSelection.selectedEvent.listSentTime).format('MM/DD/YYYY h:mm A') : 'n/a';
-  const numVips = (currentAdminSelection?.selectedEvent?.listSentToBand ?? false) ? (currentAdminSelection?.selectedEvent?.listSentNumVips ?? 0).toString() : 'n/a';
+  const thumbnail = selectedEvent?.thumbnail ?? undefined;
+  const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;  
 
-  const checkInLocation = currentAdminSelection?.selectedEvent?.checkInLocation;
-  const checkInNotes = currentAdminSelection?.selectedEvent?.checkInNotes;
+  const externalUrl = selectedEvent?.externalUrl ?? undefined;
+  const externalVipLink = selectedEvent?.externalVipLink ?? undefined;
+
+  const disableLinkButton = selectedEvent?.disableLinkButton ?? false;
+  const disableLinkReason = selectedEvent?.disableLinkReason ?? undefined;
+
+  const disableVipLinkButton = selectedEvent?.disableVipLinkButton ?? false;
+  const disableVipLinkReason = selectedEvent?.disableVipLinkReason ?? undefined;
+
+  const emailSentToVips = selectedEvent?.emailSentToVips ? "true" : "false";
+  const textSentToVips = selectedEvent?.textSentToVips  ? "true" : "false";
+  const listSentToBand = selectedEvent?.listSentToBand   ? "true" : "false";
+  const listSentTime = selectedEvent?.listSentTime ? moment.utc(selectedEvent.listSentTime).format('MM/DD/YYYY h:mm A') : 'n/a';
+  const numVips = (selectedEvent?.listSentToBand ?? false) ? (selectedEvent?.listSentNumVips ?? 0).toString() : 'n/a';
+
+  const checkInLocation = selectedEvent?.checkInLocation;
+  const checkInNotes = selectedEvent?.checkInNotes;
 
   let ticketTypeRows: any[] = [];
   if (
-    currentAdminSelection.selectedEvent &&
-    currentAdminSelection.selectedEvent.ticketTypes &&
-    currentAdminSelection.selectedEvent.ticketTypes.length > 0
+    selectedEvent &&
+    selectedEvent.ticketTypes &&
+    selectedEvent.ticketTypes.length > 0
   ) {
-    currentAdminSelection.selectedEvent.ticketTypes.forEach((ticketType, i) => {
+    selectedEvent.ticketTypes.forEach((ticketType, i) => {
       const ticketTypeId = ticketType.ticketTypeId;
       let ticketTypeDisabled = false;
       if (
-        currentAdminSelection.selectedEvent &&
-        currentAdminSelection.selectedEvent.orders
+        selectedEvent && selectedEvent.orders
       ) {
-        for (let i = 0; i < currentAdminSelection.selectedEvent.orders.length; i++) {
-          const order = currentAdminSelection.selectedEvent.orders[i];
+        for (let i = 0; i < selectedEvent.orders.length; i++) {
+          const order = selectedEvent.orders[i];
           if (order.isComped) {
             ticketTypeDisabled = true;
           } else {
@@ -661,8 +958,8 @@ export default function AdminEventEdit(props: any) {
   }
 
   let notes: any[] = [];
-  if (currentAdminSelection.selectedEvent?.notes) {
-    currentAdminSelection.selectedEvent.notes.forEach((note: Note) => {
+  if (selectedEvent?.notes) {
+    selectedEvent.notes.forEach((note: Note) => {
       notes.push(<div key={`note_${note.noteId}`}>{note.note}&nbsp;<span className="note-created">Date: {moment(note.noteTimestamp).format('MM/DD/YYYY h:mm A')}</span></div>)
     });
   }
@@ -671,36 +968,190 @@ export default function AdminEventEdit(props: any) {
     notes.push(<div>n/a</div>)
   }
 
+  const venueList: ItemDataType<number>[] = currentAdminSelection?.venues ?
+    currentAdminSelection?.venues?.map((venue) => {
+      return {
+        label: `${venue.venue} ${getExternalVenueLocation(venue)}`,
+        value: venue.venueId
+      }
+    }) : [];
+
+  const eventList: ItemDataType<number>[] = currentAdminSelection?.ticketSocketEvents ?
+    currentAdminSelection?.ticketSocketEvents?.map((evt) => {
+      return {
+        label: `${moment(evt.eventDate).format('MM/DD/YYYY')} - ${evt.title}`,
+        value: evt.ticketSocketEventId
+      }
+    }) : [];
+
+  const isExternalEvent = (selectedEvent?.isExternal ?? false) && (ticketSocketEventId == 0);
+
   return (
     <Col
       className="admin-container"
-      hidden={currentAdminSelection.selectedEvent == undefined}
+      hidden={selectedEvent == undefined}
     >
       <Row>
         <Col>
           <h3>{pageHeader}</h3>
         </Col>
       </Row>
-      <Row className="form-group">
-        <Col className="form-header">
-          <span className="title">Title:</span> {eventTitle}
-          <br />
-          <span className="title">Date:</span> {eventDate}
-          <br />
-          <span className="title">Venue:</span>{' '}
-          {currentAdminSelection.selectedEvent?.venue?.name} <br />
-          <span className="title">Location:</span> {location}
-          <br />
-          <span className="title">Status:</span>{' '}
-          {getEventStatusText(currentAdminSelection.selectedEvent)}
-          <br />
+      <Row>
+        <Col className="form-group">
+          <label className="mt-4">Event title</label>
+          <input
+            value={eventTitle}
+            onChange={(e) => setEventTitle(e.target.value)}
+            className="form-control"
+            placeholder="event title"
+            type="text"
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col className="form-group">
+          <label className="mt-4">Event date</label>
+          <DatePicker
+            id="eventDate"
+            format="M/d/yyyy"
+            onSelect={onEventDateChange}
+            value={eventDate}
+            oneTap
+            showMeridiem
+          />
+        </Col>
+      </Row>
+      <Row hidden={isExternalEvent}>
+        <Col className="form-group">
+          <label className="mt-4">Associated Ticket Socket Event</label>
+          <SelectPicker
+            value={ticketSocketEventId}
+            data={eventList}
+            size="lg"
+            block
+            onChange={onEventChange}
+          />      
+        </Col>
+      </Row>
+      <Row>
+        <Col className="form-group">
+          <label className="mt-4">Event venue</label>
+          <SelectPicker
+            value={externalEventVenueId}
+            data={venueList}
+            size="lg"
+            block
+            onChange={onEventVenueChange}
+          />
+          <Button disabled={externalEventVenueId > 0} onClick={handleVenueOpen}>Add New Venue</Button>
+          <Modal open={venueOpen} onClose={handleVenueClose}>
+            <Modal.Header>
+              <Modal.Title>Add New Venue:</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="form-group">
+                <label className="mt-4">Venue name</label>
+                <input
+                  value={venueName}
+                  onChange={(e) => setVenueName(e.target.value)}
+                  className="form-control"
+                  placeholder="venue name"
+                  type="text"
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">Address</label>
+                <input
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="form-control"
+                  placeholder="address"
+                  type="text"
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">City</label>
+                <input
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="form-control"
+                  placeholder="city"
+                  type="text"
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">State</label>
+                <input
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="form-control"
+                  placeholder="state"
+                  type="text"
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">Postal Code</label>
+                <input
+                  value={zipCode}
+                  onChange={(e) => setZipCode(e.target.value)}
+                  className="form-control"
+                  placeholder="postal code"
+                  type="text"
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">Country</label>
+                <input
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="form-control"
+                  placeholder="country"
+                  type="text"
+                />
+              </div>
+            </Modal.Body>
+            <Modal.Footer className="modal-notes-footer">
+              <Button onClick={addVenue}>
+                Ok
+              </Button>
+              <Button onClick={handleVenueClose}>
+                Cancel
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="form-group">
+          <AdminFileUpload
+            Title="Thumbnail (square, no wider than 100px x 100px)"
+            FileUploadName="Thumbnail"
+            OnUpLoad={onFileUpload}
+            CurrentFileName={thumbnail}
+            IsDirty={isThumbnailDirty}
+            CurrentFileTitle={"View Current Thumbnail"}
+            BaseUrl={thumbNailBaseUrl}
+            OnUploadStart={onUploadStart}
+            OnUploadComplete={onUploadComplete}
+          />
         </Col>
       </Row>
       <Row className="form-group">
-        <Col xs={1}>
-          Announce Date:
-        </Col>
         <Col>
+          <label className="mt-4">Event time (local)</label>
+
+          <TimePicker
+            id="eventTime"
+            format="hh:mm aa"
+            onSelect={onEventTimeChange}
+            value={eventTime}
+            cleanable
+            showMeridiem
+            onClean={onCleanEventTime}
+          />
+
+          <label className="mt-4">Announce Date</label>
+          
           <DatePicker
             id="announceDate"
             format="M/d/yyyy"
@@ -710,7 +1161,6 @@ export default function AdminEventEdit(props: any) {
             cleanable
             showMeridiem
             onClean={onCleanAnnounceDate}
-            disabled={announceDateDisabled}
           />
           <TimePicker
             id="announceTime"
@@ -720,41 +1170,68 @@ export default function AdminEventEdit(props: any) {
             cleanable
             showMeridiem
             onClean={onCleanAnnounceTime}
-            disabled={announceTimeDisabled}
           />
         </Col>
       </Row>
-      <Row className="form-group">
-        <Col xs={1}>
-          Doors Open:
-        </Col>
-        <Col>
-          <TimePicker
-            id="doorsOpen"
-            format="hh:mm aa"
-            showMeridiem={true}
-            hideMinutes={minute => minute % 15 !== 0}
-            onChange={onDoorsOpenChange}
-            value={doorsOpenTime}
+      <Row>
+        <Col className="form-group">
+          <label className="mt-4">VIP Link</label>
+          <Form.Control as="textarea"
+            rows={3}
+            id="externalVipLink"
+            onChange={(e) => setExternalVipLink(e.currentTarget.value)}
+            value={externalVipLink}
+            placeholder='VIP/Website Link (VIP tickets)'
           />
         </Col>
       </Row>
-      <Row className="form-group">
-        <Col xs={1}>
-          Meet and Greet Time:
+      <Row>
+        <Col className="form-group">
+          <label className="mt-4">Tickets Link</label>
+          <Form.Control as="textarea"
+            rows={3}
+            id="externalUrl"
+            onChange={(e) => setExternalUrl(e.currentTarget.value)}
+            value={externalUrl}
+            placeholder='Ticket/Website Link (regular tickets)'
+          />
         </Col>
-        <Col>
-          <TimePicker
-            id="meetAndGreet"
-            format="hh:mm aa"
-            showMeridiem={true}
-            hideMinutes={minute => minute % 15 !== 0}
-            onChange={onMeetAndGreetChange}
-            value={meetAndGreetTime}
+      </Row> 
+      <Row>
+        <Col className="form-group">
+          <FormCheck
+            checked={disableLinkButton}
+            onChange={(e) => setDisableLinkButton(e.target.checked)}
+            label={'Disable "Tickets" button'}
+          />
+          <label className="mt-4">Alternate text for Tickets Button (10 chars or less)</label>
+          <input
+            value={disableLinkReason}
+            onChange={(e) => setDisableLinkReason(e.target.value)}
+            className="form-control"
+            placeholder="Alternate text for Tickets button"
+            type="text"
           />
         </Col>
       </Row>
-      <Row className="form-group">
+      <Row>
+        <Col className="form-group">
+          <FormCheck
+            checked={disableVipLinkButton}
+            onChange={(e) => setDisableVipLinkButton(e.target.checked)}
+            label={'Disable "VIP" button'}
+          />
+          <label className="mt-4">Alternate text for VIP Button (10 chars or less)</label>
+          <input
+            value={disableVipLinkReason}
+            onChange={(e) => setDisableVipLinkReason(e.target.value)}
+            className="form-control"
+            placeholder="Alternate text for VIP button"
+            type="text"
+          />
+        </Col>
+      </Row>     
+      <Row className="form-group" hidden={isExternalEvent}>
         <Col xs={1}>
           Check-in location:
         </Col>
@@ -767,7 +1244,7 @@ export default function AdminEventEdit(props: any) {
           />
         </Col>
       </Row>
-      <Row className="form-group">
+      <Row className="form-group" hidden={isExternalEvent}>
         <Col xs={1}>
           Check-in notes:
         </Col>
@@ -806,57 +1283,58 @@ export default function AdminEventEdit(props: any) {
             onChange={(e) => setIsAddedToBandsInTown(e.target.checked)}
             label="Is Added to BandsInTown?"
           />
-          <FormCheck
-            checked={emailSentToVips}
-            disabled={isDeleted}
-            onChange={(e) => setEmailSentToVips(e.target.checked)}
-            label="Email Sent To VIPs?"
-          />
-          <FormCheck
-            checked={textSentToVips}
-            disabled={isDeleted}
-            onChange={(e) => setTextSentToVips(e.target.checked)}
-            label="Text Sent To VIPs?"
-          />
-          <FormCheck
-            checked={listSentToBand}
-            disabled={isDeleted}
-            onChange={(e) => setListSentToBand(e.target.checked)}
-            label="List Sent To Band?"
-          />
-          <div>
-            Date/Time List sent to band: {listSentTime}
-          </div>
-          <div>
-            # of VIPs at time email was sent: {numVips}
-          </div>
         </Col>
       </Row>
-      <Row>
+      <Row className="form-group" hidden={isExternalEvent}>
+        <Col>
+          Email Sent to Vips: {emailSentToVips}
+        </Col>
+      </Row>
+      <Row className="form-group" hidden={isExternalEvent}>
+        <Col>
+          Text Sent to Vips: {textSentToVips}
+        </Col>
+      </Row>
+      <Row className="form-group" hidden={isExternalEvent}>
+        <Col>
+          List sent to band: {listSentToBand}
+        </Col>
+      </Row>
+      <Row className="form-group" hidden={isExternalEvent}>
+        <Col>
+          Date/Time List sent to band: {listSentTime}
+        </Col>
+      </Row>
+      <Row className="form-group" hidden={isExternalEvent}>
+        <Col>
+            # of VIPs at time email was sent: {numVips}
+        </Col>
+      </Row>
+      <Row hidden={isExternalEvent}>
         <Col>
           <h5>Ticket Types</h5>
         </Col>
       </Row>
-      <Row>
+      <Row hidden={isExternalEvent}>
         <Col>
           <table className="ticket-type-table">
             <tbody>{ticketTypeRows}</tbody>
           </table>
         </Col>
       </Row>
-      <Row className="refund-section-header" hidden={refundsDisabled}>
+      <Row className="refund-section-header" hidden={refundsDisabled || isExternalEvent}>
         <Col>
           <h5>Process Event Refunds</h5>
         </Col>
       </Row>
-      <Row className="refund-section" hidden={refundsDisabled}>
+      <Row className="refund-section" hidden={refundsDisabled || isExternalEvent}>
         <Col>
           <Button className="form-control-float" onClick={confirmDoRefund}>
             Refund All Tickets
           </Button>
           <FormCheck
-            disabled={cancelDisabled}
-            title={cancelTitle}
+            disabled={refundCancelDisabled}
+            title={refundCancelTitle}
             className="form-control-float"
             checked={markCancelled}
             onChange={(e) => setMarkCancelled(e.target.checked)}
@@ -870,7 +1348,7 @@ export default function AdminEventEdit(props: any) {
           />
         </Col>
       </Row>
-      <Row>
+      <Row hidden={isExternalEvent}>
         <Col>
           Add comp order with
           <input
@@ -883,12 +1361,10 @@ export default function AdminEventEdit(props: any) {
           <Button className="comp-button" onClick={compOrder}>Comp</Button>
         </Col>
       </Row>
-      <Row
-        className="refund-section"
-        hidden={(currentAdminSelection?.selectedEvent?.orders?.length ?? 0) > 0}
-      >
+      <Row className="refund-section">
         <Col>
-          <Button onClick={cancelEvent}>Mark Cancelled</Button><Button onClick={handleNotesOpen}>Add Note</Button>
+          <Button onClick={cancelTicketSocketEvent}>{cancelButtonText}</Button><br /><br />
+          <Button onClick={handleNotesOpen}>Add Note</Button>
           <Modal open={notesOpen} onClose={handleNotesClose}>
             <Modal.Header>
               <Modal.Title>Add New Note:</Modal.Title>
@@ -919,7 +1395,7 @@ export default function AdminEventEdit(props: any) {
             {notes}
           </Col>
       </Row>
-      <Row className="refund-section">
+      <Row className="refund-section" hidden={isExternalEvent || (currentAdminSelection?.selectedEvent?.orders?.length ?? 0) <= 0}>
         <Col>
           <Button onClick={manageOrders}>Manage Orders</Button>
         </Col>

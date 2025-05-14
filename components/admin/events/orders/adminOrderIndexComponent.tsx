@@ -29,6 +29,7 @@ export default function AdminOrdersIndex(props: any) {
   const id: number | undefined = props.Id as number;
   const { Column, HeaderCell, Cell } = Table;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const [tableLoading, setTableLoading] = useState(true);
   const dispatch = useDispatch();
   const { getLocation } = useGetLocation();
@@ -46,6 +47,7 @@ export default function AdminOrdersIndex(props: any) {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
+        dispatch(setIsLoading(true));
         getEventById(id)
           .then((response) => {
             setOrderIdList([]);
@@ -54,12 +56,13 @@ export default function AdminOrdersIndex(props: any) {
                 setAdminEvent(response.event)
               );
             }
+            dispatch(setIsLoading(false));
           })
       } else if (currentAdminSelection.reloadEvents) {
         dispatch(setReloadEvents(false));
         setOrderIdList([]);
         let adminSelection = { ...currentAdminSelection };
-        let selectedEventId = adminSelection.selectedEvent?.ticketSocketEventId;
+        let selectedEventId = adminSelection.selectedEvent?.externalEventId;
         if (!adminSelection.sellerId || !selectedEventId) {
           setTableLoading(false);
           return;
@@ -71,7 +74,7 @@ export default function AdminOrdersIndex(props: any) {
           if (response.events && !response.eventError) {
             dispatch(setAdminEvents(response.events));
             const currentEvent = response.events.find(
-              (x) => x.ticketSocketEventId == selectedEventId,
+              (x) => x.externalEventId == selectedEventId,
             );
             if (currentEvent) {
               dispatch(setAdminEvent(currentEvent));
@@ -88,7 +91,7 @@ export default function AdminOrdersIndex(props: any) {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, tableLoading, dispatch, getAdminEvents, getEventById, id]);
+  }, [currentAdminSelection, tableLoading, dispatch, getAdminEvents, getEventById, id, globalSelection]);
 
   const viewOrder = (ticketSocketOrderId: number) => {
     if (

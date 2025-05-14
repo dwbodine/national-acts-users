@@ -3,10 +3,10 @@ import { ModifyEventResponse } from '@/types/event';
 
 export const useSetEventsDeleted = () => {
   const setEventsDeleted = async (
-    ticketSocketEventIdList: number[],
+    eventIdList: number[],
     isDeleted: boolean,
   ): Promise<ModifyEventResponse> => {
-    return await eventService.setEventsDeleted(ticketSocketEventIdList, isDeleted);
+    return await eventService.setEventsDeleted(eventIdList, isDeleted);
   };
 
   return { setEventsDeleted };

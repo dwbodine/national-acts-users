@@ -320,7 +320,7 @@ export default function AdminOrderEdit(props: any) {
     }
   };
 
-  const setShirtSize = (ticketId: number, shirtSize: string) => {
+  const setShirtSize = (ticketId: number, shirtSize: string | undefined) => {
     if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
@@ -753,6 +753,7 @@ export default function AdminOrderEdit(props: any) {
                 key={`shirt_${ticketId}`}
                 defaultValue={ticket.shirtSize}
                 onChange={(e) => setShirtSize(parseInt(`${ticketId}`), e.currentTarget.value)}>
+                <option value=""> -- Select One --</option>
                 <option value="XS">XS</option>
                 <option value="S">S</option>
                 <option value="M">M</option>
