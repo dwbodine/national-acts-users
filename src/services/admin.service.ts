@@ -13,11 +13,7 @@ import {
   ModifySellerResponse,
   TicketSocketAccount,
 } from '@/types/admin';
-import {
-  GetSellersResponse,
-  Seller,
-  VipEvent,
-} from '@/types/event';
+import { GetSellersResponse, Seller, VipEvent } from '@/types/event';
 
 export class AdminService {
   protected readonly instance: AxiosInstance;
@@ -66,9 +62,7 @@ export class AdminService {
       });
   };
 
-  updatePage = async (
-    pageToUpdate: Page,
-  ): Promise<ModifyPageResponse> => {
+  updatePage = async (pageToUpdate: Page): Promise<ModifyPageResponse> => {
     let url = `/admin/pages/update`;
 
     let modifyResponse: ModifyPageResponse = {
@@ -300,36 +294,36 @@ export class AdminService {
   };
 
   getSellers = async (): Promise<GetSellersResponse> => {
-      let url = `/admin/sellers`;
-  
-      let sellersResponse: GetSellersResponse = {
-        sellers: undefined,
-        sellersError: undefined,
-      };
-  
-      const headers = getAuthorizationHeader();
-  
-      return this.instance
-        .get(url, {
-          headers: headers,
-        })
-        .then((res) => {
-          const sellers = res.data;
-          sellersResponse.sellers = sellers.length ? (sellers as Seller[]) : [];
-          return sellersResponse;
-        })
-        .catch((err) => {
-          console.log(err);
-          var errorMessage = '';
-          if (err?.response?.data?.msg) {
-            errorMessage = err.response.data.msg;
-          } else {
-            errorMessage =
-              'Unknown error while fetching sellers - please contact your administrator';
-          }
-          sellersResponse.sellersError = errorMessage;
-          return sellersResponse;
-        });
+    let url = `/admin/sellers`;
+
+    let sellersResponse: GetSellersResponse = {
+      sellers: undefined,
+      sellersError: undefined,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        const sellers = res.data;
+        sellersResponse.sellers = sellers.length ? (sellers as Seller[]) : [];
+        return sellersResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching sellers - please contact your administrator';
+        }
+        sellersResponse.sellersError = errorMessage;
+        return sellersResponse;
+      });
   };
 
   updateSeller = async (sellerToUpdate: Seller): Promise<ModifyExternalEventResponse> => {
@@ -369,5 +363,4 @@ export class AdminService {
         return modifyResponse;
       });
   };
-
 }

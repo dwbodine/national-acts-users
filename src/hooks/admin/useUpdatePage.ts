@@ -3,9 +3,7 @@ import { adminService } from '../../services';
 import { ModifyPageResponse } from '@/types/admin';
 
 export const useUpdatePage = () => {
-  const updatePage = async (
-    pageToUpdate: Page,
-  ): Promise<ModifyPageResponse> => {
+  const updatePage = async (pageToUpdate: Page): Promise<ModifyPageResponse> => {
     let response: ModifyPageResponse = {
       success: false,
       pageError: undefined,

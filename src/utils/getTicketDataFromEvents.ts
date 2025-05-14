@@ -26,7 +26,7 @@ export function getTicketDataFromEvents(events: VipEvent[]): ITicketData {
           if (ticket.isActive) {
             eventHasTickets = true;
             if (
-              evt.ticketSocketEventId && 
+              evt.ticketSocketEventId &&
               !eventHasTicketTypes &&
               !ticketTypes.find(
                 (x) => x.ticketTypeName.toLowerCase() == ticket.ticketType.toLowerCase(),

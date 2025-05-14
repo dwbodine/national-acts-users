@@ -37,9 +37,7 @@ export const useGetEventStatus = () => {
     return statusSlug;
   };
 
-  const getSellerStatusSlug = (
-    seller: Seller | undefined
-  ): string => {
+  const getSellerStatusSlug = (seller: Seller | undefined): string => {
     let statusSlug: string = '';
     if (!seller) {
       return '';
