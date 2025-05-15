@@ -1,5 +1,6 @@
 import { useUploadFile } from "@/hooks/common/useUploadFile";
 import { ChangeEvent, useState } from "react";
+import { FaTimesCircle } from "react-icons/fa";
 
 
 export default function AdminFileUpload(props: any) {
@@ -9,6 +10,8 @@ export default function AdminFileUpload(props: any) {
     const onUpload = props?.OnUpLoad;
     const onUploadStart = props?.OnUploadStart;
     const onUploadComplete = props?.OnUploadComplete;
+    const showRemoveButton = props?.ShowRemoveButton ?? false;
+    const onFileRemove = props?.OnFileRemove;
     let currentFileName: string | undefined = props?.CurrentFileName;
     const isDirty = props?.IsDirty ?? false;
     const baseUrl = props?.BaseUrl ?? '';
@@ -43,6 +46,12 @@ export default function AdminFileUpload(props: any) {
         }
     };
 
+    const handleFileRemove = () => {
+        if (onFileRemove) {
+            onFileRemove();
+        }
+    };
+
     const currentFileLink = !isDirty && baseUrl && currentFileName ? 
         <a target="_blank" href={`${baseUrl}/${currentFileName}`}>{currentFileName}</a> : 
         currentFileName;
@@ -51,13 +60,18 @@ export default function AdminFileUpload(props: any) {
         currentFileName = undefined;
     }
 
+    let removeButton: any = '';
+    if (showRemoveButton && currentFileName) {
+        removeButton = <FaTimesCircle className="admin-current-file-remove" onClick={handleFileRemove} title={`Remove ${currentFileName}`} />;
+    }
+
     return (
         <div>
             <div className="admin-setting-title">{title}</div>
             <input type="file" onChange={handleFileChange} />
             <span className="danger" hidden={!isUploading}>Uploading...</span>
             <span className="success" hidden={!isUploaded && !isDirty}>Uploaded!</span>
-            <div className="admin-current-file-title" hidden={!currentFileName && !isDirty}>{currentFileTitle} {currentFileLink}</div>
+            <div className="admin-current-file-title" hidden={!currentFileName && !isDirty}>{currentFileTitle} {currentFileLink} {removeButton}</div>
         </div>
     );
 }

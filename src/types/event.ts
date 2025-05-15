@@ -157,6 +157,7 @@ export interface VipEvent {
   venue?: Venue;
   eventDate: string;
   thumbnail?: string;
+  externalThumbnail?: string;
   ticketSocketUrl?: string;
   totalRevenue?: number;
   totalServiceFees?: number;

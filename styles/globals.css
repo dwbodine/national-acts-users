@@ -990,7 +990,12 @@ input.rs-input:hover {
 }
 
 .admin-current-file-title {
-  font-size: 11px;
+  font-size: 12px;
+}
+
+.admin-current-file-remove {
+  font-size: 15px;
+  cursor: pointer;
 }
 
 .admin-report-datepicker-label,

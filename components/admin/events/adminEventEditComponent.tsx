@@ -36,6 +36,7 @@ import AdminFileUpload from '../common/adminFileUploadComponent';
 import { useCancelEvent } from '@/hooks/admin/useCancelEvent';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
+import { FaTimesCircle } from 'react-icons/fa';
 
 export default function AdminEventEdit(props: any) {
   const id: number | undefined = props.Id as number;
@@ -639,7 +640,7 @@ export default function AdminEventEdit(props: any) {
     let currentEvent = { ...currentAdminSelection.selectedEvent };
     switch (fileUploadName) {
       case 'Thumbnail':
-        currentEvent.thumbnail = filename;
+        currentEvent.externalThumbnail = filename;
         dispatch(setAdminEvent(currentEvent));
         setIsThumbnailDirty(true);
         markDirty();
@@ -660,6 +661,16 @@ export default function AdminEventEdit(props: any) {
     } else {
       toast.error('File upload failed!');
     }
+  };
+
+  const onFileRemove = () => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.externalThumbnail = undefined;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
   };
 
   const handleVenueOpen = () => {
@@ -773,6 +784,20 @@ export default function AdminEventEdit(props: any) {
       return;
     }
 
+    if (eventToUpdate.externalVipLink) {
+      if (!eventToUpdate.externalVipLink.startsWith("http://") && !eventToUpdate.externalVipLink.startsWith("https://")) {
+        toast.warning("VIP link supplied is invalid");
+        return;
+      }
+    }   
+
+    if (eventToUpdate.externalUrl) {
+      if (!eventToUpdate.externalUrl.startsWith("http://") && !eventToUpdate.externalUrl.startsWith("https://")) {
+        toast.warning("Ticket link supplied is invalid");
+        return;
+      }
+    }    
+
     if (!eventToUpdate.announceDate) {
       eventToUpdate.announceDate = undefined;
     }
@@ -791,6 +816,10 @@ export default function AdminEventEdit(props: any) {
 
     if (!eventToUpdate.externalVipLink) {
       eventToUpdate.externalVipLink = undefined;
+    }
+
+    if (!eventToUpdate.externalThumbnail) {
+      eventToUpdate.externalThumbnail = undefined;
     }
 
     dispatch(setIsLoading(true));
@@ -868,7 +897,7 @@ export default function AdminEventEdit(props: any) {
   const isAddedToBandsInTown =
     selectedEvent?.isAddedToBandsInTown ?? false;
 
-  const thumbnail = selectedEvent?.thumbnail ?? undefined;
+  const thumbnail = selectedEvent?.externalThumbnail ?? undefined;
   const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;  
 
   const externalUrl = selectedEvent?.externalUrl ?? undefined;
@@ -1133,6 +1162,8 @@ export default function AdminEventEdit(props: any) {
             BaseUrl={thumbNailBaseUrl}
             OnUploadStart={onUploadStart}
             OnUploadComplete={onUploadComplete}
+            ShowRemoveButton={true}
+            OnFileRemove={onFileRemove}
           />
         </Col>
       </Row>
