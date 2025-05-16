@@ -448,7 +448,7 @@ export default function AdminEventsIndex() {
             start={currentAdminSelection.start}
             end={currentAdminSelection.end}
           />
-          <Button onClick={resetEvents}>Reset</Button>
+          <Button disabled={sellectedSellerId == undefined} onClick={resetEvents}>Reset</Button>
         </Col>
       </Row>
       <Row hidden={allEventIds.length == 0}>
