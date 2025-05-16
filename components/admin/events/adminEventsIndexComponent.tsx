@@ -409,6 +409,10 @@ export default function AdminEventsIndex() {
     })
   }
 
+  const resetEvents = () => {
+    dispatch(setReloadEvents(true));
+  };
+
   const selectedTourId = currentAdminSelection.selectedTour?.tourId ?? 0;
   const sellectedSellerId = currentAdminSelection.sellerId;
 
@@ -444,6 +448,7 @@ export default function AdminEventsIndex() {
             start={currentAdminSelection.start}
             end={currentAdminSelection.end}
           />
+          <Button onClick={resetEvents}>Reset</Button>
         </Col>
       </Row>
       <Row hidden={allEventIds.length == 0}>
