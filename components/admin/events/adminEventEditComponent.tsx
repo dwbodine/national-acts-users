@@ -1153,7 +1153,7 @@ export default function AdminEventEdit(props: any) {
       <Row>
         <Col className="form-group">
           <AdminFileUpload
-            Title="Thumbnail (square, no wider than 100px x 100px)"
+            Title="Event thumbnail (square, will be resized to 100px wide)"
             FileUploadName="Thumbnail"
             OnUpLoad={onFileUpload}
             CurrentFileName={thumbnail}
