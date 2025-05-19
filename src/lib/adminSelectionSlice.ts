@@ -32,6 +32,7 @@ const initialState: AdminSelection = {
   roles: undefined,
   users: undefined,
   events: undefined,
+  orders: undefined,
   tours: undefined,
   mustSaveEvent: false,
   mustSaveOrder: false,
@@ -192,6 +193,10 @@ export const adminSelectionSlice = createSlice({
       state.reloadRoles = false;
       return state;
     },
+    setAdminOrders: (state, action: PayloadAction<Order[] | undefined>) => {
+      state.orders = action.payload;
+      return state;
+    },
     setMustSaveEvent: (state, action: PayloadAction<boolean>) => {
       state.mustSaveEvent = action.payload;
       return state;
@@ -242,6 +247,7 @@ export const adminSelectionSlice = createSlice({
       state.reloadSettings = true;
       state.uploadedFile = undefined;
       state.reloadSellers = true;
+      state.orders = undefined;
       return state;
     },
   },
@@ -280,6 +286,7 @@ export const {
   setAllPages,
   setPageTypes,
   setTicketSocketEventsOnly,
+  setAdminOrders,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

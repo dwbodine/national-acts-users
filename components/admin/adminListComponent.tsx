@@ -25,6 +25,9 @@ export default function AdminList() {
       case 'manage-events':
         router.push('/admin/events/');
         break;
+      case 'manage-orders':
+        router.push('/admin/events/orders/search');
+        break;
       case 'view-log':
         router.push('/admin/log/');
         break;
@@ -75,18 +78,18 @@ export default function AdminList() {
                   Manage Site Settings (global values)
                 </a>
               </li>
-{/*
+              {/* 
               <li>
                 <a className="admin-link" onClick={() => goToAdminPage('manage-global-seller-settings')}>
                   Manage Sellers
                 </a>
-              </li>
+              </li>              
               <li>
                 <a className="admin-link" onClick={() => goToAdminPage('manage-pages')}>
                   Manage Pages
                 </a>
               </li>
-*/}
+              */}
             </ul>
           </Col>
         </Row>
@@ -118,7 +121,12 @@ export default function AdminList() {
               </li>
               <li>
                 <a className="admin-link" onClick={() => goToAdminPage('manage-events')}>
-                  Manage Events/Orders
+                  Manage Events
+                </a>
+              </li>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-orders')}>
+                  Manage Orders
                 </a>
               </li>
               <li>
