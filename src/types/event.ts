@@ -210,6 +210,7 @@ export interface VipEvent {
   checkInLocation?: string;
   checkInNotes?: string;
   notes?: Note[];
+  isSoldOut?: boolean;
 }
 
 export interface TicketSocketRefreshHistory {

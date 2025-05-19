@@ -380,8 +380,19 @@ input.rs-input:hover {
   font-weight: bold;
 }
 
+.resultsTable tr.event-sold-out {
+  color: red !important;
+  font-weight: bold;
+}
+
 .resultsTable tr.event-hidden,
 .resultsTable tr.event-hidden a {
+  color: orange !important;
+  font-weight: bold;
+}
+
+.resultsTable tr.event-active-pending,
+.resultsTable tr.event-active-pending a {
   color: orange !important;
   font-weight: bold;
 }
@@ -487,11 +498,11 @@ input.rs-input:hover {
   font-weight: bold;
 }
 
-.vipTable .inactive {
+.vipTable .inactive, .vipTitle .sold-out {
   color: red;
 }
 
-.vipTable .hidden {
+.vipTable .hidden, .vipTable .active-pending {
   color: orange;
 }
 
@@ -754,6 +765,12 @@ input.rs-input:hover {
   background-color: red;
 }
 
+.week-day-event-sold-out,
+.agenda-day-event-sold-out,
+.month-day-event-sold-out {
+  background-color: red;
+}
+
 .week-day-event-deleted,
 .agenda-day-event-deleted,
 .month-day-event-deleted {
@@ -764,6 +781,12 @@ input.rs-input:hover {
 .week-day-event-hidden,
 .agenda-day-event-hidden,
 .month-day-event-hidden {
+  background-color: orange;
+}
+
+.week-day-event-active-pending,
+.agenda-day-event-active-pending,
+.month-day-event-active-pending {
   background-color: orange;
 }
 
@@ -1213,12 +1236,22 @@ input.rs-input:hover {
   font-weight: bold;
 }
 
+.sold-out .rs-table-cell {
+  color: red !important;
+  font-weight: bold;
+}
+
 .cancelled .rs-table-cell {
   color: rgb(0, 128, 255) !important;
   font-weight: bold;
 }
 
 .hidden .rs-table-cell {
+  color: orange !important;
+  font-weight: bold;
+}
+
+.active-pending .rs-table-cell {
   color: orange !important;
   font-weight: bold;
 }

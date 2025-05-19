@@ -31,8 +31,20 @@ export const useGetEventStatus = () => {
       statusSlug = 'inactive';
     } else if (event.isHidden) {
       statusSlug = 'hidden';
+    } else if (event.isSoldOut) {
+      statusSlug = 'sold-out';
     } else {
-      statusSlug = 'active';
+      if (event.announceDate) {
+        const announceDate = moment(event.announceDate).unix();
+        if (announceDate > moment().unix()) {
+          statusSlug = 'active-pending';
+        } else {
+          statusSlug = 'active';
+        }
+
+      } else {
+        statusSlug = 'active';
+      }      
     }
     return statusSlug;
   };
@@ -69,8 +81,16 @@ export const useGetEventStatus = () => {
       case 'hidden':
         statusText = 'Hidden';
         break;
+      case 'sold-out':
+        statusText = 'SOLD OUT';
+        break;
       case 'active':
+      case 'active-pending':
         statusText = 'Active';
+        const announceDate = vipEvent && vipEvent.announceDate ? moment(vipEvent.announceDate) : undefined;
+        if (announceDate && announceDate.unix() > moment().unix()) {
+          statusText += ` - Announce Date ${announceDate.format('MM/DD/YYYY')}`;
+        }
         break;
       case 'taskscomplete':
         statusText = 'All Tasks Complete';
@@ -80,6 +100,9 @@ export const useGetEventStatus = () => {
         break;
       default:
         break;
+    }
+    if (slug != 'sold-out' && (vipEvent?.isSoldOut ?? false)) {
+      statusText += " - SOLD OUT";
     }
     return statusText;
   };
