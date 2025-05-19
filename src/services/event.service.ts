@@ -1164,6 +1164,42 @@ export class EventService {
       });
   };
 
+  searchOrders = async (searchTerm: string): Promise<GetOrdersResponse> => {
+    let url = `/admin/orders/search?sTerm=${encodeURIComponent(searchTerm)}`;
+
+    let response: GetOrdersResponse = {
+      orderError: undefined,
+      orders: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        response.orders = res.data ? (res.data as Order[]) : undefined;
+        return response;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          response.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while searching orders - please contact your administrator';
+        }
+        response.orderError = errorMessage;
+        return response;
+      });
+  };
+
   setEventsInactive = async (
     eventIdList: number[],
     isActive: boolean,
