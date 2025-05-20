@@ -34,8 +34,10 @@ export const useGetEventStatus = () => {
     } else if (event.isSoldOut) {
       statusSlug = 'sold-out';
     } else {
-      if (event.announceDate) {
-        const announceDate = moment(event.announceDate).unix();
+      if (event.announceDate || event.tourAnnounceDate) {
+        const announceDate = event.announceDate
+          ? moment(event.announceDate).unix()
+          : moment(event.tourAnnounceDate).unix();
         if (announceDate > moment().unix()) {
           statusSlug = 'active-pending';
         } else {
@@ -86,10 +88,14 @@ export const useGetEventStatus = () => {
       case 'active':
       case 'active-pending':
         statusText = 'Active';
-        const announceDate =
-          vipEvent && vipEvent.announceDate ? moment(vipEvent.announceDate) : undefined;
-        if (announceDate && announceDate.unix() > moment().unix()) {
-          statusText += ` - Announce Date ${announceDate.format('MM/DD/YYYY')}`;
+        let announceDate: any = undefined;
+        if (vipEvent && (vipEvent.announceDate || vipEvent.tourAnnounceDate)) {
+          announceDate = vipEvent.announceDate
+            ? moment(vipEvent.announceDate)
+            : moment(vipEvent.tourAnnounceDate);
+          if (announceDate.unix() > moment().unix()) {
+            statusText += ` - Announce Date ${announceDate.format('MM/DD/YYYY')}`;
+          }
         }
         break;
       case 'taskscomplete':
