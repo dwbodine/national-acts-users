@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
@@ -44,10 +44,12 @@ export default function AdminOrdersIndex(props: any) {
   const [orderIdList, setOrderIdList] = useState<number[]>([]);
   const allOrderIds: number[] = currentAdminSelection.selectedEvent?.orders?.map(o => { return o.ticketSocketOrderId }) ?? [];
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
-        dispatch(setIsLoading(true));
+  const loadEventById = useCallback(() => {
+      if (!id) {
+        return;
+      }
+  
+      dispatch(setIsLoading(true));
         getEventById(id)
           .then((response) => {
             setOrderIdList([]);
@@ -57,7 +59,13 @@ export default function AdminOrdersIndex(props: any) {
               );
             }
             dispatch(setIsLoading(false));
-          })
+          });
+    }, [dispatch, getEventById, id]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
+        loadEventById();
       } else if (currentAdminSelection.reloadEvents) {
         dispatch(setReloadEvents(false));
         setOrderIdList([]);
@@ -91,7 +99,7 @@ export default function AdminOrdersIndex(props: any) {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, tableLoading, dispatch, getAdminEvents, getEventById, id, globalSelection]);
+  }, [currentAdminSelection, tableLoading, dispatch, getAdminEvents, loadEventById, id, globalSelection]);
 
   const viewOrder = (ticketSocketOrderId: number) => {
     if (

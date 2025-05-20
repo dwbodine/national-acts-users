@@ -39,7 +39,7 @@ export default function Login() {
     router.push('/forgot-password');
   };
 
-  const handlePasswordKey = (e: KeyboardEvent<HTMLInputElement>) => {
+  const submitOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key == 'Enter') {
       onSubmit();
     }
@@ -128,6 +128,7 @@ export default function Login() {
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                onKeyDown={(e) => submitOnEnter(e)}
                 className="form-control"
                 placeholder="username"
               />
@@ -141,7 +142,7 @@ export default function Login() {
               <input
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                onKeyUp={(e) => handlePasswordKey(e)}
+                onKeyUp={(e) => submitOnEnter(e)}
                 className="form-control"
                 placeholder="password"
                 type="password"

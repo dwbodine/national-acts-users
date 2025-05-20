@@ -1,5 +1,5 @@
 import { RootState } from '@/lib/store';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import router from 'next/router';
@@ -10,7 +10,7 @@ import { useGetLocation } from '@/hooks/common/useGetLocation';
 import moment from 'moment';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { useRefundEvent } from '@/hooks/admin/useRefundEvent';
-import { GetSellersResponse, GetToursResponse, ModifyEventResponse, ModifyOrderResponse, Note, Seller, VipEvent } from '@/types/event';
+import { GetSellersResponse, ModifyEventResponse, ModifyOrderResponse, Note, Seller, VipEvent } from '@/types/event';
 import {
   setAdminEvent,
   setReloadEvents,
@@ -36,7 +36,6 @@ import AdminFileUpload from '../common/adminFileUploadComponent';
 import { useCancelEvent } from '@/hooks/admin/useCancelEvent';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
-import { FaTimesCircle } from 'react-icons/fa';
 
 export default function AdminEventEdit(props: any) {
   const id: number | undefined = props.Id as number;
@@ -78,6 +77,34 @@ export default function AdminEventEdit(props: any) {
     return ev;
   };
 
+  const loadEventById = useCallback(() => {
+    if (!id) {
+      return;
+    }
+
+    dispatch(setMustSaveEvent(false));
+    dispatch(setIsLoading(true));
+    getEventById(id)
+        .then((response) => {
+          if (response.event && !response.eventError) {
+            dispatch(
+              setAdminEvent(response.event)
+            );
+            dispatch(
+              setAdminSellerId(response.event.sellerId)
+            );
+            getTicketSocketEventsOnly(response.event.sellerId).then((response) => {
+              if (response.events && !response.eventError) {
+                dispatch(setTicketSocketEventsOnly(response.events));
+              }
+              dispatch(setIsLoading(false));
+            });
+          } else {
+            dispatch(setIsLoading(false));
+          }            
+        });
+  }, [dispatch, getEventById, id, getTicketSocketEventsOnly]);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.reloadSellers) {
@@ -100,32 +127,13 @@ export default function AdminEventEdit(props: any) {
             dispatch(setIsLoading(false));
           })
       } else if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
-        dispatch(setIsLoading(true));
-        getEventById(id)
-          .then((response) => {
-            if (response.event && !response.eventError) {
-              dispatch(
-                setAdminEvent(response.event)
-              );
-              dispatch(
-                setAdminSellerId(response.event.sellerId)
-              );
-              getTicketSocketEventsOnly(response.event.sellerId).then((response) => {
-                if (response.events && !response.eventError) {
-                  dispatch(setTicketSocketEventsOnly(response.events));
-                }
-                dispatch(setIsLoading(false));
-              });
-            } else {
-              dispatch(setIsLoading(false));
-            }            
-          })
+        loadEventById();        
       }
     }, 300);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, id, getEventById, globalSelection, getAllVenues, currentSeller, getSellers, getTicketSocketEventsOnly]);
+  }, [currentAdminSelection, dispatch, id, globalSelection, getAllVenues, currentSeller, getSellers, getTicketSocketEventsOnly, loadEventById]);
 
   const onEventVenueChange = (value: number | null, event: React.SyntheticEvent) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
@@ -169,9 +177,13 @@ export default function AdminEventEdit(props: any) {
         if (response.success && !response.noteError) {
           toast.success("Note added successfully");
           setNoteText('');
-          dispatch(setReloadEvents(true));
-          dispatch(setAdminEvent(undefined));
-          goBack(false);
+          if (!id) {
+            dispatch(setReloadEvents(true));
+            dispatch(setAdminEvent(undefined));
+            goBack(false);
+          } else {
+            loadEventById();
+          }          
         } else {
           toast.error(response.noteError ?? "Unexpected error occurred while adding note");
         }
@@ -560,9 +572,13 @@ export default function AdminEventEdit(props: any) {
         dispatch(setIsLoading(false));
         if (success) {
           toast.success('Refund succeeded');
-          dispatch(setReloadEvents(true));
-          dispatch(setAdminEvent(undefined));
-          goBack(false);
+          if (!id) {
+            dispatch(setReloadEvents(true));
+            dispatch(setAdminEvent(undefined));
+            goBack(false);
+          } else {
+            loadEventById(); 
+          }          
         } else {
           toast.error('Refund failed');
         }
@@ -590,9 +606,13 @@ export default function AdminEventEdit(props: any) {
         dispatch(setIsLoading(false));
         if (success) {
           toast.success('Comp order created');
-          dispatch(setReloadEvents(true));
-          dispatch(setAdminEvent(undefined));
-          goBack(false);
+          if (!id) {
+            dispatch(setReloadEvents(true));
+            dispatch(setAdminEvent(undefined));
+            goBack(false);
+          } else {
+            loadEventById();
+          }          
         } else {
           toast.error('Comp order creation failed');
         }
@@ -616,9 +636,13 @@ export default function AdminEventEdit(props: any) {
       if (success) {
         const message = isCancelled ? 'Cancellation succeeded' : 'Uncancellation succeeded';
         toast.success(message);
-        dispatch(setReloadEvents(true));
-        dispatch(setAdminEvent(undefined));
-        goBack(false);
+        if (!id) {
+          dispatch(setReloadEvents(true));
+          dispatch(setAdminEvent(undefined));
+          goBack(false);
+        } else {
+          loadEventById();
+        }        
       } else {
         const message = isCancelled ? 'Cancellation failed' : 'Uncancellation failed';
         toast.error(message);
@@ -830,12 +854,14 @@ export default function AdminEventEdit(props: any) {
         adminSelection.start = undefined;
         adminSelection.end = undefined;
         toast.success('Event updated successfully');
-        dispatch(setReloadEvents(true));
-        dispatch(setAdminDates(adminSelection));
-        dispatch(setAdminEvent(undefined));
-        dispatch(setAdminVenue(undefined));
-        goBack(false);
-        if (id) {
+        if (!id) {
+          dispatch(setReloadEvents(true));
+          dispatch(setAdminDates(adminSelection));
+          dispatch(setAdminEvent(undefined));
+          dispatch(setAdminVenue(undefined));
+          goBack(false);
+        } else {
+          loadEventById();
           window.removeEventListener("beforeunload", beforeOnUnload);
           if (window.opener) {
             window.opener.location.reload(false);

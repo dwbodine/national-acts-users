@@ -1,5 +1,5 @@
 import { RootState } from '@/lib/store';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
@@ -39,24 +39,37 @@ export default function AdminOrderEdit(props: any) {
   const [ticketIdList, setTicketIdList] = useState<number[]>([]);
   const allTicketIds: number[] = currentAdminSelection.selectedOrder?.tickets?.map(t => { return t.ticketSocketOrderTicketId }) ?? [];
 
+  const loadOrderById = useCallback(() => {
+    if (!id) {
+      return;
+    }
+
+    dispatch(setMustSaveOrder(false));
+    dispatch(setIsLoading(true));
+    getOrderById(id)
+      .then((response) => {
+        setTicketIdList([]);
+        if (response.order && !response.orderError) {
+            dispatch(
+              setAdminOrder(response.order)
+            );
+        } else {
+          toast.error(response.orderError);
+        }
+        dispatch(setIsLoading(false));
+      });
+  }, [dispatch, getOrderById, id]);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.selectedOrder == undefined && id != undefined) {
-        getOrderById(id)
-          .then((response) => {
-            setTicketIdList([]);
-            if (response.order && !response.orderError) {
-               dispatch(
-                  setAdminOrder(response.order)
-               );
-            }
-          })
+        loadOrderById();
       }
     }, 300);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, getOrderById, id]);
+  }, [currentAdminSelection, dispatch, id, loadOrderById]);
 
   const setPrice = (ticketId: number, newPrice: number): any => {
     if (
@@ -88,7 +101,7 @@ export default function AdminOrderEdit(props: any) {
 
       dispatch(setAdminOrder(currentOrder));
 
-      dispatch(setMustSaveOrder(true));
+      markDirty();
     }
   };
 
@@ -131,7 +144,7 @@ export default function AdminOrderEdit(props: any) {
   };
 
   const markDirty = () => {
-    dispatch(setMustSaveOrder(true));
+    markDirty();
   };
 
   const setIsActive = (isActive: boolean) => {
@@ -196,7 +209,7 @@ export default function AdminOrderEdit(props: any) {
 
       dispatch(setAdminOrder(currentOrder));
 
-      dispatch(setMustSaveOrder(true));
+      markDirty();
     }
   };
 
@@ -216,7 +229,7 @@ export default function AdminOrderEdit(props: any) {
 
       dispatch(setAdminOrder(currentOrder));
 
-      dispatch(setMustSaveOrder(true));
+      markDirty();
     }
   };
 
@@ -236,7 +249,7 @@ export default function AdminOrderEdit(props: any) {
 
       dispatch(setAdminOrder(currentOrder));
 
-      dispatch(setMustSaveOrder(true));
+      markDirty();
     }
   };
 
@@ -256,7 +269,7 @@ export default function AdminOrderEdit(props: any) {
 
       dispatch(setAdminOrder(currentOrder));
 
-      dispatch(setMustSaveOrder(true));
+      markDirty();
     }
   };
 
@@ -276,7 +289,7 @@ export default function AdminOrderEdit(props: any) {
 
       dispatch(setAdminOrder(currentOrder));
 
-      dispatch(setMustSaveOrder(true));
+      markDirty();
     }
   };
 
@@ -296,7 +309,7 @@ export default function AdminOrderEdit(props: any) {
 
       dispatch(setAdminOrder(currentOrder));
 
-      dispatch(setMustSaveOrder(true));
+      markDirty();
     }
   };
 
@@ -316,7 +329,7 @@ export default function AdminOrderEdit(props: any) {
 
       dispatch(setAdminOrder(currentOrder));
 
-      dispatch(setMustSaveOrder(true));
+      markDirty();
     }
   };
 
@@ -336,7 +349,7 @@ export default function AdminOrderEdit(props: any) {
 
       dispatch(setAdminOrder(currentOrder));
 
-      dispatch(setMustSaveOrder(true));
+      markDirty();
     }
   };
 
@@ -361,7 +374,7 @@ export default function AdminOrderEdit(props: any) {
 
       dispatch(setAdminOrder(currentOrder));
 
-      dispatch(setMustSaveOrder(true));
+      markDirty();
     }
   };
 
@@ -460,9 +473,13 @@ export default function AdminOrderEdit(props: any) {
         dispatch(setIsLoading(false));
         if (success) {
           toast.success('Refund succeeded');
-          dispatch(setAdminOrder(undefined));
-          dispatch(setReloadEvents(true));
-          goBack(false);
+          if (!id) {
+            dispatch(setAdminOrder(undefined));
+            dispatch(setReloadEvents(true));
+            goBack(false);
+          } else {
+            loadOrderById();
+          }
         } else {
           toast.error('Refund failed');
         }
@@ -525,9 +542,13 @@ export default function AdminOrderEdit(props: any) {
         dispatch(setIsLoading(false));
         if (success) {
           toast.success('Refund succeeded');
-          dispatch(setAdminOrder(undefined));
-          dispatch(setReloadEvents(true));
-          goBack(false);
+          if (!id) {            
+            dispatch(setAdminOrder(undefined));
+            dispatch(setReloadEvents(true));
+            goBack(false);
+          } else {
+            loadOrderById();
+          }
         } else {
           toast.error('Refund failed');
         }
@@ -535,6 +556,7 @@ export default function AdminOrderEdit(props: any) {
     );
   };
 
+  
   const onSubmit = () => {
     if (!currentAdminSelection.selectedOrder) {
       return false;
@@ -545,11 +567,15 @@ export default function AdminOrderEdit(props: any) {
       dispatch(setIsLoading(false));
       if (results.success && !results.orderError) {
         toast.success('Order updated successfully');
-        dispatch(setAdminOrder(undefined));
-        dispatch(setReloadEvents(true));
-        setTimeout(() => {
-          goBack(false);
-        }, 500);
+        if (!id) {
+          dispatch(setAdminOrder(undefined));
+          dispatch(setReloadEvents(true));
+          setTimeout(() => {
+            goBack(false);
+          }, 500);
+        } else {
+          loadOrderById();
+        }    
       } else {
         toast.error(results.orderError ?? 'Unknown error occurred while saving order');
       }
@@ -641,11 +667,15 @@ export default function AdminOrderEdit(props: any) {
           toast.success(successMessage);
           setTicketIdList([]);
           setSelectedAction('');
-          dispatch(setAdminOrder(undefined));
-          dispatch(setReloadEvents(true));
-          setTimeout(() => {
-            goBack(false);
-          }, 500);
+          if (!id) {
+            dispatch(setAdminOrder(undefined));
+            dispatch(setReloadEvents(true));
+            setTimeout(() => {
+              goBack(false);
+            }, 500);
+          } else {
+            loadOrderById();
+          }        
         } else {
           let errorMessage = response.ticketError;
           if (!errorMessage) {
@@ -1023,7 +1053,7 @@ export default function AdminOrderEdit(props: any) {
       <Row>
         <Col>
           <Button onClick={onSubmit}>Submit</Button>{' '}
-          <Button onClick={confirmGoBack}>Back</Button>
+          <Button hidden={id != undefined} onClick={confirmGoBack}>Back</Button>
         </Col>
       </Row>
     </Col>

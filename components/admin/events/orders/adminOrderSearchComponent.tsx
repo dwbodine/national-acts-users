@@ -1,37 +1,22 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState, KeyboardEvent } from 'react';
 import { Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import {
-  setAdminEvent,
-  setAdminEvents,
-  setAdminOrder,
   setAdminOrders,
-  setAdminTour,
-  setReloadEvents,
 } from '@/lib/adminSelectionSlice';
-import { Button, Col, FormCheck, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { GetEventsResponse, GetOrdersResponse, Order } from '@/types/event';
+import { GetOrdersResponse, Order } from '@/types/event';
 import router from 'next/router';
 import moment from 'moment';
 import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
-import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
-import { useGetEventById } from '@/hooks/common/useGetEventById';
-import { useSetOrdersInactive } from '@/hooks/order/useSetOrdersInactive';
-import { useSetOrdersDeleted } from '@/hooks/order/useSetOrdersDeleted';
-import { FaArrowTurnDown } from 'react-icons/fa6';
 import { toast } from 'react-toastify';
-import ConfirmationDialog from '../../../common/confirmationDialogComponent';
-import { useGetOrderById } from '@/hooks/common/useGetOrderById';
 import { useSearchOrders } from '@/hooks/admin/useSearchOrders';
 
-export default function AdminOrdersSearch(props: any) {
+export default function AdminOrdersSearch() {
   const { Column, HeaderCell, Cell } = Table;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
-  const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const [tableLoading, setTableLoading] = useState(true);
   const dispatch = useDispatch();
   const { searchOrders } = useSearchOrders();
@@ -51,6 +36,12 @@ export default function AdminOrdersSearch(props: any) {
       clearTimeout(timeoutId);
     };
   }, [tableLoading]);
+
+  const submitOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key == 'Enter') {
+      searchAllOrders();
+    }
+  };
 
   const searchAllOrders = () => {
     if (!searchTerm) {
@@ -116,6 +107,7 @@ export default function AdminOrdersSearch(props: any) {
           <input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => submitOnEnter(e)}
             className="form-control search-text-input no-print"
             placeholder="Search for orders by purchaser name, email, order ID, event title or seller name..."
           />
