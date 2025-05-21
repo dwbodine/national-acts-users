@@ -78,7 +78,6 @@ export default function AdminList() {
                   Manage Site Settings (global values)
                 </a>
               </li>
-              {/* 
               <li>
                 <a className="admin-link" onClick={() => goToAdminPage('manage-global-seller-settings')}>
                   Manage Sellers
@@ -89,7 +88,6 @@ export default function AdminList() {
                   Manage Pages
                 </a>
               </li>
-              */}
             </ul>
           </Col>
         </Row>
