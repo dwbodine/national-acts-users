@@ -235,6 +235,14 @@ input.rs-input:hover {
   margin: 15px 0;
 }
 
+.edit-event-link, a.edit-event-link {
+  float: left;
+  display: block;
+  margin-bottom: 5px;
+  margin-top: 1.5rem;
+  margin-left: 15px;
+}
+
 .inactive-check,
 .deleted-check,
 .hidden-check,
@@ -997,7 +1005,7 @@ input.rs-input:hover {
 }
 
 .admin-container .admin-select {
-  margin: 5px 0;
+  margin: 10px 0;
 }
 
 .admin-container .admin-button-group {
@@ -1021,11 +1029,20 @@ input.rs-input:hover {
   cursor: pointer;
 }
 
-.admin-report-datepicker-label,
-.admin-seller-select-label {
+.admin-report-datepicker-label {
   width: 100px;
   margin: 15px 0;
   display: inline-block;
+}
+
+.admin-seller-select-label {
+  width: 100px;
+  display: flex;
+}
+
+.admin-seller-select-value {
+  display: flex;
+  flex-direction: row;
 }
 
 .admin-click-cell {

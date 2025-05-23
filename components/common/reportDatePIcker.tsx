@@ -66,9 +66,11 @@ export default function ReportDatePicker(props: any) {
 
   return (
     <>
-      <Row>
-        <Col>
+      <Row className="admin-select">
+        <Col xs={1}>
           <label className="admin-report-datepicker-label">Start date:</label>
+        </Col>
+        <Col>
           <DatePicker
             id="startDate"
             format="M/d/yyyy"
@@ -80,9 +82,11 @@ export default function ReportDatePicker(props: any) {
           />
         </Col>
       </Row>
-      <Row>
-        <Col>
+      <Row className="admin-select">
+        <Col xs={1}>
           <label className="admin-report-datepicker-label">End date:</label>
+        </Col>
+        <Col>
           <DatePicker
             id="endDate"
             format="M/d/yyyy"

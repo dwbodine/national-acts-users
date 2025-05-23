@@ -101,17 +101,21 @@ export default function RefreshTicketSocketData() {
       <Row className="refresh-results-header">
         <Col xl={4} lg={12} className="refresh-results-header-col">
           <h3>Refresh TicketSocket Data</h3>
-          <AdminSellerSelect
-            id="refresh"
-            Sellers={currentAdminSelection.allSellers}
-            SellerId={currentAdminSelection.sellerId}
-            OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
-          />
-          <ReportDatePicker
-            onChange={onDateChange}
-            start={currentAdminSelection.start}
-            end={currentAdminSelection.end}
-          />
+        </Col>
+      </Row>
+      <AdminSellerSelect
+        id="refresh"
+        Sellers={currentAdminSelection.allSellers}
+        SellerId={currentAdminSelection.sellerId}
+        OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
+      />
+      <ReportDatePicker
+        onChange={onDateChange}
+        start={currentAdminSelection.start}
+        end={currentAdminSelection.end}
+      />
+      <Row>
+        <Col>
           <Button onClick={submitReset}>Reset</Button> <AdminListHomeButton />
         </Col>
         <Col xl={8} lg={12}>

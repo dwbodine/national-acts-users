@@ -1,6 +1,9 @@
 import { Seller } from '@/types/event';
 import { Role } from '@/types/user';
+import { Col, Container, Row } from 'react-bootstrap';
 import { FaMinus } from 'react-icons/fa';
+import { SelectPicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
 
 export default function AdminSellerSelect(props: any) {
   const sellers: Seller[] | undefined = props.Sellers as Seller[] | undefined;
@@ -13,71 +16,58 @@ export default function AdminSellerSelect(props: any) {
   const onRoleChange = props.OnRoleChange;
   const onDelete = props.OnDelete;
 
-  let sellerOptions: any[] = [];
-  if (sellers) {
-    sellerOptions.push(
-      <option key="s" value={0}>
-        {' '}
-        -- Select one --
-      </option>,
-    );
-    sellers.map((item, i) => {
-      const key = `s${i}`;
-      sellerOptions.push(
-        <option key={key} value={item.sellerId}>
-          {item.name}
-        </option>,
-      );
-    });
-  }
+  const sellerList: ItemDataType<number>[] = sellers ?
+    sellers?.map((seller) => {
+      return {
+        label: `${seller.name}`,
+        value: seller.sellerId
+      }
+  }) : [];
 
-  let roleOptions: any[] = [];
-  if (roles) {
-    roleOptions.push(
-      <option key="r" value={0}>
-        {' '}
-        -- Select one --
-      </option>,
-    );
-    roles.map((item, i) => {
-      const key = `r${i}`;
-      roleOptions.push(
-        <option key={key} value={item.roleId}>
-          {item.roleName}
-        </option>,
-      );
-    });
-  }
+  const roleList: ItemDataType<number>[] = roles ?
+    roles?.map((role) => {
+      return {
+        label: `${role.roleName}`,
+        value: role.roleId
+      }
+  }) : [];
 
   return (
-    <div className="admin-select">
-      <span className="admin-seller-select-label">
+    <Row className="admin-select">
+      <Col xs={1}>
         Seller<span hidden={!number}> # {number}</span>:
-      </span>
-      <select
-        hidden={sellerOptions.length == 0 || !onSellerChange}
-        onChange={(e) => onSellerChange(parseInt(e.currentTarget.value))}
-        defaultValue={sellerId}
-      >
-        {' '}
-        {sellerOptions}{' '}
-      </select>
-      <select
-        hidden={roleOptions.length == 0 || !onRoleChange}
-        onChange={(e) => onRoleChange(parseInt(e.currentTarget.value))}
-        defaultValue={roleId}
-      >
-        {' '}
-        {roleOptions}{' '}
-      </select>
-      <span hidden={!onDelete}>
+      </Col>
+      <Col xs={5} sm={4} md={3} hidden={sellerList.length == 0 || !onSellerChange}>
+        <SelectPicker
+          className="admin-seller-select-value"
+          menuAutoWidth={true}
+          value={sellerId}
+          data={sellerList}
+          size="lg"        
+          onChange={(sId) => onSellerChange(sId)}
+          cleanable={false}
+        />
+      </Col>
+      <Col xs={5} sm={4} md={3} hidden={roleList.length == 0 || !onRoleChange}>
+      <SelectPicker
+          className="admin-seller-select-value"
+          menuAutoWidth={true}
+          value={roleId}
+          data={roleList}
+          size="lg"        
+          onChange={(rId) => onRoleChange(rId)}
+          cleanable={false}
+          searchable={false}
+        />
+      </Col>
+      <Col xs={1} hidden={!onDelete}>
         <FaMinus
           title="Remove seller"
           className="admin-click-cell"
           id={`${id}_remove`}
           onClick={onDelete}
         ></FaMinus>
-      </span>
-    </div>
+      </Col>
+    </Row>
   );
 }
