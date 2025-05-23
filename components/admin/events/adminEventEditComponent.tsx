@@ -926,8 +926,8 @@ export default function AdminEventEdit(props: any) {
   const thumbnail = selectedEvent?.externalThumbnail ?? undefined;
   const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;  
 
-  const externalUrl = selectedEvent?.externalUrl ?? undefined;
-  const externalVipLink = selectedEvent?.externalVipLink ?? undefined;
+  const externalUrl = selectedEvent?.externalUrl ?? '';
+  const externalVipLink = selectedEvent?.externalVipLink ?? '';
 
   const disableLinkButton = selectedEvent?.disableLinkButton ?? false;
   const disableLinkReason = selectedEvent?.disableLinkReason ?? undefined;
@@ -941,8 +941,8 @@ export default function AdminEventEdit(props: any) {
   const listSentTime = selectedEvent?.listSentTime ? moment.utc(selectedEvent.listSentTime).format('MM/DD/YYYY h:mm A') : 'n/a';
   const numVips = (selectedEvent?.listSentToBand ?? false) ? (selectedEvent?.listSentNumVips ?? 0).toString() : 'n/a';
 
-  const checkInLocation = selectedEvent?.checkInLocation;
-  const checkInNotes = selectedEvent?.checkInNotes;
+  const checkInLocation = selectedEvent?.checkInLocation ?? '';
+  const checkInNotes = selectedEvent?.checkInNotes ?? '';
 
   let ticketTypeRows: any[] = [];
   if (
@@ -1049,6 +1049,11 @@ export default function AdminEventEdit(props: any) {
       <Row>
         <Col>
           <h3>{pageHeader}</h3>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Button hidden={id != undefined} onClick={confirmGoBack}>Back</Button>
         </Col>
       </Row>
       <Row>
@@ -1232,7 +1237,7 @@ export default function AdminEventEdit(props: any) {
       </Row>
       <Row>
         <Col className="form-group">
-          <label className="mt-4">VIP Link</label>
+          <label className="mt-4 edit-event-link">VIP Link</label><a target="_blank" className="edit-event-link" hidden={!externalVipLink} href={externalVipLink}>Visit</a>
           <Form.Control as="textarea"
             rows={3}
             id="externalVipLink"
@@ -1244,7 +1249,7 @@ export default function AdminEventEdit(props: any) {
       </Row>
       <Row>
         <Col className="form-group">
-          <label className="mt-4">Tickets Link</label>
+          <label className="mt-4 edit-event-link">Tickets Link</label><a target="_blank" className="edit-event-link" hidden={!externalUrl} href={externalUrl}>Visit</a>
           <Form.Control as="textarea"
             rows={3}
             id="externalUrl"

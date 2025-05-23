@@ -1,10 +1,13 @@
-import { ChangeEvent, useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../../src/lib/store';
-import { setSelectedTourId, setSeller } from '@/lib/reportSelectionSlice';
+import { setSeller } from '@/lib/reportSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { User } from '@/types/user';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { SelectPicker } from 'rsuite';
+import { Col, Row } from 'react-bootstrap';
 
 export default function SelectSeller() {
   const dispatch = useDispatch();
@@ -51,38 +54,50 @@ export default function SelectSeller() {
     }
   }, [selectedSellerId, dispatch, user, getSelectedSeller, getUser]);
 
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const sellerId = parseInt(event.currentTarget.value);
-    const seller = getSelectedSeller(sellerId);
-    dispatch(setSeller(seller));
-    dispatch(setIsLoading(true));
+  const handleChange = (sellerId: number | null) => {
+    const seller = sellerId ? getSelectedSeller(sellerId) : undefined;
+    if (seller) {
+      dispatch(setSeller(seller));
+      dispatch(setIsLoading(true));
+    }    
   };
 
-  if (user && user.sellers && user.sellers.length > 0) {
-    if (user.sellers.length > 1) {
+  const userSellerList: ItemDataType<number>[] = user?.sellers ?
+        user.sellers.map((seller) => {
+          return {
+            label: `${seller.sellerName}`,
+            value: seller.sellerId
+          }
+      }) : [];
+
+  if (userSellerList.length > 0) {
+    if (userSellerList.length > 1) {
       return (
-        <>
-          <span className="seller-title">Seller:</span>
-          <select id="seller" value={selectedSellerId} onChange={handleChange}>
-            <option value="0"> -- Select One --</option>
-            {user.sellers.map((seller) => {
-              return (
-                <option key={seller.sellerId} value={seller.sellerId}>
-                  {seller.sellerName}
-                </option>
-              );
-            })}
-          </select>
-        </>
+        <Row className="no-print admin-seller-row">
+          <Col xs={1}>
+            Seller:
+          </Col>
+          <Col sm={11} md={5}>     
+            <SelectPicker
+                value={selectedSellerId}
+                data={userSellerList}
+                size="lg"        
+                onChange={(tId) => handleChange(tId)}
+                cleanable={false}
+                menuAutoWidth={true}
+                className="admin-seller-select-value"
+              />
+            </Col>
+        </Row>
       );
-    } else {
+    } else if (user && user.sellers) {
       const seller = user.sellers[0];
       if (seller.sellerId != selectedSellerId) {
         dispatch(setSeller(seller));
       }
-      return <span>{seller.sellerName}</span>;
+      return <Row className="no-print admin-seller-row"><Col>{seller.sellerName}</Col></Row>;
     }
   } else {
-    return <span>No sellers returned</span>;
+    return <Row className="no-print admin-seller-row"><Col>No sellers returned</Col></Row>;
   }
 }

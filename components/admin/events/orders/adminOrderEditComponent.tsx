@@ -17,10 +17,11 @@ import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 import { ModifyOrderResponse } from '@/types/event';
 import moment from 'moment';
 import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
-import { DatePicker } from 'rsuite';
+import { DatePicker, SelectPicker } from 'rsuite';
 import { useGetOrderById } from '@/hooks/common/useGetOrderById';
 import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 import { FaArrowTurnDown } from 'react-icons/fa6';
+import { ItemDataType } from 'rsuite/esm/internals/types';
 
 export default function AdminOrderEdit(props: any) {
   const id: number | undefined = props.Id as number;
@@ -35,7 +36,7 @@ export default function AdminOrderEdit(props: any) {
   const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
   const { setTicketsCheckedIn } = useSetTicketsCheckedIn();
 
-  const [selectedAction, setSelectedAction] = useState('');
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [ticketIdList, setTicketIdList] = useState<number[]>([]);
   const allTicketIds: number[] = currentAdminSelection.selectedOrder?.tickets?.map(t => { return t.ticketSocketOrderTicketId }) ?? [];
 
@@ -666,7 +667,7 @@ export default function AdminOrderEdit(props: any) {
           const successMessage = isCheckedIn ? "Tickets checked in successfully" : "Tickets unchecked successfully";
           toast.success(successMessage);
           setTicketIdList([]);
-          setSelectedAction('');
+          setSelectedAction(null);
           if (!id) {
             dispatch(setAdminOrder(undefined));
             dispatch(setReloadEvents(true));
@@ -882,6 +883,24 @@ export default function AdminOrderEdit(props: any) {
     );
   }
 
+  const actions = [
+  {
+    label: "Check In",
+    value: "checkin"
+  },
+  {
+    label: "Undo check-in",
+    value: "checkout"
+  }
+];
+
+const actionList: ItemDataType<string>[] = actions.map((action) => {
+      return {
+        label: action.label,
+        value: action.value
+      }
+  });
+
   return (
     <Col
       className="admin-container"
@@ -983,11 +1002,16 @@ export default function AdminOrderEdit(props: any) {
           <div><FaArrowTurnDown className="bulk-arrow" /></div>
           <div>With selected:</div>
           <div>
-            <select onChange={(e) => setSelectedAction(e.currentTarget.value)} className="bulk-select" defaultValue={selectedAction}>
-              <option value="">-- Select One --</option>
-              <option value="checkin">Check In</option>
-              <option value="checkout">Undo Check-in</option>
-            </select>
+            <SelectPicker
+              className="bulk-select"
+              value={selectedAction}
+              data={actionList}
+              size="lg"        
+              onChange={(a) => setSelectedAction(a)}
+              cleanable={true}
+              menuAutoWidth={true}
+              onClean={() => setSelectedAction(null)}
+            />
           </div>
           <div>
             <Button onClick={bulkEditConfirm}>Update</Button>

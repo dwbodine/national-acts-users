@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Table } from 'rsuite';
+import { SelectPicker, Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import {
@@ -38,6 +38,8 @@ import { useGetTours } from '@/hooks/admin/useGetTours';
 import { AdminSelection } from '@/types/user';
 import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { Label } from 'recharts';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -54,7 +56,7 @@ export default function AdminEventsIndex() {
   const { getTours } = useGetTours();
   const { getTicketSocketEventsOnly } = useGetTicketSocketEventsOnly();
 
-  const [selectedAction, setSelectedAction] = useState('');
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [eventIdList, setEventIdList] = useState<number[]>([]);
   const allEventIds: number[] = currentAdminSelection.events?.map(evt => { return evt.externalEventId }) ?? [];
 
@@ -63,7 +65,7 @@ export default function AdminEventsIndex() {
       if (currentAdminSelection.reloadSellers) {
         dispatch(setReloadSellers(false));
         setEventIdList([]);
-        setSelectedAction('');
+        setSelectedAction(null);
         setTableLoading(true);
         dispatch(setIsLoading(true));
         dispatch(setAdminSellerId(undefined));
@@ -76,7 +78,7 @@ export default function AdminEventsIndex() {
         });
       } else if (currentAdminSelection.reloadEvents) {
         setEventIdList([]);
-        setSelectedAction('');
+        setSelectedAction(null);
         dispatch(setReloadEvents(false));
         let adminSelection = { ...currentAdminSelection };
         let sellerId: number = 0;
@@ -335,7 +337,7 @@ export default function AdminEventsIndex() {
           const successMessage = isActive ? "Events activated successfully" : "Events deactivated successfully";
           toast.success(successMessage);
           setEventIdList([]);
-          setSelectedAction('');
+          setSelectedAction(null);
           dispatch(setReloadEvents(true));
         } else {
           let errorMessage = response.eventError;
@@ -357,7 +359,7 @@ export default function AdminEventsIndex() {
           const successMessage = setDeleted ? "Events deleted successfully" : "Events undeleted successfully";
           toast.success(successMessage);
           setEventIdList([]);
-          setSelectedAction('');
+          setSelectedAction(null);
           dispatch(setReloadEvents(true));
         } else {
           let errorMessage = response.eventError;
@@ -379,7 +381,7 @@ export default function AdminEventsIndex() {
           const successMessage = setHidden ? "Events hidden successfully" : "Events unhidden successfully";
           toast.success(successMessage);
           setEventIdList([]);
-          setSelectedAction('');
+          setSelectedAction(null);
           dispatch(setReloadEvents(true));
         } else {
           let errorMessage = response.eventError;
@@ -391,9 +393,8 @@ export default function AdminEventsIndex() {
       });
   };
 
-  const setSelectedTour = (tourIdStr: string) => {
-    let selectedTourId = parseInt(tourIdStr);
-    if (isNaN(selectedTourId) || selectedTourId <= 0) {
+  const setSelectedTour = (selectedTourId: number | null) => {
+    if (!selectedTourId || isNaN(selectedTourId) || selectedTourId <= 0) {
       selectedTourId = 0;
     }
     const tour = currentAdminSelection.tours?.find(x => x.tourId == selectedTourId);
@@ -401,13 +402,13 @@ export default function AdminEventsIndex() {
     dispatch(setReloadEvents(true));
   };
 
-  let tourOptions: any[] = [];
-  if (currentAdminSelection.tours && currentAdminSelection.tours.length > 0) {
-    tourOptions.push(<option key={0} value="0">All Events</option>)
-    currentAdminSelection.tours.forEach((tour) => {
-      tourOptions.push(<option key={tour.tourId} value={tour.tourId}>{tour.tourName}</option>);
-    })
-  }
+  const tourList: ItemDataType<number>[] = currentAdminSelection?.tours ?
+      currentAdminSelection?.tours?.map((tour) => {
+        return {
+          label: `${tour.tourName}`,
+          value: tour.tourId
+        }
+    }) : [];
 
   const resetEvents = () => {
     dispatch(setReloadEvents(true));
@@ -415,6 +416,40 @@ export default function AdminEventsIndex() {
 
   const selectedTourId = currentAdminSelection.selectedTour?.tourId ?? 0;
   const sellectedSellerId = currentAdminSelection.sellerId;
+
+  const actions = [
+    {
+      label: "Deactivate",
+      value: "inactive"
+    },
+    {
+      label: "Deactivate",
+      value: "inactive"
+    },
+    {
+      label: "Delete",
+      value: "delete"
+    },
+    {
+      label: "Undelete",
+      value: "undelete"
+    },
+    {
+      label: "Hide",
+      value: "hidden"
+    },
+    {
+      label: "Unhide",
+      value: "unhide"
+    }
+  ];
+
+  const actionList: ItemDataType<string>[] = actions.map((action) => {
+        return {
+          label: action.label,
+          value: action.value
+        }
+    });
 
   return (
     <div className="admin-container">
@@ -426,28 +461,42 @@ export default function AdminEventsIndex() {
       </Row>
       <Row className="refresh-results-header">
         <Col>
-          <h3>Event Admin</h3>
-          <AdminSellerSelect
-            id="refresh"
-            Sellers={currentAdminSelection.allSellers}
-            SellerId={currentAdminSelection.sellerId}
-            OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
-          />
-          <div className="admin-select" hidden={(currentAdminSelection.tours?.length ?? 0) == 0}>
-            <span className="admin-seller-select-label">
-              Tour:
-            </span>
-            <select onChange={(e) => setSelectedTour(e.currentTarget.value)} value={selectedTourId}>
-              {tourOptions}
-            </select>
-          </div>
-          <ReportDatePicker
-            onChange={onDateChange}
-            onStartClear={onStartClear}
-            onEndClear={onEndClear}
-            start={currentAdminSelection.start}
-            end={currentAdminSelection.end}
-          />
+          <h3>Manage Events</h3>
+        </Col>
+      </Row> 
+      <AdminSellerSelect
+        id="refresh"
+        Sellers={currentAdminSelection.allSellers}
+        SellerId={currentAdminSelection.sellerId}
+        OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
+      />
+      <Row className="admin-select" hidden={tourList.length == 0}>
+        <Col xs={1}>
+          Tour:
+        </Col>
+        <Col>
+          <SelectPicker
+              value={selectedTourId}
+              data={tourList}
+              size="lg"        
+              onChange={(tId) => setSelectedTour(tId)}
+              cleanable={true}
+              placeholder="All Events"
+              menuAutoWidth={true}
+              className="admin-seller-select-value"
+              onClean={() => setSelectedTour(0)}
+            />
+        </Col>
+      </Row>
+      <ReportDatePicker
+        onChange={onDateChange}
+        onStartClear={onStartClear}
+        onEndClear={onEndClear}
+        start={currentAdminSelection.start}
+        end={currentAdminSelection.end}
+      />
+      <Row>
+        <Col>
           <Button disabled={sellectedSellerId == undefined} onClick={resetEvents}>Reset</Button>
         </Col>
       </Row>
@@ -456,15 +505,16 @@ export default function AdminEventsIndex() {
           <div><FaArrowTurnDown className="bulk-arrow" /></div>
           <div>With selected:</div>
           <div>
-            <select onChange={(e) => setSelectedAction(e.currentTarget.value)} className="bulk-select" defaultValue={selectedAction}>
-              <option value="">-- Select One --</option>
-              <option value="inactive">Deactivate</option>
-              <option value="active">Activate</option>
-              <option value="delete">Delete</option>
-              <option value="undelete">Undelete</option>
-              <option value="hidden">Hide</option>
-              <option value="unhide">Unhide</option>
-            </select>
+            <SelectPicker
+              className="bulk-select"
+              value={selectedAction}
+              data={actionList}
+              size="lg"        
+              onChange={(a) => setSelectedAction(a)}
+              cleanable={true}
+              menuAutoWidth={true}
+              onClean={() => setSelectedAction(null)}
+            />
           </div>
           <div>
             <Button onClick={bulkEditConfirm}>Update</Button>

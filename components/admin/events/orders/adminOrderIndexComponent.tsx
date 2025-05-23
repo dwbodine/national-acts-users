@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Table } from 'rsuite';
+import { SelectPicker, Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import {
@@ -24,6 +24,7 @@ import { useSetOrdersDeleted } from '@/hooks/order/useSetOrdersDeleted';
 import { FaArrowTurnDown } from 'react-icons/fa6';
 import { toast } from 'react-toastify';
 import ConfirmationDialog from '../../../common/confirmationDialogComponent';
+import { ItemDataType } from 'rsuite/esm/internals/types';
 
 export default function AdminOrdersIndex(props: any) {
   const id: number | undefined = props.Id as number;
@@ -40,7 +41,7 @@ export default function AdminOrdersIndex(props: any) {
   const { setOrdersInactive } = useSetOrdersInactive();
   const { setOrdersDeleted } = useSetOrdersDeleted();
 
-  const [ selectedAction, setSelectedAction ] = useState('');
+  const [ selectedAction, setSelectedAction ] = useState<string | null>(null);
   const [orderIdList, setOrderIdList] = useState<number[]>([]);
   const allOrderIds: number[] = currentAdminSelection.selectedEvent?.orders?.map(o => { return o.ticketSocketOrderId }) ?? [];
 
@@ -230,7 +231,7 @@ export default function AdminOrdersIndex(props: any) {
           const successMessage = isActive ? "Orders activated successfully" : "Orders deactivated successfully";
           toast.success(successMessage);
           setOrderIdList([]);
-          setSelectedAction('');
+          setSelectedAction(null);
           dispatch(setReloadEvents(true));
         } else {
           let errorMessage = response.orderError;
@@ -252,7 +253,7 @@ export default function AdminOrdersIndex(props: any) {
           const successMessage = setDeleted ? "Orders deleted successfully" : "Orders undeleted successfully";
           toast.success(successMessage);
           setOrderIdList([]);
-          setSelectedAction('');
+          setSelectedAction(null);
           dispatch(setReloadEvents(true));
         } else {
           let errorMessage = response.orderError;
@@ -268,6 +269,32 @@ export default function AdminOrdersIndex(props: any) {
     currentAdminSelection.selectedEvent?.venue != undefined
       ? getLocation(currentAdminSelection.selectedEvent.venue)
       : '';
+
+  const actions = [
+      {
+        label: "Deactivate",
+        value: "inactive"
+      },
+      {
+        label: "Deactivate",
+        value: "inactive"
+      },
+      {
+        label: "Delete",
+        value: "delete"
+      },
+      {
+        label: "Undelete",
+        value: "undelete"
+      }
+    ];
+  
+    const actionList: ItemDataType<string>[] = actions.map((action) => {
+          return {
+            label: action.label,
+            value: action.value
+          }
+      });
 
   return (
     <div className="admin-container">
@@ -302,13 +329,16 @@ export default function AdminOrdersIndex(props: any) {
           <div><FaArrowTurnDown className="bulk-arrow" /></div>
           <div>With selected:</div>
           <div>
-            <select onChange={(e) => setSelectedAction(e.currentTarget.value)} className="bulk-select" defaultValue={selectedAction}>
-              <option value="">-- Select One --</option>
-              <option value="inactive">Deactivate</option>
-              <option value="active">Activate</option>
-              <option value="delete">Delete</option>
-              <option value="undelete">Undelete</option>
-            </select>
+            <SelectPicker
+              className="bulk-select"
+              value={selectedAction}
+              data={actionList}
+              size="lg"        
+              onChange={(a) => setSelectedAction(a)}
+              cleanable={true}
+              menuAutoWidth={true}
+              onClean={() => setSelectedAction(null)}
+            />
           </div>
           <div>
             <Button onClick={bulkEditConfirm}>Update</Button>

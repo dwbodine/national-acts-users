@@ -153,14 +153,14 @@ export default function AdminToursIndex() {
       <Row className="refresh-results-header">
         <Col>
           <h3>Tour Admin</h3>
-          <AdminSellerSelect
-            id="refresh"
-            Sellers={currentAdminSelection.allSellers}
-            SellerId={currentAdminSelection.sellerId}
-            OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
-          />
         </Col>
       </Row>
+      <AdminSellerSelect
+        id="refresh"
+        Sellers={currentAdminSelection.allSellers}
+        SellerId={currentAdminSelection.sellerId}
+        OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
+      />        
       <Row>
         <Col>
           <Table

@@ -151,7 +151,7 @@ export default function AdminUserEdit() {
 
   const removeSeller = (sellerId: number) => {
     if (!sellerId || isNaN(sellerId)) {
-      return;
+      sellerId = 0;
     }
     if (currentAdminSelection.selectedUser) {
       let user: User = { ...currentAdminSelection.selectedUser };

@@ -29,6 +29,8 @@ import HiddenCheck from './hiddenCheckComponent';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
 import { GetEventsResponse } from '@/types/event';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { SelectPicker } from 'rsuite';
 
 export default function SalesBar() {
   const dispatch = useDispatch();
@@ -156,26 +158,29 @@ export default function SalesBar() {
     dispatch(resetSelection());
   };
 
-  const setSelectedTour = (tourIdStr: string) => {
-    let selectedTourId: number | undefined = parseInt(tourIdStr);
-    if (isNaN(selectedTourId) || selectedTourId <= 0) {
-      selectedTourId = undefined;
+  const setSelectedTour = (selectedTourId: number | null) => {
+    if (!selectedTourId || selectedTourId <= 0) {
+      selectedTourId = null;
     }
-    dispatch(setSelectedTourId(selectedTourId));
+    dispatch(setSelectedTourId(selectedTourId ? selectedTourId : undefined));
     dispatch(setReloadEvents(true));
     dispatch(setIsLoading(true));
   };
 
-  let tourOptions: any[] = [];
+  let tourList: ItemDataType<number>[] = [];
   if (currentReportSelection.tours && currentReportSelection.tours.length > 0) {
     const activeTours = currentReportSelection.tours.filter(x => x.isActive);
     if (activeTours && activeTours.length > 0) {
-      tourOptions.push(<option key={0} value="0">Current Events / Tour </option>)
-      currentReportSelection.tours.forEach((tour) => {
-        tourOptions.push(<option key={tour.tourId} value={tour.tourId}>{tour.tourName}</option>);
-      })
-    }    
+      tourList = activeTours.map((tour) => {
+          return {
+            label: `${tour.tourName}`,
+            value: tour.tourId
+          }
+      });
+    }
   }
+
+  const selectedTourId = currentReportSelection?.selectedTourId ?? 0;
 
   useEffect(() => {
     const user = getUser();
@@ -210,17 +215,23 @@ export default function SalesBar() {
           />
         </Col>
       </Row>
-      <Row className="no-print admin-seller-row">
-        <Col>
-          <SelectSeller />
+      <SelectSeller />
+      <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourList.length == 0}>
+        <Col xs={1}>
+            Tour:
         </Col>
-      </Row>
-      <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourOptions.length == 0}>
-        <Col>
-          <span className="tour-title">Tour:</span>
-          <select onChange={(e) => setSelectedTour(e.currentTarget.value)} value={currentReportSelection.selectedTourId ?? 0}>
-            {tourOptions}
-          </select>
+        <Col sm={11} md={5}>          
+          <SelectPicker
+              value={selectedTourId}
+              data={tourList}
+              size="lg"        
+              onChange={(tId) => setSelectedTour(tId)}
+              cleanable={true}
+              placeholder="All Events"
+              menuAutoWidth={true}
+              className="admin-seller-select-value"
+              onClean={() => setSelectedTour(0)}
+            />
         </Col>
       </Row>
       <Row className="admin-check-row">
