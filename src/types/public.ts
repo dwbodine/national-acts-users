@@ -58,8 +58,10 @@ export interface Page {
   subtitle2?: string;
   htmlText?: string;
   isActive: boolean;
+  useIncludeDates?: boolean;
   includeStart?: string;
   includeEnd?: string;
+  useExcludeDates?: boolean;
   excludeStart?: string;
   excludeEnd?: string;
   googleAnalyticsId?: string;

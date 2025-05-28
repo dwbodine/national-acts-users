@@ -1,4 +1,4 @@
-import { Seller } from '@/types/event';
+import { Seller, SellerType } from '@/types/event';
 import { Role } from '@/types/user';
 import { Col, Container, Row } from 'react-bootstrap';
 import { FaMinus } from 'react-icons/fa';
@@ -6,15 +6,20 @@ import { SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
 export default function AdminSellerSelect(props: any) {
-  const sellers: Seller[] | undefined = props.Sellers as Seller[] | undefined;
+  let sellers: Seller[] | undefined = props.Sellers as Seller[] | undefined;
   const roles: Role[] | undefined = props.Roles as Role[] | undefined;
   const sellerId: number = props.SellerId ? (props.SellerId as number) : 0;
+  const sellerType: SellerType | undefined = props.SellerType ? (props.SellerType as SellerType) : undefined;
   const roleId: number = props.RoleId ? (props.RoleId as number) : 0;
   const number: number | undefined = props.Number as number | undefined;
   const id: string = props.id;
   const onSellerChange = props.OnSellerChange;
   const onRoleChange = props.OnRoleChange;
   const onDelete = props.OnDelete;
+
+  if (sellers && sellerType) {
+    sellers = sellers.filter(x => x.sellerType == sellerType);
+  }
 
   const sellerList: ItemDataType<number>[] = sellers ?
     sellers?.map((seller) => {

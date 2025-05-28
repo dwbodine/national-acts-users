@@ -2,126 +2,416 @@ import { RootState } from '@/lib/store';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
-import { Button, Col, FormCheck, Row } from 'react-bootstrap';
-import { setAdminSeller, setReloadPages, setReloadSellers, setSelectedPage } from '@/lib/adminSelectionSlice';
+import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
+import { setAllSellers, setMustSavePage, setPageTypes, setReloadPages, setSelectedPage } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
-import { Seller, SellerEventCategory, SellerType } from '@/types/event';
-import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
-import { ModifyPageResponse, ModifySellerResponse } from '@/types/admin';
+import { GetPageTypesResponse, GetSellersResponse, SellerType } from '@/types/event';
+import { ModifyPageResponse } from '@/types/admin';
 import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
-import { Page } from '@/types/public';
-import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
+import { Page, PageSeller, PageType } from '@/types/public';
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { DatePicker, SelectPicker } from 'rsuite';
+import moment from 'moment';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
+import { FaPlus } from 'react-icons/fa';
+import AdminFileUpload from '../common/adminFileUploadComponent';
+import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
   const { updatePage } = useUpdatePage();
+  const { getPageTypes } = useGetPageTypes();
+  const { getSellers } = useGetSellers();
   const pageSellerTypeIds: number[] = [7, 14, 15, 16, 17, 18, 19];
+
+  const [isUploading, setIsUploading] = useState(false);
+
+  const headerBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/headers`;
+  const [isHeaderDirty, setIsHeaderDirty] = useState(false);
+
+  const iconBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/thumbnails`;
+  const [isIconDirty, setIsIconDirty] = useState(false);
+
+  const linkPreviewBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/preview`;
+  const [isLinkPreviewDirty, setIsLinkPreviewDirty] = useState(false);
+  
+  const [isLogoDirty, setIsLogoDirty] = useState(false);
+  const logoBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/logos`;
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.allSellers == undefined || currentAdminSelection.selectedPage == undefined) {
+      if (currentAdminSelection.allSellers == undefined) {
+        dispatch(setIsLoading(true));
+        getSellers().then((response: GetSellersResponse) => {
+            dispatch(setAllSellers(response.sellers));
+          });
+      } else if (currentAdminSelection.pageTypes == undefined) {
+        dispatch(setIsLoading(true));
+        getPageTypes().then((response: GetPageTypesResponse) => {
+          if (!response.pageTypeError && response.pageTypes) {
+            dispatch(setPageTypes(response.pageTypes));
+          }
+          dispatch(setIsLoading(false));
+        });
+      } else if (currentAdminSelection.allPages == undefined || currentAdminSelection.selectedPage == undefined) {
         goBack();
       }
     }, 500);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch]);
+  }, [currentAdminSelection, dispatch, getPageTypes, getSellers]);
 
   const goBack = () => {
+    toast.dismiss();
     router.push('/admin/pages/');
   };
 
-  const setSellerName = (sellerName: string) => {
-    if (!currentAdminSelection.selectedSeller || !sellerName) {
+  const confirmGoBack = () => {
+    if (!currentAdminSelection?.mustSavePage) {
+      goBack();
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.name != sellerName) {
-      sellerToUpdate.name = sellerName;
-      dispatch(setAdminSeller(sellerToUpdate));
-    }    
+
+    let message: string =
+      'You have made changes to this page, are you sure you want to discard them and leave?';
+    const toastId = toast.warning(
+      <ConfirmationDialog
+        Message={message}
+        ConfirmText="Yes"
+        CancelText="No"
+        OnConfirm={goBack}
+        OnCancel={() => {
+          toast.dismiss();
+        }}
+      />,
+      {
+        position: 'top-center',
+        autoClose: false,
+        closeOnClick: false,
+      },
+    );
+  };
+
+  const markDirty = () => {
+    dispatch(setMustSavePage(true));
+  };
+
+  const setPageRoute = (route: string) => {
+    if (!currentAdminSelection.selectedPage || !route) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.route != route) {
+      pageToUpdate.route = route;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
   }
 
-  const setHideInList = (hide: boolean) => {
-    if (!currentAdminSelection.selectedSeller) {
+  const setPageTitle = (title: string) => {
+    if (!currentAdminSelection.selectedPage || !title) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.hideInList != hide) {
-      sellerToUpdate.hideInList = hide;
-      dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.title != title) {
+      pageToUpdate.title = title;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  }
+
+  const setPageType = (pageTypeId: number | null) => {
+    if (!currentAdminSelection.selectedPage || !currentAdminSelection.pageTypes
+      || currentAdminSelection.pageTypes.length == 0 || !pageTypeId || isNaN(pageTypeId)) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.pageType.pageTypeId != pageTypeId) {
+      const pageType = currentAdminSelection.pageTypes.find(x => x.pageTypeId == pageTypeId);
+      if (pageType) {
+        pageToUpdate.pageType = pageType;
+        dispatch(setSelectedPage(pageToUpdate));
+        markDirty();
+      }      
+    }
+  }
+
+  const setSubTitle1 = (title: string) => {
+    if (!currentAdminSelection.selectedPage || !title) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.subtitle1 != title) {
+      pageToUpdate.subtitle1 = title;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  }
+
+  const setSubTitle2 = (title: string) => {
+    if (!currentAdminSelection.selectedPage || !title) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.subtitle2 != title) {
+      pageToUpdate.subtitle2 = title;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  }
+
+  const setHtmlText = (htmlText: string) => {
+    if (!currentAdminSelection.selectedPage || !route) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.htmlText != htmlText) {
+      pageToUpdate.htmlText = htmlText;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  }
+
+  const setGoogleAnalyticsId = (gaId: string) => {
+    if (!currentAdminSelection.selectedPage || !route) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.googleAnalyticsId != gaId) {
+      pageToUpdate.googleAnalyticsId = gaId;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
   }
 
   const setIsActive = (isActive: boolean) => {
-    if (!currentAdminSelection.selectedSeller) {
+    if (!currentAdminSelection.selectedPage) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.isActive != isActive) {
-      sellerToUpdate.isActive = isActive;
-      dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.isActive != isActive) {
+      pageToUpdate.isActive = isActive;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
   }
 
-  const updateSellerEventCategory = (ticketSocketId: number, eventCategoryId: number | undefined) => {
-    if (!currentAdminSelection.selectedSeller || !ticketSocketId || isNaN(ticketSocketId)) {
+  const setUseIncludeDates = (useIncludeDates: boolean) => {
+    if (!currentAdminSelection.selectedPage) {
       return;
     }
-    
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    let currentCategories: SellerEventCategory[] = sellerToUpdate.sellerEventCategories
-      ? [...sellerToUpdate.sellerEventCategories]
-      : [];
-
-    let changed = false;
-    const existingCategory = currentCategories.find(x => x.ticketSocketId == ticketSocketId);
-    if (!existingCategory) {
-      if (eventCategoryId != undefined) {
-        const newCategory: SellerEventCategory = {
-          sellerId: sellerToUpdate.sellerId, 
-          ticketSocketId: ticketSocketId,
-          eventCategoryId: eventCategoryId,
-          sellerEventCategoryId: 0
-        };
-        currentCategories.push(newCategory);
-        changed = true;
-      }
-    } else {
-      if (existingCategory.eventCategoryId != eventCategoryId) {
-        currentCategories = currentCategories.map(
-          (x) => {
-            if (x.ticketSocketId == ticketSocketId) {
-              let cat = {...x};
-              cat.eventCategoryId = eventCategoryId;
-              return cat;
-            } else {
-              return x;
-            }
-        });
-        changed = true;
-      }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.useIncludeDates != useIncludeDates) {
+      pageToUpdate.useIncludeDates = useIncludeDates;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
     }
-    
-    if (changed) {
-      sellerToUpdate.sellerEventCategories = currentCategories;
-      dispatch(setAdminSeller(sellerToUpdate));
+  }
+
+  const setIncludeStart = (includeStart: Date | null) => {
+    if (!currentAdminSelection.selectedPage) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const includeStartStr = moment(includeStart).format('YYYY-MM-DD HH:mm:ss');
+    if (pageToUpdate.includeStart != includeStartStr) {
+      pageToUpdate.includeStart = includeStartStr;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  }
+
+  const setIncludeEnd = (includeEnd: Date | null) => {
+    if (!currentAdminSelection.selectedPage) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const includeEndStr = moment(includeEnd).format('YYYY-MM-DD HH:mm:ss');
+    if (pageToUpdate.includeEnd != includeEndStr) {
+      pageToUpdate.includeEnd = includeEndStr;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  }
+
+  const setUseExcludeDates = (useExcludeDates: boolean) => {
+    if (!currentAdminSelection.selectedPage) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.useExcludeDates != useExcludeDates) {
+      pageToUpdate.useExcludeDates = useExcludeDates;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  }
+
+  const setExcludeStart = (excludeStart: Date | null) => {
+    if (!currentAdminSelection.selectedPage) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const excludeStartStr = moment(excludeStart).format('YYYY-MM-DD HH:mm:ss');
+    if (pageToUpdate.excludeStart != excludeStartStr) {
+      pageToUpdate.excludeStart = excludeStartStr;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  }
+
+  const setExcludeEnd = (excludeEnd: Date | null) => {
+    if (!currentAdminSelection.selectedPage) {
+      return;
+    }
+    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const excludeEndStr = moment(excludeEnd).format('YYYY-MM-DD HH:mm:ss');
+    if (pageToUpdate.excludeEnd != excludeEndStr) {
+      pageToUpdate.excludeEnd = excludeEndStr;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  }
+
+  const updateSeller = (sellerId: number, newSellerId: number) => {
+      if (isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
+        return;
+      }
+      if (currentAdminSelection.selectedPage) {
+        let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+        let pageSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
+        const newSeller = currentAdminSelection.allSellers?.find((x) => x.sellerId == newSellerId);
+        if (newSeller) {
+          
+          dispatch(setSelectedPage(pageToUpdate));
+        }
+      } else {
+        goBack();
+      }
+    };
+
+  const addSeller = (e: any) => {
+      if (currentAdminSelection.selectedPage) {
+        let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+        let userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
+        const existingAdd = userSellers.find((x) => x.sellerId == 0);
+        if (!existingAdd) {
+          userSellers.push({
+            sellerId: 0,
+            displayName: '',
+            pageSellerId: 0,
+            pageId: pageToUpdate.pageId,
+          });
+          pageToUpdate.sellers = userSellers;
+          dispatch(setSelectedPage(pageToUpdate));
+        }
+      } else {
+        goBack();
+      }
+    };
+  
+    const removeSeller = (sellerId: number) => {
+      if (!sellerId || isNaN(sellerId)) {
+        sellerId = 0;
+      }
+      if (currentAdminSelection.selectedPage) {
+        let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+        let userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
+        userSellers = userSellers.filter((x) => x.sellerId != sellerId);
+        pageToUpdate.sellers = userSellers;
+        dispatch(setSelectedPage(pageToUpdate));
+      } else {
+        goBack();
+      }
+    };
+
+  const onFileUpload = (fileUploadName: string, filename: string) => {
+      if (!currentAdminSelection.selectedPage || !fileUploadName || !filename) {
+        return;
+      }
+      let pageToUpdate = { ...currentAdminSelection.selectedPage };
+      let isDirty = false;
+      switch (fileUploadName) {
+        case 'Header':
+          pageToUpdate.image = filename;
+          setIsHeaderDirty(true);
+          isDirty = true;
+          break;
+        case 'Icon':
+          pageToUpdate.thumbnail = filename;
+          setIsIconDirty(true);
+          isDirty = true;
+          break;
+        case 'Preview':
+          pageToUpdate.linkPreviewImage = filename;
+          setIsLinkPreviewDirty(true);
+          isDirty = true;
+          break;
+        case 'Logo':
+          pageToUpdate.logoOnlyImage = filename;
+          setIsLogoDirty(true);
+          isDirty = true;
+          break;
+        default:
+          break;
+      }
+      if (isDirty) {
+          dispatch(setSelectedPage(pageToUpdate));
+          markDirty();
+      }
+    };
+
+  const onUploadStart = () => {
+    setIsUploading(true);
+  };
+
+  const onUploadComplete = (filename: string | undefined) => {
+    setIsUploading(false);
+    if (filename) {
+      toast.success('File uploaded successfully - click submit to save');
+    } else {
+      toast.error('File upload failed!');
     }
   };
 
-  const updateSellerType = (sellerTypeValue: number | undefined) => {
-    if (!currentAdminSelection.selectedSeller || !sellerTypeValue || isNaN(sellerTypeValue)) {
-      return;
-    }
-
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.sellerType != sellerTypeValue) {
-      sellerToUpdate.sellerType = sellerTypeValue;
-      dispatch(setAdminSeller(sellerToUpdate));
-    }
+  const onFileRemove = (fileUploadName: string) => {
+      if (!currentAdminSelection.selectedPage || !fileUploadName) {
+        return;
+      }
+      let pageToUpdate = { ...currentAdminSelection.selectedPage };
+      switch (fileUploadName) {
+        case 'Header':
+          pageToUpdate.image = undefined;
+          dispatch(setSelectedPage(pageToUpdate));
+          setIsHeaderDirty(true);
+          markDirty();
+          break;
+        case 'Icon':
+          pageToUpdate.thumbnail = undefined;
+          dispatch(setSelectedPage(pageToUpdate));
+          setIsHeaderDirty(true);
+          markDirty();
+          break;
+        case 'Preview':
+          pageToUpdate.linkPreviewImage = undefined;
+          dispatch(setSelectedPage(pageToUpdate));
+          setIsHeaderDirty(true);
+          markDirty();
+          break;
+        case 'Logo':
+          pageToUpdate.logoOnlyImage = undefined;
+          dispatch(setSelectedPage(pageToUpdate));
+          setIsHeaderDirty(true);
+          markDirty();
+          break;
+        default:
+          break;
+      }
   };
 
   const onSubmit = () => {
@@ -155,7 +445,17 @@ export default function AdminPageEdit() {
         toast.error('Must select at least one seller for this page');
         return;
       }
-    }    
+    }
+
+    if (pageToUpdate.useIncludeDates && (!pageToUpdate.includeStart || !pageToUpdate.includeEnd)) {
+      toast.error('If using include date range, both include dates must be set');
+      return;
+    }
+
+    if (pageToUpdate.useExcludeDates && (!pageToUpdate.excludeStart || !pageToUpdate.excludeEnd)) {
+      toast.error('If using exclude date range, both exclude dates must be set');
+      return;
+    }
 
     dispatch(setIsLoading(true));
 
@@ -171,55 +471,90 @@ export default function AdminPageEdit() {
     });
   };
 
-  const allSellers = currentAdminSelection.allSellers;
-  let pageSellerRows: any[] = [];
-  if (allSellers && allSellers.length > 0 && currentAdminSelection.selectedPage) {
-    allSellers.map((seller, index) => {
-      const selectedSeller = currentAdminSelection.selectedPage?.sellers?.find(x => x.sellerId == seller.sellerId);
-      let options: any[] = [];
-      options.push(<option key={`a${index}_00`} value={0}>
-        {' '}
-        -- Select one --
-      </option>)
-      /*
-      account.categories?.map((x, i) => {
-        options.push(<option key={`a${index}_${i}`} value={x.eventCategoryId}>{x.name}</option>);
-      });
-      const key = `account${index}`;
-      pageSellerRows.push(
-        <Row className="form-group">
-          <Col xs={2}><label className="mt-4">Category for {account.name}</label></Col>
-          <Col>
-            <select
-              disabled={disabled}
-              key={key}
-              id={account.ticketSocketId.toString()}
-              onChange={(e) => updateSellerEventCategory(parseInt(`${account.ticketSocketId}`), parseInt(e.currentTarget.value))}
-              defaultValue={selectedCategory?.eventCategoryId}
-            >
-              {options}
-            </select>
-        </Col>
-        </Row>
-      );*/
-    });
-  }
+  const getSellerTypeFromPageType = () => {
+    let sellerType: SellerType | undefined = undefined;
+    switch (currentAdminSelection.selectedPage?.pageType?.pageTypeId) {
+      case 7:
+        sellerType = SellerType.Artist;
+        break;
+      case 14:
+        sellerType = SellerType.Venue;
+        break;
+      case 16:
+        sellerType = SellerType.Promoter;
+        break;
+      default:
+        break;
+    }
+    return sellerType;
+  };
 
-  let sellerTypeOptions: any[] = [];
-  const sellerTypeValues = Object.values(SellerType).filter((v) => !isNaN(Number(v)));
-  sellerTypeOptions.push(<option key={`st_00`} value={0}>
-    {' '}
-    -- Select one --
-  </option>)
-  sellerTypeValues.map((x, i) => {
-    sellerTypeOptions.push(<option key={`st_${i}`} value={x}>{SellerType[Number(x)]}</option>);
-  })
+  const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageTypes ?
+          currentAdminSelection.pageTypes.map((pageType) => {
+            return {
+              label: `${pageType.pageTypeName}`,
+              value: pageType.pageTypeId
+            }
+        }) : [];
 
   const pageHeader =
-    (currentAdminSelection.selectedSeller?.sellerId ?? 0 > 0) ? 'Edit seller' : 'Add seller';
+    (currentAdminSelection.selectedPage?.pageId ?? 0 > 0) ? 'Edit page' : 'Add page';
 
-  const selectedSellerType = Number(currentAdminSelection.selectedSeller?.sellerType ?? 0);
-  
+  const isActive = currentAdminSelection.selectedPage?.isActive ?? false;
+  const title = currentAdminSelection.selectedPage?.title;
+  const route = currentAdminSelection.selectedPage?.route;
+  const selectedPageTypeId = currentAdminSelection.selectedPage?.pageType.pageTypeId ?? 0;
+  const topImage = currentAdminSelection.selectedPage?.image;
+  const iconImage = currentAdminSelection.selectedPage?.thumbnail;
+  const linkPreviewImage = currentAdminSelection.selectedPage?.linkPreviewImage;
+  const logoOnlyImage = currentAdminSelection.selectedPage?.logoOnlyImage;
+  const subtitle1 = currentAdminSelection.selectedPage?.subtitle1;
+  const subtitle2 = currentAdminSelection.selectedPage?.subtitle2;
+  const htmlText = currentAdminSelection.selectedPage?.htmlText;
+  const useIncludeDates = currentAdminSelection.selectedPage?.useIncludeDates ?? false;
+  const includeStart = currentAdminSelection.selectedPage?.includeStart ? moment(currentAdminSelection.selectedPage.includeStart).toDate() : null;
+  const includeEnd = currentAdminSelection.selectedPage?.includeEnd ? moment(currentAdminSelection.selectedPage.includeEnd).toDate() : null;
+  const useExcludeDates = currentAdminSelection.selectedPage?.useExcludeDates ?? false;
+  const excludeStart = currentAdminSelection.selectedPage?.excludeStart ? moment(currentAdminSelection.selectedPage.excludeStart).toDate() : null;
+  const excludeEnd = currentAdminSelection.selectedPage?.excludeEnd ? moment(currentAdminSelection.selectedPage.excludeEnd).toDate() : null;
+  const googleAnalyticsId = currentAdminSelection.selectedPage?.googleAnalyticsId;
+
+  let sellerRows: any[] = [];
+    if (
+      currentAdminSelection.selectedPage &&
+      currentAdminSelection.selectedPage.pageType &&
+      pageSellerTypeIds.includes(currentAdminSelection.selectedPage.pageType.pageTypeId) && 
+      currentAdminSelection.allSellers != undefined
+    ) {
+      const sellerType = getSellerTypeFromPageType();
+      if (currentAdminSelection.selectedPage.sellers) {
+        currentAdminSelection.selectedPage.sellers.map((item, index) => {
+          sellerRows.push(
+            <AdminSellerSelect
+              id={item.sellerId}
+              key={item.sellerId}
+              Number={index + 1}
+              Sellers={currentAdminSelection.allSellers}
+              SellerId={item.sellerId}
+              SellerType={sellerType}
+              OnSellerChange={(newSellerId: number) => updateSeller(parseInt(`${item.sellerId}`), newSellerId)}
+              OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
+            />,
+          );
+        });
+      }
+      sellerRows.push(
+        <div
+          title="Add Seller"
+          key="addSeller"
+          className="admin-click-cell"
+          onClick={addSeller}
+        >
+          <FaPlus></FaPlus> Add Seller
+        </div>,
+      );
+    }
+
   return (
     <Row
       className="admin-container"
@@ -229,55 +564,242 @@ export default function AdminPageEdit() {
           <Col><h1>{pageHeader}</h1></Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}><label className="mt-4">Seller Name</label></Col>
-          <Col>
-            <input
-            value={currentAdminSelection.selectedSeller?.name}
-            onChange={(e) => setSellerName(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="seller name"
-            type="text"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={2}>
-            <label className="mt-4">Seller Type</label>
-          </Col>
-          <Col>
-            <select
-              onChange={(e) => updateSellerType(parseInt(e.currentTarget.value))}
-              defaultValue={selectedSellerType}
-            >
-              {sellerTypeOptions}
-            </select>
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={2}></Col>
           <Col>
             <FormCheck
-              checked={currentAdminSelection.selectedSeller?.hideInList ?? false}
-              onChange={(e) => setHideInList(e.target.checked)}
-              label={'Hide in order tickets screen'}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={2}></Col>
-          <Col>
-            <FormCheck
-              checked={!(currentAdminSelection.selectedSeller?.isActive ?? false)}
+              checked={!isActive}
               onChange={(e) => setIsActive(!e.target.checked)}
-              label={'Set to inactive'}
+              label={'Page inactive on website?'}
             />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <label className="mt-4">Main Page Title (most viewed on the site)</label>
+            <input
+              value={title}
+              onChange={(e) => setPageTitle(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="page title"
+              type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <label className="mt-4">Route (how it shows up in the url)</label>
+            <input
+              value={route}
+              onChange={(e) => setPageRoute(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="page route"
+              type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <label className="mt-4">Page Type</label>
+            <SelectPicker
+                value={selectedPageTypeId}
+                data={pageTypeList}
+                size="lg"        
+                onChange={(ptId) => setPageType(ptId)}
+                cleanable={false}
+                menuAutoWidth={true}
+                className="admin-seller-select-value"
+                searchable={false}
+              />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <AdminFileUpload
+              Title="Top Image (ideally 1200-1600px wide, max is 1600px)"
+              FileUploadName="Header"
+              OnUpLoad={onFileUpload}
+              CurrentFileName={topImage}
+              IsDirty={isHeaderDirty}
+              CurrentFileTitle={"View Current Top Image"}
+              BaseUrl={headerBaseUrl}
+              OnUploadStart={onUploadStart}
+              OnUploadComplete={onUploadComplete}
+              ShowRemoveButton={true}
+              OnFileRemove={() => onFileRemove('Header')}
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <AdminFileUpload
+              Title="Icon (rectangle, no wider than 400px)"
+              FileUploadName="Icon"
+              OnUpLoad={onFileUpload}
+              CurrentFileName={iconImage}
+              IsDirty={isIconDirty}
+              CurrentFileTitle={"View Current Icon Image"}
+              BaseUrl={iconBaseUrl}
+              OnUploadStart={onUploadStart}
+              OnUploadComplete={onUploadComplete}
+              ShowRemoveButton={true}
+              OnFileRemove={() => onFileRemove('Icon')}
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <AdminFileUpload
+              Title="Link Preview Image (rectangle, no wider than 400px)"
+              FileUploadName="Preview"
+              OnUpLoad={onFileUpload}
+              CurrentFileName={linkPreviewImage}
+              IsDirty={isLinkPreviewDirty}
+              CurrentFileTitle={"View Current Link Preview Image"}
+              BaseUrl={linkPreviewBaseUrl}
+              OnUploadStart={onUploadStart}
+              OnUploadComplete={onUploadComplete}
+              ShowRemoveButton={true}
+              OnFileRemove={() => onFileRemove('Preview')}
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <AdminFileUpload
+              Title="Logo Only (rectangle, must be a PNG and between 250-400 px wide)"
+              FileUploadName="Logo"
+              OnUpLoad={onFileUpload}
+              CurrentFileName={logoOnlyImage}
+              IsDirty={isLogoDirty}
+              CurrentFileTitle={"View Current Logo Image"}
+              BaseUrl={logoBaseUrl}
+              OnUploadStart={onUploadStart}
+              OnUploadComplete={onUploadComplete}
+              ShowRemoveButton={true}
+              OnFileRemove={() => onFileRemove('Logo')}
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <label className="mt-4">Subtitle 1</label>
+            <input
+              value={subtitle1}
+              onChange={(e) => setSubTitle1(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="Shows up underneath page title"
+              type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <label className="mt-4">Subtitle 2</label>
+            <input
+              value={subtitle2}
+              onChange={(e) => setSubTitle2(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="Shows up underneath subtitle 1"
+              type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <label className="mt-4">HTML Text</label>
+            <Form.Control as="textarea"
+              rows={3}
+              id="htmlText"
+              onChange={(e) => setHtmlText(e.currentTarget.value)}
+              value={htmlText}
+              placeholder='Free-form html text to be placed in header'
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <FormCheck
+              checked={useIncludeDates}
+              onChange={(e) => setUseIncludeDates(e.target.checked)}
+              label={'Use include date range'}
+            />
+            <label className="mt-4">Include start date</label>
+            <DatePicker
+              id="includeStart"
+              format="M/d/yyyy"
+              onSelect={setIncludeStart}
+              value={includeStart}
+              oneTap
+              cleanable
+              disabled={!useIncludeDates}
+              onClean={() => setIncludeStart(null)}
+            />
+            <label className="mt-4">Include end date</label>
+            <DatePicker
+              id="includeEnd"
+              format="M/d/yyyy"
+              onSelect={setIncludeEnd}
+              value={includeEnd}
+              oneTap
+              cleanable
+              disabled={!useIncludeDates}
+              onClean={() => setIncludeEnd(null)}
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <FormCheck
+              checked={useExcludeDates}
+              onChange={(e) => setUseExcludeDates(e.target.checked)}
+              label={'Use exclude date range'}
+            />
+            <label className="mt-4">Exclude start date</label>
+            <DatePicker
+              id="excludeStart"
+              format="M/d/yyyy"
+              onSelect={setExcludeStart}
+              value={excludeStart}
+              oneTap
+              cleanable
+              disabled={!useExcludeDates}
+              onClean={() => setExcludeStart(null)}
+            />
+            <label className="mt-4">Exclude end date</label>
+            <DatePicker
+              id="excludeEnd"
+              format="M/d/yyyy"
+              onSelect={setExcludeEnd}
+              value={excludeEnd}
+              oneTap
+              cleanable
+              disabled={!useExcludeDates}
+              onClean={() => setExcludeEnd(null)}
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <label className="mt-4">Google Analytics ID</label>
+            <input
+              value={googleAnalyticsId}
+              onChange={(e) => setGoogleAnalyticsId(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="e.g.: UA-xxxxxxxxx-x"
+              type="text"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group" hidden={!pageSellerTypeIds.includes(currentAdminSelection?.selectedPage?.pageType?.pageTypeId ?? 0)}>
+          <Col>
+              <h4>Page Sellers</h4>
+              {sellerRows}
           </Col>
         </Row>
         <Row>
           <Col>
-            <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+            <Button onClick={onSubmit}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
           </Col>
-        </Row>      
+        </Row>
       </Col>
     </Row>
   );
