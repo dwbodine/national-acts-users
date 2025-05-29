@@ -278,18 +278,41 @@ export default function AdminPageEdit() {
     }
   }
 
-  const updateSeller = (sellerId: number, newSellerId: number) => {
-      if (isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
+  const updatePageSeller = (newPageSeller: PageSeller) => {
+    if (currentAdminSelection.selectedPage && newPageSeller) {
+      let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+      const pageSellers: PageSeller[] | undefined =  pageToUpdate.sellers;
+      pageToUpdate.sellers = pageSellers?.map((ps) => 
+        (ps.pageSellerId == newPageSeller.pageSellerId && ps.sellerId == newPageSeller.sellerId) 
+          ? newPageSeller
+          : ps
+      )
+      dispatch(setSelectedPage(pageToUpdate));
+    }
+  };
+
+  const updateSeller = (pageSellerId: number, sellerId: number, newSellerId: number) => {
+      if (isNaN(pageSellerId) || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
         return;
       }
       if (currentAdminSelection.selectedPage) {
         let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-        let pageSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
-        const newSeller = currentAdminSelection.allSellers?.find((x) => x.sellerId == newSellerId);
-        if (newSeller) {
-          
-          dispatch(setSelectedPage(pageToUpdate));
+        let pageSellers: PageSeller[] | undefined =  pageToUpdate.sellers;
+        const existingSeller = pageSellers?.find((x) => x.pageSellerId == pageSellerId && x.sellerId == sellerId);
+        if (existingSeller) {
+          pageToUpdate.sellers = pageSellers?.map((ps) => 
+            (ps.pageSellerId == existingSeller.pageSellerId) 
+              ? {...ps, sellerId: newSellerId}
+              : ps
+          )
+        } else {
+          pageToUpdate.sellers = pageSellers?.map((ps) => 
+            (ps.pageSellerId == 0 && ps.sellerId == 0) 
+              ? {...ps, sellerId: newSellerId}
+              : ps
+          )   
         }
+        dispatch(setSelectedPage(pageToUpdate));
       } else {
         goBack();
       }
@@ -299,11 +322,10 @@ export default function AdminPageEdit() {
       if (currentAdminSelection.selectedPage) {
         let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
         let userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
-        const existingAdd = userSellers.find((x) => x.sellerId == 0);
+        const existingAdd = userSellers.find((x) => x.pageSellerId == 0 && x.sellerId == 0);
         if (!existingAdd) {
           userSellers.push({
             sellerId: 0,
-            displayName: '',
             pageSellerId: 0,
             pageId: pageToUpdate.pageId,
           });
@@ -537,7 +559,9 @@ export default function AdminPageEdit() {
               Sellers={currentAdminSelection.allSellers}
               SellerId={item.sellerId}
               SellerType={sellerType}
-              OnSellerChange={(newSellerId: number) => updateSeller(parseInt(`${item.sellerId}`), newSellerId)}
+              PageSeller={item}
+              OnSellerChange={(newSellerId: number) => updateSeller(parseInt(`${item.pageSellerId}`), parseInt(`${item.sellerId}`), newSellerId)}
+              OnPageSellerChange={(ps: PageSeller) => updatePageSeller(ps)}
               OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
             />,
           );

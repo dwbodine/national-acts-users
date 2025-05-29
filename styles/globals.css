@@ -1050,6 +1050,20 @@ input.rs-input:hover {
   flex-direction: row;
 }
 
+.admin-seller-select-button {
+  float: right !important;
+}
+
+.pageseller-default {
+  font-size: 0.75em;
+  font-style: italic;
+}
+
+.page-seller-label {
+  margin: 10px 0 0 0;
+  font-weight: bold;
+}
+
 .admin-click-cell {
   cursor: pointer;
 }
