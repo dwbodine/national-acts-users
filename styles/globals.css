@@ -1012,12 +1012,17 @@ input.rs-input:hover {
   margin: 10px 0;
 }
 
+.admin-file-upload {
+  margin: 10px 0;
+}
+
 .admin-setting-item {
   margin: 10px 0;
 }
 
 .admin-setting-title {
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .admin-current-file-title {
@@ -1043,6 +1048,20 @@ input.rs-input:hover {
 .admin-seller-select-value {
   display: flex;
   flex-direction: row;
+}
+
+.admin-seller-select-button {
+  float: right !important;
+}
+
+.pageseller-default {
+  font-size: 0.75em;
+  font-style: italic;
+}
+
+.page-seller-label {
+  margin: 10px 0 0 0;
+  font-weight: bold;
 }
 
 .admin-click-cell {

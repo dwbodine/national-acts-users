@@ -36,6 +36,7 @@ const initialState: AdminSelection = {
   tours: undefined,
   mustSaveEvent: false,
   mustSaveOrder: false,
+  mustSavePage: false,
   ticketSocketAccounts: undefined,
   uploadedFile: undefined,
   venues: undefined,
@@ -205,6 +206,10 @@ export const adminSelectionSlice = createSlice({
       state.mustSaveOrder = action.payload;
       return state;
     },
+    setMustSavePage: (state, action: PayloadAction<boolean>) => {
+      state.mustSavePage = action.payload;
+      return state;
+    },
     setUploadedFile: (state, action: PayloadAction<string | undefined>) => {
       state.uploadedFile = action.payload;
       return state;
@@ -242,6 +247,7 @@ export const adminSelectionSlice = createSlice({
       state.venues = undefined;
       state.mustSaveEvent = false;
       state.mustSaveOrder = false;
+      state.mustSavePage = false;
       state.allSellers = undefined;
       state.allSettings = undefined;
       state.reloadSettings = true;
@@ -270,6 +276,7 @@ export const {
   setAdminEvents,
   setMustSaveEvent,
   setMustSaveOrder,
+  setMustSavePage,
   setTours,
   setAdminTour,
   setReloadTours,

@@ -338,6 +338,7 @@ export type AdminSelection = {
   selectedSeller?: Seller | undefined;
   mustSaveOrder?: boolean;
   mustSaveEvent?: boolean;
+  mustSavePage?: boolean;
   allSellers?: Seller[] | undefined;
   allSettings?: SiteSetting[] | undefined;
   allPages?: Page[] | undefined;

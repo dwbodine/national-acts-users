@@ -66,7 +66,7 @@ export default function AdminFileUpload(props: any) {
     }
 
     return (
-        <div>
+        <div className="admin-file-upload">
             <div className="admin-setting-title">{title}</div>
             <input type="file" onChange={handleFileChange} />
             <span className="danger" hidden={!isUploading}>Uploading...</span>
