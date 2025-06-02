@@ -479,6 +479,11 @@ export default function AdminPageEdit() {
       return;
     }
 
+    if (pageToUpdate.logoOnlyImage && pageToUpdate.logoOnlyImage.length > 4 && pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length-4) != ".png") {
+      toast.error('Logo image can only be a PNG');
+      return;
+    }
+
     dispatch(setIsLoading(true));
 
     updatePage(pageToUpdate).then((response: ModifyPageResponse) => {
