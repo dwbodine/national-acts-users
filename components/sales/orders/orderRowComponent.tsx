@@ -96,6 +96,9 @@ export default function OrderRow(props: any) {
     });
   }
 
+  const phone = order.phone?.startsWith("+1 ") ? 
+    order.phone.replace("+1 ", "") : order.phone;
+
   return (
     <tr className={statusClass}>
       <td hidden={showOnlyEmails || showOnlyPhones}>{purchaserName}</td>
@@ -112,7 +115,7 @@ export default function OrderRow(props: any) {
         {serviceFees}
       </td>
       <td hidden={showOnlyPhones} className="email">{order.email}</td>
-      {hasPhoneData && !showOnlyEmails ? <td>{order.phone}</td> : ''}
+      {hasPhoneData && !showOnlyEmails ? <td>{phone}</td> : ''}
       {hasShirtData && !(showOnlyEmails || showOnlyPhones) ? <td>{shirtSizeRows}</td> : ''}
     </tr>
   );

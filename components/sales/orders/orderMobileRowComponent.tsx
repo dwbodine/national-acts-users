@@ -100,6 +100,9 @@ export default function OrderMobileRow(props: any) {
     });
   }
 
+  const phone = order.phone?.startsWith("+1 ") ? 
+    order.phone.replace("+1 ", "") : order.phone;
+
   return (
     <tr className={'mobile-event-card-container ' + statusClass}>
       <td>
@@ -142,7 +145,7 @@ export default function OrderMobileRow(props: any) {
           </Row>
           <Row hidden={!hasPhoneData || showOnlyEmails}>
             <Col xs={5} className="mobile-bold">Phone:</Col>
-            <Col>{order.phone}</Col>
+            <Col>{phone}</Col>
           </Row>
           <Row hidden={!hasShirtData || (showOnlyEmails || showOnlyPhones)}>
             <Col xs={5} className="mobile-bold">Shirts:</Col>
