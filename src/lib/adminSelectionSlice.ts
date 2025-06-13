@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { AdminSelection, Role, User } from '../types/user';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
-import { Page, PageType, SiteSetting } from '@/types/public';
+import { Country, Page, PageType, SiteSetting } from '@/types/public';
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 
 const initialState: AdminSelection = {
@@ -40,6 +40,7 @@ const initialState: AdminSelection = {
   ticketSocketAccounts: undefined,
   uploadedFile: undefined,
   venues: undefined,
+  countries: undefined,
 };
 
 export const adminSelectionSlice = createSlice({
@@ -218,6 +219,10 @@ export const adminSelectionSlice = createSlice({
       state.ticketSocketAccounts = action.payload;
       return state;
     },
+    setCountries: (state, action: PayloadAction<Country[]>) => {
+      state.countries = action.payload;
+      return state;
+    },
     resetAdmin: (state) => {
       state.sellerId = undefined;
       state.start = undefined;
@@ -294,6 +299,7 @@ export const {
   setPageTypes,
   setTicketSocketEventsOnly,
   setAdminOrders,
+  setCountries,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

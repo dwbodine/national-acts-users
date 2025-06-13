@@ -4,6 +4,19 @@ export enum SiteSettingType {
   Text = 'Text',
 }
 
+export interface TimeZone {
+  timezoneId: number;
+  timezoneName: string;
+  timezoneAbbrev: string;
+}
+
+export interface Country {
+  countryCodeId: number;
+  country: string;
+  countryCode: string;
+  timezones?: TimeZone[];
+}
+
 export interface SiteSetting {
   settingId: number;
   name: string;
