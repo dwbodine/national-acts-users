@@ -62,7 +62,7 @@ export default function AdminSellerSelect(props: any) {
     ps.city = !isArtist ? city : undefined;
     ps.state = !isArtist ? state : undefined;
     ps.zip = !isArtist ? zip : undefined;
-    const country: Country | undefined = countryId ? {country: '', countryId: countryId, countryCode: ''} : undefined;
+    const country: Country | undefined = countryId ? {countryName: '', countryId: countryId, countryCode: ''} : undefined;
     ps.country = !isArtist ? country : undefined;
     ps.phone = !isArtist ? phone : undefined;
     ps.email = !isArtist ? email : undefined;
@@ -100,7 +100,7 @@ export default function AdminSellerSelect(props: any) {
   const countryList: ItemDataType<number>[] = countries ?
     countries?.map((country) => {
       return {
-        label: `${country.country}`,
+        label: `${country.countryName}`,
         value: country.countryId
       }
   }) : [];
@@ -214,7 +214,7 @@ export default function AdminSellerSelect(props: any) {
             <Row hidden={isArtist}>
               <Col>
                 <label className="page-seller-label">Country</label>
-                <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.country?.country ?? 'n/a'}`}</div>
+                <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.country?.countryName ?? 'n/a'}`}</div>
                 <SelectPicker
                   className="admin-seller-select-value"
                   menuAutoWidth={true}

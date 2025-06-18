@@ -1963,7 +1963,8 @@ export class EventService {
       location += `, ${venue.state}`;
     }
     if (
-      venue.country && venue.country.countryName &&
+      venue.country &&
+      venue.country.countryName &&
       venue.country.countryId != DEFAULT_COUNTRY_ID
     ) {
       location += ', ' + venue.country.countryName;
@@ -1979,8 +1980,11 @@ export class EventService {
     if (venue.zipCode && venue.zipCode.trim() != '') {
       location += ` ${venue.zipCode}`;
     }
-    if (venue.country && venue.country.countryName && 
-        venue.country.countryId != DEFAULT_COUNTRY_ID) {
+    if (
+      venue.country &&
+      venue.country.countryName &&
+      venue.country.countryId != DEFAULT_COUNTRY_ID
+    ) {
       location += ', ' + venue.country.countryName;
     }
     return location;

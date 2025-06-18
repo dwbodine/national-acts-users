@@ -758,7 +758,7 @@ export default function AdminEventEdit(props: any) {
       city: city,
       state: state,
       zipCode: zipCode,
-      country: { country: '', countryId: countryId, countryCode: ''},
+      country: { countryName: '', countryId: countryId, countryCode: ''},
     };
 
     updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
@@ -1059,7 +1059,7 @@ export default function AdminEventEdit(props: any) {
   const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
       currentAdminSelection.countries.map((country) => {
         return {
-          label: `${country.country}`,
+          label: `${country.countryName}`,
           value: country.countryId
         }
     }) : [];

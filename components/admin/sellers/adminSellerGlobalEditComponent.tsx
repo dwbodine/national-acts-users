@@ -96,7 +96,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.country = undefined;
       dispatch(setAdminSeller(sellerToUpdate));
     } else if (!sellerToUpdate.country || sellerToUpdate.country.countryId != countryId) {
-      sellerToUpdate.country = {country: '', countryId: countryId, countryCode: ''};
+      sellerToUpdate.country = {countryName: '', countryId: countryId, countryCode: ''};
       dispatch(setAdminSeller(sellerToUpdate));
     }    
   }
@@ -372,7 +372,7 @@ export default function AdminSellerGlobalEdit() {
   const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
       currentAdminSelection.countries.map((country) => {
         return {
-          label: `${country.country}`,
+          label: `${country.countryName}`,
           value: country.countryId
         }
     }) : [];

@@ -11,6 +11,7 @@ import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
 import { resetAdmin } from '@/lib/adminSelectionSlice';
 import { Button } from 'react-bootstrap';
+import { DEFAULT_COUNTRY_ID } from '@/constants';
 
 export default function ReportsMissingVenues() {
   const { Column, HeaderCell, Cell } = Table;
@@ -58,11 +59,10 @@ export default function ReportsMissingVenues() {
       location += ` ${venue.postalCode}`;
     }
     if (
-      venue.country &&
-      venue.country != 'United States' &&
-      venue.country != 'USA'
+      venue.country && venue.country.countryName && 
+      venue.country.countryId != DEFAULT_COUNTRY_ID
     ) {
-      location += ', ' + venue.country;
+      location += ', ' + venue.country.countryName;
     }
     return location;
   };
