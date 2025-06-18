@@ -11,7 +11,7 @@ export interface TimeZone {
 
 export interface Country {
   countryId: number;
-  country: string;
+  countryName: string;
   countryCode: string;
   timezones?: TimeZone[];
 }

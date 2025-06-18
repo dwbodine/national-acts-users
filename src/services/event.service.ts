@@ -1927,13 +1927,10 @@ export class EventService {
       location += `, ${venue.state}`;
     }
     if (
-      venue.country &&
-      venue.country.countryId != DEFAULT_COUNTRY_ID && 
-        venue.country.country != "USA" &&
-        venue.country.country != "United States" &&
-        venue.country.country.trim() != venue.state?.trim()
+      venue.country && venue.country.countryName &&
+      venue.country.countryId != DEFAULT_COUNTRY_ID
     ) {
-      location += ', ' + venue.country;
+      location += ', ' + venue.country.countryName;
     }
     return location;
   };
@@ -1946,11 +1943,9 @@ export class EventService {
     if (venue.zipCode && venue.zipCode.trim() != '') {
       location += ` ${venue.zipCode}`;
     }
-    if (venue.country && 
-        venue.country.countryId != DEFAULT_COUNTRY_ID && 
-        venue.country.country != "USA" &&
-        venue.country.country != "United States") {
-      location += ', ' + venue.country;
+    if (venue.country && venue.country.countryName && 
+        venue.country.countryId != DEFAULT_COUNTRY_ID) {
+      location += ', ' + venue.country.countryName;
     }
     return location;
   };
