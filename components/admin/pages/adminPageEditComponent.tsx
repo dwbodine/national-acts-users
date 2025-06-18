@@ -568,6 +568,7 @@ export default function AdminPageEdit() {
               OnSellerChange={(newSellerId: number) => updateSeller(parseInt(`${item.pageSellerId}`), parseInt(`${item.sellerId}`), newSellerId)}
               OnPageSellerChange={(ps: PageSeller) => updatePageSeller(ps)}
               OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
+              Countries={currentAdminSelection.countries}
             />,
           );
         });

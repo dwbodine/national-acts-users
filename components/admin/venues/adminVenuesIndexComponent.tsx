@@ -108,7 +108,7 @@ export default function AdminVenuesIndex() {
           venue.address?.toLowerCase().includes(srch) ||
           venue.city?.toLowerCase().includes(srch) ||
           venue.state?.toLowerCase().includes(srch) ||
-          venue.country?.toLowerCase().includes(srch)
+          venue.country?.country?.toLowerCase().includes(srch)
         );
       });
     }

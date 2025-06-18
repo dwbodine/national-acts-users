@@ -469,6 +469,7 @@ export default function AdminEventsIndex() {
         Sellers={currentAdminSelection.allSellers}
         SellerId={currentAdminSelection.sellerId}
         OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
+        Countries={currentAdminSelection.countries}
       />
       <Row className="admin-select" hidden={tourList.length == 0}>
         <Col xs={1}>

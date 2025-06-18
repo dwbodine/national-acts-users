@@ -9,7 +9,8 @@ import { toast } from 'react-toastify';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
 import { ModifySellerResponse } from '@/types/admin';
-import { setEngine } from 'crypto';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { SelectPicker } from 'rsuite';
 
 export default function AdminSellerGlobalEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -86,13 +87,16 @@ export default function AdminSellerGlobalEdit() {
     }    
   }
 
-  const setCountry = (country: string) => {
+  const onCountryChange = (countryId: number | null) => {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
     let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.country != country) {
-      sellerToUpdate.country = country;
+    if (!countryId) {
+      sellerToUpdate.country = undefined;
+      dispatch(setAdminSeller(sellerToUpdate));
+    } else if (!sellerToUpdate.country || sellerToUpdate.country.countryId != countryId) {
+      sellerToUpdate.country = {country: '', countryId: countryId, countryCode: ''};
       dispatch(setAdminSeller(sellerToUpdate));
     }    
   }
@@ -364,6 +368,14 @@ export default function AdminSellerGlobalEdit() {
   const selectedSellerType = Number(currentSeller?.sellerType ?? 1);
 
   const isArtist = selectedSellerType == SellerType.Artist;  
+
+  const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
+      currentAdminSelection.countries.map((country) => {
+        return {
+          label: `${country.country}`,
+          value: country.countryId
+        }
+    }) : [];
   
   return (
     <Row
@@ -478,13 +490,15 @@ export default function AdminSellerGlobalEdit() {
         <Row className="form-group" hidden={isArtist}>
           <Col xs={2}><label className="mt-4">Country</label></Col>
           <Col>
-            <input
-            value={currentSeller?.country}
-            onChange={(e) => setCountry(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="country (leave blank for USA)"
-            type="text"
-            />
+            <SelectPicker
+                className="admin-seller-select-value"
+                menuAutoWidth={true}
+                value={currentSeller?.country?.countryId}
+                data={countryList}
+                size="lg"        
+                onChange={(cId) => onCountryChange(cId)}
+                cleanable={false}
+              />
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>

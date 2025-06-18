@@ -1,5 +1,5 @@
 import { Seller, SellerEventCategory, VipEvent } from './event';
-import { Page } from './public';
+import { Country, Page, TimeZone } from './public';
 
 export interface ExternalVenue {
   venueId: number;
@@ -8,8 +8,9 @@ export interface ExternalVenue {
   city: string;
   state?: string;
   zipCode?: string;
-  country?: string;
+  country?: Country;
   hasEvents?: boolean;
+  timezone?: TimeZone;
 }
 
 export interface TicketSocketCategory {
@@ -46,6 +47,12 @@ export interface GetExternalVenuesResponse {
   venues?: ExternalVenue[];
   statusCode?: number;
   venueError?: string;
+}
+
+export interface GetCountriesResponse {
+  countries?: Country[];
+  statusCode?: number;
+  countryError?: string;
 }
 
 export interface ModifyExternalVenueResponse {

@@ -43,7 +43,7 @@ export interface PageSeller {
   city?: string;
   state?: string;
   zip?: string;
-  country?: string;
+  country?: Country;
   phone?: string;
   email?: string;
   twitter?: string;

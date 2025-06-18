@@ -258,6 +258,7 @@ export default function AdminUserEdit() {
           OnSellerChange={(newSellerId: number) => updateSeller(parseInt(`${item.sellerId}`), newSellerId)}
           OnRoleChange={(newRoleId: number) => updateRole(parseInt(`${item.sellerId}`), newRoleId)}
           OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
+          Countries={currentAdminSelection.countries}
         />,
       );
     });

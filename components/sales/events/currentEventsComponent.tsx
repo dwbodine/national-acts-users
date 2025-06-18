@@ -221,7 +221,7 @@ export default function CurrentEvents() {
           evt.venue?.name?.toLowerCase().includes(srch) ||
           evt.venue?.city?.toLowerCase().includes(srch) ||
           evt.venue?.state?.toLowerCase().includes(srch) ||
-          evt.venue?.country?.toLowerCase().includes(srch)
+          evt.venue?.country?.country?.toLowerCase().includes(srch)
         );
       });
     } else {

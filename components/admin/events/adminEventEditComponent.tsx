@@ -36,6 +36,8 @@ import AdminFileUpload from '../common/adminFileUploadComponent';
 import { useCancelEvent } from '@/hooks/admin/useCancelEvent';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
+import { DEFAULT_COUNTRY_ID } from '@/constants';
+import { Country } from '@/types/public';
 
 export default function AdminEventEdit(props: any) {
   const id: number | undefined = props.Id as number;
@@ -68,8 +70,8 @@ export default function AdminEventEdit(props: any) {
   const [city, setCity] = useState<string | undefined>(undefined);
   const [state, setState] = useState<string | undefined>(undefined);
   const [zipCode, setZipCode] = useState<string | undefined>(undefined);
-  const [country, setCountry] = useState<string | undefined>(undefined);
-  
+  const [countryId, setCountryId] = useState<number | undefined>(undefined);
+
   const currentSeller: Seller | undefined = currentAdminSelection.allSellers?.find(x => x.sellerId == currentAdminSelection.sellerId);
 
   const beforeOnUnload = (ev: BeforeUnloadEvent) => {
@@ -107,6 +109,10 @@ export default function AdminEventEdit(props: any) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
+      if (!currentAdminSelection.countries) {
+        router.push("/admin");
+        return;
+      }
       if (currentAdminSelection.reloadSellers) {
           dispatch(setReloadSellers(false));
           dispatch(setIsLoading(true));
@@ -435,6 +441,10 @@ export default function AdminEventEdit(props: any) {
     markDirty();
   };
 
+  const onCountryChange = (countryId: number | null) => {
+    setCountryId(countryId ?? undefined);
+  };
+
   const goBack = (dismissToast: boolean = true) => {
     if (!id && dismissToast) {
       toast.dismiss();
@@ -729,8 +739,13 @@ export default function AdminEventEdit(props: any) {
       return;
     }
 
-    if (!state && !zipCode && !country) {
-      toast.error("Must provide at least one of state, zip or country");
+    if (!countryId) {
+      toast.error("Country is required (even USA)");
+      return;
+    }
+
+    if (!state && !zipCode) {
+      toast.error("Must provide at least one of state or zip");
       return;
     }
 
@@ -743,7 +758,7 @@ export default function AdminEventEdit(props: any) {
       city: city,
       state: state,
       zipCode: zipCode,
-      country: country,
+      country: { country: '', countryId: countryId, countryCode: ''},
     };
 
     updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
@@ -1041,6 +1056,14 @@ export default function AdminEventEdit(props: any) {
 
   const isExternalEvent = (selectedEvent?.isExternal ?? false) && (ticketSocketEventId == 0);
 
+  const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
+      currentAdminSelection.countries.map((country) => {
+        return {
+          label: `${country.country}`,
+          value: country.countryId
+        }
+    }) : [];
+
   return (
     <Col
       className="admin-container"
@@ -1161,12 +1184,14 @@ export default function AdminEventEdit(props: any) {
               </div>
               <div className="form-group">
                 <label className="mt-4">Country</label>
-                <input
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className="form-control"
-                  placeholder="country"
-                  type="text"
+                <SelectPicker
+                  className="admin-seller-select-value"
+                  menuAutoWidth={true}
+                  value={countryId}
+                  data={countryList}
+                  size="lg"        
+                  onChange={(cId) => onCountryChange(cId)}
+                  cleanable={false}
                 />
               </div>
             </Modal.Body>

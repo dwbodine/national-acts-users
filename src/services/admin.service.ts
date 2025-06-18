@@ -1,8 +1,9 @@
 import axios, { AxiosInstance } from 'axios';
-import { Page, SiteSetting, UpdateSettingResponse } from '@/types/public';
+import { Country, Page, SiteSetting, UpdateSettingResponse } from '@/types/public';
 import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
 import {
   ExternalVenue,
+  GetCountriesResponse,
   GetExternalEventsResponse,
   GetExternalVenuesResponse,
   GetPagesResponse,
@@ -172,6 +173,42 @@ export class AdminService {
         }
         venuesResponse.venueError = errorMessage;
         return venuesResponse;
+      });
+  };
+
+  getAllCountries = async (): Promise<GetCountriesResponse> => {
+    let url = `/admin/countries`;
+
+    let countryResponse: GetCountriesResponse = {
+      countries: undefined,
+      countryError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        countryResponse.countries = res.data ? (res.data as Country[]) : undefined;
+        return countryResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          countryResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching countries - please contact your administrator';
+        }
+        countryResponse.countryError = errorMessage;
+        return countryResponse;
       });
   };
 

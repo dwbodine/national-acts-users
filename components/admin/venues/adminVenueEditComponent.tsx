@@ -8,6 +8,8 @@ import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 import { ExternalVenue, ModifyExternalVenueResponse } from '@/types/admin';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { SelectPicker } from 'rsuite';
 
 export default function AdminVenueEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -18,7 +20,7 @@ export default function AdminVenueEdit() {
   const [city, setCity] = useState<string | undefined>(undefined);
   const [state, setState] = useState<string | undefined>(undefined);
   const [zipCode, setZipCode] = useState<string | undefined>(undefined);
-  const [country, setCountry] = useState<string | undefined>(undefined);
+  const [countryId, setCountryId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (currentAdminSelection.selectedVenue == undefined) {
@@ -32,7 +34,7 @@ export default function AdminVenueEdit() {
       setCity(currentAdminSelection.selectedVenue.city);
       setState(currentAdminSelection.selectedVenue.state);
       setZipCode(currentAdminSelection.selectedVenue.zipCode);
-      setCountry(currentAdminSelection.selectedVenue.country);
+      setCountryId(currentAdminSelection.selectedVenue.country?.countryId);
       dispatch(setIsLoading(false));
     }
   }, [
@@ -40,6 +42,10 @@ export default function AdminVenueEdit() {
     venueName,
     dispatch,
   ]);
+
+  const onCountryChange = (countryId: number | null) => {
+    setCountryId(countryId ?? undefined);
+  };
 
   const goBack = () => {
     router.push('/admin/venues/');
@@ -67,8 +73,13 @@ export default function AdminVenueEdit() {
       return;
     }
 
-    if (!state && !zipCode && !country) {
-      toast.error("Must provide at least one of state, zip or country");
+    if (!countryId) {
+      toast.error("Country is required (even USA)");
+      return;
+    }
+
+    if (!state && !zipCode) {
+      toast.error("Must provide at least one of state or zip");
       return;
     }
 
@@ -81,7 +92,7 @@ export default function AdminVenueEdit() {
       city: city,
       state: state,
       zipCode: zipCode,
-      country: country,
+      country: { country: '', countryId: countryId, countryCode: ''},
     };
 
     updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
@@ -97,6 +108,14 @@ export default function AdminVenueEdit() {
       }
     });
   };
+
+  const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
+        currentAdminSelection.countries.map((country) => {
+          return {
+            label: `${country.country}`,
+            value: country.countryId
+          }
+      }) : [];
 
   return currentAdminSelection.selectedVenue ? (
     <div className="admin-container">
@@ -153,12 +172,14 @@ export default function AdminVenueEdit() {
       </div>
       <div className="form-group">
         <label className="mt-4">Country</label>
-        <input
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          className="form-control"
-          placeholder="country"
-          type="text"
+        <SelectPicker
+          className="admin-seller-select-value"
+          menuAutoWidth={true}
+          value={countryId}
+          data={countryList}
+          size="lg"        
+          onChange={(cId) => onCountryChange(cId)}
+          cleanable={false}
         />
       </div>
       <div className="admin-button-group">
