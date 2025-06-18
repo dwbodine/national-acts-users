@@ -1164,6 +1164,42 @@ export class EventService {
       });
   };
 
+  getMissingVenueEvents = async (): Promise<GetEventsResponse> => {
+    let url = `/reports/getMissingVenueEvents`;
+
+    let response: GetEventsResponse = {
+      events: undefined,
+      eventError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        response.events = res.data ? (res.data as VipEvent[]) : undefined;
+        return response;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          response.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching calendar notes from TicketSocket - please contact your administrator';
+        }
+        response.eventError = errorMessage;
+        return response;
+      });
+  };
+
   searchOrders = async (searchTerm: string): Promise<GetOrdersResponse> => {
     let url = `/admin/orders/search?sTerm=${encodeURIComponent(searchTerm)}`;
 
@@ -1926,13 +1962,7 @@ export class EventService {
     if (venue.state && venue.state.trim() != '') {
       location += `, ${venue.state}`;
     }
-    if (
-      venue.country &&
-      venue.country != 'United States' &&
-      venue.country != 'USA' &&
-      venue.state &&
-      venue.country.trim() != venue.state.trim()
-    ) {
+    if (venue.country && venue.country != 'United States' && venue.country != 'USA') {
       location += ', ' + venue.country;
     }
     return location;
