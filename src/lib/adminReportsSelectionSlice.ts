@@ -6,7 +6,7 @@ import moment from 'moment';
 const initialState: AdminReportsSelection = {
   start: moment().unix(),
   end: moment().unix() + 86400,
-  reloadData: false,
+  reloadData: true,
 };
 
 export const adminReportsSelectionSlice = createSlice({
@@ -19,13 +19,13 @@ export const adminReportsSelectionSlice = createSlice({
       return state;
     },
     setReloadReportData: (state, action: PayloadAction<boolean>) => {
-      state.reloadData = true;
+      state.reloadData = action.payload;
       return state;
     },
     resetAdminReports: (state) => {
       state.start = moment().unix();
       state.end = moment().unix();
-      state.reloadData = false;
+      state.reloadData = true;
       return state;
     },
   },
