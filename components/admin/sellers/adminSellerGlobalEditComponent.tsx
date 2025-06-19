@@ -11,6 +11,7 @@ import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
 import { ModifySellerResponse } from '@/types/admin';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { SelectPicker } from 'rsuite';
+import { FaGalacticSenate } from 'react-icons/fa';
 
 export default function AdminSellerGlobalEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -279,6 +280,74 @@ export default function AdminSellerGlobalEdit() {
     }
   };
 
+  const checkAddress  = () => {
+    if (isArtist) {
+      return true;
+    } else {
+      const address = currentAdminSelection.selectedSeller?.address;
+      const city = currentAdminSelection.selectedSeller?.city;
+      const state = currentAdminSelection.selectedSeller?.state;
+      const zip = currentAdminSelection.selectedSeller?.zip;
+      const countryId = currentAdminSelection.selectedSeller?.country?.countryId;
+
+      if (address) {
+        if (!city) {
+          toast.error('City is required if entering an address');
+          return false;
+        }
+        if (!countryId) {
+          toast.error('Country is required if entering an address');
+          return false;
+        }
+        if (!state && !zip) {
+          toast.error('One of either state or zip is required if entering an address');
+          return false;
+        }
+      } else if (city) {
+        if (!address) {
+          toast.error('Street address is required if entering an address');
+          return false;
+        }
+        if (!countryId) {
+          toast.error('Country is required if entering an address');
+          return false;
+        }
+        if (!state && !zip) {
+          toast.error('One of either state or zip is required if entering an address');
+          return false;
+        }
+      } else if (countryId) {
+        if (!address) {
+          toast.error('Street address is required if entering an address');
+          return false;
+        }
+        if (!city) {
+          toast.error('City is required if entering an address');
+          return false;
+        }
+        if (!state && !zip) {
+          toast.error('One of either state or zip is required if entering an address');
+          return false;
+        }
+      } else if (state || zip) {
+        if (!address) {
+          toast.error('Street address is required if entering an address');
+          return false;
+        }
+        if (!city) {
+          toast.error('City is required if entering an address');
+          return false;
+        }
+        if (!countryId) {
+          toast.error('Country is required if entering an address');
+          return false;
+        }
+      }
+
+      return true;
+    }
+  }
+
   const onSubmit = () => {
     if (!currentAdminSelection.selectedSeller) {
       return false;
@@ -297,6 +366,10 @@ export default function AdminSellerGlobalEdit() {
 
     if (!sellerEventCategories || sellerEventCategories.length == 0) {
       toast.error('Must select a category for at least one Ticket Socket account');
+      return;
+    }
+
+    if (!checkAddress()) {
       return;
     }
 

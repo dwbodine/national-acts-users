@@ -353,6 +353,7 @@ export type AdminSelection = {
   tours?: Tour[] | undefined;
   uploadedFile?: string;
   venues?: ExternalVenue[] | undefined;
+  venueSearchTerm?: string;
 };
 
 export type AdminReportsSelection = {

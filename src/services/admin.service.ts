@@ -140,8 +140,11 @@ export class AdminService {
       });
   };
 
-  getAllVenues = async (): Promise<GetExternalVenuesResponse> => {
+  getAllVenues = async (searchTerm?: string): Promise<GetExternalVenuesResponse> => {
     let url = `/admin/venues`;
+    if (searchTerm) {
+      url += `?search=${encodeURIComponent(searchTerm)}`;
+    }
 
     let venuesResponse: GetExternalVenuesResponse = {
       venues: undefined,

@@ -16,7 +16,7 @@ const initialState: AdminSelection = {
   reloadTours: true,
   reloadSellers: true,
   reloadSettings: true,
-  reloadVenues: true,
+  reloadVenues: false,
   selectedEvent: undefined,
   selectedOrder: undefined,
   selectedUser: undefined,
@@ -41,6 +41,7 @@ const initialState: AdminSelection = {
   uploadedFile: undefined,
   venues: undefined,
   countries: undefined,
+  venueSearchTerm: undefined,
 };
 
 export const adminSelectionSlice = createSlice({
@@ -154,9 +155,8 @@ export const adminSelectionSlice = createSlice({
       state.pageTypes = action.payload;
       return state;
     },
-    setVenues: (state, action: PayloadAction<ExternalVenue[]>) => {
+    setVenues: (state, action: PayloadAction<ExternalVenue[] | undefined>) => {
       state.venues = action.payload;
-      state.reloadVenues = false;
       return state;
     },
     setReloadRoles: (state, action: PayloadAction<boolean>) => {
@@ -223,6 +223,10 @@ export const adminSelectionSlice = createSlice({
       state.countries = action.payload;
       return state;
     },
+    setVenueSearchTerm: (state, action: PayloadAction<string | undefined>) => {
+      state.venueSearchTerm = action.payload;
+      return state;
+    },
     resetAdmin: (state) => {
       state.sellerId = undefined;
       state.start = undefined;
@@ -233,7 +237,7 @@ export const adminSelectionSlice = createSlice({
       state.reloadPages = true;
       state.reloadTours = true;
       state.reloadSellers = true;
-      state.reloadVenues = true;
+      state.reloadVenues = false;
       state.selectedUser = undefined;
       state.selectedPage = undefined;
       state.selectedRole = undefined;
@@ -259,6 +263,7 @@ export const adminSelectionSlice = createSlice({
       state.uploadedFile = undefined;
       state.reloadSellers = true;
       state.orders = undefined;
+      state.venueSearchTerm = undefined;
       return state;
     },
   },
@@ -300,6 +305,7 @@ export const {
   setTicketSocketEventsOnly,
   setAdminOrders,
   setCountries,
+  setVenueSearchTerm,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;
