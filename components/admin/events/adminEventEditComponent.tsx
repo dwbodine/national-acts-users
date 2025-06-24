@@ -68,8 +68,10 @@ export default function AdminEventEdit(props: any) {
   const [city, setCity] = useState<string | undefined>(undefined);
   const [state, setState] = useState<string | undefined>(undefined);
   const [zipCode, setZipCode] = useState<string | undefined>(undefined);
-  const [country, setCountry] = useState<string | undefined>(undefined);
-  
+  const [countryId, setCountryId] = useState<number | undefined>(undefined);
+  const [timezone, setTimezone] = useState<string | undefined>(undefined);
+  const [timeZoneList, setTimeZoneList] = useState<ItemDataType<string>[]>([]);
+
   const currentSeller: Seller | undefined = currentAdminSelection.allSellers?.find(x => x.sellerId == currentAdminSelection.sellerId);
 
   const beforeOnUnload = (ev: BeforeUnloadEvent) => {
@@ -107,6 +109,10 @@ export default function AdminEventEdit(props: any) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
+      if (!currentAdminSelection.countries) {
+        router.push("/admin");
+        return;
+      }
       if (currentAdminSelection.reloadSellers) {
           dispatch(setReloadSellers(false));
           dispatch(setIsLoading(true));
@@ -435,6 +441,27 @@ export default function AdminEventEdit(props: any) {
     markDirty();
   };
 
+  const onCountryChange = (countryId: number | null) => {
+    setCountryId(countryId ?? undefined);
+    if (countryId) {
+      const country = currentAdminSelection.countries?.find(x => x.countryId == countryId);
+      const tzList: ItemDataType<string>[] = country?.timezones ?
+          country.timezones.map((tz) => {
+            return {
+              label: `${tz.displayName}`,
+              value: tz.timezone
+            }
+        }) : [];
+        setTimeZoneList(tzList);
+    } else {
+      setTimeZoneList([]);
+    }    
+  };
+
+  const onTimezoneChange = (timezone: string | null) => {
+    setTimezone(timezone ?? undefined);
+  };
+
   const goBack = (dismissToast: boolean = true) => {
     if (!id && dismissToast) {
       toast.dismiss();
@@ -705,6 +732,15 @@ export default function AdminEventEdit(props: any) {
       city: '',
     };
 
+    setVenueName(undefined);
+    setAddress(undefined);
+    setCity(undefined);
+    setState(undefined);
+    setZipCode(undefined);
+    setCountryId(undefined);
+    setTimeZoneList([]);
+    setTimezone(undefined);
+
     dispatch(setAdminVenue(venue));
     setVenueOpen(true);
   };
@@ -729,8 +765,18 @@ export default function AdminEventEdit(props: any) {
       return;
     }
 
-    if (!state && !zipCode && !country) {
-      toast.error("Must provide at least one of state, zip or country");
+    if (!countryId) {
+      toast.error("Country is required (even USA)");
+      return;
+    }
+
+    if (!state && !zipCode) {
+      toast.error("Must provide at least one of state or zip");
+      return;
+    }
+
+    if (!timezone) {
+      toast.error("Timezone is required");
       return;
     }
 
@@ -743,7 +789,8 @@ export default function AdminEventEdit(props: any) {
       city: city,
       state: state,
       zipCode: zipCode,
-      country: country,
+      country: {  countryId: countryId },
+      timezone: { timezone: timezone }
     };
 
     updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
@@ -1041,6 +1088,14 @@ export default function AdminEventEdit(props: any) {
 
   const isExternalEvent = (selectedEvent?.isExternal ?? false) && (ticketSocketEventId == 0);
 
+  const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
+      currentAdminSelection.countries.map((country) => {
+        return {
+          label: `${country.countryName}`,
+          value: country.countryId
+        }
+    }) : [];
+
   return (
     <Col
       className="admin-container"
@@ -1104,7 +1159,7 @@ export default function AdminEventEdit(props: any) {
             onChange={onEventVenueChange}
           />
           <Button disabled={externalEventVenueId > 0} onClick={handleVenueOpen}>Add New Venue</Button>
-          <Modal open={venueOpen} onClose={handleVenueClose}>
+          <Modal open={venueOpen} onClose={handleVenueClose} size={'lg'}>
             <Modal.Header>
               <Modal.Title>Add New Venue:</Modal.Title>
             </Modal.Header>
@@ -1114,8 +1169,8 @@ export default function AdminEventEdit(props: any) {
                 <input
                   value={venueName}
                   onChange={(e) => setVenueName(e.target.value)}
-                  className="form-control"
                   placeholder="venue name"
+                  style={{width: '80%'}}
                   type="text"
                 />
               </div>
@@ -1124,8 +1179,8 @@ export default function AdminEventEdit(props: any) {
                 <input
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="form-control"
                   placeholder="address"
+                  style={{width: '80%'}}
                   type="text"
                 />
               </div>
@@ -1134,7 +1189,6 @@ export default function AdminEventEdit(props: any) {
                 <input
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="form-control"
                   placeholder="city"
                   type="text"
                 />
@@ -1144,7 +1198,6 @@ export default function AdminEventEdit(props: any) {
                 <input
                   value={state}
                   onChange={(e) => setState(e.target.value)}
-                  className="form-control"
                   placeholder="state"
                   type="text"
                 />
@@ -1154,19 +1207,32 @@ export default function AdminEventEdit(props: any) {
                 <input
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value)}
-                  className="form-control"
                   placeholder="postal code"
                   type="text"
                 />
               </div>
               <div className="form-group">
                 <label className="mt-4">Country</label>
-                <input
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className="form-control"
-                  placeholder="country"
-                  type="text"
+                <SelectPicker
+                  className="admin-seller-select-value"
+                  menuAutoWidth={true}
+                  value={countryId}
+                  data={countryList}
+                  size="lg"        
+                  onChange={(cId) => onCountryChange(cId)}
+                  cleanable={false}
+                />
+              </div>
+              <div className="form-group">
+                <label className="mt-4">Timezone</label>
+                <SelectPicker
+                  className="admin-seller-select-value"
+                  menuAutoWidth={true}
+                  value={timezone}
+                  data={timeZoneList}
+                  size="lg"        
+                  onChange={(tz) => onTimezoneChange(tz)}
+                  cleanable={false}
                 />
               </div>
             </Modal.Body>

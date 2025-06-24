@@ -36,7 +36,7 @@ import { getAuthorizationHeader } from '../utils/getAuthorizationHeader';
 import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
 import moment from 'moment';
 import { getShirtDataFromEvents } from '@/utils/getShirtData';
-import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
+import { DEFAULT_COUNTRY_ID, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { report } from 'process';
 import { ExternalVenue } from '@/types/admin';
 
@@ -1962,8 +1962,12 @@ export class EventService {
     if (venue.state && venue.state.trim() != '') {
       location += `, ${venue.state}`;
     }
-    if (venue.country && venue.country != 'United States' && venue.country != 'USA') {
-      location += ', ' + venue.country;
+    if (
+      venue.country &&
+      venue.country.countryName &&
+      venue.country.countryId != DEFAULT_COUNTRY_ID
+    ) {
+      location += ', ' + venue.country.countryName;
     }
     return location;
   };
@@ -1976,8 +1980,12 @@ export class EventService {
     if (venue.zipCode && venue.zipCode.trim() != '') {
       location += ` ${venue.zipCode}`;
     }
-    if (venue.country && venue.country != 'United States' && venue.country != 'USA') {
-      location += ', ' + venue.country;
+    if (
+      venue.country &&
+      venue.country.countryName &&
+      venue.country.countryId != DEFAULT_COUNTRY_ID
+    ) {
+      location += ', ' + venue.country.countryName;
     }
     return location;
   };

@@ -108,6 +108,7 @@ export default function RefreshTicketSocketData() {
         Sellers={currentAdminSelection.allSellers}
         SellerId={currentAdminSelection.sellerId}
         OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
+        Countries={currentAdminSelection.countries}
       />
       <ReportDatePicker
         onChange={onDateChange}

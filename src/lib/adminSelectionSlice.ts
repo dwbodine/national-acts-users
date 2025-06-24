@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { AdminSelection, Role, User } from '../types/user';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
-import { Page, PageType, SiteSetting } from '@/types/public';
+import { Country, Page, PageType, SiteSetting } from '@/types/public';
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 
 const initialState: AdminSelection = {
@@ -40,6 +40,8 @@ const initialState: AdminSelection = {
   ticketSocketAccounts: undefined,
   uploadedFile: undefined,
   venues: undefined,
+  countries: undefined,
+  venueSearchTerm: undefined,
 };
 
 export const adminSelectionSlice = createSlice({
@@ -153,9 +155,8 @@ export const adminSelectionSlice = createSlice({
       state.pageTypes = action.payload;
       return state;
     },
-    setVenues: (state, action: PayloadAction<ExternalVenue[]>) => {
+    setVenues: (state, action: PayloadAction<ExternalVenue[] | undefined>) => {
       state.venues = action.payload;
-      state.reloadVenues = false;
       return state;
     },
     setReloadRoles: (state, action: PayloadAction<boolean>) => {
@@ -218,6 +219,14 @@ export const adminSelectionSlice = createSlice({
       state.ticketSocketAccounts = action.payload;
       return state;
     },
+    setCountries: (state, action: PayloadAction<Country[]>) => {
+      state.countries = action.payload;
+      return state;
+    },
+    setVenueSearchTerm: (state, action: PayloadAction<string | undefined>) => {
+      state.venueSearchTerm = action.payload;
+      return state;
+    },
     resetAdmin: (state) => {
       state.sellerId = undefined;
       state.start = undefined;
@@ -254,6 +263,7 @@ export const adminSelectionSlice = createSlice({
       state.uploadedFile = undefined;
       state.reloadSellers = true;
       state.orders = undefined;
+      state.venueSearchTerm = undefined;
       return state;
     },
   },
@@ -294,6 +304,8 @@ export const {
   setPageTypes,
   setTicketSocketEventsOnly,
   setAdminOrders,
+  setCountries,
+  setVenueSearchTerm,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

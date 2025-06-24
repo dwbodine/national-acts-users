@@ -8,7 +8,7 @@ import {
   Tour,
   VipEvent,
 } from './event';
-import { Page, PageType, SiteSetting } from './public';
+import { Country, Page, PageType, SiteSetting } from './public';
 
 export type LoginResponse = {
   user?: User;
@@ -342,6 +342,7 @@ export type AdminSelection = {
   allSellers?: Seller[] | undefined;
   allSettings?: SiteSetting[] | undefined;
   allPages?: Page[] | undefined;
+  countries: Country[] | undefined;
   pageTypes?: PageType[] | undefined;
   roles?: Role[] | undefined;
   users?: User[] | undefined;
@@ -352,6 +353,7 @@ export type AdminSelection = {
   tours?: Tour[] | undefined;
   uploadedFile?: string;
   venues?: ExternalVenue[] | undefined;
+  venueSearchTerm?: string;
 };
 
 export type AdminReportsSelection = {

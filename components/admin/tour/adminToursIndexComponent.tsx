@@ -160,6 +160,7 @@ export default function AdminToursIndex() {
         Sellers={currentAdminSelection.allSellers}
         SellerId={currentAdminSelection.sellerId}
         OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
+        Countries={currentAdminSelection.countries}
       />        
       <Row>
         <Col>

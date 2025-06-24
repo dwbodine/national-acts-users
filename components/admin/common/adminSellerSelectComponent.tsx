@@ -1,8 +1,7 @@
+import { DEFAULT_COUNTRY_ID } from '@/constants';
 import { Seller, SellerType } from '@/types/event';
-import { PageSeller } from '@/types/public';
+import { Country, PageSeller } from '@/types/public';
 import { Role } from '@/types/user';
-import { pages } from 'next/dist/build/templates/app-page';
-import { setLazyProp } from 'next/dist/server/api-utils';
 import { useState } from 'react';
 import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
 import { FaMinus } from 'react-icons/fa';
@@ -22,6 +21,7 @@ export default function AdminSellerSelect(props: any) {
   const onPageSellerChange = props.OnPageSellerChange;
   const onDelete = props.OnDelete;
   const pageSeller: PageSeller | undefined = props.PageSeller ? (props.PageSeller as PageSeller) : undefined;
+  const countries: Country[] | undefined = props.Countries ? (props.Countries as Country[]) : undefined;
 
   const [pageSellerSettingsOpen, setPageSellerSettingsOpen] = useState(false);
   const handlePageSellerSettingsOpen = () => setPageSellerSettingsOpen(true);
@@ -33,7 +33,7 @@ export default function AdminSellerSelect(props: any) {
   const [city, setCity] = useState(pageSeller?.city);
   const [state, setState] = useState(pageSeller?.state);
   const [zip, setZip] = useState(pageSeller?.zip);
-  const [country, setCountry] = useState(pageSeller?.country);
+  const [countryId, setCountryId] = useState(pageSeller?.country?.countryId);
   const [phone, setPhone] = useState(pageSeller?.phone);
   const [email, setEmail] = useState(pageSeller?.email);
   const [twitter, setTwitter] = useState(pageSeller?.twitter);
@@ -62,6 +62,7 @@ export default function AdminSellerSelect(props: any) {
     ps.city = !isArtist ? city : undefined;
     ps.state = !isArtist ? state : undefined;
     ps.zip = !isArtist ? zip : undefined;
+    const country: Country | undefined = countryId ? { countryId: countryId } : undefined;
     ps.country = !isArtist ? country : undefined;
     ps.phone = !isArtist ? phone : undefined;
     ps.email = !isArtist ? email : undefined;
@@ -76,6 +77,10 @@ export default function AdminSellerSelect(props: any) {
     handlePageSellerSettingsClose();
   };  
 
+  const onCountryChange = (countryId: number | null) => {
+    setCountryId(countryId ?? undefined);
+  };
+
   const sellerList: ItemDataType<number>[] = sellers ?
     sellers?.map((seller) => {
       return {
@@ -89,6 +94,14 @@ export default function AdminSellerSelect(props: any) {
       return {
         label: `${role.roleName}`,
         value: role.roleId
+      }
+  }) : [];
+
+  const countryList: ItemDataType<number>[] = countries ?
+    countries?.map((country) => {
+      return {
+        label: `${country.countryName}`,
+        value: country.countryId
       }
   }) : [];
 
@@ -201,13 +214,15 @@ export default function AdminSellerSelect(props: any) {
             <Row hidden={isArtist}>
               <Col>
                 <label className="page-seller-label">Country</label>
-                <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.country ?? 'n/a'}`}</div>
-                <input
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className="form-control form-control-half"
-                  placeholder="Country override"
-                  type="text"
+                <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.country?.countryName ?? 'n/a'}`}</div>
+                <SelectPicker
+                  className="admin-seller-select-value"
+                  menuAutoWidth={true}
+                  value={countryId}
+                  data={countryList}
+                  size="lg"        
+                  onChange={(cId) => onCountryChange(cId)}
+                  cleanable={false}
                 />
               </Col>
             </Row>

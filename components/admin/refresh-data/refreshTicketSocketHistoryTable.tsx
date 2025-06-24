@@ -8,7 +8,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
 
   return results != undefined ? (
     <Table height={420} data={results} bordered cellBordered>
-      <Column resizable>
+      <Column resizable fullText>
         <HeaderCell>Date</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -16,7 +16,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column resizable>
+      <Column resizable fullText>
         <HeaderCell>User</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -24,7 +24,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column resizable>
+      <Column resizable fullText>
         <HeaderCell>Seller</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -34,19 +34,19 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column resizable>
+      <Column resizable fullText>
         <HeaderCell>Start Query</HeaderCell>
         <Cell>
           {(rowData) => (rowData.start ? moment.unix(rowData.start).format('l') : 'n/a')}
         </Cell>
       </Column>
-      <Column resizable>
+      <Column resizable fullText>
         <HeaderCell>End Query</HeaderCell>
         <Cell>
           {(rowData) => (rowData.end ? moment.unix(rowData.end).format('l') : 'n/a')}
         </Cell>
       </Column>
-      <Column resizable>
+      <Column resizable fullText>
         <HeaderCell>Start Timer</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -54,7 +54,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column resizable>
+      <Column resizable fullText>
         <HeaderCell>End Timer</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -62,13 +62,13 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Event update duration</HeaderCell>
         <Cell>
           {(rowData) => (rowData.duration ? rowData.duration.toFixed(1) : '0.0')}
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Order update duration</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -78,7 +78,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Total duration</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -86,21 +86,21 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Success</HeaderCell>
         <Cell>{(rowData) => (rowData.succeeded ? 'true' : 'false')}</Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Order Data Update</HeaderCell>
         <Cell>
           {(rowData) => (rowData.orderDataUpdateSucceeded ? 'succeeded' : 'failed')}
         </Cell>
       </Column>
-      <Column resizable>
+      <Column resizable fullText>
         <HeaderCell>Error</HeaderCell>
         <Cell>{(rowData) => (rowData.errorMessage ? rowData.errorMessage : 'n/a')}</Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Service Events Skipped</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -110,7 +110,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Events failed</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -118,7 +118,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Orders failed</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -126,7 +126,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Tickets failed</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -134,7 +134,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Ticket types failed</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -144,7 +144,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Total Events From Service</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -154,7 +154,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Events Inserted</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -162,13 +162,13 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Events Updated</HeaderCell>
         <Cell>
           {(rowData) => (rowData.eventsUpdated ? rowData.eventsUpdated.toString() : '0')}
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Orders Inserted</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -176,19 +176,19 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Orders Updated</HeaderCell>
         <Cell>
           {(rowData) => (rowData.ordersUpdated ? rowData.ordersUpdated.toString() : '0')}
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Orders Deleted</HeaderCell>
         <Cell>
           {(rowData) => (rowData.ordersDeleted ? rowData.ordersDeleted.toString() : '0')}
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Tickets Inserted</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -196,7 +196,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Tickets Updated</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -204,7 +204,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Ticket types Inserted</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -212,7 +212,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Ticket types Updated</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -220,7 +220,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Order data rows total</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -228,7 +228,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Order data rows removed</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -236,7 +236,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Order data rows updated</HeaderCell>
         <Cell>
           {(rowData) =>
@@ -244,7 +244,7 @@ export default function RefreshTicketSocketHistoryTable(props: any) {
           }
         </Cell>
       </Column>
-      <Column>
+      <Column fullText>
         <HeaderCell>Order data rows inserted</HeaderCell>
         <Cell>
           {(rowData) =>

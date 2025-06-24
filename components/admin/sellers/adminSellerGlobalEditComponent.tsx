@@ -9,7 +9,9 @@ import { toast } from 'react-toastify';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
 import { ModifySellerResponse } from '@/types/admin';
-import { setEngine } from 'crypto';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { SelectPicker } from 'rsuite';
+import { FaGalacticSenate } from 'react-icons/fa';
 
 export default function AdminSellerGlobalEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -86,13 +88,16 @@ export default function AdminSellerGlobalEdit() {
     }    
   }
 
-  const setCountry = (country: string) => {
+  const onCountryChange = (countryId: number | null) => {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
     let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.country != country) {
-      sellerToUpdate.country = country;
+    if (!countryId) {
+      sellerToUpdate.country = undefined;
+      dispatch(setAdminSeller(sellerToUpdate));
+    } else if (!sellerToUpdate.country || sellerToUpdate.country.countryId != countryId) {
+      sellerToUpdate.country = { countryId: countryId };
       dispatch(setAdminSeller(sellerToUpdate));
     }    
   }
@@ -275,6 +280,74 @@ export default function AdminSellerGlobalEdit() {
     }
   };
 
+  const checkAddress  = () => {
+    if (isArtist) {
+      return true;
+    } else {
+      const address = currentAdminSelection.selectedSeller?.address;
+      const city = currentAdminSelection.selectedSeller?.city;
+      const state = currentAdminSelection.selectedSeller?.state;
+      const zip = currentAdminSelection.selectedSeller?.zip;
+      const countryId = currentAdminSelection.selectedSeller?.country?.countryId;
+
+      if (address) {
+        if (!city) {
+          toast.error('City is required if entering an address');
+          return false;
+        }
+        if (!countryId) {
+          toast.error('Country is required if entering an address');
+          return false;
+        }
+        if (!state && !zip) {
+          toast.error('One of either state or zip is required if entering an address');
+          return false;
+        }
+      } else if (city) {
+        if (!address) {
+          toast.error('Street address is required if entering an address');
+          return false;
+        }
+        if (!countryId) {
+          toast.error('Country is required if entering an address');
+          return false;
+        }
+        if (!state && !zip) {
+          toast.error('One of either state or zip is required if entering an address');
+          return false;
+        }
+      } else if (countryId) {
+        if (!address) {
+          toast.error('Street address is required if entering an address');
+          return false;
+        }
+        if (!city) {
+          toast.error('City is required if entering an address');
+          return false;
+        }
+        if (!state && !zip) {
+          toast.error('One of either state or zip is required if entering an address');
+          return false;
+        }
+      } else if (state || zip) {
+        if (!address) {
+          toast.error('Street address is required if entering an address');
+          return false;
+        }
+        if (!city) {
+          toast.error('City is required if entering an address');
+          return false;
+        }
+        if (!countryId) {
+          toast.error('Country is required if entering an address');
+          return false;
+        }
+      }
+
+      return true;
+    }
+  }
+
   const onSubmit = () => {
     if (!currentAdminSelection.selectedSeller) {
       return false;
@@ -293,6 +366,10 @@ export default function AdminSellerGlobalEdit() {
 
     if (!sellerEventCategories || sellerEventCategories.length == 0) {
       toast.error('Must select a category for at least one Ticket Socket account');
+      return;
+    }
+
+    if (!checkAddress()) {
       return;
     }
 
@@ -364,6 +441,14 @@ export default function AdminSellerGlobalEdit() {
   const selectedSellerType = Number(currentSeller?.sellerType ?? 1);
 
   const isArtist = selectedSellerType == SellerType.Artist;  
+
+  const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
+      currentAdminSelection.countries.map((country) => {
+        return {
+          label: `${country.countryName}`,
+          value: country.countryId
+        }
+    }) : [];
   
   return (
     <Row
@@ -478,13 +563,15 @@ export default function AdminSellerGlobalEdit() {
         <Row className="form-group" hidden={isArtist}>
           <Col xs={2}><label className="mt-4">Country</label></Col>
           <Col>
-            <input
-            value={currentSeller?.country}
-            onChange={(e) => setCountry(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="country (leave blank for USA)"
-            type="text"
-            />
+            <SelectPicker
+                className="admin-seller-select-value"
+                menuAutoWidth={true}
+                value={currentSeller?.country?.countryId}
+                data={countryList}
+                size="lg"        
+                onChange={(cId) => onCountryChange(cId)}
+                cleanable={false}
+              />
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>

@@ -1,4 +1,4 @@
-import { PageType } from './public';
+import { Country, PageType } from './public';
 import { IDashboardTotals } from './user';
 
 export enum SellerType {
@@ -22,7 +22,7 @@ export interface Seller {
   city?: string;
   state?: string;
   zip?: string;
-  country?: string;
+  country?: Country;
   phone?: string;
   email?: string;
   twitter?: string;
@@ -138,7 +138,7 @@ export interface Venue {
   city?: string;
   state?: string;
   postalCode?: string;
-  country?: string;
+  country?: Country;
   timezone?: string;
 }
 

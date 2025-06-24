@@ -39,7 +39,6 @@ import { AdminSelection } from '@/types/user';
 import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
 import { ItemDataType } from 'rsuite/esm/internals/types';
-import { Label } from 'recharts';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -469,6 +468,7 @@ export default function AdminEventsIndex() {
         Sellers={currentAdminSelection.allSellers}
         SellerId={currentAdminSelection.sellerId}
         OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
+        Countries={currentAdminSelection.countries}
       />
       <Row className="admin-select" hidden={tourList.length == 0}>
         <Col xs={1}>

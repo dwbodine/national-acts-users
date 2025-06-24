@@ -4,6 +4,18 @@ export enum SiteSettingType {
   Text = 'Text',
 }
 
+export interface TimeZone {
+  timezone: string;
+  displayName?: string;
+}
+
+export interface Country {
+  countryId: number;
+  countryName?: string;
+  countryCode?: string;
+  timezones?: TimeZone[];
+}
+
 export interface SiteSetting {
   settingId: number;
   name: string;
@@ -31,7 +43,7 @@ export interface PageSeller {
   city?: string;
   state?: string;
   zip?: string;
-  country?: string;
+  country?: Country;
   phone?: string;
   email?: string;
   twitter?: string;

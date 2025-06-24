@@ -5,6 +5,7 @@ export const FULL_PAGE_CHART_BREAKPOINT: number = 1200;
 export const MINIMUM_UNIX_TIMESTAMP: number = 1641013200;
 export const EVENTS_AGENDA_VIEW_BREAKPOINT: number = 992;
 export const DEFAULT_EVENT_TAB_VIEW = EventTabView.Month;
+export const DEFAULT_COUNTRY_ID = 235;
 
 export enum ActivePageKey {
   Dashboard = 1,
