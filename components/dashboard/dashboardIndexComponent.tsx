@@ -310,28 +310,28 @@ export default function DashboardIndex() {
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Ticket Revenue (USD)</HeaderCell>
-                <Cell>{(rowData) => `$${parseFloat(rowData.Revenue).toFixed(2)}`}</Cell>
+                <Cell>{(rowData) => rowData.Revenue ? `$${parseFloat(rowData.Revenue).toFixed(2)}` : '$0.00'}</Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Revenue Refunded (USD)</HeaderCell>
-                <Cell>{(rowData) => `$${parseFloat(rowData.RevenueRefunded).toFixed(2)}`}</Cell>
+                <Cell>{(rowData) => rowData.RevenueRefunded ? `$${parseFloat(rowData.RevenueRefunded).toFixed(2)}` : '$0.00'}</Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Service Fees (USD)</HeaderCell>
                 <Cell>
-                  {(rowData) => `$${parseFloat(rowData.ServiceFees).toFixed(2)}`}
+                  {(rowData) => rowData.ServiceFees ? `$${parseFloat(rowData.ServiceFees).toFixed(2)}` : '$0.00'}
                 </Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Service Fees Refunded (USD)</HeaderCell>
                 <Cell>
-                  {(rowData) => `$${parseFloat(rowData.ServiceFeeRevenueRefunded).toFixed(2)}`}
+                  {(rowData) => rowData.ServiceFeeRevenueRefunded ? `$${parseFloat(rowData.ServiceFeeRevenueRefunded).toFixed(2)}` : '$0.00'}
                 </Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Total Revenue (USD)</HeaderCell>
                 <Cell>
-                  {(rowData) => `$${parseFloat(rowData.TotalRevenue).toFixed(2)}`}
+                  {(rowData) => rowData.TotalRevenue ? `$${parseFloat(rowData.TotalRevenue).toFixed(2)}` : '$0.00'}
                 </Cell>
               </Column>
             </Table>

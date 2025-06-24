@@ -255,8 +255,18 @@ export default function EventDataExpanded(props: any) {
 
     const listSent = (vipEvent?.listSentTime != undefined) ? moment.utc(vipEvent.listSentTime).format('MM/DD/YYYY h:mm A') : 'n/a';
     const numVips = (vipEvent?.listSentNumVips ?? 0 > 0) ? (vipEvent?.listSentNumVips ?? 0).toString() : 'n/a';
-    const doorsOpenTime = (vipEvent?.doorsOpen) ? moment(vipEvent.doorsOpen).format('h:mm A') : 'n/a';
-    const meetAndGreetTime = (vipEvent?.meetAndGreetTime) ? moment(vipEvent.meetAndGreetTime).format('h:mm A') : 'n/a';
+    let doorsOpenTime = (vipEvent?.doorsOpen) ? moment(vipEvent.doorsOpen).format('h:mm A') : undefined;
+    if (doorsOpenTime && vipEvent?.venue?.timezone) {
+        doorsOpenTime += ` ${vipEvent.venue.timezone}`
+    } else if (!doorsOpenTime) {
+        doorsOpenTime = 'n/a';
+    }
+    let meetAndGreetTime = (vipEvent?.meetAndGreetTime) ? moment(vipEvent.meetAndGreetTime).format('h:mm A') : undefined;
+    if (meetAndGreetTime && vipEvent?.venue?.timezone) {
+        meetAndGreetTime += ` ${vipEvent.venue.timezone}`
+    } else if (!meetAndGreetTime) {
+        meetAndGreetTime = 'n/a';
+    }
     const checkInLocation = (vipEvent?.checkInLocation) ? vipEvent.checkInLocation : 'n/a';
     const checkInNotes = (vipEvent?.checkInNotes) ? vipEvent.checkInNotes : 'n/a';
     const hasVips = (vipEvent?.totalTickets ?? 0 > 0);

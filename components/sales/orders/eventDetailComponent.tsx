@@ -518,6 +518,22 @@ export default function EventDetail(props: any) {
     }
   }  
 
+  let doorsOpen = '';
+  if (currentReportSelection.currentDetailEvent?.doorsOpen) {
+    doorsOpen = moment(currentReportSelection.currentDetailEvent.doorsOpen).format('h:mm A');
+    if (currentReportSelection.currentDetailEvent.venue?.timezone) {
+      doorsOpen += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
+    }
+  }
+
+  let meetAndGreet = '';
+  if (currentReportSelection.currentDetailEvent?.meetAndGreetTime) {
+    meetAndGreet = moment(currentReportSelection.currentDetailEvent.meetAndGreetTime).format('h:mm A');
+    if (currentReportSelection.currentDetailEvent.venue?.timezone) {
+      meetAndGreet += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
+    }
+  } 
+
   return (
     <>
       {currentReportSelection.currentDetailEvent != undefined ? (
@@ -598,13 +614,13 @@ export default function EventDetail(props: any) {
                       <tr hidden={!currentReportSelection.currentDetailEvent.doorsOpen}>
                         <td className="vipLabel">Doors Open:</td>
                         <td>
-                          {currentReportSelection.currentDetailEvent.doorsOpen ? moment(currentReportSelection.currentDetailEvent.doorsOpen).format('h:mm A') : 'n/a'}
+                          {doorsOpen}
                         </td>
                       </tr>
                       <tr hidden={!currentReportSelection.currentDetailEvent.meetAndGreetTime}>
                         <td className="vipLabel">Meet & Greet Time:</td>
                         <td>
-                          {currentReportSelection.currentDetailEvent.meetAndGreetTime ? moment(currentReportSelection.currentDetailEvent.meetAndGreetTime).format('h:mm A') : 'n/a'}
+                          {meetAndGreet}
                         </td>
                       </tr>
                       <tr hidden={!currentReportSelection.currentDetailEvent.checkInLocation}>
