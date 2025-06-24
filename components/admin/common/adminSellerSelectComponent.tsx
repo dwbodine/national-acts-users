@@ -62,7 +62,7 @@ export default function AdminSellerSelect(props: any) {
     ps.city = !isArtist ? city : undefined;
     ps.state = !isArtist ? state : undefined;
     ps.zip = !isArtist ? zip : undefined;
-    const country: Country | undefined = countryId ? {countryName: '', countryId: countryId, countryCode: ''} : undefined;
+    const country: Country | undefined = countryId ? { countryId: countryId } : undefined;
     ps.country = !isArtist ? country : undefined;
     ps.phone = !isArtist ? phone : undefined;
     ps.email = !isArtist ? email : undefined;

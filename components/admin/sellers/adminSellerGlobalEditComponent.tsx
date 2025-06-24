@@ -97,7 +97,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.country = undefined;
       dispatch(setAdminSeller(sellerToUpdate));
     } else if (!sellerToUpdate.country || sellerToUpdate.country.countryId != countryId) {
-      sellerToUpdate.country = {countryName: '', countryId: countryId, countryCode: ''};
+      sellerToUpdate.country = { countryId: countryId };
       dispatch(setAdminSeller(sellerToUpdate));
     }    
   }

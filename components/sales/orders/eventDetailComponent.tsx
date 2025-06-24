@@ -510,6 +510,9 @@ export default function EventDetail(props: any) {
   if (currentReportSelection.currentDetailEvent?.eventDate != undefined) {
     if (currentReportSelection.currentDetailEvent?.eventTime != undefined) {
       eventDate = moment(currentReportSelection.currentDetailEvent.eventTime).format('MM/DD/YYYY h:mm A');
+      if (currentReportSelection.currentDetailEvent.venue?.timezone) {
+        eventDate += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
+      }
     } else {
       eventDate = moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY');
     }

@@ -16,7 +16,7 @@ const initialState: AdminSelection = {
   reloadTours: true,
   reloadSellers: true,
   reloadSettings: true,
-  reloadVenues: false,
+  reloadVenues: true,
   selectedEvent: undefined,
   selectedOrder: undefined,
   selectedUser: undefined,
@@ -237,7 +237,7 @@ export const adminSelectionSlice = createSlice({
       state.reloadPages = true;
       state.reloadTours = true;
       state.reloadSellers = true;
-      state.reloadVenues = false;
+      state.reloadVenues = true;
       state.selectedUser = undefined;
       state.selectedPage = undefined;
       state.selectedRole = undefined;

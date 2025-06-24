@@ -31,7 +31,6 @@ export default function AdminVenuesIndex() {
         setTableLoading(false);
         return;
       }
-      dispatch(setVenueSearchTerm(searchTerm));
       dispatch(setReloadVenues(false));
       dispatch(setIsLoading(true));
       setTableLoading(true);
@@ -42,6 +41,7 @@ export default function AdminVenuesIndex() {
         } else {
           toast.error(response.venueError);
         } 
+        dispatch(setVenueSearchTerm(searchTerm));
         dispatch(setIsLoading(false));
         setTimeout(() => {              
           setTableLoading(false);  
@@ -51,16 +51,17 @@ export default function AdminVenuesIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.reloadVenues) {
+      if (currentAdminSelection.reloadVenues && currentAdminSelection.venueSearchTerm && currentAdminSelection.venueSearchTerm.length >= 3) {
         searchVenues();
       } else {
+        dispatch(setReloadVenues(false));
         setTableLoading(false);
       }
     }, 500);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [searchVenues, currentAdminSelection]);
+  }, [searchVenues, currentAdminSelection, searchTerm, dispatch]);
 
   const editVenue = (venueId: number) => {
     if (!venueId || isNaN(venueId)) {

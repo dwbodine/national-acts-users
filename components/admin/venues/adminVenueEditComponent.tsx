@@ -21,6 +21,7 @@ export default function AdminVenueEdit() {
   const [state, setState] = useState<string | undefined>(undefined);
   const [zipCode, setZipCode] = useState<string | undefined>(undefined);
   const [countryId, setCountryId] = useState<number | undefined>(undefined);
+  const [timezone, setTimezone] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (currentAdminSelection.selectedVenue == undefined) {
@@ -35,6 +36,7 @@ export default function AdminVenueEdit() {
       setState(currentAdminSelection.selectedVenue.state);
       setZipCode(currentAdminSelection.selectedVenue.zipCode);
       setCountryId(currentAdminSelection.selectedVenue.country?.countryId);
+      setTimezone(currentAdminSelection.selectedVenue.timezone?.timezone);
       dispatch(setIsLoading(false));
     }
   }, [
@@ -45,6 +47,10 @@ export default function AdminVenueEdit() {
 
   const onCountryChange = (countryId: number | null) => {
     setCountryId(countryId ?? undefined);
+  };
+
+  const onTimezoneChange = (timezone: string | null) => {
+    setTimezone(timezone ?? undefined);
   };
 
   const goBack = () => {
@@ -83,6 +89,11 @@ export default function AdminVenueEdit() {
       return;
     }
 
+    if (!timezone) {
+      toast.error("Timezone is required");
+      return;
+    }
+
     dispatch(setIsLoading(true));
 
     let venueToUpdate: ExternalVenue = {
@@ -92,7 +103,8 @@ export default function AdminVenueEdit() {
       city: city,
       state: state,
       zipCode: zipCode,
-      country: { countryName: '', countryId: countryId, countryCode: ''},
+      country: { countryId: countryId },
+      timezone: { timezone: timezone }
     };
 
     updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
@@ -116,6 +128,15 @@ export default function AdminVenueEdit() {
             value: country.countryId
           }
       }) : [];
+
+ const timeZoneList: ItemDataType<string>[] = currentAdminSelection?.selectedVenue?.country?.timezones ?
+      currentAdminSelection.selectedVenue.country.timezones.map((tz) => {
+        return {
+          label: `${tz.displayName}`,
+          value: tz.timezone
+        }
+    }) : [];
+   
 
   return currentAdminSelection.selectedVenue ? (
     <div className="admin-container">
@@ -179,6 +200,18 @@ export default function AdminVenueEdit() {
           data={countryList}
           size="lg"        
           onChange={(cId) => onCountryChange(cId)}
+          cleanable={false}
+        />
+      </div>
+      <div className="form-group">
+        <label className="mt-4">Timezone</label>
+        <SelectPicker
+          className="admin-seller-select-value"
+          menuAutoWidth={true}
+          value={timezone}
+          data={timeZoneList}
+          size="lg"        
+          onChange={(tz) => onTimezoneChange(tz)}
           cleanable={false}
         />
       </div>

@@ -5,14 +5,14 @@ export enum SiteSettingType {
 }
 
 export interface TimeZone {
-  timezone: number;
-  displayName: string;
+  timezone: string;
+  displayName?: string;
 }
 
 export interface Country {
   countryId: number;
-  countryName: string;
-  countryCode: string;
+  countryName?: string;
+  countryCode?: string;
   timezones?: TimeZone[];
 }
 

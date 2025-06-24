@@ -39,7 +39,6 @@ import { AdminSelection } from '@/types/user';
 import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
 import { ItemDataType } from 'rsuite/esm/internals/types';
-import { Label } from 'recharts';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
