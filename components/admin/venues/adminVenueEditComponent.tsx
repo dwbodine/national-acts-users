@@ -10,6 +10,7 @@ import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 import { ExternalVenue, ModifyExternalVenueResponse } from '@/types/admin';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { SelectPicker } from 'rsuite';
+import { count } from 'console';
 
 export default function AdminVenueEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -43,6 +44,7 @@ export default function AdminVenueEdit() {
     currentAdminSelection,
     venueName,
     dispatch,
+    countryId
   ]);
 
   const onCountryChange = (countryId: number | null) => {
@@ -129,8 +131,10 @@ export default function AdminVenueEdit() {
           }
       }) : [];
 
- const timeZoneList: ItemDataType<string>[] = currentAdminSelection?.selectedVenue?.country?.timezones ?
-      currentAdminSelection.selectedVenue.country.timezones.map((tz) => {
+ const selectedCountry = currentAdminSelection.countries?.find(x => x.countryId == countryId);
+
+ const timeZoneList: ItemDataType<string>[] = selectedCountry?.timezones ?
+      selectedCountry.timezones.map((tz) => {
         return {
           label: `${tz.displayName}`,
           value: tz.timezone
