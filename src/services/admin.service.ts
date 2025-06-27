@@ -101,6 +101,44 @@ export class AdminService {
       });
   };
 
+  updatePageOrder = async (pagesToUpdate: Page[]): Promise<ModifyPageResponse> => {
+    let url = `/admin/pages/order`;
+
+    let modifyResponse: ModifyPageResponse = {
+      success: false,
+      pageError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify(pagesToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        modifyResponse.updatedPage = res.data ? (res.data as Page) : undefined;
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while updating page order';
+        }
+        modifyResponse.pageError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
   updateSiteSettings = async (
     settingsToUpdate: SiteSetting[],
   ): Promise<UpdateSettingResponse> => {

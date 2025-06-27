@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { GetPageTypesResponse, GetSellersResponse, Seller } from '../types/event';
-import { GetSettingsResponse, PageType, SiteSetting } from '@/types/public';
+import { GetSettingsResponse, Page, PageType, SiteSetting } from '@/types/public';
+import { GetPagesResponse } from '@/types/admin';
 
 export class PublicService {
   protected readonly instance: AxiosInstance;
@@ -49,8 +50,8 @@ export class PublicService {
       });
   };
 
-  getPageTypes = async (): Promise<GetPageTypesResponse> => {
-    let url = `/public/page_types`;
+  getPageTypes = async (sellerTypesOnly: boolean = false): Promise<GetPageTypesResponse> => {
+    let url = sellerTypesOnly ? `/public/page_seller_types` : `/public/page_types`;
 
     let pageTypeResponse: GetPageTypesResponse = {
       pageTypes: undefined,
@@ -82,6 +83,42 @@ export class PublicService {
         }
         pageTypeResponse.pageTypeError = errorMessage;
         return pageTypeResponse;
+      });
+  };
+
+  getPagesByType = async (pageTypeId: number): Promise<GetPagesResponse> => {
+    let url = `/public/pages/${pageTypeId}`;
+
+    let response: GetPagesResponse = {
+      pages: undefined,
+      pageError: undefined,
+    };
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+    };
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        const pages = res.data;
+        response.pages = pages.length ? (pages as Page[]) : [];
+        return response;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching pages by type - please contact your administrator';
+        }
+        response.pageError = errorMessage;
+        return response;
       });
   };
 
