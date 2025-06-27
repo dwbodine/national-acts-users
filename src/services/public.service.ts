@@ -50,7 +50,9 @@ export class PublicService {
       });
   };
 
-  getPageTypes = async (sellerTypesOnly: boolean = false): Promise<GetPageTypesResponse> => {
+  getPageTypes = async (
+    sellerTypesOnly: boolean = false,
+  ): Promise<GetPageTypesResponse> => {
     let url = sellerTypesOnly ? `/public/page_seller_types` : `/public/page_types`;
 
     let pageTypeResponse: GetPageTypesResponse = {
