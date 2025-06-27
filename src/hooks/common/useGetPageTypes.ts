@@ -2,12 +2,12 @@ import { publicService } from '../../services';
 import { GetPageTypesResponse } from '@/types/event';
 
 export const useGetPageTypes = () => {
-  const getPageTypes = async (): Promise<GetPageTypesResponse> => {
+  const getPageTypes = async (sellerTypesOnly: boolean = false): Promise<GetPageTypesResponse> => {
     let response: GetPageTypesResponse = {
       pageTypes: undefined,
       pageTypeError: undefined,
     };
-    response = await publicService.getPageTypes();
+    response = await publicService.getPageTypes(sellerTypesOnly);
     return response;
   };
 

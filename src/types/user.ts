@@ -320,6 +320,7 @@ export type AdminSelection = {
   sellerId?: number;
   start?: number;
   end?: number;
+  reloadCountries?: boolean;
   reloadUsers?: boolean;
   reloadRoles?: boolean;
   reloadEvents?: boolean;
@@ -332,6 +333,7 @@ export type AdminSelection = {
   selectedRole?: Role | undefined;
   selectedEvent?: VipEvent | undefined;
   selectedPage?: Page | undefined;
+  selectedPageType?: PageType | undefined;
   selectedTour?: Tour | undefined;
   selectedVenue?: ExternalVenue | undefined;
   selectedOrder?: Order | undefined;

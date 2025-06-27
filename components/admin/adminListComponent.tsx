@@ -46,6 +46,9 @@ export default function AdminList() {
       case 'manage-pages':
         router.push('/admin/pages');
         break;
+      case 'manage-order':
+        router.push('/admin/pages/order');
+        break;
       default:
         break;
     }
@@ -75,7 +78,7 @@ export default function AdminList() {
             <ul>
               <li>
                 <a className="admin-link" onClick={() => goToAdminPage('manage-site-settings')}>
-                  Manage Site Settings (global values)
+                  Manage Site Settings
                 </a>
               </li>
               <li>
@@ -86,6 +89,11 @@ export default function AdminList() {
               <li>
                 <a className="admin-link" onClick={() => goToAdminPage('manage-pages')}>
                   Manage Pages
+                </a>
+              </li>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-order')}>
+                  Manage Page Order
                 </a>
               </li>
             </ul>

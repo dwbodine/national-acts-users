@@ -1012,6 +1012,10 @@ input.rs-input:hover {
   margin: 10px 0;
 }
 
+.admin-home-button {
+  margin: 5px 0;
+}
+
 .admin-file-upload {
   margin: 10px 0;
 }
@@ -1062,6 +1066,15 @@ input.rs-input:hover {
 .page-seller-label {
   margin: 10px 0 0 0;
   font-weight: bold;
+}
+
+.page-order-cell, .page-order-cell div {
+  padding: 0;
+}
+
+.page-order-input {
+  width: 75px;
+  min-width: 0 !important;
 }
 
 .admin-click-cell {

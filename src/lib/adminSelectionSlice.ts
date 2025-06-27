@@ -9,6 +9,7 @@ const initialState: AdminSelection = {
   sellerId: undefined,
   start: undefined,
   end: undefined,
+  reloadCountries: true,
   reloadUsers: true,
   reloadEvents: true,
   reloadPages: true,
@@ -21,6 +22,7 @@ const initialState: AdminSelection = {
   selectedOrder: undefined,
   selectedUser: undefined,
   selectedPage: undefined,
+  selectedPageType: undefined,
   selectedRole: undefined,
   selectedSeller: undefined,
   selectedTour: undefined,
@@ -89,6 +91,10 @@ export const adminSelectionSlice = createSlice({
     },
     setAdminVenue: (state, action: PayloadAction<ExternalVenue | undefined>) => {
       state.selectedVenue = action.payload;
+      return state;
+    },
+    setReloadCountries: (state, action: PayloadAction<boolean>) => {
+      state.reloadCountries = action.payload;
       return state;
     },
     setReloadUsers: (state, action: PayloadAction<boolean>) => {
@@ -190,6 +196,10 @@ export const adminSelectionSlice = createSlice({
       state.selectedPage = action.payload;
       return state;
     },
+    setSelectedPageType: (state, action: PayloadAction<PageType>) => {
+      state.selectedPageType = action.payload;
+      return state;
+    },
     setRoles: (state, action: PayloadAction<Role[]>) => {
       state.roles = action.payload;
       state.reloadRoles = false;
@@ -240,6 +250,7 @@ export const adminSelectionSlice = createSlice({
       state.reloadVenues = true;
       state.selectedUser = undefined;
       state.selectedPage = undefined;
+      state.selectedPageType = undefined;
       state.selectedRole = undefined;
       state.selectedEvent = undefined;
       state.selectedOrder = undefined;
@@ -300,12 +311,14 @@ export const {
   setTicketSocketAccounts,
   setReloadPages,
   setSelectedPage,
+  setSelectedPageType,
   setAllPages,
   setPageTypes,
   setTicketSocketEventsOnly,
   setAdminOrders,
   setCountries,
   setVenueSearchTerm,
+  setReloadCountries,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

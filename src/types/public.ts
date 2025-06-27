@@ -78,6 +78,7 @@ export interface Page {
   excludeEnd?: string;
   googleAnalyticsId?: string;
   pageOrder?: number;
+  lastUpdate?: string;
   sellers?: PageSeller[];
 }
 

@@ -5,5 +5,5 @@ export default function AdminListHomeButton() {
   const goHome = () => {
     router.push('/admin/');
   };
-  return <Button onClick={goHome}>Back</Button>;
+  return <Button className="admin-home-button" onClick={goHome}>Back</Button>;
 }
