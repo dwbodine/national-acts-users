@@ -1,15 +1,18 @@
 import axios, { AxiosInstance } from 'axios';
-import { Country, Page, SiteSetting, UpdateSettingResponse } from '@/types/public';
+import { Country, Faq, FaqCategory, Page, SiteSetting, UpdateSettingResponse } from '@/types/public';
 import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
 import {
   ExternalVenue,
   GetCountriesResponse,
   GetExternalEventsResponse,
   GetExternalVenuesResponse,
+  GetFaqCategoriesResponse,
+  GetFaqsResponse,
   GetPagesResponse,
   GetTicketSocketAccountsResponse,
   ModifyExternalEventResponse,
   ModifyExternalVenueResponse,
+  ModifyFaqResponse,
   ModifyPageResponse,
   ModifySellerResponse,
   TicketSocketAccount,
@@ -26,6 +29,238 @@ export class AdminService {
       timeoutErrorMessage: 'Time out!',
     });
   }
+
+  getAllFaqs = async (): Promise<GetFaqsResponse> => {
+    let url = `/public/faq/0`;
+
+    let response: GetFaqsResponse = {
+      faqs: undefined,
+      faqError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+    };
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        response.faqs = res.data ? (res.data as Faq[]) : undefined;
+        return response;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          response.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching faqs - please contact your administrator';
+        }
+        response.faqError = errorMessage;
+        return response;
+      });
+  };
+
+  getAllFaqCategories = async (): Promise<GetFaqCategoriesResponse> => {
+    let url = `/public/faq_categories`;
+
+    let response: GetFaqCategoriesResponse = {
+      categories: undefined,
+      categoryError: undefined,
+      statusCode: 200,
+    };
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+    };
+
+    return this.instance
+      .get(url, {
+        headers: headers,
+      })
+      .then((res) => {
+        response.categories = res.data ? (res.data as FaqCategory[]) : undefined;
+        return response;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          response.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage =
+            'Unknown error while fetching faq categories - please contact your administrator';
+        }
+        response.categoryError = errorMessage;
+        return response;
+      });
+  };
+
+  updateFaq = async (faqToUpdate: Faq): Promise<ModifyFaqResponse> => {
+    let url = `/admin/faq/update`;
+
+    let modifyResponse: ModifyFaqResponse = {
+      success: false,
+      faqError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify(faqToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while updating FAQ';
+        }
+        modifyResponse.faqError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  deleteFaq = async (faqId: number): Promise<ModifyFaqResponse> => {
+    let url = `/admin/faq/delete`;
+
+    let modifyResponse: ModifyFaqResponse = {
+      success: false,
+      faqError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify({
+      "faqId": faqId
+    });
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while deleting FAQ';
+        }
+        modifyResponse.faqError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  moveFaqUp = async (faqId: number): Promise<ModifyFaqResponse> => {
+    let url = `/admin/faq/moveup`;
+
+    let modifyResponse: ModifyFaqResponse = {
+      success: false,
+      faqError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify({
+      "faqId": faqId
+    });
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while moving up FAQ';
+        }
+        modifyResponse.faqError = errorMessage;
+        return modifyResponse;
+      });
+  };
+
+  moveFaqDown = async (faqId: number): Promise<ModifyFaqResponse> => {
+    let url = `/admin/faq/movedown`;
+
+    let modifyResponse: ModifyFaqResponse = {
+      success: false,
+      faqError: undefined,
+      statusCode: 200,
+    };
+
+    const data = JSON.stringify({
+      "faqId": faqId
+    });
+
+    const headers = getAuthorizationHeader();
+
+    return this.instance
+      .post(url, data, {
+        headers: headers,
+      })
+      .then((res) => {
+        modifyResponse.success = res.status == 200;
+        return modifyResponse;
+      })
+      .catch((err) => {
+        console.log(err);
+        var errorMessage = '';
+        if (err?.response?.status) {
+          modifyResponse.statusCode = parseInt(err.response.status);
+        }
+        if (err?.response?.data?.msg) {
+          errorMessage = err.response.data.msg;
+        } else {
+          errorMessage = 'Unknown error while moving down FAQ';
+        }
+        modifyResponse.faqError = errorMessage;
+        return modifyResponse;
+      });
+  };
 
   getAllPages = async (): Promise<GetPagesResponse> => {
     let url = `/admin/pages`;

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { AdminSelection, Role, User } from '../types/user';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
-import { Country, Page, PageType, SiteSetting } from '@/types/public';
+import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from '@/types/public';
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 
 const initialState: AdminSelection = {
@@ -10,6 +10,7 @@ const initialState: AdminSelection = {
   start: undefined,
   end: undefined,
   reloadCountries: true,
+  reloadFaqs: true,
   reloadUsers: true,
   reloadEvents: true,
   reloadPages: true,
@@ -19,6 +20,7 @@ const initialState: AdminSelection = {
   reloadSettings: true,
   reloadVenues: true,
   selectedEvent: undefined,
+  selectedFaq: undefined,
   selectedOrder: undefined,
   selectedUser: undefined,
   selectedPage: undefined,
@@ -30,6 +32,8 @@ const initialState: AdminSelection = {
   allSellers: undefined,
   allSettings: undefined,
   allPages: undefined,
+  allFaqs: undefined,
+  faqCategories: undefined,
   pageTypes: undefined,
   roles: undefined,
   users: undefined,
@@ -65,6 +69,14 @@ export const adminSelectionSlice = createSlice({
     },
     setAllSettings: (state, action: PayloadAction<SiteSetting[] | undefined>) => {
       state.allSettings = action.payload;
+      return state;
+    },
+    setAllFaqs: (state, action: PayloadAction<Faq[] | undefined>) => {
+      state.allFaqs = action.payload;
+      return state;
+    },
+    setAllFaqCategories: (state, action: PayloadAction<FaqCategory[] | undefined>) => {
+      state.faqCategories = action.payload;
       return state;
     },
     setAllPages: (state, action: PayloadAction<Page[] | undefined>) => {
@@ -110,6 +122,14 @@ export const adminSelectionSlice = createSlice({
       if (state.reloadPages) {
         state.selectedPage = undefined;
         state.allPages = undefined;
+      }
+      return state;
+    },
+    setReloadFaqs: (state, action: PayloadAction<boolean>) => {
+      state.reloadFaqs = action.payload;
+      if (state.reloadFaqs) {
+        state.selectedFaq = undefined;
+        state.allFaqs = undefined;
       }
       return state;
     },
@@ -192,6 +212,10 @@ export const adminSelectionSlice = createSlice({
       state.selectedRole = action.payload;
       return state;
     },
+    setSelectedFaq: (state, action: PayloadAction<Faq>) => {
+      state.selectedFaq = action.payload;
+      return state;
+    },
     setSelectedPage: (state, action: PayloadAction<Page>) => {
       state.selectedPage = action.payload;
       return state;
@@ -241,6 +265,7 @@ export const adminSelectionSlice = createSlice({
       state.sellerId = undefined;
       state.start = undefined;
       state.end = undefined;
+      state.reloadFaqs = true;
       state.reloadUsers = true;
       state.reloadRoles = true;
       state.reloadEvents = true;
@@ -248,6 +273,7 @@ export const adminSelectionSlice = createSlice({
       state.reloadTours = true;
       state.reloadSellers = true;
       state.reloadVenues = true;
+      state.selectedFaq = undefined;
       state.selectedUser = undefined;
       state.selectedPage = undefined;
       state.selectedPageType = undefined;
@@ -262,6 +288,7 @@ export const adminSelectionSlice = createSlice({
       state.users = undefined;
       state.events = undefined;
       state.allPages = undefined;
+      state.allFaqs = undefined;
       state.ticketSocketEvents = undefined;
       state.tours = undefined;
       state.venues = undefined;
@@ -319,6 +346,10 @@ export const {
   setCountries,
   setVenueSearchTerm,
   setReloadCountries,
+  setAllFaqs,
+  setAllFaqCategories,
+  setSelectedFaq,
+  setReloadFaqs,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

@@ -1016,6 +1016,12 @@ input.rs-input:hover {
   margin: 5px 0;
 }
 
+.admin-up-down-button {
+  margin: 0 35px 0 15px;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
 .admin-file-upload {
   margin: 10px 0;
 }
