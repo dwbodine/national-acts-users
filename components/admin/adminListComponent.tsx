@@ -49,6 +49,9 @@ export default function AdminList() {
       case 'manage-order':
         router.push('/admin/pages/order');
         break;
+      case 'manage-faqs':
+        router.push('/admin/faqs/');
+        break;
       default:
         break;
     }
@@ -94,6 +97,11 @@ export default function AdminList() {
               <li>
                 <a className="admin-link" onClick={() => goToAdminPage('manage-order')}>
                   Manage Page Order
+                </a>
+              </li>
+              <li>
+                <a className="admin-link" onClick={() => goToAdminPage('manage-faqs')}>
+                  Manage FAQs
                 </a>
               </li>
             </ul>

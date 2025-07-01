@@ -26,6 +26,19 @@ export interface SiteSetting {
   dirty?: boolean;
 }
 
+export interface FaqCategory {
+  categoryId: number;
+  categoryName?: string;
+}
+
+export interface Faq {
+  faqId: number;
+  category: FaqCategory;
+  order: number;
+  question: string;
+  answer: string;
+}
+
 export interface PageType {
   pageTypeId: number;
   pageTypeName: string;
