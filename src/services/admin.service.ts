@@ -1,5 +1,12 @@
 import axios, { AxiosInstance } from 'axios';
-import { Country, Faq, FaqCategory, Page, SiteSetting, UpdateSettingResponse } from '@/types/public';
+import {
+  Country,
+  Faq,
+  FaqCategory,
+  Page,
+  SiteSetting,
+  UpdateSettingResponse,
+} from '@/types/public';
 import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
 import {
   ExternalVenue,
@@ -155,7 +162,7 @@ export class AdminService {
     };
 
     const data = JSON.stringify({
-      "faqId": faqId
+      faqId: faqId,
     });
 
     const headers = getAuthorizationHeader();
@@ -194,7 +201,7 @@ export class AdminService {
     };
 
     const data = JSON.stringify({
-      "faqId": faqId
+      faqId: faqId,
     });
 
     const headers = getAuthorizationHeader();
@@ -233,7 +240,7 @@ export class AdminService {
     };
 
     const data = JSON.stringify({
-      "faqId": faqId
+      faqId: faqId,
     });
 
     const headers = getAuthorizationHeader();
