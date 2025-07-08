@@ -340,7 +340,10 @@ export default function AdminEventEdit(props: any) {
       return;
     }
 
-    const announceDate = moment(date).startOf('day');
+    let announceDate = moment(date).startOf('day');
+    announceDate = announceDate.hours(0);
+    announceDate = announceDate.minutes(0);
+    announceDate = announceDate.seconds(0);
     let currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');
     dispatch(setAdminEvent(currentEvent));
@@ -1266,7 +1269,7 @@ export default function AdminEventEdit(props: any) {
       </Row>
       <Row className="form-group">
         <Col>
-          <label className="mt-4">Event time (local)</label>
+          <label className="mt-4">Event time (in venue local time zone)</label>
 
           <TimePicker
             id="eventTime"
@@ -1278,7 +1281,7 @@ export default function AdminEventEdit(props: any) {
             onClean={onCleanEventTime}
           />
 
-          <label className="mt-4">Announce Date</label>
+          <label className="mt-4">Announce Date (in Pacific Time)</label>
           
           <DatePicker
             id="announceDate"

@@ -227,7 +227,10 @@ export default function AdminTourEdit() {
       return;
     }
 
-    const announceDate = moment(date).startOf('day');
+    let announceDate = moment(date).startOf('day');
+    announceDate = announceDate.hours(0);
+    announceDate = announceDate.minutes(0);
+    announceDate = announceDate.seconds(0);
     let currentTour = { ...currentAdminSelection.selectedTour };
     currentTour.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');
     dispatch(setAdminTour(currentTour));
@@ -358,7 +361,7 @@ export default function AdminTourEdit() {
           />
       </div>
       <div className="form-group">
-        <label className="mt-4">Announce Date:</label>
+        <label className="mt-4">Announce Date (in Pacific Time):</label>
           <DatePicker
             id="announceDate"
             format="M/d/yyyy"

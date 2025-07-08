@@ -182,7 +182,7 @@ export default function AdminToursIndex() {
               </Cell>
             </Column>
             <Column flexGrow={1} minWidth={100}>
-              <HeaderCell>Announce Date</HeaderCell>
+              <HeaderCell>Announce Date (in Pacific Time)</HeaderCell>
               <Cell>
                 {(rowData: Tour) => rowData.announceDate ? moment(rowData.announceDate).format('M/DD/YYYY h:mm A') : ''}
               </Cell>
