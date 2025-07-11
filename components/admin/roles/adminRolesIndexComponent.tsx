@@ -1,15 +1,14 @@
-import { SyntheticEvent, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
-import { GetRolesResponse, Role, User } from '@/types/user';
+import { GetRolesResponse, Role } from '@/types/user';
 import { Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
 import router from 'next/router';
-import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
+import { Button, FormCheck } from 'react-bootstrap';
 import { useDeleteRoles } from '@/hooks/admin/useDeleteRoles';
-import { CirclesWithBar } from 'react-loader-spinner';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 
@@ -50,7 +49,7 @@ export default function AdminRolesIndex() {
     if (!roleId || isNaN(roleId)) {
       return;
     }
-    let role = currentAdminSelection.roles?.find((x) => x.roleId == roleId);
+    const role = currentAdminSelection.roles?.find((x) => x.roleId == roleId);
     if (role) {
       dispatch(setSelectedRole(role));
       setTableLoading(true);
@@ -75,7 +74,7 @@ export default function AdminRolesIndex() {
     }
     
     if (isChecked && !selectedRoles.includes(roleId)) {
-      let rIds = [...selectedRoles];
+      const rIds = [...selectedRoles];
       rIds.push(roleId);
       setSelectedRoles(rIds);
     } else if (!isChecked && selectedRoles.includes(roleId)) {

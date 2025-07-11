@@ -1,7 +1,8 @@
+import { AddNoteModalProps } from "@/types/props";
 import { Button, Form } from "react-bootstrap";
 import { Modal } from "rsuite";
 
-export default function AddNoteModal(props: any) {
+export default function AddNoteModal(props: AddNoteModalProps) {
     const id = props.Id;
     const notesOpen = props.NotesOpen;
     const handleNotesClose = props.HandleNotesClose;
@@ -20,14 +21,14 @@ export default function AddNoteModal(props: any) {
             <Modal.Body>
                 <Form.Control
                     id="addNoteTitle"
-                    onChange={(e) => setNoteTitle(e.currentTarget.value)}
+                    onChange={(e) => setNoteTitle ? setNoteTitle(e.currentTarget.value) : null}
                     value={noteTitle}
                     placeholder="Note title"
                 />
                 <Form.Control as="textarea"
                     id="addNote"
                     rows={5}
-                    onChange={(e) => setNoteText(e.currentTarget.value)}
+                    onChange={(e) => setNoteText ? setNoteText(e.currentTarget.value) : null}
                     value={noteText}
                     placeholder="Note text"
                 />

@@ -1,10 +1,10 @@
-import { IAverageDailyData } from '@/types/user';
+import { AverageSalesWidgetProps } from '@/types/props';
 import moment from 'moment';
 
-export default function AverageSalesWidget(props: any) {
-  const monthlyAverages = props.monthlyAverages as IAverageDailyData | undefined;
-  const yearlyAverages = props.yearlyAverages as IAverageDailyData | undefined;
-  const selectedYear = props.selectedYear as number | undefined;
+export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
+  const monthlyAverages = props.MonthlyAverages;
+  const yearlyAverages = props.YearlyAverages;
+  const selectedYear = props.SelectedYear;
   const currentYear = moment().year();
 
   return monthlyAverages && yearlyAverages ? (

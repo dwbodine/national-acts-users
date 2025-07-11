@@ -1,9 +1,9 @@
-import { TicketSocketRefreshHistory } from '@/types/event';
+import { RefreshTicketSocketHistoryTableProps } from '@/types/props';
 import moment from 'moment';
 import { Table } from 'rsuite';
 
-export default function RefreshTicketSocketHistoryTable(props: any) {
-  const results = props.history as TicketSocketRefreshHistory[] | undefined;
+export default function RefreshTicketSocketHistoryTable(props: RefreshTicketSocketHistoryTableProps) {
+  const results = props.History;
   const { Column, HeaderCell, Cell } = Table;
 
   return results != undefined ? (

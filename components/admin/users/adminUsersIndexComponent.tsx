@@ -62,7 +62,7 @@ export default function AdminUsersIndex() {
     if (!userId || isNaN(userId)) {
       return;
     }
-    let user = currentAdminSelection.users?.find((x) => x.userId == userId);
+    const user = currentAdminSelection.users?.find((x) => x.userId == userId);
     if (user) {
       dispatch(setSelectedUser(user));
       setTableLoading(true);

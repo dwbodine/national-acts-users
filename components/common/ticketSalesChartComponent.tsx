@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { ITicketSalesData } from '@/types/event';
 import {
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  LineChart,
-  Line,
   ResponsiveContainer,
-  Legend,
   Label,
   AreaChart,
   Area,
 } from 'recharts';
 import { Row, Col } from 'react-bootstrap';
 import { LabelPosition } from 'recharts/types/component/Label';
+import { TicketSalesChartProps } from '@/types/props';
 
-export default function TicketSalesChart(props: any) {
-  const ticketSalesData: ITicketSalesData[] = props.TicketSalesData as ITicketSalesData[];
+export default function TicketSalesChart(props: TicketSalesChartProps) {
+  const ticketSalesData = props.TicketSalesData;
   const [chartsHidden, setChartsHidden] = useState(true);
-  const hideCharts: boolean = props.ChartsHidden as boolean;
-  const hideRev: boolean = props.HideRevenue as boolean;
-  const hideMobile: boolean = props.HideMobile as boolean;
+  const hideCharts = props.ChartsHidden;
+  const hideRev = props.HideRevenue;
+  const hideMobile = props.HideMobile;
 
   useEffect(() => {
     if (hideCharts) {

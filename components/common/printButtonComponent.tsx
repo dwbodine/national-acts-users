@@ -1,7 +1,8 @@
+import { PrintButtonProps } from '@/types/props';
 import { Button } from 'react-bootstrap';
 
-export default function PrintButton(props: any) {
-  const showPrint: boolean = props.ShowPrint as boolean;
+export default function PrintButton(props: PrintButtonProps) {
+  const showPrint = props.ShowPrint;
 
   const handleClick = () => {
     window.print();

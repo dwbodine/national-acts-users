@@ -24,13 +24,13 @@ export const useWindowSize = (): WindowSize => {
       let windowHeight = window.outerHeight;
       if (isLandscape && currentAngle > 0) {
         if (windowHeight >= windowWidth) {
-          let temp = windowWidth;
+          const temp = windowWidth;
           windowWidth = windowHeight;
           windowHeight = temp;
         }
       } else if (!isLandscape && currentAngle == 0) {
         if (windowWidth >= windowHeight) {
-          let temp = windowWidth;
+          const temp = windowWidth;
           windowWidth = windowHeight;
           windowHeight = temp;
         }

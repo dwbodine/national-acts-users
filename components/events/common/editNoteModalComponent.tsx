@@ -1,7 +1,8 @@
+import { EditNoteModalProps } from "@/types/props";
 import { Button, Form } from "react-bootstrap";
 import { DatePicker, Modal } from "rsuite";
 
-export default function EditNoteModal(props: any) {
+export default function EditNoteModal(props: EditNoteModalProps) {
     const id = props.Id;
     const notesOpen = props.NotesOpen;
     const handleNotesClose = props.HandleNotesClose;
@@ -17,7 +18,7 @@ export default function EditNoteModal(props: any) {
     const onNoteDateChange = props.OnNoteDateChange;
 
     return (
-        <Modal id="displayNoteModal" open={notesOpen} onClose={handleNotesClose}>
+        <Modal id={id} open={notesOpen} onClose={handleNotesClose}>
             <Modal.Header>
                 <Modal.Title>View/Edit Note for {displayDate}</Modal.Title>
             </Modal.Header>
@@ -34,7 +35,7 @@ export default function EditNoteModal(props: any) {
                 <Form.Control
                     id="editNoteTitle"
                     disabled={noteIsCompleted}
-                    onChange={(e) => setNoteTitle(e.currentTarget.value)}
+                    onChange={(e) => setNoteTitle ? setNoteTitle(e.currentTarget.value) : null}
                     value={noteTitle}
                     placeholder="Note title"
                 />
@@ -42,7 +43,7 @@ export default function EditNoteModal(props: any) {
                     id="editNote"
                     rows={5}
                     disabled={noteIsCompleted}
-                    onChange={(e) => setNoteText(e.currentTarget.value)}
+                    onChange={(e) => setNoteText ? setNoteText(e.currentTarget.value) : null}
                     value={noteText}
                     placeholder="Note text"
                 />

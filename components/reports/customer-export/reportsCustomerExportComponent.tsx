@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
-import ReportDatePicker from '../../common/reportDatePIcker';
+import ReportDatePicker from '../../common/reportDatePicker';
 import ReportsListHomeButton from '../reportsListHomeButton';
 import { setReportDates } from '@/lib/adminReportsSelectionSlice';
 import { Button } from 'react-bootstrap';

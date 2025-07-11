@@ -9,40 +9,42 @@ import AgendaDay from "./agendaDayComponent";
 import { Col, Row } from "react-bootstrap";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import getSelectedAdminEventDateRange from "@/utils/getSelectedAdminEventDateRange";
+import { AgendaViewProps } from "@/types/props";
+import { ReactElement } from "react";
 
 
-export default function AgendaView(props: any) {
+export default function AgendaView(props: AgendaViewProps) {
     const startOfMonth = props.StartOfMonth ? moment(props.StartOfMonth).startOf('day') : undefined;
     const endOfMonth = props.EndOfMonth ? moment(props.EndOfMonth).endOf('day') : undefined;
-    const events = props.Events as VipEvent[] | undefined;
-    const notes = props.Notes as Note[] | undefined;
+    const events = props.Events;
+    const notes = props.Notes;
 
     const dispatch = useDispatch();
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
 
     const previousMonth = () => {
-        let reportSelection = { ...currentReportSelection };
+        const reportSelection = { ...currentReportSelection };
         if (!reportSelection || !reportSelection.start) {
             return;
         }
-        let previousMonth = moment.unix(reportSelection.start).subtract(1, 'month').startOf('day').unix();
+        const previousMonth = moment.unix(reportSelection.start).subtract(1, 'month').startOf('day').unix();
         const dateRange = getSelectedAdminEventDateRange(previousMonth, EventTabView.Agenda);
         dispatch(setIsLoading(true));
         dispatch(setAdminDateRange(dateRange));
     };
 
     const nextMonth = () => {
-        let reportSelection = { ...currentReportSelection };
+        const reportSelection = { ...currentReportSelection };
         if (!reportSelection || !reportSelection.start) {
             return;
         }
-        let nextMonth = moment.unix(reportSelection.start).add(1, 'month').startOf('day').unix();
+        const nextMonth = moment.unix(reportSelection.start).add(1, 'month').startOf('day').unix();
         const dateRange = getSelectedAdminEventDateRange(nextMonth, EventTabView.Agenda);
         dispatch(setIsLoading(true));
         dispatch(setAdminDateRange(dateRange));
     };
 
-    let agendaDays: any[] = [];
+    const agendaDays: ReactElement[] = [];
     if (startOfMonth && endOfMonth && events && events.length > 0) {
         let displayDate = startOfMonth;
         let i = 1;
@@ -56,7 +58,7 @@ export default function AgendaView(props: any) {
                 filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= displayDate.endOf('day').valueOf())
             }
             agendaDays.push(<AgendaDay key={i} AgendaDayNumber={i}
-                AgendaDate={displayDate.format('YYYY-MM-DD')}
+                AgendaDate={displayDate}
                 Events={filteredEvents}
                 Notes={filteredNotes}
             />);    

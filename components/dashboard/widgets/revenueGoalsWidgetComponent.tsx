@@ -1,11 +1,12 @@
+import { RevenueGoalsWidgetProps } from '@/types/props';
 import { Col, Row } from 'react-bootstrap';
 import { Progress } from 'rsuite';
 
-export default function RevenueGoalsWidget(props: any) {
-  const percentGoal = props.percentGoal as number | undefined;
-  const title = props.percentTitle as string;
-  const totalGoal = props.totalGoal as number | undefined;
-  const amount = props.amount as number | undefined;
+export default function RevenueGoalsWidget(props: RevenueGoalsWidgetProps) {
+  const percentGoal = props.PercentGoal;
+  const title = props.PercentTitle;
+  const totalGoal = props.TotalGoal;
+  const amount = props.Amount;
 
   let wholePercent = 0.0;
   if (percentGoal) {

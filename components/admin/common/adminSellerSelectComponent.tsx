@@ -1,5 +1,5 @@
-import { DEFAULT_COUNTRY_ID } from '@/constants';
 import { Seller, SellerType } from '@/types/event';
+import { AdminSellerSelectProps } from '@/types/props';
 import { Country, PageSeller } from '@/types/public';
 import { Role } from '@/types/user';
 import { useState } from 'react';
@@ -8,14 +8,14 @@ import { FaMinus } from 'react-icons/fa';
 import { Modal, SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
-export default function AdminSellerSelect(props: any) {
+export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   let sellers: Seller[] | undefined = props.Sellers as Seller[] | undefined;
   const roles: Role[] | undefined = props.Roles as Role[] | undefined;
   const sellerId: number = props.SellerId ? (props.SellerId as number) : 0;
   const sellerType: SellerType | undefined = props.SellerType ? (props.SellerType as SellerType) : undefined;
   const roleId: number = props.RoleId ? (props.RoleId as number) : 0;
   const number: number | undefined = props.Number as number | undefined;
-  const id: string = props.id;
+  const id: string = props.Id;
   const onSellerChange = props.OnSellerChange;
   const onRoleChange = props.OnRoleChange;
   const onPageSellerChange = props.OnPageSellerChange;
@@ -55,7 +55,7 @@ export default function AdminSellerSelect(props: any) {
     if (!pageSeller || !onPageSellerChange) {
       return;
     }
-    let ps: PageSeller = {...pageSeller};
+    const ps: PageSeller = {...pageSeller};
     ps.displayName = displayName;
     ps.showDisplayName = showDisplayName;
     ps.address = !isArtist ? address : undefined;
@@ -117,7 +117,7 @@ export default function AdminSellerSelect(props: any) {
           value={sellerId}
           data={sellerList}
           size="lg"        
-          onChange={(sId) => onSellerChange(sId)}
+          onChange={(sId) => onSellerChange ? onSellerChange(sId) : null}
           cleanable={false}
         />
       </Col>
@@ -128,7 +128,7 @@ export default function AdminSellerSelect(props: any) {
           value={roleId}
           data={roleList}
           size="lg"        
-          onChange={(rId) => onRoleChange(rId)}
+          onChange={(rId) => onRoleChange ? onRoleChange(rId) : null}
           cleanable={false}
           searchable={false}
         />

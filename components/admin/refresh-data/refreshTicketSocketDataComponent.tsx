@@ -7,12 +7,11 @@ import {
   GetRefreshHistoryResponse,
   GetSellersResponse,
   RefreshHistoryResponse,
-  Seller,
   TicketSocketRefreshHistory,
 } from '@/types/event';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import ReportDatePicker from '../../common/reportDatePIcker';
+import ReportDatePicker from '../../common/reportDatePicker';
 import { RootState } from '@/lib/store';
 import {
   setAdminDates,
@@ -23,8 +22,6 @@ import RefreshTicketSocketDataResults from './refreshTicketSocketDataResults';
 import RefreshTicketSocketHistoryTable from './refreshTicketSocketHistoryTable';
 import { useGetRefreshHistory } from '@/hooks/admin/useGetRefreshHistory';
 import { useRefreshEventsFromTicketSocket } from '@/hooks/admin/useRefreshEventsFromTicketSocket';
-import { AdminSelection } from '@/types/user';
-import { DiPerl } from 'react-icons/di';
 import { toast } from 'react-toastify';
 
 export default function RefreshTicketSocketData() {
@@ -72,14 +69,14 @@ export default function RefreshTicketSocketData() {
   };
 
   const onDateChange = (newStart: number, newEnd: number) => {
-    let adminSelection = { ...currentAdminSelection };
+    const adminSelection = { ...currentAdminSelection };
     adminSelection.start = newStart;
     adminSelection.end = newEnd;
     dispatch(setAdminDates(adminSelection));
   };
 
   const submitReset = () => {
-    let adminSelection = { ...currentAdminSelection };
+    const adminSelection = { ...currentAdminSelection };
     if (!adminSelection.sellerId) {
       toast.warning('Must select a seller');
       return;

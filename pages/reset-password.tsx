@@ -5,7 +5,6 @@ import Container from 'react-bootstrap/Container';
 import { Col, Row, Button } from 'react-bootstrap';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import CheckAuth from '../components/common/checkAuthComponent';
-import { User } from '@/types/user';
 
 export default function ResetPassword() {
   const { resetPasswordSecure } = useResetPasswordSecure();
@@ -20,7 +19,7 @@ export default function ResetPassword() {
     document.title = 'Client Portal - Reset Password';
   }, [router]);
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = () => {
     const user = getUser();
     if (!user) {
       return;

@@ -1,12 +1,12 @@
-import { IDashboardTotals, ITopSeller } from '@/types/user';
+import { YearToDateWidgetProps } from '@/types/props';
 import moment from 'moment';
 import { Col, Row } from 'react-bootstrap';
 
-export default function YearToDateWidget(props: any) {
-  const totals = props.totals as IDashboardTotals | undefined;
-  const projectedYearTotalRevenue = props.projectedYearTotalRevenue as number | undefined;
+export default function YearToDateWidget(props: YearToDateWidgetProps) {
+  const totals = props.Totals;
+  const projectedYearTotalRevenue = props.ProjectedYearTotalRevenue;
+  const selectedYear = props.SelectedYear;
   const currentYear = moment().year();
-  const selectedYear = props.selectedYear as number | undefined;
 
   let ticketsPerTransaction = 0;
   let averagePurchaseAmount = 0;

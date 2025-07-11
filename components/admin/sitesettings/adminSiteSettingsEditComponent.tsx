@@ -3,7 +3,7 @@ import { setAllSettings, setReloadSettings } from "@/lib/adminSelectionSlice";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { RootState } from "@/lib/store";
 import { GetSettingsResponse, SiteSetting, UpdateSettingResponse } from "@/types/public";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AdminFileUpload from "../common/adminFileUploadComponent";
 import { Button, Col, Row } from "react-bootstrap";
@@ -47,7 +47,7 @@ export default function AdminSiteSettingsEdit() {
             case 'HomeBanner':
                 if (adminSelection.allSettings != undefined) {
                     const currentSettings = adminSelection.allSettings.map((originalSetting: SiteSetting) => {
-                        let setting = { ...originalSetting };
+                        const setting = { ...originalSetting };
                         if (setting.name == 'HomeBanner' && filename) {
                             setting.value = filename;
                             setting.dirty = true;
@@ -82,7 +82,7 @@ export default function AdminSiteSettingsEdit() {
         const adminSelection = { ...currentAdminSelection };
         if (adminSelection.allSettings != undefined) {
             const currentSettings = adminSelection.allSettings.map((originalSetting: SiteSetting) => {
-                let setting = { ...originalSetting };
+                const setting = { ...originalSetting };
                 if (setting.name == settingName) {
                     setting.value = settingValue?.toString() ?? '';
                     setting.dirty = true;
@@ -100,7 +100,7 @@ export default function AdminSiteSettingsEdit() {
         const adminSelection = { ...currentAdminSelection };
         if (adminSelection.allSettings != undefined) {
             const currentSettings = adminSelection.allSettings.map((originalSetting: SiteSetting) => {
-                let setting = { ...originalSetting };
+                const setting = { ...originalSetting };
                 if (setting.name == settingName) {
                     setting.value = settingValue ?? '';
                     setting.dirty = true;
@@ -116,7 +116,7 @@ export default function AdminSiteSettingsEdit() {
             return;
         }
 
-        let allSettings = [ ...currentAdminSelection.allSettings ];
+        const allSettings = [ ...currentAdminSelection.allSettings ];
         const dirtySettings = allSettings.filter(x => x.dirty);
         if (!dirtySettings || dirtySettings.length == 0) {
             return;
@@ -141,14 +141,14 @@ export default function AdminSiteSettingsEdit() {
             return;
         }
         const currentSettings = currentAdminSelection.allSettings.map((originalSetting: SiteSetting) => {
-            let setting = { ...originalSetting };
+            const setting = { ...originalSetting };
             setting.dirty = false;
             return setting;
         });
         dispatch(setAllSettings(currentSettings));   
     };
 
-    let settingRows: any[] = [];
+    const settingRows: ReactElement[] = [];
     let hasDirtySettings: boolean = false;
     if (currentAdminSelection.allSettings && currentAdminSelection.allSettings.length > 0) {
         currentAdminSelection.allSettings.forEach((setting) => {
@@ -173,7 +173,7 @@ export default function AdminSiteSettingsEdit() {
                                 <AdminFileUpload 
                                     Title={setting.displayName} 
                                     FileUploadName={setting.name} 
-                                    OnUpLoad={onFileUpload} 
+                                    OnUpload={onFileUpload} 
                                     CurrentFileName={setting.value}
                                     IsDirty={setting.dirty}
                                     CurrentFileTitle={currentFileTitle}

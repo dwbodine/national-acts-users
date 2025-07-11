@@ -1,9 +1,8 @@
-import dashboardSelectionSlice from '@/lib/dashboardSelectionSlice';
-import { IDashboardData, IDashboardTotals, ITopSeller } from '@/types/user';
+import { MonthToDateWidgetProps } from '@/types/props';
 import { Col, Row } from 'react-bootstrap';
 
-export default function MonthToDateWidget(props: any) {
-  const dashBoardData = props.DashBoardData as IDashboardData | undefined;
+export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
+  const dashBoardData = props.DashBoardData;
 
   let ticketsPerTransaction = 0;
   let averagePurchaseAmount = 0;

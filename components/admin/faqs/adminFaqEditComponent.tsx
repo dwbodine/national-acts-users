@@ -48,9 +48,9 @@ export default function AdminFaqEdit() {
       return;
     }
 
-    let message: string =
+    const message: string =
       'You have made changes to this faq, are you sure you want to discard them and leave?';
-    const toastId = toast.warning(
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"
@@ -76,7 +76,7 @@ export default function AdminFaqEdit() {
     if (!currentAdminSelection.selectedFaq?.category || !categoryId) {
       return;
     }
-    let faqToUpdate: Faq = { ...currentAdminSelection.selectedFaq };
+    const faqToUpdate: Faq = { ...currentAdminSelection.selectedFaq };
     if (faqToUpdate.category.categoryId != categoryId) {
       faqToUpdate.category = { categoryId: categoryId };
       dispatch(setSelectedFaq(faqToUpdate));
@@ -88,7 +88,7 @@ export default function AdminFaqEdit() {
     if (!currentAdminSelection.selectedFaq || !question) {
       return;
     }
-    let faqToUpdate: Faq = { ...currentAdminSelection.selectedFaq };
+    const faqToUpdate: Faq = { ...currentAdminSelection.selectedFaq };
     if (faqToUpdate.question != question) {
       faqToUpdate.question = question;
       dispatch(setSelectedFaq(faqToUpdate));
@@ -100,7 +100,7 @@ export default function AdminFaqEdit() {
     if (!currentAdminSelection.selectedFaq || !answer) {
       return;
     }
-    let faqToUpdate: Faq = { ...currentAdminSelection.selectedFaq };
+    const faqToUpdate: Faq = { ...currentAdminSelection.selectedFaq };
     if (faqToUpdate.answer != answer) {
       faqToUpdate.answer = answer;
       dispatch(setSelectedFaq(faqToUpdate));
@@ -113,7 +113,7 @@ export default function AdminFaqEdit() {
       return false;
     }
 
-    let faqToUpdate: Faq = {
+    const faqToUpdate: Faq = {
       ...currentAdminSelection.selectedFaq
     };
 

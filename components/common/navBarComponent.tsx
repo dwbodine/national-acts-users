@@ -7,13 +7,14 @@ import { useWindowSize } from '@/hooks/common/useWindowSize';
 import { useEffect } from 'react';
 import router from 'next/router';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { NavBarProps } from '@/types/props';
 
-export default function NavBar(props: any) {
+export default function NavBar(props: NavBarProps) {
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
   const { getUser } = useCurrentUser();
 
-  const navBarHidden = props.hidden ?? (false as boolean);
+  const navBarHidden = props.Hidden;
 
   useEffect(() => {
     // blank

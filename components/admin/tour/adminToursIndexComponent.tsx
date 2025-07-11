@@ -45,7 +45,7 @@ export default function AdminToursIndex() {
         });
       } else if (currentAdminSelection.reloadTours) {
         dispatch(setReloadTours(false));
-        let adminSelection = { ...currentAdminSelection };
+        const adminSelection = { ...currentAdminSelection };
         if (!adminSelection.sellerId) {
           setTableLoading(false);
           return;
@@ -89,7 +89,7 @@ export default function AdminToursIndex() {
     };
   }, [dispatch, getSellers, currentAdminSelection, getTours, tableLoading, getAdminSellerEvents]);
 
-  const updateSeller = (sellerId: number) => {
+  const updateSeller = (sellerId: number | null) => {
     const updateSellerId = sellerId && !isNaN(sellerId) ? sellerId : undefined;
     dispatch(setAdminSellerId(updateSellerId));
     dispatch(setReloadTours(true));
@@ -156,10 +156,10 @@ export default function AdminToursIndex() {
         </Col>
       </Row>
       <AdminSellerSelect
-        id="refresh"
+        Id="refresh"
         Sellers={currentAdminSelection.allSellers}
         SellerId={currentAdminSelection.sellerId}
-        OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
+        OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
         Countries={currentAdminSelection.countries}
       />        
       <Row>

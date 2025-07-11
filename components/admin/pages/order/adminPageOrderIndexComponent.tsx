@@ -4,7 +4,6 @@ import { SelectPicker, Table } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { setAllPages, setPageTypes, setReloadPages, setSelectedPageType } from '@/lib/adminSelectionSlice';
-import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { GetPagesResponse, ModifyPageResponse } from '@/types/admin';
 import { GetPageTypesResponse } from '@/types/event';
@@ -26,7 +25,7 @@ export default function AdminPageOrderIndex() {
   const { updatePageOrder } = useUpdatePageOrder();
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
-  1
+  
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.pageTypes == undefined) {
@@ -78,7 +77,7 @@ export default function AdminPageOrderIndex() {
     }
     let pages = currentAdminSelection.allPages.slice();
     pages = pages.map(page => {
-      let newPage = { ...page };
+      const newPage = { ...page };
       if (newPage.pageId == pageId) {
         newPage.pageOrder = order;
         newPage.lastUpdate = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -87,7 +86,7 @@ export default function AdminPageOrderIndex() {
     });
     pages = getPagesSorted(pages);
     let prevOrder = 0;
-    for (let page of pages) {
+    for (const page of pages) {
       if (page.pageOrder == prevOrder) {
         page.pageOrder += 1;
       }
@@ -101,7 +100,7 @@ export default function AdminPageOrderIndex() {
     if (!currentAdminSelection.allPages) {
       return;
     }
-    let pages = currentAdminSelection.allPages.slice();
+    const pages = currentAdminSelection.allPages.slice();
     dispatch(setIsLoading(true));
     updatePageOrder(pages).then((response: ModifyPageResponse) => {
       if (response.success) {
@@ -134,7 +133,7 @@ export default function AdminPageOrderIndex() {
     );
   }
 
-  let pages = currentAdminSelection?.allPages ? currentAdminSelection.allPages.slice() : undefined;
+  const pages = currentAdminSelection?.allPages ? currentAdminSelection.allPages.slice() : undefined;
   const pagesSorted = pages ? getPagesSorted(pages) : [];
 
   return (

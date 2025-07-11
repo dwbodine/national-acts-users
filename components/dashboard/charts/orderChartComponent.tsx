@@ -1,10 +1,10 @@
-import { IOrderKeys, IRevenueKeys } from '@/types/event';
+import { OrderChartProps } from '@/types/props';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
-export default function OrderChart(props: any) {
-  const orderData: IOrderKeys[] = props.OrderData as IOrderKeys[];
-  const chartsHidden: boolean = props.ChartHidden as boolean;
-  const totalOrders: number = props.TotalOrders as number;
+export default function OrderChart(props: OrderChartProps) {
+  const orderData = props.OrderData;
+  const chartsHidden = props.ChartHidden;
+  const totalOrders = props.TotalOrders;
 
   return (
     <>

@@ -1,11 +1,12 @@
-import { ISalesData } from '@/types/user';
+import { SalesPerDayOfWeekWidgetProps } from '@/types/props';
 import moment from 'moment';
+import { ReactElement } from 'react';
 import { Col, Row } from 'react-bootstrap';
 
-export default function SalesPerDayOfWeekWidget(props: any) {
-  const salesPerDayMonth = props.salesPerDayMonth as ISalesData[] | undefined;
-  const salesPerDayYear = props.salesPerDayYear as ISalesData[] | undefined;
-  const selectedYear = props.selectedYear as number | undefined;
+export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetProps) {
+  const salesPerDayMonth = props.SalesPerDayMonth;
+  const salesPerDayYear = props.SalesPerDayYear;
+  const selectedYear = props.SelectedYear;
   const currentYear = moment().year();
 
   const today = moment();
@@ -15,7 +16,7 @@ export default function SalesPerDayOfWeekWidget(props: any) {
   const firstWeekOfMonth = firstDayOfMonthDate.week();
   const firstDayOfYear = moment([currentYear, 1, 1]).day();
 
-  let salesRows: any[] = [];
+  const salesRows: ReactElement[] = [];
 
   if (salesPerDayMonth != undefined || salesPerDayYear != undefined) {
     for (let i = 1; i <= 7; i++) {

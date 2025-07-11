@@ -211,6 +211,8 @@ export interface VipEvent {
   checkInNotes?: string;
   notes?: Note[];
   isSoldOut?: boolean;
+  isVisibleOnSite?: boolean;
+  isVisibleOnPortal?: boolean;
 }
 
 export interface TicketSocketRefreshHistory {

@@ -15,6 +15,7 @@ import { useGetAllOrders } from '@/hooks/order/useGetAllOrders';
 import moment from 'moment';
 import { GetOrdersResponse } from '@/types/event';
 import { toast } from 'react-toastify';
+import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 
 export default function DashboardBar() {
   const dispatch = useDispatch();
@@ -25,9 +26,9 @@ export default function DashboardBar() {
   );
   const dateRangeTitle = 'Selected date range';
 
-  let pageTitle: string = `Home Dashboard`;
+  const pageTitle: string = `Home Dashboard`;
 
-  let ranges = [
+  const ranges: RangeType<DateRange>[] = [
     {
       label: 'This Month',
       value: [moment().startOf('month').startOf('day').toDate(), moment().endOf('month').endOf('day').toDate()]
@@ -72,14 +73,14 @@ export default function DashboardBar() {
       toast.warning("Invalid selection: selected dates must both be in the same year");
       return;
     }
-    let dashboardSelection = { ...currentDashboardSelection };
+    const dashboardSelection = { ...currentDashboardSelection };
     dashboardSelection.start = selectedStart;
     dashboardSelection.end = selectedEnd;
     dispatch(setDashboardDateRange(dashboardSelection));
   };
 
   const exportDashboardData = () => {
-    let dashboardSelection = { ...currentDashboardSelection };
+    const dashboardSelection = { ...currentDashboardSelection };
     if (
       !dashboardSelection.currentDashboardData ||
       !dashboardSelection.start ||
@@ -114,11 +115,11 @@ export default function DashboardBar() {
         </Col>
         <Col sm={6} xs={12} className="control-container no-print">
           <DateRangeSelector
-            dateRangeTitle={dateRangeTitle}
-            selectedStart={currentDashboardSelection?.start}
-            selectedEnd={currentDashboardSelection?.end}
-            disabled={false}
-            onDateChange={onDateChange}
+            DateRangeTitle={dateRangeTitle}
+            SelectedStart={currentDashboardSelection?.start}
+            SelectedEnd={currentDashboardSelection?.end}
+            Disabled={false}
+            OnDateChange={onDateChange}
             Ranges={ranges}
           />
           <Button className="dashboard-export-button" onClick={exportDashboardData}>

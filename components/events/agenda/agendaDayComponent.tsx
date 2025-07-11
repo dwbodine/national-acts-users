@@ -1,12 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import moment from 'moment';
-import { Note, VipEvent } from '@/types/event';
+import { VipEvent } from '@/types/event';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { RootState } from '@/lib/store';
-import { Modal } from 'rsuite';
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { toast } from 'react-toastify';
 import { useEditNote } from '@/hooks/admin/useEditNote';
@@ -17,14 +16,16 @@ import { FaExclamationTriangle } from 'react-icons/fa';
 import EventDataExpanded from '../../common/eventDataExpandedComponent';
 import AddNoteModal from '../common/addNoteModalComponent';
 import EditNoteModal from '../common/editNoteModalComponent';
+import { AgendaDayProps } from '@/types/props';
 
-export default function AgendaDay(props: any) {
-    const dispatch = useDispatch();
-    const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
+export default function AgendaDay(props: AgendaDayProps) {
     const agendaDate = props.AgendaDate ? moment(props.AgendaDate) : undefined;
-    const events = props.Events as VipEvent[] | undefined;
-    const notes = props.Notes as Note[] | undefined;
-    const key = props.AgendaDayNumber as number;
+    const events = props.Events;
+    const notes = props.Notes;
+    const key = props.AgendaDayNumber;
+
+    const dispatch = useDispatch();
+    const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();    
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
     const [notesOpen, setNotesOpen] = useState(false);
     const [displayNoteOpen, setDisplayNoteOpen] = useState(false);
@@ -120,9 +121,9 @@ export default function AgendaDay(props: any) {
             return;
         }
 
-        let message: string =
+        const message: string =
             'You are about to delete this note';
-        const toastId = toast.warning(
+        toast.warning(
             <ConfirmationDialog
                 Message={message}
                 ConfirmText="Yes"
@@ -177,11 +178,11 @@ export default function AgendaDay(props: any) {
     };
 
 
-    let noteRows: any[] = [];
+    const noteRows: ReactElement[] = [];
     if (notes && notes.length > 0) {
         notes.forEach((note, i) => {
             if (!note.ticketSocketEventId) {
-                let noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
+                const noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
                 const noteClass = note.isCompleted ? "agenda-day-note-completed" : "agenda-day-note";
                 noteRows.push(<div key={`adNote_${key}_${i}`} className={noteClass}>
                     <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '', moment(note.noteTimestamp).toDate(), note.isCompleted ?? false)}>{noteText}</span>
@@ -191,7 +192,7 @@ export default function AgendaDay(props: any) {
         });
     }
 
-    let eventRows: any[] = [];
+    const eventRows: ReactElement[] = [];
     if (events && events.length > 0) {
         events.forEach((evt, i) => {
             const statusSlug = getEventStatusSlug(evt, true);
@@ -206,12 +207,12 @@ export default function AgendaDay(props: any) {
             const sold = evt.totalTickets;
             const available = evt.ticketTypes?.reduce((accumulator, current) => accumulator + current.totalAvailable, 0) ?? 0;
 
-            let listSent = (evt.listSentToBand ?? false);
+            const listSent = (evt.listSentToBand ?? false);
             const listSentVips = evt.listSentNumVips ?? 0;
             const currentVips = evt.totalTickets ?? 0;
             const showVipAlert = (listSent && (listSentVips != currentVips));
 
-            let alertIcon: any = '';
+            let alertIcon: ReactElement = <></>;
             if (showVipAlert) {
                 alertIcon = <FaExclamationTriangle className="agenda-day-event-alert" title={`Current total of ${currentVips} differs from the count of ${listSentVips} when the list was sent to the band`}></FaExclamationTriangle>
             }

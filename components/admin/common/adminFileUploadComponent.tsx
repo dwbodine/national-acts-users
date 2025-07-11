@@ -1,13 +1,14 @@
 import { useUploadFile } from "@/hooks/common/useUploadFile";
-import { ChangeEvent, useState } from "react";
+import { AdminFileUploadProps } from "@/types/props";
+import { ChangeEvent, ReactElement, useState } from "react";
 import { FaTimesCircle } from "react-icons/fa";
 
 
-export default function AdminFileUpload(props: any) {
+export default function AdminFileUpload(props: AdminFileUploadProps) {
     const title: string = props?.Title ?? '';
     const currentFileTitle: string = props?.CurrentFileTitle ?? 'Current file: ';
     const fileUploadName: string = props?.FileUploadName ?? '';
-    const onUpload = props?.OnUpLoad;
+    const onUpload = props?.OnUpload;
     const onUploadStart = props?.OnUploadStart;
     const onUploadComplete = props?.OnUploadComplete;
     const showRemoveButton = props?.ShowRemoveButton ?? false;
@@ -60,7 +61,7 @@ export default function AdminFileUpload(props: any) {
         currentFileName = undefined;
     }
 
-    let removeButton: any = '';
+    let removeButton: ReactElement = <></>;
     if (showRemoveButton && currentFileName) {
         removeButton = <FaTimesCircle className="admin-current-file-remove" onClick={handleFileRemove} title={`Remove ${currentFileName}`} />;
     }

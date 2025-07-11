@@ -1,55 +1,54 @@
-import React, { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_REACT_NODES } from 'react';
-import { IShirtData, IShirtSizeData } from '@/types/event';
+import React from 'react';
+import { IShirtSizeData } from '@/types/event';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { ShirtSizesChartProps } from '@/types/props';
 
-export default function ShirtSizesChart(props: any) {
-  const shirtPropData: IShirtData = props.ShirtData as IShirtData;
-  const chartsHidden: boolean = props.ChartHidden as boolean;
-  const totalShirts: number = props.TotalShirts as number;
+export default function ShirtSizesChart(props: any) { // ShirtSizesChartProps) {
+  const shirtPropData = props.ShirtData;
+  const chartsHidden = props.ChartHidden;
+  const totalShirts = props.TotalShirts ?? 0;
 
   const chartColors = ['#8884d8', '#82ca9d', '#ffc658'];
   const shirtSizes = shirtPropData?.ShirtSizes;
 
-  let shirtData: any = [];
-  let legendData: any = [];
-  if (shirtSizes?.length > 0) {
-    shirtPropData.ShirtData?.forEach((shirSizeData: IShirtSizeData[], key: string) => {
-      let arr: any = [];
+  const shirtData: Map<string, string>[] = [];
+  const legendData = [];
+  if (shirtSizes?.length ?? 0 > 0) {
+    shirtPropData?.ShirtData?.forEach((shirSizeData: IShirtSizeData[], key: string) => {
+      const arr = new Map<string, string>();
       let total = 0;
-      arr['EventDate'] = key;
-      shirtSizes.forEach((shirtSize: string) => {
-        var data = shirSizeData.find((x) => x.ShirtSize == shirtSize);
-        var number = 0;
+      arr.set('EventDate', key);
+      shirtSizes?.forEach((shirtSize: string) => {
+        const data = shirSizeData.find((x) => x.ShirtSize == shirtSize);
+        let number = 0;
         if (data) {
           number = data.Number;
         }
-        arr[shirtSize] = number;
+        arr.set(shirtSize, number.toString());
         total += number;
       });
-      let obj: any = {};
-      Object.assign(obj, arr);
-      shirtData.push(obj);
-      arr['Total'] = total;
-      let legendObj: any = {};
-      Object.assign(legendObj, arr);
-      legendData.push(legendObj);
+      shirtData.push(arr);
+      arr.set('Total', total.toString());
+      legendData.push(arr);
     });
 
-    var areas = [];
-    let i = 0;
-    for (const shirtSize of shirtSizes) {
-      const key = `ss${i}`;
-      const color = chartColors[i % 3];
-      areas.push(
-        <Area
-          key={key}
-          type="monotone"
-          dataKey={shirtSize}
-          stroke={color}
-          fill={color}
-        />,
-      );
-      i++;
+    const areas = [];
+    if (shirtSizes) {
+      let i = 0;
+      for (const shirtSize of shirtSizes) {
+        const key = `ss${i}`;
+        const color = chartColors[i % 3];
+        areas.push(
+          <Area
+            key={key}
+            type="monotone"
+            dataKey={shirtSize}
+            stroke={color}
+            fill={color}
+          />,
+        );
+        i++;
+      }
     }
 
     return (

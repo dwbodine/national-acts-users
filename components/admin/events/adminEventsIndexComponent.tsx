@@ -20,7 +20,7 @@ import {
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import ReportDatePicker from '../../common/reportDatePIcker';
+import ReportDatePicker from '../../common/reportDatePicker';
 import { GetEventsResponse, GetSellersResponse, GetToursResponse, VipEvent } from '@/types/event';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
@@ -79,7 +79,7 @@ export default function AdminEventsIndex() {
         setEventIdList([]);
         setSelectedAction(null);
         dispatch(setReloadEvents(false));
-        let adminSelection = { ...currentAdminSelection };
+        const adminSelection = { ...currentAdminSelection };
         let sellerId: number = 0;
         if (!adminSelection.sellerId) {
           setTableLoading(false);
@@ -135,7 +135,7 @@ export default function AdminEventsIndex() {
     };
   }, [dispatch, getSellers, currentAdminSelection, getAdminEvents, tableLoading, getTours, getTicketSocketEventsOnly]);
 
-  const updateSeller = (sellerId: number) => {
+  const updateSeller = (sellerId: number | null) => {
     if (!sellerId || isNaN(sellerId)) {
       return;
     }
@@ -147,7 +147,7 @@ export default function AdminEventsIndex() {
   };
 
   const onDateChange = (newStart: number | undefined, newEnd: number | undefined) => {
-    let adminSelection = { ...currentAdminSelection };
+    const adminSelection = { ...currentAdminSelection };
     adminSelection.start = newStart;
     adminSelection.end = newEnd;
     dispatch(setAdminDates(adminSelection));
@@ -280,7 +280,7 @@ export default function AdminEventsIndex() {
       return;
     }
 
-    const toastId = toast.warning(
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"
@@ -464,10 +464,10 @@ export default function AdminEventsIndex() {
         </Col>
       </Row> 
       <AdminSellerSelect
-        id="refresh"
+        Id="refresh"
         Sellers={currentAdminSelection.allSellers}
         SellerId={currentAdminSelection.sellerId}
-        OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
+        OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
         Countries={currentAdminSelection.countries}
       />
       <Row className="admin-select" hidden={tourList.length == 0}>

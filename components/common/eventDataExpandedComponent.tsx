@@ -2,19 +2,20 @@ import { useAddNote } from '@/hooks/admin/useAddNote';
 import { useSendListToBand } from '@/hooks/admin/useSendListToBand';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
 import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents, setUpdateListStatus } from '@/lib/adminEventsSelectionSlice';
-import { resetAdmin, setAdminSellerId, setReloadEvents, setReloadSellers, setReloadVenues } from '@/lib/adminSelectionSlice';
+import { resetAdmin } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Note, VipEvent } from '@/types/event';
+import { EventDataExpandedProps } from '@/types/props';
 import moment from 'moment';
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Modal, TimePicker } from 'rsuite';
 
-export default function EventDataExpanded(props: any) {
-    const focusControl = props.FocusControl as string | undefined;
+export default function EventDataExpanded(props: EventDataExpandedProps) {
+    const focusControl = props.FocusControl;
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
     const vipEvent = currentReportSelection?.expandedEvent;
     const dispatch = useDispatch();
@@ -96,7 +97,7 @@ export default function EventDataExpanded(props: any) {
 
     const setSentEmail = (isSent: boolean) => {
         if (vipEvent != undefined) {
-            let currentEvent = { ...vipEvent };
+            const currentEvent = { ...vipEvent };
             currentEvent.emailSentToVips = isSent;
             dispatch(
                 setExpandedEvent(currentEvent)
@@ -106,7 +107,7 @@ export default function EventDataExpanded(props: any) {
 
     const setSentText = (isSent: boolean) => {
         if (vipEvent != undefined) {
-            let currentEvent = { ...vipEvent };
+            const currentEvent = { ...vipEvent };
             currentEvent.textSentToVips = isSent;
             dispatch(
                 setExpandedEvent(currentEvent)
@@ -116,7 +117,7 @@ export default function EventDataExpanded(props: any) {
 
     const setSentList = (isSent: boolean) => {
         if (vipEvent != undefined) {
-            let currentEvent = { ...vipEvent };
+            const currentEvent = { ...vipEvent };
             if (isSent != currentEvent.listSentToBand) {
                 dispatch(
                     setUpdateListStatus(true)
@@ -135,7 +136,7 @@ export default function EventDataExpanded(props: any) {
             dispatch(
                 setIsLoading(true)
             );
-            let currentEvent = { ...vipEvent };
+            const currentEvent = { ...vipEvent };
             if (completeAll) {
                 currentEvent.emailSentToVips = true;
                 currentEvent.textSentToVips = true;
@@ -190,7 +191,7 @@ export default function EventDataExpanded(props: any) {
 
     const editDoors = () => {
         if (vipEvent != undefined) {
-            let currentEvent: VipEvent = { ...vipEvent };
+            const currentEvent: VipEvent = { ...vipEvent };
             let doorsOpen: string | undefined = undefined;
             if (modalDoorsOpenDate) {
                 doorsOpen = moment(currentEvent.eventDate)
@@ -232,7 +233,7 @@ export default function EventDataExpanded(props: any) {
             return;
         }
 
-        let doorsOpen = moment(vipEvent.eventDate)
+        const doorsOpen = moment(vipEvent.eventDate)
             .startOf('day')
             .add(date.getHours(), 'hours')
             .add(date.getMinutes(), 'minutes');
@@ -245,7 +246,7 @@ export default function EventDataExpanded(props: any) {
             return;
         }
 
-        let meetAndGreet = moment(vipEvent.eventDate)
+        const meetAndGreet = moment(vipEvent.eventDate)
             .startOf('day')
             .add(date.getHours(), 'hours')
             .add(date.getMinutes(), 'minutes');
@@ -271,7 +272,7 @@ export default function EventDataExpanded(props: any) {
     const checkInNotes = (vipEvent?.checkInNotes) ? vipEvent.checkInNotes : 'n/a';
     const hasVips = (vipEvent?.totalTickets ?? 0 > 0);
 
-    let notes: any[] = [];
+    const notes: ReactElement[] = [];
     if (vipEvent?.notes) {
         vipEvent.notes.forEach((note: Note) => {
             notes.push(<div key={`note_${note.noteId}`}>{note.note}&nbsp;<span className="note-created">Date: {moment(note.noteTimestamp).format('MM/DD/YYYY h:mm A')}</span></div>)

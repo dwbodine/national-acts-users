@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../src/lib/store';
 import { setAdminEvents, setReloadAdminEvents, setAdminNotes, setActiveEventTab, setAdminDateRange, setExpandedEvent } from '@/lib/adminEventsSelectionSlice';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect } from 'react';
 import router from 'next/router';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
@@ -145,7 +145,7 @@ export default function AllEvents() {
     return text;
   };
 
-  let activeComponent: any = undefined;
+  let activeComponent: ReactElement = <></>;
   switch (currentReportSelection.eventTabView) {
     case EventTabView.Month:
       activeComponent = <AllEventsMonth />;

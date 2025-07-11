@@ -1,16 +1,16 @@
-import { ITicketSalesData } from '@/types/event';
+import { SalesByAccountWidgetProps } from '@/types/props';
 import { Col, Row } from 'react-bootstrap';
 
-export default function SalesByAccountWidget(props: any) {
-  const accountName = props.accountName as string | undefined;
-  const accountTotals = props.accountTotals as ITicketSalesData | undefined;
-  const selectedYear = props.selectedYear as number | undefined;
+export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
+  const accountName = props.AccountName;
+  const accountTotals = props.AccountTotals;
+  const selectedYear = props.SelectedYear;
 
   let ticketsPerTransaction = 0;
   let averagePurchaseAmount = 0;
   let pricePerTicket = 0;
   let serviceFeePerTicket = 0;
-  let tickets = accountTotals?.Tickets ?? 0;
+  const tickets = accountTotals?.Tickets ?? 0;
   if (tickets > 0) {
     pricePerTicket = (accountTotals?.Revenue ?? 0) / tickets;
     serviceFeePerTicket = (accountTotals?.ServiceFees ?? 0) / tickets;

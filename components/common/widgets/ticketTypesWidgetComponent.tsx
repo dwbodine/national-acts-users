@@ -1,48 +1,51 @@
-import React from 'react';
-import { ITicketData, ITicketTypeData, TicketType } from '@/types/event';
+import React, { ReactElement } from 'react';
+import { ITicketTypeData, TicketType } from '@/types/event';
 import { FaTicketAlt } from 'react-icons/fa';
+import { TicketTypesWidgetProps } from '@/types/props';
 
-export default function TicketTypesWidget(props: any) {
-  const ticketPropData: ITicketData = props.TicketData as ITicketData;
-  const totalTickets: number = props.TotalTickets as number;
-  const ticketsRefunded: number = props.TicketsRefunded as number;
-  const hideTicketBreakdown: boolean = props.HideTicketBreakDown as boolean;
-  const isAdmin: boolean = props.IsAdmin as boolean;
+export default function TicketTypesWidget(props: TicketTypesWidgetProps) {
+  const ticketPropData = props.TicketData;
+  const totalTickets = props.TotalTickets;
+  const ticketsRefunded = props.TicketsRefunded;
+  const hideTicketBreakdown = props.HideTicketBreakDown;
+  const isAdmin = props.IsAdmin;
 
   const ticketTypes: TicketType[] | undefined = ticketPropData?.TicketTypes;
 
-  let arr: any = [];
-  if (ticketTypes?.length > 0) {
-    let ttypes: any = [];
+  const ticketMap = new Map<string, number>();
+  if (ticketTypes?.length ?? 0 > 0) {
+    const ttypes: ReactElement[] = [];
 
     if (!hideTicketBreakdown) {
-      ticketTypes.forEach((ticketType) => {
-        ticketPropData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
-              const data = ticketTypeData.find(
-                (x) => x.TicketType.toLowerCase() == ticketType.ticketTypeName.toLowerCase(),
-              );
-              let number = arr[ticketType.ticketTypeName] ?? 0;
-              if (data != undefined) {
-                number += data.Number;
-              }
-              arr[ticketType.ticketTypeName] = number;
+      ticketTypes?.forEach((ticketType) => {
+        ticketPropData?.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
+          const data = ticketTypeData.find(
+            (x) => x.TicketType.toLowerCase() == ticketType.ticketTypeName.toLowerCase(),
+          );
+          let number = ticketMap.get(ticketType.ticketTypeName) ?? 0;
+          if (data != undefined) {
+            number += data.Number;
           }
+          ticketMap.set(ticketType.ticketTypeName, number);
+        }
         );
       });
 
-      let i = 0;
-      for (const ticketType of ticketTypes) {
-        const key = `ttw${i}`;
-        const numSold = arr[ticketType.ticketTypeName];
-        if (!isAdmin && numSold == 0) {
-          continue;
+      if (ticketTypes) {
+        let i = 0;
+        for (const ticketType of ticketTypes) {
+          const key = `ttw${i}`;
+          const numSold = ticketMap.get(ticketType.ticketTypeName) ?? 0;
+          if (!isAdmin && numSold == 0) {
+            continue;
+          }
+          ttypes.push(
+            <div key={key}>
+              {ticketType.ticketTypeName} ({numSold})
+            </div>,
+          );
+          i++;
         }
-        ttypes.push(
-          <div key={key}>
-            {ticketType.ticketTypeName} ({numSold})
-          </div>,
-        );
-        i++;
       }
     }
 

@@ -6,7 +6,7 @@ import { RootState } from '@/lib/store';
 import { setAllFaqs, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
 import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { GetFaqsResponse, ModifyFaqResponse } from '@/types/admin';
+import { GetFaqsResponse } from '@/types/admin';
 import { Button } from 'react-bootstrap';
 import { Faq } from '@/types/public';
 import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';
@@ -70,7 +70,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    let faq = currentAdminSelection.allFaqs?.find((x) => x.faqId == faqId);
+    const faq = currentAdminSelection.allFaqs?.find((x) => x.faqId == faqId);
     if (faq) {
       dispatch(setSelectedFaq(faq));
       setTableLoading(true);
@@ -82,7 +82,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    moveFaqUp(faqId).then ((response: ModifyFaqResponse) => {
+    moveFaqUp(faqId).then (() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
@@ -92,7 +92,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    moveFaqDown(faqId).then ((response: ModifyFaqResponse) => {
+    moveFaqDown(faqId).then (() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
@@ -102,7 +102,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    deleteFaq(faqId).then ((response: ModifyFaqResponse) => {
+    deleteFaq(faqId).then (() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });

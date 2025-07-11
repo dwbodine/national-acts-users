@@ -1,14 +1,14 @@
-import { VipEvent } from '@/types/event';
 import React from 'react';
 import moment from 'moment';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
+import { EventRowProps } from '@/types/props';
 
-export default function EventRow(props: any) {
-  const vipEvent = props.VipEvent as VipEvent;
-  const hideRevItem = props.HideRevenue as boolean;
-  const hideServiceFees = props.HideServiceFees as boolean;
-  const showNotes = props.ShowNotes as boolean;
+export default function EventRow(props: EventRowProps) {
+  const vipEvent = props.VipEvent;
+  const hideRevItem = props.HideRevenue;
+  const hideServiceFees = props.HideServiceFees;
+  const showNotes = props.ShowNotes;
   const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
   const id = `event_${vipEvent.externalEventId}`;
@@ -58,7 +58,7 @@ export default function EventRow(props: any) {
         {serviceFees}
       </td>
       <td hidden={!showNotes}>
-        <a onClick={() => showNoteDialog(vipEvent.externalEventId)}>Notes</a>
+        <a onClick={() => showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null}>Notes</a>
       </td>
     </tr>
   );

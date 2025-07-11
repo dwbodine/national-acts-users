@@ -2,6 +2,7 @@ import { ActivePageKey } from "@/constants";
 import { setReloadAdminEvents } from "@/lib/adminEventsSelectionSlice";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { setReloadEvents } from "@/lib/reportSelectionSlice";
+import { AdminTabsProps } from "@/types/props";
 import router from "next/router";
 import { Col, Container, Row } from "react-bootstrap";
 import { CirclesWithBar } from "react-loader-spinner";
@@ -9,10 +10,10 @@ import { useDispatch } from "react-redux";
 import { Button, ButtonGroup } from "rsuite";
 
 
-export default function AdminTabsMobile(props: any) {
-  const activeKey = props.ActiveKey as ActivePageKey;
-  const isLoading = props.IsLoading as boolean;
-  const notAdmin = props.NotAdmin as boolean;
+export default function AdminTabsMobile(props: AdminTabsProps) {
+  const activeKey = props.ActiveKey;
+  const isLoading = props.IsLoading;
+  const notAdmin = props.NotAdmin;
   const dispatch = useDispatch();
 
   const allTabsTop: ActivePageKey[] = [ActivePageKey.Dashboard, ActivePageKey.Events, ActivePageKey.SalesOverview];
@@ -51,7 +52,7 @@ export default function AdminTabsMobile(props: any) {
     }
   };
 
-  let activeComponent: any = undefined;
+  let activeComponent: JSX.Element | undefined;
   switch (activeKey) {
     case ActivePageKey.Dashboard:
       activeComponent = props.DashboardComponent;

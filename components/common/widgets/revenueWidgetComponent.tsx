@@ -1,9 +1,10 @@
+import { RevenueWidgetProps } from '@/types/props';
 import { FaMoneyBillAlt } from 'react-icons/fa';
 
-export default function RevenueWidget(props: any) {
-  const totalRevenue: number = (props.TotalRevenue as number ?? 0);
-  const totalServiceFees: number = (props.TotalServiceFees as number ?? 0);  
-  const hideServiceFees: boolean = props.HideServiceFees as boolean;
+export default function RevenueWidget(props: RevenueWidgetProps) {
+  const totalRevenue = (props.TotalRevenue ?? 0);
+  const totalServiceFees = (props.TotalServiceFees ?? 0);  
+  const hideServiceFees = props.HideServiceFees;
 
   return (
     <>

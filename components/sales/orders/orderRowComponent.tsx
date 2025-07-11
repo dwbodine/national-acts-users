@@ -31,7 +31,7 @@ export default function OrderRow(props: any) {
   const revenue = new Number(order.revenueUsd - (order.revenueRefundedUsd ?? 0)).toFixed(2);
   const serviceFees = new Number((order.serviceFeesUsd ?? 0) - (order.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2);
 
-  const ticketTypeRows: any[] = [];
+  const ticketTypeRows: ReactElement[] = [];
 
   if (order.tickets && order.tickets.length > 0) {
     const ticketMap = new Map<string, number>();
@@ -60,7 +60,7 @@ export default function OrderRow(props: any) {
     });
   }
 
-  const shirtSizeRows: any[] = [];
+  const shirtSizeRows: ReactElement[] = [];
   if (hasShirtData) {
     const shirtMap = new Map<string, number>();
     order.tickets?.forEach((ticket) => {
@@ -86,7 +86,7 @@ export default function OrderRow(props: any) {
     });
   }
 
-  const attendeeNameRows: any[] = [];
+  const attendeeNameRows: ReactElement[] = [];
   if (order.tickets && order.tickets.length > 0) {
     order.tickets.forEach((ticket, i) => {
       const key = `anr${i}`;

@@ -1,5 +1,5 @@
 import { RootState } from '@/lib/store';
-import { useCallback, useEffect, useState } from 'react';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import router from 'next/router';
@@ -36,8 +36,9 @@ import AdminFileUpload from '../common/adminFileUploadComponent';
 import { useCancelEvent } from '@/hooks/admin/useCancelEvent';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
+import { EditProps } from '@/types/props';
 
-export default function AdminEventEdit(props: any) {
+export default function AdminEventEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -141,21 +142,21 @@ export default function AdminEventEdit(props: any) {
     };
   }, [currentAdminSelection, dispatch, id, globalSelection, getAllVenues, currentSeller, getSellers, getTicketSocketEventsOnly, loadEventById]);
 
-  const onEventVenueChange = (value: number | null, event: React.SyntheticEvent) => {
+  const onEventVenueChange = (value: number | null) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.externalEventVenueId = value ?? undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
 
-  const onEventChange = (value: number | null, event: React.SyntheticEvent) => {
+  const onEventChange = (value: number | null) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.ticketSocketEventId = value ?? undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -165,7 +166,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.title = title;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -202,7 +203,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.isActive = isActive;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -212,7 +213,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.isHidden = isHidden;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -222,7 +223,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.isDeleted = isDeleted;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -232,7 +233,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.isAddedToBandsInTown = isAddedToBandsInTown;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -242,7 +243,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.disableLinkButton = isDisabled;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -252,7 +253,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.disableLinkReason = reason.trim().length > 0 ? reason : undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -262,7 +263,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.disableVipLinkButton = isDisabled;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -272,7 +273,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.disableVipLinkReason = reason.trim().length > 0 ? reason : undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -282,7 +283,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.externalVipLink = url.trim().length > 0 ? url : undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -292,7 +293,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.externalUrl = url.trim().length > 0 ? url : undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -304,7 +305,7 @@ export default function AdminEventEdit(props: any) {
     }
 
     const eventDate = moment(date).startOf('day');
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.eventDate = eventDate.format('YYYY-MM-DD HH:mm:ss');
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -314,10 +315,10 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     if (currentEvent.ticketTypes) {
       currentEvent.ticketTypes = currentEvent.ticketTypes.map((ticketType) => {
-        let newTicketType = { ...ticketType };
+        const newTicketType = { ...ticketType };
         if (newTicketType.ticketTypeId == 0) {
           newTicketType.ticketTypeName = ticketTypeName;
         }
@@ -344,7 +345,7 @@ export default function AdminEventEdit(props: any) {
     announceDate = announceDate.hours(0);
     announceDate = announceDate.minutes(0);
     announceDate = announceDate.seconds(0);
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -362,7 +363,7 @@ export default function AdminEventEdit(props: any) {
     }
 
     const announceTime = moment(date);
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     let announceDate = moment(currentEvent.announceDate);
     announceDate = announceDate.hours(announceTime.hours());
     announceDate = announceDate.minutes(announceTime.minutes());
@@ -376,7 +377,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.announceDate = undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -386,7 +387,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     if (currentEvent.announceDate) {
       let announceDate = moment(currentEvent.announceDate);
       announceDate = announceDate.hours(0);
@@ -404,7 +405,7 @@ export default function AdminEventEdit(props: any) {
       }
   
       const eventTime = moment(date);
-      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      const currentEvent = { ...currentAdminSelection.selectedEvent };
       let eventDate = moment(currentEvent.eventDate);
       eventDate = eventDate.hours(eventTime.hours());
       eventDate = eventDate.minutes(eventTime.minutes());
@@ -418,7 +419,7 @@ export default function AdminEventEdit(props: any) {
       if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
         return;
       }
-      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      const currentEvent = { ...currentAdminSelection.selectedEvent };
       currentEvent.eventTime = undefined;    
       dispatch(setAdminEvent(currentEvent));
       markDirty();
@@ -428,7 +429,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.checkInLocation = location;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -438,7 +439,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.checkInNotes = notes;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
@@ -482,9 +483,9 @@ export default function AdminEventEdit(props: any) {
       return;
     }
 
-    let message: string =
+    const message: string =
       'You have made changes to this event, are you sure you want to discard them and leave?';
-    const toastId = toast.warning(
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"
@@ -524,7 +525,7 @@ export default function AdminEventEdit(props: any) {
     }
 
     if (ticketTypeId > 0) {
-      let currentEvent = { ...currentAdminSelection.selectedEvent };
+      const currentEvent = { ...currentAdminSelection.selectedEvent };
       currentEvent.ticketTypes = currentEvent.ticketTypes?.map((ticketType) => {
         if (ticketType.ticketTypeId == ticketTypeId) {
           ticketType = { ...ticketType, isActive: isActive };
@@ -571,7 +572,7 @@ export default function AdminEventEdit(props: any) {
     if (refundServiceFees) {
       message += ', including all service fees';
     }
-    const toastId = toast.warning(
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"
@@ -691,7 +692,7 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection.selectedEvent || !fileUploadName || !filename) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     switch (fileUploadName) {
       case 'Thumbnail':
         currentEvent.externalThumbnail = filename;
@@ -721,14 +722,14 @@ export default function AdminEventEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    let currentEvent = { ...currentAdminSelection.selectedEvent };
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.externalThumbnail = undefined;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
 
   const handleVenueOpen = () => {
-    let venue: ExternalVenue = {
+    const venue: ExternalVenue = {
       venueId: 0,
       venue: '',
       address: '',
@@ -785,7 +786,7 @@ export default function AdminEventEdit(props: any) {
 
     handleVenueClose();
 
-    let venueToUpdate: ExternalVenue = {
+    const venueToUpdate: ExternalVenue = {
       ...currentAdminSelection.selectedVenue,
       venue: venueName,
       address: address,
@@ -799,13 +800,13 @@ export default function AdminEventEdit(props: any) {
     updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
       if (response.success) {
         const newVenue = response.updatedVenue;
-        let adminSelection = { ...currentAdminSelection };
+        const adminSelection = { ...currentAdminSelection };
         if (newVenue != undefined && 
             adminSelection.venues != undefined && 
             adminSelection.selectedEvent != undefined && 
             !adminSelection.venues.find(x => x.venueId == newVenue.venueId)) {
           dispatch(setAdminVenue(undefined));
-          let venueList = [ ...adminSelection.venues ];
+          const venueList = [ ...adminSelection.venues ];
           venueList.push(newVenue);
           venueList.sort((a, b) =>
             a.venue < b.venue ? -1 : a.venue > b.venue ? 1 : 0,
@@ -813,7 +814,7 @@ export default function AdminEventEdit(props: any) {
           dispatch(
             setVenues(venueList)
           );
-          let currentEvent = { ...adminSelection.selectedEvent };
+          const currentEvent = { ...adminSelection.selectedEvent };
           currentEvent.externalEventVenueId = newVenue.venueId;
           dispatch(
             setAdminEvent(currentEvent)
@@ -836,7 +837,7 @@ export default function AdminEventEdit(props: any) {
       return false;
     }    
 
-    let eventToUpdate: VipEvent = { ...currentAdminSelection.selectedEvent };
+    const eventToUpdate: VipEvent = { ...currentAdminSelection.selectedEvent };
 
     if (!eventToUpdate.title) {
       toast.warning("Title must be set");
@@ -900,7 +901,7 @@ export default function AdminEventEdit(props: any) {
 
     updateEvent(eventToUpdate).then((response: ModifyEventResponse) => {
       if (response.success) {
-        let adminSelection = { ...currentAdminSelection };
+        const adminSelection = { ...currentAdminSelection };
         adminSelection.start = undefined;
         adminSelection.end = undefined;
         toast.success('Event updated successfully');
@@ -994,7 +995,7 @@ export default function AdminEventEdit(props: any) {
   const checkInLocation = selectedEvent?.checkInLocation ?? '';
   const checkInNotes = selectedEvent?.checkInNotes ?? '';
 
-  let ticketTypeRows: any[] = [];
+  const ticketTypeRows: ReactElement[] = [];
   if (
     selectedEvent &&
     selectedEvent.ticketTypes &&
@@ -1011,7 +1012,7 @@ export default function AdminEventEdit(props: any) {
           if (order.isComped) {
             ticketTypeDisabled = true;
           } else {
-            var ticketsWithType = order.tickets?.find(
+            const ticketsWithType = order.tickets?.find(
               (x) => x.ticketTypeId == ticketTypeId,
             );
             if (ticketsWithType != undefined) {
@@ -1062,7 +1063,7 @@ export default function AdminEventEdit(props: any) {
     );
   }
 
-  let notes: any[] = [];
+  const notes: ReactElement[] = [];
   if (selectedEvent?.notes) {
     selectedEvent.notes.forEach((note: Note) => {
       notes.push(<div key={`note_${note.noteId}`}>{note.note}&nbsp;<span className="note-created">Date: {moment(note.noteTimestamp).format('MM/DD/YYYY h:mm A')}</span></div>)
@@ -1533,7 +1534,7 @@ export default function AdminEventEdit(props: any) {
       </Row>
       <Row>
         <Col>
-          <Button onClick={onSubmit}>Submit</Button>{' '}
+          <Button onClick={onSubmit} disabled={isUploading}>Submit</Button>{' '}
           <Button hidden={id != undefined} onClick={confirmGoBack}>Back</Button>
         </Col>
       </Row>

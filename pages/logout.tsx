@@ -15,7 +15,7 @@ export default function Logout() {
     const timeoutId = setTimeout(() => {
       logActivityData(UserActivityType.Logout).then(() => {
         resetStores();
-        logout().then((success) => {
+        logout().then(() => {
           router.push('/login/');
         });
       });

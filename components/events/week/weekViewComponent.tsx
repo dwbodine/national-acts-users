@@ -40,7 +40,7 @@ export default function WeekView(props: any) {
         dispatch(setAdminDateRange(dateRange));
     };
 
-    let weekdays: any[] = [];
+    let weekdays: ReactElement[] = [];
     if (startOfWeek) {
         let displayDate = startOfWeek;
         for (let i = 0; i < 7; i++) {

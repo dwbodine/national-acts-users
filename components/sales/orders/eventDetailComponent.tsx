@@ -94,9 +94,9 @@ export default function EventDetail(props: any) {
     currentReportSelection.currentDetailEvent?.hasNonUSAOrders ?? false;
   const currencySymbol: string | undefined =
     currentReportSelection.currentDetailEvent?.nonUsaCurrencySymbol;
-  const ticketBreakdownRows: any[] = [];
-  const shirtSizeBreakdownRows: any[] = [];
-  let orderRows: any[] = [];
+  const ticketBreakdownRows: ReactElement[] = [];
+  const shirtSizeBreakdownRows: ReactElement[] = [];
+  let orderRows: ReactElement[] = [];
   let hasOrders = false;
   let searchBarHidden = true;
   let visibleOrders: Order[] = [];

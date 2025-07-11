@@ -1,11 +1,12 @@
-import { ITopSeller } from '@/types/user';
+import { TopSellersWidgetProps } from '@/types/props';
+import { ReactElement } from 'react';
 import { Col, Row } from 'react-bootstrap';
 
-export default function TopSellersWidget(props: any) {
-  const topSellers = props.topSellers as ITopSeller[] | undefined;
-  const dateRange = props.dateRange as string | undefined;
+export default function TopSellersWidget(props: TopSellersWidgetProps) {
+  const topSellers = props.TopSellers;
+  const dateRange = props.DateRange;
 
-  let sellerRows: any[] = [];
+  const sellerRows: ReactElement[] = [];
   if (topSellers && topSellers.length > 0) {
     topSellers.forEach((seller, i) => {
       const key = `topSeller${i}`;

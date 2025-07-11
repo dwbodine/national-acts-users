@@ -3,21 +3,21 @@ import RevenueWidget from './revenueWidgetComponent';
 import ShirtSizesWidget from './shirtSizesWidgetComponent';
 import ShowsListedWidget from './showsListedWidgetComponent';
 import TicketTypesWidget from './ticketTypesWidgetComponent';
-import { IShirtData, ITicketData } from '@/types/event';
+import { WidgetBarProps } from '@/types/props';
 
-export default function WidgetBar(props: any) {
-  const totalShows: number = props.TotalShows as number;
-  const totalTickets: number = props.TotalTickets as number;
-  const totalRevenue: number = props.TotalRevenue as number;
-  const totalShirts: number = props.TotalShirts as number;
-  const ticketData: ITicketData | undefined = props.TicketData as ITicketData | undefined;
-  const shirtData: IShirtData | undefined = props.ShirtData as IShirtData | undefined;
-  const hideRevItem = props.HideRevenue as boolean;
-  const hideServiceFees = props.HideServiceFees as boolean;
-  const ticketsRefunded: number = props.TicketsRefunded as number;
-  const totalServiceFees: number = props.TotalServiceFees as number;
-  const hideTicketBreakdown: boolean = props.HideTicketBreakDown as boolean;
-  const isAdmin: boolean = props.IsAdmin as boolean;
+export default function WidgetBar(props: WidgetBarProps) {
+  const totalShows = props.TotalShows;
+  const totalTickets = props.TotalTickets;
+  const totalRevenue = props.TotalRevenue;
+  const totalShirts = props.TotalShirts;
+  const ticketData = props.TicketData;
+  const shirtData = props.ShirtData;
+  const hideRevItem = props.HideRevenue;
+  const hideServiceFees = props.HideServiceFees;
+  const ticketsRefunded = props.TicketsRefunded;
+  const totalServiceFees = props.TotalServiceFees;
+  const hideTicketBreakdown = props.HideTicketBreakDown;
+  const isAdmin = props.IsAdmin;
 
   const hideTickets = !ticketData || totalTickets == 0;
   const hideShirts = !shirtData || totalShirts == 0;

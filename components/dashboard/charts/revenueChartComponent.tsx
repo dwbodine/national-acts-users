@@ -1,10 +1,10 @@
-import { IRevenueKeys } from '@/types/event';
+import { RevenueChartProps } from '@/types/props';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
-export default function RevenueChart(props: any) {
-  const revenueData: IRevenueKeys[] = props.RevenueData as IRevenueKeys[];
-  const chartsHidden: boolean = props.ChartHidden as boolean;
-  const totalRevenue: number = props.TotalRevenue as number;
+export default function RevenueChart(props: RevenueChartProps) {
+  const revenueData = props.RevenueData;
+  const chartsHidden = props.ChartHidden;
+  const totalRevenue = props.TotalRevenue ?? 0;
 
   return (
     <>

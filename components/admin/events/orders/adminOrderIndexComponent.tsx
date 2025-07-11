@@ -25,8 +25,9 @@ import { FaArrowTurnDown } from 'react-icons/fa6';
 import { toast } from 'react-toastify';
 import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 import { ItemDataType } from 'rsuite/esm/internals/types';
+import { EditProps } from '@/types/props';
 
-export default function AdminOrdersIndex(props: any) {
+export default function AdminOrdersIndex(props: EditProps) {
   const id: number | undefined = props.Id as number;
   const { Column, HeaderCell, Cell } = Table;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -70,8 +71,8 @@ export default function AdminOrdersIndex(props: any) {
       } else if (currentAdminSelection.reloadEvents) {
         dispatch(setReloadEvents(false));
         setOrderIdList([]);
-        let adminSelection = { ...currentAdminSelection };
-        let selectedEventId = adminSelection.selectedEvent?.externalEventId;
+        const adminSelection = { ...currentAdminSelection };
+        const selectedEventId = adminSelection.selectedEvent?.externalEventId;
         if (!adminSelection.sellerId || !selectedEventId) {
           setTableLoading(false);
           return;
@@ -181,7 +182,7 @@ export default function AdminOrdersIndex(props: any) {
       return;
     }
 
-    const toastId = toast.warning(
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"

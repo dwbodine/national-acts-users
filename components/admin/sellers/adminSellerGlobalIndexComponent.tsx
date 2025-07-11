@@ -73,7 +73,7 @@ export default function AdminSellerGlobalIndex() {
     if (!sellerId || isNaN(sellerId)) {
       return;
     }
-    let seller = currentAdminSelection.allSellers?.find((x) => x.sellerId == sellerId);
+    const seller = currentAdminSelection.allSellers?.find((x) => x.sellerId == sellerId);
     if (seller) {
       dispatch(setAdminSeller(seller));
       setTableLoading(true);

@@ -175,7 +175,7 @@ export default function WeekDay(props: any) {
         );
     };
 
-    let noteRows: any[] = [];
+    let noteRows: ReactElement[] = [];
     if (notes && notes.length > 0) {
         notes.forEach((note, i) => {
             if (!note.ticketSocketEventId) {
@@ -189,7 +189,7 @@ export default function WeekDay(props: any) {
         });
     }
 
-    let eventRows: any[] = [];
+    let eventRows: ReactElement[] = [];
     if (events && events.length > 0) {
         events.forEach((evt, i) => {
             const statusSlug = getEventStatusSlug(evt, true);

@@ -3,10 +3,9 @@ import DashboardBar from './dashboardBarComponent';
 import TicketSalesChart from '../common/ticketSalesChartComponent';
 import {
   GetDashboardOrdersResponse,
-  GetOrdersResponse,
   ITicketSalesData,
 } from '@/types/event';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
 import { useDispatch, useSelector } from 'react-redux';
@@ -108,7 +107,7 @@ export default function DashboardIndex() {
     currentDashboardSelection.currentDashboardData?.topVenues ?? undefined;
   const dateRange = `${moment.unix(currentDashboardSelection.start).format('MM/DD/YYYY')} - ${moment.unix(currentDashboardSelection.end).format('MM/DD/YYYY')}`;
 
-  let chartSalesData: ITicketSalesData[] = [];
+  const chartSalesData: ITicketSalesData[] = [];
   if (ticketSalesData) {
     let j = 0;
     for (let i = ticketSalesData.length - 1; i >= 0; i--) {
@@ -117,7 +116,7 @@ export default function DashboardIndex() {
     }
   }
 
-  let accountTotalWidgets: any[] = [];
+  const accountTotalWidgets: ReactElement[] = [];
   const accountTotals = currentDashboardSelection.currentDashboardData?.totalsByAccount;
   if (accountTotals && accountTotals.length > 0) {
     accountTotals.forEach((accountTotal, i) => {

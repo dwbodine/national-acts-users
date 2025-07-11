@@ -1,12 +1,13 @@
-import { ISalesData } from '@/types/user';
+import { SalesPerMonthWidgetProps } from '@/types/props';
 import moment from 'moment';
+import { ReactElement } from 'react';
 import { Col, Row } from 'react-bootstrap';
 
-export default function SalesPerMonthWidget(props: any) {
-  const salesPerMonth = props.salesPerMonth as ISalesData[] | undefined;
-  const selectedYear = props.selectedYear as number | undefined;
+export default function SalesPerMonthWidget(props: SalesPerMonthWidgetProps) {
+  const salesPerMonth = props.SalesPerMonth;
+  const selectedYear = props.SelectedYear;
 
-  let salesRows: any[] = [];
+  const salesRows: ReactElement[] = [];
   const currentYear = selectedYear ? selectedYear : moment().year();
 
   if (salesPerMonth != undefined) {

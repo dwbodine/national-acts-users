@@ -1,5 +1,5 @@
 import { RootState } from '@/lib/store';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
@@ -11,7 +11,6 @@ import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
 import { ModifySellerResponse } from '@/types/admin';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { SelectPicker } from 'rsuite';
-import { FaGalacticSenate } from 'react-icons/fa';
 
 export default function AdminSellerGlobalEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -37,7 +36,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller || !sellerName) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.name != sellerName) {
       sellerToUpdate.name = sellerName;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -48,7 +47,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.address != address) {
       sellerToUpdate.address = address;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -59,7 +58,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.city != city) {
       sellerToUpdate.city = city;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -70,7 +69,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.state != state) {
       sellerToUpdate.state = state;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -81,7 +80,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.zip != zip) {
       sellerToUpdate.zip = zip;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -92,7 +91,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (!countryId) {
       sellerToUpdate.country = undefined;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -106,7 +105,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.phone != phone) {
       sellerToUpdate.phone = phone;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -117,7 +116,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.email != email) {
       sellerToUpdate.email = email;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -128,7 +127,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.twitter != twitter) {
       sellerToUpdate.twitter = twitter;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -139,7 +138,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.facebook != facebook) {
       sellerToUpdate.facebook = facebook;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -150,7 +149,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.instagram != instagram) {
       sellerToUpdate.instagram = instagram;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -161,7 +160,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.youtube != youtube) {
       sellerToUpdate.youtube = youtube;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -172,7 +171,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.spotify != spotify) {
       sellerToUpdate.spotify = spotify;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -183,7 +182,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.website != website) {
       sellerToUpdate.website = website;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -194,7 +193,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.websiteDisplayText != websiteDisplayText) {
       sellerToUpdate.websiteDisplayText = websiteDisplayText;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -205,7 +204,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.hideInList != hide) {
       sellerToUpdate.hideInList = hide;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -216,7 +215,7 @@ export default function AdminSellerGlobalEdit() {
     if (!currentAdminSelection.selectedSeller) {
       return;
     }
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.isActive != isActive) {
       sellerToUpdate.isActive = isActive;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -228,7 +227,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     let currentCategories: SellerEventCategory[] = sellerToUpdate.sellerEventCategories
       ? [...sellerToUpdate.sellerEventCategories]
       : [];
@@ -251,7 +250,7 @@ export default function AdminSellerGlobalEdit() {
         currentCategories = currentCategories.map(
           (x) => {
             if (x.ticketSocketId == ticketSocketId) {
-              let cat = {...x};
+              const cat = {...x};
               cat.eventCategoryId = eventCategoryId;
               return cat;
             } else {
@@ -273,7 +272,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
 
-    let sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.sellerType != sellerTypeValue) {
       sellerToUpdate.sellerType = sellerTypeValue;
       dispatch(setAdminSeller(sellerToUpdate));
@@ -353,7 +352,7 @@ export default function AdminSellerGlobalEdit() {
       return false;
     }
 
-    let sellerToUpdate: Seller = {
+    const sellerToUpdate: Seller = {
       ...currentAdminSelection.selectedSeller
     };
 
@@ -389,12 +388,12 @@ export default function AdminSellerGlobalEdit() {
   };
 
   const allAccounts = currentAdminSelection.ticketSocketAccounts;
-  let categoryRows: any[] = [];
+  const categoryRows: ReactElement[] = [];
   if (allAccounts && allAccounts.length > 0 && currentAdminSelection.selectedSeller) {
     allAccounts.map((account, index) => {
       const selectedCategory = currentAdminSelection.selectedSeller?.sellerEventCategories?.find(x => x.ticketSocketId == account.ticketSocketId);
       const disabled = selectedCategory && selectedCategory.hasEvents;
-      let options: any[] = [];
+      const options: ReactElement[] = [];
       options.push(<option key={`a${index}_00`} value={0}>
         {' '}
         -- Select one --
@@ -422,7 +421,7 @@ export default function AdminSellerGlobalEdit() {
     });
   }
 
-  let sellerTypeOptions: any[] = [];
+  const sellerTypeOptions: ReactElement[] = [];
   const sellerTypeValues = Object.values(SellerType).filter((v) => !isNaN(Number(v)));
   sellerTypeOptions.push(<option key={`st_00`} value={0}>
     {' '}

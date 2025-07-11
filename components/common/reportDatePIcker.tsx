@@ -1,20 +1,21 @@
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
+import { ReportDatePickerProps } from '@/types/props';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { DatePicker } from 'rsuite';
 
-export default function ReportDatePicker(props: any) {
-  const onChange = props.onChange;
-  const onStartClear = props.onStartClear;
-  const onEndClear = props.onEndClear;
+export default function ReportDatePicker(props: ReportDatePickerProps) {
+  const onChange = props.OnChange;
+  const onStartClear = props.OnStartClear;
+  const onEndClear = props.OnEndClear;
   const [start, setStart] = useState<number | undefined>();
   const [end, setEnd] = useState<number | undefined>();
 
   useEffect(() => {
-    setStart(props.start);
-    setEnd(props.end);
-  }, [props.start, props.end]);
+    setStart(props.Start);
+    setEnd(props.End);
+  }, [props.Start, props.End]);
 
   const onStartChange = (date: Date | null) => {
     if (!date) {

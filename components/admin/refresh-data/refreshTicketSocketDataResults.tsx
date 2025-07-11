@@ -1,9 +1,9 @@
-import { TicketSocketRefreshHistory } from '@/types/event';
+import { RefreshTicketSocketDataResultProps } from '@/types/props';
 import moment from 'moment';
 import { Col, Row } from 'react-bootstrap';
 
-export default function RefreshTicketSocketDataResults(props: any) {
-  const results = props.updateResults as TicketSocketRefreshHistory | undefined;
+export default function RefreshTicketSocketDataResults(props: RefreshTicketSocketDataResultProps) {
+  const results = props.UpdateResults;
 
   let succeeded = '';
   let errorMessage = '';

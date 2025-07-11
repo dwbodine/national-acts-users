@@ -1,11 +1,11 @@
 import { ActivePageKey } from '@/constants';
 import AdminPage from '../../components/common/adminPageComponent';
-import { User, UserActivityType } from '@/types/user';
+import { UserActivityType } from '@/types/user';
 import DashboardIndex from '../../components/dashboard/dashboardIndexComponent';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useDispatch } from 'react-redux';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { setReloadDashboardOrders } from '@/lib/dashboardSelectionSlice';
 
 export default function Dashboard() {

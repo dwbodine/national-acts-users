@@ -45,8 +45,8 @@ export default function MonthView(props: any) {
     };
 
 
-    let monthDayRows: any[] = [];
-    let monthDays: any[] = [];
+    let monthDayRows: ReactElement[] = [];
+    let monthDays: ReactElement[] = [];
     if (startOfMonth && endOfMonth) {
         let displayDate = startOfMonth.startOf('week').startOf("day");
         let i = 1;

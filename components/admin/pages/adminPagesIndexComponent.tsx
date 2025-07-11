@@ -90,7 +90,7 @@ export default function AdminPagesIndex() {
     if (!pageId || isNaN(pageId)) {
       return;
     }
-    let page = currentAdminSelection.allPages?.find((x) => x.pageId == pageId);
+    const page = currentAdminSelection.allPages?.find((x) => x.pageId == pageId);
     if (page) {
       dispatch(setSelectedPage(page));
       setTableLoading(true);

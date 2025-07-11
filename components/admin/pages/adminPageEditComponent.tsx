@@ -1,5 +1,5 @@
 import { RootState } from '@/lib/store';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
 import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { GetPageTypesResponse, GetSellersResponse, SellerType } from '@/types/event';
 import { ModifyPageResponse } from '@/types/admin';
 import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
-import { Page, PageSeller, PageType } from '@/types/public';
+import { Page, PageSeller } from '@/types/public';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import { ItemDataType } from 'rsuite/esm/internals/types';
@@ -19,7 +19,6 @@ import { useGetSellers } from '@/hooks/common/useGetSellers';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import { FaPlus } from 'react-icons/fa';
 import AdminFileUpload from '../common/adminFileUploadComponent';
-import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -78,9 +77,9 @@ export default function AdminPageEdit() {
       return;
     }
 
-    let message: string =
+    const message: string =
       'You have made changes to this page, are you sure you want to discard them and leave?';
-    const toastId = toast.warning(
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"
@@ -106,7 +105,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage || !route) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.route != route) {
       pageToUpdate.route = route;
       dispatch(setSelectedPage(pageToUpdate));
@@ -118,7 +117,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage || !title) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.title != title) {
       pageToUpdate.title = title;
       dispatch(setSelectedPage(pageToUpdate));
@@ -131,7 +130,7 @@ export default function AdminPageEdit() {
       || currentAdminSelection.pageTypes.length == 0 || !pageTypeId || isNaN(pageTypeId)) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.pageType.pageTypeId != pageTypeId) {
       const pageType = currentAdminSelection.pageTypes.find(x => x.pageTypeId == pageTypeId);
       if (pageType) {
@@ -146,7 +145,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage || !title) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.subtitle1 != title) {
       pageToUpdate.subtitle1 = title;
       dispatch(setSelectedPage(pageToUpdate));
@@ -158,7 +157,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage || !title) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.subtitle2 != title) {
       pageToUpdate.subtitle2 = title;
       dispatch(setSelectedPage(pageToUpdate));
@@ -170,7 +169,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage || !route) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.htmlText != htmlText) {
       pageToUpdate.htmlText = htmlText;
       dispatch(setSelectedPage(pageToUpdate));
@@ -182,7 +181,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage || !route) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.googleAnalyticsId != gaId) {
       pageToUpdate.googleAnalyticsId = gaId;
       dispatch(setSelectedPage(pageToUpdate));
@@ -194,7 +193,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.isActive != isActive) {
       pageToUpdate.isActive = isActive;
       dispatch(setSelectedPage(pageToUpdate));
@@ -206,7 +205,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.useIncludeDates != useIncludeDates) {
       pageToUpdate.useIncludeDates = useIncludeDates;
       dispatch(setSelectedPage(pageToUpdate));
@@ -218,7 +217,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     const includeStartStr = moment(includeStart).format('YYYY-MM-DD HH:mm:ss');
     if (pageToUpdate.includeStart != includeStartStr) {
       pageToUpdate.includeStart = includeStartStr;
@@ -231,7 +230,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     const includeEndStr = moment(includeEnd).format('YYYY-MM-DD HH:mm:ss');
     if (pageToUpdate.includeEnd != includeEndStr) {
       pageToUpdate.includeEnd = includeEndStr;
@@ -244,7 +243,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.useExcludeDates != useExcludeDates) {
       pageToUpdate.useExcludeDates = useExcludeDates;
       dispatch(setSelectedPage(pageToUpdate));
@@ -256,7 +255,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     const excludeStartStr = moment(excludeStart).format('YYYY-MM-DD HH:mm:ss');
     if (pageToUpdate.excludeStart != excludeStartStr) {
       pageToUpdate.excludeStart = excludeStartStr;
@@ -269,7 +268,7 @@ export default function AdminPageEdit() {
     if (!currentAdminSelection.selectedPage) {
       return;
     }
-    let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     const excludeEndStr = moment(excludeEnd).format('YYYY-MM-DD HH:mm:ss');
     if (pageToUpdate.excludeEnd != excludeEndStr) {
       pageToUpdate.excludeEnd = excludeEndStr;
@@ -280,7 +279,7 @@ export default function AdminPageEdit() {
 
   const updatePageSeller = (newPageSeller: PageSeller) => {
     if (currentAdminSelection.selectedPage && newPageSeller) {
-      let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+      const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const pageSellers: PageSeller[] | undefined =  pageToUpdate.sellers;
       pageToUpdate.sellers = pageSellers?.map((ps) => 
         (ps.pageSellerId == newPageSeller.pageSellerId && ps.sellerId == newPageSeller.sellerId) 
@@ -296,8 +295,8 @@ export default function AdminPageEdit() {
         return;
       }
       if (currentAdminSelection.selectedPage) {
-        let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-        let pageSellers: PageSeller[] | undefined =  pageToUpdate.sellers;
+        const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+        const pageSellers: PageSeller[] | undefined =  pageToUpdate.sellers;
         const existingSeller = pageSellers?.find((x) => x.pageSellerId == pageSellerId && x.sellerId == sellerId);
         if (existingSeller) {
           pageToUpdate.sellers = pageSellers?.map((ps) => 
@@ -318,10 +317,10 @@ export default function AdminPageEdit() {
       }
     };
 
-  const addSeller = (e: any) => {
+  const addSeller = () => {
       if (currentAdminSelection.selectedPage) {
-        let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-        let userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
+        const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+        const userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
         const existingAdd = userSellers.find((x) => x.pageSellerId == 0 && x.sellerId == 0);
         if (!existingAdd) {
           userSellers.push({
@@ -342,7 +341,7 @@ export default function AdminPageEdit() {
         sellerId = 0;
       }
       if (currentAdminSelection.selectedPage) {
-        let pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+        const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
         let userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
         userSellers = userSellers.filter((x) => x.sellerId != sellerId);
         pageToUpdate.sellers = userSellers;
@@ -356,7 +355,7 @@ export default function AdminPageEdit() {
       if (!currentAdminSelection.selectedPage || !fileUploadName || !filename) {
         return;
       }
-      let pageToUpdate = { ...currentAdminSelection.selectedPage };
+      const pageToUpdate = { ...currentAdminSelection.selectedPage };
       let isDirty = false;
       switch (fileUploadName) {
         case 'Header':
@@ -405,7 +404,7 @@ export default function AdminPageEdit() {
       if (!currentAdminSelection.selectedPage || !fileUploadName) {
         return;
       }
-      let pageToUpdate = { ...currentAdminSelection.selectedPage };
+      const pageToUpdate = { ...currentAdminSelection.selectedPage };
       switch (fileUploadName) {
         case 'Header':
           pageToUpdate.image = undefined;
@@ -441,7 +440,7 @@ export default function AdminPageEdit() {
       return false;
     }
 
-    let pageToUpdate: Page = {
+    const pageToUpdate: Page = {
       ...currentAdminSelection.selectedPage
     };
 
@@ -546,7 +545,7 @@ export default function AdminPageEdit() {
   const excludeEnd = currentAdminSelection.selectedPage?.excludeEnd ? moment(currentAdminSelection.selectedPage.excludeEnd).toDate() : null;
   const googleAnalyticsId = currentAdminSelection.selectedPage?.googleAnalyticsId;
 
-  let sellerRows: any[] = [];
+  const sellerRows: ReactElement[] = [];
     if (
       currentAdminSelection.selectedPage &&
       currentAdminSelection.selectedPage.pageType &&
@@ -646,7 +645,7 @@ export default function AdminPageEdit() {
             <AdminFileUpload
               Title="Top Image (ideally 1200-1600px wide, max is 1600px)"
               FileUploadName="Header"
-              OnUpLoad={onFileUpload}
+              OnUpload={onFileUpload}
               CurrentFileName={topImage}
               IsDirty={isHeaderDirty}
               CurrentFileTitle={"View Current Top Image"}
@@ -663,7 +662,7 @@ export default function AdminPageEdit() {
             <AdminFileUpload
               Title="Icon (rectangle, no wider than 400px)"
               FileUploadName="Icon"
-              OnUpLoad={onFileUpload}
+              OnUpload={onFileUpload}
               CurrentFileName={iconImage}
               IsDirty={isIconDirty}
               CurrentFileTitle={"View Current Icon Image"}
@@ -680,7 +679,7 @@ export default function AdminPageEdit() {
             <AdminFileUpload
               Title="Link Preview Image (rectangle, no wider than 400px)"
               FileUploadName="Preview"
-              OnUpLoad={onFileUpload}
+              OnUpload={onFileUpload}
               CurrentFileName={linkPreviewImage}
               IsDirty={isLinkPreviewDirty}
               CurrentFileTitle={"View Current Link Preview Image"}
@@ -697,7 +696,7 @@ export default function AdminPageEdit() {
             <AdminFileUpload
               Title="Logo Only (rectangle, must be a PNG and between 250-400 px wide)"
               FileUploadName="Logo"
-              OnUpLoad={onFileUpload}
+              OnUpload={onFileUpload}
               CurrentFileName={logoOnlyImage}
               IsDirty={isLogoDirty}
               CurrentFileTitle={"View Current Logo Image"}
@@ -827,7 +826,7 @@ export default function AdminPageEdit() {
         </Row>
         <Row>
           <Col>
-            <Button onClick={onSubmit}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
+            <Button onClick={onSubmit} disabled={isUploading}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
           </Col>
         </Row>
       </Col>

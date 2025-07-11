@@ -9,7 +9,7 @@ import { useWindowSize } from '@/hooks/common/useWindowSize';
 import router from 'next/router';
 import moment from 'moment';
 import { DatePicker } from 'rsuite';
-import { EventTabView, DateRange } from '@/types/user';
+import { EventTabView } from '@/types/user';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
 
@@ -21,7 +21,7 @@ export default function EventSalesBar() {
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const agendaOnly = windowSize.width < EVENTS_AGENDA_VIEW_BREAKPOINT;
 
-  let pageTitle: string = 'Admin Events View';
+  const pageTitle: string = 'Admin Events View';
 
   const onDateChange = (date: Date) => {
     const selectedDate = moment(date).unix();

@@ -22,8 +22,9 @@ import { useGetOrderById } from '@/hooks/common/useGetOrderById';
 import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 import { FaArrowTurnDown } from 'react-icons/fa6';
 import { ItemDataType } from 'rsuite/esm/internals/types';
+import { EditProps } from '@/types/props';
 
-export default function AdminOrderEdit(props: any) {
+export default function AdminOrderEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
@@ -72,7 +73,7 @@ export default function AdminOrderEdit(props: any) {
     };
   }, [currentAdminSelection, dispatch, id, loadOrderById]);
 
-  const setPrice = (ticketId: number, newPrice: number): any => {
+  const setPrice = (ticketId: number, newPrice: number) => {
     if (
       !currentAdminSelection.selectedOrder ||
       !ticketId ||
@@ -81,11 +82,11 @@ export default function AdminOrderEdit(props: any) {
     ) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     let orderRevenue = 0;
     if (currentOrder.tickets && !currentOrder.isComped) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
-        let ticket = { ...t };
+        const ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
           ticket.price = newPrice;
           orderRevenue += newPrice;
@@ -124,9 +125,9 @@ export default function AdminOrderEdit(props: any) {
       return;
     }
 
-    let message: string =
+    const message: string =
       'You have made changes to this order, are you sure you want to discard them and leave?';
-    const toastId = toast.warning(
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"
@@ -152,7 +153,7 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedOrder) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     currentOrder.isActive = isActive;
     dispatch(setAdminOrder(currentOrder));
     markDirty();
@@ -162,7 +163,7 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedOrder) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     currentOrder.isDeleted = isDeleted;
     dispatch(setAdminOrder(currentOrder));
     markDirty();
@@ -172,7 +173,7 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection || !currentAdminSelection.selectedOrder) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     currentOrder.isComped = isComped;
     currentOrder.isDeleted = false;
     currentOrder.isActive = true;
@@ -189,11 +190,11 @@ export default function AdminOrderEdit(props: any) {
     ) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     let orderServiceFees = 0;
     if (currentOrder.tickets && !currentOrder.isComped) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
-        let ticket = { ...t };
+        const ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
           ticket.serviceFee = newServiceFee;
           orderServiceFees += newServiceFee;
@@ -218,10 +219,10 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
-        let ticket = { ...t };
+        const ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
           ticket.isActive = isActive;
         }
@@ -238,10 +239,10 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
-        let ticket = { ...t };
+        const ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
           ticket.isCheckedIn = isCheckedIn;
         }
@@ -258,10 +259,10 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
-        let ticket = { ...t };
+        const ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
           ticket.attendeeFirstName = firstName;
         }
@@ -278,10 +279,10 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
-        let ticket = { ...t };
+        const ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
           ticket.attendeeLastName = lastName;
         }
@@ -298,10 +299,10 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
-        let ticket = { ...t };
+        const ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
           ticket.attendeeEmail = email;
         }
@@ -318,10 +319,10 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
-        let ticket = { ...t };
+        const ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
           ticket.attendeePhone = phone;
         }
@@ -338,10 +339,10 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
-        let ticket = { ...t };
+        const ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
           ticket.shirtSize = shirtSize;
         }
@@ -358,11 +359,11 @@ export default function AdminOrderEdit(props: any) {
     if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
-    let currentOrder = { ...currentAdminSelection.selectedOrder };
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
     if (!isNaN(ticketId) && currentOrder.tickets) {
       const refundDate = moment(newDate).format('YYYY-MM-DD');
       currentOrder.tickets = currentOrder.tickets.map((t) => {
-        let ticket = { ...t };
+        const ticket = { ...t };
         if (ticket.ticketSocketOrderTicketId == ticketId) {
           if (ticket.isChargedBack) {
             ticket.chargebackDate = refundDate;
@@ -402,8 +403,8 @@ export default function AdminOrderEdit(props: any) {
       return;
     }
 
-    let message: string = 'By continuing, this ticket will be marked as refunded in full';
-    const toastId = toast.warning(
+    const message: string = 'By continuing, this ticket will be marked as refunded in full';
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"
@@ -442,9 +443,9 @@ export default function AdminOrderEdit(props: any) {
       return;
     }
 
-    let message: string =
+    const message: string =
       'By continuing, this ticket will be marked as refunded in full, including all service fees';
-    const toastId = toast.warning(
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"
@@ -512,7 +513,7 @@ export default function AdminOrderEdit(props: any) {
     if (refundServiceFees) {
       message += ', including all service fees';
     }
-    const toastId = toast.warning(
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"
@@ -623,7 +624,7 @@ export default function AdminOrderEdit(props: any) {
       return;
     }
 
-    const toastId = toast.warning(
+    toast.warning(
       <ConfirmationDialog
         Message={message}
         ConfirmText="Yes"
@@ -710,7 +711,7 @@ export default function AdminOrderEdit(props: any) {
   const isDeleted = currentAdminSelection.selectedOrder?.isDeleted ?? false;
   const isComped = currentAdminSelection.selectedOrder?.isComped ?? false;
 
-  let ticketRows: any[] = [];
+  const ticketRows: ReactElement[] = [];
   let hasRefunds = false;
   let hasChargebacks = false;
   if (currentAdminSelection.selectedOrder && currentAdminSelection.selectedOrder.tickets && currentAdminSelection.selectedOrder.tickets.length > 0) {
@@ -855,7 +856,7 @@ export default function AdminOrderEdit(props: any) {
               disabled={ticket.isRefunded || ticket.isChargedBack}
               id={`refund_${ticketId}`}
               key={`refund_${ticketId}`}
-              onClick={(e) => confirmRefundTicket(parseInt(`${ticketId}`))}
+              onClick={() => confirmRefundTicket(parseInt(`${ticketId}`))}
             >
               Refund Ticket
             </Button>
@@ -864,7 +865,7 @@ export default function AdminOrderEdit(props: any) {
               disabled={ticket.isRefunded || ticket.isChargedBack}
               id={`refundSf_${ticketId}`}
               key={`refundSf_${ticketId}`}
-              onClick={(e) => confirmRefundTicketWithServiceFees(parseInt(`${ticketId}`))}
+              onClick={() => confirmRefundTicketWithServiceFees(parseInt(`${ticketId}`))}
             >
               Refund Ticket With Service Fees
             </Button>

@@ -1,5 +1,5 @@
 import { RootState } from '@/lib/store';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
 import { Button, FormCheck } from 'react-bootstrap';
@@ -11,6 +11,7 @@ import { GetEventsResponse, ModifyTourResponse, Tour, VipEvent } from '@/types/e
 import { CheckPicker, DatePicker, PickerHandle, TimePicker } from 'rsuite';
 import moment from 'moment';
 import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
+import { ItemDataType } from 'rsuite/esm/internals/types';
 
 export default function AdminTourEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -41,7 +42,7 @@ export default function AdminTourEdit() {
     if (!currentAdminSelection || !currentAdminSelection.selectedTour) {
       return;
     }
-    let currentTour = { ...currentAdminSelection.selectedTour };
+    const currentTour = { ...currentAdminSelection.selectedTour };
     currentTour.tourName = tourName;
     dispatch(setAdminTour(currentTour));
   };
@@ -58,7 +59,7 @@ export default function AdminTourEdit() {
     dispatch(setIsLoading(true));
     closeSellers();
     
-    let selectedTour = {...currentAdminSelection.selectedTour}
+    const selectedTour = {...currentAdminSelection.selectedTour}
     selectedTour.sellers = [];
     selectedTour.events = [];
     sellerIds.forEach((sellerId) => {
@@ -73,7 +74,7 @@ export default function AdminTourEdit() {
     getAdminSellerEvents(sellerIds)
       .then((response: GetEventsResponse) => {
         if (!response.eventError && response.events) {
-          let adminEvents = response.events.filter(x => !x.isDeleted);
+          const adminEvents = response.events.filter(x => !x.isDeleted);
           if (adminEvents && adminEvents.length > 0) {
             adminEvents.sort((a, b) =>
               moment(a.eventDate).valueOf() < moment(b.eventDate).valueOf() ? -1 : moment(a.eventDate).valueOf() > moment(b.eventDate).valueOf() ? 1 : 0,
@@ -91,7 +92,7 @@ export default function AdminTourEdit() {
       return;
     }
 
-    let selectedTour = {...currentAdminSelection.selectedTour}
+    const selectedTour = {...currentAdminSelection.selectedTour}
     selectedTour.events = [];
     if (selectedTour.sellers && currentAdminSelection.sellerId) {
       selectedTour.sellers = selectedTour.sellers.filter(x => x.sellerId != currentAdminSelection.sellerId);
@@ -115,8 +116,8 @@ export default function AdminTourEdit() {
       return;
     }
 
-    let selectedTour = {...currentAdminSelection.selectedTour}
-    let selectedEvents: VipEvent[] = [];
+    const selectedTour = {...currentAdminSelection.selectedTour}
+    const selectedEvents: VipEvent[] = [];
     eventIds.forEach((eventId) => {
       const evt = currentAdminSelection.events?.find(x => x.externalEventId == eventId);
       if (evt) {
@@ -145,7 +146,7 @@ export default function AdminTourEdit() {
       return;
     }
 
-    let selectedTour = {...currentAdminSelection.selectedTour}
+    const selectedTour = {...currentAdminSelection.selectedTour}
     selectedTour.events = [];
     dispatch(setAdminTour(selectedTour));
   };
@@ -193,7 +194,7 @@ export default function AdminTourEdit() {
     }
 
     dispatch(setIsLoading(true));
-    let tourToUpdate: Tour = { ...currentAdminSelection.selectedTour };
+    const tourToUpdate: Tour = { ...currentAdminSelection.selectedTour };
     updateTour(tourToUpdate).then((response: ModifyTourResponse) => {
       if (response.success) {
         dispatch(setReloadTours(true));
@@ -206,13 +207,22 @@ export default function AdminTourEdit() {
     });
   };
 
-  const renderSellerItem = (label: ReactNode, item: any) => {
+  const renderSellerItem = (label: ReactNode) => {
     return <span>{label}</span>
   };
 
-  const renderEventItem = (label: ReactNode, item: any) => {
-    const evt = item as VipEvent;
-    return <span>{moment(evt.eventDate).format('M/D/YYYY')} - {label}</span>
+  const renderEventItem = (label: ReactNode, item: ItemDataType<string | number>) => {
+    if (!item.value) {
+      return <></>;
+    }
+    let eventId: number = 0;
+    if (typeof item.value == "number") {
+      eventId = item.value;
+    } else {
+      eventId = parseInt(item.value);
+    }
+    const evt = currentAdminSelection.events?.find(x => x.externalEventId == eventId);
+    return evt ? <span>{moment(evt.eventDate).format('M/D/YYYY')} - {label}</span> : <></>;
   };
 
   const closeSellers = () => {
@@ -231,7 +241,7 @@ export default function AdminTourEdit() {
     announceDate = announceDate.hours(0);
     announceDate = announceDate.minutes(0);
     announceDate = announceDate.seconds(0);
-    let currentTour = { ...currentAdminSelection.selectedTour };
+    const currentTour = { ...currentAdminSelection.selectedTour };
     currentTour.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');
     dispatch(setAdminTour(currentTour));
   };
@@ -242,7 +252,7 @@ export default function AdminTourEdit() {
     }
 
     const announceTime = moment(date);
-    let currentTour = { ...currentAdminSelection.selectedTour };
+    const currentTour = { ...currentAdminSelection.selectedTour };
     let announceDate = moment(currentTour.announceDate);
     announceDate = announceDate.hours(announceTime.hours());
     announceDate = announceDate.minutes(announceTime.minutes());
@@ -255,7 +265,7 @@ export default function AdminTourEdit() {
     if (!currentAdminSelection || !currentAdminSelection.selectedTour) {
       return;
     }
-    let currentTour = { ...currentAdminSelection.selectedTour };
+    const currentTour = { ...currentAdminSelection.selectedTour };
     currentTour.announceDate = '';
     dispatch(setAdminTour(currentTour));
   };
@@ -264,7 +274,7 @@ export default function AdminTourEdit() {
     if (!currentAdminSelection || !currentAdminSelection.selectedTour) {
       return;
     }
-    let currentTour = { ...currentAdminSelection.selectedTour };
+    const currentTour = { ...currentAdminSelection.selectedTour };
     if (currentTour.announceDate) {
       let announceDate = moment(currentTour.announceDate);
       announceDate = announceDate.hours(0);
@@ -279,7 +289,7 @@ export default function AdminTourEdit() {
       if (!currentAdminSelection || !currentAdminSelection.selectedTour) {
         return;
       }
-      let currentTour = { ...currentAdminSelection.selectedTour };
+      const currentTour = { ...currentAdminSelection.selectedTour };
       currentTour.isActive = isActive;
       dispatch(setAdminTour(currentTour));
   };
@@ -298,9 +308,9 @@ export default function AdminTourEdit() {
     ? currentAdminSelection.selectedTour.sellers.map((seller) => { return seller.sellerId })
     : [];
 
-  let disabledSellers = currentAdminSelection.sellerId ? [ currentAdminSelection.sellerId ] : [];
+  const disabledSellers = currentAdminSelection.sellerId ? [ currentAdminSelection.sellerId ] : [];
 
-  let eventData: VipEvent[] = currentAdminSelection.events && currentAdminSelection.events.length > 0  ? currentAdminSelection.events : [];
+  const eventData: VipEvent[] = currentAdminSelection.events && currentAdminSelection.events.length > 0  ? currentAdminSelection.events : [];
   let selectedEvents: number[] = [];
   if (currentAdminSelection.selectedTour?.events && currentAdminSelection.selectedTour?.events.length > 0) {
     selectedEvents = currentAdminSelection.selectedTour.events.map((evt) => { return evt.externalEventId });

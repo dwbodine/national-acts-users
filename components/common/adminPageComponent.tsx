@@ -1,4 +1,3 @@
-import { ActivePageKey } from '@/constants';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
@@ -6,20 +5,20 @@ import CheckAuth from './checkAuthComponent';
 import NavBar from './navBarComponent';
 import { Container } from 'react-bootstrap';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
-import { UserActivityType } from '@/types/user';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import AdminTabs from './adminTabsComponent';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 import AdminTabsMobile from './adminTabsMobileComponent';
+import { AdminPageProps } from '@/types/props';
 
-export default function AdminPage(props: any) {
+export default function AdminPage(props: AdminPageProps) {
   const { getUser } = useCurrentUser();
   const [notAdmin, setNotAdmin] = useState(true);
   const { logActivityData } = useLogActivityData();
-  const activeKey = props.activeKey as ActivePageKey;
-  const title = props.title as string;
-  const userActivity = props.userActivity as UserActivityType | undefined;
+  const activeKey = props.ActiveKey;
+  const title = props.Title;
+  const userActivity = props.UserActivity;
   const globalSettings = useSelector((state: RootState) => state.globalSelection);
   const isLoading = globalSettings.isLoading;
 
@@ -58,24 +57,24 @@ export default function AdminPage(props: any) {
           ActiveKey={activeKey}
           IsLoading={isLoading}
           NotAdmin={notAdmin}
-          DashboardComponent={props.dashboardComponent}
-          EventsComponent={props.eventsComponent}
-          SalesComponent={props.salesComponent}
-          AdminComponent={props.adminComponent}
-          ReportComponent={props.reportComponent}
-          UsersComponent={props.usersComponent}
+          DashboardComponent={props.DashboardComponent}
+          EventsComponent={props.EventsComponent}
+          SalesComponent={props.SalesComponent}
+          AdminComponent={props.AdminComponent}
+          ReportComponent={props.ReportComponent}
+          UsersComponent={props.UsersComponent}
         />
         :
         <AdminTabs
           ActiveKey={activeKey}
           IsLoading={isLoading}
           NotAdmin={notAdmin}
-          DashboardComponent={props.dashboardComponent}
-          EventsComponent={props.eventsComponent}
-          SalesComponent={props.salesComponent}
-          AdminComponent={props.adminComponent}
-          ReportComponent={props.reportComponent}
-          UsersComponent={props.usersComponent}
+          DashboardComponent={props.DashboardComponent}
+          EventsComponent={props.EventsComponent}
+          SalesComponent={props.SalesComponent}
+          AdminComponent={props.AdminComponent}
+          ReportComponent={props.ReportComponent}
+          UsersComponent={props.UsersComponent}
          /> 
          }
       </Container>

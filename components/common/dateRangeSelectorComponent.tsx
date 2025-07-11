@@ -1,17 +1,18 @@
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DateRangePicker } from 'rsuite';
-import { DateRange } from 'rsuite/esm/DateRangePicker';
+import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import moment from 'moment';
 import { FaCalendar } from 'react-icons/fa';
+import { DateRangeSelectorProps } from '@/types/props';
 
-export default function DateRangeSelector(props: any) {
-  const title = props.dateRangeTitle;
-  const onDateChange = props.onDateChange;
-  const selectedStart = props.selectedStart;
-  const selectedEnd = props.selectedEnd;
-  const disabled = props.disabled;
+export default function DateRangeSelector(props: DateRangeSelectorProps) {
+  const title = props.DateRangeTitle;
+  const onDateChange = props.OnDateChange;
+  const selectedStart = props.SelectedStart;
+  const selectedEnd = props.SelectedEnd;
+  const disabled = props.Disabled;
 
-  const defaultRanges = [
+  const defaultRanges: RangeType<DateRange>[] = [
     {
       label: 'Today',
       value: [moment().startOf('day').toDate(), moment().endOf('day').toDate()]
@@ -48,8 +49,7 @@ export default function DateRangeSelector(props: any) {
   }, [selectedEnd, selectedStart]);
 
   const handleChange = (
-    value: DateRange | null,
-    event: SyntheticEvent<Element, Event>,
+    value: DateRange | null
   ) => {
     const selectedStart = value ? moment(value[0]).unix() : 0;
     const selectedEnd = value ? moment(value[1]).unix() : 0;

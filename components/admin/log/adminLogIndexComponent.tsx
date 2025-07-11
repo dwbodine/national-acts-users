@@ -32,14 +32,14 @@ export default function AdminLogIndex() {
     };
   });
 
-  let logRows: any[] = [];
+  const logRows: ReactElement[] = [];
   if (logs && logs.length > 0) {
     for (const log of logs) {
       logRows.push(<p>{log}</p>);
     }
   }
 
-  let cronLogRows: any[] = [];
+  const cronLogRows: ReactElement[] = [];
   if (cronLogs && cronLogs.length > 0) {
     for (const log of cronLogs) {
       cronLogRows.push(<p>{log.replaceAll('"', '')}</p>);

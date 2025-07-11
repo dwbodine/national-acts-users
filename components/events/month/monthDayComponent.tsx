@@ -1,12 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Col, Form } from 'react-bootstrap';
 import moment from 'moment';
-import { Note, VipEvent } from '@/types/event';
+import { VipEvent } from '@/types/event';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { RootState } from '@/lib/store';
-import { Modal } from 'rsuite';
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { toast } from 'react-toastify';
 import { useEditNote } from '@/hooks/admin/useEditNote';
@@ -16,14 +14,15 @@ import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import AddNoteModal from '../common/addNoteModalComponent';
 import EditNoteModal from '../common/editNoteModalComponent';
+import { MonthDayProps } from '@/types/props';
 
-export default function MonthDay(props: any) {
+export default function MonthDay(props: MonthDayProps) {
     const dispatch = useDispatch();
     const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
     const monthDate = props.MonthDate ? moment(props.MonthDate) : undefined;
-    const events = props.Events as VipEvent[] | undefined;
-    const notes = props.Notes as Note[] | undefined;
-    const key = props.MonthDayNumber as number;
+    const events = props.Events;
+    const notes = props.Notes;
+    const key = props.MonthDayNumber;
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
     const [notesOpen, setNotesOpen] = useState(false);
     const [displayNoteOpen, setDisplayNoteOpen] = useState(false);
@@ -119,9 +118,9 @@ export default function MonthDay(props: any) {
             return;
         }
     
-        let message: string =
+        const message: string =
         'You are about to delete this note';
-        const toastId = toast.warning(
+        toast.warning(
         <ConfirmationDialog
             Message={message}
             ConfirmText="Yes"
@@ -175,11 +174,11 @@ export default function MonthDay(props: any) {
         );
     };
 
-    let noteRows: any[] = [];
+    const noteRows: ReactElement[] = [];
     if (notes && notes.length > 0) {
         notes.forEach((note, i) => {
             if (!note.ticketSocketEventId) {
-                let noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
+                const noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
                 const noteClass = note.isCompleted ? "month-day-note-completed" : "month-day-note";
                 noteRows.push(<div key={`wdNote_${key}_${i}`} className={noteClass}>
                                     <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '', moment(note.noteTimestamp).toDate(), note.isCompleted ?? false)}>{noteText}</span>
@@ -189,7 +188,7 @@ export default function MonthDay(props: any) {
         });
     }
 
-    let eventRows: any[] = [];
+    const eventRows: ReactElement[] = [];
     if (events && events.length > 0) {
         events.forEach((evt, i) => {
             const statusSlug = getEventStatusSlug(evt, true);
@@ -213,11 +212,11 @@ export default function MonthDay(props: any) {
             });
             const available = evt.ticketTypes?.reduce((accumulator, current) => accumulator + current.totalAvailable, 0) ?? 0;
 
-            let listSent = (evt.listSentToBand ?? false);
+            const listSent = (evt.listSentToBand ?? false);
             const listSentVips = evt.listSentNumVips ?? 0;
             const showVipAlert = (listSent && (listSentVips != sold));
             
-            let alertIcon: any = '';
+            let alertIcon: ReactElement = <></>;
             if (showVipAlert) {
                 alertIcon = <FaExclamationTriangle className="month-day-event-alert" title={`Current total of ${sold} differs from the count of ${listSentVips} when the list was sent to the band`}></FaExclamationTriangle>
             }

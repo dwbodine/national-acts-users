@@ -22,9 +22,9 @@ export default function AdminEventsEdit() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminEventEdit Id={id} />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminEventEdit Id={id} />}
     />
   );
 }

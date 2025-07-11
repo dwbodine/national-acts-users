@@ -1,5 +1,5 @@
-import { ITicketTypeData, SellerType, TicketType, VipEvent } from '@/types/event';
-import React from 'react';
+import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
+import React, { ReactElement } from 'react';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
@@ -7,20 +7,21 @@ import { RootState } from '@/lib/store';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
+import { EventRowProps } from '@/types/props';
 
-export default function EventMobileRow(props: any) {
-  const vipEvent = props.VipEvent as VipEvent;
-  const hideRevItem = props.HideRevenue as boolean;
-  const hideServiceFees = props.HideServiceFees as boolean;
-  const canCheckInTickets = props.CanCheckInTickets as boolean;
-  const showNotes = props.ShowNotes as boolean;
+export default function EventMobileRow(props: EventRowProps) {
+  const vipEvent = props.VipEvent;
+  const hideRevItem = props.HideRevenue;
+  const hideServiceFees = props.HideServiceFees;
+  const canCheckInTickets = props.CanCheckInTickets;
+  const showNotes = props.ShowNotes;
   const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const currentSellerType = currentReportSelection.seller.sellerType;
   const id = `event_${vipEvent.externalEventId}`;
   const { getEventStatusSlug } = useGetEventStatus();
-  const isAdmin = props.IsAdmin as boolean;
+  const isAdmin = props.IsAdmin;
 
   const setDetailEvent = () => {
     const url = `/event/?id=${vipEvent.externalEventId}`;
@@ -39,19 +40,17 @@ export default function EventMobileRow(props: any) {
     location = getLocation(vipEvent.venue);
   }
 
-  const ticketBreakdownRows: any[] = [];
-  let hasTicketData = false;
+  const ticketBreakdownRows: ReactElement[] = [];
   const ticketData = getTicketDataFromEvents([vipEvent]);
   const ticketTypes = ticketData?.TicketTypes;
   if (ticketTypes?.length > 0) {
-    hasTicketData = true;
     let i = 0;
     ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
       ticketTypes.forEach((ticketType: TicketType) => {
         const key = `ttd${i}`;
-        var data = ticketTypeData.find((x) => x.TicketType == ticketType.ticketTypeName);
-        var number = 0;
-        var total = '';
+        const data = ticketTypeData.find((x) => x.TicketType == ticketType.ticketTypeName);
+        let number = 0;
+        let total = '';
         if (data) {
           number = data.Number;
         }
@@ -134,7 +133,7 @@ export default function EventMobileRow(props: any) {
           </Row>
           <Row hidden={!showNotes}>
             <Col>
-              <Button onClick={() => showNoteDialog(vipEvent.externalEventId)}>Notes</Button>
+              <Button onClick={() => showNoteDialog ? showNoteDialog(vipEvent.externalEventId): null}>Notes</Button>
             </Col>
           </Row>
         </Container>

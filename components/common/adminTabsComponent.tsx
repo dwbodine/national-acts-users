@@ -2,6 +2,7 @@ import { ActivePageKey } from "@/constants";
 import { setReloadAdminEvents } from "@/lib/adminEventsSelectionSlice";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { setReloadEvents } from "@/lib/reportSelectionSlice";
+import { AdminTabsProps } from "@/types/props";
 import router from "next/router";
 import { Col, Container, Row } from "react-bootstrap";
 import { CirclesWithBar } from "react-loader-spinner";
@@ -9,10 +10,10 @@ import { useDispatch } from "react-redux";
 import { Tabs } from "rsuite";
 
 
-export default function AdminTabs(props: any) {
-    const activeKey = props.ActiveKey as ActivePageKey;
-    const isLoading = props.IsLoading as boolean;
-    const notAdmin = props.NotAdmin as boolean;
+export default function AdminTabs(props: AdminTabsProps) {
+    const activeKey = props.ActiveKey;
+    const isLoading = props.IsLoading;
+    const notAdmin = props.NotAdmin;
     const dispatch = useDispatch();
 
     const onSelectTab = (eventKey: string | number | undefined) => {

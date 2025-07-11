@@ -1,9 +1,9 @@
 import { RootState } from '@/lib/store';
-import { useEffect, useMemo, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
 import { GetRolesResponse, Role, UpdateUserResponse, User } from '@/types/user';
-import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
+import { Button, FormCheck } from 'react-bootstrap';
 import { setReloadUsers, setSelectedUser } from '@/lib/adminSelectionSlice';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { GetSellersResponse, Seller, SellerType } from '@/types/event';
@@ -12,8 +12,6 @@ import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import { FaPlus } from 'react-icons/fa';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
 import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
-import { current } from '@reduxjs/toolkit';
-import { CirclesWithBar } from 'react-loader-spinner';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 
@@ -81,18 +79,18 @@ export default function AdminUserEdit() {
     router.push('/admin/users/');
   };
 
-  const updateSeller = (sellerId: number, newSellerId: number) => {
+  const updateSeller = (sellerId: number, newSellerId: number | null) => {
     if (isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
       return;
     }
     if (currentAdminSelection.selectedUser) {
-      let user: User = { ...currentAdminSelection.selectedUser };
-      let userSellers = user.sellers ? [...user.sellers] : [];
+      const user: User = { ...currentAdminSelection.selectedUser };
+      const userSellers = user.sellers ? [...user.sellers] : [];
       const newSeller = allSellers?.find((x) => x.sellerId == newSellerId);
       if (newSeller) {
         for (let i = 0; i < userSellers.length; i++) {
           if (userSellers[i].sellerId == sellerId) {
-            let userSeller = { ...userSellers[i] };
+            const userSeller = { ...userSellers[i] };
             userSeller.sellerId = newSellerId;
             userSeller.sellerName = newSeller.name;
             userSeller.sellerType = newSeller.sellerType;
@@ -108,16 +106,16 @@ export default function AdminUserEdit() {
     }
   };
 
-  const updateRole = (sellerId: number, newRoleId: number) => {
+  const updateRole = (sellerId: number, newRoleId: number | null) => {
     if (!sellerId || isNaN(sellerId) || !newRoleId || isNaN(newRoleId)) {
       return;
     }
     if (currentAdminSelection.selectedUser) {
-      let user: User = { ...currentAdminSelection.selectedUser };
+      const user: User = { ...currentAdminSelection.selectedUser };
       const newRole = allRoles?.find((x) => x.roleId == newRoleId);
       if (newRole && user.sellers) {
         user.sellers = user.sellers.map((us) => {
-          let userSeller = {...us};
+          const userSeller = {...us};
           if (userSeller.sellerId == sellerId) {
             userSeller.roleId = newRoleId;
           }
@@ -130,10 +128,10 @@ export default function AdminUserEdit() {
     }
   };
 
-  const addSeller = (e: any) => {
+  const addSeller = () => {
     if (currentAdminSelection.selectedUser) {
-      let user: User = { ...currentAdminSelection.selectedUser };
-      let userSellers = user.sellers ? [...user.sellers] : [];
+      const user: User = { ...currentAdminSelection.selectedUser };
+      const userSellers = user.sellers ? [...user.sellers] : [];
       const existingAdd = userSellers.find((x) => x.sellerId == 0);
       if (!existingAdd) {
         userSellers.push({
@@ -154,7 +152,7 @@ export default function AdminUserEdit() {
       sellerId = 0;
     }
     if (currentAdminSelection.selectedUser) {
-      let user: User = { ...currentAdminSelection.selectedUser };
+      const user: User = { ...currentAdminSelection.selectedUser };
       let userSellers = user.sellers ? [...user.sellers] : [];
       userSellers = userSellers.filter((x) => x.sellerId != sellerId);
       user.sellers = userSellers;
@@ -169,9 +167,9 @@ export default function AdminUserEdit() {
       return false;
     }
 
-    let userId = currentAdminSelection.selectedUser.userId;
+    const userId = currentAdminSelection.selectedUser.userId;
 
-    var result = confirm('Are you sure you want to delete this user?');
+    const result = confirm('Are you sure you want to delete this user?');
 
     if (result) {
       deleteUser(userId).then((response: UpdateUserResponse) => {
@@ -201,7 +199,7 @@ export default function AdminUserEdit() {
       return;
     }
 
-    let userToUpdate: User = {
+    const userToUpdate: User = {
       ...currentAdminSelection.selectedUser,
       firstName: firstName || '',
       lastName: lastName || '',
@@ -236,7 +234,7 @@ export default function AdminUserEdit() {
     });
   };
 
-  let sellerRows: any[] = [];
+  const sellerRows: ReactElement[] = [];
   if (
     allSellers != undefined &&
     allRoles != undefined &&
@@ -248,15 +246,15 @@ export default function AdminUserEdit() {
     currentAdminSelection.selectedUser.sellers.map((item, index) => {
       sellerRows.push(
         <AdminSellerSelect
-          id={item.sellerId}
+          Id={item.sellerId.toString()}
           key={item.sellerId}
           Number={index + 1}
           Sellers={allSellers}
           Roles={allRoles}
           SellerId={item.sellerId}
           RoleId={item.roleId}
-          OnSellerChange={(newSellerId: number) => updateSeller(parseInt(`${item.sellerId}`), newSellerId)}
-          OnRoleChange={(newRoleId: number) => updateRole(parseInt(`${item.sellerId}`), newRoleId)}
+          OnSellerChange={(newSellerId: number | null) => updateSeller(parseInt(`${item.sellerId}`), newSellerId)}
+          OnRoleChange={(newRoleId: number | null) => updateRole(parseInt(`${item.sellerId}`), newRoleId)}
           OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
           Countries={currentAdminSelection.countries}
         />,

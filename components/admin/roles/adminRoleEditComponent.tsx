@@ -1,5 +1,5 @@
 import { RootState } from '@/lib/store';
-import { useEffect, useState, useRef } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import router from 'next/router';
 import {
@@ -66,7 +66,7 @@ export default function AdminRoleEdit() {
       return;
     }
     const hasPerm = hasPermission(permissionId);
-    let roleToUpdate: Role = { ...currentAdminSelection.selectedRole };
+    const roleToUpdate: Role = { ...currentAdminSelection.selectedRole };
     let currentPermissions: Permission[] = roleToUpdate.permissions
       ? [...roleToUpdate.permissions]
       : [];
@@ -101,7 +101,7 @@ export default function AdminRoleEdit() {
       return;
     }
 
-    let roleToUpdate: Role = {
+    const roleToUpdate: Role = {
       ...currentAdminSelection.selectedRole,
       roleName: newRoleName,
     };
@@ -119,7 +119,7 @@ export default function AdminRoleEdit() {
     });
   };
 
-  let permissionRows: any[] = [];
+  const permissionRows: ReactElement[] = [];
   if (allPermissions && allPermissions.length > 0) {
     allPermissions.map((item, index) => {
       const checked: boolean = hasPermission(item.permissionId);

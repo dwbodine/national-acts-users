@@ -67,7 +67,7 @@ export default function AdminVenuesIndex() {
     if (!venueId || isNaN(venueId)) {
       return;
     }
-    let venue = currentAdminSelection.venues?.find((x) => x.venueId == venueId);
+    const venue = currentAdminSelection.venues?.find((x) => x.venueId == venueId);
     if (venue) {
       dispatch(setAdminVenue(venue));
       setIsLoading(true);
@@ -76,7 +76,7 @@ export default function AdminVenuesIndex() {
   };
 
   const addVenue = () => {
-    let venue: ExternalVenue = {
+    const venue: ExternalVenue = {
       venueId: 0,
       venue: '',
       address: '',
@@ -92,7 +92,7 @@ export default function AdminVenuesIndex() {
     if (!venueId || isNaN(venueId)) {
       return;
     }
-    let venue = currentAdminSelection.venues?.find((x) => x.venueId == venueId);
+    const venue = currentAdminSelection.venues?.find((x) => x.venueId == venueId);
     if (venue) {
       deleteVenue(venue.venueId).then((response: ModifyExternalVenueResponse) => {
         if (response.success) {
@@ -179,7 +179,7 @@ export default function AdminVenuesIndex() {
               <HeaderCell>Address</HeaderCell>
               <Cell className="admin-click-cell">
                 {(rowData) => {
-                  let venue = rowData as ExternalVenue;
+                  const venue = rowData as ExternalVenue;
                   return (
                     <div id={rowData.venueId} onClick={() => editVenue(parseInt(`${rowData.venueId}`))}>
                       {getExternalVenueLocation(venue)}

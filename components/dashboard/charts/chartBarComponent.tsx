@@ -1,21 +1,20 @@
 import { Row, Col } from 'react-bootstrap';
-import { IOrderKeys, IRevenueKeys, IShirtData, ITicketData } from '@/types/event';
 import RevenueChart from './revenueChartComponent';
 import OrderChart from './orderChartComponent';
 import TicketTypesChart from './ticketTypesChartComponent';
 import ShirtSizesChart from './shirtSizesChartComponent';
+import { ChartBarProps } from '@/types/props';
 
-export default function ChartBar(props: any) {
-  const isLoading: boolean = props.IsLoading as boolean;
-  const totalTickets: number = props.TotalTickets as number;
-  const totalRevenue: number = props.TotalRevenue as number;
-  const totalShirts: number = props.TotalShirts as number;
-  const totalOrders: number = props.TotalOrders as number;
-  const revenueData: IRevenueKeys[] = props.RevenueData as IRevenueKeys[];
-  const orderData: IOrderKeys[] = props.OrderData as IOrderKeys[];
-  const ticketData: ITicketData | undefined = props.TicketData as ITicketData | undefined;
-  const shirtData: IShirtData | undefined = props.ShirtData as IShirtData | undefined;
-  const chartsHidden: boolean = props.ChartHidden as boolean;
+export default function ChartBar(props: ChartBarProps) {
+  const totalTickets = props.TotalTickets;
+  const totalRevenue = props.TotalRevenue;
+  const totalShirts = props.TotalShirts;
+  const totalOrders = props.TotalOrders;
+  const revenueData = props.RevenueData;
+  const orderData = props.OrderData;
+  const ticketData = props.TicketData;
+  const shirtData = props.ShirtData;
+  const chartsHidden = props.ChartHidden;
 
   return (
     <Row>

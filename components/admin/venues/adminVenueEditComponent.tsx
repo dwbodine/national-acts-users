@@ -10,7 +10,6 @@ import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 import { ExternalVenue, ModifyExternalVenueResponse } from '@/types/admin';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { SelectPicker } from 'rsuite';
-import { count } from 'console';
 
 export default function AdminVenueEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -98,7 +97,7 @@ export default function AdminVenueEdit() {
 
     dispatch(setIsLoading(true));
 
-    let venueToUpdate: ExternalVenue = {
+    const venueToUpdate: ExternalVenue = {
       ...currentAdminSelection.selectedVenue,
       venue: venueName,
       address: address,
