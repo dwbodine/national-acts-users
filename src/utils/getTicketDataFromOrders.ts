@@ -6,7 +6,7 @@ export function getTicketDataFromOrders(
   evt: VipEvent | undefined,
 ): ITicketData {
   const map = new Map<string, ITicketTypeData[]>();
-  let ticketTypes: TicketType[] = [];
+  const ticketTypes: TicketType[] = [];
 
   if (!evt) {
     return {
@@ -16,7 +16,7 @@ export function getTicketDataFromOrders(
   }
   const key = moment(evt.eventDate).format('MM/DD/YYYY');
   // older data may not have ticket types attached
-  let eventHasTicketTypes: boolean = evt.hasTicketTypeData ?? false;
+  const eventHasTicketTypes: boolean = evt.hasTicketTypeData ?? false;
   if (eventHasTicketTypes) {
     evt.ticketTypes?.forEach((ticketType) => {
       if (
@@ -65,7 +65,7 @@ export function getTicketDataFromOrders(
             (item) => item.TicketType.toLowerCase() === ticketTypeName.toLowerCase(),
           );
           if (indexToUpdate >= 0) {
-            let item = collection[indexToUpdate];
+            const item = collection[indexToUpdate];
             item.Number += 1;
             collection[indexToUpdate] = item;
           } else {
