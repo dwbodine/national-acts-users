@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import ReportDatePicker from '../../common/reportDatePicker';
@@ -30,7 +30,7 @@ export default function ReportsCustomerExport() {
   useEffect(() => {}, [currentAdminReportSelection, globalSelection.isLoading]);
 
   const onDateChange = (newStart: number, newEnd: number) => {
-    let reportSelection = { ...currentAdminReportSelection };
+    const reportSelection = { ...currentAdminReportSelection };
     reportSelection.start = newStart;
     reportSelection.end = newEnd;
     dispatch(setReportDates(reportSelection));
@@ -112,9 +112,9 @@ export default function ReportsCustomerExport() {
     <div className="admin-container">
       <h3>Export Customer Data</h3>
       <ReportDatePicker
-        onChange={onDateChange}
-        start={currentAdminReportSelection.start}
-        end={currentAdminReportSelection.end}
+        OnChange={onDateChange}
+        Start={currentAdminReportSelection.start}
+        End={currentAdminReportSelection.end}
       />
       <Button onClick={onSubmit}>Submit</Button>
       <ReportsListHomeButton />

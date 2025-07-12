@@ -105,12 +105,10 @@ export default function SalesBar() {
             const hasNonUsaOrders =
               vipEvents.find((x) => x.hasNonUSAOrders == true) != undefined;
             let currencySymbol: string | undefined = undefined;
-            let currencyAbbrev: string | undefined = undefined;
             if (hasNonUsaOrders) {
               const symbolOrder = vipEvents.find((x) => x.hasNonUSAOrders == true);
               if (symbolOrder != undefined) {
                 currencySymbol = symbolOrder.nonUsaCurrencySymbol;
-                currencyAbbrev = symbolOrder.nonUsaCurrencyAbbrev;
               }
             }
             const showServiceFees =
@@ -144,7 +142,7 @@ export default function SalesBar() {
   }
 
   const onDateChange = (selectedStart: number, selectedEnd: number) => {
-    let reportSelection = { ...currentReportSelection };
+    const reportSelection = { ...currentReportSelection };
     reportSelection.start = selectedStart;
     reportSelection.end = selectedEnd;
     reportSelection.retainDateSelection = true;

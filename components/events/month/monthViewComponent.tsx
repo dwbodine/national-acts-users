@@ -11,6 +11,7 @@ import getSelectedAdminEventDateRange from "@/utils/getSelectedAdminEventDateRan
 import MonthDay from "./monthDayComponent";
 import MonthWeek from "./monthWeekComponent";
 import EventDataExpanded from "../../common/eventDataExpandedComponent";
+import { ReactElement } from "react";
 
 
 export default function MonthView(props: any) {
@@ -64,7 +65,7 @@ export default function MonthView(props: any) {
             monthDays.push(<MonthDay key={i} 
                 MonthDayNumber={i}
                 WeekDayNumber={parseInt(displayDate.format('d'))}
-                MonthDate={displayDate.format('YYYY-MM-DD')}
+                MonthDate={displayDate}
                 Events={filteredEvents}
                 Notes={filteredNotes} />);        
                 

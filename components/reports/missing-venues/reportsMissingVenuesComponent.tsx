@@ -7,7 +7,6 @@ import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetMissingVenueEvents } from '@/hooks/report/useGetMissingVenueEvents';
 import { Table } from 'rsuite';
 import moment from 'moment';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
 import { resetAdmin } from '@/lib/adminSelectionSlice';
 import { Button } from 'react-bootstrap';
@@ -21,7 +20,6 @@ export default function ReportsMissingVenues() {
   );
   const dispatch = useDispatch();
   const { getMissingVenueEvents } = useGetMissingVenueEvents();
-  const { getLocation } = useGetLocation();
   const [events, setEvents] = useState<VipEvent[] | undefined>(undefined);
 
 
