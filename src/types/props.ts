@@ -23,7 +23,7 @@ import {
   UserActivityType,
 } from './user';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, ReactElement, SetStateAction } from 'react';
 
 export interface EditProps {
   Id?: number;
@@ -191,6 +191,8 @@ export interface WidgetBarProps {
   TotalServiceFees?: number;
   HideTicketBreakDown?: boolean;
   IsAdmin?: boolean;
+  RevenueRefunded?: number;
+  ServiceFeesRefunded?: number;
 }
 
 export interface ChartBarProps {
@@ -327,4 +329,22 @@ export interface MonthDayProps {
   Events?: VipEvent[];
   Notes?: Note[];
   MonthDayNumber?: number;
+  WeekDayNumber?: number;
+}
+
+export interface MonthWeekProps {
+  WeekDays?: ReactElement[];
+}
+
+export interface WeekDayProps {
+  WeekDate?: moment.Moment;
+  Events?: VipEvent[];
+  Notes?: Note[];
+  WeekDayNumber?: number;
+}
+
+export interface WeekViewProps {
+  StartOfWeek?: moment.Moment;
+  Events?: VipEvent[];
+  Notes?: Note[];
 }

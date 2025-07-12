@@ -1,12 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Col, Form } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import moment from 'moment';
 import { Note, VipEvent } from '@/types/event';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { RootState } from '@/lib/store';
-import { Modal } from 'rsuite';
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { toast } from 'react-toastify';
 import { useEditNote } from '@/hooks/admin/useEditNote';
@@ -16,14 +15,16 @@ import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import AddNoteModal from '../common/addNoteModalComponent';
 import EditNoteModal from '../common/editNoteModalComponent';
+import { WeekDayProps } from '@/types/props';
 
-export default function WeekDay(props: any) {
+export default function WeekDay(props: WeekDayProps) {
+    const weekDate = props.WeekDate ? moment(props.WeekDate) : undefined;
+    const events = props.Events;
+    const notes = props.Notes;
+    const key = props.WeekDayNumber;
+
     const dispatch = useDispatch();
     const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
-    const weekDate = props.WeekDate ? moment(props.WeekDate) : undefined;
-    const events = props.Events as VipEvent[] | undefined;
-    const notes = props.Notes as Note[] | undefined;
-    const key = props.WeekDayNumber as number;
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
     const [notesOpen, setNotesOpen] = useState(false);
     const [displayNoteOpen, setDisplayNoteOpen] = useState(false);

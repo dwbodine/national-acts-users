@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect } from 'react';
+import { useEffect } from 'react';
 import router from 'next/router';
 import { Col, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';

@@ -6,14 +6,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { setAdminDateRange, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
-import { DateRange, EventTabView } from '@/types/user';
+import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
+import { EventTabView } from '@/types/user';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
+import { WeekViewProps } from '@/types/props';
+import { ReactElement } from 'react';
 
-export default function WeekView(props: any) {
-    const startOfWeek = props.StartOfWeek ? moment(props.StartOfWeek).startOf('day') : undefined;
-    const events = props.Events as VipEvent[] | undefined;
-    const notes = props.Notes as Note[] | undefined;
+export default function WeekView(props: WeekViewProps) {
+    const startOfWeek = props.StartOfWeek;
+    const events = props.Events;
+    const notes = props.Notes;
 
     const dispatch = useDispatch();
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
@@ -53,7 +55,7 @@ export default function WeekView(props: any) {
                 filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= displayDate.endOf('day').valueOf())
             }
             weekdays.push(<WeekDay key={i} WeekDayNumber={i}
-                WeekDate={displayDate.format('YYYY-MM-DD')}
+                WeekDate={displayDate}
                 Events={filteredEvents}
                 Notes={filteredNotes}
             />);

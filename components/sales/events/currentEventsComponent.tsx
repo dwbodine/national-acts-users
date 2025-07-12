@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../../src/lib/store';
 import { useGetEvents } from '@/hooks/event/useGetEvents';
-import { setEvents, setDateRange, setReloadEvents, setTours, setSelectedTourId } from '@/lib/reportSelectionSlice';
+import { setEvents, setDateRange, setReloadEvents, setTours } from '@/lib/reportSelectionSlice';
 import { GetToursResponse, IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
 import { useEffect, useMemo, useState } from 'react';
 import moment from 'moment';
@@ -51,7 +51,7 @@ export default function CurrentEvents() {
 
   let ticketData: ITicketData | undefined = undefined;
   let shirtData: IShirtData | undefined = undefined;
-  let vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;
+  const vipEvents: VipEvent[] | undefined = currentReportSelection.currentEvents;
   let visibleEvents: VipEvent[] = [];
   let ticketSalesData: ITicketSalesData[] | undefined = undefined;
   let searchBarHidden = true;
@@ -236,7 +236,6 @@ export default function CurrentEvents() {
   let totalTicketsComped = 0;
   let totalRevenue = 0.0;
   let totalShirts = 0;
-  let totalOrders = 0;
   let ticketsRefunded = 0;
   let revenueRefunded = 0;
   let totalServiceFees = 0;
@@ -285,7 +284,6 @@ export default function CurrentEvents() {
         totalRevenue += evt.totalRevenue ?? 0 - (evt.revenueRefunded ?? 0);
         ticketsRefunded += evt.numTicketsRefunded ?? 0;
         
-        totalOrders += evt.orders?.filter(x => !x.isComped)?.length ?? 0;
         totalShirts += evt.totalShirts ?? 0;
         serviceFeesRefunded += evt.serviceFeeRevenueRefunded ?? 0;
         totalServiceFees += evt.totalServiceFees ?? 0 - (evt.serviceFeeRevenueRefunded ?? 0);        
