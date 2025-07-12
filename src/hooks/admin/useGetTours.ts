@@ -1,4 +1,3 @@
-import { AdminSelection } from '@/types/user';
 import { eventService } from '../../services';
 import { GetToursResponse } from '@/types/event';
 

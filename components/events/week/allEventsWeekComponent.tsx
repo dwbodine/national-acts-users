@@ -116,7 +116,7 @@ export default function AllEventsWeek() {
     windowSizeJson,
   ]);
 
-  const startOfWeek = currentReportSelection.start ? moment.unix(currentReportSelection.start).format('YYYY-MM-DD') : undefined;
+  const startOfWeek = currentReportSelection.start ? moment.unix(currentReportSelection.start) : undefined;
 
   return (
     (vipEvents != undefined) ?

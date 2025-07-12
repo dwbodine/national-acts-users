@@ -6,13 +6,12 @@ import {
   setUserActivityDateRange,
 } from '@/lib/userActivitySelectionSlice';
 import { RootState } from '@/lib/store';
-import { GetActivityResponse, UserActivity } from '@/types/user';
+import { GetActivityResponse } from '@/types/user';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table } from 'rsuite';
 import moment from 'moment';
 import { Col, Container, FormCheck, Row } from 'react-bootstrap';
-import { CirclesWithBar } from 'react-loader-spinner';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 
 export default function UserActivityTable() {
@@ -31,7 +30,7 @@ export default function UserActivityTable() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentUserActivitySelection.start == undefined || currentUserActivitySelection.end == undefined) {
-        let userActivitySelection = {...currentUserActivitySelection};
+        const userActivitySelection = {...currentUserActivitySelection};
         userActivitySelection.start = moment().startOf('month').unix();
         userActivitySelection.end = moment().endOf('day').unix();
         dispatch(

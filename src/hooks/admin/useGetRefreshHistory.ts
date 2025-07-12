@@ -1,5 +1,5 @@
 import { eventService } from '../../services';
-import { GetRefreshHistoryResponse, RefreshHistoryResponse } from '@/types/event';
+import { GetRefreshHistoryResponse } from '@/types/event';
 
 export const useGetRefreshHistory = () => {
   const getRefreshHistory = async (): Promise<GetRefreshHistoryResponse> => {

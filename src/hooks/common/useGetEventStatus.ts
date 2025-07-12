@@ -88,7 +88,7 @@ export const useGetEventStatus = () => {
       case 'active':
       case 'active-pending':
         statusText = 'Active';
-        let announceDate: any = undefined;
+        let announceDate: moment.Moment;
         if (vipEvent && (vipEvent.announceDate || vipEvent.tourAnnounceDate)) {
           announceDate = vipEvent.announceDate
             ? moment(vipEvent.announceDate)

@@ -6,7 +6,7 @@ export const useCurrentUser = () => {
     let currentUserStr: string | undefined = undefined;
     try {
       currentUserStr = localStorage.getItem('currentUser') || undefined;
-    } catch (e) {
+    } catch {
       currentUserStr = undefined;
     }
     if (currentUserStr) {

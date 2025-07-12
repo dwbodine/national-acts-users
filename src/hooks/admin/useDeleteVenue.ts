@@ -2,7 +2,7 @@ import { adminService } from '../../services';
 import { ModifyExternalVenueResponse } from '@/types/admin';
 
 export const useDeleteVenue = () => {
-  const deleteVenue = async (venueId: Number): Promise<ModifyExternalVenueResponse> => {
+  const deleteVenue = async (venueId: number): Promise<ModifyExternalVenueResponse> => {
     let response: ModifyExternalVenueResponse = {
       success: false,
       venueError: undefined,

@@ -1,24 +1,26 @@
 import { useDispatch } from 'react-redux';
 import { setReloadEvents, setFocusControl } from '@/lib/reportSelectionSlice';
-import { Ticket } from '@/types/event';
 import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 import router from 'next/router';
 import { FaCheck, FaX } from 'react-icons/fa6';
 import moment from 'moment';
+import { AttendeeRowProps } from '@/types/props';
 
-export default function AttendeeRow(props: any) {
+export default function AttendeeRow(props: AttendeeRowProps) {
+  
+  const canCheckInTickets = props.CanCheckInTickets;
+  const ticket = props.Ticket;
+
+  const ticketId = ticket?.ticketSocketOrderTicketId ?? 0;
   const dispatch = useDispatch();
-  const canCheckInTickets = props.CanCheckInTickets as boolean;
-  const ticket = props.Ticket as Ticket;
-  const ticketId = ticket.ticketSocketOrderTicketId;
-  let attendeeName = `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
-  const currentCheckIn = ticket.isCheckedIn;
-  const checkedInDate = currentCheckIn ? moment(ticket.checkedInDate).format('MM/DD/YYYY') : '';
-  const checkedInTime = currentCheckIn ? moment(ticket.checkedInDate).format('h:mm a') : '';
+  let attendeeName = `${ticket?.attendeeFirstName} ${ticket?.attendeeLastName}`;
+  const currentCheckIn = ticket?.isCheckedIn;
+  const checkedInDate = currentCheckIn && ticket ? moment(ticket.checkedInDate).format('MM/DD/YYYY') : '';
+  const checkedInTime = currentCheckIn && ticket ? moment(ticket.checkedInDate).format('h:mm a') : '';
   if (currentCheckIn) {
     attendeeName += ` (${checkedInTime})`;
   }
-  const id = `ticket_${ticket.ticketSocketOrderTicketId}`;
+  const id = `ticket_${ticket?.ticketSocketOrderTicketId}`;
   let className = '';
   if (canCheckInTickets) {
     className = currentCheckIn ? 'attendee-check-highlight' : 'attendee-check';
@@ -50,7 +52,7 @@ export default function AttendeeRow(props: any) {
 
   const handleClick = () => {
     if (canCheckInTickets) {
-      checkIn(!ticket.isCheckedIn);
+      checkIn(!ticket?.isCheckedIn);
     }
   };
 

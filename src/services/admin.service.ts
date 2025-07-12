@@ -11,7 +11,6 @@ import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
 import {
   ExternalVenue,
   GetCountriesResponse,
-  GetExternalEventsResponse,
   GetExternalVenuesResponse,
   GetFaqCategoriesResponse,
   GetFaqsResponse,
@@ -177,7 +176,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }

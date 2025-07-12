@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { AdminReportsSelection, AdminSelection, Role, User } from '../types/user';
+import { AdminReportsSelection } from '../types/user';
 import moment from 'moment';
 
 const initialState: AdminReportsSelection = {

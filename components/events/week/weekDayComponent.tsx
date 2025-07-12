@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Col } from 'react-bootstrap';
 import moment from 'moment';
-import { Note, VipEvent } from '@/types/event';
+import { VipEvent } from '@/types/event';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { RootState } from '@/lib/store';
@@ -120,9 +120,9 @@ export default function WeekDay(props: WeekDayProps) {
             return;
         }
     
-        let message: string =
+        const message: string =
         'You are about to delete this note';
-        const toastId = toast.warning(
+        toast.warning(
         <ConfirmationDialog
             Message={message}
             ConfirmText="Yes"
@@ -176,11 +176,11 @@ export default function WeekDay(props: WeekDayProps) {
         );
     };
 
-    let noteRows: ReactElement[] = [];
+    const noteRows: ReactElement[] = [];
     if (notes && notes.length > 0) {
         notes.forEach((note, i) => {
             if (!note.ticketSocketEventId) {
-                let noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
+                const noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
                 const noteClass = note.isCompleted ? "week-day-note-completed" : "week-day-note";
                 noteRows.push(<div key={`wdNote_${key}_${i}`} className={noteClass}>
                                     <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '', moment(note.noteTimestamp).toDate(), note.isCompleted ?? false)}>{noteText}</span>
@@ -190,7 +190,7 @@ export default function WeekDay(props: WeekDayProps) {
         });
     }
 
-    let eventRows: ReactElement[] = [];
+    const eventRows: ReactElement[] = [];
     if (events && events.length > 0) {
         events.forEach((evt, i) => {
             const statusSlug = getEventStatusSlug(evt, true);
@@ -205,12 +205,12 @@ export default function WeekDay(props: WeekDayProps) {
             const sold = evt.totalTickets;
             const available = evt.ticketTypes?.reduce((accumulator, current) => accumulator + current.totalAvailable, 0) ?? 0;
 
-            let listSent = (evt.listSentToBand ?? false);
+            const listSent = (evt.listSentToBand ?? false);
             const listSentVips = evt.listSentNumVips ?? 0;
             const currentVips = evt.totalTickets ?? 0;
             const showVipAlert = (listSent && (listSentVips != currentVips));
             
-            let alertIcon: any = '';
+            let alertIcon: ReactElement = <></>;
             if (showVipAlert) {
                 alertIcon = <FaExclamationTriangle className="week-day-event-alert" title={`Current total of ${currentVips} differs from the count of ${listSentVips} when the list was sent to the band`}></FaExclamationTriangle>
             }
