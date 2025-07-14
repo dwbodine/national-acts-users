@@ -16,7 +16,7 @@ export class AuthService {
   getLogs = async (): Promise<LogResponse> => {
     const url = `/log`;
 
-    let logResponse: LogResponse = {
+    const logResponse: LogResponse = {
       logs: undefined,
       errorMessage: undefined,
     };
@@ -33,7 +33,7 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -47,7 +47,7 @@ export class AuthService {
   getCronLogs = async (): Promise<LogResponse> => {
     const url = `/cron_log`;
 
-    let logResponse: LogResponse = {
+    const logResponse: LogResponse = {
       logs: undefined,
       errorMessage: undefined,
     };
@@ -64,7 +64,7 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -86,7 +86,7 @@ export class AuthService {
       password: password,
     };
 
-    let userResponse: UserLoginResponse = {
+    const userResponse: UserLoginResponse = {
       user: undefined,
       loginError: undefined,
     };
@@ -102,7 +102,7 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -142,7 +142,7 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -180,7 +180,7 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -219,7 +219,7 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -265,7 +265,7 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -317,7 +317,7 @@ export class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {

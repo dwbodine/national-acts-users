@@ -15,10 +15,10 @@ export default function AdminHome() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.SalesOverview}
-      salesComponent={salesComponent}
-      userActivity={UserActivityType.AccessSalesOverView}
+      Title={title}
+      ActiveKey={ActivePageKey.SalesOverview}
+      SalesComponent={salesComponent}
+      UserActivity={UserActivityType.AccessSalesOverView}
     />
   );
 }

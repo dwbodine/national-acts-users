@@ -6,9 +6,12 @@ import {
   ITicketData,
   ITicketSalesData,
   Note,
+  Order,
   Seller,
   SellerType,
+  Ticket,
   TicketSocketRefreshHistory,
+  TicketType,
   VipEvent,
 } from './event';
 import { Country, PageSeller } from './public';
@@ -24,9 +27,11 @@ import {
 } from './user';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import { Dispatch, ReactElement, SetStateAction } from 'react';
+import { CellProps } from 'rsuite';
 
 export interface EditProps {
   Id?: number;
+  Hidden?: boolean;
 }
 
 export interface RefreshTicketSocketDataResultProps {
@@ -347,4 +352,34 @@ export interface WeekViewProps {
   StartOfWeek?: moment.Moment;
   Events?: VipEvent[];
   Notes?: Note[];
+}
+
+export interface MonthViewProps {
+  StartOfMonth?: moment.Moment;
+  EndOfMonth?: moment.Moment;
+  Events?: VipEvent[];
+  Notes?: Note[];
+}
+
+export interface AttendeeRowProps {
+  CanCheckInTickets?: boolean;
+  Ticket?: Ticket;
+}
+
+export interface OrderRowProps {
+  TicketTypes?: TicketType[];
+  EventDate?: string;
+  EventName?: string;
+  Order?: Order;
+  HasPhoneData?: boolean;
+  HideRevenue?: boolean;
+  HideServiceFees?: boolean;
+  CanCheckInTickets?: boolean;
+  ShowOnlyEmails?: boolean;
+  ShowOnlyPhones?: boolean;
+  IsAdmin?: boolean;
+}
+
+export interface ExpandCellProps extends CellProps<VipEvent> {
+  expandedRowKeys?: number[];
 }

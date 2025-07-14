@@ -1,5 +1,5 @@
 import { useGetLogs } from '@/hooks/admin/useGetLogs';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import moment from 'moment';
 

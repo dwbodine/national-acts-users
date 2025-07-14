@@ -7,9 +7,9 @@ export default function AdminVenues() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminVenuesIndex />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminVenuesIndex />}
     />
   );
 }

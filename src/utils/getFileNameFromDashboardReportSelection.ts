@@ -13,7 +13,7 @@ export default function getFileNameFromDashboardReportSelection(
   ) {
     const start = currentDashboardSelection.start;
     const end = currentDashboardSelection.end;
-    let hash = moment().unix();
+    const hash = moment().unix();
     fileName = `${reportName}_${start}_${end}_${hash}.csv`;
   }
   return fileName;

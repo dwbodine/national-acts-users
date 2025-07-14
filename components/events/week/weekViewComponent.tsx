@@ -21,28 +21,28 @@ export default function WeekView(props: WeekViewProps) {
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
 
     const previousWeek = () => {
-        let reportSelection = { ...currentReportSelection };
+        const reportSelection = { ...currentReportSelection };
         if (!reportSelection || !reportSelection.start) {
             return;
         }
-        let previousMonday = moment.unix(reportSelection.start).subtract(7, 'days').startOf('day').unix();
+        const previousMonday = moment.unix(reportSelection.start).subtract(7, 'days').startOf('day').unix();
         const dateRange = getSelectedAdminEventDateRange(previousMonday, EventTabView.Week);
         dispatch(setIsLoading(true));
         dispatch(setAdminDateRange(dateRange));
     };
 
     const nextWeek = () => {
-        let reportSelection = { ...currentReportSelection };
+        const reportSelection = { ...currentReportSelection };
         if (!reportSelection || !reportSelection.start) {
             return;
         }
-        let nextMonday = moment.unix(reportSelection.start).add(7, 'days').startOf('day').unix();
+        const nextMonday = moment.unix(reportSelection.start).add(7, 'days').startOf('day').unix();
         const dateRange = getSelectedAdminEventDateRange(nextMonday, EventTabView.Week);
         dispatch(setIsLoading(true));
         dispatch(setAdminDateRange(dateRange));
     };
 
-    let weekdays: ReactElement[] = [];
+    const weekdays: ReactElement[] = [];
     if (startOfWeek) {
         let displayDate = startOfWeek;
         for (let i = 0; i < 7; i++) {

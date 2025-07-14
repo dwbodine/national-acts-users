@@ -2,7 +2,7 @@ import { setAdminDateRange } from "@/lib/adminEventsSelectionSlice";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { RootState } from "@/lib/store";
 import { Note, VipEvent } from "@/types/event";
-import { DateRange, EventTabView } from "@/types/user";
+import { EventTabView } from "@/types/user";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { Col, Row } from "react-bootstrap";
@@ -12,41 +12,42 @@ import MonthDay from "./monthDayComponent";
 import MonthWeek from "./monthWeekComponent";
 import EventDataExpanded from "../../common/eventDataExpandedComponent";
 import { ReactElement } from "react";
+import { MonthViewProps } from "@/types/props";
 
 
-export default function MonthView(props: any) {
+export default function MonthView(props: MonthViewProps) {
     const startOfMonth = props.StartOfMonth ? moment(props.StartOfMonth).startOf('day') : undefined;
     const endOfMonth = props.EndOfMonth ? moment(props.EndOfMonth).endOf('day') : undefined;
-    const events = props.Events as VipEvent[] | undefined;
-    const notes = props.Notes as Note[] | undefined;
+    const events = props.Events;
+    const notes = props.Notes;
 
     const dispatch = useDispatch();
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
 
     const previousMonth = () => {
-        let reportSelection = { ...currentReportSelection };
+        const reportSelection = { ...currentReportSelection };
         if (!reportSelection || !reportSelection.periodStart) {
             return;
         }
-        let previousMonth = moment.unix(reportSelection.periodStart).subtract(1, 'month').startOf('day').unix();
+        const previousMonth = moment.unix(reportSelection.periodStart).subtract(1, 'month').startOf('day').unix();
         const dateRange = getSelectedAdminEventDateRange(previousMonth, EventTabView.Month);
         dispatch(setIsLoading(true));
         dispatch(setAdminDateRange(dateRange));
     };
 
     const nextMonth = () => {
-        let reportSelection = { ...currentReportSelection };
+        const reportSelection = { ...currentReportSelection };
         if (!reportSelection || !reportSelection.periodStart) {
             return;
         }
-        let nextMonth = moment.unix(reportSelection.periodStart).add(1, 'month').startOf('day').unix();
+        const nextMonth = moment.unix(reportSelection.periodStart).add(1, 'month').startOf('day').unix();
         const dateRange = getSelectedAdminEventDateRange(nextMonth, EventTabView.Month);
         dispatch(setIsLoading(true));
         dispatch(setAdminDateRange(dateRange));
     };
 
 
-    let monthDayRows: ReactElement[] = [];
+    const monthDayRows: ReactElement[] = [];
     let monthDays: ReactElement[] = [];
     if (startOfMonth && endOfMonth) {
         let displayDate = startOfMonth.startOf('week').startOf("day");

@@ -1,4 +1,4 @@
-import { Seller, SellerEventCategory, VipEvent } from './event';
+import { Seller, VipEvent } from './event';
 import { Country, Faq, FaqCategory, Page, TimeZone } from './public';
 
 export interface ExternalVenue {

@@ -7,9 +7,9 @@ export default function AdminUsersEdit() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminUserEdit />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminUserEdit />}
     />
   );
 }

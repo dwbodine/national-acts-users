@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { UserActivity, UserActivitySelection } from '../types/user';
-import moment from 'moment';
 
 const initialState: UserActivitySelection = {
   start: undefined,

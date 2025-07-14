@@ -29,9 +29,9 @@ export class UserService {
   }
 
   getUsers = async (): Promise<GetUsersResponse> => {
-    let url = `/admin/users`;
+    const url = `/admin/users`;
 
-    let usersResponse: GetUsersResponse = {
+    const usersResponse: GetUsersResponse = {
       users: undefined,
       userError: undefined,
       statusCode: 200,
@@ -50,7 +50,7 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           usersResponse.statusCode = parseInt(err.response.status);
         }
@@ -65,9 +65,9 @@ export class UserService {
   };
 
   getRoles = async (): Promise<GetRolesResponse> => {
-    let url = `/admin/roles`;
+    const url = `/admin/roles`;
 
-    let rolesResponse: GetRolesResponse = {
+    const rolesResponse: GetRolesResponse = {
       roles: undefined,
       roleError: undefined,
       statusCode: 200,
@@ -86,7 +86,7 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           rolesResponse.statusCode = parseInt(err.response.status);
         }
@@ -101,9 +101,9 @@ export class UserService {
   };
 
   getPermissions = async (): Promise<GetPermissionsResponse> => {
-    let url = `/admin/permissions`;
+    const url = `/admin/permissions`;
 
-    let permResponse: GetPermissionsResponse = {
+    const permResponse: GetPermissionsResponse = {
       permissions: undefined,
       permissionError: undefined,
       statusCode: 200,
@@ -124,7 +124,7 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           permResponse.statusCode = parseInt(err.response.status);
         }
@@ -142,9 +142,9 @@ export class UserService {
     eventId: number,
     userId: number,
   ): Promise<UserSellerResponse> => {
-    let url = `/user/getUserSellerFromEventId/${userId}/${eventId}`;
+    const url = `/user/getUserSellerFromEventId/${userId}/${eventId}`;
 
-    let sellerResponse: UserSellerResponse = {
+    const sellerResponse: UserSellerResponse = {
       userSeller: undefined,
       userSellerError: undefined,
       statusCode: 200,
@@ -162,7 +162,7 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           sellerResponse.statusCode = parseInt(err.response.status);
         }
@@ -178,9 +178,9 @@ export class UserService {
   };
 
   updateRole = async (roleToUpdate: Role): Promise<UpdateRoleResponse> => {
-    let url = `/admin/roles/update`;
+    const url = `/admin/roles/update`;
 
-    let rolesResponse: UpdateRoleResponse = {
+    const rolesResponse: UpdateRoleResponse = {
       success: false,
       roleError: undefined,
       statusCode: 200,
@@ -200,7 +200,7 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           rolesResponse.statusCode = parseInt(err.response.status);
         }
@@ -215,9 +215,9 @@ export class UserService {
   };
 
   deleteRoles = async (roleIds: number[]): Promise<UpdateRoleResponse> => {
-    let url = `/admin/roles/delete`;
+    const url = `/admin/roles/delete`;
 
-    let rolesResponse: UpdateRoleResponse = {
+    const rolesResponse: UpdateRoleResponse = {
       success: false,
       roleError: undefined,
       statusCode: 200,
@@ -237,7 +237,7 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           rolesResponse.statusCode = parseInt(err.response.status);
         }
@@ -252,9 +252,9 @@ export class UserService {
   };
 
   updateUser = async (userToUpdate: User): Promise<UpdateUserResponse> => {
-    let url = `/admin/users/update`;
+    const url = `/admin/users/update`;
 
-    let userResponse: UpdateUserResponse = {
+    const userResponse: UpdateUserResponse = {
       success: false,
       userError: undefined,
       statusCode: 200,
@@ -274,7 +274,7 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           userResponse.statusCode = parseInt(err.response.status);
         }
@@ -289,9 +289,9 @@ export class UserService {
   };
 
   deleteUser = async (userId: number): Promise<UpdateUserResponse> => {
-    let url = `/admin/users/delete`;
+    const url = `/admin/users/delete`;
 
-    let userResponse: UpdateUserResponse = {
+    const userResponse: UpdateUserResponse = {
       success: false,
       userError: undefined,
       statusCode: 200,
@@ -313,7 +313,7 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           userResponse.statusCode = parseInt(err.response.status);
         }
@@ -332,9 +332,9 @@ export class UserService {
     activityData: string | undefined = undefined,
     token: string | undefined = undefined,
   ): Promise<LogActivityResponse> => {
-    let url = '/user/logUserActivity';
+    const url = '/user/logUserActivity';
 
-    let activityResponse: LogActivityResponse = {
+    const activityResponse: LogActivityResponse = {
       statusCode: 200,
       logActivityError: undefined,
     };
@@ -360,7 +360,7 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           activityResponse.statusCode = parseInt(err.response.status);
         }
@@ -381,9 +381,9 @@ export class UserService {
     activityType: UserActivityType | undefined = undefined,
     filterAdmins: boolean = false,
   ): Promise<GetActivityResponse> => {
-    let url = '/dashboard/getUserActivity';
+    const url = '/dashboard/getUserActivity';
 
-    let activityResponse: GetActivityResponse = {
+    const activityResponse: GetActivityResponse = {
       statusCode: 200,
       logActivityError: undefined,
     };
@@ -411,7 +411,7 @@ export class UserService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           activityResponse.statusCode = parseInt(err.response.status);
         }

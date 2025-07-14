@@ -7,9 +7,9 @@ export default function AdminRoles() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminRolesIndex />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminRolesIndex />}
     />
   );
 }

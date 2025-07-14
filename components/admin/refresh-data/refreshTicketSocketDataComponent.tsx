@@ -61,7 +61,7 @@ export default function RefreshTicketSocketData() {
     currentAdminSelection,
   ]);
 
-  const updateSeller = (sellerId: number) => {
+  const updateSeller = (sellerId: number | null) => {
     if (!sellerId || isNaN(sellerId)) {
       return;
     }
@@ -101,28 +101,28 @@ export default function RefreshTicketSocketData() {
         </Col>
       </Row>
       <AdminSellerSelect
-        id="refresh"
+        Id="refresh"
         Sellers={currentAdminSelection.allSellers}
         SellerId={currentAdminSelection.sellerId}
-        OnSellerChange={(sellerId: number) => updateSeller(sellerId)}
+        OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
         Countries={currentAdminSelection.countries}
       />
       <ReportDatePicker
-        onChange={onDateChange}
-        start={currentAdminSelection.start}
-        end={currentAdminSelection.end}
+        OnChange={onDateChange}
+        Start={currentAdminSelection.start}
+        End={currentAdminSelection.end}
       />
       <Row>
         <Col>
           <Button onClick={submitReset}>Reset</Button> <AdminListHomeButton />
         </Col>
         <Col xl={8} lg={12}>
-          <RefreshTicketSocketDataResults updateResults={updateResults} />
+          <RefreshTicketSocketDataResults UpdateResults={updateResults} />
         </Col>
       </Row>
       <Row>
         <Col>
-          <RefreshTicketSocketHistoryTable history={history} />
+          <RefreshTicketSocketHistoryTable History={history} />
         </Col>
       </Row>
     </div>

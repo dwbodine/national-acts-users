@@ -7,7 +7,7 @@ import {
   TicketType,
   VipEvent,
 } from '@/types/event';
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, ReactElement, useEffect, useMemo, useState } from 'react';
 import moment from 'moment';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -37,7 +37,7 @@ import {
   setShowOnlyPhones,
 } from '@/lib/reportSelectionSlice';
 import getFileNameFromEvent from '@/utils/getFileNameFromEvent';
-import { EnumPermission, User, UserReportSelection, UserSeller } from '@/types/user';
+import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 import OrderMobileRow from './orderMobileRowComponent';
 import { useHasPermission } from '@/hooks/user/useHasPermission';
@@ -47,8 +47,11 @@ import { getTicketDataFromOrders } from '@/utils/getTicketDataFromOrders';
 import { getShirtDataFromOrders } from '@/utils/getShirtDataFromOrders';
 import { useGetUserSeller } from '@/hooks/order/useGetUserSeller';
 import router from 'next/router';
+import { EditProps } from '@/types/props';
 
-export default function EventDetail(props: any) {
+export default function EventDetail(props: EditProps) {
+  const id = props.Id;
+
   const { getUser } = useCurrentUser();
   const [user, setUser] = useState<User | undefined>(undefined);
   const { userHasPermission } = useHasPermission();
@@ -65,7 +68,7 @@ export default function EventDetail(props: any) {
   const [showOnlyEmailsDisplay, setShowOnlyEmailsDisplay] = useState(false);
   const [showOnlyPhonesDisplay, setShowOnlyPhonesDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const id: number | undefined = props.Id as number;
+  
 
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
@@ -96,7 +99,7 @@ export default function EventDetail(props: any) {
     currentReportSelection.currentDetailEvent?.nonUsaCurrencySymbol;
   const ticketBreakdownRows: ReactElement[] = [];
   const shirtSizeBreakdownRows: ReactElement[] = [];
-  let orderRows: ReactElement[] = [];
+  const orderRows: ReactElement[] = [];
   let hasOrders = false;
   let searchBarHidden = true;
   let visibleOrders: Order[] = [];
@@ -132,7 +135,7 @@ export default function EventDetail(props: any) {
       setAlwaysShowRevenue(vRevenueData && !vRevenueControls);
 
       if (!currentReportSelection.seller || currentReportSelection.seller.sellerId <= 0) {
-        let reportSelection = { ...currentReportSelection };
+        const reportSelection = { ...currentReportSelection };
         if (user?.selectedSellerId ?? 0 > 0) {
           // use cached user to transfer detail to redux in new window
           const seller = user.sellers.find((x) => x.sellerId == user.selectedSellerId);
@@ -186,23 +189,23 @@ export default function EventDetail(props: any) {
         if (currentReportSelection.reloadEvents) {
           setIsLoading(true);
           dispatch(setReloadEvents(false));
-          let reportSelection: UserReportSelection = { ...currentReportSelection };
+          const reportSelection: UserReportSelection = { ...currentReportSelection };
           if (!viewInactiveOrders) {
             reportSelection.showInactiveOrders = false;
           }
           const results = await getEventById(id);
           if (results && results.event) {
-            let newEvent: VipEvent = results.event;
+            const newEvent: VipEvent = results.event;
             if (newEvent) {
               if (newEvent.orders && newEvent.orders.length > 0) {
-                let orders: Order[] = [];
+                const orders: Order[] = [];
                 for (const order of newEvent.orders) {
                   if (order.isComped && order.tickets) {
                     for (const ticket of order.tickets) {
                       if (ticket.ticketTypeId != 0 || !newEvent.ticketSocketEventId) {
                         continue;
                       }
-                      let newOrder: Order = {
+                      const newOrder: Order = {
                         ticketSocketEventId: newEvent.ticketSocketEventId,
                         ticketSocketOrderId: order.ticketSocketOrderId,
                         purchaserLastName: ticket.attendeeLastName ?? '',
@@ -409,11 +412,11 @@ export default function EventDetail(props: any) {
       ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
         ticketTypes.forEach((ticketType: TicketType) => {
           const key = `ttd${i}`;
-          var data = ticketTypeData.find(
+          const data = ticketTypeData.find(
             (x) => x.TicketType == ticketType.ticketTypeName,
           );
-          var number = 0;
-          var total = '';
+          let number = 0;
+          let total = '';
           if (data) {
             number = data.Number;
           }
@@ -434,17 +437,17 @@ export default function EventDetail(props: any) {
     }
     shirtData = getShirtDataFromOrders(filteredOrders);
     const shirtSizes = shirtData?.ShirtSizes ?? [];
-    let arr: any = [];
+    const arr = new Map<string, number>();
     if (shirtSizes.length > 0) {
       hasShirtData = true;
       shirtSizes.forEach((shirtSize: string) => {
-        shirtData?.ShirtData?.forEach((shirSizeData: IShirtSizeData[], key: string) => {
-          var data = shirSizeData.find((x) => x.ShirtSize == shirtSize);
-          var number = arr[shirtSize] ?? 0;
+        shirtData?.ShirtData?.forEach((shirSizeData: IShirtSizeData[]) => {
+          const data = shirSizeData.find((x) => x.ShirtSize == shirtSize);
+          let number = arr.get(shirtSize) ?? 0;
           if (data) {
             number += data.Number;
           }
-          arr[shirtSize] = number;
+          arr.set(shirtSize, number);
         });
       });
       let i = 0;
@@ -452,7 +455,7 @@ export default function EventDetail(props: any) {
         const key = `ssw${i}`;
         shirtSizeBreakdownRows.push(
           <div key={key}>
-            {shirtSize} ({arr[shirtSize]})
+            {shirtSize} ({arr.get(shirtSize)})
           </div>,
         );
         i++;

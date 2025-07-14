@@ -5,7 +5,7 @@ export default function getSelectedAdminEventDateRange(
   selectedUnixDate: number,
   tabView: EventTabView,
 ) {
-  let dateRange: DateRange = {
+  const dateRange: DateRange = {
     start: 0,
     end: 0,
   };

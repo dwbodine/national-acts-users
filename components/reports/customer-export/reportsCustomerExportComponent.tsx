@@ -79,12 +79,10 @@ export default function ReportsCustomerExport() {
       const hasNonUsaOrders =
         vipEvents.find((x) => x.hasNonUSAOrders == true) != undefined;
       let currencySymbol: string | undefined = undefined;
-      let currencyAbbrev: string | undefined = undefined;
       if (hasNonUsaOrders) {
         const symbolOrder = vipEvents.find((x) => x.hasNonUSAOrders == true);
         if (symbolOrder != undefined) {
           currencySymbol = symbolOrder.nonUsaCurrencySymbol;
-          currencyAbbrev = symbolOrder.nonUsaCurrencyAbbrev;
         }
       }
       const showServiceFees = false;

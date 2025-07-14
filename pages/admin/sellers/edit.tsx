@@ -7,9 +7,9 @@ export default function AdminGlobalSellersEdit() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminSellerGlobalEdit />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminSellerGlobalEdit />}
     />
   );
 }

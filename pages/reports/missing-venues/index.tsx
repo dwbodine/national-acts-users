@@ -7,9 +7,9 @@ export default function CustomerExportReport() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Reports}
-      reportComponent={<ReportsMissingVenues />}
+      Title={title}
+      ActiveKey={ActivePageKey.Reports}
+      ReportComponent={<ReportsMissingVenues />}
     />
   );
 }

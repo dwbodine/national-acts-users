@@ -43,7 +43,7 @@ export const userReportSelectionSlice = createSlice({
         state.reloadTours = true;
         const currentUserStr = localStorage.getItem('currentUser') || undefined;
         if (currentUserStr) {
-          let currentUser = JSON.parse(currentUserStr) as User;
+          const currentUser = JSON.parse(currentUserStr) as User;
           currentUser.selectedSellerId = action.payload.sellerId;
           localStorage.setItem('currentUser', JSON.stringify(currentUser));
         }
@@ -125,7 +125,7 @@ export const userReportSelectionSlice = createSlice({
       }
       const currentUserStr = localStorage.getItem('currentUser') || undefined;
       if (currentUserStr) {
-        let currentUser = JSON.parse(currentUserStr) as User;
+        const currentUser = JSON.parse(currentUserStr) as User;
         currentUser.selectedHideRevenue = action.payload;
         currentUser.selectedHideServiceFees = state.hideServiceFees;
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
@@ -147,7 +147,7 @@ export const userReportSelectionSlice = createSlice({
       state.reloadEvents = false;
       const currentUserStr = localStorage.getItem('currentUser') || undefined;
       if (currentUserStr) {
-        let currentUser = JSON.parse(currentUserStr) as User;
+        const currentUser = JSON.parse(currentUserStr) as User;
         currentUser.selectedHideServiceFees = action.payload;
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
       }

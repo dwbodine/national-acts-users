@@ -22,9 +22,9 @@ export default function AdminOrders() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminOrdersIndex Id={id} />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminOrdersIndex Id={id} />}
     />
   );
 }

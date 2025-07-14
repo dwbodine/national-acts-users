@@ -37,7 +37,6 @@ import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
 import moment from 'moment';
 import { getShirtDataFromEvents } from '@/utils/getShirtData';
 import { DEFAULT_COUNTRY_ID, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
-import { report } from 'process';
 import { ExternalVenue } from '@/types/admin';
 
 export class EventService {
@@ -82,7 +81,7 @@ export class EventService {
       url += `&end=${reportSelection.end}`;
     }
 
-    let eventResponse: GetEventsResponse = {
+    const eventResponse: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
       statusCode: 200,
@@ -101,7 +100,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           eventResponse.statusCode = parseInt(err.response.status);
         }
@@ -117,9 +116,9 @@ export class EventService {
   };
 
   getTours = async (sellerId: number): Promise<GetToursResponse> => {
-    let url = `/events/tours/${sellerId}`;
+    const url = `/events/tours/${sellerId}`;
 
-    let tourResponse: GetToursResponse = {
+    const tourResponse: GetToursResponse = {
       tours: undefined,
       tourError: undefined,
       statusCode: 200,
@@ -138,7 +137,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           tourResponse.statusCode = parseInt(err.response.status);
         }
@@ -170,7 +169,7 @@ export class EventService {
       url += `&end=${reportSelection.end}`;
     }
 
-    let eventResponse: GetEventsResponse = {
+    const eventResponse: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
       statusCode: 200,
@@ -189,7 +188,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           eventResponse.statusCode = parseInt(err.response.status);
         }
@@ -205,9 +204,9 @@ export class EventService {
   };
 
   getAdminSellerEvents = async (sellerIds: number[]): Promise<GetEventsResponse> => {
-    let url = `/events/getEventsAndOrders?ignoreFlags=1&omitOrders=1&sellerIds=${sellerIds.join(',')}`;
+    const url = `/events/getEventsAndOrders?ignoreFlags=1&omitOrders=1&sellerIds=${sellerIds.join(',')}`;
 
-    let eventResponse: GetEventsResponse = {
+    const eventResponse: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
       statusCode: 200,
@@ -226,7 +225,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           eventResponse.statusCode = parseInt(err.response.status);
         }
@@ -250,7 +249,7 @@ export class EventService {
       url += `?sellerId=${sellerId}`;
     }
 
-    let eventResponse: GetEventsResponse = {
+    const eventResponse: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
       statusCode: 200,
@@ -269,7 +268,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           eventResponse.statusCode = parseInt(err.response.status);
         }
@@ -285,9 +284,9 @@ export class EventService {
   };
 
   getAllOrders = async (start: number, end: number): Promise<GetOrdersResponse> => {
-    let url = `/events/getOrders?start=${start}&end=${end}&ignoreFlags=1`;
+    const url = `/events/getOrders?start=${start}&end=${end}&ignoreFlags=1`;
 
-    let ordersResponse: GetOrdersResponse = {
+    const ordersResponse: GetOrdersResponse = {
       orders: undefined,
       orderError: undefined,
       statusCode: 200,
@@ -305,7 +304,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           ordersResponse.statusCode = parseInt(err.response.status);
         }
@@ -331,7 +330,7 @@ export class EventService {
 
     const url = `/dashboard/getDashboardDataSecured/${year}`;
 
-    let dashResponse: GetDashboardOrdersResponse = {
+    const dashResponse: GetDashboardOrdersResponse = {
       totals: undefined,
       dashError: undefined,
       statusCode: 200,
@@ -349,7 +348,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           dashResponse.statusCode = parseInt(err.response.status);
         }
@@ -391,7 +390,7 @@ export class EventService {
       url += `&sellerId=${sellerId}`;
     }
 
-    let eventResponse: GetEventsResponse = {
+    const eventResponse: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
       statusCode: 200,
@@ -414,7 +413,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           eventResponse.statusCode = parseInt(err.response.status);
         }
@@ -430,9 +429,9 @@ export class EventService {
   };
 
   getEventById = async (eventId: number): Promise<GetEventResponse> => {
-    let url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&eventId=${eventId}`;
+    const url = `/events/getEventsAndOrders?excludeExternal=1&ignoreFlags=1&eventId=${eventId}`;
 
-    let eventResponse: GetEventResponse = {
+    const eventResponse: GetEventResponse = {
       event: undefined,
       eventError: undefined,
       statusCode: 200,
@@ -451,7 +450,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           eventResponse.statusCode = parseInt(err.response.status);
         }
@@ -467,9 +466,9 @@ export class EventService {
   };
 
   getOrderById = async (orderId: number): Promise<GetOrderResponse> => {
-    let url = `/events/getOrderById?tsOrderId=${orderId}`;
+    const url = `/events/getOrderById?tsOrderId=${orderId}`;
 
-    let orderResponse: GetOrderResponse = {
+    const orderResponse: GetOrderResponse = {
       order: undefined,
       orderError: undefined,
       statusCode: 200,
@@ -488,7 +487,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           orderResponse.statusCode = parseInt(err.response.status);
         }
@@ -504,9 +503,9 @@ export class EventService {
   };
 
   updateEvent = async (eventToUpdate: VipEvent): Promise<ModifyEventResponse> => {
-    let url = `/admin/events/update`;
+    const url = `/admin/events/update`;
 
-    let eventResponse: ModifyEventResponse = {
+    const eventResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
       statusCode: 200,
@@ -526,7 +525,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           eventResponse.statusCode = parseInt(err.response.status);
         }
@@ -541,9 +540,9 @@ export class EventService {
   };
 
   updateTour = async (tourToUpdate: Tour): Promise<ModifyTourResponse> => {
-    let url = `/admin/tours/update`;
+    const url = `/admin/tours/update`;
 
-    let tourResponse: ModifyTourResponse = {
+    const tourResponse: ModifyTourResponse = {
       success: false,
       tourError: undefined,
       statusCode: 200,
@@ -563,7 +562,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           tourResponse.statusCode = parseInt(err.response.status);
         }
@@ -582,9 +581,9 @@ export class EventService {
     markCancelled: boolean,
     refundServiceFees: boolean,
   ): Promise<ModifyEventResponse> => {
-    let url = 'admin/events/refund';
+    const url = 'admin/events/refund';
 
-    let eventResponse: ModifyEventResponse = {
+    const eventResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
       statusCode: 200,
@@ -610,7 +609,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           eventResponse.statusCode = parseInt(err.response.status);
         }
@@ -628,9 +627,9 @@ export class EventService {
     eventId: number,
     isCancelled: boolean,
   ): Promise<ModifyEventResponse> => {
-    let url = '/admin/events/cancel';
+    const url = '/admin/events/cancel';
 
-    let eventResponse: ModifyEventResponse = {
+    const eventResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
       statusCode: 200,
@@ -655,7 +654,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           eventResponse.statusCode = parseInt(err.response.status);
         }
@@ -673,9 +672,9 @@ export class EventService {
     eventId: number,
     isSent: boolean,
   ): Promise<ModifyEventResponse> => {
-    let url = '/admin/events/sendListToBand';
+    const url = '/admin/events/sendListToBand';
 
-    let eventResponse: ModifyEventResponse = {
+    const eventResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
       statusCode: 200,
@@ -702,7 +701,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           eventResponse.statusCode = parseInt(err.response.status);
         }
@@ -721,9 +720,9 @@ export class EventService {
     refundServiceFees: boolean,
     markChargeback: boolean = false,
   ): Promise<ModifyOrderResponse> => {
-    let url = 'admin/orders/refund';
+    const url = 'admin/orders/refund';
 
-    let orderResponse: ModifyOrderResponse = {
+    const orderResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
       statusCode: 200,
@@ -749,7 +748,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           orderResponse.statusCode = parseInt(err.response.status);
         }
@@ -767,9 +766,9 @@ export class EventService {
     ticketId: number,
     refundServiceFees: boolean,
   ): Promise<ModifyOrderResponse> => {
-    let url = 'admin/tickets/refund';
+    const url = 'admin/tickets/refund';
 
-    let orderResponse: ModifyOrderResponse = {
+    const orderResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
       statusCode: 200,
@@ -794,7 +793,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           orderResponse.statusCode = parseInt(err.response.status);
         }
@@ -809,9 +808,9 @@ export class EventService {
   };
 
   updateOrder = async (orderToUpdate: Order): Promise<ModifyOrderResponse> => {
-    let url = `/admin/orders/update`;
+    const url = `/admin/orders/update`;
 
-    let orderResponse: ModifyOrderResponse = {
+    const orderResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
       statusCode: 200,
@@ -831,7 +830,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           orderResponse.statusCode = parseInt(err.response.status);
         }
@@ -849,9 +848,9 @@ export class EventService {
     eventId: number,
     numTickets: number,
   ): Promise<ModifyOrderResponse> => {
-    let url = `/admin/orders/comp`;
+    const url = `/admin/orders/comp`;
 
-    let orderResponse: ModifyOrderResponse = {
+    const orderResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
       statusCode: 200,
@@ -874,7 +873,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           orderResponse.statusCode = parseInt(err.response.status);
         }
@@ -903,7 +902,7 @@ export class EventService {
       url += `?start=${end}`;
     }
 
-    let refreshResponse: RefreshHistoryResponse = {
+    const refreshResponse: RefreshHistoryResponse = {
       results: undefined,
       refreshError: undefined,
       statusCode: 200,
@@ -923,7 +922,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           refreshResponse.statusCode = parseInt(err.response.status);
         }
@@ -939,9 +938,9 @@ export class EventService {
   };
 
   getTicketSocketRefreshHistory = async (): Promise<GetRefreshHistoryResponse> => {
-    let url = `/events/getRefreshHistory`;
+    const url = `/events/getRefreshHistory`;
 
-    let refreshResponse: GetRefreshHistoryResponse = {
+    const refreshResponse: GetRefreshHistoryResponse = {
       history: undefined,
       refreshError: undefined,
       statusCode: 200,
@@ -961,7 +960,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           refreshResponse.statusCode = parseInt(err.response.status);
         }
@@ -985,7 +984,7 @@ export class EventService {
     const url = '/admin/notes/add';
     const headers = getAuthorizationHeader();
 
-    let modifyResponse: ModifyNoteResponse = {
+    const modifyResponse: ModifyNoteResponse = {
       success: false,
       noteError: undefined,
       statusCode: 200,
@@ -1017,7 +1016,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -1042,7 +1041,7 @@ export class EventService {
     const url = '/admin/notes/edit';
     const headers = getAuthorizationHeader();
 
-    let modifyResponse: ModifyNoteResponse = {
+    const modifyResponse: ModifyNoteResponse = {
       success: false,
       noteError: undefined,
       statusCode: 200,
@@ -1070,7 +1069,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -1089,7 +1088,7 @@ export class EventService {
     const url = '/admin/notes/delete';
     const headers = getAuthorizationHeader();
 
-    let modifyResponse: ModifyNoteResponse = {
+    const modifyResponse: ModifyNoteResponse = {
       success: false,
       noteError: undefined,
       statusCode: 200,
@@ -1113,7 +1112,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -1129,9 +1128,9 @@ export class EventService {
   };
 
   getCalendarNotes = async (start: number, end: number): Promise<GetNotesResponse> => {
-    let url = `/admin/notes/calendar?start=${start}&end=${end}`;
+    const url = `/admin/notes/calendar?start=${start}&end=${end}`;
 
-    let refreshResponse: GetNotesResponse = {
+    const refreshResponse: GetNotesResponse = {
       notes: undefined,
       noteError: undefined,
       statusCode: 200,
@@ -1149,7 +1148,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           refreshResponse.statusCode = parseInt(err.response.status);
         }
@@ -1165,9 +1164,9 @@ export class EventService {
   };
 
   getMissingVenueEvents = async (): Promise<GetEventsResponse> => {
-    let url = `/reports/getMissingVenueEvents`;
+    const url = `/reports/getMissingVenueEvents`;
 
-    let response: GetEventsResponse = {
+    const response: GetEventsResponse = {
       events: undefined,
       eventError: undefined,
       statusCode: 200,
@@ -1185,7 +1184,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           response.statusCode = parseInt(err.response.status);
         }
@@ -1201,9 +1200,9 @@ export class EventService {
   };
 
   searchOrders = async (searchTerm: string): Promise<GetOrdersResponse> => {
-    let url = `/admin/orders/search?sTerm=${encodeURIComponent(searchTerm)}`;
+    const url = `/admin/orders/search?sTerm=${encodeURIComponent(searchTerm)}`;
 
-    let response: GetOrdersResponse = {
+    const response: GetOrdersResponse = {
       orderError: undefined,
       orders: undefined,
       statusCode: 200,
@@ -1221,7 +1220,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           response.statusCode = parseInt(err.response.status);
         }
@@ -1243,7 +1242,7 @@ export class EventService {
     const url = '/events/setEventsInactive';
     const headers = getAuthorizationHeader();
 
-    let modifyResponse: ModifyEventResponse = {
+    const modifyResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
       statusCode: 200,
@@ -1268,7 +1267,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -1290,7 +1289,7 @@ export class EventService {
     const url = '/events/setEventsDeleted';
     const headers = getAuthorizationHeader();
 
-    let modifyResponse: ModifyEventResponse = {
+    const modifyResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
       statusCode: 200,
@@ -1315,7 +1314,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -1337,7 +1336,7 @@ export class EventService {
     const url = '/events/setEventsHidden';
     const headers = getAuthorizationHeader();
 
-    let modifyResponse: ModifyEventResponse = {
+    const modifyResponse: ModifyEventResponse = {
       success: false,
       eventError: undefined,
       statusCode: 200,
@@ -1362,7 +1361,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -1384,7 +1383,7 @@ export class EventService {
     const url = '/events/setOrdersInactive';
     const headers = getAuthorizationHeader();
 
-    let modifyResponse: ModifyOrderResponse = {
+    const modifyResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
       statusCode: 200,
@@ -1409,7 +1408,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -1431,7 +1430,7 @@ export class EventService {
     const url = '/events/setOrdersDeleted';
     const headers = getAuthorizationHeader();
 
-    let modifyResponse: ModifyOrderResponse = {
+    const modifyResponse: ModifyOrderResponse = {
       success: false,
       orderError: undefined,
       statusCode: 200,
@@ -1456,7 +1455,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -1478,7 +1477,7 @@ export class EventService {
     const url = '/events/setTicketsCheckin';
     const headers = getAuthorizationHeader();
 
-    let modifyResponse: ModifyTicketResponse = {
+    const modifyResponse: ModifyTicketResponse = {
       success: false,
       ticketError: undefined,
       statusCode: 200,
@@ -1503,7 +1502,7 @@ export class EventService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -1533,21 +1532,21 @@ export class EventService {
     const ticketTypes = ticketData?.TicketTypes;
     if (ticketTypes?.length > 0) {
       exportStr += '"Ticket Type breakdown:"\n';
-      let arr: any = [];
+      const arr = new Map<string, number>();
       ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
         ticketTypes.forEach((ticketType: TicketType) => {
-          var data = ticketTypeData.find(
+          const data = ticketTypeData.find(
             (x) => x.TicketType == ticketType.ticketTypeName,
           );
-          var number = arr[ticketType.ticketTypeName] ?? 0;
+          let number = arr.get(ticketType.ticketTypeName) ?? 0;
           if (data) {
             number += data.Number;
           }
-          arr[ticketType.ticketTypeName] = number;
+          arr.set(ticketType.ticketTypeName, number);
         });
       });
       for (const ticketType in arr) {
-        exportStr += `"${ticketType}","${arr[ticketType]}"\n`;
+        exportStr += `"${ticketType}","${arr.get(ticketType)}"\n`;
       }
     }
 
@@ -1563,7 +1562,7 @@ export class EventService {
 
     let totalTcketsSold = 0;
     let totalRevenue = 0.0;
-    let totalServiceFees = 0.0;
+    const totalServiceFees = 0.0;
 
     events.forEach((vipEvent: VipEvent) => {
       const sellerName = vipEvent.sellerName;
@@ -1846,10 +1845,10 @@ export class EventService {
       exportStr += '"Type","Number"\n';
       ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
         ticketTypes.forEach((ticketType: TicketType) => {
-          var data = ticketTypeData.find(
+          const data = ticketTypeData.find(
             (x) => x.TicketType == ticketType.ticketTypeName,
           );
-          var number = 0;
+          let number = 0;
           if (data) {
             number = data.Number;
           }

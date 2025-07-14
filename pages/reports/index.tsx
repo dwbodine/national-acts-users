@@ -8,10 +8,10 @@ export default function Reports() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Reports}
-      reportComponent={<ReportsIndex />}
-      userActivity={UserActivityType.AccessReports}
+      Title={title}
+      ActiveKey={ActivePageKey.Reports}
+      ReportComponent={<ReportsIndex />}
+      UserActivity={UserActivityType.AccessReports}
     />
   );
 }

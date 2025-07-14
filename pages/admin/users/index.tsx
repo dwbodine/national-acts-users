@@ -7,9 +7,9 @@ export default function AdminUsers() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminUsersIndex />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminUsersIndex />}
     />
   );
 }

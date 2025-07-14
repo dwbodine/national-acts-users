@@ -3,11 +3,11 @@ import moment from 'moment';
 
 export function getTicketDataFromEvents(events: VipEvent[]): ITicketData {
   const map = new Map<string, ITicketTypeData[]>();
-  let ticketTypes: TicketType[] = [];
+  const ticketTypes: TicketType[] = [];
   events?.forEach((evt) => {
     const key = moment(evt.eventDate).format('MM/DD/YYYY');
     let eventHasTickets: boolean = false;
-    let eventHasTicketTypes: boolean = evt.hasTicketTypeData ?? false;
+    const eventHasTicketTypes: boolean = evt.hasTicketTypeData ?? false;
     if (eventHasTicketTypes) {
       evt.ticketTypes?.forEach((ticketType) => {
         if (
@@ -60,7 +60,7 @@ export function getTicketDataFromEvents(events: VipEvent[]): ITicketData {
                 (item) => item.TicketType.toLowerCase() === ticketTypeName.toLowerCase(),
               );
               if (indexToUpdate >= 0) {
-                let item = collection[indexToUpdate];
+                const item = collection[indexToUpdate];
                 item.Number += 1;
                 collection[indexToUpdate] = item;
               } else {

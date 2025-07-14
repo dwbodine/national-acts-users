@@ -290,8 +290,8 @@ export default function AdminPageEdit() {
     }
   };
 
-  const updateSeller = (pageSellerId: number, sellerId: number, newSellerId: number) => {
-      if (isNaN(pageSellerId) || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
+  const updateSeller = (pageSellerId: number | null, sellerId: number | null, newSellerId: number | null) => {
+      if (!pageSellerId || isNaN(pageSellerId) || !sellerId || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
         return;
       }
       if (currentAdminSelection.selectedPage) {
@@ -557,14 +557,14 @@ export default function AdminPageEdit() {
         currentAdminSelection.selectedPage.sellers.map((item, index) => {
           sellerRows.push(
             <AdminSellerSelect
-              id={item.sellerId}
+              Id={item.sellerId.toString()}
               key={item.sellerId}
               Number={index + 1}
               Sellers={currentAdminSelection.allSellers}
               SellerId={item.sellerId}
               SellerType={sellerType}
               PageSeller={item}
-              OnSellerChange={(newSellerId: number) => updateSeller(parseInt(`${item.pageSellerId}`), parseInt(`${item.sellerId}`), newSellerId)}
+              OnSellerChange={(newSellerId: number | null) => updateSeller(parseInt(`${item.pageSellerId}`), parseInt(`${item.sellerId}`), newSellerId)}
               OnPageSellerChange={(ps: PageSeller) => updatePageSeller(ps)}
               OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
               Countries={currentAdminSelection.countries}

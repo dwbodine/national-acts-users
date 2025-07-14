@@ -1,39 +1,38 @@
-import { Order, TicketType } from '@/types/event';
 import moment from 'moment';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import AttendeeRow from './attendeeRowComponent';
+import { OrderRowProps } from '@/types/props';
 
-export default function OrderRow(props: any) {
-  const ticketTypes = props.TicketTypes as TicketType[] | undefined;
-  const eventDate = props.EventDate as string;
-  const eventName = props.EventName as string;
-  const order = props.Order as Order;
-  const hasPhoneData = props.HasPhoneData as boolean;
-  const hasShirtData = ((order.totalShirts ?? 0) > 0);
-  const hideRev = props.HideRevenue as boolean;
-  const hideServiceFees = props.HideServiceFees as boolean;
-  const canCheckInTickets = props.CanCheckInTickets as boolean;
-  const showOnlyEmails = props.ShowOnlyEmails as boolean;
-  const showOnlyPhones = props.ShowOnlyPhones as boolean;
+export default function OrderRow(props: OrderRowProps) {
+  const ticketTypes = props.TicketTypes;
+  const eventDate = props.EventDate;
+  const eventName = props.EventName;
+  const order = props.Order;
+  const hasPhoneData = props.HasPhoneData;
+  const hasShirtData = ((order?.totalShirts ?? 0) > 0);
+  const hideRev = props.HideRevenue;
+  const hideServiceFees = props.HideServiceFees;
+  const canCheckInTickets = props.CanCheckInTickets;
+  const showOnlyEmails = props.ShowOnlyEmails;
+  const showOnlyPhones = props.ShowOnlyPhones;
 
   let statusClass = '';
-  if (order.isDeleted) {
+  if (order?.isDeleted) {
     statusClass += 'deleted';
-  } else if (!order.isActive) {
+  } else if (!order?.isActive) {
     statusClass += 'inactive';
-  } else if (order.hasRefunds) {
+  } else if (order?.hasRefunds) {
     statusClass += 'refunded';
   }
 
-  const id = `order_${order.ticketSocketOrderId}`;
-  const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
-  const purchaseDate = order.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
-  const revenue = new Number(order.revenueUsd - (order.revenueRefundedUsd ?? 0)).toFixed(2);
-  const serviceFees = new Number((order.serviceFeesUsd ?? 0) - (order.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2);
+  const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
+  const purchaseDate = order?.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
+  const revenue = new Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0)).toFixed(2);
+  const serviceFees = new Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2);
 
   const ticketTypeRows: ReactElement[] = [];
 
-  if (order.tickets && order.tickets.length > 0) {
+  if (order?.tickets && order.tickets.length > 0) {
     const ticketMap = new Map<string, number>();
     order.tickets?.forEach((ticket) => {
       let ticketTypeName = ticket.ticketType;
@@ -63,7 +62,7 @@ export default function OrderRow(props: any) {
   const shirtSizeRows: ReactElement[] = [];
   if (hasShirtData) {
     const shirtMap = new Map<string, number>();
-    order.tickets?.forEach((ticket) => {
+    order?.tickets?.forEach((ticket) => {
       if (ticket.shirtSize) {
         const item = shirtMap.get(ticket.shirtSize);
         let num: number = 1;
@@ -87,7 +86,7 @@ export default function OrderRow(props: any) {
   }
 
   const attendeeNameRows: ReactElement[] = [];
-  if (order.tickets && order.tickets.length > 0) {
+  if (order?.tickets && order.tickets.length > 0) {
     order.tickets.forEach((ticket, i) => {
       const key = `anr${i}`;
       attendeeNameRows.push(
@@ -96,8 +95,8 @@ export default function OrderRow(props: any) {
     });
   }
 
-  const phone = order.phone?.startsWith("+1 ") ? 
-    order.phone.replace("+1 ", "") : order.phone;
+  const phone = order?.phone?.startsWith("+1 ") ? 
+    order.phone.replace("+1 ", "") : order?.phone;
 
   return (
     <tr className={statusClass}>
@@ -107,14 +106,14 @@ export default function OrderRow(props: any) {
       <td hidden={showOnlyEmails || showOnlyPhones}>{moment(eventDate).format('MM/DD/YYYY')}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{eventName}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{ticketTypeRows}</td>
-      <td hidden={showOnlyEmails || showOnlyPhones}>{order.numTickets}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{order?.numTickets}</td>
       <td className="pull-right" hidden={hideRev || showOnlyEmails || showOnlyPhones}>
         {revenue}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}>
         {serviceFees}
       </td>
-      <td hidden={showOnlyPhones} className="email">{order.email}</td>
+      <td hidden={showOnlyPhones} className="email">{order?.email}</td>
       {hasPhoneData && !showOnlyEmails ? <td>{phone}</td> : ''}
       {hasShirtData && !(showOnlyEmails || showOnlyPhones) ? <td>{shirtSizeRows}</td> : ''}
     </tr>

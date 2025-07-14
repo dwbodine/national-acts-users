@@ -1,40 +1,40 @@
-import { Order, TicketType } from '@/types/event';
 import moment from 'moment';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import AttendeeRow from './attendeeRowComponent';
+import { OrderRowProps } from '@/types/props';
 
-export default function OrderMobileRow(props: any) {
-  const ticketTypes = props.TicketTypes as TicketType[] | undefined;
-  const eventDate = props.EventDate as string;
-  const eventName = props.EventName as string;
-  const order = props.Order as Order;
-  const hasPhoneData = props.HasPhoneData as boolean;
-  const hasShirtData = ((order.totalShirts ?? 0) > 0);
-  const hideRev = props.HideRevenue as boolean;
-  const hideServiceFees = props.HideServiceFees as boolean;
-  const canCheckInTickets = props.CanCheckInTickets as boolean;
-  const showOnlyEmails = props.ShowOnlyEmails as boolean;
-  const showOnlyPhones = props.ShowOnlyPhones as boolean;
-  const isAdmin = props.IsAdmin as boolean;
+export default function OrderMobileRow(props: OrderRowProps) {
+  const ticketTypes = props.TicketTypes;
+  const eventDate = props.EventDate;
+  const eventName = props.EventName;
+  const order = props.Order;
+  const hasPhoneData = props.HasPhoneData;
+  const hasShirtData = ((order?.totalShirts ?? 0) > 0);
+  const hideRev = props.HideRevenue;
+  const hideServiceFees = props.HideServiceFees;
+  const canCheckInTickets = props.CanCheckInTickets;
+  const showOnlyEmails = props.ShowOnlyEmails;
+  const showOnlyPhones = props.ShowOnlyPhones;
+  const isAdmin = props.IsAdmin;
 
   let statusClass = '';
-  if (order.isDeleted) {
+  if (order?.isDeleted) {
     statusClass += 'deleted';
-  } else if (!order.isActive) {
+  } else if (!order?.isActive) {
     statusClass += 'inactive';
-  } else if (order.hasRefunds) {
+  } else if (order?.hasRefunds) {
     statusClass += 'refunded';
   }
 
-  const id = `order_${order.ticketSocketOrderId}`;
-  const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
-  const purchaseDate = order.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
-  const revenue = `$${new Number(order.revenueUsd - (order.revenueRefundedUsd ?? 0)).toFixed(2)}`;
-  const serviceFees = `$${new Number((order.serviceFeesUsd ?? 0) - (order.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2)}`;
+  const id = `order_${order?.ticketSocketOrderId}`;
+  const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
+  const purchaseDate = order?.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
+  const revenue = `$${new Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0)).toFixed(2)}`;
+  const serviceFees = `$${new Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2)}`;
 
   const ticketTypeRows: ReactElement[] = [];
-  if (order.tickets && order.tickets.length > 0) {
+  if (order?.tickets && order.tickets.length > 0) {
     const ticketMap = new Map<string, number>();
     order.tickets?.forEach((ticket) => {
       let ticketTypeName = ticket.ticketType;
@@ -66,7 +66,7 @@ export default function OrderMobileRow(props: any) {
   const shirtSizeRows: ReactElement[] = [];
   if (hasShirtData) {
     const shirtMap = new Map<string, number>();
-    order.tickets?.forEach((ticket) => {
+    order?.tickets?.forEach((ticket) => {
       if (ticket.shirtSize) {
         const item = shirtMap.get(ticket.shirtSize);
         let num: number = 1;
@@ -89,7 +89,7 @@ export default function OrderMobileRow(props: any) {
   }
 
   const attendeeNameRows: ReactElement[] = [];
-  if (order.tickets && order.tickets.length > 0) {
+  if (order?.tickets && order.tickets.length > 0) {
     let i = 0;
     order.tickets.forEach((ticket) => {
       const key = `anr${i}`;
@@ -100,8 +100,8 @@ export default function OrderMobileRow(props: any) {
     });
   }
 
-  const phone = order.phone?.startsWith("+1 ") ? 
-    order.phone.replace("+1 ", "") : order.phone;
+  const phone = order?.phone?.startsWith("+1 ") ? 
+    order.phone.replace("+1 ", "") : order?.phone;
 
   return (
     <tr className={'mobile-event-card-container ' + statusClass}>
@@ -141,7 +141,7 @@ export default function OrderMobileRow(props: any) {
           </Row>
           <Row hidden={showOnlyPhones}>
             <Col xs={5} className="mobile-bold">Email:</Col>
-            <Col>{order.email}</Col>
+            <Col>{order?.email}</Col>
           </Row>
           <Row hidden={!hasPhoneData || showOnlyEmails}>
             <Col xs={5} className="mobile-bold">Phone:</Col>

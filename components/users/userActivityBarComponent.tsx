@@ -7,7 +7,6 @@ import {
   setReloadActivities,
   setUserActivityDateRange,
 } from '@/lib/userActivitySelectionSlice';
-import { Button } from 'react-bootstrap';
 
 export default function UserActivityBar() {
   const dispatch = useDispatch();
@@ -16,10 +15,10 @@ export default function UserActivityBar() {
   );
   const dateRangeTitle = 'Selected date range';
 
-  let pageTitle: string = `User Activity`;
+  const pageTitle: string = `User Activity`;
 
   const onDateChange = (selectedStart: number, selectedEnd: number) => {
-    let userActivitySelection = { ...currentUserActivitySelection };
+    const userActivitySelection = { ...currentUserActivitySelection };
     userActivitySelection.start = selectedStart;
     userActivitySelection.end = selectedEnd;
     dispatch(setUserActivityDateRange(userActivitySelection));
@@ -38,11 +37,11 @@ export default function UserActivityBar() {
         </Col>
         <Col sm={6} xs={12} className="control-container no-print">
           <DateRangeSelector
-            dateRangeTitle={dateRangeTitle}
-            selectedStart={currentUserActivitySelection?.start}
-            selectedEnd={currentUserActivitySelection?.end}
-            disabled={false}
-            onDateChange={onDateChange}
+            DateRangeTitle={dateRangeTitle}
+            SelectedStart={currentUserActivitySelection?.start}
+            SelectedEnd={currentUserActivitySelection?.end}
+            Disabled={false}
+            OnDateChange={onDateChange}
           />
         </Col>
       </Row>

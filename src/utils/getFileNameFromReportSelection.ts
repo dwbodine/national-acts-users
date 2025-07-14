@@ -15,7 +15,7 @@ export default function getFileNameFromReportSelection(
     const start = currentReportSelection.start;
     const end = currentReportSelection.end;
     let stub = '';
-    let hash = moment().unix();
+    const hash = moment().unix();
     if (fileNameStub) {
       stub = `_${fileNameStub}`;
     }

@@ -7,9 +7,9 @@ export default function AdminToursEdit() {
   
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminTourEdit />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminTourEdit />}
     />
   );
 }

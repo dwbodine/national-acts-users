@@ -7,9 +7,9 @@ export default function AdminOrderSearch() {
   
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminOrdersSearch />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminOrdersSearch />}
     />
   );
 }

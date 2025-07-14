@@ -7,9 +7,9 @@ export default function AdminEvents() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminEventsIndex />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminEventsIndex />}
     />
   );
 }

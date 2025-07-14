@@ -14,9 +14,9 @@ export default function Users() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Users}
-      usersComponent={userComponent}
+      Title={title}
+      ActiveKey={ActivePageKey.Users}
+      UsersComponent={userComponent}
     />
   );
 }

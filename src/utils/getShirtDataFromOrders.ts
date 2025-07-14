@@ -3,7 +3,7 @@ import moment from 'moment';
 
 export function getShirtDataFromOrders(orders: Order[]): IShirtData | undefined {
   const map = new Map<string, IShirtSizeData[]>();
-  let shirtSizes: string[] = [];
+  const shirtSizes: string[] = [];
   orders.forEach((order: Order) => {
     const key = moment(order.purchaseDate).format('MM/DD/YYYY');
     if (order.totalShirts ?? 0 > 0) {
@@ -24,7 +24,7 @@ export function getShirtDataFromOrders(orders: Order[]): IShirtData | undefined 
               (item) => item.ShirtSize === ticket.shirtSize,
             );
             if (indexToUpdate >= 0) {
-              let item = collection[indexToUpdate];
+              const item = collection[indexToUpdate];
               item.Number += 1;
               collection[indexToUpdate] = item;
             } else {
@@ -41,7 +41,7 @@ export function getShirtDataFromOrders(orders: Order[]): IShirtData | undefined 
     }
   });
   shirtSizes.sort();
-  let shirtSizeSorted: string[] = [];
+  const shirtSizeSorted: string[] = [];
   if (shirtSizes.find((x) => x == 'S')) {
     shirtSizeSorted.push('S');
   }

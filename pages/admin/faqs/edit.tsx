@@ -7,9 +7,9 @@ export default function AdminFaqsEdit() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminFaqEdit />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminFaqEdit />}
     />
   );
 }

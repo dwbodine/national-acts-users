@@ -15,9 +15,9 @@ export class PublicService {
   }
 
   getSellers = async (): Promise<GetSellersResponse> => {
-    let url = `/public/sellers`;
+    const url = `/public/sellers`;
 
-    let sellersResponse: GetSellersResponse = {
+    const sellersResponse: GetSellersResponse = {
       sellers: undefined,
       sellersError: undefined,
     };
@@ -38,7 +38,7 @@ export class PublicService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -53,9 +53,9 @@ export class PublicService {
   getPageTypes = async (
     sellerTypesOnly: boolean = false,
   ): Promise<GetPageTypesResponse> => {
-    let url = sellerTypesOnly ? `/public/page_seller_types` : `/public/page_types`;
+    const url = sellerTypesOnly ? `/public/page_seller_types` : `/public/page_types`;
 
-    let pageTypeResponse: GetPageTypesResponse = {
+    const pageTypeResponse: GetPageTypesResponse = {
       pageTypes: undefined,
       pageTypeError: undefined,
     };
@@ -76,7 +76,7 @@ export class PublicService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -89,9 +89,9 @@ export class PublicService {
   };
 
   getPagesByType = async (pageTypeId: number): Promise<GetPagesResponse> => {
-    let url = `/public/pages/${pageTypeId}`;
+    const url = `/public/pages/${pageTypeId}`;
 
-    let response: GetPagesResponse = {
+    const response: GetPagesResponse = {
       pages: undefined,
       pageError: undefined,
     };
@@ -112,7 +112,7 @@ export class PublicService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -125,9 +125,9 @@ export class PublicService {
   };
 
   getSiteSettings = async (): Promise<GetSettingsResponse> => {
-    let url = `/public/settings`;
+    const url = `/public/settings`;
 
-    let settingsResponse: GetSettingsResponse = {
+    const settingsResponse: GetSettingsResponse = {
       settings: undefined,
       settingsError: undefined,
     };
@@ -148,7 +148,7 @@ export class PublicService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -160,8 +160,8 @@ export class PublicService {
       });
   };
 
-  uploadTempFile = async (file: any): Promise<string | undefined> => {
-    let url = `/public/uploadFile`;
+  uploadTempFile = async (file: File): Promise<string | undefined> => {
+    const url = `/public/uploadFile`;
 
     if (!file || !file.name) {
       return undefined;
@@ -185,7 +185,7 @@ export class PublicService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
