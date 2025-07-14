@@ -7,9 +7,9 @@ export default function AdminPages() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminPagesIndex />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminPagesIndex />}
     />
   );
 }

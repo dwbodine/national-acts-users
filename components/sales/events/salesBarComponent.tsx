@@ -205,11 +205,11 @@ export default function SalesBar() {
         </Col>
         <Col sm={6} xs={12} className="control-container no-print">
           <DateRangeSelector
-            dateRangeTitle={dateRangeTitle}
-            selectedStart={currentReportSelection?.start}
-            selectedEnd={currentReportSelection?.end}
-            disabled={currentReportSelection.seller.sellerId <= 0 || !hasEvents}
-            onDateChange={onDateChange}
+            DateRangeTitle={dateRangeTitle}
+            SelectedStart={currentReportSelection?.start}
+            SelectedEnd={currentReportSelection?.end}
+            Disabled={currentReportSelection.seller.sellerId <= 0 || !hasEvents}
+            OnDateChange={onDateChange}
           />
         </Col>
       </Row>

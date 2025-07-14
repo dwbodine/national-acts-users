@@ -17,6 +17,7 @@ import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import setFocusToControl from '@/utils/setFocusToControl';
 import EventDataExpanded from '../../common/eventDataExpandedComponent';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { ExpandCellProps } from '@/types/props';
 
 export default function AllEventsWeek() {
   const { Column, HeaderCell, Cell } = Table;
@@ -32,17 +33,13 @@ export default function AllEventsWeek() {
   const [vipEvents, setVipEvents] = useState<VipEvent[] | undefined>(undefined);
   const [notes, setNotes] = useState<Note[] | undefined>(undefined);
 
-  const ExpandCell = (props: any) => (
+  const ExpandCell = (props: ExpandCellProps) => (
     <Cell {...props} style={{ padding: 5 }}>
       <IconButton
         appearance="subtle"
-        onClick={() => {
-          if (props.onChange != undefined) {
-            props.onChange(props.rowData);
-          }
-        }}
+        onClick={() => handleExpanded(props.rowData)}
         icon={
-          (expandedRowKey === props.rowData[rowKey]) ? (
+          (expandedRowKey === props.rowData?.externalEventId) ? (
             <CollaspedOutlineIcon />
           ) : (
             <ExpandOutlineIcon />
@@ -181,7 +178,7 @@ export default function AllEventsWeek() {
             </Column>
             <Column width={70} align="center">
               <HeaderCell>&nbsp;</HeaderCell>
-              <ExpandCell dataKey="id" expandedrowkeys={expandedRowKey ? [expandedRowKey] : []} onChange={handleExpanded} rowData={undefined} />
+              <ExpandCell dataKey="id" expandedRowKeys={expandedRowKey ? [expandedRowKey] : []} rowData={undefined} />
             </Column>
           </Table>
         </Col>

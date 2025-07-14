@@ -8,10 +8,10 @@ export default function Admin() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminIndex />}
-      userActivity={UserActivityType.AccessAdmin}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminIndex />}
+      UserActivity={UserActivityType.AccessAdmin}
     />
   );
 }

@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <>
       <CheckAuth />
-      <NavBar hidden={notLoggedIn || adminUser} />
+      <NavBar Hidden={notLoggedIn || adminUser} />
       <Container fluid hidden={notLoggedIn || adminUser} className="vipContainer">
         <AdminBar />
         <CurrentEvents />

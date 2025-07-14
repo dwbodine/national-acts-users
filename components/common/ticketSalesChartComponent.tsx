@@ -8,10 +8,12 @@ import {
   Label,
   AreaChart,
   Area,
+  TooltipProps,
 } from 'recharts';
 import { Row, Col } from 'react-bootstrap';
 import { LabelPosition } from 'recharts/types/component/Label';
 import { TicketSalesChartProps } from '@/types/props';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 export default function TicketSalesChart(props: TicketSalesChartProps) {
   const ticketSalesData = props.TicketSalesData;
@@ -30,7 +32,7 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
     }
   }, [setChartsHidden, hideCharts]);
 
-  const CustomTooltip = (params: any) => {
+  const CustomTooltip = (params: TooltipProps<ValueType, NameType>) => {
     const { active, payload, label } = params;
     if (active && payload && payload.length) {
       return (
@@ -38,7 +40,7 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
           <p className="label">{`Purchase Date: ${label}`}</p>
           <p className="label">{`Ticket Sales: ${payload[0].value}`}</p>
           {!hideRev ? (
-            <p className="label">{`Ticket Revenue: $${parseFloat(payload[1].value).toFixed(2)}`}</p>
+            <p className="label">{`Ticket Revenue: $${parseFloat(payload[1]?.value?.toString() ?? '0').toFixed(2)}`}</p>
           ) : (
             ''
           )}

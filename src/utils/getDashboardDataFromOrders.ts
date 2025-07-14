@@ -1,9 +1,4 @@
-import {
-  ITicketEventSalesData,
-  ITicketSalesData,
-  ITicketSellerSalesData,
-  Order,
-} from '@/types/event';
+import { ITicketEventSalesData, ITicketSalesData } from '@/types/event';
 import {
   AdminDashboardSelection,
   IAverageDailyData,
@@ -27,9 +22,6 @@ export function getDashboardDataFromOrders(
   let totalTicketsRefunded: number = 0;
   let totalTicketRevenueRefunded: number = 0;
   let totalServiceFeeRevenueRefunded: number = 0;
-  let totalTicketsChargedBack: number = 0;
-  let totalTicketRevenueChargedBack: number = 0;
-  let totalServiceFeeRevenueChargedBack: number = 0;
   let totalRevenue: number = 0;
   let monthlyPurchases: number = 0;
   let monthlyTickets: number = 0;
@@ -37,16 +29,13 @@ export function getDashboardDataFromOrders(
   let monthlyTicketRevenue: number = 0;
   let monthlyTicketRevenueRefunded: number = 0;
   let monthlyTicketServiceFeeRevenueRefunded: number = 0;
-  let monthlyTicketsChargedBack: number = 0;
-  let monthlyTicketRevenueChargedBack: number = 0;
-  let monthlyServiceFeeRevenueChargedBack: number = 0;
   let monthlyServiceFeeRevenue: number = 0;
   let monthlyTotalRevenue: number = 0;
   let totalServiceFees: number = 0;
   let totalPurchases: number = 0;
-  let topSellersMap = new Map<number, ITopSeller>();
-  let topSellingLocationsMap = new Map<string, ITopSellingLocation>();
-  let topSellingVenuesMap = new Map<string, ITopSellingLocation>();
+  const topSellersMap = new Map<number, ITopSeller>();
+  const topSellingLocationsMap = new Map<string, ITopSellingLocation>();
+  const topSellingVenuesMap = new Map<string, ITopSellingLocation>();
 
   const startDate = moment.unix(currentDashboardSelection.start).startOf('day');
   const endEnd = moment.unix(currentDashboardSelection.end).endOf('day');
@@ -54,11 +43,11 @@ export function getDashboardDataFromOrders(
   const startOfMonth = moment().startOf('month').startOf('day');
   const endOfMonth = moment().endOf('month').endOf('day');
 
-  let orderMap = new Map<string, ITicketSalesData>();
-  let totalsByAccountMap = new Map<number, ITicketSalesData>();
-  let salesPerMonthMap = new Map<number, number>();
-  let salesPerDayMonthMap = new Map<number, number>();
-  let salesPerDayYearMap = new Map<number, number>();
+  const orderMap = new Map<string, ITicketSalesData>();
+  const totalsByAccountMap = new Map<number, ITicketSalesData>();
+  const salesPerMonthMap = new Map<number, number>();
+  const salesPerDayMonthMap = new Map<number, number>();
+  const salesPerDayYearMap = new Map<number, number>();
 
   if (totals.dailyOrderData && totals.dailyOrderData.length > 0) {
     // loop through daily order data to compile stats
@@ -153,10 +142,6 @@ export function getDashboardDataFromOrders(
         monthlyTicketRevenueRefunded += dailyOrderData.revenueRefunded ?? 0;
         monthlyTicketServiceFeeRevenueRefunded +=
           dailyOrderData.serviceFeeRevenueRefunded ?? 0;
-        monthlyTicketsChargedBack += dailyOrderData.numTicketsChargedBack ?? 0;
-        monthlyTicketRevenueChargedBack += dailyOrderData.revenueChargedBack ?? 0;
-        monthlyServiceFeeRevenueChargedBack +=
-          dailyOrderData.serviceFeeRevenueChargedBack ?? 0;
       }
 
       // compile data for current selected date range
@@ -173,14 +158,10 @@ export function getDashboardDataFromOrders(
         totalTicketsRefunded += dailyOrderData.numTicketsRefunded ?? 0;
         totalTicketRevenueRefunded += dailyOrderData.revenueRefunded ?? 0;
         totalServiceFeeRevenueRefunded += dailyOrderData.serviceFeeRevenueRefunded ?? 0;
-        totalTicketsChargedBack += dailyOrderData.numTicketsChargedBack ?? 0;
-        totalTicketRevenueChargedBack += dailyOrderData.revenueChargedBack ?? 0;
-        totalServiceFeeRevenueChargedBack +=
-          dailyOrderData.serviceFeeRevenueChargedBack ?? 0;
 
         // compile data for top sellers for current time period
         if (dailyOrderData.sellerId) {
-          var topSeller = topSellersMap.get(dailyOrderData.sellerId);
+          let topSeller = topSellersMap.get(dailyOrderData.sellerId);
           if (topSeller) {
             topSeller.revenueUsd += dailyOrderData.totalRevenueUsd;
           } else {
@@ -194,12 +175,12 @@ export function getDashboardDataFromOrders(
         }
 
         // compile data per venue for selected time period
-        let location = eventService
+        const location = eventService
           .getLocationInfoFromDailyOrderData(dailyOrderData)
           ?.trim();
 
         if (location && dailyOrderData.zip && dailyOrderData.venue) {
-          var topVenue = topSellingVenuesMap.get(dailyOrderData.zip);
+          let topVenue = topSellingVenuesMap.get(dailyOrderData.zip);
           if (topVenue) {
             topVenue.revenueUsd += dailyOrderData.totalRevenueUsd;
           } else {
@@ -214,7 +195,7 @@ export function getDashboardDataFromOrders(
 
         // compile data per location for selected time period
         if (location) {
-          var topCity = topSellingLocationsMap.get(location);
+          let topCity = topSellingLocationsMap.get(location);
           if (topCity) {
             topCity.revenueUsd += dailyOrderData.totalRevenueUsd;
           } else {
@@ -246,7 +227,7 @@ export function getDashboardDataFromOrders(
 
         // set key and see if we already have a map entry for it
         const key = moment(dailyOrderData.purchaseDate).format('YYYY-MM-DD');
-        let salesData = orderMap.get(key);
+        const salesData = orderMap.get(key);
 
         // create new entry
         if (!salesData) {
@@ -289,7 +270,7 @@ export function getDashboardDataFromOrders(
             (dailyOrderData.serviceFeeRevenueRefunded ?? 0);
           if (salesData.children) {
             if (salesData.children.find((x) => x.SellerName == esd.SellerName)) {
-              let sellerSalesData = salesData.children.map((seller) => {
+              const sellerSalesData = salesData.children.map((seller) => {
                 if (seller.SellerName == esd.SellerName) {
                   seller.Tickets += dailyOrderData.tickets;
                   seller.Revenue += dailyOrderData.ticketRevenueUsd;
@@ -309,7 +290,7 @@ export function getDashboardDataFromOrders(
                           x.SellerName == sellerName,
                       )
                     ) {
-                      let eventSalesData = seller.children.map((evt) => {
+                      const eventSalesData = seller.children.map((evt) => {
                         if (
                           evt.SellerName == esd.SellerName &&
                           evt.EventId == esd.EventId
@@ -378,14 +359,14 @@ export function getDashboardDataFromOrders(
   // end loop
 
   // data for Ticket Sales chart
-  let ticketSalesData: ITicketSalesData[] = [];
+  const ticketSalesData: ITicketSalesData[] = [];
   if (orderMap.size > 0) {
     const keys = Array.from(orderMap.keys()).sort();
     const start = moment(keys[0]);
     let end = moment(keys[keys.length - 1]);
     while (end.unix() >= start.unix()) {
       const key = end.format('YYYY-MM-DD');
-      let salesData = orderMap.get(key);
+      const salesData = orderMap.get(key);
       if (!salesData) {
         const data: ITicketSalesData = {
           PurchaseDate: moment(key).format('MM/DD/YYYY'),
@@ -410,7 +391,7 @@ export function getDashboardDataFromOrders(
   }
 
   // roll up data for month
-  let salesByMonth: ISalesData[] = [];
+  const salesByMonth: ISalesData[] = [];
   if (salesPerMonthMap.size > 0) {
     const keys = Array.from(salesPerMonthMap.keys()).sort();
     keys.forEach((key) => {
@@ -422,7 +403,7 @@ export function getDashboardDataFromOrders(
   }
 
   // roll up daily data for month
-  let salesPerDayMonth: ISalesData[] = [];
+  const salesPerDayMonth: ISalesData[] = [];
   if (salesPerDayMonthMap.size > 0) {
     const keys = Array.from(salesPerDayMonthMap.keys()).sort();
     keys.forEach((key) => {
@@ -434,7 +415,7 @@ export function getDashboardDataFromOrders(
   }
 
   // roll up daily data per year
-  let salesPerDayYear: ISalesData[] = [];
+  const salesPerDayYear: ISalesData[] = [];
   if (salesPerDayYearMap.size > 0) {
     const keys = Array.from(salesPerDayYearMap.keys()).sort();
     keys.forEach((key) => {
@@ -446,7 +427,7 @@ export function getDashboardDataFromOrders(
   }
 
   // get totals by TicketSocket account
-  let totalsByAccount: ITotalsByAccount[] = [];
+  const totalsByAccount: ITotalsByAccount[] = [];
   if (totalsByAccountMap.size > 0) {
     const keys = Array.from(totalsByAccountMap.keys()).sort();
     keys.forEach((key) => {
@@ -458,7 +439,7 @@ export function getDashboardDataFromOrders(
   }
 
   // get top-selling customers
-  let topSellerValuesArray: ITopSeller[] = Array.from(topSellersMap.values());
+  const topSellerValuesArray: ITopSeller[] = Array.from(topSellersMap.values());
   topSellerValuesArray.sort((a, b) =>
     a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0,
   );
@@ -468,7 +449,7 @@ export function getDashboardDataFromOrders(
       : topSellerValuesArray;
 
   // get top-selling locations
-  let topLocationValuesArray: ITopSellingLocation[] = Array.from(
+  const topLocationValuesArray: ITopSellingLocation[] = Array.from(
     topSellingLocationsMap.values(),
   );
   topLocationValuesArray.sort((a, b) =>
@@ -480,7 +461,7 @@ export function getDashboardDataFromOrders(
       : topLocationValuesArray;
 
   // get top-selling venues
-  let topVenueValuesArray: ITopSellingLocation[] = Array.from(
+  const topVenueValuesArray: ITopSellingLocation[] = Array.from(
     topSellingVenuesMap.values(),
   );
   topVenueValuesArray.sort((a, b) =>

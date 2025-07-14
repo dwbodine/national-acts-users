@@ -7,9 +7,9 @@ export default function AdminGlobalSellers() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminSellerGlobalIndex />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminSellerGlobalIndex />}
     />
   );
 }

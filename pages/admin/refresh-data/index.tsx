@@ -7,9 +7,9 @@ export default function AdminRefreshData() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<RefreshTicketSocketData />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<RefreshTicketSocketData />}
     />
   );
 }

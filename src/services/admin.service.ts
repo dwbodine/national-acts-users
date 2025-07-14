@@ -23,7 +23,7 @@ import {
   ModifySellerResponse,
   TicketSocketAccount,
 } from '@/types/admin';
-import { GetSellersResponse, Seller, VipEvent } from '@/types/event';
+import { GetSellersResponse, Seller } from '@/types/event';
 
 export class AdminService {
   protected readonly instance: AxiosInstance;
@@ -37,9 +37,9 @@ export class AdminService {
   }
 
   getAllFaqs = async (): Promise<GetFaqsResponse> => {
-    let url = `/public/faq/0`;
+    const url = `/public/faq/0`;
 
-    let response: GetFaqsResponse = {
+    const response: GetFaqsResponse = {
       faqs: undefined,
       faqError: undefined,
       statusCode: 200,
@@ -60,7 +60,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           response.statusCode = parseInt(err.response.status);
         }
@@ -76,9 +76,9 @@ export class AdminService {
   };
 
   getAllFaqCategories = async (): Promise<GetFaqCategoriesResponse> => {
-    let url = `/public/faq_categories`;
+    const url = `/public/faq_categories`;
 
-    let response: GetFaqCategoriesResponse = {
+    const response: GetFaqCategoriesResponse = {
       categories: undefined,
       categoryError: undefined,
       statusCode: 200,
@@ -99,7 +99,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           response.statusCode = parseInt(err.response.status);
         }
@@ -115,9 +115,9 @@ export class AdminService {
   };
 
   updateFaq = async (faqToUpdate: Faq): Promise<ModifyFaqResponse> => {
-    let url = `/admin/faq/update`;
+    const url = `/admin/faq/update`;
 
-    let modifyResponse: ModifyFaqResponse = {
+    const modifyResponse: ModifyFaqResponse = {
       success: false,
       faqError: undefined,
       statusCode: 200,
@@ -137,7 +137,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -152,9 +152,9 @@ export class AdminService {
   };
 
   deleteFaq = async (faqId: number): Promise<ModifyFaqResponse> => {
-    let url = `/admin/faq/delete`;
+    const url = `/admin/faq/delete`;
 
-    let modifyResponse: ModifyFaqResponse = {
+    const modifyResponse: ModifyFaqResponse = {
       success: false,
       faqError: undefined,
       statusCode: 200,
@@ -191,9 +191,9 @@ export class AdminService {
   };
 
   moveFaqUp = async (faqId: number): Promise<ModifyFaqResponse> => {
-    let url = `/admin/faq/moveup`;
+    const url = `/admin/faq/moveup`;
 
-    let modifyResponse: ModifyFaqResponse = {
+    const modifyResponse: ModifyFaqResponse = {
       success: false,
       faqError: undefined,
       statusCode: 200,
@@ -215,7 +215,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -230,9 +230,9 @@ export class AdminService {
   };
 
   moveFaqDown = async (faqId: number): Promise<ModifyFaqResponse> => {
-    let url = `/admin/faq/movedown`;
+    const url = `/admin/faq/movedown`;
 
-    let modifyResponse: ModifyFaqResponse = {
+    const modifyResponse: ModifyFaqResponse = {
       success: false,
       faqError: undefined,
       statusCode: 200,
@@ -254,7 +254,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -269,9 +269,9 @@ export class AdminService {
   };
 
   getAllPages = async (): Promise<GetPagesResponse> => {
-    let url = `/admin/pages`;
+    const url = `/admin/pages`;
 
-    let pagesResponse: GetPagesResponse = {
+    const pagesResponse: GetPagesResponse = {
       pages: undefined,
       pageError: undefined,
       statusCode: 200,
@@ -289,7 +289,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           pagesResponse.statusCode = parseInt(err.response.status);
         }
@@ -305,9 +305,9 @@ export class AdminService {
   };
 
   updatePage = async (pageToUpdate: Page): Promise<ModifyPageResponse> => {
-    let url = `/admin/pages/update`;
+    const url = `/admin/pages/update`;
 
-    let modifyResponse: ModifyPageResponse = {
+    const modifyResponse: ModifyPageResponse = {
       success: false,
       pageError: undefined,
       statusCode: 200,
@@ -328,7 +328,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -343,9 +343,9 @@ export class AdminService {
   };
 
   updatePageOrder = async (pagesToUpdate: Page[]): Promise<ModifyPageResponse> => {
-    let url = `/admin/pages/order`;
+    const url = `/admin/pages/order`;
 
-    let modifyResponse: ModifyPageResponse = {
+    const modifyResponse: ModifyPageResponse = {
       success: false,
       pageError: undefined,
       statusCode: 200,
@@ -366,7 +366,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -383,9 +383,9 @@ export class AdminService {
   updateSiteSettings = async (
     settingsToUpdate: SiteSetting[],
   ): Promise<UpdateSettingResponse> => {
-    let url = `/admin/settings/update`;
+    const url = `/admin/settings/update`;
 
-    let settingResponse: UpdateSettingResponse = {
+    const settingResponse: UpdateSettingResponse = {
       success: false,
       settingsError: undefined,
       statusCode: 200,
@@ -405,7 +405,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           settingResponse.statusCode = parseInt(err.response.status);
         }
@@ -425,7 +425,7 @@ export class AdminService {
       url += `?search=${encodeURIComponent(searchTerm)}`;
     }
 
-    let venuesResponse: GetExternalVenuesResponse = {
+    const venuesResponse: GetExternalVenuesResponse = {
       venues: undefined,
       venueError: undefined,
       statusCode: 200,
@@ -443,7 +443,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           venuesResponse.statusCode = parseInt(err.response.status);
         }
@@ -459,9 +459,9 @@ export class AdminService {
   };
 
   getAllCountries = async (): Promise<GetCountriesResponse> => {
-    let url = `/admin/countries`;
+    const url = `/admin/countries`;
 
-    let countryResponse: GetCountriesResponse = {
+    const countryResponse: GetCountriesResponse = {
       countries: undefined,
       countryError: undefined,
       statusCode: 200,
@@ -479,7 +479,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           countryResponse.statusCode = parseInt(err.response.status);
         }
@@ -497,9 +497,9 @@ export class AdminService {
   updateVenue = async (
     venueToUpdate: ExternalVenue,
   ): Promise<ModifyExternalVenueResponse> => {
-    let url = `/admin/venues/edit`;
+    const url = `/admin/venues/edit`;
 
-    let modifyResponse: ModifyExternalVenueResponse = {
+    const modifyResponse: ModifyExternalVenueResponse = {
       success: false,
       venueError: undefined,
       statusCode: 200,
@@ -520,7 +520,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -534,11 +534,11 @@ export class AdminService {
       });
   };
 
-  deleteVenue = async (venueId: Number): Promise<ModifyExternalVenueResponse> => {
+  deleteVenue = async (venueId: number): Promise<ModifyExternalVenueResponse> => {
     const url = '/admin/venues/delete';
     const headers = getAuthorizationHeader();
 
-    let modifyResponse: ModifyExternalVenueResponse = {
+    const modifyResponse: ModifyExternalVenueResponse = {
       success: false,
       venueError: undefined,
       statusCode: 200,
@@ -559,7 +559,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }
@@ -575,9 +575,9 @@ export class AdminService {
   };
 
   getTicketSocketAccounts = async (): Promise<GetTicketSocketAccountsResponse> => {
-    let url = `/admin/ticketSocketAccounts`;
+    const url = `/admin/ticketSocketAccounts`;
 
-    let accountsResponse: GetTicketSocketAccountsResponse = {
+    const accountsResponse: GetTicketSocketAccountsResponse = {
       accounts: undefined,
       accountError: undefined,
       statusCode: 200,
@@ -597,7 +597,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           accountsResponse.statusCode = parseInt(err.response.status);
         }
@@ -613,9 +613,9 @@ export class AdminService {
   };
 
   getSellers = async (): Promise<GetSellersResponse> => {
-    let url = `/admin/sellers`;
+    const url = `/admin/sellers`;
 
-    let sellersResponse: GetSellersResponse = {
+    const sellersResponse: GetSellersResponse = {
       sellers: undefined,
       sellersError: undefined,
     };
@@ -633,7 +633,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.data?.msg) {
           errorMessage = err.response.data.msg;
         } else {
@@ -646,9 +646,9 @@ export class AdminService {
   };
 
   updateSeller = async (sellerToUpdate: Seller): Promise<ModifyExternalEventResponse> => {
-    let url = `/admin/seller/update`;
+    const url = `/admin/seller/update`;
 
-    let modifyResponse: ModifySellerResponse = {
+    const modifyResponse: ModifySellerResponse = {
       success: false,
       sellerError: undefined,
       statusCode: 200,
@@ -669,7 +669,7 @@ export class AdminService {
       })
       .catch((err) => {
         console.log(err);
-        var errorMessage = '';
+        let errorMessage = '';
         if (err?.response?.status) {
           modifyResponse.statusCode = parseInt(err.response.status);
         }

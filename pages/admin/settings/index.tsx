@@ -7,9 +7,9 @@ export default function AdminSiteSettings() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Admin}
-      adminComponent={<AdminSiteSettingsEdit />}
+      Title={title}
+      ActiveKey={ActivePageKey.Admin}
+      AdminComponent={<AdminSiteSettingsEdit />}
     />
   );
 }

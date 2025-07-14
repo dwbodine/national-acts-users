@@ -1256,7 +1256,7 @@ export default function AdminEventEdit(props: EditProps) {
           <AdminFileUpload
             Title="Event thumbnail (square, will be resized to 100px wide)"
             FileUploadName="Thumbnail"
-            OnUpLoad={onFileUpload}
+            OnUpload={onFileUpload}
             CurrentFileName={thumbnail}
             IsDirty={isThumbnailDirty}
             CurrentFileTitle={"View Current Thumbnail"}

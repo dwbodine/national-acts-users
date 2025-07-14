@@ -50,7 +50,7 @@ export default function AdminPage(props: AdminPageProps) {
   return (
     <>
       <CheckAuth />
-      <NavBar hidden={notAdmin} />
+      <NavBar Hidden={notAdmin} />
       <Container fluid hidden={notAdmin} className="vipContainer">
         {windowSize.isMobile ? 
         <AdminTabsMobile

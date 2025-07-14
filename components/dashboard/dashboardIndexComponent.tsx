@@ -127,7 +127,7 @@ export default function DashboardIndex() {
       const key = `accountTotal${i}`;
       accountTotalWidgets.push(
         <Col key={key} xl={3} lg={4} md={6} className="stat-block-container">
-          <SalesByAccountWidget selectedYear={selectedYear} accountName={accountName} accountTotals={accountTotals} />
+          <SalesByAccountWidget SelectedYear={selectedYear} AccountName={accountName} AccountTotals={accountTotals} />
         </Col>,
       );
     });
@@ -184,20 +184,20 @@ export default function DashboardIndex() {
         </Row>
         <Row className="dashboard-sales-table">
           <Col xl={3} lg={4} md={6} className="stat-block-container">
-            <TopSellersWidget topSellers={topSellers} dateRange={dateRange} />
+            <TopSellersWidget TopSellers={topSellers} DateRange={dateRange} />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <TopSellingLocationsWidget
-              topSellers={topLocations}
-              title="Locations"
-              dateRange={dateRange}
+              TopSellingLocations={topLocations}
+              Title="Locations"
+              DateRange={dateRange}
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <TopSellingLocationsWidget
-              topSellers={topVenues}
-              title="Venues"
-              dateRange={dateRange}
+              TopSellingLocations={topVenues}
+              Title="Venues"
+              DateRange={dateRange}
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container" hidden={selectedYear != currentYear}>
@@ -207,67 +207,67 @@ export default function DashboardIndex() {
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container" hidden={selectedYear != currentYear}>
             <RevenueGoalsWidget
-              percentTitle="Monthly Goal"
-              amount={
+              PercentTitle="Monthly Goal"
+              Amount={
                 currentDashboardSelection.currentDashboardData?.monthToDateTotalRevenue
               }
-              totalGoal={
+              TotalGoal={
                 currentDashboardSelection.currentDashboardData?.totals?.monthlyRevenueGoal
               }
-              percentGoal={
+              PercentGoal={
                 currentDashboardSelection.currentDashboardData?.percentMonthlyGoal
               }
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <YearToDateWidget
-              selectedYear={selectedYear}
-              totals={currentDashboardSelection.currentDashboardData?.totals}
-              projectedYearTotalRevenue={
+              SelectedYear={selectedYear}
+              Totals={currentDashboardSelection.currentDashboardData?.totals}
+              ProjectedYearTotalRevenue={
                 currentDashboardSelection.currentDashboardData?.projectedYearTotalRevenue
               }
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <RevenueGoalsWidget
-              percentTitle={`Yearly Goal ${selectedYear}`}
-              amount={
+              PercentTitle={`Yearly Goal ${selectedYear}`}
+              Amount={
                 currentDashboardSelection.currentDashboardData?.totals?.totalRevenueUsd
               }
-              totalGoal={
+              TotalGoal={
                 currentDashboardSelection.currentDashboardData?.totals?.yearlyRevenueGoal
               }
-              percentGoal={
+              PercentGoal={
                 currentDashboardSelection.currentDashboardData?.percentYearlyGoal
               }
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <SalesPerMonthWidget
-              selectedYear={selectedYear}
-              salesPerMonth={
+              SelectedYear={selectedYear}
+              SalesPerMonth={
                 currentDashboardSelection.currentDashboardData?.salesPerMonth
               }
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <SalesPerDayOfWeekWidget
-              selectedYear={selectedYear}
-              salesPerDayMonth={
+              SelectedYear={selectedYear}
+              SalesPerDayMonth={
                 currentDashboardSelection.currentDashboardData?.salesPerDayMonth
               }
-              salesPerDayYear={
+              SalesPerDayYear={
                 currentDashboardSelection.currentDashboardData?.salesPerDayYear
               }
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <AverageSalesWidget
-              selectedYear={selectedYear}
-              monthlyAverages={
+              SelectedYear={selectedYear}
+              MonthlyAverages={
                 currentDashboardSelection.currentDashboardData?.monthlyAverages
               }
-              yearlyAverages={
+              YearlyAverages={
                 currentDashboardSelection.currentDashboardData?.yearlyAverages
               }
             />

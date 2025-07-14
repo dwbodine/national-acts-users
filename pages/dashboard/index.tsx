@@ -28,9 +28,9 @@ export default function Dashboard() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Dashboard}
-      dashboardComponent={<DashboardIndex />}
+      Title={title}
+      ActiveKey={ActivePageKey.Dashboard}
+      DashboardComponent={<DashboardIndex />}
     />
   );
 }

@@ -27,9 +27,11 @@ import {
 } from './user';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import { Dispatch, ReactElement, SetStateAction } from 'react';
+import { CellProps } from 'rsuite';
 
 export interface EditProps {
   Id?: number;
+  Hidden?: boolean;
 }
 
 export interface RefreshTicketSocketDataResultProps {
@@ -376,4 +378,8 @@ export interface OrderRowProps {
   ShowOnlyEmails?: boolean;
   ShowOnlyPhones?: boolean;
   IsAdmin?: boolean;
+}
+
+export interface ExpandCellProps extends CellProps<VipEvent> {
+  expandedRowKeys?: number[];
 }

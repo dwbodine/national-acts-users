@@ -15,10 +15,10 @@ export default function AdminHome() {
 
   return (
     <AdminPage
-      title={title}
-      activeKey={ActivePageKey.Events}
-      eventsComponent={eventAdminComponent}
-      userActivity={UserActivityType.AdminEventsOverview}
+      Title={title}
+      ActiveKey={ActivePageKey.Events}
+      EventsComponent={eventAdminComponent}
+      UserActivity={UserActivityType.AdminEventsOverview}
     />
   );
 }

@@ -489,11 +489,11 @@ export default function AdminEventsIndex() {
         </Col>
       </Row>
       <ReportDatePicker
-        onChange={onDateChange}
-        onStartClear={onStartClear}
-        onEndClear={onEndClear}
-        start={currentAdminSelection.start}
-        end={currentAdminSelection.end}
+        OnChange={onDateChange}
+        OnStartClear={onStartClear}
+        OnEndClear={onEndClear}
+        Start={currentAdminSelection.start}
+        End={currentAdminSelection.end}
       />
       <Row>
         <Col>

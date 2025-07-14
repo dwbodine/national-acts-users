@@ -3,7 +3,7 @@ import { IShirtSizeData } from '@/types/event';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { ShirtSizesChartProps } from '@/types/props';
 
-export default function ShirtSizesChart(props: any) { // ShirtSizesChartProps) {
+export default function ShirtSizesChart(props: ShirtSizesChartProps) {
   const shirtPropData = props.ShirtData;
   const chartsHidden = props.ChartHidden;
   const totalShirts = props.TotalShirts ?? 0;

@@ -1,15 +1,9 @@
-import {
-  IShirtData,
-  IShirtSizeData,
-  ITicketData,
-  ITicketTypeData,
-  VipEvent,
-} from '@/types/event';
+import { IShirtData, IShirtSizeData, VipEvent } from '@/types/event';
 import moment from 'moment';
 
 export function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefined {
   const map = new Map<string, IShirtSizeData[]>();
-  let shirtSizes: string[] = [];
+  const shirtSizes: string[] = [];
   let eventsHaveShirtData: boolean = false;
   events?.forEach((evt: VipEvent) => {
     const key = moment(evt.eventDate).format('MM/DD/YYYY');
@@ -31,7 +25,7 @@ export function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefin
             (item) => item.ShirtSize === shirt.size,
           );
           if (indexToUpdate >= 0) {
-            let item = collection[indexToUpdate];
+            const item = collection[indexToUpdate];
             item.Number += shirt.total ?? 0;
             collection[indexToUpdate] = item;
           } else {
@@ -48,7 +42,7 @@ export function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefin
   });
   if (eventsHaveShirtData) {
     shirtSizes.sort();
-    let shirtSizeSorted: string[] = [];
+    const shirtSizeSorted: string[] = [];
     if (shirtSizes.find((x) => x == 'S')) {
       shirtSizeSorted.push('S');
     }

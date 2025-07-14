@@ -1,13 +1,13 @@
-import { ITicketData, ITicketSalesData, ITicketTypeData, VipEvent } from '@/types/event';
+import { ITicketSalesData, VipEvent } from '@/types/event';
 import moment from 'moment';
 
 export function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[] {
-  let map = new Map<string, ITicketSalesData>();
+  const map = new Map<string, ITicketSalesData>();
   events?.forEach((evt) => {
     evt.orders?.forEach((order) => {
       if (order.isActive && !order.isDeleted) {
         const key = moment(order.purchaseDate).format('YYYY-MM-DD');
-        let salesData = map.get(key);
+        const salesData = map.get(key);
         if (!salesData) {
           const data: ITicketSalesData = {
             PurchaseDate: moment(key).format('MM/DD/YYYY'),
@@ -23,21 +23,21 @@ export function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[
           salesData.Tickets += order.numTickets;
           salesData.Revenue += order.revenueUsd;
           salesData.ServiceFees += order.serviceFees ?? 0;
-          (salesData.TotalRevenue += order.revenueUsd + (order.serviceFeesUsd ?? 0)),
-            map.set(key, salesData);
+          salesData.TotalRevenue += (order.revenueUsd ?? 0) + (order.serviceFeesUsd ?? 0);
+          map.set(key, salesData);
         }
       }
     });
   });
 
-  let ticketSalesData: ITicketSalesData[] = [];
+  const ticketSalesData: ITicketSalesData[] = [];
   if (map.size > 0) {
-    var keys = Array.from(map.keys()).sort();
-    var start = moment(keys[0]);
-    var end = moment(keys[keys.length - 1]);
+    const keys = Array.from(map.keys()).sort();
+    let start = moment(keys[0]);
+    const end = moment(keys[keys.length - 1]);
     while (start.unix() <= end.unix()) {
       const key = start.format('YYYY-MM-DD');
-      let salesData = map.get(key);
+      const salesData = map.get(key);
       if (!salesData) {
         const data: ITicketSalesData = {
           PurchaseDate: moment(key).format('MM/DD/YYYY'),

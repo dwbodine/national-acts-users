@@ -31,8 +31,8 @@ export default function AllEventsMonth() {
         }        
     }, [dispatch, currentReportSelection]);
 
-    const startOfMonth = currentReportSelection.start ? moment.unix(currentReportSelection.start).format('YYYY-MM-DD HH:mm:ss') : undefined;
-    const endOfMonth = currentReportSelection.end ? moment.unix(currentReportSelection.end).format('YYYY-MM-DD HH:mm:ss') : undefined;
+    const startOfMonth = currentReportSelection.start ? moment.unix(currentReportSelection.start) : undefined;
+    const endOfMonth = currentReportSelection.end ? moment.unix(currentReportSelection.end) : undefined;
 
     return (
         (vipEvents != undefined) ?
