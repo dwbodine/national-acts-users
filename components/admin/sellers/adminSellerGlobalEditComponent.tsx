@@ -40,7 +40,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.name != sellerName) {
       sellerToUpdate.name = sellerName;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setAddress = (address: string) => {
@@ -51,7 +51,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.address != address) {
       sellerToUpdate.address = address;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setCity = (city: string) => {
@@ -62,7 +62,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.city != city) {
       sellerToUpdate.city = city;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setState = (state: string) => {
@@ -73,7 +73,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.state != state) {
       sellerToUpdate.state = state;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setZip = (zip: string) => {
@@ -84,7 +84,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.zip != zip) {
       sellerToUpdate.zip = zip;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const onCountryChange = (countryId: number | null) => {
@@ -98,7 +98,7 @@ export default function AdminSellerGlobalEdit() {
     } else if (!sellerToUpdate.country || sellerToUpdate.country.countryId != countryId) {
       sellerToUpdate.country = { countryId: countryId };
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setPhone = (phone: string) => {
@@ -109,7 +109,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.phone != phone) {
       sellerToUpdate.phone = phone;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setEmail = (email: string) => {
@@ -120,7 +120,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.email != email) {
       sellerToUpdate.email = email;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setTwitter = (twitter: string) => {
@@ -131,7 +131,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.twitter != twitter) {
       sellerToUpdate.twitter = twitter;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setFacebook = (facebook: string) => {
@@ -142,7 +142,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.facebook != facebook) {
       sellerToUpdate.facebook = facebook;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setInstagram = (instagram: string) => {
@@ -153,7 +153,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.instagram != instagram) {
       sellerToUpdate.instagram = instagram;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setYouTube = (youtube: string) => {
@@ -164,7 +164,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.youtube != youtube) {
       sellerToUpdate.youtube = youtube;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setSpotify = (spotify: string) => {
@@ -175,7 +175,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.spotify != spotify) {
       sellerToUpdate.spotify = spotify;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setWebsite = (website: string) => {
@@ -186,7 +186,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.website != website) {
       sellerToUpdate.website = website;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setWebsiteDisplayText = (websiteDisplayText: string) => {
@@ -197,7 +197,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.websiteDisplayText != websiteDisplayText) {
       sellerToUpdate.websiteDisplayText = websiteDisplayText;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setHideInList = (hide: boolean) => {
@@ -208,7 +208,7 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.hideInList != hide) {
       sellerToUpdate.hideInList = hide;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const setIsActive = (isActive: boolean) => {
@@ -219,14 +219,14 @@ export default function AdminSellerGlobalEdit() {
     if (sellerToUpdate.isActive != isActive) {
       sellerToUpdate.isActive = isActive;
       dispatch(setAdminSeller(sellerToUpdate));
-    }    
+    }
   }
 
   const updateSellerEventCategory = (ticketSocketId: number, eventCategoryId: number | undefined) => {
     if (!currentAdminSelection.selectedSeller || !ticketSocketId || isNaN(ticketSocketId)) {
       return;
     }
-    
+
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     let currentCategories: SellerEventCategory[] = sellerToUpdate.sellerEventCategories
       ? [...sellerToUpdate.sellerEventCategories]
@@ -237,10 +237,12 @@ export default function AdminSellerGlobalEdit() {
     if (!existingCategory) {
       if (eventCategoryId != undefined) {
         const newCategory: SellerEventCategory = {
-          sellerId: sellerToUpdate.sellerId, 
+          sellerId: sellerToUpdate.sellerId,
           ticketSocketId: ticketSocketId,
           eventCategoryId: eventCategoryId,
-          sellerEventCategoryId: 0
+          sellerEventCategoryId: 0,
+          isVisibleOnSite: true,
+          isVisibleOnPortal: true,
         };
         currentCategories.push(newCategory);
         changed = true;
@@ -250,21 +252,83 @@ export default function AdminSellerGlobalEdit() {
         currentCategories = currentCategories.map(
           (x) => {
             if (x.ticketSocketId == ticketSocketId) {
-              const cat = {...x};
+              const cat = { ...x };
               cat.eventCategoryId = eventCategoryId;
+              cat.isVisibleOnSite = (eventCategoryId != undefined && eventCategoryId > 0);
+              cat.isVisibleOnPortal = (eventCategoryId != undefined && eventCategoryId > 0);
               return cat;
             } else {
               return x;
             }
-        });
+          });
         changed = true;
       }
     }
-    
+
     if (changed) {
       sellerToUpdate.sellerEventCategories = currentCategories;
       dispatch(setAdminSeller(sellerToUpdate));
     }
+  };
+
+  const updateSellerEventCategorySiteVisible = (ticketSocketId: number, eventCategoryId: number, isVisibleOnSite: boolean) => {
+    if (!currentAdminSelection.selectedSeller || !ticketSocketId || isNaN(ticketSocketId) || !eventCategoryId || isNaN(eventCategoryId)) {
+      return;
+    }
+
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    let currentCategories: SellerEventCategory[] = sellerToUpdate.sellerEventCategories
+      ? [...sellerToUpdate.sellerEventCategories]
+      : [];
+
+    const existingCategory = currentCategories.find(x => x.ticketSocketId == ticketSocketId);
+    if (!existingCategory) {
+      return;
+    }
+
+    currentCategories = currentCategories.map(
+      (x) => {
+        if (x.ticketSocketId == ticketSocketId && x.eventCategoryId == eventCategoryId) {
+          const cat = { ...x };
+          cat.isVisibleOnSite = isVisibleOnSite;
+          return cat;
+        } else {
+          return x;
+        }
+      });
+
+    sellerToUpdate.sellerEventCategories = currentCategories;
+    dispatch(setAdminSeller(sellerToUpdate));
+  };
+
+  const updateSellerEventCategoryPortalVisible = (ticketSocketId: number, eventCategoryId: number | undefined, isVisibleOnPortal: boolean) => {
+    if (!currentAdminSelection.selectedSeller || !ticketSocketId || isNaN(ticketSocketId) || !eventCategoryId || isNaN(eventCategoryId)) {
+      return;
+    }
+
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    let currentCategories: SellerEventCategory[] = sellerToUpdate.sellerEventCategories
+      ? [...sellerToUpdate.sellerEventCategories]
+      : [];
+
+    const existingCategory = currentCategories.find(x => x.ticketSocketId == ticketSocketId);
+    if (!existingCategory) {
+      return;
+    }
+
+    currentCategories = currentCategories.map(
+      (x) => {
+        if (x.ticketSocketId == ticketSocketId && x.eventCategoryId == eventCategoryId) {
+          const cat = { ...x };
+          cat.isVisibleOnPortal = isVisibleOnPortal;
+          return cat;
+        } else {
+          return x;
+        }
+      });
+
+    sellerToUpdate.sellerEventCategories = currentCategories;
+    dispatch(setAdminSeller(sellerToUpdate));
   };
 
   const updateSellerType = (sellerTypeValue: number | undefined) => {
@@ -279,7 +343,7 @@ export default function AdminSellerGlobalEdit() {
     }
   };
 
-  const checkAddress  = () => {
+  const checkAddress = () => {
     if (isArtist) {
       return true;
     } else {
@@ -406,7 +470,7 @@ export default function AdminSellerGlobalEdit() {
       categoryRows.push(
         <Row key={rowKey} className="form-group">
           <Col xs={2}><label className="mt-4">Category for {account.name}</label></Col>
-          <Col>
+          <Col xs={2}>
             <select
               disabled={disabled}
               key={key}
@@ -416,7 +480,23 @@ export default function AdminSellerGlobalEdit() {
             >
               {options}
             </select>
-        </Col>
+          </Col>
+          <Col xs={1}>
+            <FormCheck
+              disabled={!selectedCategory}
+              checked={selectedCategory?.isVisibleOnSite ?? false}
+              onChange={(e) => updateSellerEventCategorySiteVisible(parseInt(`${account.ticketSocketId}`), parseInt(`${selectedCategory?.eventCategoryId}`), e.target.checked)}
+              label={'Visible on site?'}
+            />
+          </Col>
+          <Col xs={1}>
+            <FormCheck
+              disabled={!selectedCategory}
+              checked={selectedCategory?.isVisibleOnPortal ?? false}
+              onChange={(e) => updateSellerEventCategoryPortalVisible(parseInt(`${account.ticketSocketId}`), parseInt(`${selectedCategory?.eventCategoryId}`), e.target.checked)}
+              label={'Visible on portal?'}
+            />
+          </Col>
         </Row>
       );
     });
@@ -440,16 +520,16 @@ export default function AdminSellerGlobalEdit() {
 
   const selectedSellerType = Number(currentSeller?.sellerType ?? 1);
 
-  const isArtist = selectedSellerType == SellerType.Artist;  
+  const isArtist = selectedSellerType == SellerType.Artist;
 
   const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
-      currentAdminSelection.countries.map((country) => {
-        return {
-          label: `${country.countryName}`,
-          value: country.countryId
-        }
+    currentAdminSelection.countries.map((country) => {
+      return {
+        label: `${country.countryName}`,
+        value: country.countryId
+      }
     }) : [];
-  
+
   return (
     <Row
       className="admin-container"
@@ -465,11 +545,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Seller Name</label></Col>
           <Col>
             <input
-            value={currentSeller?.name}
-            onChange={(e) => setSellerName(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="seller name"
-            type="text"
+              value={currentSeller?.name}
+              onChange={(e) => setSellerName(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="seller name"
+              type="text"
             />
           </Col>
         </Row>
@@ -516,11 +596,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Address</label></Col>
           <Col>
             <input
-            value={currentSeller?.address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="address"
-            type="text"
+              value={currentSeller?.address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="address"
+              type="text"
             />
           </Col>
         </Row>
@@ -528,11 +608,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">City</label></Col>
           <Col>
             <input
-            value={currentSeller?.city}
-            onChange={(e) => setCity(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="city"
-            type="text"
+              value={currentSeller?.city}
+              onChange={(e) => setCity(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="city"
+              type="text"
             />
           </Col>
         </Row>
@@ -540,11 +620,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">State</label></Col>
           <Col>
             <input
-            value={currentSeller?.state}
-            onChange={(e) => setState(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="state"
-            type="text"
+              value={currentSeller?.state}
+              onChange={(e) => setState(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="state"
+              type="text"
             />
           </Col>
         </Row>
@@ -552,11 +632,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Postal Code</label></Col>
           <Col>
             <input
-            value={currentSeller?.zip}
-            onChange={(e) => setZip(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="postal code"
-            type="text"
+              value={currentSeller?.zip}
+              onChange={(e) => setZip(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="postal code"
+              type="text"
             />
           </Col>
         </Row>
@@ -564,25 +644,25 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Country</label></Col>
           <Col>
             <SelectPicker
-                className="admin-seller-select-value"
-                menuAutoWidth={true}
-                value={currentSeller?.country?.countryId}
-                data={countryList}
-                size="lg"        
-                onChange={(cId) => onCountryChange(cId)}
-                cleanable={false}
-              />
+              className="admin-seller-select-value"
+              menuAutoWidth={true}
+              value={currentSeller?.country?.countryId}
+              data={countryList}
+              size="lg"
+              onChange={(cId) => onCountryChange(cId)}
+              cleanable={false}
+            />
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
           <Col xs={2}><label className="mt-4">Phone</label></Col>
           <Col>
             <input
-            value={currentSeller?.phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="phone"
-            type="text"
+              value={currentSeller?.phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="phone"
+              type="text"
             />
           </Col>
         </Row>
@@ -590,11 +670,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Email</label></Col>
           <Col>
             <input
-            value={currentSeller?.email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="email"
-            type="email"
+              value={currentSeller?.email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="email"
+              type="email"
             />
           </Col>
         </Row>
@@ -602,11 +682,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Twitter</label></Col>
           <Col>
             <input
-            value={currentSeller?.twitter}
-            onChange={(e) => setTwitter(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="Twitter (X) url"
-            type="text"
+              value={currentSeller?.twitter}
+              onChange={(e) => setTwitter(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="Twitter (X) url"
+              type="text"
             />
           </Col>
         </Row>
@@ -614,11 +694,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Facebook</label></Col>
           <Col>
             <input
-            value={currentSeller?.facebook}
-            onChange={(e) => setFacebook(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="Facebook url"
-            type="text"
+              value={currentSeller?.facebook}
+              onChange={(e) => setFacebook(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="Facebook url"
+              type="text"
             />
           </Col>
         </Row>
@@ -626,11 +706,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Instagram</label></Col>
           <Col>
             <input
-            value={currentSeller?.instagram}
-            onChange={(e) => setInstagram(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="Instagram url"
-            type="text"
+              value={currentSeller?.instagram}
+              onChange={(e) => setInstagram(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="Instagram url"
+              type="text"
             />
           </Col>
         </Row>
@@ -638,11 +718,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">YouTube</label></Col>
           <Col>
             <input
-            value={currentSeller?.youtube}
-            onChange={(e) => setYouTube(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="YouTube url"
-            type="text"
+              value={currentSeller?.youtube}
+              onChange={(e) => setYouTube(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="YouTube url"
+              type="text"
             />
           </Col>
         </Row>
@@ -650,11 +730,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Spotify</label></Col>
           <Col>
             <input
-            value={currentSeller?.spotify}
-            onChange={(e) => setSpotify(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="Spotify url"
-            type="text"
+              value={currentSeller?.spotify}
+              onChange={(e) => setSpotify(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="Spotify url"
+              type="text"
             />
           </Col>
         </Row>
@@ -662,11 +742,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Website</label></Col>
           <Col>
             <input
-            value={currentSeller?.website}
-            onChange={(e) => setWebsite(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="Website url"
-            type="text"
+              value={currentSeller?.website}
+              onChange={(e) => setWebsite(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="Website url"
+              type="text"
             />
           </Col>
         </Row>
@@ -674,11 +754,11 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Website Display Text</label></Col>
           <Col>
             <input
-            value={currentSeller?.websiteDisplayText}
-            onChange={(e) => setWebsiteDisplayText(e.target.value)}
-            className="form-control form-control-half"
-            placeholder="Website display text (shown instead of url)"
-            type="text"
+              value={currentSeller?.websiteDisplayText}
+              onChange={(e) => setWebsiteDisplayText(e.target.value)}
+              className="form-control form-control-half"
+              placeholder="Website display text (shown instead of url)"
+              type="text"
             />
           </Col>
         </Row>
@@ -686,7 +766,7 @@ export default function AdminSellerGlobalEdit() {
           <Col>
             <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
           </Col>
-        </Row>      
+        </Row>
       </Col>
     </Row>
   );

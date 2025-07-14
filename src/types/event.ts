@@ -13,6 +13,8 @@ export interface SellerEventCategory {
   eventCategoryId?: number;
   sellerEventCategoryId?: number;
   hasEvents?: boolean;
+  isVisibleOnSite?: boolean;
+  isVisibleOnPortal?: boolean;
 }
 
 export interface Seller {
