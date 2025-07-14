@@ -10,6 +10,8 @@ import {
   setAdminSellerId,
   setAdminTour,
   setAllSellers,
+  setCountries,
+  setReloadCountries,
   setReloadEvents,
   setReloadSellers,
   setReloadTours,
@@ -39,6 +41,8 @@ import { AdminSelection } from '@/types/user';
 import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
 import { ItemDataType } from 'rsuite/esm/internals/types';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { GetCountriesResponse } from '@/types/admin';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -54,6 +58,7 @@ export default function AdminEventsIndex() {
   const { setEventsHidden } = useSetEventsHidden();
   const { getTours } = useGetTours();
   const { getTicketSocketEventsOnly } = useGetTicketSocketEventsOnly();
+  const { getAllCountries } = useGetAllCountries();
 
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [eventIdList, setEventIdList] = useState<number[]>([]);
@@ -61,7 +66,18 @@ export default function AdminEventsIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.reloadSellers) {
+      if (currentAdminSelection.reloadCountries) {
+        dispatch(setReloadCountries(false));
+        dispatch(setIsLoading(true));
+        getAllCountries().then((response: GetCountriesResponse) => {
+          if (response.countries && !response.countryError) {
+            dispatch(setCountries(response.countries));
+          } else {
+            toast.error(response.countryError);
+            dispatch(setIsLoading(false));
+          }
+        });
+      } else if (currentAdminSelection.reloadSellers) {
         dispatch(setReloadSellers(false));
         setEventIdList([]);
         setSelectedAction(null);
@@ -113,7 +129,7 @@ export default function AdminEventsIndex() {
                     }
                     dispatch(setIsLoading(false));
                     setTableLoading(false);
-                  }); 
+                  });
                 } else {
                   dispatch(setIsLoading(false));
                   setTableLoading(false);
@@ -402,11 +418,11 @@ export default function AdminEventsIndex() {
   };
 
   const tourList: ItemDataType<number>[] = currentAdminSelection?.tours ?
-      currentAdminSelection?.tours?.map((tour) => {
-        return {
-          label: `${tour.tourName}`,
-          value: tour.tourId
-        }
+    currentAdminSelection?.tours?.map((tour) => {
+      return {
+        label: `${tour.tourName}`,
+        value: tour.tourId
+      }
     }) : [];
 
   const resetEvents = () => {
@@ -444,11 +460,11 @@ export default function AdminEventsIndex() {
   ];
 
   const actionList: ItemDataType<string>[] = actions.map((action) => {
-        return {
-          label: action.label,
-          value: action.value
-        }
-    });
+    return {
+      label: action.label,
+      value: action.value
+    }
+  });
 
   return (
     <div className="admin-container">
@@ -456,13 +472,13 @@ export default function AdminEventsIndex() {
         <Col>
           <AdminListHomeButton />
           <Button hidden={sellectedSellerId == undefined} onClick={addEvent}>Add New Event</Button>
-        </Col>        
+        </Col>
       </Row>
       <Row className="refresh-results-header">
         <Col>
           <h3>Manage Events</h3>
         </Col>
-      </Row> 
+      </Row>
       <AdminSellerSelect
         Id="refresh"
         Sellers={currentAdminSelection.allSellers}
@@ -476,16 +492,16 @@ export default function AdminEventsIndex() {
         </Col>
         <Col>
           <SelectPicker
-              value={selectedTourId}
-              data={tourList}
-              size="lg"        
-              onChange={(tId) => setSelectedTour(tId)}
-              cleanable={true}
-              placeholder="All Events"
-              menuAutoWidth={true}
-              className="admin-seller-select-value"
-              onClean={() => setSelectedTour(0)}
-            />
+            value={selectedTourId}
+            data={tourList}
+            size="lg"
+            onChange={(tId) => setSelectedTour(tId)}
+            cleanable={true}
+            placeholder="All Events"
+            menuAutoWidth={true}
+            className="admin-seller-select-value"
+            onClean={() => setSelectedTour(0)}
+          />
         </Col>
       </Row>
       <ReportDatePicker
@@ -509,7 +525,7 @@ export default function AdminEventsIndex() {
               className="bulk-select"
               value={selectedAction}
               data={actionList}
-              size="lg"        
+              size="lg"
               onChange={(a) => setSelectedAction(a)}
               cleanable={true}
               menuAutoWidth={true}
@@ -591,13 +607,13 @@ export default function AdminEventsIndex() {
               <HeaderCell>&nbsp;</HeaderCell>
               <Cell>
                 {(rowData: VipEvent) =>
-                    <a
-                      href="#"
-                      id={`${rowData.externalEventId}_event`}
-                      onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
-                    >
-                      Edit
-                    </a>
+                  <a
+                    href="#"
+                    id={`${rowData.externalEventId}_event`}
+                    onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
+                  >
+                    Edit
+                  </a>
                 }
               </Cell>
             </Column>

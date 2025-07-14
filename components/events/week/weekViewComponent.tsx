@@ -44,7 +44,7 @@ export default function WeekView(props: WeekViewProps) {
 
     const weekdays: ReactElement[] = [];
     if (startOfWeek) {
-        let displayDate = startOfWeek;
+        let displayDate = moment(startOfWeek);
         for (let i = 0; i < 7; i++) {
             let filteredEvents: VipEvent[] = [];
             let filteredNotes: Note[] = [];
@@ -55,7 +55,7 @@ export default function WeekView(props: WeekViewProps) {
                 filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= displayDate.endOf('day').valueOf())
             }
             weekdays.push(<WeekDay key={i} WeekDayNumber={i}
-                WeekDate={displayDate}
+                WeekDate={displayDate.format('MM/DD/YYYY')}
                 Events={filteredEvents}
                 Notes={filteredNotes}
             />);

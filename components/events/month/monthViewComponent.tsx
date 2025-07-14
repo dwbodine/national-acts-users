@@ -66,7 +66,7 @@ export default function MonthView(props: MonthViewProps) {
             monthDays.push(<MonthDay key={i} 
                 MonthDayNumber={i}
                 WeekDayNumber={parseInt(displayDate.format('d'))}
-                MonthDate={displayDate}
+                MonthDate={displayDate.format('MM/DD/YYYY')}
                 Events={filteredEvents}
                 Notes={filteredNotes} />);        
                 

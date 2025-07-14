@@ -16,6 +16,8 @@ import moment from 'moment';
 import { GetOrdersResponse } from '@/types/event';
 import { toast } from 'react-toastify';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { AdminDashboardSelection } from '@/types/user';
 
 export default function DashboardBar() {
   const dispatch = useDispatch();
@@ -80,7 +82,7 @@ export default function DashboardBar() {
   };
 
   const exportDashboardData = () => {
-    const dashboardSelection = { ...currentDashboardSelection };
+    const dashboardSelection: AdminDashboardSelection = { ...currentDashboardSelection };
     if (
       !dashboardSelection.currentDashboardData ||
       !dashboardSelection.start ||
@@ -89,11 +91,15 @@ export default function DashboardBar() {
       return;
     }
 
+    dispatch(setIsLoading(true));
+
     getAllOrders(dashboardSelection.start, dashboardSelection.end).then(
       (response: GetOrdersResponse) => {
         if (response.orders && !response.orderError) {
           if (dashboardSelection.currentDashboardData) {
-            dashboardSelection.currentDashboardData.orders = response.orders;
+            const dashboardData = {...dashboardSelection.currentDashboardData };
+            dashboardData.orders = response.orders;
+            dashboardSelection.currentDashboardData = dashboardData;
             const csvData = exportDashboardOrdersToCsv(dashboardSelection);
             const fileName = getFileNameFromDashboardReportSelection(
               'dashboard-orders',
@@ -103,6 +109,7 @@ export default function DashboardBar() {
             dispatch(setCurrentDashboardData(dashboardSelection.currentDashboardData));
           }
         }
+        dispatch(setIsLoading(false));
       },
     );
   };

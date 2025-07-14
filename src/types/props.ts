@@ -1,17 +1,12 @@
 import { ActivePageKey } from '@/constants';
 import {
-  IOrderKeys,
-  IRevenueKeys,
   IShirtData,
   ITicketData,
   ITicketSalesData,
   Note,
-  Order,
   Seller,
   SellerType,
-  Ticket,
   TicketSocketRefreshHistory,
-  TicketType,
   VipEvent,
 } from './event';
 import { Country, PageSeller } from './public';
@@ -31,7 +26,6 @@ import { CellProps } from 'rsuite';
 
 export interface EditProps {
   Id?: number;
-  Hidden?: boolean;
 }
 
 export interface RefreshTicketSocketDataResultProps {
@@ -200,42 +194,6 @@ export interface WidgetBarProps {
   ServiceFeesRefunded?: number;
 }
 
-export interface ChartBarProps {
-  TotalTickets?: number;
-  TotalRevenue?: number;
-  TotalShirts?: number;
-  TotalOrders?: number;
-  RevenueData?: IRevenueKeys[];
-  OrderData?: IOrderKeys[];
-  TicketData?: ITicketData;
-  ShirtData?: IShirtData;
-  ChartHidden?: boolean;
-}
-
-export interface OrderChartProps {
-  OrderData?: IOrderKeys[];
-  ChartHidden?: boolean;
-  TotalOrders?: number;
-}
-
-export interface RevenueChartProps {
-  RevenueData?: IRevenueKeys[];
-  ChartHidden?: boolean;
-  TotalRevenue?: number;
-}
-
-export interface ShirtSizesChartProps {
-  ShirtData?: IShirtData;
-  ChartHidden?: boolean;
-  TotalShirts?: number;
-}
-
-export interface TicketTypesChartProps {
-  TicketData?: ITicketData;
-  ChartHidden?: boolean;
-  TotalTickets?: number;
-}
-
 export interface AverageSalesWidgetProps {
   MonthlyAverages?: IAverageDailyData;
   YearlyAverages?: IAverageDailyData;
@@ -288,15 +246,15 @@ export interface YearToDateWidgetProps {
 }
 
 export interface AgendaDayProps {
-  AgendaDate?: moment.Moment;
+  AgendaDate?: string;
   Events?: VipEvent[];
   Notes?: Note[];
   AgendaDayNumber?: number;
 }
 
 export interface AgendaViewProps {
-  StartOfMonth?: moment.Moment;
-  EndOfMonth?: moment.Moment;
+  StartOfMonth?: string;
+  EndOfMonth?: string;
   Events?: VipEvent[];
   Notes?: Note[];
 }
@@ -329,8 +287,15 @@ export interface EditNoteModalProps {
   OnNoteDateChange?: (date: Date) => void;
 }
 
+export interface MonthViewProps {
+  StartOfMonth?: string;
+  EndOfMonth?: string;
+  Events?: VipEvent[];
+  Notes?: Note[];
+}
+
 export interface MonthDayProps {
-  MonthDate?: moment.Moment;
+  MonthDate?: string;
   Events?: VipEvent[];
   Notes?: Note[];
   MonthDayNumber?: number;
@@ -342,42 +307,16 @@ export interface MonthWeekProps {
 }
 
 export interface WeekDayProps {
-  WeekDate?: moment.Moment;
+  WeekDate?: string;
   Events?: VipEvent[];
   Notes?: Note[];
   WeekDayNumber?: number;
 }
 
 export interface WeekViewProps {
-  StartOfWeek?: moment.Moment;
+  StartOfWeek?: string;
   Events?: VipEvent[];
   Notes?: Note[];
-}
-
-export interface MonthViewProps {
-  StartOfMonth?: moment.Moment;
-  EndOfMonth?: moment.Moment;
-  Events?: VipEvent[];
-  Notes?: Note[];
-}
-
-export interface AttendeeRowProps {
-  CanCheckInTickets?: boolean;
-  Ticket?: Ticket;
-}
-
-export interface OrderRowProps {
-  TicketTypes?: TicketType[];
-  EventDate?: string;
-  EventName?: string;
-  Order?: Order;
-  HasPhoneData?: boolean;
-  HideRevenue?: boolean;
-  HideServiceFees?: boolean;
-  CanCheckInTickets?: boolean;
-  ShowOnlyEmails?: boolean;
-  ShowOnlyPhones?: boolean;
-  IsAdmin?: boolean;
 }
 
 export interface ExpandCellProps extends CellProps<VipEvent> {

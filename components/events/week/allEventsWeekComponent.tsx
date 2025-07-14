@@ -119,7 +119,7 @@ export default function AllEventsWeek() {
     (vipEvents != undefined) ?
     <>
       <Row>
-        <WeekView StartOfWeek={startOfWeek} Events={vipEvents} Notes={notes} />
+        <WeekView StartOfWeek={startOfWeek?.format('MM/DD/YYYY')} Events={vipEvents} Notes={notes} />
       </Row>
       <Row>
         <Col>
@@ -131,9 +131,16 @@ export default function AllEventsWeek() {
             expandedRowKeys={expandedRowKey ? [expandedRowKey] : []}
             rowExpandedHeight={260}
             renderRowExpanded={renderRowExpanded}
-            rowClassName={(rowData: VipEvent) => {
-              return (rowData && rowData.externalEventId == expandedRowKey) ? 'highlighted' : getEventStatusSlug(rowData);
-            }}
+            rowClassName={(evt: VipEvent) => {
+              if (evt && evt.externalEventId == expandedRowKey) {
+                handleExpanded(evt);
+                return 'highlighted';
+              } else if (evt) {
+                return getEventStatusSlug(evt);
+              } else {
+                return '';
+              }
+           }}
 
           >
             <Column flexGrow={1} minWidth={100}>

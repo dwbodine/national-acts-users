@@ -38,7 +38,7 @@ export default function AllEventsAgenda() {
         (vipEvents != undefined) ?
         <Row>
             <Col>
-                <AgendaView StartOfMonth={startOfMonth} EndOfMonth={endOfMonth} Events={vipEvents} Notes={currentReportSelection?.notes} /> 
+                <AgendaView StartOfMonth={startOfMonth?.format('MM/DD/YYYY')} EndOfMonth={endOfMonth?.format('MM/DD/YYYY')} Events={vipEvents} Notes={currentReportSelection?.notes} /> 
             </Col>
         </Row> :
         <Row>

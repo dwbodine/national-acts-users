@@ -46,7 +46,7 @@ export default function AgendaView(props: AgendaViewProps) {
 
     const agendaDays: ReactElement[] = [];
     if (startOfMonth && endOfMonth && events && events.length > 0) {
-        let displayDate = startOfMonth;
+        let displayDate = moment(startOfMonth);
         let i = 1;
         while (displayDate.valueOf() <= endOfMonth.valueOf()) {
             let filteredEvents: VipEvent[] = [];
@@ -58,7 +58,7 @@ export default function AgendaView(props: AgendaViewProps) {
                 filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= displayDate.endOf('day').valueOf())
             }
             agendaDays.push(<AgendaDay key={i} AgendaDayNumber={i}
-                AgendaDate={displayDate}
+                AgendaDate={displayDate.format('MM/DD/YYYY')}
                 Events={filteredEvents}
                 Notes={filteredNotes}
             />);    

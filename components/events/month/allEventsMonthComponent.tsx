@@ -38,7 +38,7 @@ export default function AllEventsMonth() {
         (vipEvents != undefined) ?
         <Row>
             <Col>
-                <MonthView StartOfMonth={startOfMonth} EndOfMonth={endOfMonth} Events={vipEvents} Notes={currentReportSelection?.notes} /> 
+                <MonthView StartOfMonth={startOfMonth?.format('MM/DD/YYYY')} EndOfMonth={endOfMonth?.format('MM/DD/YYYY')} Events={vipEvents} Notes={currentReportSelection?.notes} /> 
             </Col>
         </Row> :
         <Row>

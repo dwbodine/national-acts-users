@@ -401,9 +401,10 @@ export default function AdminSellerGlobalEdit() {
       account.categories?.map((x, i) => {
         options.push(<option key={`a${index}_${i}`} value={x.eventCategoryId}>{x.name}</option>);
       });
+      const rowKey = `accoutnRow${index}`;
       const key = `account${index}`;
       categoryRows.push(
-        <Row className="form-group">
+        <Row key={rowKey} className="form-group">
           <Col xs={2}><label className="mt-4">Category for {account.name}</label></Col>
           <Col>
             <select

@@ -59,6 +59,9 @@ export default function DashboardIndex() {
                 currentDashboardSelection,
                 response.totals,
               );
+              if (!dashData.orders) {
+                dashData.orders = [];
+              }
               dispatch(setCurrentDashboardData(dashData));
               dispatch(setIsLoading(false));
               setChartsHidden(false);

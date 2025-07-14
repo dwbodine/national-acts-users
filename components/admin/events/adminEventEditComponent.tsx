@@ -23,6 +23,8 @@ import {
   setAllSellers,
   setTicketSocketEventsOnly,
   setAdminSellerId,
+  setReloadCountries,
+  setCountries,
 } from '@/lib/adminSelectionSlice';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
 import { DatePicker, Modal, SelectPicker, TimePicker } from 'rsuite';
@@ -31,12 +33,13 @@ import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
-import { ExternalVenue, ModifyExternalVenueResponse } from '@/types/admin';
+import { ExternalVenue, GetCountriesResponse, GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/admin';
 import AdminFileUpload from '../common/adminFileUploadComponent';
 import { useCancelEvent } from '@/hooks/admin/useCancelEvent';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
 import { EditProps } from '@/types/props';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 
 export default function AdminEventEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;
@@ -46,7 +49,8 @@ export default function AdminEventEdit(props: EditProps) {
   const { updateVenue } = useUpdateVenue();
   const { getExternalVenueLocation } = useGetLocation();
   const { getAllVenues } = useGetAllVenues();
-  
+  const { getAllCountries } = useGetAllCountries();
+
   const { refundEvent } = useRefundEvent();
   const { cancelEvent } = useCancelEvent();
   const { updateEvent } = useUpdateEvent();
@@ -88,59 +92,84 @@ export default function AdminEventEdit(props: EditProps) {
     dispatch(setMustSaveEvent(false));
     dispatch(setIsLoading(true));
     getEventById(id)
-        .then((response) => {
-          if (response.event && !response.eventError) {
-            dispatch(
-              setAdminEvent(response.event)
-            );
-            dispatch(
-              setAdminSellerId(response.event.sellerId)
-            );
-            getTicketSocketEventsOnly(response.event.sellerId).then((response) => {
-              if (response.events && !response.eventError) {
-                dispatch(setTicketSocketEventsOnly(response.events));
-              }
-              dispatch(setIsLoading(false));
-            });
-          } else {
+      .then((response) => {
+        if (response.event && !response.eventError) {
+          dispatch(
+            setAdminEvent(response.event)
+          );
+          dispatch(
+            setAdminSellerId(response.event.sellerId)
+          );
+          getTicketSocketEventsOnly(response.event.sellerId).then((response) => {
+            if (response.events && !response.eventError) {
+              dispatch(setTicketSocketEventsOnly(response.events));
+            }
             dispatch(setIsLoading(false));
-          }            
-        });
+          });
+        } else {
+          dispatch(setIsLoading(false));
+        }
+      });
   }, [dispatch, getEventById, id, getTicketSocketEventsOnly]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (!currentAdminSelection.countries) {
-        router.push("/admin");
-        return;
-      }
-      if (currentAdminSelection.reloadSellers) {
-          dispatch(setReloadSellers(false));
+    const timeoutId = setTimeout(async () => {
+      if (currentAdminSelection.reloadCountries) {
+        dispatch(setReloadCountries(false));
+        if (!globalSelection.isLoading) {
           dispatch(setIsLoading(true));
-          getSellers().then((response: GetSellersResponse) => {
-            dispatch(setAllSellers(response.sellers));
-            dispatch(setIsLoading(false));
-          });
+        }
+        const response: GetCountriesResponse = await getAllCountries();
+        if (response.countries && !response.countryError) {
+          dispatch(setCountries(response.countries));
+        } else {
+          toast.error(response.countryError);
+          dispatch(setIsLoading(false));
+        }
+      } else if (currentAdminSelection.reloadSellers) {
+        dispatch(setReloadSellers(false));
+        if (!globalSelection.isLoading) {
+          dispatch(setIsLoading(true));
+        }
+        const response: GetSellersResponse = await getSellers();
+        if (response.sellers && !response.sellersError) {
+          dispatch(setAllSellers(response.sellers));
+        } else {
+          toast.error(response.sellersError);
+          dispatch(setIsLoading(false));
+        }
       } else if (currentAdminSelection.reloadVenues) {
-        dispatch(setIsLoading(true));
+        if (!globalSelection.isLoading) {
+          dispatch(setIsLoading(true));
+        }
         dispatch(setReloadVenues(false));
-        getAllVenues()
-          .then((response) => {
-            if (response.venues && !response.venueError) {
-              dispatch(
-                setVenues(response.venues)
-              );
-            }
-            dispatch(setIsLoading(false));
-          })
-      } else if (currentAdminSelection.selectedEvent == undefined && id != undefined) {
-        loadEventById();        
+        const response: GetExternalVenuesResponse = await getAllVenues();
+        if (response.venues && !response.venueError) {
+          dispatch(
+            setVenues(response.venues)
+          );
+        } else {
+          toast.error(response.venueError);
+          dispatch(setIsLoading(false));
+        }
+      } else if (currentAdminSelection.selectedEvent == undefined
+        && id != undefined
+        && currentAdminSelection.countries != undefined
+        && currentAdminSelection.allSellers != undefined
+        && currentAdminSelection.venues != undefined) {
+        await loadEventById();
+      } else if (currentAdminSelection != undefined
+        && currentAdminSelection.countries != undefined
+        && currentAdminSelection.allSellers != undefined
+        && currentAdminSelection.venues != undefined
+        && globalSelection.isLoading) {
+        dispatch(setIsLoading(false));
       }
     }, 300);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, id, globalSelection, getAllVenues, currentSeller, getSellers, getTicketSocketEventsOnly, loadEventById]);
+  }, [currentAdminSelection, dispatch, id, globalSelection, getAllVenues, currentSeller, getSellers, getTicketSocketEventsOnly, loadEventById, getAllCountries]);
 
   const onEventVenueChange = (value: number | null) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
@@ -190,7 +219,7 @@ export default function AdminEventEdit(props: EditProps) {
             goBack(false);
           } else {
             loadEventById();
-          }          
+          }
         } else {
           toast.error(response.noteError ?? "Unexpected error occurred while adding note");
         }
@@ -394,35 +423,35 @@ export default function AdminEventEdit(props: EditProps) {
       announceDate = announceDate.minutes(0);
       announceDate = announceDate.seconds(0);
       currentEvent.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');;
-    }    
+    }
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
 
   const onEventTimeChange = (date: Date | null) => {
-      if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
-        return;
-      }
-  
-      const eventTime = moment(date);
-      const currentEvent = { ...currentAdminSelection.selectedEvent };
-      let eventDate = moment(currentEvent.eventDate);
-      eventDate = eventDate.hours(eventTime.hours());
-      eventDate = eventDate.minutes(eventTime.minutes());
-      eventDate = eventDate.seconds(0);
-      currentEvent.eventTime = eventDate.format('YYYY-MM-DD HH:mm:ss');
-      dispatch(setAdminEvent(currentEvent));
-      markDirty();
+    if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+
+    const eventTime = moment(date);
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
+    let eventDate = moment(currentEvent.eventDate);
+    eventDate = eventDate.hours(eventTime.hours());
+    eventDate = eventDate.minutes(eventTime.minutes());
+    eventDate = eventDate.seconds(0);
+    currentEvent.eventTime = eventDate.format('YYYY-MM-DD HH:mm:ss');
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
   };
 
   const onCleanEventTime = () => {
-      if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
-        return;
-      }
-      const currentEvent = { ...currentAdminSelection.selectedEvent };
-      currentEvent.eventTime = undefined;    
-      dispatch(setAdminEvent(currentEvent));
-      markDirty();
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.eventTime = undefined;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
   };
 
   const onCheckInLocationChange = (location: string | undefined) => {
@@ -450,16 +479,16 @@ export default function AdminEventEdit(props: EditProps) {
     if (countryId) {
       const country = currentAdminSelection.countries?.find(x => x.countryId == countryId);
       const tzList: ItemDataType<string>[] = country?.timezones ?
-          country.timezones.map((tz) => {
-            return {
-              label: `${tz.displayName}`,
-              value: tz.timezone
-            }
+        country.timezones.map((tz) => {
+          return {
+            label: `${tz.displayName}`,
+            value: tz.timezone
+          }
         }) : [];
-        setTimeZoneList(tzList);
+      setTimeZoneList(tzList);
     } else {
       setTimeZoneList([]);
-    }    
+    }
   };
 
   const onTimezoneChange = (timezone: string | null) => {
@@ -608,8 +637,8 @@ export default function AdminEventEdit(props: EditProps) {
             dispatch(setAdminEvent(undefined));
             goBack(false);
           } else {
-            loadEventById(); 
-          }          
+            loadEventById();
+          }
         } else {
           toast.error('Refund failed');
         }
@@ -643,7 +672,7 @@ export default function AdminEventEdit(props: EditProps) {
             goBack(false);
           } else {
             loadEventById();
-          }          
+          }
         } else {
           toast.error('Comp order creation failed');
         }
@@ -660,7 +689,7 @@ export default function AdminEventEdit(props: EditProps) {
     const isCancelled = !currentAdminSelection.selectedEvent.isCancelled;
 
     dispatch(setIsLoading(true));
-    
+
     cancelEvent(eventId, isCancelled).then((response: ModifyEventResponse) => {
       const success = response.success;
       dispatch(setIsLoading(false));
@@ -673,7 +702,7 @@ export default function AdminEventEdit(props: EditProps) {
           goBack(false);
         } else {
           loadEventById();
-        }        
+        }
       } else {
         const message = isCancelled ? 'Cancellation failed' : 'Uncancellation failed';
         toast.error(message);
@@ -793,7 +822,7 @@ export default function AdminEventEdit(props: EditProps) {
       city: city,
       state: state,
       zipCode: zipCode,
-      country: {  countryId: countryId },
+      country: { countryId: countryId },
       timezone: { timezone: timezone }
     };
 
@@ -801,12 +830,12 @@ export default function AdminEventEdit(props: EditProps) {
       if (response.success) {
         const newVenue = response.updatedVenue;
         const adminSelection = { ...currentAdminSelection };
-        if (newVenue != undefined && 
-            adminSelection.venues != undefined && 
-            adminSelection.selectedEvent != undefined && 
-            !adminSelection.venues.find(x => x.venueId == newVenue.venueId)) {
+        if (newVenue != undefined &&
+          adminSelection.venues != undefined &&
+          adminSelection.selectedEvent != undefined &&
+          !adminSelection.venues.find(x => x.venueId == newVenue.venueId)) {
           dispatch(setAdminVenue(undefined));
-          const venueList = [ ...adminSelection.venues ];
+          const venueList = [...adminSelection.venues];
           venueList.push(newVenue);
           venueList.sort((a, b) =>
             a.venue < b.venue ? -1 : a.venue > b.venue ? 1 : 0,
@@ -830,12 +859,12 @@ export default function AdminEventEdit(props: EditProps) {
   };
 
   const handleVenueClose = () => setVenueOpen(false);
-  
+
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedEvent || !currentAdminSelection.sellerId) {
       return false;
-    }    
+    }
 
     const eventToUpdate: VipEvent = { ...currentAdminSelection.selectedEvent };
 
@@ -864,14 +893,14 @@ export default function AdminEventEdit(props: EditProps) {
         toast.warning("VIP link supplied is invalid");
         return;
       }
-    }   
+    }
 
     if (eventToUpdate.externalUrl) {
       if (!eventToUpdate.externalUrl.startsWith("http://") && !eventToUpdate.externalUrl.startsWith("https://")) {
         toast.warning("Ticket link supplied is invalid");
         return;
       }
-    }    
+    }
 
     if (!eventToUpdate.announceDate) {
       eventToUpdate.announceDate = undefined;
@@ -937,27 +966,27 @@ export default function AdminEventEdit(props: EditProps) {
   const pageHeader = (eventId > 0) ? `Edit event for ${currentSeller?.name}` : `Add event for ${currentSeller?.name}`;
 
   const eventTitle =
-      selectedEvent != undefined
-        ? selectedEvent.title
-        : '';
-  
+    selectedEvent != undefined
+      ? selectedEvent.title
+      : '';
+
   const eventDate =
     selectedEvent?.eventDate != undefined
       ? moment(selectedEvent.eventDate).toDate()
       : null;
 
   const eventTime =
-      selectedEvent != undefined &&
+    selectedEvent != undefined &&
       selectedEvent.eventTime != null
-            ? moment(selectedEvent.eventTime).toDate()
-            : null; 
-  
+      ? moment(selectedEvent.eventTime).toDate()
+      : null;
+
   const announceDate =
     selectedEvent != undefined &&
       selectedEvent.announceDate != null
       ? moment(selectedEvent.announceDate).toDate()
       : null;
-  
+
   const refundsDisabled =
     selectedEvent == undefined ||
     selectedEvent.totalTickets == 0 ||
@@ -967,7 +996,7 @@ export default function AdminEventEdit(props: EditProps) {
   const cancelButtonText = isCancelled ? 'Uncancel Event' : 'Mark Cancelled';
   const refundCancelDisabled = isCancelled;
   const refundCancelTitle = refundCancelDisabled ? 'Event has already been cancelled' : '';
-  
+
   const isActive = selectedEvent?.isActive ?? false;
   const isDeleted = selectedEvent?.isDeleted ?? false;
   const isHidden = selectedEvent?.isHidden ?? false;
@@ -975,7 +1004,7 @@ export default function AdminEventEdit(props: EditProps) {
     selectedEvent?.isAddedToBandsInTown ?? false;
 
   const thumbnail = selectedEvent?.externalThumbnail ?? undefined;
-  const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;  
+  const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;
 
   const externalUrl = selectedEvent?.externalUrl ?? '';
   const externalVipLink = selectedEvent?.externalVipLink ?? '';
@@ -987,8 +1016,8 @@ export default function AdminEventEdit(props: EditProps) {
   const disableVipLinkReason = selectedEvent?.disableVipLinkReason ?? undefined;
 
   const emailSentToVips = selectedEvent?.emailSentToVips ? "true" : "false";
-  const textSentToVips = selectedEvent?.textSentToVips  ? "true" : "false";
-  const listSentToBand = selectedEvent?.listSentToBand   ? "true" : "false";
+  const textSentToVips = selectedEvent?.textSentToVips ? "true" : "false";
+  const listSentToBand = selectedEvent?.listSentToBand ? "true" : "false";
   const listSentTime = selectedEvent?.listSentTime ? moment.utc(selectedEvent.listSentTime).format('MM/DD/YYYY h:mm A') : 'n/a';
   const numVips = (selectedEvent?.listSentToBand ?? false) ? (selectedEvent?.listSentNumVips ?? 0).toString() : 'n/a';
 
@@ -1093,11 +1122,11 @@ export default function AdminEventEdit(props: EditProps) {
   const isExternalEvent = (selectedEvent?.isExternal ?? false) && (ticketSocketEventId == 0);
 
   const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
-      currentAdminSelection.countries.map((country) => {
-        return {
-          label: `${country.countryName}`,
-          value: country.countryId
-        }
+    currentAdminSelection.countries.map((country) => {
+      return {
+        label: `${country.countryName}`,
+        value: country.countryId
+      }
     }) : [];
 
   return (
@@ -1149,7 +1178,7 @@ export default function AdminEventEdit(props: EditProps) {
             size="lg"
             block
             onChange={onEventChange}
-          />      
+          />
         </Col>
       </Row>
       <Row>
@@ -1174,7 +1203,7 @@ export default function AdminEventEdit(props: EditProps) {
                   value={venueName}
                   onChange={(e) => setVenueName(e.target.value)}
                   placeholder="venue name"
-                  style={{width: '80%'}}
+                  style={{ width: '80%' }}
                   type="text"
                 />
               </div>
@@ -1184,7 +1213,7 @@ export default function AdminEventEdit(props: EditProps) {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="address"
-                  style={{width: '80%'}}
+                  style={{ width: '80%' }}
                   type="text"
                 />
               </div>
@@ -1222,7 +1251,7 @@ export default function AdminEventEdit(props: EditProps) {
                   menuAutoWidth={true}
                   value={countryId}
                   data={countryList}
-                  size="lg"        
+                  size="lg"
                   onChange={(cId) => onCountryChange(cId)}
                   cleanable={false}
                 />
@@ -1234,7 +1263,7 @@ export default function AdminEventEdit(props: EditProps) {
                   menuAutoWidth={true}
                   value={timezone}
                   data={timeZoneList}
-                  size="lg"        
+                  size="lg"
                   onChange={(tz) => onTimezoneChange(tz)}
                   cleanable={false}
                 />
@@ -1283,7 +1312,7 @@ export default function AdminEventEdit(props: EditProps) {
           />
 
           <label className="mt-4">Announce Date (in Pacific Time)</label>
-          
+
           <DatePicker
             id="announceDate"
             format="M/d/yyyy"
@@ -1328,7 +1357,7 @@ export default function AdminEventEdit(props: EditProps) {
             placeholder='Ticket/Website Link (regular tickets)'
           />
         </Col>
-      </Row> 
+      </Row>
       <Row>
         <Col className="form-group">
           <FormCheck
@@ -1362,7 +1391,7 @@ export default function AdminEventEdit(props: EditProps) {
             type="text"
           />
         </Col>
-      </Row>     
+      </Row>
       <Row className="form-group" hidden={isExternalEvent}>
         <Col xs={1}>
           Check-in location:
@@ -1439,7 +1468,7 @@ export default function AdminEventEdit(props: EditProps) {
       </Row>
       <Row className="form-group" hidden={isExternalEvent}>
         <Col>
-            # of VIPs at time email was sent: {numVips}
+          # of VIPs at time email was sent: {numVips}
         </Col>
       </Row>
       <Row hidden={isExternalEvent}>
@@ -1522,10 +1551,10 @@ export default function AdminEventEdit(props: EditProps) {
         </Col>
       </Row>
       <Row>
-          <Col>
-            <div>NOTES:</div>
-            {notes}
-          </Col>
+        <Col>
+          <div>NOTES:</div>
+          {notes}
+        </Col>
       </Row>
       <Row className="refund-section" hidden={isExternalEvent || (currentAdminSelection?.selectedEvent?.orders?.length ?? 0) <= 0}>
         <Col>

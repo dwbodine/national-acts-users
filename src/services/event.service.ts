@@ -1545,7 +1545,7 @@ export class EventService {
           arr.set(ticketType.ticketTypeName, number);
         });
       });
-      for (const ticketType in arr) {
+      for (const ticketType in arr.keys) {
         exportStr += `"${ticketType}","${arr.get(ticketType)}"\n`;
       }
     }
@@ -1706,7 +1706,7 @@ export class EventService {
     } else if (hasPhoneData && showOnlyPhones) {
       exportStr += `"${phone}"\n`;
     } else {
-      const purchaserName = `${order.purchaserLastName}, ${order.purchaserFirstName}`;
+      const purchaserName = (order.purchaserLastName || order.purchaserFirstName) ? `${order.purchaserLastName}, ${order.purchaserFirstName}` : '';
       const purchaserZip = order.purchaserZipCode ?? '';
       const purchaserIpAddress = order.purchaserIpAddress ?? '';
       const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
@@ -1731,7 +1731,7 @@ export class EventService {
           if (shirts.length > 0) {
             shirts += ' / ';
           }
-          attendeeNames += `${ticket.attendeeFirstName} ${ticket.attendeeLastName}`;
+          attendeeNames += (ticket.attendeeFirstName || ticket.attendeeLastName) ?  `${ticket.attendeeFirstName} ${ticket.attendeeLastName}` : '';
           if (ticket.shirtSize) {
             shirts += ticket.shirtSize;
           }
@@ -1852,7 +1852,7 @@ export class EventService {
           if (data) {
             number = data.Number;
           }
-          exportStr += `"${ticketType}","${number}"\n`;
+          exportStr += `"${ticketType.ticketTypeName}","${number}"\n`;
         });
       });
       exportStr += '\n';
