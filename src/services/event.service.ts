@@ -1621,7 +1621,7 @@ export class EventService {
       exportStr += '"Phone"\n';
     } else {
       exportStr =
-        '"Seller Name","Purchaser Name","Purchaser Zip","Purchaser IP Address","Attendee Name(s)","Purchase Date","Event Date","Event Name","Ticket Type","Number of tickets"';
+        '"Seller Name","Purchaser Name","Purchaser Zip","Purchaser IP Address","Attendee Name(s)","Purchase Date","Order Id","Order Status","Event Date","Event Name","Ticket Type","Number of tickets"';
       if (hasNonUsaOrders) {
         if (showRevenueData) {
           if (hideCurrencyInHeaders) {
@@ -1713,6 +1713,8 @@ export class EventService {
       const purchaserZip = order.purchaserZipCode ?? '';
       const purchaserIpAddress = order.purchaserIpAddress ?? '';
       const purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
+      const orderId = order.orderId;
+      const orderStatus = this.getOrderStatusText(order);
       const eventDate = moment(order.eventDate).format('MM/DD/YYYY');
       const eventName = order.eventTitle;
       const sellerName = order.sellerName;
@@ -1756,7 +1758,7 @@ export class EventService {
         });
       }
 
-      exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${purchaserIpAddress}","${attendeeNames}","${purchaseDate}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
+      exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${purchaserIpAddress}","${attendeeNames}","${purchaseDate}","${orderId}","${orderStatus}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
       if (hasNonUsaOrders) {
         if (showRevenueData) {
           if (order.currencyAbbrev != 'USD' && order.currencySymbol != '$') {
@@ -2032,5 +2034,59 @@ export class EventService {
         break;
     }
     return accountName;
+  };
+
+  getOrderStatusSlug = (order: Order | undefined): string => {
+    let statusSlug: string = '';
+    if (!order) {
+      return '';
+    }
+    if (order.isComped) {
+      statusSlug = 'comped';
+    } else if (order.isDeleted) {
+      statusSlug = 'deleted';
+    } else if (order.hasRefunds) {
+      statusSlug = 'refunded';
+    } else if (order.hasChargebacks) {
+      statusSlug = 'charged-back';
+    } else if (!order.isActive) {
+      statusSlug = 'inactive';
+    } else {
+      statusSlug = 'active';
+    }
+    return statusSlug;
+  };
+
+  getOrderStatusText = (order: Order | undefined): string => {
+    const slug = this.getOrderStatusSlug(order);
+    let statusText: string = '';
+    switch (slug) {
+      case 'deleted':
+        statusText = 'Deleted';
+        break;
+      case 'comped':
+        statusText = 'Comped';
+        break;
+      case 'inactive':
+        statusText = 'Inactive';
+        break;
+      case 'active':
+        statusText = 'Active';
+        break;
+      case 'refunded':
+        const hasActiveTickets = order?.tickets?.find((x) => !x.isRefunded);
+        if (hasActiveTickets) {
+          statusText = 'Partially Refunded';
+        } else {
+          statusText = 'Refunded';
+        }
+        break;
+      case 'charged-back':
+        statusText = 'Charged Back';
+        break;
+      default:
+        break;
+    }
+    return statusText;
   };
 }

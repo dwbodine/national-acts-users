@@ -48,18 +48,18 @@ export default function AdminTourEdit() {
   };
 
   const onSellerChange = (sellerIds: number[]) => {
-    if (!currentAdminSelection || 
-        !currentAdminSelection.allSellers || 
-        !currentAdminSelection.selectedTour || 
-        !sellerIds || 
-        sellerIds.length == 0) {
+    if (!currentAdminSelection ||
+      !currentAdminSelection.allSellers ||
+      !currentAdminSelection.selectedTour ||
+      !sellerIds ||
+      sellerIds.length == 0) {
       return;
     }
 
     dispatch(setIsLoading(true));
     closeSellers();
-    
-    const selectedTour = {...currentAdminSelection.selectedTour}
+
+    const selectedTour = { ...currentAdminSelection.selectedTour }
     selectedTour.sellers = [];
     selectedTour.events = [];
     sellerIds.forEach((sellerId) => {
@@ -67,7 +67,7 @@ export default function AdminTourEdit() {
       if (seller && selectedTour.sellers) {
         selectedTour.sellers.push(seller);
       }
-    });    
+    });
     dispatch(setAdminTour(selectedTour));
 
     // update available event list
@@ -83,40 +83,40 @@ export default function AdminTourEdit() {
           dispatch(setAdminEvents(adminEvents));
           dispatch(setIsLoading(false));
         }
-      });    
+      });
   };
 
   const onSellerClean = () => {
-    if (!currentAdminSelection || 
+    if (!currentAdminSelection ||
       !currentAdminSelection.selectedTour) {
       return;
     }
 
-    const selectedTour = {...currentAdminSelection.selectedTour}
+    const selectedTour = { ...currentAdminSelection.selectedTour }
     selectedTour.events = [];
     if (selectedTour.sellers && currentAdminSelection.sellerId) {
       selectedTour.sellers = selectedTour.sellers.filter(x => x.sellerId != currentAdminSelection.sellerId);
     } else if (currentAdminSelection.sellerId) {
       const seller = currentAdminSelection.allSellers?.find(x => x.sellerId == currentAdminSelection.sellerId);
-      selectedTour.sellers = seller ? [ seller ] : [];
+      selectedTour.sellers = seller ? [seller] : [];
     } else {
       selectedTour.sellers = [];
-    }    
-    
+    }
+
     dispatch(setAdminTour(selectedTour));
     closeSellers();
   };
 
   const onEventChange = (eventIds: number[]) => {
-    if (!currentAdminSelection || 
-      !currentAdminSelection.events || 
-      !currentAdminSelection.selectedTour || 
-      !eventIds || 
+    if (!currentAdminSelection ||
+      !currentAdminSelection.events ||
+      !currentAdminSelection.selectedTour ||
+      !eventIds ||
       eventIds.length == 0) {
       return;
     }
 
-    const selectedTour = {...currentAdminSelection.selectedTour}
+    const selectedTour = { ...currentAdminSelection.selectedTour }
     const selectedEvents: VipEvent[] = [];
     eventIds.forEach((eventId) => {
       const evt = currentAdminSelection.events?.find(x => x.externalEventId == eventId);
@@ -135,18 +135,18 @@ export default function AdminTourEdit() {
       }
     }
     selectedTour.events = selectedEvents;
-    
+
 
     dispatch(setAdminTour(selectedTour));
   };
 
   const onEventClean = () => {
-    if (!currentAdminSelection || 
+    if (!currentAdminSelection ||
       !currentAdminSelection.selectedTour) {
       return;
     }
 
-    const selectedTour = {...currentAdminSelection.selectedTour}
+    const selectedTour = { ...currentAdminSelection.selectedTour }
     selectedTour.events = [];
     dispatch(setAdminTour(selectedTour));
   };
@@ -230,7 +230,7 @@ export default function AdminTourEdit() {
     if (handle && handle.close) {
       handle.close();
     }
-  };    
+  };
 
   const onAnnounceDateChange = (date: Date | null) => {
     if (!date || !currentAdminSelection || !currentAdminSelection.selectedTour) {
@@ -281,17 +281,17 @@ export default function AdminTourEdit() {
       announceDate = announceDate.minutes(0);
       announceDate = announceDate.seconds(0);
       currentTour.announceDate = announceDate.format('YYYY-MM-DD HH:mm:ss');;
-    }    
+    }
     dispatch(setAdminTour(currentTour));
   };
 
   const setIsActive = (isActive: boolean) => {
-      if (!currentAdminSelection || !currentAdminSelection.selectedTour) {
-        return;
-      }
-      const currentTour = { ...currentAdminSelection.selectedTour };
-      currentTour.isActive = isActive;
-      dispatch(setAdminTour(currentTour));
+    if (!currentAdminSelection || !currentAdminSelection.selectedTour) {
+      return;
+    }
+    const currentTour = { ...currentAdminSelection.selectedTour };
+    currentTour.isActive = isActive;
+    dispatch(setAdminTour(currentTour));
   };
 
   let pageHeader =
@@ -300,27 +300,40 @@ export default function AdminTourEdit() {
   const sNames = sellerNames();
   if (sNames) {
     pageHeader += ` for ${sNames}`;
-  } 
+  }
 
-  const sellerData = currentAdminSelection.allSellers && currentAdminSelection.allSellers.length > 0 ? currentAdminSelection.allSellers : [];
+  const sellerList: ItemDataType<number>[] = currentAdminSelection.allSellers && currentAdminSelection.allSellers.length > 0 ?
+    currentAdminSelection.allSellers?.map((seller) => {
+      return {
+        label: `${seller.name}`,
+        value: seller.sellerId
+      }
+    }) : [];
 
   const selectedSellers = currentAdminSelection.selectedTour?.sellers && currentAdminSelection.selectedTour?.sellers.length > 0
     ? currentAdminSelection.selectedTour.sellers.map((seller) => { return seller.sellerId })
     : [];
 
-  const disabledSellers = currentAdminSelection.sellerId ? [ currentAdminSelection.sellerId ] : [];
+  const disabledSellers = currentAdminSelection.sellerId ? [currentAdminSelection.sellerId] : [];
 
-  const eventData: VipEvent[] = currentAdminSelection.events && currentAdminSelection.events.length > 0  ? currentAdminSelection.events : [];
+  const eventList: ItemDataType<number>[] = currentAdminSelection.events && currentAdminSelection.events.length > 0 ?
+    currentAdminSelection.events?.map((evt) => {
+      return {
+        label: `${evt.title}`,
+        value: evt.externalEventId
+      }
+    }) : [];
+
   let selectedEvents: number[] = [];
   if (currentAdminSelection.selectedTour?.events && currentAdminSelection.selectedTour?.events.length > 0) {
     selectedEvents = currentAdminSelection.selectedTour.events.map((evt) => { return evt.externalEventId });
   }
 
   const announceDate =
-      currentAdminSelection.selectedTour != undefined &&
-        currentAdminSelection.selectedTour.announceDate != null
-        ? moment(currentAdminSelection.selectedTour.announceDate).toDate()
-        : null;
+    currentAdminSelection.selectedTour != undefined &&
+      currentAdminSelection.selectedTour.announceDate != null
+      ? moment(currentAdminSelection.selectedTour.announceDate).toDate()
+      : null;
 
   const announceTimeDisabled = !announceDate;
 
@@ -342,63 +355,59 @@ export default function AdminTourEdit() {
       </div>
       <div className="form-group">
         <label className="mt-4">Sellers</label>
-        <CheckPicker 
-          sticky={true} 
+        <CheckPicker
+          sticky={true}
           countable={false}
-          data={sellerData} 
-          labelKey="name"
-          valueKey="sellerId"
+          data={sellerList}
           renderMenuItem={renderSellerItem}
-          value={selectedSellers} 
+          value={selectedSellers}
           disabledItemValues={disabledSellers}
-          style={{ width: 500 }} 
-          onChange={onSellerChange} 
+          style={{ width: 500 }}
+          onChange={onSellerChange}
           onClean={onSellerClean}
           ref={sellerRef}
-          />
+        />
       </div>
       <div className="form-group">
         <label className="mt-4">Events</label>
-        <CheckPicker 
-          data={eventData} 
-          labelKey="title"
-          valueKey="externalEventId"
+        <CheckPicker
+          data={eventList}
           renderMenuItem={renderEventItem}
-          value={selectedEvents} 
-          style={{ width: 500 }} 
-          onChange={onEventChange} 
-          onClean={onEventClean} 
-          />
+          value={selectedEvents}
+          style={{ width: 500 }}
+          onChange={onEventChange}
+          onClean={onEventClean}
+        />
       </div>
       <div className="form-group">
         <label className="mt-4">Announce Date (in Pacific Time):</label>
-          <DatePicker
-            id="announceDate"
-            format="M/d/yyyy"
-            onSelect={onAnnounceDateChange}
-            value={announceDate}
-            oneTap
-            cleanable
-            showMeridiem
-            onClean={onCleanAnnounceDate}
-          />
-          <TimePicker
-            id="announceTime"
-            format="hh:mm aa"
-            onSelect={onAnnounceTimeChange}
-            value={announceDate}
-            cleanable
-            showMeridiem
-            onClean={onCleanAnnounceTime}
-            disabled={announceTimeDisabled}
-          />
+        <DatePicker
+          id="announceDate"
+          format="M/d/yyyy"
+          onSelect={onAnnounceDateChange}
+          value={announceDate}
+          oneTap
+          cleanable
+          showMeridiem
+          onClean={onCleanAnnounceDate}
+        />
+        <TimePicker
+          id="announceTime"
+          format="hh:mm aa"
+          onSelect={onAnnounceTimeChange}
+          value={announceDate}
+          cleanable
+          showMeridiem
+          onClean={onCleanAnnounceTime}
+          disabled={announceTimeDisabled}
+        />
       </div>
       <div>
-         <FormCheck
-            checked={isActive}
-            onChange={(e) => setIsActive(e.target.checked)}
-            label="Is Active?"
-          />
+        <FormCheck
+          checked={isActive}
+          onChange={(e) => setIsActive(e.target.checked)}
+          label="Is Active?"
+        />
       </div>
       <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
     </div>

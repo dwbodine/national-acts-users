@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { ReactElement } from 'react';
 import AttendeeRow from './attendeeRowComponent';
 import { OrderRowProps } from '@/types/props';
+import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
 
 export default function OrderRow(props: OrderRowProps) {
   const ticketTypes = props.TicketTypes;
@@ -16,6 +17,8 @@ export default function OrderRow(props: OrderRowProps) {
   const showOnlyEmails = props.ShowOnlyEmails;
   const showOnlyPhones = props.ShowOnlyPhones;
 
+  const { getOrderStatusText } = useGetOrderStatus();
+
   let statusClass = '';
   if (order?.isDeleted) {
     statusClass += 'deleted';
@@ -24,6 +27,9 @@ export default function OrderRow(props: OrderRowProps) {
   } else if (order?.hasRefunds) {
     statusClass += 'refunded';
   }
+
+  const orderStatus = getOrderStatusText(order);
+  const orderId = order?.orderId;
 
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
   const purchaseDate = order?.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
@@ -103,6 +109,8 @@ export default function OrderRow(props: OrderRowProps) {
       <td hidden={showOnlyEmails || showOnlyPhones}>{purchaserName}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{attendeeNameRows}</td>
       <td hidden={showOnlyEmails || showOnlyPhones} className="purchase-date no-print">{purchaseDate}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{orderId}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{orderStatus}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{moment(eventDate).format('MM/DD/YYYY')}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{eventName}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{ticketTypeRows}</td>

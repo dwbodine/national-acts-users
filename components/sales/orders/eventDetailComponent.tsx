@@ -733,6 +733,8 @@ export default function EventDetail(props: EditProps) {
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Purchaser Name</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Attendee Name</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay} className="purchase-date no-print">Purchase Date</th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Order Id</th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Order Status</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Date</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Name</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Ticket Type</th>

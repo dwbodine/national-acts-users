@@ -3,6 +3,7 @@ import React, { ReactElement } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import AttendeeRow from './attendeeRowComponent';
 import { OrderRowProps } from '@/types/props';
+import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
 
 export default function OrderMobileRow(props: OrderRowProps) {
   const ticketTypes = props.TicketTypes;
@@ -18,6 +19,8 @@ export default function OrderMobileRow(props: OrderRowProps) {
   const showOnlyPhones = props.ShowOnlyPhones;
   const isAdmin = props.IsAdmin;
 
+  const { getOrderStatusText } = useGetOrderStatus();
+
   let statusClass = '';
   if (order?.isDeleted) {
     statusClass += 'deleted';
@@ -26,6 +29,8 @@ export default function OrderMobileRow(props: OrderRowProps) {
   } else if (order?.hasRefunds) {
     statusClass += 'refunded';
   }
+
+  const orderStatus = getOrderStatusText(order);
 
   const id = `order_${order?.ticketSocketOrderId}`;
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
@@ -118,6 +123,10 @@ export default function OrderMobileRow(props: OrderRowProps) {
           <Row hidden={showOnlyEmails || showOnlyPhones} className="no-print">
             <Col xs={5} className="mobile-bold">Purchase Date:</Col>
             <Col>{purchaseDate}</Col>
+          </Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
+            <Col xs={5} className="mobile-bold">Order Status:</Col>
+            <Col>{orderStatus}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col xs={5} className="mobile-bold">Event Date:</Col>

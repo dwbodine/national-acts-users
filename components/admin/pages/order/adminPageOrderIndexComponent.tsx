@@ -16,6 +16,7 @@ import moment from 'moment';
 import { toast } from 'react-toastify';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Page } from '@/types/public';
+import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
 
 export default function AdminPageOrderIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -70,31 +71,69 @@ export default function AdminPageOrderIndex() {
     }
   };
 
-  const setPageOrder = (e: ChangeEvent<HTMLInputElement>, pageId: number, order: number) => {
+  const onPageOrderChange =  (e: ChangeEvent<HTMLInputElement>, pageId: number, oldOrder: number, newOrder: number) => {
     e.target.blur();
-    if (!currentAdminSelection.allPages || currentAdminSelection.allPages.length == 0 || !pageId || !order || isNaN(pageId) || isNaN(order)) {
+    setPageOrder(pageId, oldOrder, newOrder);
+  };
+
+  const setPageOrder = (pageId: number, oldOrder: number, newOrder: number) => {
+    if (!currentAdminSelection.allPages || currentAdminSelection.allPages.length == 0 || !pageId || !oldOrder || isNaN(pageId) || isNaN(oldOrder) || !newOrder || isNaN(newOrder)) {
       return;
     }
     let pages = currentAdminSelection.allPages.slice();
     pages = pages.map(page => {
       const newPage = { ...page };
       if (newPage.pageId == pageId) {
-        newPage.pageOrder = order;
+        newPage.pageOrder = newOrder;
+        newPage.lastUpdate = moment().format('YYYY-MM-DD HH:mm:ss');
+      } else if (newPage.pageOrder == newOrder) {
+        newPage.pageOrder = oldOrder < newPage.pageOrder ? oldOrder : newPage.pageOrder + 1;
         newPage.lastUpdate = moment().format('YYYY-MM-DD HH:mm:ss');
       }
       return newPage;
     });
     pages = getPagesSorted(pages);
     let prevOrder = 0;
+    // reset lastUpdate on all after sort
+    const lastUpdate = moment().format('YYYY-MM-DD HH:mm:ss');
     for (const page of pages) {
       if (page.pageOrder == prevOrder) {
         page.pageOrder += 1;
       }
       prevOrder = page.pageOrder ?? 0;
+      page.lastUpdate = lastUpdate;
     }
 
     dispatch(setAllPages(pages));
   }
+
+  const moveUp = (pageId: number) => {
+    if (!pageId || isNaN(pageId) || !currentAdminSelection.allPages) {
+      return;
+    }
+    const page = currentAdminSelection.allPages.find(x => x.pageId == pageId);
+    if (page && page.pageOrder) {
+      const order = page.pageOrder;
+      if (order > 1) {
+        const newOrder = order - 1;
+        setPageOrder(pageId, order, newOrder);
+      }
+    }
+  };
+
+  const moveDown = (pageId: number) => {
+    if (!pageId || isNaN(pageId) || !currentAdminSelection.allPages) {
+      return;
+    }
+    const page = currentAdminSelection.allPages.find(x => x.pageId == pageId);
+    if (page && page.pageOrder) {
+      const order = page.pageOrder;
+      if (order < currentAdminSelection.allPages.length) {
+        const newOrder = order + 1;
+        setPageOrder(pageId, order, newOrder);
+      }
+    }
+  };
 
   const onSubmit = () => {
     if (!currentAdminSelection.allPages) {
@@ -129,7 +168,7 @@ export default function AdminPageOrderIndex() {
 
   const getPagesSorted = (pages: Page[]) => {
     return pages.sort((a, b) =>
-      a.pageOrder == b.pageOrder ? (moment(a.lastUpdate ?? '').unix() - moment(b.lastUpdate ?? '').unix()) : ((a.pageOrder ?? 0) - (b.pageOrder ?? 0))
+      a.pageOrder == b.pageOrder ? (moment(b.lastUpdate ?? '').unix() - moment(a.lastUpdate ?? '').unix()) : ((a.pageOrder ?? 0) - (b.pageOrder ?? 0))
     );
   }
 
@@ -176,7 +215,22 @@ export default function AdminPageOrderIndex() {
               <HeaderCell>Order</HeaderCell>
               <Cell className='page-order-cell'>
                 {(rowData) => (
-                  <input className='page-order-input' id={rowData.pageId} type="text" value={rowData.pageOrder} onChange={(e) => setPageOrder(e, parseInt(`${rowData.pageId}`), parseInt(e.currentTarget.value))} />
+                  <input className='page-order-input' id={rowData.pageId} type="text" value={rowData.pageOrder} onChange={(e) => onPageOrderChange(e, parseInt(`${rowData.pageId}`), parseInt(`${rowData.pageOrder}`), parseInt(e.currentTarget.value))} />
+                )}
+              </Cell>
+            </Column>
+            <Column flexGrow={1}>
+              <HeaderCell> </HeaderCell>
+              <Cell>
+                {(rowData: Page) => (
+                  <>
+                    <span>
+                      <FaArrowUp className="admin-up-down-button" onClick={() => moveUp(parseInt(`${rowData.pageId}`))} title="Move Up" />
+                    </span>
+                    <span>
+                      <FaArrowDown className="admin-up-down-button" onClick={() => moveDown(parseInt(`${rowData.pageId}`))} title="Move Down" />
+                    </span>
+                  </>
                 )}
               </Cell>
             </Column>
