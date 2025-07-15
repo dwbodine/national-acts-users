@@ -4,9 +4,12 @@ import {
   ITicketData,
   ITicketSalesData,
   Note,
+  Order,
   Seller,
   SellerType,
+  Ticket,
   TicketSocketRefreshHistory,
+  TicketType,
   VipEvent,
 } from './event';
 import { Country, PageSeller } from './public';
@@ -321,4 +324,23 @@ export interface WeekViewProps {
 
 export interface ExpandCellProps extends CellProps<VipEvent> {
   expandedRowKeys?: number[];
+}
+
+export interface AttendeeRowProps {
+  Ticket?: Ticket;
+  CanCheckInTickets?: boolean;
+}
+
+export interface OrderRowProps {
+  TicketTypes?: TicketType[];
+  EventDate?: string;
+  EventName?: string;
+  Order?: Order;
+  HasPhoneData?: boolean;
+  HideRevenue?: boolean;
+  HideServiceFees?: boolean;
+  CanCheckInTickets?: boolean;
+  ShowOnlyEmails?: boolean;
+  ShowOnlyPhones?: boolean;
+  IsAdmin?: boolean;
 }

@@ -44,7 +44,7 @@ export default function EventPage() {
     <>
       <CheckAuth />
       <NavBar Hidden={notLoggedIn} />
-      <EventDetail Hidden={detailHidden} Id={id} />
+      <EventDetail Id={id} />
     </>
   );
 }

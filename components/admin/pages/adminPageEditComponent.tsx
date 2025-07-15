@@ -291,7 +291,7 @@ export default function AdminPageEdit() {
   };
 
   const updateSeller = (pageSellerId: number | null, sellerId: number | null, newSellerId: number | null) => {
-      if (!pageSellerId || isNaN(pageSellerId) || !sellerId || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
+      if (pageSellerId == null || isNaN(pageSellerId) || sellerId == null || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
         return;
       }
       if (currentAdminSelection.selectedPage) {

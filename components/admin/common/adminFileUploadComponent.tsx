@@ -53,13 +53,17 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
         }
     };
 
-    const currentFileLink = !isDirty && baseUrl && currentFileName ? 
-        <a target="_blank" href={`${baseUrl}/${currentFileName}`}>{currentFileName}</a> : 
-        currentFileName;
-
     if (currentFileName == 'None') {
         currentFileName = undefined;
+    } else if (!currentFileName?.startsWith("http")) {
+        currentFileName = `${baseUrl}/${currentFileName}`;
     }
+
+    const currentFileLink = !isDirty && currentFileName ? 
+        <a target="_blank" href={currentFileName}>{currentFileName}</a> : 
+        currentFileName;
+
+    
 
     let removeButton: ReactElement = <></>;
     if (showRemoveButton && currentFileName) {

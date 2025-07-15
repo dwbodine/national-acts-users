@@ -149,7 +149,7 @@ export default function AdminEventsIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [dispatch, getSellers, currentAdminSelection, getAdminEvents, tableLoading, getTours, getTicketSocketEventsOnly]);
+  }, [dispatch, getSellers, currentAdminSelection, getAdminEvents, tableLoading, getTours, getTicketSocketEventsOnly, getAllCountries]);
 
   const updateSeller = (sellerId: number | null) => {
     if (!sellerId || isNaN(sellerId)) {
