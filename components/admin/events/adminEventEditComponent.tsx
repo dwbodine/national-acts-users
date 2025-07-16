@@ -848,7 +848,8 @@ export default function AdminEventEdit(props: EditProps) {
           dispatch(
             setAdminEvent(currentEvent)
           );
-          toast.success('Venue added successfully');
+          markDirty();
+          toast.warning('Venue added successfully - must click submit before continuing');
         } else {
           toast.error('Error occurred while saving venue');
         }
