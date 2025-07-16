@@ -426,7 +426,7 @@ export default function AdminEventsIndex() {
     }) : [];
 
   const resetEvents = () => {
-    dispatch(setReloadEvents(true));
+    onDateChange(undefined, undefined);
   };
 
   const selectedTourId = currentAdminSelection.selectedTour?.tourId ?? 0;
