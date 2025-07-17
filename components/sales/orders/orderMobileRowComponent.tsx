@@ -31,6 +31,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
   }
 
   const orderStatus = getOrderStatusText(order);
+  const orderId = order?.orderId;
 
   const id = `order_${order?.ticketSocketOrderId}`;
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
@@ -123,6 +124,10 @@ export default function OrderMobileRow(props: OrderRowProps) {
           <Row hidden={showOnlyEmails || showOnlyPhones} className="no-print">
             <Col xs={5} className="mobile-bold">Purchase Date:</Col>
             <Col>{purchaseDate}</Col>
+          </Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
+            <Col xs={5} className="mobile-bold">Order Id:</Col>
+            <Col>{orderId}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col xs={5} className="mobile-bold">Order Status:</Col>
