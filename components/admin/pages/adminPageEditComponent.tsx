@@ -38,7 +38,7 @@ export default function AdminPageEdit() {
 
   const linkPreviewBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/preview`;
   const [isLinkPreviewDirty, setIsLinkPreviewDirty] = useState(false);
-  
+
   const [isLogoDirty, setIsLogoDirty] = useState(false);
   const logoBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/logos`;
 
@@ -47,8 +47,8 @@ export default function AdminPageEdit() {
       if (currentAdminSelection.allSellers == undefined) {
         dispatch(setIsLoading(true));
         getSellers().then((response: GetSellersResponse) => {
-            dispatch(setAllSellers(response.sellers));
-          });
+          dispatch(setAllSellers(response.sellers));
+        });
       } else if (currentAdminSelection.pageTypes == undefined) {
         dispatch(setIsLoading(true));
         getPageTypes().then((response: GetPageTypesResponse) => {
@@ -137,7 +137,7 @@ export default function AdminPageEdit() {
         pageToUpdate.pageType = pageType;
         dispatch(setSelectedPage(pageToUpdate));
         markDirty();
-      }      
+      }
     }
   }
 
@@ -165,11 +165,29 @@ export default function AdminPageEdit() {
     }
   }
 
+  const cleanHtmlText = (htmlText: string) => {
+    htmlText = htmlText.replace(/<!DOCTYPE[^>[]*(\[[^]]*\])?>/gi, '');
+    htmlText = htmlText.replace(/<html.*?>/gi, '');
+    htmlText = htmlText.replace(/<head.*?>/gi, '');
+    htmlText = htmlText.replace(/<meta.*?\/>/gi, '');
+    htmlText = htmlText.replace(/<meta.*?>/gi, '');
+    htmlText = htmlText.replace(/<title.*?<\/title>/gi, '');
+    htmlText = htmlText.replace(/<\/head.*?>/gi, '');
+    htmlText = htmlText.replace(/<body.*?>/gi, '');
+    htmlText = htmlText.replace(/<\/body.*?>/gi, '');
+    htmlText = htmlText.replace(/<\/html.*?>/gi, '');
+    htmlText = htmlText.replace(/\\n\\n\\n/gi, '\\n');
+    htmlText = htmlText.replace(/\\n\\n/gi, '\\n');
+    htmlText = htmlText.trim();
+    return htmlText;
+  }
+
   const setHtmlText = (htmlText: string) => {
     if (!currentAdminSelection.selectedPage || !route) {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    htmlText = cleanHtmlText(htmlText);
     if (pageToUpdate.htmlText != htmlText) {
       pageToUpdate.htmlText = htmlText;
       dispatch(setSelectedPage(pageToUpdate));
@@ -280,9 +298,9 @@ export default function AdminPageEdit() {
   const updatePageSeller = (newPageSeller: PageSeller) => {
     if (currentAdminSelection.selectedPage && newPageSeller) {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-      const pageSellers: PageSeller[] | undefined =  pageToUpdate.sellers;
-      pageToUpdate.sellers = pageSellers?.map((ps) => 
-        (ps.pageSellerId == newPageSeller.pageSellerId && ps.sellerId == newPageSeller.sellerId) 
+      const pageSellers: PageSeller[] | undefined = pageToUpdate.sellers;
+      pageToUpdate.sellers = pageSellers?.map((ps) =>
+        (ps.pageSellerId == newPageSeller.pageSellerId && ps.sellerId == newPageSeller.sellerId)
           ? newPageSeller
           : ps
       )
@@ -291,101 +309,101 @@ export default function AdminPageEdit() {
   };
 
   const updateSeller = (pageSellerId: number | null, sellerId: number | null, newSellerId: number | null) => {
-      if (pageSellerId == null || isNaN(pageSellerId) || sellerId == null || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
-        return;
-      }
-      if (currentAdminSelection.selectedPage) {
-        const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-        const pageSellers: PageSeller[] | undefined =  pageToUpdate.sellers;
-        const existingSeller = pageSellers?.find((x) => x.pageSellerId == pageSellerId && x.sellerId == sellerId);
-        if (existingSeller) {
-          pageToUpdate.sellers = pageSellers?.map((ps) => 
-            (ps.pageSellerId == existingSeller.pageSellerId) 
-              ? {...ps, sellerId: newSellerId}
-              : ps
-          )
-        } else {
-          pageToUpdate.sellers = pageSellers?.map((ps) => 
-            (ps.pageSellerId == 0 && ps.sellerId == 0) 
-              ? {...ps, sellerId: newSellerId}
-              : ps
-          )   
-        }
-        dispatch(setSelectedPage(pageToUpdate));
+    if (pageSellerId == null || isNaN(pageSellerId) || sellerId == null || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
+      return;
+    }
+    if (currentAdminSelection.selectedPage) {
+      const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+      const pageSellers: PageSeller[] | undefined = pageToUpdate.sellers;
+      const existingSeller = pageSellers?.find((x) => x.pageSellerId == pageSellerId && x.sellerId == sellerId);
+      if (existingSeller) {
+        pageToUpdate.sellers = pageSellers?.map((ps) =>
+          (ps.pageSellerId == existingSeller.pageSellerId)
+            ? { ...ps, sellerId: newSellerId }
+            : ps
+        )
       } else {
-        goBack();
+        pageToUpdate.sellers = pageSellers?.map((ps) =>
+          (ps.pageSellerId == 0 && ps.sellerId == 0)
+            ? { ...ps, sellerId: newSellerId }
+            : ps
+        )
       }
-    };
+      dispatch(setSelectedPage(pageToUpdate));
+    } else {
+      goBack();
+    }
+  };
 
   const addSeller = () => {
-      if (currentAdminSelection.selectedPage) {
-        const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-        const userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
-        const existingAdd = userSellers.find((x) => x.pageSellerId == 0 && x.sellerId == 0);
-        if (!existingAdd) {
-          userSellers.push({
-            sellerId: 0,
-            pageSellerId: 0,
-            pageId: pageToUpdate.pageId,
-          });
-          pageToUpdate.sellers = userSellers;
-          dispatch(setSelectedPage(pageToUpdate));
-        }
-      } else {
-        goBack();
-      }
-    };
-  
-    const removeSeller = (sellerId: number) => {
-      if (!sellerId || isNaN(sellerId)) {
-        sellerId = 0;
-      }
-      if (currentAdminSelection.selectedPage) {
-        const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-        let userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
-        userSellers = userSellers.filter((x) => x.sellerId != sellerId);
+    if (currentAdminSelection.selectedPage) {
+      const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+      const userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
+      const existingAdd = userSellers.find((x) => x.pageSellerId == 0 && x.sellerId == 0);
+      if (!existingAdd) {
+        userSellers.push({
+          sellerId: 0,
+          pageSellerId: 0,
+          pageId: pageToUpdate.pageId,
+        });
         pageToUpdate.sellers = userSellers;
         dispatch(setSelectedPage(pageToUpdate));
-      } else {
-        goBack();
       }
-    };
+    } else {
+      goBack();
+    }
+  };
+
+  const removeSeller = (sellerId: number) => {
+    if (!sellerId || isNaN(sellerId)) {
+      sellerId = 0;
+    }
+    if (currentAdminSelection.selectedPage) {
+      const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+      let userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
+      userSellers = userSellers.filter((x) => x.sellerId != sellerId);
+      pageToUpdate.sellers = userSellers;
+      dispatch(setSelectedPage(pageToUpdate));
+    } else {
+      goBack();
+    }
+  };
 
   const onFileUpload = (fileUploadName: string, filename: string) => {
-      if (!currentAdminSelection.selectedPage || !fileUploadName || !filename) {
-        return;
-      }
-      const pageToUpdate = { ...currentAdminSelection.selectedPage };
-      let isDirty = false;
-      switch (fileUploadName) {
-        case 'Header':
-          pageToUpdate.image = filename;
-          setIsHeaderDirty(true);
-          isDirty = true;
-          break;
-        case 'Icon':
-          pageToUpdate.thumbnail = filename;
-          setIsIconDirty(true);
-          isDirty = true;
-          break;
-        case 'Preview':
-          pageToUpdate.linkPreviewImage = filename;
-          setIsLinkPreviewDirty(true);
-          isDirty = true;
-          break;
-        case 'Logo':
-          pageToUpdate.logoOnlyImage = filename;
-          setIsLogoDirty(true);
-          isDirty = true;
-          break;
-        default:
-          break;
-      }
-      if (isDirty) {
-          dispatch(setSelectedPage(pageToUpdate));
-          markDirty();
-      }
-    };
+    if (!currentAdminSelection.selectedPage || !fileUploadName || !filename) {
+      return;
+    }
+    const pageToUpdate = { ...currentAdminSelection.selectedPage };
+    let isDirty = false;
+    switch (fileUploadName) {
+      case 'Header':
+        pageToUpdate.image = filename;
+        setIsHeaderDirty(true);
+        isDirty = true;
+        break;
+      case 'Icon':
+        pageToUpdate.thumbnail = filename;
+        setIsIconDirty(true);
+        isDirty = true;
+        break;
+      case 'Preview':
+        pageToUpdate.linkPreviewImage = filename;
+        setIsLinkPreviewDirty(true);
+        isDirty = true;
+        break;
+      case 'Logo':
+        pageToUpdate.logoOnlyImage = filename;
+        setIsLogoDirty(true);
+        isDirty = true;
+        break;
+      default:
+        break;
+    }
+    if (isDirty) {
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  };
 
   const onUploadStart = () => {
     setIsUploading(true);
@@ -401,38 +419,38 @@ export default function AdminPageEdit() {
   };
 
   const onFileRemove = (fileUploadName: string) => {
-      if (!currentAdminSelection.selectedPage || !fileUploadName) {
-        return;
-      }
-      const pageToUpdate = { ...currentAdminSelection.selectedPage };
-      switch (fileUploadName) {
-        case 'Header':
-          pageToUpdate.image = undefined;
-          dispatch(setSelectedPage(pageToUpdate));
-          setIsHeaderDirty(true);
-          markDirty();
-          break;
-        case 'Icon':
-          pageToUpdate.thumbnail = undefined;
-          dispatch(setSelectedPage(pageToUpdate));
-          setIsHeaderDirty(true);
-          markDirty();
-          break;
-        case 'Preview':
-          pageToUpdate.linkPreviewImage = undefined;
-          dispatch(setSelectedPage(pageToUpdate));
-          setIsHeaderDirty(true);
-          markDirty();
-          break;
-        case 'Logo':
-          pageToUpdate.logoOnlyImage = undefined;
-          dispatch(setSelectedPage(pageToUpdate));
-          setIsHeaderDirty(true);
-          markDirty();
-          break;
-        default:
-          break;
-      }
+    if (!currentAdminSelection.selectedPage || !fileUploadName) {
+      return;
+    }
+    const pageToUpdate = { ...currentAdminSelection.selectedPage };
+    switch (fileUploadName) {
+      case 'Header':
+        pageToUpdate.image = undefined;
+        dispatch(setSelectedPage(pageToUpdate));
+        setIsHeaderDirty(true);
+        markDirty();
+        break;
+      case 'Icon':
+        pageToUpdate.thumbnail = undefined;
+        dispatch(setSelectedPage(pageToUpdate));
+        setIsHeaderDirty(true);
+        markDirty();
+        break;
+      case 'Preview':
+        pageToUpdate.linkPreviewImage = undefined;
+        dispatch(setSelectedPage(pageToUpdate));
+        setIsHeaderDirty(true);
+        markDirty();
+        break;
+      case 'Logo':
+        pageToUpdate.logoOnlyImage = undefined;
+        dispatch(setSelectedPage(pageToUpdate));
+        setIsHeaderDirty(true);
+        markDirty();
+        break;
+      default:
+        break;
+    }
   };
 
   const onSubmit = () => {
@@ -478,9 +496,13 @@ export default function AdminPageEdit() {
       return;
     }
 
-    if (pageToUpdate.logoOnlyImage && pageToUpdate.logoOnlyImage.length > 4 && pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length-4) != ".png") {
+    if (pageToUpdate.logoOnlyImage && pageToUpdate.logoOnlyImage.length > 4 && pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length - 4) != ".png") {
       toast.error('Logo image can only be a PNG');
       return;
+    }
+
+    if (pageToUpdate.htmlText) {
+      pageToUpdate.htmlText = cleanHtmlText(pageToUpdate.htmlText);
     }
 
     dispatch(setIsLoading(true));
@@ -516,12 +538,12 @@ export default function AdminPageEdit() {
   };
 
   const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageTypes ?
-          currentAdminSelection.pageTypes.map((pageType) => {
-            return {
-              label: `${pageType.pageTypeName}`,
-              value: pageType.pageTypeId
-            }
-        }) : [];
+    currentAdminSelection.pageTypes.map((pageType) => {
+      return {
+        label: `${pageType.pageTypeName}`,
+        value: pageType.pageTypeId
+      }
+    }) : [];
 
   const pageHeader =
     (currentAdminSelection.selectedPage?.pageId ?? 0 > 0) ? 'Edit page' : 'Add page';
@@ -546,43 +568,43 @@ export default function AdminPageEdit() {
   const googleAnalyticsId = currentAdminSelection.selectedPage?.googleAnalyticsId;
 
   const sellerRows: ReactElement[] = [];
-    if (
-      currentAdminSelection.selectedPage &&
-      currentAdminSelection.selectedPage.pageType &&
-      pageSellerTypeIds.includes(currentAdminSelection.selectedPage.pageType.pageTypeId) && 
-      currentAdminSelection.allSellers != undefined
-    ) {
-      const sellerType = getSellerTypeFromPageType();
-      if (currentAdminSelection.selectedPage.sellers) {
-        currentAdminSelection.selectedPage.sellers.map((item, index) => {
-          sellerRows.push(
-            <AdminSellerSelect
-              Id={item.sellerId.toString()}
-              key={item.sellerId}
-              Number={index + 1}
-              Sellers={currentAdminSelection.allSellers}
-              SellerId={item.sellerId}
-              SellerType={sellerType}
-              PageSeller={item}
-              OnSellerChange={(newSellerId: number | null) => updateSeller(parseInt(`${item.pageSellerId}`), parseInt(`${item.sellerId}`), newSellerId)}
-              OnPageSellerChange={(ps: PageSeller) => updatePageSeller(ps)}
-              OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
-              Countries={currentAdminSelection.countries}
-            />,
-          );
-        });
-      }
-      sellerRows.push(
-        <div
-          title="Add Seller"
-          key="addSeller"
-          className="admin-click-cell"
-          onClick={addSeller}
-        >
-          <FaPlus></FaPlus> Add Seller
-        </div>,
-      );
+  if (
+    currentAdminSelection.selectedPage &&
+    currentAdminSelection.selectedPage.pageType &&
+    pageSellerTypeIds.includes(currentAdminSelection.selectedPage.pageType.pageTypeId) &&
+    currentAdminSelection.allSellers != undefined
+  ) {
+    const sellerType = getSellerTypeFromPageType();
+    if (currentAdminSelection.selectedPage.sellers) {
+      currentAdminSelection.selectedPage.sellers.map((item, index) => {
+        sellerRows.push(
+          <AdminSellerSelect
+            Id={item.sellerId.toString()}
+            key={item.sellerId}
+            Number={index + 1}
+            Sellers={currentAdminSelection.allSellers}
+            SellerId={item.sellerId}
+            SellerType={sellerType}
+            PageSeller={item}
+            OnSellerChange={(newSellerId: number | null) => updateSeller(parseInt(`${item.pageSellerId}`), parseInt(`${item.sellerId}`), newSellerId)}
+            OnPageSellerChange={(ps: PageSeller) => updatePageSeller(ps)}
+            OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
+            Countries={currentAdminSelection.countries}
+          />,
+        );
+      });
     }
+    sellerRows.push(
+      <div
+        title="Add Seller"
+        key="addSeller"
+        className="admin-click-cell"
+        onClick={addSeller}
+      >
+        <FaPlus></FaPlus> Add Seller
+      </div>,
+    );
+  }
 
   return (
     <Row
@@ -629,15 +651,15 @@ export default function AdminPageEdit() {
           <Col>
             <label className="mt-4">Page Type</label>
             <SelectPicker
-                value={selectedPageTypeId}
-                data={pageTypeList}
-                size="lg"        
-                onChange={(ptId) => setPageType(ptId)}
-                cleanable={false}
-                menuAutoWidth={true}
-                className="admin-seller-select-value"
-                searchable={false}
-              />
+              value={selectedPageTypeId}
+              data={pageTypeList}
+              size="lg"
+              onChange={(ptId) => setPageType(ptId)}
+              cleanable={false}
+              menuAutoWidth={true}
+              className="admin-seller-select-value"
+              searchable={false}
+            />
           </Col>
         </Row>
         <Row className="form-group">
@@ -736,7 +758,7 @@ export default function AdminPageEdit() {
           <Col>
             <label className="mt-4">HTML Text</label>
             <Form.Control as="textarea"
-              rows={3}
+              rows={10}
               id="htmlText"
               onChange={(e) => setHtmlText(e.currentTarget.value)}
               value={htmlText}
@@ -820,8 +842,8 @@ export default function AdminPageEdit() {
         </Row>
         <Row className="form-group" hidden={!pageSellerTypeIds.includes(currentAdminSelection?.selectedPage?.pageType?.pageTypeId ?? 0)}>
           <Col>
-              <h4>Page Sellers</h4>
-              {sellerRows}
+            <h4>Page Sellers</h4>
+            {sellerRows}
           </Col>
         </Row>
         <Row>
