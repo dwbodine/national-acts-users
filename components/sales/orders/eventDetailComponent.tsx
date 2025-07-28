@@ -14,7 +14,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Button, FormCheck } from 'react-bootstrap';
 import OrderRow from './orderRowComponent';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetExport } from '@/hooks/common/useGetExport';
 import downloadFile from '@/utils/downloadFile';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
@@ -55,7 +54,6 @@ export default function EventDetail(props: EditProps) {
   const { getUser } = useCurrentUser();
   const [user, setUser] = useState<User | undefined>(undefined);
   const { userHasPermission } = useHasPermission();
-  const { getLocation } = useGetLocation();
   const { exportEventCustomerDataToCsv } = useGetExport();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const [checkChanged, setCheckChanged] = useState(false);
