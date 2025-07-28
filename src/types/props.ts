@@ -344,3 +344,7 @@ export interface OrderRowProps {
   ShowOnlyPhones?: boolean;
   IsAdmin?: boolean;
 }
+
+export interface VipItineraryProps {
+  SellerId: number;
+}
