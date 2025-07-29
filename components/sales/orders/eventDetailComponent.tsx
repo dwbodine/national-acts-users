@@ -14,7 +14,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Button, FormCheck } from 'react-bootstrap';
 import OrderRow from './orderRowComponent';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetExport } from '@/hooks/common/useGetExport';
 import downloadFile from '@/utils/downloadFile';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
@@ -55,7 +54,6 @@ export default function EventDetail(props: EditProps) {
   const { getUser } = useCurrentUser();
   const [user, setUser] = useState<User | undefined>(undefined);
   const { userHasPermission } = useHasPermission();
-  const { getLocation } = useGetLocation();
   const { exportEventCustomerDataToCsv } = useGetExport();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const [checkChanged, setCheckChanged] = useState(false);
@@ -89,7 +87,6 @@ export default function EventDetail(props: EditProps) {
 
   let ticketData: ITicketData | undefined = undefined;
   let shirtData: IShirtData | undefined = undefined;
-  let location = '';
   const hasPhoneData = currentReportSelection.currentDetailEvent?.hasPhoneData ?? false;
   let hasTicketData: boolean = false;
   let hasShirtData: boolean = false;
@@ -354,9 +351,6 @@ export default function EventDetail(props: EditProps) {
     ) {
       searchBarHidden = false;
     }
-    if (currentReportSelection.currentDetailEvent.venue) {
-      location = getLocation(currentReportSelection.currentDetailEvent.venue);
-    }
 
     filteredOrders = filterOrders(currentReportSelection.currentDetailEvent.orders);
     filteredOrders?.forEach((order, i) => {
@@ -537,6 +531,13 @@ export default function EventDetail(props: EditProps) {
     }
   } 
 
+  const venue = currentReportSelection.currentDetailEvent?.venue;
+  const venueName = venue?.name;
+  const address = venue?.address1;
+  const location = `${venue?.city}, ${venue?.state}`;
+  const zip = venue?.postalCode;
+  const country = venue?.country?.countryName;
+  
   return (
     <>
       {currentReportSelection.currentDetailEvent != undefined ? (
@@ -556,8 +557,10 @@ export default function EventDetail(props: EditProps) {
                       <tr>
                         <td className="vipLabel">Venue:</td>
                         <td>
-                          {currentReportSelection.currentDetailEvent.venue?.name} in{' '}
-                          {location}
+                          {venueName && <div>{venueName}</div>}
+                          {address && <div>{address}</div>}
+                          {location && <div>{location} { zip && <span>{zip}</span>}</div>}
+                          {country && <div>{country}</div>}
                         </td>
                       </tr>
                       <tr>
@@ -628,13 +631,13 @@ export default function EventDetail(props: EditProps) {
                       </tr>
                       <tr hidden={!currentReportSelection.currentDetailEvent.checkInLocation}>
                         <td className="vipLabel">Check-in Location:</td>
-                        <td>
+                        <td className="vipValue">
                           {currentReportSelection.currentDetailEvent.checkInLocation ?? 'n/a'}
                         </td>
                       </tr>
                       <tr hidden={!currentReportSelection.currentDetailEvent.checkInNotes}>
                         <td className="vipLabel">Check-in Notes:</td>
-                        <td>{currentReportSelection.currentDetailEvent.checkInNotes ?? 'n/a'}</td>
+                        <td className="vipValue">{currentReportSelection.currentDetailEvent.checkInNotes ?? 'n/a'}</td>
                       </tr>
                     </tbody>
                   </table>

@@ -463,12 +463,17 @@ input.rs-input:hover {
 
 .vipDetailsTable td {
   padding: 5px 10px;
-  white-space: nowrap;
 }
 
 .vipDetailsTable .vipLabel {
+  min-width: 175px;
   font-weight: bold;
   text-align: left;
+  white-space: nowrap;
+}
+
+.vipValue {
+  max-width: 80%;
 }
 
 .vipTitle {
