@@ -1,10 +1,10 @@
-import { useRouter } from 'next/router';
-import { useResetPasswordSecure } from '../src/hooks/user/useResetPasswordSecure';
+import { Button, Col, Row } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import { Col, Row, Button } from 'react-bootstrap';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import CheckAuth from '../components/common/checkAuthComponent';
+import Container from 'react-bootstrap/Container';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useResetPasswordSecure } from '../src/hooks/user/useResetPasswordSecure';
+import { useRouter } from 'next/router';
 
 export default function ResetPassword() {
   const { resetPasswordSecure } = useResetPasswordSecure();
@@ -24,7 +24,7 @@ export default function ResetPassword() {
     if (!user) {
       return;
     }
-    const username = user.username;
+    const { username } = user;
     setPasswordError('');
     setPasswordSuccess('');
     resetPasswordSecure(username, password, confirmPassword)
@@ -40,8 +40,7 @@ export default function ResetPassword() {
           }, 2000);
         }
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setPasswordError(
           'Unknown error while resetting password - please contact your administrator',
         );

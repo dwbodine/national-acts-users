@@ -1,7 +1,7 @@
-import { ActivePageKey } from '@/constants';
-import AdminPage from '../../../components/common/adminPageComponent';
-import AdminEventEdit from '../../../components/admin/events/adminEventEditComponent';
 import { useEffect, useState } from 'react';
+import { ActivePageKey } from '@/constants';
+import AdminEventEdit from '../../../components/admin/events/adminEventEditComponent';
+import AdminPage from '../../../components/common/adminPageComponent';
 
 export default function AdminEventsEdit() {
   const title = 'Client Portal - Edit Event';
@@ -12,13 +12,13 @@ export default function AdminEventsEdit() {
     if (searchParams) {
       const idRoute = searchParams.get('id');
       if (idRoute) {
-        const idVal = parseInt(idRoute.toString());
+        const idVal = parseInt(idRoute);
         if (!isNaN(idVal)) {
           setId(idVal);
         }
       }
     }
-  },[]);
+  }, []);
 
   return (
     <AdminPage

@@ -1,18 +1,17 @@
 import { ActivePageKey } from '@/constants';
 import AdminPage from '../../components/common/adminPageComponent';
-import { UserActivityType } from '@/types/user';
 import DashboardIndex from '../../components/dashboard/dashboardIndexComponent';
+import { UserActivityType } from '@/types/user';
+import { setReloadDashboardOrders } from '@/lib/dashboardSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useDispatch } from 'react-redux';
-import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 import { useEffect } from 'react';
-import { setReloadDashboardOrders } from '@/lib/dashboardSelectionSlice';
+import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 
 export default function Dashboard() {
-  const { getUser } = useCurrentUser();
   const dispatch = useDispatch();
+  const { getUser } = useCurrentUser();
   const { logActivityData } = useLogActivityData();
-
   const title = 'Client Portal - Home';
 
   useEffect(() => {

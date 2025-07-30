@@ -1,10 +1,10 @@
-import Container from 'react-bootstrap/Container';
-import { Col, Row, Button } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
+import Container from 'react-bootstrap/Container';
 import { Seller } from '@/types/event';
-import { useRouter } from 'next/router';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRegister } from '@/hooks/user/useRegister';
+import { useRouter } from 'next/router';
 
 export default function Register() {
   const router = useRouter();
@@ -35,16 +35,15 @@ export default function Register() {
             setSellers(response.sellers);
           }
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
           setRegisterError('Unknown error occurred while fetching sellers');
         });
     }
   }, [dummyVal, getSellers]);
 
   const handleSellerChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const sellerId = parseInt(event.currentTarget.value);
-    setSellerId(sellerId);
+    const selectedSellerId = parseInt(event.currentTarget.value);
+    setSellerId(selectedSellerId);
   };
 
   const onSubmit = () => {
@@ -74,7 +73,7 @@ export default function Register() {
       setRegisterError('Confirm password cannot be blank');
       return;
     }
-    if (password != confirmPassword) {
+    if (password !== confirmPassword) {
       setRegisterError('Passwords do not match');
       return;
     }
@@ -89,8 +88,7 @@ export default function Register() {
           );
         }
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setRegisterError('Unknown error occurred during user registration');
       });
   };
@@ -162,13 +160,11 @@ export default function Register() {
               className="form-control"
             >
               <option value="0"> -- Select One --</option>
-              {sellers?.map((seller) => {
-                return (
-                  <option key={seller.sellerId} value={seller.sellerId}>
-                    {seller.name}
-                  </option>
-                );
-              })}
+              {sellers?.map(seller =>
+                <option key={seller.sellerId} value={seller.sellerId}>
+                  {seller.name}
+                </option>
+              )}
             </select>
           </div>
         </Col>

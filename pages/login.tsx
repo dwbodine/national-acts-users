@@ -1,15 +1,13 @@
-import { useRouter } from 'next/router';
-import { useState, KeyboardEvent, useEffect } from 'react';
-import { useLogin } from '../src/hooks/user/useLogin';
-import Container from 'react-bootstrap/Container';
-import { Col, Row, Button } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
+import { KeyboardEvent, useEffect, useState } from 'react';
 import CheckAuth from '../components/common/checkAuthComponent';
+import Container from 'react-bootstrap/Container';
 import Image from 'next/image';
-import { useResetStores } from '@/hooks/common/useResetStores';
+import { setForAdmin } from '@/lib/reportSelectionSlice';
 import { useDispatch } from 'react-redux';
-import {
-  setForAdmin,
-} from '@/lib/reportSelectionSlice';
+import { useLogin } from '../src/hooks/user/useLogin';
+import { useResetStores } from '@/hooks/common/useResetStores';
+import { useRouter } from 'next/router';
 
 export default function Login() {
   const [name, setName] = useState('');
@@ -37,12 +35,6 @@ export default function Login() {
 
   const forgotPassword = () => {
     router.push('/forgot-password');
-  };
-
-  const submitOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key == 'Enter') {
-      onSubmit();
-    }
   };
 
   const onSubmit = () => {
@@ -78,10 +70,15 @@ export default function Login() {
             );
           }
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
           setLoginError('Unknown error during login - please contact your administrator');
         });
+    }
+  };
+
+  const submitOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onSubmit();
     }
   };
 
