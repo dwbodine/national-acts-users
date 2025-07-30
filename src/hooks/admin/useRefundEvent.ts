@@ -6,7 +6,8 @@ export const useRefundEvent = () => {
     eventId: number,
     markCancelled: boolean,
     refundServiceFees: boolean,
-  ): Promise<ModifyEventResponse> => await eventService.refundEvent(eventId, markCancelled, refundServiceFees);
+  ): Promise<ModifyEventResponse> =>
+    await eventService.refundEvent(eventId, markCancelled, refundServiceFees);
 
   return { refundEvent };
 };

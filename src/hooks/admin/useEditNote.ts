@@ -8,13 +8,8 @@ export const useEditNote = () => {
     noteTitle?: string,
     noteDate?: Date,
     isCompleted?: boolean,
-  ): Promise<ModifyNoteResponse> => await eventService.editNote(
-      noteId,
-      note,
-      noteTitle,
-      noteDate,
-      isCompleted,
-    );
+  ): Promise<ModifyNoteResponse> =>
+    await eventService.editNote(noteId, note, noteTitle, noteDate, isCompleted);
 
   return { editNote };
 };

@@ -6,7 +6,8 @@ export const useRefreshEventsFromTicketSocket = () => {
     sellerId: number,
     start?: number,
     end?: number,
-  ): Promise<RefreshHistoryResponse> => await eventService.refreshEventsFromService(sellerId, start, end);
+  ): Promise<RefreshHistoryResponse> =>
+    await eventService.refreshEventsFromService(sellerId, start, end);
 
   return { refreshEventsFromTicketSocket };
 };

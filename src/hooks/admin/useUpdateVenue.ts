@@ -4,7 +4,8 @@ import { adminService } from '../../services';
 export const useUpdateVenue = () => {
   const updateVenue = async (
     venueToUpdate: ExternalVenue,
-  ): Promise<ModifyExternalVenueResponse> => await adminService.updateVenue(venueToUpdate);
+  ): Promise<ModifyExternalVenueResponse> =>
+    await adminService.updateVenue(venueToUpdate);
 
   return { updateVenue };
 };

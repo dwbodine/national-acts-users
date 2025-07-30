@@ -1,37 +1,33 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { UserActivity, UserActivitySelection } from '../types/user';
 
 const initialState: UserActivitySelection = {
-  start: undefined,
-  end: undefined,
-  reloadActivities: true,
-  filterAdmins: true,
-  currentLogins: 0,
   currentActivities: [],
+  currentLogins: 0,
+  end: undefined,
+  filterAdmins: true,
+  reloadActivities: true,
+  start: undefined,
 };
 
 export const userActivitySelectionSlice = createSlice({
-  name: 'userActivitySelection',
   initialState,
+  name: 'userActivitySelection',
   reducers: {
-    setUserActivityDateRange: (state, action: PayloadAction<UserActivitySelection>) => {
-      state.start = action.payload.start;
-      state.end = action.payload.end;
+    resetUserActivity: (state) => {
+      state.start = undefined;
+      state.end = undefined;
       state.reloadActivities = true;
+      state.filterAdmins = true;
       state.currentLogins = 0;
-      return state;
-    },
-    setReloadActivities: (state, action: PayloadAction<boolean>) => {
-      state.reloadActivities = action.payload;
-      return state;
-    },
-    setCurrentLogins: (state, action: PayloadAction<number>) => {
-      state.currentLogins = action.payload;
       return state;
     },
     setCurrentActivities: (state, action: PayloadAction<UserActivity[]>) => {
       state.currentActivities = action.payload;
+      return state;
+    },
+    setCurrentLogins: (state, action: PayloadAction<number>) => {
+      state.currentLogins = action.payload;
       return state;
     },
     setFilterAdmins: (state, action: PayloadAction<boolean>) => {
@@ -39,11 +35,14 @@ export const userActivitySelectionSlice = createSlice({
       state.reloadActivities = true;
       return state;
     },
-    resetUserActivity: (state) => {
-      state.start = undefined;
-      state.end = undefined;
+    setReloadActivities: (state, action: PayloadAction<boolean>) => {
+      state.reloadActivities = action.payload;
+      return state;
+    },
+    setUserActivityDateRange: (state, action: PayloadAction<UserActivitySelection>) => {
+      state.start = action.payload.start;
+      state.end = action.payload.end;
       state.reloadActivities = true;
-      state.filterAdmins = true;
       state.currentLogins = 0;
       return state;
     },

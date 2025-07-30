@@ -33,13 +33,13 @@ export const useGetEventStatus = () => {
     } else if (event.isSoldOut) {
       return 'sold-out';
     } else if (event.announceDate || event.tourAnnounceDate) {
-        const announceDate = event.announceDate
-          ? moment(event.announceDate).unix()
-          : moment(event.tourAnnounceDate).unix();
-        if (announceDate > moment().unix()) {
-          return 'active-pending';
-        } 
-        return 'active';
+      const announceDate = event.announceDate
+        ? moment(event.announceDate).unix()
+        : moment(event.tourAnnounceDate).unix();
+      if (announceDate > moment().unix()) {
+        return 'active-pending';
+      }
+      return 'active';
     }
 
     return 'active';
@@ -51,7 +51,7 @@ export const useGetEventStatus = () => {
     }
     if (!seller.isActive) {
       return 'inactive';
-    } 
+    }
     return 'active';
   };
 

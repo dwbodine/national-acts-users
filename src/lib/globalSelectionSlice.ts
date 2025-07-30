@@ -1,5 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { GlobalSelection } from '../types/user';
 
 const initialState: GlobalSelection = {
@@ -7,15 +6,15 @@ const initialState: GlobalSelection = {
 };
 
 export const globalSelectionSlice = createSlice({
-  name: 'userActivitySelection',
   initialState,
+  name: 'userActivitySelection',
   reducers: {
-    setIsLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
-      return state;
-    },
     resetGlobalSettings: (state) => {
       state.isLoading = false;
+      return state;
+    },
+    setIsLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
       return state;
     },
   },
