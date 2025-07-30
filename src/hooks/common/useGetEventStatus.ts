@@ -6,7 +6,6 @@ export const useGetEventStatus = () => {
     event: VipEvent | undefined,
     isAdmin: boolean = false,
   ): string => {
-    let statusSlug: string = '';
     if (!event) {
       return '';
     }
@@ -16,51 +15,44 @@ export const useGetEventStatus = () => {
       event.textSentToVips &&
       event.listSentToBand
     ) {
-      statusSlug = 'taskscomplete';
+      return 'taskscomplete';
     } else if (
       isAdmin &&
-      event.totalTickets == 0 &&
+      event.totalTickets === 0 &&
       moment(event.eventDate).valueOf() <= moment().valueOf()
     ) {
-      statusSlug = 'zerovips';
+      return 'zerovips';
     } else if (event.isDeleted) {
-      statusSlug = 'deleted';
+      return 'deleted';
     } else if (event.isCancelled) {
-      statusSlug = 'cancelled';
+      return 'cancelled';
     } else if (!event.isActive) {
-      statusSlug = 'inactive';
+      return 'inactive';
     } else if (event.isHidden) {
-      statusSlug = 'hidden';
+      return 'hidden';
     } else if (event.isSoldOut) {
-      statusSlug = 'sold-out';
-    } else {
-      if (event.announceDate || event.tourAnnounceDate) {
+      return 'sold-out';
+    } else if (event.announceDate || event.tourAnnounceDate) {
         const announceDate = event.announceDate
           ? moment(event.announceDate).unix()
           : moment(event.tourAnnounceDate).unix();
         if (announceDate > moment().unix()) {
-          statusSlug = 'active-pending';
-        } else {
-          statusSlug = 'active';
-        }
-      } else {
-        statusSlug = 'active';
-      }
+          return 'active-pending';
+        } 
+        return 'active';
     }
-    return statusSlug;
+
+    return 'active';
   };
 
   const getSellerStatusSlug = (seller: Seller | undefined): string => {
-    let statusSlug: string = '';
     if (!seller) {
       return '';
     }
     if (!seller.isActive) {
-      statusSlug = 'inactive';
-    } else {
-      statusSlug = 'active';
-    }
-    return statusSlug;
+      return 'inactive';
+    } 
+    return 'active';
   };
 
   const getEventStatusText = (
@@ -69,7 +61,6 @@ export const useGetEventStatus = () => {
   ): string => {
     const slug = getEventStatusSlug(vipEvent, isAdmin);
     let statusText: string = '';
-    let announceDate: moment.Moment;
     switch (slug) {
       case 'deleted':
         statusText = 'Deleted';
@@ -90,7 +81,7 @@ export const useGetEventStatus = () => {
       case 'active-pending':
         statusText = 'Active';
         if (vipEvent && (vipEvent.announceDate || vipEvent.tourAnnounceDate)) {
-          announceDate = vipEvent.announceDate
+          const announceDate = vipEvent.announceDate
             ? moment(vipEvent.announceDate)
             : moment(vipEvent.tourAnnounceDate);
           if (announceDate.unix() > moment().unix()) {
@@ -107,7 +98,7 @@ export const useGetEventStatus = () => {
       default:
         break;
     }
-    if (slug != 'sold-out' && (vipEvent?.isSoldOut ?? false)) {
+    if (slug !== 'sold-out' && (vipEvent?.isSoldOut ?? false)) {
       statusText += ' - SOLD OUT';
     }
     return statusText;

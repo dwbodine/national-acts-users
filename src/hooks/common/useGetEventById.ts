@@ -1,5 +1,5 @@
-import { eventService } from '../../services';
 import { GetEventResponse } from '@/types/event';
+import { eventService } from '../../services';
 
 export const useGetEventById = () => {
   const getEventById = async (eventId: number): Promise<GetEventResponse> => {

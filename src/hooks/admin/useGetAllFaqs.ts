@@ -1,15 +1,9 @@
-import { adminService } from '../../services';
 import { GetFaqsResponse } from '@/types/admin';
+import { adminService } from '../../services';
+
 
 export const useGetAllFaqs = () => {
-  const getAllFaqs = async (): Promise<GetFaqsResponse> => {
-    let response: GetFaqsResponse = {
-      faqs: [],
-      faqError: undefined,
-    };
-    response = await adminService.getAllFaqs();
-    return response;
-  };
+  const getAllFaqs = async (): Promise<GetFaqsResponse> => await adminService.getAllFaqs();
 
   return { getAllFaqs };
 };

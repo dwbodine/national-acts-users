@@ -1,15 +1,8 @@
-import { adminService } from '../../services';
 import { GetCountriesResponse } from '@/types/admin';
+import { adminService } from '../../services';
 
 export const useGetAllCountries = () => {
-  const getAllCountries = async (): Promise<GetCountriesResponse> => {
-    let response: GetCountriesResponse = {
-      countries: [],
-      countryError: undefined,
-    };
-    response = await adminService.getAllCountries();
-    return response;
-  };
+  const getAllCountries = async (): Promise<GetCountriesResponse> => await adminService.getAllCountries();
 
   return { getAllCountries };
 };

@@ -1,17 +1,8 @@
-import { eventService } from '../../services';
 import { GetOrdersResponse } from '@/types/event';
+import { eventService } from '../../services';
 
 export const useGetAllOrders = () => {
-  const getAllOrders = async (start: number, end: number): Promise<GetOrdersResponse> => {
-    let response: GetOrdersResponse = {
-      orders: [],
-      orderError: undefined,
-    };
-
-    response = await eventService.getAllOrders(start, end);
-
-    return response;
-  };
+  const getAllOrders = async (start: number, end: number): Promise<GetOrdersResponse> => await eventService.getAllOrders(start, end);
 
   return { getAllOrders };
 };

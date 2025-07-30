@@ -7,14 +7,17 @@ const eslintConfig = [
   ...tseslint.config(eslint.configs.all, tseslint.configs.strict),
   {
     rules: {
-      "max-statements": "off",
-      "radix": "off",
-      "one-var": "off",
+      "complexity": "off",
+      "id-length": "off",
+      "max-lines": "off",
       "max-lines-per-function": "off",
+      "max-params": "off",
+      "max-statements": "off",
       "no-magic-numbers": "off",
       "no-ternary": "off",
-      "id-length": "off",
       "no-undefined": "off",
+      "one-var": "off",
+      "radix": "off",
     }
   }
 ];

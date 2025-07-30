@@ -1,27 +1,26 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { DateRange, EventReportSelection, EventTabView } from '../types/user';
 import { Note, VipEvent } from '@/types/event';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 const initialState: EventReportSelection = {
-  start: undefined,
-  end: undefined,
-  showDeleted: false,
-  showInactive: false,
-  reloadEvents: true,
   currentEvents: undefined,
-  notes: [],
-  expandedRow: undefined,
-  showHidden: false,
-  focusControl: '',
-  expandedEvent: undefined,
-  updateListStatus: false,
+  end: undefined,
   eventTabView: undefined,
+  expandedEvent: undefined,
+  expandedRow: undefined,
+  focusControl: '',
+  notes: [],
+  reloadEvents: true,
+  showDeleted: false,
+  showHidden: false,
+  showInactive: false,  
+  start: undefined,
+  updateListStatus: false,
 };
 
 export const adminEventsSelectionSlice = createSlice({
-  name: 'adminEventReportSelection',
   initialState,
+  name: 'adminEventReportSelection',
   reducers: {
     setActiveEventTab: (state, action: PayloadAction<EventTabView>) => {
       state.eventTabView = action.payload;

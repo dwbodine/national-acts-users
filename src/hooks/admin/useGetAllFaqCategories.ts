@@ -1,15 +1,8 @@
-import { adminService } from '../../services';
 import { GetFaqCategoriesResponse } from '@/types/admin';
+import { adminService } from '../../services';
 
 export const useGetAllFaqCategories = () => {
-  const getAllFaqCategories = async (): Promise<GetFaqCategoriesResponse> => {
-    let response: GetFaqCategoriesResponse = {
-      categories: [],
-      categoryError: undefined,
-    };
-    response = await adminService.getAllFaqCategories();
-    return response;
-  };
+  const getAllFaqCategories = async (): Promise<GetFaqCategoriesResponse> => await adminService.getAllFaqCategories();
 
   return { getAllFaqCategories };
 };

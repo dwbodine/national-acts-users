@@ -1,5 +1,5 @@
-import { userService } from '@/services';
 import { GetActivityResponse, UserActivityType } from '@/types/user';
+import { userService } from '@/services';
 
 export const useGetActivityData = () => {
   const getActivityData = async (

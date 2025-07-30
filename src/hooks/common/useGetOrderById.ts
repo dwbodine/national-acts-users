@@ -1,5 +1,5 @@
-import { eventService } from '../../services';
 import { GetOrderResponse } from '@/types/event';
+import { eventService } from '../../services';
 
 export const useGetOrderById = () => {
   const getOrderById = async (orderId: number): Promise<GetOrderResponse> => {

@@ -1,15 +1,8 @@
-import { adminService } from '../../services';
 import { ModifyFaqResponse } from '@/types/admin';
+import { adminService } from '../../services';
 
 export const useMoveFaqUp = () => {
-  const moveFaqUp = async (faqId: number): Promise<ModifyFaqResponse> => {
-    let response: ModifyFaqResponse = {
-      success: false,
-      faqError: undefined,
-    };
-    response = await adminService.moveFaqUp(faqId);
-    return response;
-  };
+  const moveFaqUp = async (faqId: number): Promise<ModifyFaqResponse> => await adminService.moveFaqUp(faqId);
 
   return { moveFaqUp };
 };

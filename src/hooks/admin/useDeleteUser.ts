@@ -2,14 +2,6 @@ import { UpdateUserResponse } from '@/types/user';
 import { userService } from '../../services';
 
 export const useDeleteUser = () => {
-  const deleteUser = async (userId: number): Promise<UpdateUserResponse> => {
-    let response: UpdateUserResponse = {
-      success: false,
-      userError: undefined,
-    };
-    response = await userService.deleteUser(userId);
-    return response;
-  };
-
+  const deleteUser = async (userId: number): Promise<UpdateUserResponse> => await userService.deleteUser(userId);
   return { deleteUser };
 };

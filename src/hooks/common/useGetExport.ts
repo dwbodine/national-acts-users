@@ -1,15 +1,14 @@
 import { AdminDashboardSelection } from '@/types/user';
-import { eventService } from '../../services';
 import { VipEvent } from '@/types/event';
+import { eventService } from '../../services';
 
 export const useGetExport = () => {
   const exportEventsToCsv = (
     vipEvents: VipEvent[],
     viewServiceFees: boolean,
     showRevenueData: boolean,
-  ): string => {
-    return eventService.exportEventsToCsv(vipEvents, viewServiceFees, showRevenueData);
-  };
+  ): string =>
+    eventService.exportEventsToCsv(vipEvents, viewServiceFees, showRevenueData);
 
   const exportEventCustomerDataToCsv = (
     vipEvent: VipEvent,
@@ -20,8 +19,8 @@ export const useGetExport = () => {
     currencySymbol?: string,
     showOnlyEmails?: boolean,
     showOnlyPhones?: boolean,
-  ): string => {
-    return eventService.exportEventCustomerDataToCsv(
+  ): string =>
+    eventService.exportEventCustomerDataToCsv(
       vipEvent,
       viewServiceFees,
       showRevenueData,
@@ -31,7 +30,6 @@ export const useGetExport = () => {
       showOnlyEmails,
       showOnlyPhones,
     );
-  };
 
   const exportCustomerDataToCsv = (
     vipEvents: VipEvent[],
@@ -41,8 +39,8 @@ export const useGetExport = () => {
     hasShirtData: boolean,
     hasNonUsaOrders: boolean,
     currencySymbol?: string,
-  ): string => {
-    return eventService.exportCustomerDataToCsv(
+  ): string =>
+    eventService.exportCustomerDataToCsv(
       vipEvents,
       viewServiceFees,
       showRevenueData,
@@ -51,18 +49,15 @@ export const useGetExport = () => {
       hasNonUsaOrders,
       currencySymbol,
     );
-  };
 
   const exportDashboardOrdersToCsv = (
     currentDashboardSelection: AdminDashboardSelection,
-  ): string => {
-    return eventService.exportDashboardOrdersToCsv(currentDashboardSelection);
-  };
+  ): string => eventService.exportDashboardOrdersToCsv(currentDashboardSelection);
 
   return {
-    exportEventsToCsv,
-    exportEventCustomerDataToCsv,
     exportCustomerDataToCsv,
     exportDashboardOrdersToCsv,
+    exportEventCustomerDataToCsv,
+    exportEventsToCsv,
   };
 };
