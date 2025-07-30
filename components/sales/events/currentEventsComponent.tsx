@@ -8,7 +8,7 @@ import moment from 'moment';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { CirclesWithBar } from 'react-loader-spinner';
+import { RingLoader } from 'react-spinners';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
 import { getShirtDataFromEvents } from '@/utils/getShirtData';
@@ -297,7 +297,7 @@ export default function CurrentEvents() {
       <Container fluid hidden={!globalSelection.isLoading || !user || user.isAdmin}>
         <Row>
           <Col className="spinner-container">
-            <CirclesWithBar height="100" width="100" color="#d12610" />
+            <RingLoader size={150} color="#d12610" />
           </Col>
         </Row>
       </Container>

@@ -69,6 +69,7 @@ export const useGetEventStatus = () => {
   ): string => {
     const slug = getEventStatusSlug(vipEvent, isAdmin);
     let statusText: string = '';
+    let announceDate: moment.Moment;
     switch (slug) {
       case 'deleted':
         statusText = 'Deleted';
@@ -88,7 +89,6 @@ export const useGetEventStatus = () => {
       case 'active':
       case 'active-pending':
         statusText = 'Active';
-        let announceDate: moment.Moment;
         if (vipEvent && (vipEvent.announceDate || vipEvent.tourAnnounceDate)) {
           announceDate = vipEvent.announceDate
             ? moment(vipEvent.announceDate)

@@ -155,11 +155,12 @@ export default function AdminSiteSettingsEdit() {
             if (!hasDirtySettings) {
                 hasDirtySettings = setting.dirty ?? false;
             }
+            let currentFileTitle: string = '';
+            let baseUrl: string = '';
             switch (setting.type.toLowerCase()) {
                 case 'image':
                 case 'file':
-                    const currentFileTitle = setting.type.toLowerCase() == 'image' ? "View Current Image: " : "View Current File: ";
-                    let baseUrl = '';
+                    currentFileTitle = (setting.type.toLowerCase() == 'image') ? "View Current Image: " : "View Current File: ";
                     switch (setting.name) {
                         case 'HomeBanner':
                             baseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/homebanners`;

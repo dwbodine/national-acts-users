@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 import { Row, Col } from 'react-bootstrap';
 import { LabelPosition } from 'recharts/types/component/Label';
-import { TicketSalesChartProps } from '@/types/props';
+import { CustomToolTipParams, CustomToolTipParamsPayload, TicketSalesChartProps } from '@/types/props';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 export default function TicketSalesChart(props: TicketSalesChartProps) {
@@ -32,9 +32,11 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
     }
   }, [setChartsHidden, hideCharts]);
 
-  const CustomTooltip = (params: TooltipProps<ValueType, NameType>) => {
-    const { active, payload, label } = params;
-    if (active && payload && payload.length) {
+  const CustomTooltip = (props: TooltipProps<ValueType, NameType>) => {
+    const params = props as CustomToolTipParams;
+    const { active, label } = params;
+    const payload = params.payload as CustomToolTipParamsPayload[];
+    if (active && payload && payload.length > 0) {
       return (
         <div className="custom-tooltip">
           <p className="label">{`Purchase Date: ${label}`}</p>

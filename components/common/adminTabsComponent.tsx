@@ -5,7 +5,7 @@ import { setReloadEvents } from "@/lib/reportSelectionSlice";
 import { AdminTabsProps } from "@/types/props";
 import router from "next/router";
 import { Col, Container, Row } from "react-bootstrap";
-import { CirclesWithBar } from "react-loader-spinner";
+import { RingLoader } from 'react-spinners';
 import { useDispatch } from "react-redux";
 import { Tabs } from "rsuite";
 
@@ -65,7 +65,7 @@ export default function AdminTabs(props: AdminTabsProps) {
                                     <Container fluid hidden={!isLoading || !props.DashboardComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -85,7 +85,7 @@ export default function AdminTabs(props: AdminTabsProps) {
                                     <Container fluid hidden={!isLoading || !props.EventsComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -108,7 +108,7 @@ export default function AdminTabs(props: AdminTabsProps) {
                                     <Container fluid hidden={!isLoading || !props.SalesComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -128,7 +128,7 @@ export default function AdminTabs(props: AdminTabsProps) {
                                     <Container fluid hidden={!isLoading || !props.AdminComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -148,7 +148,7 @@ export default function AdminTabs(props: AdminTabsProps) {
                                     <Container fluid hidden={!isLoading || !props.ReportComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -168,7 +168,7 @@ export default function AdminTabs(props: AdminTabsProps) {
                                     <Container fluid hidden={!isLoading || !props.UsersComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>

@@ -24,7 +24,7 @@ import {
   UserActivityType,
 } from './user';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import { Dispatch, ReactElement, SetStateAction } from 'react';
+import { Dispatch, JSX, ReactElement, SetStateAction } from 'react';
 import { CellProps } from 'rsuite';
 
 export interface EditProps {
@@ -343,4 +343,14 @@ export interface OrderRowProps {
   ShowOnlyEmails?: boolean;
   ShowOnlyPhones?: boolean;
   IsAdmin?: boolean;
+}
+
+export interface CustomToolTipParamsPayload {
+  value?: string;
+}
+
+export interface CustomToolTipParams {
+  active?: boolean;
+  payload?: CustomToolTipParamsPayload[];
+  label?: string;
 }

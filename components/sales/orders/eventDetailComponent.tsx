@@ -17,7 +17,7 @@ import OrderRow from './orderRowComponent';
 import { useGetExport } from '@/hooks/common/useGetExport';
 import downloadFile from '@/utils/downloadFile';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { CirclesWithBar } from 'react-loader-spinner';
+import { RingLoader } from 'react-spinners';
 import PrintButton from '../../common/printButtonComponent';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useDispatch, useSelector } from 'react-redux';
@@ -645,12 +645,7 @@ export default function EventDetail(props: EditProps) {
               </Row>
               <Row hidden={!isLoading}>
                 <Col className="spinner-container" hidden={!isLoading}>
-                  <CirclesWithBar
-                    height="100"
-                    width="100"
-                    color="#d12610"
-                    visible={isLoading}
-                  />
+                  <RingLoader size={150} color="#d12610" />
                 </Col>
               </Row>
               <Row hidden={isLoading} className="no-print">

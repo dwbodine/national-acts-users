@@ -5,9 +5,10 @@ import { setReloadEvents } from "@/lib/reportSelectionSlice";
 import { AdminTabsProps } from "@/types/props";
 import router from "next/router";
 import { Col, Container, Row } from "react-bootstrap";
-import { CirclesWithBar } from "react-loader-spinner";
+import { RingLoader } from 'react-spinners';
 import { useDispatch } from "react-redux";
 import { Button, ButtonGroup } from "rsuite";
+import { JSX } from "react";
 
 
 export default function AdminTabsMobile(props: AdminTabsProps) {
@@ -128,7 +129,7 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
           <Container fluid hidden={!isLoading || !activeComponent}>
             <Row>
               <Col className="spinner-container">
-                <CirclesWithBar height="100" width="100" color="#d12610" />
+                <RingLoader size={150} color="#d12610" />
               </Col>
             </Row>
           </Container>

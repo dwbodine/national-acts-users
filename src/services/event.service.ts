@@ -24,6 +24,7 @@ import {
   GetToursResponse,
   Tour,
   ModifyTourResponse,
+  Ticket,
 } from '../types/event';
 import {
   AdminDashboardSelection,
@@ -2060,6 +2061,7 @@ export class EventService {
   getOrderStatusText = (order: Order | undefined): string => {
     const slug = this.getOrderStatusSlug(order);
     let statusText: string = '';
+    let activeTicket: Ticket | undefined = undefined;
     switch (slug) {
       case 'deleted':
         statusText = 'Deleted';
@@ -2074,8 +2076,8 @@ export class EventService {
         statusText = 'Active';
         break;
       case 'refunded':
-        const hasActiveTickets = order?.tickets?.find((x) => !x.isRefunded);
-        if (hasActiveTickets) {
+        activeTicket = order?.tickets?.find((x) => !x.isRefunded);
+        if (activeTicket) {
           statusText = 'Partially Refunded';
         } else {
           statusText = 'Refunded';
