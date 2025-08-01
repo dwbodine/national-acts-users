@@ -1,6 +1,6 @@
-import Cookies from 'js-cookie';
 import { authRoutes, protectedRoutes, publicRoutes } from '../../src/router/routes';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 import { useEffect } from 'react';
 
 export default function CheckAuth() {
@@ -13,8 +13,9 @@ export default function CheckAuth() {
 
       if (protectedRoutes.includes(pathName) && !authTokenCookie) {
         Cookies.remove('authToken');
-        console.log(`Redirecting to login from ${pathName}`);
-        if (pathName != '/') {
+        if (pathName === '/') {
+          router.push('/login/');
+        } else {
           let returnPath = `${pathName}`;
           const searchParams = new URLSearchParams(window.location.search);
           if (searchParams && searchParams.size > 0) {
@@ -28,8 +29,6 @@ export default function CheckAuth() {
             });
           }
           router.push(`/login/?returnPath=${encodeURI(returnPath)}`);
-        } else {
-          router.push('/login/');
         }
 
         Cookies.remove('authToken');

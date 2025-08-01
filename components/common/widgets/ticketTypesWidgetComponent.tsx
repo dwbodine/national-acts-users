@@ -1,5 +1,5 @@
-import React, { ReactElement } from 'react';
 import { ITicketTypeData, TicketType } from '@/types/event';
+import React, { ReactElement } from 'react';
 import { FaTicketAlt } from 'react-icons/fa';
 import { TicketTypesWidgetProps } from '@/types/props';
 
@@ -13,17 +13,17 @@ export default function TicketTypesWidget(props: TicketTypesWidgetProps) {
   const ticketTypes: TicketType[] | undefined = ticketPropData?.TicketTypes;
 
   const ticketMap = new Map<string, number>();
-  if (ticketTypes?.length ?? 0 > 0) {
+  if ((ticketTypes?.length ?? 0) > 0) {
     const ttypes: ReactElement[] = [];
 
     if (!hideTicketBreakdown) {
       ticketTypes?.forEach((ticketType) => {
         ticketPropData?.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
           const data = ticketTypeData.find(
-            (x) => x.TicketType.toLowerCase() == ticketType.ticketTypeName.toLowerCase(),
+            (x) => x.TicketType.toLowerCase() === ticketType.ticketTypeName.toLowerCase(),
           );
           let number = ticketMap.get(ticketType.ticketTypeName) ?? 0;
-          if (data != undefined) {
+          if (data !== undefined) {
             number += data.Number;
           }
           ticketMap.set(ticketType.ticketTypeName, number);
@@ -36,7 +36,7 @@ export default function TicketTypesWidget(props: TicketTypesWidgetProps) {
         for (const ticketType of ticketTypes) {
           const key = `ttw${i}`;
           const numSold = ticketMap.get(ticketType.ticketTypeName) ?? 0;
-          if (!isAdmin && numSold == 0) {
+          if (!isAdmin && numSold === 0) {
             continue;
           }
           ttypes.push(
@@ -44,7 +44,7 @@ export default function TicketTypesWidget(props: TicketTypesWidgetProps) {
               {ticketType.ticketTypeName} ({numSold})
             </div>,
           );
-          i++;
+          i += 1;
         }
       }
     }
@@ -59,7 +59,6 @@ export default function TicketTypesWidget(props: TicketTypesWidgetProps) {
         <span>{ticketsRefunded}</span>
       </>
     );
-  } else {
-    return <></>;
   }
+  return <></>;
 }
