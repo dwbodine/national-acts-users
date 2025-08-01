@@ -1,7 +1,8 @@
-import axios, { AxiosInstance } from 'axios';
-import { GetPageTypesResponse, GetSellersResponse, Seller } from '../types/event';
-import { GetSettingsResponse, Page, PageType, SiteSetting } from '@/types/public';
-import { GetPagesResponse } from '@/types/admin';
+import { GetPageTypesResponse, GetPagesResponse, GetSellersResponse, GetSettingsResponse } from '@/types/responses';
+import { Page, PageType, SiteSetting } from '@/types/public';
+import axios, { AxiosError, AxiosInstance } from 'axios';
+import { Seller } from '../types/event';
+
 
 export class PublicService {
   protected readonly instance: AxiosInstance;
@@ -17,37 +18,24 @@ export class PublicService {
   getSellers = async (): Promise<GetSellersResponse> => {
     const url = `/public/sellers`;
 
-    const sellersResponse: GetSellersResponse = {
-      sellers: undefined,
-      sellersError: undefined,
-    };
+    const response: GetSellersResponse = {};
 
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        const sellers = res.data;
-        sellersResponse.sellers = sellers.length ? (sellers as Seller[]) : [];
-        return sellersResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching sellers - please contact your administrator';
-        }
-        sellersResponse.sellersError = errorMessage;
-        return sellersResponse;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.sellers = res.data ? (res.data as Seller[]) : [];
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error while fetching sellers - please contact your administrator';
+    }
+
+    return response;
   };
 
   getPageTypes = async (
@@ -55,109 +43,70 @@ export class PublicService {
   ): Promise<GetPageTypesResponse> => {
     const url = sellerTypesOnly ? `/public/page_seller_types` : `/public/page_types`;
 
-    const pageTypeResponse: GetPageTypesResponse = {
-      pageTypes: undefined,
-      pageTypeError: undefined,
-    };
+    const response: GetPageTypesResponse = {};
 
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        const pageTypes = res.data;
-        pageTypeResponse.pageTypes = pageTypes.length ? (pageTypes as PageType[]) : [];
-        return pageTypeResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching page types - please contact your administrator';
-        }
-        pageTypeResponse.pageTypeError = errorMessage;
-        return pageTypeResponse;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.pageTypes = res.data ? (res.data as PageType[]) : [];
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error while fetching page types - please contact your administrator';
+    }
+
+    return response;
   };
 
   getPagesByType = async (pageTypeId: number): Promise<GetPagesResponse> => {
     const url = `/public/pages/${pageTypeId}`;
 
-    const response: GetPagesResponse = {
-      pages: undefined,
-      pageError: undefined,
-    };
+    const response: GetPagesResponse = {};
 
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        const pages = res.data;
-        response.pages = pages.length ? (pages as Page[]) : [];
-        return response;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching pages by type - please contact your administrator';
-        }
-        response.pageError = errorMessage;
-        return response;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.pages = res.data ? (res.data as Page[]) : [];
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error while fetching pages by type - please contact your administrator';
+    }
+
+    return response;
   };
 
   getSiteSettings = async (): Promise<GetSettingsResponse> => {
     const url = `/public/settings`;
 
-    const settingsResponse: GetSettingsResponse = {
-      settings: undefined,
-      settingsError: undefined,
-    };
+    const response: GetSettingsResponse = {};
 
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        const settings = res.data;
-        settingsResponse.settings = settings.length ? (settings as SiteSetting[]) : [];
-        return settingsResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching settings - please contact your administrator';
-        }
-        settingsResponse.settingsError = errorMessage;
-        return settingsResponse;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.settings = res.data ? (res.data as SiteSetting[]) : [];
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error while fetching settings - please contact your administrator';
+    }
+
+    return response;
   };
 
   uploadTempFile = async (file: File): Promise<string | undefined> => {
@@ -167,32 +116,20 @@ export class PublicService {
       return undefined;
     }
 
-    const formData = new FormData();
-    formData.append('tempFile', file);
+    const data = new FormData();
+    data.append('tempFile', file);
 
     const headers = {
       'Content-Type': 'multipart/form-data',
       'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
-    return this.instance
-      .post(url, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        const filename = res.data;
-        return filename;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while updating event';
-        }
-        console.log(errorMessage);
-        return undefined;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      const filename = res.data;
+      return filename;
+    } catch {
+      return undefined;
+    }
   };
 }

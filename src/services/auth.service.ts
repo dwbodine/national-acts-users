@@ -1,6 +1,8 @@
-import axios, { AxiosInstance } from 'axios';
-import { LogResponse, User, UserLoginResponse, UserResponse } from '../types/user';
+import { LogResponse, UserLoginResponse, UserResponse } from '@/types/responses';
+import axios, { AxiosError, AxiosInstance } from 'axios';
+import { User } from '../types/user';
 import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
+
 
 export class AuthService {
   protected readonly instance: AxiosInstance;
@@ -16,101 +18,69 @@ export class AuthService {
   getLogs = async (): Promise<LogResponse> => {
     const url = `/log`;
 
-    const logResponse: LogResponse = {
-      logs: undefined,
-      errorMessage: undefined,
-    };
+    const response: LogResponse = {};
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        logResponse.logs = res.data as string;
-        return logResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while retrieving logs';
-        }
-        logResponse.errorMessage = errorMessage;
-        return logResponse;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.logs = res.data ? (res.data as string) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error while fetching logs - please contact your administrator';
+    }
+
+    return response;
   };
 
   getCronLogs = async (): Promise<LogResponse> => {
     const url = `/cron_log`;
 
-    const logResponse: LogResponse = {
-      logs: undefined,
-      errorMessage: undefined,
-    };
+    const response: LogResponse = {};
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        logResponse.logs = res.data as string;
-        return logResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while retrieving cron logs';
-        }
-        logResponse.errorMessage = errorMessage;
-        return logResponse;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.logs = res.data ? (res.data as string) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error while fetching cron logs - please contact your administrator';
+    }
+
+    return response;
   };
 
   login = async (username: string, password: string): Promise<UserLoginResponse> => {
+    const url = '/user/login';
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
     };
 
     const data = {
-      username: username,
-      password: password,
+      password,
+      username,
     };
 
-    const userResponse: UserLoginResponse = {
-      user: undefined,
-      loginError: undefined,
-    };
+    const response: UserLoginResponse = {};
 
-    return this.instance
-      .post('/user/login', data, {
-        headers: headers,
-      })
-      .then((res) => {
-        const user = { ...res.data };
-        userResponse.user = user as User;
-        return userResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error during login - please contact your administrator';
-        }
-        userResponse.loginError = errorMessage;
-        return userResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+      response.user = res.data ? (res.data as User) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error during login - please contact your administrator';
+    }
+
+    return response;
   };
 
   resetPasswordSecure = async (
@@ -118,117 +88,67 @@ export class AuthService {
     password: string,
     confirmPassword: string,
   ): Promise<UserResponse> => {
+    const url = '/user/resetPasswordSecured';
     const headers = getAuthorizationHeader();
 
     const data = {
-      username: username,
-      password: password,
-      confirmPassword: confirmPassword,
+      confirmPassword,
+      password,
+      username,
     };
 
-    let userResponse: UserResponse = {
-      user: undefined,
-      errorMessage: undefined,
-    };
-
-    return this.instance
-      .post('/user/resetPasswordSecured', data, {
-        headers: headers,
-      })
-      .then((res) => {
-        const response = { ...res.data };
-        userResponse = response as UserResponse;
-        return userResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while resetting password - please contact your administrator';
-        }
-        userResponse.errorMessage = errorMessage;
-        return userResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      return res.data ? (res.data as UserResponse) : {};
+    } catch (e) {
+      const err = e as AxiosError;
+      const response: UserResponse = {};
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error while resetting password - please contact your administrator';
+      return response;
+    }
   };
 
   forgotPassword = async (username: string): Promise<UserResponse> => {
+    const url = '/user/sendPasswordReset';
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
     };
 
-    const data = {
-      username: username,
-    };
+    const data = { username };
 
-    let userResponse: UserResponse = {
-      user: undefined,
-      errorMessage: undefined,
-    };
-
-    return this.instance
-      .post('/user/sendPasswordReset', data, {
-        headers: headers,
-      })
-      .then((res) => {
-        const response = { ...res.data };
-        userResponse = response as UserResponse;
-        return userResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error during send of password reset email - please contact your administrator';
-        }
-        userResponse.errorMessage = errorMessage;
-        return userResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      return res.data ? (res.data as UserResponse) : {};
+    } catch (e) {
+      const err = e as AxiosError;
+      const response: UserResponse = {};
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error during send of password reset email - please contact your administrator';
+      return response;
+    }
   };
 
   validateResetCode = async (username: string, code: number): Promise<UserResponse> => {
+    const url = '/user/validateResetCode';
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
     };
 
-    const data = {
-      username: username,
-      code: code,
-    };
+    const data = { code, username };
 
-    let userResponse: UserResponse = {
-      user: undefined,
-      errorMessage: undefined,
-    };
-
-    return this.instance
-      .post('/user/validateResetCode', data, {
-        headers: headers,
-      })
-      .then((res) => {
-        const response = { ...res.data };
-        userResponse = response as UserResponse;
-        return userResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while validating reset code - please contact your administrator';
-        }
-        userResponse.errorMessage = errorMessage;
-        return userResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      return res.data ? (res.data as UserResponse) : {};
+    } catch (e) {
+      const err = e as AxiosError;
+      const response: UserResponse = {};
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error while validating reset code - please contact your administrator';
+      return response;
+    }
   };
 
   resetPassword = async (
@@ -237,44 +157,29 @@ export class AuthService {
     confirmPassword: string,
     code: number,
   ): Promise<UserResponse> => {
+    const url = '/user/resetPassword';
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
     };
 
     const data = {
-      username: username,
-      password: password,
-      confirmPassword: confirmPassword,
-      code: code,
+      code,
+      confirmPassword,
+      password,
+      username,
     };
 
-    let userResponse: UserResponse = {
-      user: undefined,
-      errorMessage: undefined,
-    };
-
-    return this.instance
-      .post('/user/resetPassword', data, {
-        headers: headers,
-      })
-      .then((res) => {
-        const response = { ...res.data };
-        userResponse = response as UserResponse;
-        return userResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while resetting password - please contact your administrator';
-        }
-        userResponse.errorMessage = errorMessage;
-        return userResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      return res.data ? (res.data as UserResponse) : {};
+    } catch (e) {
+      const err = e as AxiosError;
+      const response: UserResponse = {};
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error while resetting password - please contact your administrator';
+      return response;
+    }
   };
 
   register = async (
@@ -286,46 +191,31 @@ export class AuthService {
     confirmPassword: string,
     notes?: string,
   ): Promise<UserResponse> => {
+    const url = '/user/register';
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
     };
 
     const data = {
-      username: username,
-      firstName: firstName,
-      lastName: lastName,
-      sellerId: sellerId,
-      password: password,
-      confirmPassword: confirmPassword,
-      notes: notes,
+      confirmPassword,
+      firstName,
+      lastName,
+      notes,
+      password,
+      sellerId,
+      username,
     };
 
-    let userResponse: UserResponse = {
-      user: undefined,
-      errorMessage: undefined,
-    };
-
-    return this.instance
-      .post('/user/register', data, {
-        headers: headers,
-      })
-      .then((res) => {
-        const response = { ...res.data };
-        userResponse = response as UserResponse;
-        return userResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while registering user - please contact your administrator';
-        }
-        userResponse.errorMessage = errorMessage;
-        return userResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      return res.data ? (res.data as UserResponse) : {};
+    } catch (e) {
+      const err = e as AxiosError;
+      const response: UserResponse = {};
+      response.statusCode = err?.response?.status ?? 500;
+      response.error = err?.message ?? 'Unknown error while registering user - please contact your administrator';
+      return response;
+    }
   };
 }
