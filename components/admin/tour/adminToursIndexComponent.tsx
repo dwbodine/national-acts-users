@@ -1,8 +1,5 @@
-import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import { Table } from 'rsuite';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
+import { Button, Col, Row } from 'react-bootstrap';
+import { GetEventsResponse, GetSellersResponse, GetToursResponse } from '@/types/responses';
 import {
   setAdminEvents,
   setAdminSellerId,
@@ -11,16 +8,20 @@ import {
   setReloadTours,
   setTours,
 } from '@/lib/adminSelectionSlice';
-import { Button, Col, Row } from 'react-bootstrap';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import AdminListHomeButton from '../adminListHomeButton';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import { GetEventsResponse, GetSellersResponse, GetToursResponse, Tour } from '@/types/event';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { RootState } from '@/lib/store';
+import { Table } from 'rsuite';
+import { Tour } from '@/types/event';
 import moment from 'moment';
 import router from 'next/router';
-import { useGetTours } from '@/hooks/admin/useGetTours';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { useGetTours } from '@/hooks/admin/useGetTours';
 
 export default function AdminToursIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -33,7 +34,7 @@ export default function AdminToursIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.allSellers == undefined) {
+      if (currentAdminSelection.allSellers === undefined) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         dispatch(setAdminSellerId(undefined));
@@ -53,32 +54,33 @@ export default function AdminToursIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getTours(adminSelection.sellerId).then((response: GetToursResponse) => {
-          if (!response.tourError) {
+          if (response.error) {
+            dispatch(setIsLoading(false));
+            setTableLoading(false);
+          } else {
             if (response.tours) {
               dispatch(setTours(response.tours));
-            }            
+            }
             if (currentAdminSelection.sellerId) {
               getAdminSellerEvents([currentAdminSelection.sellerId])
-              .then((response: GetEventsResponse) => {
-                if (response.events && !response.eventError) {
-                  const filteredEvents = response.events.filter(x => !x.isDeleted);
-                  if (filteredEvents) {
-                    dispatch(setAdminEvents(filteredEvents));
-                  }                  
-                }
-                dispatch(setIsLoading(false));
-                setTableLoading(false);
-              });
+                .then((resp: GetEventsResponse) => {
+                  if (resp.events && !resp.error) {
+                    const filteredEvents = resp.events.filter(x => !x.isDeleted);
+                    if (filteredEvents) {
+                      dispatch(setAdminEvents(filteredEvents));
+                    }
+                  }
+                  dispatch(setIsLoading(false));
+                  setTableLoading(false);
+                });
             } else {
               dispatch(setIsLoading(false));
               setTableLoading(false);
-            }            
-          } else {
-            dispatch(setIsLoading(false));
-            setTableLoading(false);
-          }          
+            }
+
+          }
         });
-      } else if (currentAdminSelection.tours != undefined && tableLoading) {
+      } else if (currentAdminSelection.tours !== undefined && tableLoading) {
         setTimeout(() => {
           setTableLoading(false);
         }, 300);
@@ -100,12 +102,12 @@ export default function AdminToursIndex() {
       !tourId ||
       isNaN(tourId) ||
       !currentAdminSelection.tours ||
-      currentAdminSelection.tours.length == 0
+      currentAdminSelection.tours.length === 0
     ) {
       return;
     }
     const tour = currentAdminSelection.tours.find(
-      (x) => x.tourId == tourId,
+      (x) => x.tourId === tourId,
     );
     if (!tour) {
       return;
@@ -119,24 +121,24 @@ export default function AdminToursIndex() {
     if (!currentAdminSelection.sellerId) {
       toast.error('Must select a seller first');
       return;
-    } else if (!currentAdminSelection.events || currentAdminSelection.events.length == 0) {
+    } else if (!currentAdminSelection.events || currentAdminSelection.events.length === 0) {
       toast.error('No future events to add to a tour');
       return;
     }
 
-    const seller = currentAdminSelection.allSellers?.find(x => x.sellerId == currentAdminSelection.sellerId);
+    const seller = currentAdminSelection.allSellers?.find(x => x.sellerId === currentAdminSelection.sellerId);
 
     if (!seller) {
       return;
     }
 
     const tour: Tour = {
-      tourId: 0,
-      tourName: '',
       announceDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+      events: [],
       isActive: true,
       sellers: [seller],
-      events: []
+      tourId: 0,
+      tourName: '',
     };
     dispatch(setAdminTour(tour));
     setTableLoading(true);
@@ -161,7 +163,7 @@ export default function AdminToursIndex() {
         SellerId={currentAdminSelection.sellerId}
         OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
         Countries={currentAdminSelection.countries}
-      />        
+      />
       <Row>
         <Col>
           <Table
@@ -190,16 +192,16 @@ export default function AdminToursIndex() {
             <Column flexGrow={1}>
               <HeaderCell>First show</HeaderCell>
               <Cell>
-                {(rowData: Tour) => rowData.events && rowData.events.length > 0 
-                  ? `${moment(rowData.events[0].eventDate).format('M/DD/YYYY')} (${rowData.events[0].venue?.city}, ${rowData.events[0].venue?.state})` 
+                {(rowData: Tour) => rowData.events && rowData.events.length > 0
+                  ? `${moment(rowData.events[0].eventDate).format('M/DD/YYYY')} (${rowData.events[0].venue?.city}, ${rowData.events[0].venue?.state})`
                   : ''}
               </Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>Last show</HeaderCell>
               <Cell>
-              {(rowData: Tour) => rowData.events && rowData.events.length > 0 
-                  ? `${moment(rowData.events[rowData.events.length-1].eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length-1].venue?.city}, ${rowData.events[rowData.events.length-1].venue?.state})` 
+                {(rowData: Tour) => rowData.events && rowData.events.length > 0
+                  ? `${moment(rowData.events[rowData.events.length - 1].eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length - 1].venue?.city}, ${rowData.events[rowData.events.length - 1].venue?.state})`
                   : ''}
               </Cell>
             </Column>

@@ -1,17 +1,17 @@
+import { GetSellersResponse, GetTicketSocketAccountsResponse } from '@/types/responses';
+import { Seller, SellerType } from '@/types/event';
+import { setAdminSeller, setAllSellers, setReloadSellers, setTicketSocketAccounts } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Table } from 'rsuite';
-import { useDispatch, useSelector } from 'react-redux';
+import { Button } from 'react-bootstrap';
 import { RootState } from '@/lib/store';
-import { setAdminSeller, setAllSellers, setReloadSellers, setTicketSocketAccounts } from '@/lib/adminSelectionSlice';
+import { Table } from 'rsuite';
 import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { GetSellersResponse, Seller, SellerType } from '@/types/event';
-import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
-import { GetTicketSocketAccountsResponse } from '@/types/admin';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { Button } from 'react-bootstrap';
+import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
 
 export default function AdminSellerGlobalIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -30,7 +30,7 @@ export default function AdminSellerGlobalIndex() {
         dispatch(setIsLoading(true));
         dispatch(setAllSellers(undefined));
         getTicketSocketAccounts().then((response: GetTicketSocketAccountsResponse) => {
-          if (!response.accountError && response.accounts) {
+          if (!response.error && response.accounts) {
             dispatch(setTicketSocketAccounts(response.accounts));
           }
         });
@@ -39,7 +39,7 @@ export default function AdminSellerGlobalIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getAdminSellers().then((response: GetSellersResponse) => {
-          if (!response.sellersError && response.sellers) {
+          if (!response.error && response.sellers) {
             dispatch(setAllSellers(response.sellers));
           }
           dispatch(setIsLoading(false));
@@ -58,22 +58,22 @@ export default function AdminSellerGlobalIndex() {
 
   const addSeller = () => {
     const seller: Seller = {
-      sellerId: 0,
-      name: '',
-      sellerType: SellerType.Artist,
       hideInList: true,
       isActive: true,
+      name: '',
+      sellerId: 0,
+      sellerType: SellerType.Artist,
     };
     dispatch(setAdminSeller(seller));
     setTableLoading(true);
-    router.push('/admin/sellers/edit');    
+    router.push('/admin/sellers/edit');
   };
 
   const editSeller = (sellerId: number) => {
     if (!sellerId || isNaN(sellerId)) {
       return;
     }
-    const seller = currentAdminSelection.allSellers?.find((x) => x.sellerId == sellerId);
+    const seller = currentAdminSelection.allSellers?.find((x) => x.sellerId === sellerId);
     if (seller) {
       dispatch(setAdminSeller(seller));
       setTableLoading(true);
@@ -82,30 +82,26 @@ export default function AdminSellerGlobalIndex() {
   };
 
   const filterSellers = (sellers: Seller[] | undefined) => {
-        let filteredSellers: Seller[] | undefined = sellers;
-        if (searchTerm && searchTerm.length >= 2 && sellers && sellers.length > 0) {
-          const srch = searchTerm.toLowerCase();
-          filteredSellers = sellers.filter((seller) => {
-            return (
-              seller.name.toLowerCase().includes(srch)
-            );
-          });
-        }
-        return filteredSellers;
-      };
-  
+    let filteredSellers: Seller[] | undefined = sellers;
+    if (searchTerm && searchTerm.length >= 2 && sellers && sellers.length > 0) {
+      const srch = searchTerm.toLowerCase();
+      filteredSellers = sellers.filter((seller) => seller.name.toLowerCase().includes(srch));
+    }
+    return filteredSellers;
+  };
+
   const filteredSellers = filterSellers(currentAdminSelection.allSellers);
 
   return (
     <div className="admin-container">
       <h3>Manage Sellers</h3>
       <input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="form-control search-text-input no-print"
-            placeholder="Search for sellers by name..."
-            hidden={currentAdminSelection.allSellers == undefined}
-          />
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="form-control search-text-input no-print"
+        placeholder="Search for sellers by name..."
+        hidden={currentAdminSelection.allSellers === undefined}
+      />
       <Button onClick={addSeller}>Add Seller</Button>
       <Table
         height={600}
@@ -113,9 +109,7 @@ export default function AdminSellerGlobalIndex() {
         bordered
         cellBordered
         loading={tableLoading}
-        rowClassName={(rowData: Seller) => {
-          return getSellerStatusSlug(rowData);
-        }}
+        rowClassName={(rowData: Seller) => getSellerStatusSlug(rowData)}
       >
         <Column width={300}>
           <HeaderCell>Seller Name</HeaderCell>

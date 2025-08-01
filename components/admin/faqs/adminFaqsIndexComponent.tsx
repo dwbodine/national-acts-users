@@ -1,19 +1,19 @@
+import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
+import { setAllFaqs, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Table } from 'rsuite';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
-import { setAllFaqs, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
-import router from 'next/router';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { GetFaqsResponse } from '@/types/admin';
 import { Button } from 'react-bootstrap';
 import { Faq } from '@/types/public';
-import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';
-import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
-import { useMoveFaqUp } from '@/hooks/admin/useMoveFaqUp';
-import { useMoveFaqDown } from '@/hooks/admin/useMoveFaqDown';
+import { GetFaqsResponse } from '@/types/responses';
+import { RootState } from '@/lib/store';
+import { Table } from 'rsuite';
+import router from 'next/router';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useDeleteFaq } from '@/hooks/admin/useDeleteFaq';
+import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';
+import { useMoveFaqDown } from '@/hooks/admin/useMoveFaqDown';
+import { useMoveFaqUp } from '@/hooks/admin/useMoveFaqUp';
 
 export default function AdminFaqsIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -32,7 +32,7 @@ export default function AdminFaqsIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getAllFaqs().then((response: GetFaqsResponse) => {
-          if (!response.faqError && response.faqs) {
+          if (!response.error && response.faqs) {
             dispatch(setAllFaqs(response.faqs));
           }
           dispatch(setIsLoading(false));
@@ -41,7 +41,7 @@ export default function AdminFaqsIndex() {
       } else if (tableLoading) {
         setTimeout(() => {
           dispatch(setIsLoading(false));
-          setTableLoading(false);          
+          setTableLoading(false);
         }, 300);
       }
     }, 500);
@@ -52,25 +52,25 @@ export default function AdminFaqsIndex() {
 
   const addFaq = () => {
     const faq: Faq = {
-      faqId: 0,
-      question: '',
       answer: '',
-      order: 0,
       category: {
         categoryId: 0,
         categoryName: ''
       },
+      faqId: 0,
+      order: 0,
+      question: '',
     };
     dispatch(setSelectedFaq(faq));
     setTableLoading(true);
-    router.push('/admin/faqs/edit');    
+    router.push('/admin/faqs/edit');
   };
 
   const editFaq = (faqId: number) => {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    const faq = currentAdminSelection.allFaqs?.find((x) => x.faqId == faqId);
+    const faq = currentAdminSelection.allFaqs?.find((x) => x.faqId === faqId);
     if (faq) {
       dispatch(setSelectedFaq(faq));
       setTableLoading(true);
@@ -82,7 +82,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    moveFaqUp(faqId).then (() => {
+    moveFaqUp(faqId).then(() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
@@ -92,7 +92,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    moveFaqDown(faqId).then (() => {
+    moveFaqDown(faqId).then(() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
@@ -102,7 +102,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    deleteFaq(faqId).then (() => {
+    deleteFaq(faqId).then(() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
@@ -123,7 +123,7 @@ export default function AdminFaqsIndex() {
           <HeaderCell>Category</HeaderCell>
           <Cell>
             {(rowData) => (
-                <span>{rowData.category?.categoryName}</span>
+              <span>{rowData.category?.categoryName}</span>
             )}
           </Cell>
         </Column>
@@ -139,12 +139,12 @@ export default function AdminFaqsIndex() {
           <HeaderCell> </HeaderCell>
           <Cell>
             {(rowData) => (
-                <span>
-                  <FaArrowUp className="admin-up-down-button" onClick={() => moveUp(parseInt(`${rowData.faqId}`))} title="Move Up" />
-                  <FaArrowDown className="admin-up-down-button" onClick={() => moveDown(parseInt(`${rowData.faqId}`))} title="Move Down" />
-                  <Button onClick={() => editFaq(parseInt(`${rowData.faqId}`))}>Edit</Button>
-                  <Button onClick={() => deleteOneFaq(parseInt(`${rowData.faqId}`))}>Delete</Button>
-                </span>
+              <span>
+                <FaArrowUp className="admin-up-down-button" onClick={() => moveUp(parseInt(`${rowData.faqId}`))} title="Move Up" />
+                <FaArrowDown className="admin-up-down-button" onClick={() => moveDown(parseInt(`${rowData.faqId}`))} title="Move Down" />
+                <Button onClick={() => editFaq(parseInt(`${rowData.faqId}`))}>Edit</Button>
+                <Button onClick={() => deleteOneFaq(parseInt(`${rowData.faqId}`))}>Delete</Button>
+              </span>
             )}
           </Cell>
         </Column>

@@ -1,16 +1,17 @@
+import { Button, FormCheck } from 'react-bootstrap';
+import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
-import { GetRolesResponse, Role } from '@/types/user';
-import { Table } from 'rsuite';
-import { useDispatch, useSelector } from 'react-redux';
+import { GetRolesResponse } from '@/types/responses';
+import { Role } from '@/types/user';
 import { RootState } from '@/lib/store';
-import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
+import { Table } from 'rsuite';
 import router from 'next/router';
-import { Button, FormCheck } from 'react-bootstrap';
-import { useDeleteRoles } from '@/hooks/admin/useDeleteRoles';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { useDeleteRoles } from '@/hooks/admin/useDeleteRoles';
+import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
 
 export default function AdminRolesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -28,7 +29,7 @@ export default function AdminRolesIndex() {
         dispatch(setIsLoading(true));
         setSelectedRoles([]);
         getAllRoles().then((response: GetRolesResponse) => {
-          if (!response.roleError && response.roles) {
+          if (!response.error && response.roles) {
             dispatch(setRoles(response.roles));
           }
           dispatch(setIsLoading(false));
@@ -49,7 +50,7 @@ export default function AdminRolesIndex() {
     if (!roleId || isNaN(roleId)) {
       return;
     }
-    const role = currentAdminSelection.roles?.find((x) => x.roleId == roleId);
+    const role = currentAdminSelection.roles?.find((x) => x.roleId === roleId);
     if (role) {
       dispatch(setSelectedRole(role));
       setTableLoading(true);
@@ -59,9 +60,9 @@ export default function AdminRolesIndex() {
 
   const addRole = () => {
     const role: Role = {
+      permissions: [],
       roleId: 0,
       roleName: '',
-      permissions: [],
     };
     dispatch(setSelectedRole(role));
     setTableLoading(true);
@@ -72,20 +73,20 @@ export default function AdminRolesIndex() {
     if (!roleId || isNaN(roleId) || roleId <= 0) {
       return;
     }
-    
+
     if (isChecked && !selectedRoles.includes(roleId)) {
       const rIds = [...selectedRoles];
       rIds.push(roleId);
       setSelectedRoles(rIds);
     } else if (!isChecked && selectedRoles.includes(roleId)) {
       let rIds = [...selectedRoles];
-      rIds = rIds.filter((x) => x != roleId);
+      rIds = rIds.filter((x) => x !== roleId);
       setSelectedRoles(rIds);
-    }    
+    }
   };
 
   const deleteSelectedRoles = () => {
-    if (selectedRoles.length == 0) {
+    if (selectedRoles.length === 0) {
       return;
     }
     deleteRoles(selectedRoles).then((response) => {
@@ -137,7 +138,7 @@ export default function AdminRolesIndex() {
         </Column>
       </Table>
       <Button onClick={addRole}>Add</Button>{' '}
-      <Button hidden={selectedRoles.length == 0} onClick={deleteSelectedRoles}>
+      <Button hidden={selectedRoles.length === 0} onClick={deleteSelectedRoles}>
         Delete
       </Button>{' '}
       <AdminListHomeButton />

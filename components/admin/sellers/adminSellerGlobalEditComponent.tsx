@@ -1,25 +1,33 @@
-import { RootState } from '@/lib/store';
-import { ReactElement, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import router from 'next/router';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
+import { ReactElement, useEffect } from 'react';
+import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { setAdminSeller, setReloadSellers } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { ModifySellerResponse } from '@/types/responses';
+import { RootState } from '@/lib/store';
+import { SelectPicker } from 'rsuite';
+import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
-import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
-import { ModifySellerResponse } from '@/types/admin';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { SelectPicker } from 'rsuite';
 
 export default function AdminSellerGlobalEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
   const { updateSeller } = useUpdateSeller();
 
+  const currentSeller = currentAdminSelection.selectedSeller;
+  const selectedSellerType = Number(currentSeller?.sellerType ?? 1);
+  const isArtist = selectedSellerType === SellerType.Artist;
+
+  const goBack = () => {
+    router.push('/admin/sellers/');
+  };
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.ticketSocketAccounts == undefined || currentAdminSelection.selectedSeller == undefined) {
+      if (currentAdminSelection.ticketSocketAccounts === undefined || currentAdminSelection.selectedSeller === undefined) {
         goBack();
       }
     }, 500);
@@ -28,16 +36,12 @@ export default function AdminSellerGlobalEdit() {
     };
   }, [currentAdminSelection, dispatch]);
 
-  const goBack = () => {
-    router.push('/admin/sellers/');
-  };
-
   const setSellerName = (sellerName: string) => {
     if (!currentAdminSelection.selectedSeller || !sellerName) {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.name != sellerName) {
+    if (sellerToUpdate.name !== sellerName) {
       sellerToUpdate.name = sellerName;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -48,7 +52,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.address != address) {
+    if (sellerToUpdate.address !== address) {
       sellerToUpdate.address = address;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -59,7 +63,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.city != city) {
+    if (sellerToUpdate.city !== city) {
       sellerToUpdate.city = city;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -70,7 +74,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.state != state) {
+    if (sellerToUpdate.state !== state) {
       sellerToUpdate.state = state;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -81,7 +85,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.zip != zip) {
+    if (sellerToUpdate.zip !== zip) {
       sellerToUpdate.zip = zip;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -95,8 +99,8 @@ export default function AdminSellerGlobalEdit() {
     if (!countryId) {
       sellerToUpdate.country = undefined;
       dispatch(setAdminSeller(sellerToUpdate));
-    } else if (!sellerToUpdate.country || sellerToUpdate.country.countryId != countryId) {
-      sellerToUpdate.country = { countryId: countryId };
+    } else if (!sellerToUpdate.country || sellerToUpdate.country.countryId !== countryId) {
+      sellerToUpdate.country = { countryId };
       dispatch(setAdminSeller(sellerToUpdate));
     }
   }
@@ -106,7 +110,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.phone != phone) {
+    if (sellerToUpdate.phone !== phone) {
       sellerToUpdate.phone = phone;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -117,7 +121,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.email != email) {
+    if (sellerToUpdate.email !== email) {
       sellerToUpdate.email = email;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -128,7 +132,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.twitter != twitter) {
+    if (sellerToUpdate.twitter !== twitter) {
       sellerToUpdate.twitter = twitter;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -139,7 +143,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.facebook != facebook) {
+    if (sellerToUpdate.facebook !== facebook) {
       sellerToUpdate.facebook = facebook;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -150,7 +154,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.instagram != instagram) {
+    if (sellerToUpdate.instagram !== instagram) {
       sellerToUpdate.instagram = instagram;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -161,7 +165,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.youtube != youtube) {
+    if (sellerToUpdate.youtube !== youtube) {
       sellerToUpdate.youtube = youtube;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -172,7 +176,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.spotify != spotify) {
+    if (sellerToUpdate.spotify !== spotify) {
       sellerToUpdate.spotify = spotify;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -183,7 +187,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.website != website) {
+    if (sellerToUpdate.website !== website) {
       sellerToUpdate.website = website;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -194,7 +198,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.websiteDisplayText != websiteDisplayText) {
+    if (sellerToUpdate.websiteDisplayText !== websiteDisplayText) {
       sellerToUpdate.websiteDisplayText = websiteDisplayText;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -205,7 +209,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.hideInList != hide) {
+    if (sellerToUpdate.hideInList !== hide) {
       sellerToUpdate.hideInList = hide;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -216,7 +220,7 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.isActive != isActive) {
+    if (sellerToUpdate.isActive !== isActive) {
       sellerToUpdate.isActive = isActive;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -233,36 +237,33 @@ export default function AdminSellerGlobalEdit() {
       : [];
 
     let changed = false;
-    const existingCategory = currentCategories.find(x => x.ticketSocketId == ticketSocketId);
-    if (!existingCategory) {
-      if (eventCategoryId != undefined) {
-        const newCategory: SellerEventCategory = {
-          sellerId: sellerToUpdate.sellerId,
-          ticketSocketId: ticketSocketId,
-          eventCategoryId: eventCategoryId,
-          sellerEventCategoryId: 0,
-          isVisibleOnSite: true,
-          isVisibleOnPortal: true,
-        };
-        currentCategories.push(newCategory);
-        changed = true;
-      }
-    } else {
-      if (existingCategory.eventCategoryId != eventCategoryId) {
+    const existingCategory = currentCategories.find(x => x.ticketSocketId === ticketSocketId);
+    if (existingCategory) {
+      if (existingCategory.eventCategoryId !== eventCategoryId) {
         currentCategories = currentCategories.map(
           (x) => {
-            if (x.ticketSocketId == ticketSocketId) {
+            if (x.ticketSocketId === ticketSocketId) {
               const cat = { ...x };
               cat.eventCategoryId = eventCategoryId;
-              cat.isVisibleOnSite = (eventCategoryId != undefined && eventCategoryId > 0);
-              cat.isVisibleOnPortal = (eventCategoryId != undefined && eventCategoryId > 0);
+              cat.isVisibleOnSite = (eventCategoryId !== undefined && eventCategoryId > 0);
+              cat.isVisibleOnPortal = (eventCategoryId !== undefined && eventCategoryId > 0);
               return cat;
-            } else {
-              return x;
             }
+            return x;
           });
         changed = true;
       }
+    } else if (eventCategoryId !== undefined) {
+      const newCategory: SellerEventCategory = {
+        eventCategoryId,
+        isVisibleOnPortal: true,
+        isVisibleOnSite: true,
+        sellerEventCategoryId: 0,
+        sellerId: sellerToUpdate.sellerId,
+        ticketSocketId,
+      };
+      currentCategories.push(newCategory);
+      changed = true;
     }
 
     if (changed) {
@@ -281,20 +282,19 @@ export default function AdminSellerGlobalEdit() {
       ? [...sellerToUpdate.sellerEventCategories]
       : [];
 
-    const existingCategory = currentCategories.find(x => x.ticketSocketId == ticketSocketId);
+    const existingCategory = currentCategories.find(x => x.ticketSocketId === ticketSocketId);
     if (!existingCategory) {
       return;
     }
 
     currentCategories = currentCategories.map(
       (x) => {
-        if (x.ticketSocketId == ticketSocketId && x.eventCategoryId == eventCategoryId) {
+        if (x.ticketSocketId === ticketSocketId && x.eventCategoryId === eventCategoryId) {
           const cat = { ...x };
           cat.isVisibleOnSite = isVisibleOnSite;
           return cat;
-        } else {
-          return x;
         }
+        return x;
       });
 
     sellerToUpdate.sellerEventCategories = currentCategories;
@@ -311,20 +311,19 @@ export default function AdminSellerGlobalEdit() {
       ? [...sellerToUpdate.sellerEventCategories]
       : [];
 
-    const existingCategory = currentCategories.find(x => x.ticketSocketId == ticketSocketId);
+    const existingCategory = currentCategories.find(x => x.ticketSocketId === ticketSocketId);
     if (!existingCategory) {
       return;
     }
 
     currentCategories = currentCategories.map(
       (x) => {
-        if (x.ticketSocketId == ticketSocketId && x.eventCategoryId == eventCategoryId) {
+        if (x.ticketSocketId === ticketSocketId && x.eventCategoryId === eventCategoryId) {
           const cat = { ...x };
           cat.isVisibleOnPortal = isVisibleOnPortal;
           return cat;
-        } else {
-          return x;
         }
+        return x;
       });
 
     sellerToUpdate.sellerEventCategories = currentCategories;
@@ -337,7 +336,7 @@ export default function AdminSellerGlobalEdit() {
     }
 
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.sellerType != sellerTypeValue) {
+    if (sellerToUpdate.sellerType !== sellerTypeValue) {
       sellerToUpdate.sellerType = sellerTypeValue;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -346,74 +345,72 @@ export default function AdminSellerGlobalEdit() {
   const checkAddress = () => {
     if (isArtist) {
       return true;
-    } else {
-      const address = currentAdminSelection.selectedSeller?.address;
-      const city = currentAdminSelection.selectedSeller?.city;
-      const state = currentAdminSelection.selectedSeller?.state;
-      const zip = currentAdminSelection.selectedSeller?.zip;
-      const countryId = currentAdminSelection.selectedSeller?.country?.countryId;
-
-      if (address) {
-        if (!city) {
-          toast.error('City is required if entering an address');
-          return false;
-        }
-        if (!countryId) {
-          toast.error('Country is required if entering an address');
-          return false;
-        }
-        if (!state && !zip) {
-          toast.error('One of either state or zip is required if entering an address');
-          return false;
-        }
-      } else if (city) {
-        if (!address) {
-          toast.error('Street address is required if entering an address');
-          return false;
-        }
-        if (!countryId) {
-          toast.error('Country is required if entering an address');
-          return false;
-        }
-        if (!state && !zip) {
-          toast.error('One of either state or zip is required if entering an address');
-          return false;
-        }
-      } else if (countryId) {
-        if (!address) {
-          toast.error('Street address is required if entering an address');
-          return false;
-        }
-        if (!city) {
-          toast.error('City is required if entering an address');
-          return false;
-        }
-        if (!state && !zip) {
-          toast.error('One of either state or zip is required if entering an address');
-          return false;
-        }
-      } else if (state || zip) {
-        if (!address) {
-          toast.error('Street address is required if entering an address');
-          return false;
-        }
-        if (!city) {
-          toast.error('City is required if entering an address');
-          return false;
-        }
-        if (!countryId) {
-          toast.error('Country is required if entering an address');
-          return false;
-        }
-      }
-
-      return true;
     }
+    const address = currentAdminSelection.selectedSeller?.address;
+    const city = currentAdminSelection.selectedSeller?.city;
+    const state = currentAdminSelection.selectedSeller?.state;
+    const zip = currentAdminSelection.selectedSeller?.zip;
+    const countryId = currentAdminSelection.selectedSeller?.country?.countryId;
+
+    if (address) {
+      if (!city) {
+        toast.error('City is required if entering an address');
+        return false;
+      }
+      if (!countryId) {
+        toast.error('Country is required if entering an address');
+        return false;
+      }
+      if (!state && !zip) {
+        toast.error('One of either state or zip is required if entering an address');
+        return false;
+      }
+    } else if (city) {
+      if (!address) {
+        toast.error('Street address is required if entering an address');
+        return false;
+      }
+      if (!countryId) {
+        toast.error('Country is required if entering an address');
+        return false;
+      }
+      if (!state && !zip) {
+        toast.error('One of either state or zip is required if entering an address');
+        return false;
+      }
+    } else if (countryId) {
+      if (!address) {
+        toast.error('Street address is required if entering an address');
+        return false;
+      }
+      if (!city) {
+        toast.error('City is required if entering an address');
+        return false;
+      }
+      if (!state && !zip) {
+        toast.error('One of either state or zip is required if entering an address');
+        return false;
+      }
+    } else if (state || zip) {
+      if (!address) {
+        toast.error('Street address is required if entering an address');
+        return false;
+      }
+      if (!city) {
+        toast.error('City is required if entering an address');
+        return false;
+      }
+      if (!countryId) {
+        toast.error('Country is required if entering an address');
+        return false;
+      }
+    }
+    return true;
   }
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedSeller) {
-      return false;
+      return;
     }
 
     const sellerToUpdate: Seller = {
@@ -425,9 +422,9 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
 
-    const sellerEventCategories = sellerToUpdate.sellerEventCategories?.filter(x => x.eventCategoryId ?? 0 > 0);
+    const sellerEventCategories = sellerToUpdate.sellerEventCategories?.filter(x => (x.eventCategoryId ?? 0) > 0);
 
-    if (!sellerEventCategories || sellerEventCategories.length == 0) {
+    if (!sellerEventCategories || sellerEventCategories.length === 0) {
       toast.error('Must select a category for at least one Ticket Socket account');
       return;
     }
@@ -445,7 +442,7 @@ export default function AdminSellerGlobalEdit() {
         dispatch(setAdminSeller(undefined));
         router.push('/admin/sellers/');
       } else {
-        toast.error(response.sellerError ?? 'Error occurred while saving seller');
+        toast.error(response.error ?? 'Error occurred while saving seller');
       }
       dispatch(setIsLoading(false));
     });
@@ -454,15 +451,15 @@ export default function AdminSellerGlobalEdit() {
   const allAccounts = currentAdminSelection.ticketSocketAccounts;
   const categoryRows: ReactElement[] = [];
   if (allAccounts && allAccounts.length > 0 && currentAdminSelection.selectedSeller) {
-    allAccounts.map((account, index) => {
-      const selectedCategory = currentAdminSelection.selectedSeller?.sellerEventCategories?.find(x => x.ticketSocketId == account.ticketSocketId);
+    allAccounts.forEach((account, index) => {
+      const selectedCategory = currentAdminSelection.selectedSeller?.sellerEventCategories?.find(x => x.ticketSocketId === account.ticketSocketId);
       const disabled = selectedCategory && selectedCategory.hasEvents;
       const options: ReactElement[] = [];
       options.push(<option key={`a${index}_00`} value={0}>
         {' '}
         -- Select one --
       </option>)
-      account.categories?.map((x, i) => {
+      account.categories?.forEach((x, i) => {
         options.push(<option key={`a${index}_${i}`} value={x.eventCategoryId}>{x.name}</option>);
       });
       const rowKey = `accoutnRow${index}`;
@@ -508,33 +505,28 @@ export default function AdminSellerGlobalEdit() {
     {' '}
     -- Select one --
   </option>)
-  sellerTypeValues.map((x, i) => {
+  sellerTypeValues.forEach((x, i) => {
     sellerTypeOptions.push(<option key={`st_${i}`} value={x}>{SellerType[Number(x)]}</option>);
   })
 
 
-  const currentSeller = currentAdminSelection.selectedSeller;
 
   const pageHeader =
-    (currentSeller?.sellerId ?? 0 > 0) ? 'Edit seller' : 'Add seller';
-
-  const selectedSellerType = Number(currentSeller?.sellerType ?? 1);
-
-  const isArtist = selectedSellerType == SellerType.Artist;
+    (currentSeller?.sellerId ?? 0) > 0 ? 'Edit seller' : 'Add seller';
 
   const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
-    currentAdminSelection.countries.map((country) => {
-      return {
+    currentAdminSelection.countries.map((country) => (
+      {
         label: `${country.countryName}`,
         value: country.countryId
       }
-    }) : [];
+    )) : [];
 
   return (
     <Row
       className="admin-container"
       hidden={
-        !((allAccounts?.length ?? 0) > 0 && currentSeller != undefined)
+        !((allAccounts?.length ?? 0) > 0 && currentSeller !== undefined)
       }
     >
       <Col>

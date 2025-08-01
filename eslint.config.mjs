@@ -16,8 +16,10 @@ const eslintConfig = [
       "no-magic-numbers": "off",
       "no-nested-ternary": "off",
       "no-ternary": "off",      
-      "no-undefined": "off",
+      "no-undef-init": "off",
+      "no-undefined": "off",      
       "one-var": "off",
+      "prefer-named-capture-group": "off",
       "radix": "off",
       "require-unicode-regexp": "off",
     }

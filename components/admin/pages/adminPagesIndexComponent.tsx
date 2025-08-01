@@ -1,18 +1,18 @@
+import { GetPageTypesResponse, GetPagesResponse, GetSellersResponse } from '@/types/responses';
+import { setAllPages, setAllSellers, setPageTypes, setReloadPages, setReloadSellers, setSelectedPage } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Table } from 'rsuite';
-import { useDispatch, useSelector } from 'react-redux';
+import { Button } from 'react-bootstrap';
+import { Page } from '@/types/public';
 import { RootState } from '@/lib/store';
-import { setAllPages, setAllSellers, setPageTypes, setReloadPages, setReloadSellers, setSelectedPage } from '@/lib/adminSelectionSlice';
+import { Table } from 'rsuite';
 import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { GetPagesResponse } from '@/types/admin';
-import { Button } from 'react-bootstrap';
-import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
-import { Page } from '@/types/public';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
-import { GetPageTypesResponse, GetSellersResponse } from '@/types/event';
+import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
+
 
 export default function AdminPagesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -26,11 +26,11 @@ export default function AdminPagesIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.pageTypes == undefined) {
+      if (currentAdminSelection.pageTypes === undefined) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getPageTypes().then((response: GetPageTypesResponse) => {
-          if (!response.pageTypeError && response.pageTypes) {
+          if (!response.error && response.pageTypes) {
             dispatch(setPageTypes(response.pageTypes));
           }
           dispatch(setIsLoading(false));
@@ -41,7 +41,7 @@ export default function AdminPagesIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getAdminSellers().then((response: GetSellersResponse) => {
-          if (!response.sellersError && response.sellers) {
+          if (!response.error && response.sellers) {
             dispatch(setAllSellers(response.sellers));
           }
           dispatch(setIsLoading(false));
@@ -52,7 +52,7 @@ export default function AdminPagesIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getAllPages().then((response: GetPagesResponse) => {
-          if (!response.pageError && response.pages) {
+          if (!response.error && response.pages) {
             dispatch(setAllPages(response.pages));
           }
           dispatch(setIsLoading(false));
@@ -71,26 +71,26 @@ export default function AdminPagesIndex() {
 
   const addPage = () => {
     const page: Page = {
+      isActive: true,
       pageId: 0,
-      route: '',
-      title: '',
       pageType: {
         pageTypeId: 1,
         pageTypeName: '',
         pageTypeTemplate: ''
       },
-      isActive: true,
+      route: '',
+      title: '',
     };
     dispatch(setSelectedPage(page));
     setTableLoading(true);
-    router.push('/admin/pages/edit');    
+    router.push('/admin/pages/edit');
   };
 
   const editPage = (pageId: number) => {
     if (!pageId || isNaN(pageId)) {
       return;
     }
-    const page = currentAdminSelection.allPages?.find((x) => x.pageId == pageId);
+    const page = currentAdminSelection.allPages?.find((x) => x.pageId === pageId);
     if (page) {
       dispatch(setSelectedPage(page));
       setTableLoading(true);
@@ -99,30 +99,26 @@ export default function AdminPagesIndex() {
   };
 
   const filterPages = (pages: Page[] | undefined) => {
-        let filteredPages: Page[] | undefined = pages;
-        if (searchTerm && searchTerm.length >= 2 && pages && pages.length > 0) {
-          const srch = searchTerm.toLowerCase();
-          filteredPages = pages.filter((page) => {
-            return (
-              page.title.toLowerCase().includes(srch)
-            );
-          });
-        }
-        return filteredPages;
-      };
-  
+    let filteredPages: Page[] | undefined = pages;
+    if (searchTerm && searchTerm.length >= 2 && pages && pages.length > 0) {
+      const srch = searchTerm.toLowerCase();
+      filteredPages = pages.filter((page) => page.title.toLowerCase().includes(srch));
+    }
+    return filteredPages;
+  };
+
   const filteredPages = filterPages(currentAdminSelection.allPages);
 
   return (
     <div className="admin-container">
       <h3>Manage Pages</h3>
       <input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="form-control search-text-input no-print"
-            placeholder="Search for pages by title..."
-            hidden={currentAdminSelection.allPages == undefined}
-          />
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="form-control search-text-input no-print"
+        placeholder="Search for pages by title..."
+        hidden={currentAdminSelection.allPages === undefined}
+      />
       <Button onClick={addPage}>Add Page</Button>
       <Table
         height={600}

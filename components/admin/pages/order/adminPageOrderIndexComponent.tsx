@@ -1,22 +1,21 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-import AdminListHomeButton from '../../adminListHomeButton';
-import { SelectPicker, Table } from 'rsuite';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
-import { setAllPages, setPageTypes, setReloadPages, setSelectedPageType } from '@/lib/adminSelectionSlice';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { GetPagesResponse, ModifyPageResponse } from '@/types/admin';
-import { GetPageTypesResponse } from '@/types/event';
-import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { useUpdatePageOrder } from '@/hooks/admin/useUpdatePageOrder';
-import { useGetPagesByType } from '@/hooks/common/useGetPagesByType';
-import { ARTIST_SELLER_TYPE } from '@/constants';
-import moment from 'moment';
-import { toast } from 'react-toastify';
 import { Button, Col, Row } from 'react-bootstrap';
-import { Page } from '@/types/public';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
+import { GetPageTypesResponse, GetPagesResponse, ModifyPageResponse } from '@/types/responses';
+import { SelectPicker, Table } from 'rsuite';
+import { setAllPages, setPageTypes, setReloadPages, setSelectedPageType } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { ARTIST_SELLER_TYPE } from '@/constants';
+import AdminListHomeButton from '../../adminListHomeButton';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { Page } from '@/types/public';
+import { RootState } from '@/lib/store';
+import moment from 'moment';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { toast } from 'react-toastify';
+import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
+import { useGetPagesByType } from '@/hooks/common/useGetPagesByType';
+import { useUpdatePageOrder } from '@/hooks/admin/useUpdatePageOrder';
 
 export default function AdminPageOrderIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -26,27 +25,27 @@ export default function AdminPageOrderIndex() {
   const { updatePageOrder } = useUpdatePageOrder();
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
-  
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.pageTypes == undefined) {
+      if (currentAdminSelection.pageTypes === undefined) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getPageTypes(true).then((response: GetPageTypesResponse) => {
-          if (!response.pageTypeError && response.pageTypes) {
+          if (!response.error && response.pageTypes) {
             dispatch(setPageTypes(response.pageTypes));
-            const artistPageType = response.pageTypes.find(x => x.pageTypeId == ARTIST_SELLER_TYPE);
+            const artistPageType = response.pageTypes.find(x => x.pageTypeId === ARTIST_SELLER_TYPE);
             if (artistPageType) {
               dispatch(setSelectedPageType(artistPageType));
             }
           }
         });
-      } else if (currentAdminSelection.reloadPages && currentAdminSelection.selectedPageType != undefined) {
+      } else if (currentAdminSelection.reloadPages && currentAdminSelection.selectedPageType !== undefined) {
         dispatch(setReloadPages(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getPagesByType(currentAdminSelection.selectedPageType.pageTypeId).then((response: GetPagesResponse) => {
-          if (!response.pageError && response.pages) {
+          if (!response.error && response.pages) {
             dispatch(setAllPages(response.pages));
           }
           dispatch(setIsLoading(false));
@@ -64,29 +63,29 @@ export default function AdminPageOrderIndex() {
   }, [dispatch, currentAdminSelection, tableLoading, getPageTypes, getPagesByType]);
 
   const onPageTypeChange = (pageTypeId: number | null) => {
-    const pageType = currentAdminSelection?.pageTypes?.find(x => x.pageTypeId == pageTypeId);
+    const pageType = currentAdminSelection?.pageTypes?.find(x => x.pageTypeId === pageTypeId);
     if (pageType) {
       dispatch(setSelectedPageType(pageType));
       dispatch(setReloadPages(true));
     }
   };
 
-  const onPageOrderChange =  (e: ChangeEvent<HTMLInputElement>, pageId: number, oldOrder: number, newOrder: number) => {
-    e.target.blur();
-    setPageOrder(pageId, oldOrder, newOrder);
-  };
+  const getPagesSorted = (pages: Page[]) =>
+    pages.sort((a, b) =>
+      a.pageOrder === b.pageOrder ? (moment(b.lastUpdate ?? '').unix() - moment(a.lastUpdate ?? '').unix()) : ((a.pageOrder ?? 0) - (b.pageOrder ?? 0))
+    );
 
   const setPageOrder = (pageId: number, oldOrder: number, newOrder: number) => {
-    if (!currentAdminSelection.allPages || currentAdminSelection.allPages.length == 0 || !pageId || !oldOrder || isNaN(pageId) || isNaN(oldOrder) || !newOrder || isNaN(newOrder)) {
+    if (!currentAdminSelection.allPages || currentAdminSelection.allPages.length === 0 || !pageId || !oldOrder || isNaN(pageId) || isNaN(oldOrder) || !newOrder || isNaN(newOrder)) {
       return;
     }
     let pages = currentAdminSelection.allPages.slice();
     pages = pages.map(page => {
       const newPage = { ...page };
-      if (newPage.pageId == pageId) {
+      if (newPage.pageId === pageId) {
         newPage.pageOrder = newOrder;
         newPage.lastUpdate = moment().format('YYYY-MM-DD HH:mm:ss');
-      } else if (newPage.pageOrder == newOrder) {
+      } else if (newPage.pageOrder === newOrder) {
         newPage.pageOrder = oldOrder < newPage.pageOrder ? oldOrder : newPage.pageOrder + 1;
         newPage.lastUpdate = moment().format('YYYY-MM-DD HH:mm:ss');
       }
@@ -94,10 +93,10 @@ export default function AdminPageOrderIndex() {
     });
     pages = getPagesSorted(pages);
     let prevOrder = 0;
-    // reset lastUpdate on all after sort
+    // Reset lastUpdate on all after sort
     const lastUpdate = moment().format('YYYY-MM-DD HH:mm:ss');
     for (const page of pages) {
-      if (page.pageOrder == prevOrder) {
+      if (page.pageOrder === prevOrder) {
         page.pageOrder += 1;
       }
       prevOrder = page.pageOrder ?? 0;
@@ -105,13 +104,18 @@ export default function AdminPageOrderIndex() {
     }
 
     dispatch(setAllPages(pages));
-  }
+  };
+
+  const onPageOrderChange = (e: ChangeEvent<HTMLInputElement>, pageId: number, oldOrder: number, newOrder: number) => {
+    e.target.blur();
+    setPageOrder(pageId, oldOrder, newOrder);
+  };
 
   const moveUp = (pageId: number) => {
     if (!pageId || isNaN(pageId) || !currentAdminSelection.allPages) {
       return;
     }
-    const page = currentAdminSelection.allPages.find(x => x.pageId == pageId);
+    const page = currentAdminSelection.allPages.find(x => x.pageId === pageId);
     if (page && page.pageOrder) {
       const order = page.pageOrder;
       if (order > 1) {
@@ -125,7 +129,7 @@ export default function AdminPageOrderIndex() {
     if (!pageId || isNaN(pageId) || !currentAdminSelection.allPages) {
       return;
     }
-    const page = currentAdminSelection.allPages.find(x => x.pageId == pageId);
+    const page = currentAdminSelection.allPages.find(x => x.pageId === pageId);
     if (page && page.pageOrder) {
       const order = page.pageOrder;
       if (order < currentAdminSelection.allPages.length) {
@@ -145,9 +149,9 @@ export default function AdminPageOrderIndex() {
       if (response.success) {
         dispatch(setReloadPages(true));
         toast.success('Page order save succeeded');
-      } else if (response.pageError) {
+      } else if (response.error) {
         dispatch(setIsLoading(false));
-        toast.error(response.pageError);
+        toast.error(response.error);
       } else {
         dispatch(setIsLoading(false));
         toast.error('Page order save failed');
@@ -159,18 +163,12 @@ export default function AdminPageOrderIndex() {
   const pageTypeId = currentAdminSelection?.selectedPageType?.pageTypeId ?? 0;
 
   const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageTypes ?
-    currentAdminSelection.pageTypes.map((pageType) => {
-      return {
+    currentAdminSelection.pageTypes.map((pageType) => (
+      {
         label: `${pageType.pageTypeName}`,
         value: pageType.pageTypeId
       }
-    }) : [];
-
-  const getPagesSorted = (pages: Page[]) => {
-    return pages.sort((a, b) =>
-      a.pageOrder == b.pageOrder ? (moment(b.lastUpdate ?? '').unix() - moment(a.lastUpdate ?? '').unix()) : ((a.pageOrder ?? 0) - (b.pageOrder ?? 0))
-    );
-  }
+    )) : [];
 
   const pages = currentAdminSelection?.allPages ? currentAdminSelection.allPages.slice() : undefined;
   const pagesSorted = pages ? getPagesSorted(pages) : [];

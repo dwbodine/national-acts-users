@@ -1,12 +1,12 @@
 import { RefreshTicketSocketHistoryTableProps } from '@/types/props';
-import moment from 'moment';
 import { Table } from 'rsuite';
+import moment from 'moment';
 
 export default function RefreshTicketSocketHistoryTable(props: RefreshTicketSocketHistoryTableProps) {
   const results = props.History;
   const { Column, HeaderCell, Cell } = Table;
 
-  return results != undefined ? (
+  return results ? (
     <Table height={420} data={results} bordered cellBordered>
       <Column resizable fullText>
         <HeaderCell>Date</HeaderCell>

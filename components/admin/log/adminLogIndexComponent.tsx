@@ -1,8 +1,7 @@
-import { useGetLogs } from '@/hooks/admin/useGetLogs';
-import { ReactElement, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+import { ReactElement, useEffect, useState } from 'react';
 import moment from 'moment';
-
+import { useGetLogs } from '@/hooks/admin/useGetLogs';
 
 export default function AdminLogIndex() {
 
@@ -12,14 +11,14 @@ export default function AdminLogIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (logs == undefined) {
+      if (logs === undefined) {
         getAllLogs().then((response) => {
           if (response.logs && !response.errorMessage) {
             setLogs(response.logs.split('\n'));
           }
         });
       }
-      if (cronLogs == undefined) {
+      if (cronLogs === undefined) {
         getAllCronLogs().then((response) => {
           if (response.logs && !response.errorMessage) {
             setCronLogs(response.logs.split('\\r\\n'));

@@ -1,24 +1,24 @@
-import { useGetSiteSettings } from "@/hooks/admin/useGetSiteSettings"
-import { setAllSettings, setReloadSettings } from "@/lib/adminSelectionSlice";
-import { setIsLoading } from "@/lib/globalSelectionSlice";
-import { RootState } from "@/lib/store";
-import { GetSettingsResponse, SiteSetting, UpdateSettingResponse } from "@/types/public";
+import { Button, Col, Row } from "react-bootstrap";
+import { GetSettingsResponse, UpdateSettingResponse } from "@/types/responses";
 import { ReactElement, useEffect, useState } from "react";
+import { setAllSettings, setReloadSettings } from "@/lib/adminSelectionSlice";
 import { useDispatch, useSelector } from "react-redux";
 import AdminFileUpload from "../common/adminFileUploadComponent";
-import { Button, Col, Row } from "react-bootstrap";
 import AdminListHomeButton from "../adminListHomeButton";
-import { useUpdateSiteSetting } from "@/hooks/admin/useUpdateSiteSetting";
+import { RootState } from "@/lib/store";
+import { SiteSetting } from "@/types/public";
+import router from "next/router";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { toast } from "react-toastify";
-import router   from "next/router";
-
+import { useGetSiteSettings } from "@/hooks/admin/useGetSiteSettings"
+import { useUpdateSiteSetting } from "@/hooks/admin/useUpdateSiteSetting";
 
 export default function AdminSiteSettingsEdit() {
     const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
     const dispatch = useDispatch();
     const { getAllSettings } = useGetSiteSettings();
     const { updateSiteSettings } = useUpdateSiteSetting();
-    const [ isUploading, setIsUploading ] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -26,7 +26,7 @@ export default function AdminSiteSettingsEdit() {
                 dispatch(setIsLoading(true));
                 dispatch(setReloadSettings(false));
                 getAllSettings().then((response: GetSettingsResponse) => {
-                    if (response.settings && !response.settingsError) {
+                    if (response.settings && !response.error) {
                         dispatch(setAllSettings(response.settings));
                     }
                     dispatch(setIsLoading(false));
@@ -39,16 +39,16 @@ export default function AdminSiteSettingsEdit() {
     }, [currentAdminSelection, dispatch, getAllSettings]);
 
     const onFileUpload = (fileUploadName: string | undefined, filename: string | undefined) => {
-        if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length == 0 || !fileUploadName || !filename) {
+        if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length === 0 || !fileUploadName || !filename) {
             return;
         }
         const adminSelection = { ...currentAdminSelection };
         switch (fileUploadName) {
             case 'HomeBanner':
-                if (adminSelection.allSettings != undefined) {
+                if (adminSelection.allSettings !== undefined) {
                     const currentSettings = adminSelection.allSettings.map((originalSetting: SiteSetting) => {
                         const setting = { ...originalSetting };
-                        if (setting.name == 'HomeBanner' && filename) {
+                        if (setting.name === 'HomeBanner' && filename) {
                             setting.value = filename;
                             setting.dirty = true;
                         }
@@ -76,49 +76,61 @@ export default function AdminSiteSettingsEdit() {
     };
 
     const onNumberChange = (settingName: string, settingValue: number | undefined) => {
-        if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length == 0 || !settingName) {
+        if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length === 0 || !settingName) {
             return;
         }
         const adminSelection = { ...currentAdminSelection };
-        if (adminSelection.allSettings != undefined) {
+        if (adminSelection.allSettings !== undefined) {
             const currentSettings = adminSelection.allSettings.map((originalSetting: SiteSetting) => {
                 const setting = { ...originalSetting };
-                if (setting.name == settingName) {
+                if (setting.name === settingName) {
                     setting.value = settingValue?.toString() ?? '';
                     setting.dirty = true;
                 }
                 return setting;
             });
-            dispatch(setAllSettings(currentSettings));    
-        }        
+            dispatch(setAllSettings(currentSettings));
+        }
     };
 
     const onTextChange = (settingName: string, settingValue: string | undefined) => {
-        if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length == 0 || !settingName) {
+        if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length === 0 || !settingName) {
             return;
         }
         const adminSelection = { ...currentAdminSelection };
-        if (adminSelection.allSettings != undefined) {
+        if (adminSelection.allSettings !== undefined) {
             const currentSettings = adminSelection.allSettings.map((originalSetting: SiteSetting) => {
                 const setting = { ...originalSetting };
-                if (setting.name == settingName) {
+                if (setting.name === settingName) {
                     setting.value = settingValue ?? '';
                     setting.dirty = true;
                 }
                 return setting;
             });
-            dispatch(setAllSettings(currentSettings));    
-        }      
+            dispatch(setAllSettings(currentSettings));
+        }
+    };
+
+    const clearDirty = () => {
+        if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length === 0) {
+            return;
+        }
+        const currentSettings = currentAdminSelection.allSettings.map((originalSetting: SiteSetting) => {
+            const setting = { ...originalSetting };
+            setting.dirty = false;
+            return setting;
+        });
+        dispatch(setAllSettings(currentSettings));
     };
 
     const onSubmit = () => {
-        if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length == 0) {
+        if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length === 0) {
             return;
         }
 
-        const allSettings = [ ...currentAdminSelection.allSettings ];
+        const allSettings = [...currentAdminSelection.allSettings];
         const dirtySettings = allSettings.filter(x => x.dirty);
-        if (!dirtySettings || dirtySettings.length == 0) {
+        if (!dirtySettings || dirtySettings.length === 0) {
             return;
         }
 
@@ -129,24 +141,14 @@ export default function AdminSiteSettingsEdit() {
                     clearDirty();
                     router.push('/admin/');
                 } else {
-                    const err = response.settingsError ? response.settingsError : 'Errors occurred while saving settings';
+                    const err = response.error ?? 'Errors occurred while saving settings';
                     toast.error(err);
                 }
             });
-     
+
     };
 
-    const clearDirty = () => {
-        if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length == 0) {
-            return;
-        }
-        const currentSettings = currentAdminSelection.allSettings.map((originalSetting: SiteSetting) => {
-            const setting = { ...originalSetting };
-            setting.dirty = false;
-            return setting;
-        });
-        dispatch(setAllSettings(currentSettings));   
-    };
+
 
     const settingRows: ReactElement[] = [];
     let hasDirtySettings: boolean = false;
@@ -155,12 +157,11 @@ export default function AdminSiteSettingsEdit() {
             if (!hasDirtySettings) {
                 hasDirtySettings = setting.dirty ?? false;
             }
-            let currentFileTitle: string = '';
             let baseUrl: string = '';
+            const currentFileTitle = (setting.type.toLowerCase() === 'image') ? "View Current Image: " : "View Current File: ";
             switch (setting.type.toLowerCase()) {
                 case 'image':
                 case 'file':
-                    currentFileTitle = (setting.type.toLowerCase() == 'image') ? "View Current Image: " : "View Current File: ";
                     switch (setting.name) {
                         case 'HomeBanner':
                             baseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/homebanners`;
@@ -171,10 +172,10 @@ export default function AdminSiteSettingsEdit() {
                     settingRows.push(
                         <Row key={setting.settingId}>
                             <Col className="admin-setting-item">
-                                <AdminFileUpload 
-                                    Title={setting.displayName} 
-                                    FileUploadName={setting.name} 
-                                    OnUpload={onFileUpload} 
+                                <AdminFileUpload
+                                    Title={setting.displayName}
+                                    FileUploadName={setting.name}
+                                    OnUpload={onFileUpload}
                                     CurrentFileName={setting.value}
                                     IsDirty={setting.dirty}
                                     CurrentFileTitle={currentFileTitle}
@@ -190,10 +191,10 @@ export default function AdminSiteSettingsEdit() {
                         <Row key={setting.settingId}>
                             <Col className="admin-setting-item">
                                 <div className="admin-setting-title">{setting.displayName}</div>
-                                <input 
-                                    type="number" 
-                                    name={setting.name} 
-                                    value={setting.value} 
+                                <input
+                                    type="number"
+                                    name={setting.name}
+                                    value={setting.value}
                                     onChange={(e) => onNumberChange(setting.name, parseFloat(e.target.value))}
                                 />
                             </Col>
@@ -205,10 +206,10 @@ export default function AdminSiteSettingsEdit() {
                         <Row key={setting.settingId}>
                             <Col className="admin-setting-item">
                                 <div className="admin-setting-title">{setting.displayName}</div>
-                                <input 
-                                    type="text" 
-                                    name={setting.name} 
-                                    value={setting.value} 
+                                <input
+                                    type="text"
+                                    name={setting.name}
+                                    value={setting.value}
                                     onChange={(e) => onTextChange(setting.name, e.target.value)}
                                 />
                             </Col>

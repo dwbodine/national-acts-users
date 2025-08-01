@@ -1,27 +1,29 @@
-import { RootState } from '@/lib/store';
-import { ReactElement, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import router from 'next/router';
 import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
+import { DatePicker, SelectPicker } from 'rsuite';
+import { GetPageTypesResponse, GetSellersResponse, ModifyPageResponse } from '@/types/responses';
+import { Page, PageSeller } from '@/types/public';
+import { ReactElement, useEffect, useState } from 'react';
 import { setAllSellers, setMustSavePage, setPageTypes, setReloadPages, setSelectedPage } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import AdminFileUpload from '../common/adminFileUploadComponent';
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import { FaPlus } from 'react-icons/fa';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { RootState } from '@/lib/store';
+import { SellerType } from '@/types/event';
+import moment from 'moment';
+import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
-import { GetPageTypesResponse, GetSellersResponse, SellerType } from '@/types/event';
-import { ModifyPageResponse } from '@/types/admin';
-import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
-import { Page, PageSeller } from '@/types/public';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { DatePicker, SelectPicker } from 'rsuite';
-import moment from 'moment';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import { FaPlus } from 'react-icons/fa';
-import AdminFileUpload from '../common/adminFileUploadComponent';
+import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const route = currentAdminSelection.selectedPage?.route;
+
   const dispatch = useDispatch();
   const { updatePage } = useUpdatePage();
   const { getPageTypes } = useGetPageTypes();
@@ -42,22 +44,27 @@ export default function AdminPageEdit() {
   const [isLogoDirty, setIsLogoDirty] = useState(false);
   const logoBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/logos`;
 
+  const goBack = () => {
+    toast.dismiss();
+    router.push('/admin/pages/');
+  };
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.allSellers == undefined) {
+      if (currentAdminSelection.allSellers === undefined) {
         dispatch(setIsLoading(true));
         getSellers().then((response: GetSellersResponse) => {
           dispatch(setAllSellers(response.sellers));
         });
-      } else if (currentAdminSelection.pageTypes == undefined) {
+      } else if (currentAdminSelection.pageTypes === undefined) {
         dispatch(setIsLoading(true));
         getPageTypes().then((response: GetPageTypesResponse) => {
-          if (!response.pageTypeError && response.pageTypes) {
+          if (!response.error && response.pageTypes) {
             dispatch(setPageTypes(response.pageTypes));
           }
           dispatch(setIsLoading(false));
         });
-      } else if (currentAdminSelection.allPages == undefined || currentAdminSelection.selectedPage == undefined) {
+      } else if (currentAdminSelection.allPages === undefined || currentAdminSelection.selectedPage === undefined) {
         goBack();
       }
     }, 500);
@@ -65,11 +72,6 @@ export default function AdminPageEdit() {
       clearTimeout(timeoutId);
     };
   }, [currentAdminSelection, dispatch, getPageTypes, getSellers]);
-
-  const goBack = () => {
-    toast.dismiss();
-    router.push('/admin/pages/');
-  };
 
   const confirmGoBack = () => {
     if (!currentAdminSelection?.mustSavePage) {
@@ -90,9 +92,9 @@ export default function AdminPageEdit() {
         }}
       />,
       {
-        position: 'top-center',
         autoClose: false,
         closeOnClick: false,
+        position: 'top-center',
       },
     );
   };
@@ -101,13 +103,13 @@ export default function AdminPageEdit() {
     dispatch(setMustSavePage(true));
   };
 
-  const setPageRoute = (route: string) => {
-    if (!currentAdminSelection.selectedPage || !route) {
+  const setPageRoute = (rte: string) => {
+    if (!currentAdminSelection.selectedPage || !rte) {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    if (pageToUpdate.route != route) {
-      pageToUpdate.route = route;
+    if (pageToUpdate.route !== rte) {
+      pageToUpdate.route = rte;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
@@ -118,7 +120,7 @@ export default function AdminPageEdit() {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    if (pageToUpdate.title != title) {
+    if (pageToUpdate.title !== title) {
       pageToUpdate.title = title;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -127,12 +129,12 @@ export default function AdminPageEdit() {
 
   const setPageType = (pageTypeId: number | null) => {
     if (!currentAdminSelection.selectedPage || !currentAdminSelection.pageTypes
-      || currentAdminSelection.pageTypes.length == 0 || !pageTypeId || isNaN(pageTypeId)) {
+      || currentAdminSelection.pageTypes.length === 0 || !pageTypeId || isNaN(pageTypeId)) {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    if (pageToUpdate.pageType.pageTypeId != pageTypeId) {
-      const pageType = currentAdminSelection.pageTypes.find(x => x.pageTypeId == pageTypeId);
+    if (pageToUpdate.pageType.pageTypeId !== pageTypeId) {
+      const pageType = currentAdminSelection.pageTypes.find(x => x.pageTypeId === pageTypeId);
       if (pageType) {
         pageToUpdate.pageType = pageType;
         dispatch(setSelectedPage(pageToUpdate));
@@ -146,7 +148,7 @@ export default function AdminPageEdit() {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    if (pageToUpdate.subtitle1 != title) {
+    if (pageToUpdate.subtitle1 !== title) {
       pageToUpdate.subtitle1 = title;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -158,14 +160,15 @@ export default function AdminPageEdit() {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    if (pageToUpdate.subtitle2 != title) {
+    if (pageToUpdate.subtitle2 !== title) {
       pageToUpdate.subtitle2 = title;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
   }
 
-  const cleanHtmlText = (htmlText: string) => {
+  const cleanHtmlText = (html: string) => {
+    let htmlText: string = html;
     htmlText = htmlText.replace(/<!DOCTYPE[^>[]*(\[[^]]*\])?>/gi, '');
     htmlText = htmlText.replace(/<html.*?>/gi, '');
     htmlText = htmlText.replace(/<head.*?>/gi, '');
@@ -182,13 +185,14 @@ export default function AdminPageEdit() {
     return htmlText;
   }
 
-  const setHtmlText = (htmlText: string) => {
+  const setHtmlText = (html: string) => {
     if (!currentAdminSelection.selectedPage || !route) {
       return;
     }
+    let htmlText: string = html;
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     htmlText = cleanHtmlText(htmlText);
-    if (pageToUpdate.htmlText != htmlText) {
+    if (pageToUpdate.htmlText !== htmlText) {
       pageToUpdate.htmlText = htmlText;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -200,7 +204,7 @@ export default function AdminPageEdit() {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    if (pageToUpdate.googleAnalyticsId != gaId) {
+    if (pageToUpdate.googleAnalyticsId !== gaId) {
       pageToUpdate.googleAnalyticsId = gaId;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -212,7 +216,7 @@ export default function AdminPageEdit() {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    if (pageToUpdate.isActive != isActive) {
+    if (pageToUpdate.isActive !== isActive) {
       pageToUpdate.isActive = isActive;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -224,7 +228,7 @@ export default function AdminPageEdit() {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    if (pageToUpdate.useIncludeDates != useIncludeDates) {
+    if (pageToUpdate.useIncludeDates !== useIncludeDates) {
       pageToUpdate.useIncludeDates = useIncludeDates;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -237,7 +241,7 @@ export default function AdminPageEdit() {
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     const includeStartStr = moment(includeStart).format('YYYY-MM-DD HH:mm:ss');
-    if (pageToUpdate.includeStart != includeStartStr) {
+    if (pageToUpdate.includeStart !== includeStartStr) {
       pageToUpdate.includeStart = includeStartStr;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -250,7 +254,7 @@ export default function AdminPageEdit() {
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     const includeEndStr = moment(includeEnd).format('YYYY-MM-DD HH:mm:ss');
-    if (pageToUpdate.includeEnd != includeEndStr) {
+    if (pageToUpdate.includeEnd !== includeEndStr) {
       pageToUpdate.includeEnd = includeEndStr;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -262,7 +266,7 @@ export default function AdminPageEdit() {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    if (pageToUpdate.useExcludeDates != useExcludeDates) {
+    if (pageToUpdate.useExcludeDates !== useExcludeDates) {
       pageToUpdate.useExcludeDates = useExcludeDates;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -275,7 +279,7 @@ export default function AdminPageEdit() {
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     const excludeStartStr = moment(excludeStart).format('YYYY-MM-DD HH:mm:ss');
-    if (pageToUpdate.excludeStart != excludeStartStr) {
+    if (pageToUpdate.excludeStart !== excludeStartStr) {
       pageToUpdate.excludeStart = excludeStartStr;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -288,7 +292,7 @@ export default function AdminPageEdit() {
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     const excludeEndStr = moment(excludeEnd).format('YYYY-MM-DD HH:mm:ss');
-    if (pageToUpdate.excludeEnd != excludeEndStr) {
+    if (pageToUpdate.excludeEnd !== excludeEndStr) {
       pageToUpdate.excludeEnd = excludeEndStr;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
@@ -300,7 +304,7 @@ export default function AdminPageEdit() {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const pageSellers: PageSeller[] | undefined = pageToUpdate.sellers;
       pageToUpdate.sellers = pageSellers?.map((ps) =>
-        (ps.pageSellerId == newPageSeller.pageSellerId && ps.sellerId == newPageSeller.sellerId)
+        (ps.pageSellerId === newPageSeller.pageSellerId && ps.sellerId === newPageSeller.sellerId)
           ? newPageSeller
           : ps
       )
@@ -309,22 +313,22 @@ export default function AdminPageEdit() {
   };
 
   const updateSeller = (pageSellerId: number | null, sellerId: number | null, newSellerId: number | null) => {
-    if (pageSellerId == null || isNaN(pageSellerId) || sellerId == null || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
+    if (pageSellerId === null || isNaN(pageSellerId) || sellerId === null || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
       return;
     }
     if (currentAdminSelection.selectedPage) {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const pageSellers: PageSeller[] | undefined = pageToUpdate.sellers;
-      const existingSeller = pageSellers?.find((x) => x.pageSellerId == pageSellerId && x.sellerId == sellerId);
+      const existingSeller = pageSellers?.find((x) => x.pageSellerId === pageSellerId && x.sellerId === sellerId);
       if (existingSeller) {
         pageToUpdate.sellers = pageSellers?.map((ps) =>
-          (ps.pageSellerId == existingSeller.pageSellerId)
+          (ps.pageSellerId === existingSeller.pageSellerId)
             ? { ...ps, sellerId: newSellerId }
             : ps
         )
       } else {
         pageToUpdate.sellers = pageSellers?.map((ps) =>
-          (ps.pageSellerId == 0 && ps.sellerId == 0)
+          (ps.pageSellerId === 0 && ps.sellerId === 0)
             ? { ...ps, sellerId: newSellerId }
             : ps
         )
@@ -339,12 +343,12 @@ export default function AdminPageEdit() {
     if (currentAdminSelection.selectedPage) {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
-      const existingAdd = userSellers.find((x) => x.pageSellerId == 0 && x.sellerId == 0);
+      const existingAdd = userSellers.find((x) => x.pageSellerId === 0 && x.sellerId === 0);
       if (!existingAdd) {
         userSellers.push({
-          sellerId: 0,
-          pageSellerId: 0,
           pageId: pageToUpdate.pageId,
+          pageSellerId: 0,
+          sellerId: 0,
         });
         pageToUpdate.sellers = userSellers;
         dispatch(setSelectedPage(pageToUpdate));
@@ -354,14 +358,15 @@ export default function AdminPageEdit() {
     }
   };
 
-  const removeSeller = (sellerId: number) => {
+  const removeSeller = (sId: number) => {
+    let sellerId: number = sId;
     if (!sellerId || isNaN(sellerId)) {
       sellerId = 0;
     }
     if (currentAdminSelection.selectedPage) {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       let userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
-      userSellers = userSellers.filter((x) => x.sellerId != sellerId);
+      userSellers = userSellers.filter((x) => x.sellerId !== sellerId);
       pageToUpdate.sellers = userSellers;
       dispatch(setSelectedPage(pageToUpdate));
     } else {
@@ -455,7 +460,7 @@ export default function AdminPageEdit() {
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedPage) {
-      return false;
+      return;
     }
 
     const pageToUpdate: Page = {
@@ -478,9 +483,9 @@ export default function AdminPageEdit() {
     }
 
     if (pageSellerTypeIds.includes(pageToUpdate.pageType.pageTypeId)) {
-      const pageSellers = pageToUpdate.sellers?.filter(x => x.sellerId ?? 0 > 0);
+      const pageSellers = pageToUpdate.sellers?.filter(x => (x.sellerId ?? 0) > 0);
 
-      if (!pageSellers || pageSellers.length == 0) {
+      if (!pageSellers || pageSellers.length === 0) {
         toast.error('Must select at least one seller for this page');
         return;
       }
@@ -496,7 +501,7 @@ export default function AdminPageEdit() {
       return;
     }
 
-    if (pageToUpdate.logoOnlyImage && pageToUpdate.logoOnlyImage.length > 4 && pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length - 4) != ".png") {
+    if (pageToUpdate.logoOnlyImage && pageToUpdate.logoOnlyImage.length > 4 && pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length - 4) !== ".png") {
       toast.error('Logo image can only be a PNG');
       return;
     }
@@ -513,7 +518,7 @@ export default function AdminPageEdit() {
         toast.success('Save page succeeded');
         router.push('/admin/pages/');
       } else {
-        toast.error(response.pageError ?? 'Error occurred while saving page');
+        toast.error(response.error ?? 'Error occurred while saving page');
       }
       dispatch(setIsLoading(false));
     });
@@ -538,19 +543,18 @@ export default function AdminPageEdit() {
   };
 
   const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageTypes ?
-    currentAdminSelection.pageTypes.map((pageType) => {
-      return {
+    currentAdminSelection.pageTypes.map((pageType) => (
+      {
         label: `${pageType.pageTypeName}`,
         value: pageType.pageTypeId
       }
-    }) : [];
+    )) : [];
 
   const pageHeader =
-    (currentAdminSelection.selectedPage?.pageId ?? 0 > 0) ? 'Edit page' : 'Add page';
+    ((currentAdminSelection.selectedPage?.pageId ?? 0) > 0) ? 'Edit page' : 'Add page';
 
   const isActive = currentAdminSelection.selectedPage?.isActive ?? false;
   const title = currentAdminSelection.selectedPage?.title;
-  const route = currentAdminSelection.selectedPage?.route;
   const selectedPageTypeId = currentAdminSelection.selectedPage?.pageType.pageTypeId ?? 0;
   const topImage = currentAdminSelection.selectedPage?.image;
   const iconImage = currentAdminSelection.selectedPage?.thumbnail;
@@ -572,11 +576,11 @@ export default function AdminPageEdit() {
     currentAdminSelection.selectedPage &&
     currentAdminSelection.selectedPage.pageType &&
     pageSellerTypeIds.includes(currentAdminSelection.selectedPage.pageType.pageTypeId) &&
-    currentAdminSelection.allSellers != undefined
+    currentAdminSelection.allSellers !== undefined
   ) {
     const sellerType = getSellerTypeFromPageType();
     if (currentAdminSelection.selectedPage.sellers) {
-      currentAdminSelection.selectedPage.sellers.map((item, index) => {
+      currentAdminSelection.selectedPage.sellers.forEach((item, index) => {
         sellerRows.push(
           <AdminSellerSelect
             Id={item.sellerId.toString()}
