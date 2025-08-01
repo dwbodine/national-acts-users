@@ -1,7 +1,7 @@
 import { ITicketData, ITicketTypeData, Order, TicketType, VipEvent } from '@/types/event';
 import moment from 'moment';
 
-export function getTicketDataFromOrders(
+export default function getTicketDataFromOrders(
   orders: Order[],
   evt: VipEvent | undefined,
 ): ITicketData {
@@ -10,19 +10,19 @@ export function getTicketDataFromOrders(
 
   if (!evt) {
     return {
-      TicketTypes: ticketTypes,
       TicketData: map,
+      TicketTypes: ticketTypes,
     };
   }
   const key = moment(evt.eventDate).format('MM/DD/YYYY');
-  // older data may not have ticket types attached
+  // Older data may not have ticket types attached
   const eventHasTicketTypes: boolean = evt.hasTicketTypeData ?? false;
   if (eventHasTicketTypes) {
     evt.ticketTypes?.forEach((ticketType) => {
       if (
         !ticketTypes.find(
           (x) =>
-            x.ticketTypeName.toLowerCase() == ticketType.ticketTypeName.toLowerCase(),
+            x.ticketTypeName.toLowerCase() === ticketType.ticketTypeName.toLowerCase(),
         )
       ) {
         ticketTypes.push(ticketType);
@@ -36,30 +36,31 @@ export function getTicketDataFromOrders(
           evt.ticketSocketEventId &&
           !eventHasTicketTypes &&
           !ticketTypes.find(
-            (x) => x.ticketTypeName.toLowerCase() == ticket.ticketType.toLowerCase(),
+            (x) => x.ticketTypeName.toLowerCase() === ticket.ticketType.toLowerCase(),
           ) &&
-          evt.ticketSocketEventId != undefined
+          evt.ticketSocketEventId !== undefined
         ) {
           ticketTypes.push({
             eventId: evt.ticketSocketEventId,
+            isActive: true,
             ticketTypeId: 0,
             ticketTypeName: ticket.ticketType,
             totalAvailable: 0,
-            isActive: true,
           });
         }
         const collection = map.get(key);
-        if (!collection) {
+        if (collection === undefined) {
           const data: ITicketTypeData = {
-            TicketType: ticket.ticketType,
             Number: 1,
+            TicketType: ticket.ticketType,
           };
           map.set(key, [data]);
         } else {
           let ticketTypeName = ticket.ticketType;
-          const ttype = ticketTypes.find((x) => x.ticketTypeId == ticket.ticketTypeId);
+          const ttype = ticketTypes.find((x) => x.ticketTypeId === ticket.ticketTypeId);
           if (ttype) {
-            ticketTypeName = ttype.ticketTypeName;
+            const theType = ttype.ticketTypeName;
+            ticketTypeName = theType;
           }
           const indexToUpdate = collection.findIndex(
             (item) => item.TicketType.toLowerCase() === ticketTypeName.toLowerCase(),
@@ -70,8 +71,8 @@ export function getTicketDataFromOrders(
             collection[indexToUpdate] = item;
           } else {
             collection.push({
-              TicketType: ticketTypeName,
               Number: 1,
+              TicketType: ticketTypeName,
             });
           }
         }
@@ -80,7 +81,7 @@ export function getTicketDataFromOrders(
   });
   ticketTypes.sort();
   return {
-    TicketTypes: ticketTypes,
     TicketData: map,
+    TicketTypes: ticketTypes,
   };
 }

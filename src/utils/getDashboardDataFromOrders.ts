@@ -1,4 +1,3 @@
-import { ITicketEventSalesData, ITicketSalesData } from '@/types/event';
 import {
   AdminDashboardSelection,
   IAverageDailyData,
@@ -10,10 +9,11 @@ import {
   ITopSellingLocation,
   ITotalsByAccount,
 } from '@/types/user';
-import { eventService } from '../services';
+import { ITicketEventSalesData, ITicketSalesData } from '@/types/event';
+import { getLocationInfoFromDailyOrderData } from './eventUtils';
 import moment from 'moment';
 
-export function getDashboardDataFromOrders(
+export default function getDashboardDataFromOrders(
   currentDashboardSelection: AdminDashboardSelection,
   totals: IDashboardTotals,
 ): IDashboardData {
@@ -50,29 +50,29 @@ export function getDashboardDataFromOrders(
   const salesPerDayYearMap = new Map<number, number>();
 
   if (totals.dailyOrderData && totals.dailyOrderData.length > 0) {
-    // loop through daily order data to compile stats
+    // Loop through daily order data to compile stats
     totals.dailyOrderData.forEach((dailyOrderData: IDailyOrderData) => {
-      // purchase date for this iteration
-      const purchaseDate = moment(dailyOrderData.purchaseDate);
+      // Purchase date for this iteration
+      const dailyOrderPurchaseDate = moment(dailyOrderData.purchaseDate);
 
-      // get stats per TicketSocket account (keyed by ticketSocketId)
+      // Get stats per TicketSocket account (keyed by ticketSocketId)
       let accountOrderData: ITicketSalesData | undefined = totalsByAccountMap.get(
         dailyOrderData.ticketSocketId,
       );
-      if (!accountOrderData) {
+      if (accountOrderData === undefined) {
         accountOrderData = {
           PurchaseDate: '',
           Purchases: dailyOrderData.orders,
-          Tickets: dailyOrderData.tickets,
-          TicketsRefunded: dailyOrderData.numTicketsRefunded ?? 0,
           Revenue: dailyOrderData.ticketRevenueUsd,
-          ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
-          TotalRevenue: dailyOrderData.totalRevenueUsd,
-          RevenueRefunded: dailyOrderData.revenueRefunded ?? 0,
-          ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
-          TicketsChargedBack: dailyOrderData.numTicketsChargedBack ?? 0,
           RevenueChargedBack: dailyOrderData.revenueChargedBack ?? 0,
+          RevenueRefunded: dailyOrderData.revenueRefunded ?? 0,
           ServiceFeeRevenueChargedBack: dailyOrderData.serviceFeeRevenueChargedBack ?? 0,
+          ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
+          ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
+          Tickets: dailyOrderData.tickets,
+          TicketsChargedBack: dailyOrderData.numTicketsChargedBack ?? 0,
+          TicketsRefunded: dailyOrderData.numTicketsRefunded ?? 0,
+          TotalRevenue: dailyOrderData.totalRevenueUsd,
         };
       } else {
         accountOrderData.Purchases += dailyOrderData.orders;
@@ -100,33 +100,33 @@ export function getDashboardDataFromOrders(
       }
       totalsByAccountMap.set(dailyOrderData.ticketSocketId, accountOrderData);
 
-      // get stats for sales per month
-      const purchaseMonth = parseInt(purchaseDate.format('M'));
+      // Get stats for sales per month
+      const purchaseMonth = parseInt(dailyOrderPurchaseDate.format('M'));
       let salesPerMonth = salesPerMonthMap.get(purchaseMonth);
-      if (!salesPerMonth) {
+      if (salesPerMonth === undefined) {
         salesPerMonthMap.set(purchaseMonth, dailyOrderData.totalRevenueUsd);
       } else {
         salesPerMonth += dailyOrderData.totalRevenueUsd;
         salesPerMonthMap.set(purchaseMonth, salesPerMonth);
       }
 
-      // get stats for sales per day of week
-      const purchaseDayOfWeek = parseInt(purchaseDate.format('d'));
+      // Get stats for sales per day of week
+      const purchaseDayOfWeek = parseInt(dailyOrderPurchaseDate.format('d'));
       let salesPerDayYear = salesPerDayYearMap.get(purchaseDayOfWeek);
-      if (salesPerDayYear == undefined) {
+      if (salesPerDayYear === undefined) {
         salesPerDayYearMap.set(purchaseDayOfWeek, dailyOrderData.totalRevenueUsd);
       } else {
         salesPerDayYear += dailyOrderData.totalRevenueUsd;
         salesPerDayYearMap.set(purchaseDayOfWeek, salesPerDayYear);
       }
 
-      // compile data for current month
+      // Compile data for current month
       if (
-        purchaseDate.valueOf() >= startOfMonth.valueOf() &&
-        purchaseDate.valueOf() <= endOfMonth.valueOf()
+        dailyOrderPurchaseDate.valueOf() >= startOfMonth.valueOf() &&
+        dailyOrderPurchaseDate.valueOf() <= endOfMonth.valueOf()
       ) {
         let salesPerDayMonth = salesPerDayMonthMap.get(purchaseDayOfWeek);
-        if (salesPerDayMonth == undefined) {
+        if (salesPerDayMonth === undefined) {
           salesPerDayMonthMap.set(purchaseDayOfWeek, dailyOrderData.totalRevenueUsd);
         } else {
           salesPerDayMonth += dailyOrderData.totalRevenueUsd;
@@ -144,12 +144,12 @@ export function getDashboardDataFromOrders(
           dailyOrderData.serviceFeeRevenueRefunded ?? 0;
       }
 
-      // compile data for current selected date range
+      // Compile data for current selected date range
       if (
-        purchaseDate.valueOf() >= startDate.valueOf() &&
-        purchaseDate.valueOf() <= endEnd.valueOf()
+        dailyOrderPurchaseDate.valueOf() >= startDate.valueOf() &&
+        dailyOrderPurchaseDate.valueOf() <= endEnd.valueOf()
       ) {
-        // totals for current time period
+        // Totals for current time period
         totalPurchases += dailyOrderData.orders;
         totalTickets += dailyOrderData.tickets;
         totalTicketRevenue += dailyOrderData.ticketRevenueUsd;
@@ -159,24 +159,23 @@ export function getDashboardDataFromOrders(
         totalTicketRevenueRefunded += dailyOrderData.revenueRefunded ?? 0;
         totalServiceFeeRevenueRefunded += dailyOrderData.serviceFeeRevenueRefunded ?? 0;
 
-        // compile data for top sellers for current time period
+        // Compile data for top sellers for current time period
         if (dailyOrderData.sellerId) {
           let topSeller = topSellersMap.get(dailyOrderData.sellerId);
           if (topSeller) {
             topSeller.revenueUsd += dailyOrderData.totalRevenueUsd;
           } else {
             topSeller = {
-              sellerId: dailyOrderData.sellerId,
-              sellerName: dailyOrderData.sellerName ?? '',
               revenueUsd: dailyOrderData.totalRevenueUsd,
+              sellerId: dailyOrderData.sellerId,
+              sellerName: dailyOrderData.sellerName ?? '',              
             };
           }
           topSellersMap.set(dailyOrderData.sellerId, topSeller);
         }
 
-        // compile data per venue for selected time period
-        const location = eventService
-          .getLocationInfoFromDailyOrderData(dailyOrderData)
+        // Compile data per venue for selected time period
+        const location = getLocationInfoFromDailyOrderData(dailyOrderData)
           ?.trim();
 
         if (location && dailyOrderData.zip && dailyOrderData.venue) {
@@ -184,25 +183,25 @@ export function getDashboardDataFromOrders(
           if (topVenue) {
             topVenue.revenueUsd += dailyOrderData.totalRevenueUsd;
           } else {
-            topVenue = {
-              tooltip: `${dailyOrderData.venue} (${location} ${dailyOrderData.zip})`,
+            topVenue = {              
               location: dailyOrderData.venue,
               revenueUsd: dailyOrderData.totalRevenueUsd,
+              tooltip: `${dailyOrderData.venue} (${location} ${dailyOrderData.zip})`,
             };
           }
           topSellingVenuesMap.set(dailyOrderData.zip, topVenue);
         }
 
-        // compile data per location for selected time period
+        // Compile data per location for selected time period
         if (location) {
           let topCity = topSellingLocationsMap.get(location);
           if (topCity) {
             topCity.revenueUsd += dailyOrderData.totalRevenueUsd;
           } else {
-            topCity = {
-              tooltip: '',
-              location: location,
+            topCity = {              
+              location,
               revenueUsd: dailyOrderData.totalRevenueUsd,
+              tooltip: '',
             };
           }
           topSellingLocationsMap.set(location, topCity);
@@ -214,50 +213,50 @@ export function getDashboardDataFromOrders(
 
         const esd: ITicketEventSalesData = {
           EventId: dailyOrderData.ticketSocketEventId,
-          SellerName: sellerName,
           PurchaseDate: purchaseDate,
-          Purchases: dailyOrderData.orders,
-          Tickets: dailyOrderData.tickets,
+          Purchases: dailyOrderData.orders,          
           Revenue: dailyOrderData.ticketRevenueUsd,
-          ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
-          TotalRevenue: dailyOrderData.totalRevenueUsd,
-          RevenueRefunded: dailyOrderData.revenueRefunded ?? 0,
+          RevenueRefunded: dailyOrderData.revenueRefunded ?? 0,          
+          SellerName: sellerName,          
           ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
+          ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
+          Tickets: dailyOrderData.tickets,          
+          TotalRevenue: dailyOrderData.totalRevenueUsd,          
         };
 
-        // set key and see if we already have a map entry for it
+        // Set key and see if we already have a map entry for it
         const key = moment(dailyOrderData.purchaseDate).format('YYYY-MM-DD');
         const salesData = orderMap.get(key);
 
-        // create new entry
-        if (!salesData) {
+        // Create new entry
+        if (salesData === undefined) {
           const data: ITicketSalesData = {
             PurchaseDate: moment(key).format('M/D/YYYY'),
-            Tickets: dailyOrderData.tickets,
             Purchases: dailyOrderData.orders,
             Revenue: dailyOrderData.ticketRevenueUsd,
-            ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
-            TotalRevenue: dailyOrderData.totalRevenueUsd,
             RevenueRefunded: dailyOrderData.revenueRefunded ?? 0,
             ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
+            ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
+            Tickets: dailyOrderData.tickets,
+            TotalRevenue: dailyOrderData.totalRevenueUsd,            
             children: [
               {
-                SellerName: sellerName,
                 PurchaseDate: `${sellerName} (${moment(dailyOrderData.purchaseDate).format('M/D/YYYY')})`,
                 Purchases: dailyOrderData.orders,
-                Tickets: dailyOrderData.tickets,
                 Revenue: dailyOrderData.ticketRevenueUsd,
-                ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
-                TotalRevenue: dailyOrderData.totalRevenueUsd,
                 RevenueRefunded: dailyOrderData.revenueRefunded ?? 0,
-                ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
+                SellerName: sellerName,
+                ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,                
+                ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
+                Tickets: dailyOrderData.tickets,                
+                TotalRevenue: dailyOrderData.totalRevenueUsd,                
                 children: [esd],
               },
             ],
           };
           orderMap.set(key, data);
         } else {
-          // update existing entry
+          // Update existing entry
           salesData.Tickets += dailyOrderData.tickets;
           salesData.Revenue += dailyOrderData.ticketRevenueUsd;
           salesData.ServiceFees += dailyOrderData.serviceFeesRevenueUsd;
@@ -269,9 +268,9 @@ export function getDashboardDataFromOrders(
             (salesData.ServiceFeeRevenueRefunded ?? 0) +
             (dailyOrderData.serviceFeeRevenueRefunded ?? 0);
           if (salesData.children) {
-            if (salesData.children.find((x) => x.SellerName == esd.SellerName)) {
+            if (salesData.children.find((x) => x.SellerName === esd.SellerName)) {
               const sellerSalesData = salesData.children.map((seller) => {
-                if (seller.SellerName == esd.SellerName) {
+                if (seller.SellerName === esd.SellerName) {
                   seller.Tickets += dailyOrderData.tickets;
                   seller.Revenue += dailyOrderData.ticketRevenueUsd;
                   seller.ServiceFees += dailyOrderData.serviceFeesRevenueUsd;
@@ -286,14 +285,14 @@ export function getDashboardDataFromOrders(
                     if (
                       seller.children.find(
                         (x) =>
-                          x.EventId == dailyOrderData.ticketSocketEventId &&
-                          x.SellerName == sellerName,
+                          x.EventId === dailyOrderData.ticketSocketEventId &&
+                          x.SellerName === sellerName,
                       )
                     ) {
                       const eventSalesData = seller.children.map((evt) => {
                         if (
-                          evt.SellerName == esd.SellerName &&
-                          evt.EventId == esd.EventId
+                          evt.SellerName === esd.SellerName &&
+                          evt.EventId === esd.EventId
                         ) {
                           evt.Tickets += dailyOrderData.tickets;
                           evt.Revenue += dailyOrderData.ticketRevenueUsd;
@@ -322,30 +321,31 @@ export function getDashboardDataFromOrders(
               salesData.children = sellerSalesData;
             } else {
               salesData.children.push({
-                SellerName: sellerName,
                 PurchaseDate: `${sellerName} (${moment(dailyOrderData.purchaseDate).format('M/D/YYYY')})`,
                 Purchases: dailyOrderData.orders,
-                Tickets: dailyOrderData.tickets,
                 Revenue: dailyOrderData.ticketRevenueUsd,
-                ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
-                TotalRevenue: dailyOrderData.totalRevenueUsd,
                 RevenueRefunded: dailyOrderData.revenueRefunded ?? 0,
-                ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
+                SellerName: sellerName,
+                ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,                
+                ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
+                Tickets: dailyOrderData.tickets,
+                TotalRevenue: dailyOrderData.totalRevenueUsd,                
                 children: [esd],
               });
             }
           } else {
             salesData.children = [
               {
-                SellerName: sellerName,
+                
                 PurchaseDate: `${sellerName} (${moment(dailyOrderData.purchaseDate).format('M/D/YYYY')})`,
                 Purchases: dailyOrderData.orders,
-                Tickets: dailyOrderData.tickets,
                 Revenue: dailyOrderData.ticketRevenueUsd,
-                ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
-                TotalRevenue: dailyOrderData.totalRevenueUsd,
                 RevenueRefunded: dailyOrderData.revenueRefunded ?? 0,
-                ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
+                SellerName: sellerName,
+                ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,                
+                ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
+                Tickets: dailyOrderData.tickets,
+                TotalRevenue: dailyOrderData.totalRevenueUsd,                
                 children: [esd],
               },
             ];
@@ -356,9 +356,9 @@ export function getDashboardDataFromOrders(
       }
     });
   }
-  // end loop
+  // End loop
 
-  // data for Ticket Sales chart
+  // Data for Ticket Sales chart
   const ticketSalesData: ITicketSalesData[] = [];
   if (orderMap.size > 0) {
     const keys = Array.from(orderMap.keys()).sort();
@@ -367,13 +367,13 @@ export function getDashboardDataFromOrders(
     while (end.unix() >= start.unix()) {
       const key = end.format('YYYY-MM-DD');
       const salesData = orderMap.get(key);
-      if (!salesData) {
+      if (salesData === undefined) {
         const data: ITicketSalesData = {
           PurchaseDate: moment(key).format('MM/DD/YYYY'),
           Purchases: 0,
-          Tickets: 0,
           Revenue: 0,
           ServiceFees: 0,
+          Tickets: 0,          
           TotalRevenue: 0,
           children: [],
         };
@@ -390,43 +390,43 @@ export function getDashboardDataFromOrders(
     }
   }
 
-  // roll up data for month
+  // Roll up data for month
   const salesByMonth: ISalesData[] = [];
   if (salesPerMonthMap.size > 0) {
     const keys = Array.from(salesPerMonthMap.keys()).sort();
     keys.forEach((key) => {
       salesByMonth.push({
-        key: key,
+        key,
         value: salesPerMonthMap.get(key) ?? 0,
       });
     });
   }
 
-  // roll up daily data for month
+  // Roll up daily data for month
   const salesPerDayMonth: ISalesData[] = [];
   if (salesPerDayMonthMap.size > 0) {
     const keys = Array.from(salesPerDayMonthMap.keys()).sort();
     keys.forEach((key) => {
       salesPerDayMonth.push({
-        key: key,
+        key,
         value: salesPerDayMonthMap.get(key) ?? 0,
       });
     });
   }
 
-  // roll up daily data per year
+  // Roll up daily data per year
   const salesPerDayYear: ISalesData[] = [];
   if (salesPerDayYearMap.size > 0) {
     const keys = Array.from(salesPerDayYearMap.keys()).sort();
     keys.forEach((key) => {
       salesPerDayYear.push({
-        key: key,
+        key,
         value: salesPerDayYearMap.get(key) ?? 0,
       });
     });
   }
 
-  // get totals by TicketSocket account
+  // Get totals by TicketSocket account
   const totalsByAccount: ITotalsByAccount[] = [];
   if (totalsByAccountMap.size > 0) {
     const keys = Array.from(totalsByAccountMap.keys()).sort();
@@ -438,7 +438,7 @@ export function getDashboardDataFromOrders(
     });
   }
 
-  // get top-selling customers
+  // Get top-selling customers
   const topSellerValuesArray: ITopSeller[] = Array.from(topSellersMap.values());
   topSellerValuesArray.sort((a, b) =>
     a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0,
@@ -448,7 +448,7 @@ export function getDashboardDataFromOrders(
       ? topSellerValuesArray.slice(0, 10)
       : topSellerValuesArray;
 
-  // get top-selling locations
+  // Get top-selling locations
   const topLocationValuesArray: ITopSellingLocation[] = Array.from(
     topSellingLocationsMap.values(),
   );
@@ -460,7 +460,7 @@ export function getDashboardDataFromOrders(
       ? topLocationValuesArray.slice(0, 10)
       : topLocationValuesArray;
 
-  // get top-selling venues
+  // Get top-selling venues
   const topVenueValuesArray: ITopSellingLocation[] = Array.from(
     topSellingVenuesMap.values(),
   );
@@ -472,7 +472,7 @@ export function getDashboardDataFromOrders(
       ? topVenueValuesArray.slice(0, 10)
       : topVenueValuesArray;
 
-  // compute averages for month
+  // Compute averages for month
   const averageDailyTransactionsPerMonth = monthlyPurchases / totals.day;
   const averageDailyTicketsPerMonth = monthlyTickets / totals.day;
   const averageDailyTicketRevenuePerMonth = monthlyTicketRevenue / totals.day;
@@ -486,17 +486,17 @@ export function getDashboardDataFromOrders(
   const monthToDateServiceFeePerTicket = monthlyServiceFeeRevenue / monthlyTickets;
 
   const monthlyAverages: IAverageDailyData = {
-    transactions: averageDailyTransactionsPerMonth,
-    tickets: averageDailyTicketsPerMonth,
-    ticketRevenue: averageDailyTicketRevenuePerMonth,
-    serviceFees: averageDailyServiceFeesPerMonth,
-    totalRevenue: averageDailyTotalRevenuePerMonth,
     refunds: averageDailyRefundsPerMonth,
     revenueRefunded: averageDailyRevenueRefundedPerMonth,
     serviceFeeRevenueRefunded: averageDailyServiceFeeRevenueRefundedPerMonth,
+    serviceFees: averageDailyServiceFeesPerMonth,
+    ticketRevenue: averageDailyTicketRevenuePerMonth,
+    tickets: averageDailyTicketsPerMonth,
+    totalRevenue: averageDailyTotalRevenuePerMonth,    
+    transactions: averageDailyTransactionsPerMonth,
   };
 
-  // compute averages per year
+  // Compute averages per year
   const averageDailyTransactionsPerYear = totals.orders / totals.dayOfYear;
   const averageDailyTicketsPerYear = totals.tickets / totals.dayOfYear;
   const averageDailyTicketRevenuePerYear = totals.ticketRevenueUsd / totals.dayOfYear;
@@ -509,21 +509,21 @@ export function getDashboardDataFromOrders(
     (totals.serviceFeeRevenueRefunded ?? 0) / totals.dayOfYear;
 
   const yearlyAverages: IAverageDailyData = {
-    transactions: averageDailyTransactionsPerYear,
-    tickets: averageDailyTicketsPerYear,
-    ticketRevenue: averageDailyTicketRevenuePerYear,
-    serviceFees: averageDailyServiceFeesPerYear,
-    totalRevenue: averageDailyTotalRevenuePerYear,
     refunds: averageDailyRefundsPerYear,
     revenueRefunded: averageDailyRevenueRefundedPerYear,
     serviceFeeRevenueRefunded: averageDailyServiceFeeRevenueRefundedPerYear,
+    serviceFees: averageDailyServiceFeesPerYear,
+    ticketRevenue: averageDailyTicketRevenuePerYear,
+    tickets: averageDailyTicketsPerYear,
+    totalRevenue: averageDailyTotalRevenuePerYear,
+    transactions: averageDailyTransactionsPerYear,
   };
 
-  // compute percent of month/year goals
+  // Compute percent of month/year goals
   const percentMonthlyGoal = monthlyTotalRevenue / totals.monthlyRevenueGoal;
   const percentYearlyGoal = totals.totalRevenueUsd / totals.yearlyRevenueGoal;
 
-  // compute projected month/year revenue
+  // Compute projected month/year revenue
   const remainingDaysInMonth = totals.daysInMonth - totals.day;
   const projectedMonthTotalRevenue =
     monthlyTotalRevenue + averageDailyTotalRevenuePerMonth * remainingDaysInMonth;
@@ -532,41 +532,42 @@ export function getDashboardDataFromOrders(
   const projectedYearTotalRevenue =
     totals.totalRevenueUsd + averageDailyTotalRevenuePerYear * remainingDaysInYear;
 
-  // add to object for use in dashboard
+  // Add to object for use in dashboard
   const dashboardData: IDashboardData = {
-    ticketSalesData: ticketSalesData,
-    tickets: totalTickets,
-    ticketsRefunded: totalTicketsRefunded,
+    monthToDatePricePerTicket,
+    monthToDatePurchases: monthlyPurchases,
+    monthToDateRevenue: monthlyTicketRevenue,
+    monthToDateRevenueRefunded: monthlyTicketRevenueRefunded,
+    monthToDateServiceFeePerTicket,
+    monthToDateServiceFees: monthlyServiceFeeRevenue,
+    monthToDateServiceFeesRefunded: monthlyTicketServiceFeeRevenueRefunded,    
+    monthToDateTickets: monthlyTickets,
+    monthToDateTicketsRefunded: monthlyTicketsRefunded,    
+    monthToDateTotalRevenue: monthlyTotalRevenue,
+    monthlyAverages,
+    percentMonthlyGoal,
+    percentYearlyGoal,
+    projectedMonthTotalRevenue,
+    projectedYearTotalRevenue,
+    purchases: totalPurchases,
     revenue: totalTicketRevenue,
     revenueRefunded: totalTicketRevenueRefunded,
+    salesPerDayMonth,
+    salesPerDayYear,
+    salesPerMonth: salesByMonth,    
     serviceFeeRevenueRefunded: totalServiceFeeRevenueRefunded,
     serviceFees: totalServiceFees,
-    purchases: totalPurchases,
-    totalRevenue: totalRevenue,
-    topSellers: topSellers,
-    topLocations: topLocations,
-    topVenues: topVenues,
-    percentMonthlyGoal: percentMonthlyGoal,
-    percentYearlyGoal: percentYearlyGoal,
-    projectedMonthTotalRevenue: projectedMonthTotalRevenue,
-    projectedYearTotalRevenue: projectedYearTotalRevenue,
-    totals: totals,
-    monthToDatePurchases: monthlyPurchases,
-    monthToDateTickets: monthlyTickets,
-    monthToDateRevenue: monthlyTicketRevenue,
-    monthToDateTicketsRefunded: monthlyTicketsRefunded,
-    monthToDateRevenueRefunded: monthlyTicketRevenueRefunded,
-    monthToDateServiceFeesRefunded: monthlyTicketServiceFeeRevenueRefunded,
-    monthToDateServiceFees: monthlyServiceFeeRevenue,
-    monthToDateTotalRevenue: monthlyTotalRevenue,
-    salesPerMonth: salesByMonth,
-    salesPerDayMonth: salesPerDayMonth,
-    salesPerDayYear: salesPerDayYear,
-    totalsByAccount: totalsByAccount,
-    monthlyAverages: monthlyAverages,
-    yearlyAverages: yearlyAverages,
-    monthToDatePricePerTicket: monthToDatePricePerTicket,
-    monthToDateServiceFeePerTicket: monthToDateServiceFeePerTicket,
+    ticketSalesData,
+    tickets: totalTickets,
+    ticketsRefunded: totalTicketsRefunded,
+    topLocations,
+    topSellers,
+    topVenues,
+    totalRevenue,
+    totals,
+    totalsByAccount,
+    yearlyAverages,
+    
   };
 
   return dashboardData;

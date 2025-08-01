@@ -1,6 +1,6 @@
+import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import { FlatCompat } from '@eslint/eslintrc';
 
 const eslintConfig = [
   ...new FlatCompat({ baseDirectory: import.meta.dirname, }).extends('next', 'prettier'),
@@ -14,10 +14,12 @@ const eslintConfig = [
       "max-params": "off",
       "max-statements": "off",
       "no-magic-numbers": "off",
-      "no-ternary": "off",
+      "no-nested-ternary": "off",
+      "no-ternary": "off",      
       "no-undefined": "off",
       "one-var": "off",
       "radix": "off",
+      "require-unicode-regexp": "off",
     }
   }
 ];

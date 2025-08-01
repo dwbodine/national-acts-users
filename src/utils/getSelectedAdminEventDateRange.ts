@@ -1,4 +1,4 @@
-import { EventTabView, DateRange } from '@/types/user';
+import { DateRange, EventTabView } from '@/types/user';
 import moment from 'moment';
 
 export default function getSelectedAdminEventDateRange(
@@ -6,8 +6,8 @@ export default function getSelectedAdminEventDateRange(
   tabView: EventTabView,
 ) {
   const dateRange: DateRange = {
-    start: 0,
     end: 0,
+    start: 0,
   };
   switch (tabView) {
     case EventTabView.Agenda:
