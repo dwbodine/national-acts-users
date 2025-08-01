@@ -1,16 +1,16 @@
+import { GetRolesResponse, GetUsersResponse } from '@/types/responses';
+import { Role, User } from '@/types/user';
+import { setSelectedUser, setUsers } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { GetRolesResponse, GetUsersResponse, Role, User } from '@/types/user';
-import { Table } from 'rsuite';
-import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
-import { setSelectedUser, setUsers } from '@/lib/adminSelectionSlice';
-import router from 'next/router';
-import { useGetAllUsers } from '@/hooks/admin/useGetAllUsers';
+import { Table } from 'rsuite';
 import debouce from 'lodash.debounce';
+import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
-import React from 'react';
+import { useGetAllUsers } from '@/hooks/admin/useGetAllUsers';
 
 export default function AdminUsersIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -22,27 +22,25 @@ export default function AdminUsersIndex() {
   const [searchTerm, setSearchTerm] = useState('');
   const [tableLoading, setTableLoading] = useState(true);
 
-  const debouncedResults = useMemo(() => {
-    return debouce(setSearchTerm, 300);
-  }, []);
+  const debouncedResults = useMemo(() => debouce(setSearchTerm, 300), []);
 
   useEffect(() => {
     if (
-      allRoles == undefined
+      allRoles === undefined
     ) {
       setTableLoading(true);
       dispatch(setIsLoading(true));
       getAllRoles().then((resp: GetRolesResponse) => {
-        const roles = resp.roles;
+        const { roles } = resp;
         setAllRoles(roles);
         dispatch(setIsLoading(false));
         setTableLoading(false);
-      }); 
+      });
     } else if (!currentAdminSelection.users || currentAdminSelection.reloadUsers) {
       setTableLoading(true);
       dispatch(setIsLoading(true));
       getAllUsers().then((response: GetUsersResponse) => {
-        if (!response.userError && response.users) {
+        if (!response.error && response.users) {
           dispatch(setUsers(response.users));
         }
         dispatch(setIsLoading(false));
@@ -62,7 +60,7 @@ export default function AdminUsersIndex() {
     if (!userId || isNaN(userId)) {
       return;
     }
-    const user = currentAdminSelection.users?.find((x) => x.userId == userId);
+    const user = currentAdminSelection.users?.find((x) => x.userId === userId);
     if (user) {
       dispatch(setSelectedUser(user));
       setTableLoading(true);
@@ -74,25 +72,24 @@ export default function AdminUsersIndex() {
     let filteredUsers: User[] | undefined = users;
     if (searchTerm && searchTerm.length >= 2 && users && users.length > 0) {
       const srch = searchTerm.toLowerCase();
-      filteredUsers = users.filter((user) => {
-        return (
-          user.firstName?.toLowerCase().includes(srch) ||
-          user.lastName?.toLowerCase().includes(srch) ||
-          user.username.toLowerCase().includes(srch) ||
-          (!user.isAdmin && user.sellers?.find(x => x.sellerName.toLowerCase().includes(srch)) != undefined)
-        );
-      });
+      filteredUsers = users.filter((user) =>
+      (
+        user.firstName?.toLowerCase().includes(srch) ||
+        user.lastName?.toLowerCase().includes(srch) ||
+        user.username.toLowerCase().includes(srch) ||
+        (!user.isAdmin && user.sellers?.find(x => x.sellerName.toLowerCase().includes(srch)) !== undefined)
+      )
+      );
     }
     return filteredUsers;
   };
 
   const getRoleName = (roleId: number) => {
-    let roleName = '';
-    const role = allRoles?.find(x => x.roleId == roleId);
+    const role = allRoles?.find(x => x.roleId === roleId);
     if (role) {
-      roleName = role.roleName;
+      return role.roleName;
     }
-    return roleName;
+    return '';
   };
 
   const filteredUsers = filterUsers(currentAdminSelection.users);
@@ -105,7 +102,7 @@ export default function AdminUsersIndex() {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="form-control search-text-input no-print"
         placeholder="Search for users by name, username or client name..."
-        hidden={currentAdminSelection.users == undefined}
+        hidden={currentAdminSelection.users === undefined}
       />
       <Table
         height={500}
@@ -142,7 +139,7 @@ export default function AdminUsersIndex() {
               );
             }}
           </Cell>
-        </Column>        
+        </Column>
         <Column flexGrow={2}>
           <HeaderCell>Email</HeaderCell>
           <Cell className="admin-click-cell">
@@ -165,7 +162,7 @@ export default function AdminUsersIndex() {
               if (rowData.isAdmin) {
                 seller = 'System Admin';
               } else if (rowData.sellers && rowData.sellers.length > 1) {
-                const length = rowData.sellers.length;
+                const { length } = rowData.sellers;
                 seller = rowData.sellers.reduce((accumulator, currentValue, index) => {
                   let name = currentValue.sellerName;
                   if (currentValue.roleId && currentValue.roleId > 0) {
@@ -173,9 +170,8 @@ export default function AdminUsersIndex() {
                   }
                   if (index === length - 1) {
                     return accumulator + name;
-                  } else {
-                    return accumulator + name + ',  ';
                   }
+                  return `${accumulator}${name},  `;
                 }, '');
               } else if (rowData.sellers && rowData.sellers.length > 0) {
                 seller = `${rowData.sellers[0].sellerName} (${getRoleName(rowData.sellers[0].roleId ?? 0)})`;

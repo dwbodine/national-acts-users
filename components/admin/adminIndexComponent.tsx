@@ -1,14 +1,14 @@
 import { Col, Container, Row } from 'react-bootstrap';
+import { resetAdmin, setCountries, setReloadCountries } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import AdminIndexBar from './adminIndexBarComponent';
 import AdminList from './adminListComponent';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { resetAdmin, setCountries, setReloadCountries } from '@/lib/adminSelectionSlice';
+import { GetCountriesResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
-import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
-import { GetCountriesResponse } from '@/types/admin';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { useEffect } from 'react';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 
 export default function AdminIndex() {
   const dispatch = useDispatch();
@@ -16,21 +16,21 @@ export default function AdminIndex() {
   const { getAllCountries } = useGetAllCountries();
 
   useEffect(() => {
-      const timeoutId = setTimeout(() => {
-        dispatch(resetAdmin());
-        if (currentAdminSelection.reloadCountries) {
-          dispatch(setReloadCountries(false));
-          dispatch(setIsLoading(true));
-          getAllCountries().then((response: GetCountriesResponse) => {
-            if (response.countries && !response.countryError) {
-              dispatch(setCountries(response.countries));
-            } else {
-              toast.error(response.countryError);
-            }
-            dispatch(setIsLoading(false));
-          });
-        }
-      }, 500);
+    const timeoutId = setTimeout(() => {
+      dispatch(resetAdmin());
+      if (currentAdminSelection.reloadCountries) {
+        dispatch(setReloadCountries(false));
+        dispatch(setIsLoading(true));
+        getAllCountries().then((response: GetCountriesResponse) => {
+          if (response.countries && !response.error) {
+            dispatch(setCountries(response.countries));
+          } else {
+            toast.error(response.error);
+          }
+          dispatch(setIsLoading(false));
+        });
+      }
+    }, 500);
     return () => {
       clearTimeout(timeoutId);
     };

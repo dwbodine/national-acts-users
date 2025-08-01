@@ -1,15 +1,16 @@
-import { RootState } from '@/lib/store';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import router from 'next/router';
-import { Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 import { setAdminVenue, setReloadVenues } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button } from 'react-bootstrap';
+import { ExternalVenue } from '@/types/admin';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import { ModifyExternalVenueResponse } from '@/types/responses';
+import { RootState } from '@/lib/store';
+import { SelectPicker } from 'rsuite';
+import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
-import { ExternalVenue, ModifyExternalVenueResponse } from '@/types/admin';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { SelectPicker } from 'rsuite';
 
 export default function AdminVenueEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -23,11 +24,15 @@ export default function AdminVenueEdit() {
   const [countryId, setCountryId] = useState<number | undefined>(undefined);
   const [timezone, setTimezone] = useState<string | undefined>(undefined);
 
+  const goBack = () => {
+    router.push('/admin/venues/');
+  };
+
   useEffect(() => {
-    if (currentAdminSelection.selectedVenue == undefined) {
+    if (currentAdminSelection.selectedVenue === undefined) {
       goBack();
     } else if (
-      venueName == undefined
+      venueName === undefined
     ) {
       dispatch(setIsLoading(true));
       setVenueName(currentAdminSelection.selectedVenue.venue);
@@ -46,21 +51,17 @@ export default function AdminVenueEdit() {
     countryId
   ]);
 
-  const onCountryChange = (countryId: number | null) => {
-    setCountryId(countryId ?? undefined);
+  const onCountryChange = (cId: number | null) => {
+    setCountryId(cId ?? undefined);
   };
 
-  const onTimezoneChange = (timezone: string | null) => {
-    setTimezone(timezone ?? undefined);
-  };
-
-  const goBack = () => {
-    router.push('/admin/venues/');
+  const onTimezoneChange = (tz: string | null) => {
+    setTimezone(tz ?? undefined);
   };
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedVenue) {
-      return false;
+      return;
     }
 
     const isUpdate = (currentAdminSelection.selectedVenue.venueId > 0);
@@ -99,13 +100,13 @@ export default function AdminVenueEdit() {
 
     const venueToUpdate: ExternalVenue = {
       ...currentAdminSelection.selectedVenue,
+      address,
+      city,
+      country: { countryId },
+      state,
+      timezone: { timezone },
       venue: venueName,
-      address: address,
-      city: city,
-      state: state,
-      zipCode: zipCode,
-      country: { countryId: countryId },
-      timezone: { timezone: timezone }
+      zipCode,
     };
 
     updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
@@ -116,30 +117,30 @@ export default function AdminVenueEdit() {
         toast.success(message);
         router.push('/admin/venues/');
       } else {
-        toast.error(response.venueError ?? 'Error occurred while saving venue');
+        toast.error(response.error ?? 'Error occurred while saving venue');
         dispatch(setIsLoading(false));
       }
     });
   };
 
   const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
-        currentAdminSelection.countries.map((country) => {
-          return {
-            label: `${country.countryName}`,
-            value: country.countryId
-          }
-      }) : [];
+    currentAdminSelection.countries.map((country) => (
+      {
+        label: `${country.countryName}`,
+        value: country.countryId
+      }
+    )) : [];
 
- const selectedCountry = currentAdminSelection.countries?.find(x => x.countryId == countryId);
+  const selectedCountry = currentAdminSelection.countries?.find(x => x.countryId === countryId);
 
- const timeZoneList: ItemDataType<string>[] = selectedCountry?.timezones ?
-      selectedCountry.timezones.map((tz) => {
-        return {
-          label: `${tz.displayName}`,
-          value: tz.timezone
-        }
-    }) : [];
-   
+  const timeZoneList: ItemDataType<string>[] = selectedCountry?.timezones ?
+    selectedCountry.timezones.map((tz) => (
+      {
+        label: `${tz.displayName}`,
+        value: tz.timezone
+      }
+    )) : [];
+
 
   return currentAdminSelection.selectedVenue ? (
     <div className="admin-container">
@@ -201,7 +202,7 @@ export default function AdminVenueEdit() {
           menuAutoWidth={true}
           value={countryId}
           data={countryList}
-          size="lg"        
+          size="lg"
           onChange={(cId) => onCountryChange(cId)}
           cleanable={false}
         />
@@ -213,7 +214,7 @@ export default function AdminVenueEdit() {
           menuAutoWidth={true}
           value={timezone}
           data={timeZoneList}
-          size="lg"        
+          size="lg"
           onChange={(tz) => onTimezoneChange(tz)}
           cleanable={false}
         />

@@ -1,15 +1,15 @@
-import { useEffect } from 'react';
+import { Col, Row } from 'react-bootstrap';
 import router from 'next/router';
-import { useDispatch } from 'react-redux';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { Col, Row } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 export default function AdminList() {
   const dispatch = useDispatch();
   const { getUser } = useCurrentUser();
   const user = getUser();
-  const isDennis = (user?.isAdmin ?? false) && (user?.username == 'dwbodine@gmail.com');
+  const isDennis = (user?.isAdmin ?? false) && (user?.username === 'dwbodine@gmail.com');
 
   const goToAdminPage = (adminAction: string) => {
     switch (adminAction) {
@@ -88,7 +88,7 @@ export default function AdminList() {
                 <a className="admin-link" onClick={() => goToAdminPage('manage-global-seller-settings')}>
                   Manage Sellers
                 </a>
-              </li>              
+              </li>
               <li>
                 <a className="admin-link" onClick={() => goToAdminPage('manage-pages')}>
                   Manage Pages
