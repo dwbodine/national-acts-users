@@ -1,13 +1,13 @@
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
 import React, { ReactElement } from 'react';
-import moment from 'moment';
-import { useSelector } from 'react-redux';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
-import { RootState } from '@/lib/store';
-import { Button, Col, Container, Row } from 'react-bootstrap';
-import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { EventRowProps } from '@/types/props';
+import { RootState } from '@/lib/store';
+import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
+import moment from 'moment';
+import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
+import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useSelector } from 'react-redux';
 
 export default function EventMobileRow(props: EventRowProps) {
   const vipEvent = props.VipEvent;
@@ -30,7 +30,7 @@ export default function EventMobileRow(props: EventRowProps) {
 
   const statusSlug = getEventStatusSlug(vipEvent);
   let statusClass = '';
-  if (statusSlug != 'active') {
+  if (statusSlug !== 'active') {
     statusClass = `event-${statusSlug}`
   }
 
@@ -48,7 +48,7 @@ export default function EventMobileRow(props: EventRowProps) {
     ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
       ticketTypes.forEach((ticketType: TicketType) => {
         const key = `ttd${i}`;
-        const data = ticketTypeData.find((x) => x.TicketType == ticketType.ticketTypeName);
+        const data = ticketTypeData.find((x) => x.TicketType === ticketType.ticketTypeName);
         let number = 0;
         let total = '';
         if (data) {
@@ -65,19 +65,19 @@ export default function EventMobileRow(props: EventRowProps) {
             </div>,
           );
         }        
-        i++;
+        i += 1;
       });
     });
   }
 
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
-  const revenue = `$${new Number(vipEvent.totalRevenue ?? 0 - (vipEvent.revenueRefunded ?? 0)).toFixed(2)}`;
-  const serviceFees = `$${new Number(vipEvent.totalServiceFees ?? 0 - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2)}`;
-  const buttonText = currentSellerType == SellerType.Venue ? 'Customer List' : 'VIP List';
-  const noOrders = (!vipEvent.orders || vipEvent.orders.length == 0);
+  const revenue = `$${Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0)).toFixed(2)}`;
+  const serviceFees = `$${Number((vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2)}`;
+  const buttonText = currentSellerType === SellerType.Venue ? 'Customer List' : 'VIP List';
+  const noOrders = (!vipEvent.orders || vipEvent.orders.length === 0);
 
   return (
-    <tr className={'mobile-event-card-container ' + statusClass}>
+    <tr className={`mobile-event-card-container ${statusClass}`}>
       <td>
         <Container className="mobile-event-card" id={id}>
           <Row>
@@ -114,7 +114,7 @@ export default function EventMobileRow(props: EventRowProps) {
               {vipEvent.totalCheckedIn} / {vipEvent.totalTickets}
             </Col>
           </Row>
-          <Row hidden={ticketBreakdownRows.length == 0}>
+          <Row hidden={ticketBreakdownRows.length === 0}>
             <Col>Ticket type breakdown:</Col>
             <Col>{ticketBreakdownRows}</Col>
           </Row>

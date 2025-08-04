@@ -1,10 +1,18 @@
-import { AdminDashboardSelection, IDailyOrderData } from "@/types/user";
-import { IShirtSizeData, ITicketData, ITicketTypeData, Order, TicketType, Venue, VipEvent } from "@/types/event";
-import { DEFAULT_COUNTRY_ID } from "@/constants";
-import { ExternalVenue } from "@/types/admin";
-import { getShirtDataFromEvents } from "./getShirtData";
-import { getTicketDataFromEvents } from "./getTicketDataFromEvents";
-import moment from "moment";
+import { AdminDashboardSelection, IDailyOrderData } from '@/types/user';
+import {
+  IShirtSizeData,
+  ITicketData,
+  ITicketTypeData,
+  Order,
+  TicketType,
+  Venue,
+  VipEvent,
+} from '@/types/event';
+import { DEFAULT_COUNTRY_ID } from '@/constants';
+import { ExternalVenue } from '@/types/admin';
+import getShirtDataFromEvents from './getShirtData';
+import getTicketDataFromEvents from './getTicketDataFromEvents';
+import moment from 'moment';
 
 const getLocationInfoFromVenue = (venue: Venue): string => {
   let location = `${venue.city}`;
@@ -464,7 +472,7 @@ const exportDashboardOrdersToCsv = (
     return '';
   }
 
-  const {orders} = currentDashboardSelection.currentDashboardData;
+  const { orders } = currentDashboardSelection.currentDashboardData;
   const startDate = moment.unix(currentDashboardSelection.start).format('M/D/YYYY');
   const endDate = moment.unix(currentDashboardSelection.end).format('M/D/YYYY');
 
@@ -582,4 +590,4 @@ export {
   getOrderStatusSlug,
   getOrderStatusText,
   getTicketDataFromEvents,
-}
+};

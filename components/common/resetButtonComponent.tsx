@@ -1,5 +1,5 @@
-import { ResetButtonProps } from '@/types/props';
 import { Button } from 'react-bootstrap';
+import { ResetButtonProps } from '@/types/props';
 
 export default function ResetButton(props: ResetButtonProps) {
   const isDisabled = props.IsDisabled;

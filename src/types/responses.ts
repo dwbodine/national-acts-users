@@ -1,186 +1,200 @@
-import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from "./public";
-import { ExternalVenue, TicketSocketAccount } from "./admin";
-import { IDashboardTotals, Permission, Role, User, UserActivity, UserSeller } from "./user";
-import { Note, Order, Seller, Ticket, TicketSocketRefreshHistory, Tour, VipEvent } from "./event";
+import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from './public';
+import { ExternalVenue, TicketSocketAccount } from './admin';
+import {
+  IDashboardTotals,
+  Permission,
+  Role,
+  User,
+  UserActivity,
+  UserSeller,
+} from './user';
+import {
+  Note,
+  Order,
+  Seller,
+  Ticket,
+  TicketSocketRefreshHistory,
+  Tour,
+  VipEvent,
+} from './event';
 
 export interface GetResponseBase {
-    statusCode?: number;
-    error?: string;
+  statusCode?: number;
+  error?: string;
 }
 
 export interface PostReponseBase extends GetResponseBase {
-    success?: boolean;
+  success?: boolean;
 }
 
 export interface GetFaqCategoriesResponse extends GetResponseBase {
-    categories?: FaqCategory[];
+  categories?: FaqCategory[];
 }
 
 export interface GetFaqsResponse extends GetResponseBase {
-    faqs?: Faq[];
+  faqs?: Faq[];
 }
 
 export interface ModifyFaqResponse extends PostReponseBase {
-    updatedFaq?: Faq;
+  updatedFaq?: Faq;
 }
 
 export interface GetPagesResponse extends GetResponseBase {
-    pages?: Page[];
+  pages?: Page[];
 }
 
 export interface ModifyPageResponse extends PostReponseBase {
-    updatedPage?: Page;
+  updatedPage?: Page;
 }
 
 export interface GetExternalVenuesResponse extends GetResponseBase {
-    venues?: ExternalVenue[];
+  venues?: ExternalVenue[];
 }
 
 export interface GetCountriesResponse extends GetResponseBase {
-    countries?: Country[];
+  countries?: Country[];
 }
 
 export interface ModifyExternalVenueResponse extends PostReponseBase {
-    updatedVenue?: ExternalVenue;
+  updatedVenue?: ExternalVenue;
 }
 
 export interface GetExternalEventsResponse extends GetResponseBase {
-    events?: VipEvent[];
+  events?: VipEvent[];
 }
 
 export interface ModifyExternalEventResponse extends PostReponseBase {
-    updatedEvent?: VipEvent;
+  updatedEvent?: VipEvent;
 }
 
 export interface GetTicketSocketAccountsResponse extends GetResponseBase {
-    accounts?: TicketSocketAccount[];
+  accounts?: TicketSocketAccount[];
 }
 
 export interface ModifySellerResponse extends PostReponseBase {
-    updatedSeller?: Seller;
+  updatedSeller?: Seller;
 }
 
 export interface GetSettingsResponse extends GetResponseBase {
-    settings?: SiteSetting[];
+  settings?: SiteSetting[];
 }
 
 export interface UpdateSettingResponse extends PostReponseBase {
-    updatedSetting?: SiteSetting;
+  updatedSetting?: SiteSetting;
 }
 
 export interface GetEventsResponse extends GetResponseBase {
-    events?: VipEvent[];
+  events?: VipEvent[];
 }
 
 export interface GetToursResponse extends GetResponseBase {
-    tours?: Tour[];
+  tours?: Tour[];
 }
 
 export interface GetEventResponse extends GetResponseBase {
-    event?: VipEvent;
+  event?: VipEvent;
 }
 
 export interface GetNotesResponse extends GetResponseBase {
-    notes?: Note[];
+  notes?: Note[];
 }
 
 export interface GetDashboardOrdersResponse extends GetResponseBase {
-    totals?: IDashboardTotals;
+  totals?: IDashboardTotals;
 }
 
 export interface GetOrdersResponse extends GetResponseBase {
-    orders?: Order[];
+  orders?: Order[];
 }
 
 export interface GetOrderResponse extends GetResponseBase {
-    order?: Order;
+  order?: Order;
 }
 
 export interface ModifyEventResponse extends PostReponseBase {
-    updatedEvent?: VipEvent;
+  updatedEvent?: VipEvent;
 }
 
 export interface ModifyTourResponse extends PostReponseBase {
-    updatedTour?: Tour;
+  updatedTour?: Tour;
 }
 
 export interface RefreshHistoryResponse extends GetResponseBase {
-    results?: TicketSocketRefreshHistory;
+  results?: TicketSocketRefreshHistory;
 }
 
 export interface GetRefreshHistoryResponse extends GetResponseBase {
-    history?: TicketSocketRefreshHistory[];
+  history?: TicketSocketRefreshHistory[];
 }
 
 export interface ModifyOrderResponse extends PostReponseBase {
-    updatedOrder?: Order;
+  updatedOrder?: Order;
 }
 
 export interface ModifyNoteResponse extends PostReponseBase {
-    updatedNote?: Note;
+  updatedNote?: Note;
 }
 
 export interface ModifyTicketResponse extends PostReponseBase {
-    updatedTicket?: Ticket;
+  updatedTicket?: Ticket;
 }
 
 export interface GetSellerResponse extends GetResponseBase {
-    seller?: Seller;
+  seller?: Seller;
 }
 
 export interface GetSellersResponse extends GetResponseBase {
-    sellers?: Seller[];
+  sellers?: Seller[];
 }
 
 export interface GetPageTypesResponse extends GetResponseBase {
-    pageTypes?: PageType[];
+  pageTypes?: PageType[];
 }
 
 export interface LoginResponse extends PostReponseBase {
-    user?: User;
-};
+  user?: User;
+}
 
 export interface UserSellerResponse extends GetResponseBase {
-    userSeller?: UserSeller;
-};
+  userSeller?: UserSeller;
+}
 
 export interface UserLoginResponse extends PostReponseBase {
-    user?: User;
-};
+  user?: User;
+}
 
 export interface UserResponse extends PostReponseBase {
-    user?: User;
-};
+  user?: User;
+}
 
 export interface LogResponse extends GetResponseBase {
-    logs?: string;
-};
+  logs?: string;
+}
 
 export interface GetUsersResponse extends GetResponseBase {
-    users?: User[];
+  users?: User[];
 }
 
 export interface GetRolesResponse extends GetResponseBase {
-    roles?: Role[];
+  roles?: Role[];
 }
 
 export interface UpdateRoleResponse extends PostReponseBase {
-    updatedRole?: Role;
+  updatedRole?: Role;
 }
 
 export interface UpdateUserResponse extends PostReponseBase {
-    updatedUser?: User;
+  updatedUser?: User;
 }
 
 export interface GetPermissionsResponse extends GetResponseBase {
-    permissions?: Permission[];
+  permissions?: Permission[];
 }
 
 export interface LogActivityResponse extends PostReponseBase {
-    updatedActivity?: UserActivity;
+  updatedActivity?: UserActivity;
 }
 
 export interface GetActivityResponse extends PostReponseBase {
-    activities?: UserActivity[];
+  activities?: UserActivity[];
 }
-

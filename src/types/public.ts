@@ -94,5 +94,3 @@ export interface Page {
   lastUpdate?: string;
   sellers?: PageSeller[];
 }
-
-

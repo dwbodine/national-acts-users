@@ -1,5 +1,5 @@
-import { PrintButtonProps } from '@/types/props';
 import { Button } from 'react-bootstrap';
+import { PrintButtonProps } from '@/types/props';
 
 export default function PrintButton(props: PrintButtonProps) {
   const showPrint = props.ShowPrint;

@@ -6,7 +6,7 @@ import {
   LogActivityResponse,
   UpdateRoleResponse,
   UpdateUserResponse,
-  UserSellerResponse
+  UserSellerResponse,
 } from '@/types/responses';
 import {
   Permission,
@@ -44,7 +44,9 @@ export class UserService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching users - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching users - please contact your administrator';
     }
 
     return response;
@@ -64,7 +66,9 @@ export class UserService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching roles - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching roles - please contact your administrator';
     }
 
     return response;
@@ -84,7 +88,9 @@ export class UserService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching permissions - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching permissions - please contact your administrator';
     }
 
     return response;
@@ -107,7 +113,9 @@ export class UserService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching user seller - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching user seller - please contact your administrator';
     }
 
     return response;
@@ -129,7 +137,9 @@ export class UserService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while updating role - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while updating role - please contact your administrator';
     }
 
     return response;
@@ -151,7 +161,9 @@ export class UserService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while deleting roles - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while deleting roles - please contact your administrator';
     }
 
     return response;
@@ -173,7 +185,9 @@ export class UserService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while updating user - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while updating user - please contact your administrator';
     }
 
     return response;
@@ -195,7 +209,9 @@ export class UserService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while deleting user - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while deleting user - please contact your administrator';
     }
 
     return response;
@@ -224,7 +240,9 @@ export class UserService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while logging activity data - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while logging activity data - please contact your administrator';
     }
 
     return response;
@@ -259,7 +277,9 @@ export class UserService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching activity data - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching activity data - please contact your administrator';
     }
 
     return response;

@@ -11,8 +11,8 @@ export default function getFileNameFromReportSelection(
     currentReportSelection.seller &&
     currentReportSelection.seller.sellerId !== 0
   ) {
-    const {sellerName} = currentReportSelection.seller;
-    const {start, end} = currentReportSelection;
+    const { sellerName } = currentReportSelection.seller;
+    const { start, end } = currentReportSelection;
     let stub = '';
     const hash = moment().unix();
     if (fileNameStub) {

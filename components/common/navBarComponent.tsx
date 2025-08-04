@@ -1,13 +1,12 @@
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import ResetPasswordButton from './resetPasswordComponent';
-import LogoutButton from './logoutButtonComponent';
+import { Col, Row } from 'react-bootstrap';
 import Image from 'next/image';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
-import { useEffect } from 'react';
+import LogoutButton from './logoutButtonComponent';
+import { NavBarProps } from '@/types/props';
+import ResetPasswordButton from './resetPasswordComponent';
 import router from 'next/router';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { NavBarProps } from '@/types/props';
+import { useEffect } from 'react';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function NavBar(props: NavBarProps) {
   const windowSize = useWindowSize();
@@ -17,7 +16,7 @@ export default function NavBar(props: NavBarProps) {
   const navBarHidden = props.Hidden;
 
   useEffect(() => {
-    // blank
+    // Blank
   }, [windowSizeJson]);
 
   const goHome = () => {
@@ -29,7 +28,7 @@ export default function NavBar(props: NavBarProps) {
     }
   };
 
-  return !navBarHidden ? (
+  return (navBarHidden ? '' : 
     <>
       <Row className="no-print nav-bar">
         <Col className="logo-col">
@@ -48,7 +47,5 @@ export default function NavBar(props: NavBarProps) {
         </Col>
       </Row>
     </>
-  ) : (
-    ''
   );
 }

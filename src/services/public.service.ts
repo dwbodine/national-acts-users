@@ -1,8 +1,12 @@
-import { GetPageTypesResponse, GetPagesResponse, GetSellersResponse, GetSettingsResponse } from '@/types/responses';
+import {
+  GetPageTypesResponse,
+  GetPagesResponse,
+  GetSellersResponse,
+  GetSettingsResponse,
+} from '@/types/responses';
 import { Page, PageType, SiteSetting } from '@/types/public';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { Seller } from '../types/event';
-
 
 export class PublicService {
   protected readonly instance: AxiosInstance;
@@ -32,7 +36,9 @@ export class PublicService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching sellers - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching sellers - please contact your administrator';
     }
 
     return response;
@@ -57,7 +63,9 @@ export class PublicService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching page types - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching page types - please contact your administrator';
     }
 
     return response;
@@ -80,7 +88,9 @@ export class PublicService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching pages by type - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching pages by type - please contact your administrator';
     }
 
     return response;
@@ -103,7 +113,9 @@ export class PublicService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching settings - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching settings - please contact your administrator';
     }
 
     return response;

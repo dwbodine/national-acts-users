@@ -11,7 +11,7 @@ export default function getFileNameFromDashboardReportSelection(
     currentDashboardSelection.start &&
     currentDashboardSelection.end
   ) {
-    const {start, end} = currentDashboardSelection;
+    const { start, end } = currentDashboardSelection;
     const hash = moment().unix();
     fileName = `${reportName}_${start}_${end}_${hash}.csv`;
   }

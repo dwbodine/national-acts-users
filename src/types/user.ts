@@ -10,7 +10,6 @@ import {
   VipEvent,
 } from './event';
 
-
 export type UserSeller = {
   sellerId: number;
   sellerName: string;
@@ -363,4 +362,3 @@ export enum ForgotPasswordMode {
   ValidateResetCode,
   ResetPassword,
 }
-

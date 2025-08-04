@@ -3,7 +3,6 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import { User } from '../types/user';
 import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
 
-
 export class AuthService {
   protected readonly instance: AxiosInstance;
 
@@ -29,7 +28,9 @@ export class AuthService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching logs - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching logs - please contact your administrator';
     }
 
     return response;
@@ -49,7 +50,9 @@ export class AuthService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while fetching cron logs - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while fetching cron logs - please contact your administrator';
     }
 
     return response;
@@ -77,7 +80,8 @@ export class AuthService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error during login - please contact your administrator';
+      response.error =
+        err?.message ?? 'Unknown error during login - please contact your administrator';
     }
 
     return response;
@@ -104,7 +108,9 @@ export class AuthService {
       const err = e as AxiosError;
       const response: UserResponse = {};
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while resetting password - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while resetting password - please contact your administrator';
       return response;
     }
   };
@@ -125,7 +131,9 @@ export class AuthService {
       const err = e as AxiosError;
       const response: UserResponse = {};
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error during send of password reset email - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error during send of password reset email - please contact your administrator';
       return response;
     }
   };
@@ -146,7 +154,9 @@ export class AuthService {
       const err = e as AxiosError;
       const response: UserResponse = {};
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while validating reset code - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while validating reset code - please contact your administrator';
       return response;
     }
   };
@@ -177,7 +187,9 @@ export class AuthService {
       const err = e as AxiosError;
       const response: UserResponse = {};
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while resetting password - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while resetting password - please contact your administrator';
       return response;
     }
   };
@@ -214,7 +226,9 @@ export class AuthService {
       const err = e as AxiosError;
       const response: UserResponse = {};
       response.statusCode = err?.response?.status ?? 500;
-      response.error = err?.message ?? 'Unknown error while registering user - please contact your administrator';
+      response.error =
+        err?.message ??
+        'Unknown error while registering user - please contact your administrator';
       return response;
     }
   };
