@@ -1,5 +1,5 @@
-import { MonthToDateWidgetProps } from '@/types/props';
 import { Col, Row } from 'react-bootstrap';
+import { MonthToDateWidgetProps } from '@/types/props';
 
 export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
   const dashBoardData = props.DashBoardData;

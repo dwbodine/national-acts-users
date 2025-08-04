@@ -1,7 +1,7 @@
+import { Col, Row } from 'react-bootstrap';
+import { ReactElement } from 'react';
 import { SalesPerMonthWidgetProps } from '@/types/props';
 import moment from 'moment';
-import { ReactElement } from 'react';
-import { Col, Row } from 'react-bootstrap';
 
 export default function SalesPerMonthWidget(props: SalesPerMonthWidgetProps) {
   const salesPerMonth = props.SalesPerMonth;
@@ -10,10 +10,10 @@ export default function SalesPerMonthWidget(props: SalesPerMonthWidgetProps) {
   const salesRows: ReactElement[] = [];
   const currentYear = selectedYear ? selectedYear : moment().year();
 
-  if (salesPerMonth != undefined) {
-    for (let i = 0; i < 12; i++) {
+  if (salesPerMonth !== undefined) {
+    for (let i = 0; i < 12; i += 1) {
       const monthName = moment([currentYear, i, 1]).format('MMMM');
-      const monthVal = salesPerMonth.find((x) => x.key == i + 1)?.value ?? 0;
+      const monthVal = salesPerMonth.find((x) => x.key === i + 1)?.value ?? 0;
       const key = `salePerMonth${i}`;
       salesRows.push(
         <Row key={key}>

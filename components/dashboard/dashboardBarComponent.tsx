@@ -1,23 +1,21 @@
-import DateRangeSelector from '../common/dateRangeSelectorComponent';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
+import { Button, Col, Row } from 'react-bootstrap';
+import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import {
   setCurrentDashboardData,
   setDashboardDateRange,
 } from '@/lib/dashboardSelectionSlice';
-import { Button } from 'react-bootstrap';
-import { useGetExport } from '@/hooks/common/useGetExport';
-import getFileNameFromDashboardReportSelection from '@/utils/getFileNameFromDashboardReportSelection';
-import downloadFile from '@/utils/downloadFile';
-import { useGetAllOrders } from '@/hooks/order/useGetAllOrders';
-import moment from 'moment';
-import { GetOrdersResponse } from '@/types/event';
-import { toast } from 'react-toastify';
-import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { AdminDashboardSelection } from '@/types/user';
+import DateRangeSelector from '../common/dateRangeSelectorComponent';
+import { GetOrdersResponse } from '@/types/responses';
+import { RootState } from '@/lib/store';
+import downloadFile from '@/utils/downloadFile';
+import getFileNameFromDashboardReportSelection from '@/utils/getFileNameFromDashboardReportSelection';
+import moment from 'moment';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { toast } from 'react-toastify';
+import { useGetAllOrders } from '@/hooks/order/useGetAllOrders';
+import { useGetExport } from '@/hooks/common/useGetExport';
 
 export default function DashboardBar() {
   const dispatch = useDispatch();
@@ -41,7 +39,7 @@ export default function DashboardBar() {
     }
   ];
 
-  for (let i = moment().quarter(); i >= 1; i--) {
+  for (let i = moment().quarter(); i >= 1; i -= 1) {
     ranges.push(
       {
         label: `Q${i} ${moment().year()}`,
@@ -50,7 +48,7 @@ export default function DashboardBar() {
     )
   }
 
-  for (let i = moment().year(); i >= 2022; i--) {
+  for (let i = moment().year(); i >= 2022; i -= 1) {
     const startDateStr = `${i}-01-01`;
     ranges.push(
       {
@@ -71,7 +69,7 @@ export default function DashboardBar() {
       toast.warning("Invalid selection: dates must be from this year or earlier");
       return;
     }
-    if (startDate.year() != endDate.year()) {
+    if (startDate.year() !== endDate.year()) {
       toast.warning("Invalid selection: selected dates must both be in the same year");
       return;
     }
@@ -95,7 +93,7 @@ export default function DashboardBar() {
 
     getAllOrders(dashboardSelection.start, dashboardSelection.end).then(
       (response: GetOrdersResponse) => {
-        if (response.orders && !response.orderError) {
+        if (response.orders && !response.error) {
           if (dashboardSelection.currentDashboardData) {
             const dashboardData = {...dashboardSelection.currentDashboardData };
             dashboardData.orders = response.orders;
