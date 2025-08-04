@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react';
+import { Venue, VipEvent } from '@/types/event';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
-import ReportsListHomeButton from '../reportsListHomeButton';
-import { GetEventsResponse, Venue, VipEvent } from '@/types/event';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useGetMissingVenueEvents } from '@/hooks/report/useGetMissingVenueEvents';
-import { Table } from 'rsuite';
-import moment from 'moment';
-import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
-import { resetAdmin } from '@/lib/adminSelectionSlice';
+import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { DEFAULT_COUNTRY_ID } from '@/constants';
+import { GetEventsResponse } from '@/types/responses';
+import ReportsListHomeButton from '../reportsListHomeButton';
+import { RootState } from '@/lib/store';
+import { Table } from 'rsuite';
+import moment from 'moment';
+import { resetAdmin } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
+import { useGetMissingVenueEvents } from '@/hooks/report/useGetMissingVenueEvents';
 
 export default function ReportsMissingVenues() {
   const { Column, HeaderCell, Cell } = Table;
@@ -46,21 +47,21 @@ export default function ReportsMissingVenues() {
 
   const getVenueInformation = (venue: Venue): string => {
     let location = `${venue.name}, ${venue.address1}`;
-    if (venue.address2 && venue.address2.trim() != '') {
+    if (venue.address2 && venue.address2.trim() !== '') {
       location += `, ${venue.address2}`;
     }
     location += `, ${venue.city}`;
-    if (venue.state && venue.state.trim() != '') {
+    if (venue.state && venue.state.trim() !== '') {
       location += `, ${venue.state}`;
     }
-    if (venue.postalCode && venue.postalCode.trim() != '') {
+    if (venue.postalCode && venue.postalCode.trim() !== '') {
       location += ` ${venue.postalCode}`;
     }
     if (
       venue.country && venue.country.countryName && 
-      venue.country.countryId != DEFAULT_COUNTRY_ID
+      venue.country.countryId !== DEFAULT_COUNTRY_ID
     ) {
-      location += ', ' + venue.country.countryName;
+      location += `,  ${venue.country.countryName}`;
     }
     return location;
   };
