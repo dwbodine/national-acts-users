@@ -1,5 +1,5 @@
-import { AddNoteModalProps } from "@/types/props";
 import { Button, Form } from "react-bootstrap";
+import { AddNoteModalProps } from "@/types/props";
 import { Modal } from "rsuite";
 
 export default function AddNoteModal(props: AddNoteModalProps) {

@@ -1,12 +1,12 @@
-import { setIsLoading } from "@/lib/globalSelectionSlice";
-import { RootState } from "@/lib/store";
-import { VipEvent } from "@/types/event";
-import { useEffect, useState } from "react"
 import { Col, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import MonthView from "./monthViewComponent";
+import { RootState } from "@/lib/store";
+import { VipEvent } from "@/types/event";
 import moment from "moment";
 import setFocusToControl from "@/utils/setFocusToControl";
-import MonthView from "./monthViewComponent";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
 
 export default function AllEventsMonth() {
     const dispatch = useDispatch();
@@ -14,16 +14,16 @@ export default function AllEventsMonth() {
     const [vipEvents, setVipEvents] = useState<VipEvent[] | undefined>(undefined);
 
     useEffect(() => {
-        if (currentReportSelection.currentEvents != undefined && currentReportSelection.notes != undefined) {
+        if (currentReportSelection.currentEvents !== undefined && currentReportSelection.notes !== undefined) {
             setVipEvents(currentReportSelection.currentEvents);
             dispatch(
                 setIsLoading(false)
             );
             if (
                 currentReportSelection.focusControl &&
-                currentReportSelection.focusControl != ''
+                currentReportSelection.focusControl !== ''
               ) {
-                const focusControl: string = currentReportSelection.focusControl;
+                const {focusControl} = currentReportSelection;
                 setTimeout(() => {
                   setFocusToControl(focusControl);
                 }, 50);
@@ -35,14 +35,14 @@ export default function AllEventsMonth() {
     const endOfMonth = currentReportSelection.end ? moment.unix(currentReportSelection.end) : undefined;
 
     return (
-        (vipEvents != undefined) ?
+        (vipEvents === undefined) ?
+        <Row>
+            <Col>No data returned</Col>
+        </Row> :
         <Row>
             <Col>
                 <MonthView StartOfMonth={startOfMonth?.format('MM/DD/YYYY')} EndOfMonth={endOfMonth?.format('MM/DD/YYYY')} Events={vipEvents} Notes={currentReportSelection?.notes} /> 
             </Col>
-        </Row> :
-        <Row>
-            <Col>No data returned</Col>
-        </Row>
+        </Row>        
     )
 }

@@ -1,6 +1,6 @@
-import { EditNoteModalProps } from "@/types/props";
 import { Button, Form } from "react-bootstrap";
 import { DatePicker, Modal } from "rsuite";
+import { EditNoteModalProps } from "@/types/props";
 
 export default function EditNoteModal(props: EditNoteModalProps) {
     const id = props.Id;

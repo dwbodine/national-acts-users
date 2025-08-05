@@ -1,20 +1,20 @@
-import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
-import { VipEvent } from '@/types/event';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
-import { RootState } from '@/lib/store';
 import { ReactElement, useState } from 'react';
-import { useAddNote } from '@/hooks/admin/useAddNote';
-import { toast } from 'react-toastify';
-import { useEditNote } from '@/hooks/admin/useEditNote';
-import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
-import { FaX } from 'react-icons/fa6';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { FaExclamationTriangle } from 'react-icons/fa';
+import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import AddNoteModal from '../common/addNoteModalComponent';
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import EditNoteModal from '../common/editNoteModalComponent';
+import { FaExclamationTriangle } from 'react-icons/fa';
+import { FaX } from 'react-icons/fa6';
 import { MonthDayProps } from '@/types/props';
+import { RootState } from '@/lib/store';
+import { VipEvent } from '@/types/event';
+import moment from 'moment';
+import { toast } from 'react-toastify';
+import { useAddNote } from '@/hooks/admin/useAddNote';
+import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
+import { useEditNote } from '@/hooks/admin/useEditNote';
+import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 
 export default function MonthDay(props: MonthDayProps) {
     const dispatch = useDispatch();
@@ -38,10 +38,10 @@ export default function MonthDay(props: MonthDayProps) {
     const { deleteNote } = useDeleteNote();
 
     const handleNotesOpen = () => setNotesOpen(true);
-    const handleDisplayNoteOpen = (noteId: number, noteText: string, noteTitle: string, noteDate: Date, isCompleted: boolean) => {
-        setNoteId(noteId);
-        setDisplayNoteTitle(noteTitle);
-        setDisplayNoteText(noteText);
+    const handleDisplayNoteOpen = (nId: number, nText: string, nTitle: string, noteDate: Date, isCompleted: boolean) => {
+        setNoteId(nId);
+        setDisplayNoteTitle(nTitle);
+        setDisplayNoteText(nText);
         setDisplayNoteDate(noteDate);
         setNoteIsCompleted(isCompleted);
         setDisplayNoteOpen(true);
@@ -53,9 +53,9 @@ export default function MonthDay(props: MonthDayProps) {
             setNoteId(0);
             setDisplayNoteText('');
             setNoteIsCompleted(false);
-            setDisplayNoteTitle('');    
-            setDisplayNoteDate(undefined);        
-        }, 500);        
+            setDisplayNoteTitle('');
+            setDisplayNoteDate(undefined);
+        }, 500);
     };
 
     const onNoteDateChange = (date: Date) => {
@@ -77,12 +77,12 @@ export default function MonthDay(props: MonthDayProps) {
                     dispatch(setReloadAdminEvents(true));
                 } else {
                     toast.error(response.noteError ?? "Unexpected error occurred while adding note");
-                }                
+                }
             });
     };
 
     const editNewNoteAndMarkComplete = () => {
-        if (!monthDate || !displayNoteText || !displayNoteTitle || noteId == 0 || !displayNoteDate) {
+        if (!monthDate || !displayNoteText || !displayNoteTitle || noteId === 0 || !displayNoteDate) {
             return;
         }
         editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true)
@@ -98,7 +98,7 @@ export default function MonthDay(props: MonthDayProps) {
     };
 
     const editNewNote = () => {
-        if (!monthDate || !displayNoteText || !displayNoteTitle || noteId == 0 || !displayNoteDate) {
+        if (!monthDate || !displayNoteText || !displayNoteTitle || noteId === 0 || !displayNoteDate) {
             return;
         }
         editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, noteIsCompleted)
@@ -109,38 +109,13 @@ export default function MonthDay(props: MonthDayProps) {
                     dispatch(setReloadAdminEvents(true));
                 } else {
                     toast.error(response.noteError ?? "Unexpected error occurred while adding note");
-                }                
+                }
             });
     };
 
-    const confirmDeleteNote = (noteId: number) => {
-        if (!noteId) {
-            return;
-        }
-    
-        const message: string =
-        'You are about to delete this note';
-        toast.warning(
-        <ConfirmationDialog
-            Message={message}
-            ConfirmText="Yes"
-            CancelText="No"
-            OnConfirm={() => deleteSelectedNote(noteId)}
-            OnCancel={() => {
-                toast.dismiss();
-            }}
-        />,
-        {
-            position: 'top-center',
-            autoClose: false,
-            closeOnClick: false,
-        },
-        );
-    };
-    
-    const deleteSelectedNote = (noteId: number) => {
+    const deleteSelectedNote = (nId: number) => {
         toast.dismiss();
-        deleteNote(noteId)
+        deleteNote(nId)
             .then((response) => {
                 if (response.success && !response.noteError) {
                     toast.success("Calendar note deleted");
@@ -149,14 +124,41 @@ export default function MonthDay(props: MonthDayProps) {
                     toast.error(response.noteError ?? "Unexpected error occurred while deleting note");
                 }
             });
-    }
+    };
+
+    const confirmDeleteNote = (nId: number) => {
+        if (!nId) {
+            return;
+        }
+
+        const message: string =
+            'You are about to delete this note';
+        toast.warning(
+            <ConfirmationDialog
+                Message={message}
+                ConfirmText="Yes"
+                CancelText="No"
+                OnConfirm={() => deleteSelectedNote(nId)}
+                OnCancel={() => {
+                    toast.dismiss();
+                }}
+            />,
+            {
+                autoClose: false,
+                closeOnClick: false,
+                position: 'top-center',
+            },
+        );
+    };
+
+
 
     const setRowExpanded = (vipEvent: VipEvent) => {
         const eventId = vipEvent.externalEventId;
         let expandedRowKey = currentReportSelection.expandedRow;
         let expandedEvent: VipEvent | undefined = vipEvent;
         let focusControlId = `expandedRow_${eventId}`;
-        if (expandedRowKey == eventId) {
+        if (expandedRowKey === eventId) {
             expandedRowKey = undefined;
             expandedEvent = undefined;
             focusControlId = '';
@@ -178,12 +180,12 @@ export default function MonthDay(props: MonthDayProps) {
     if (notes && notes.length > 0) {
         notes.forEach((note, i) => {
             if (!note.ticketSocketEventId) {
-                const noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
+                const nText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
                 const noteClass = note.isCompleted ? "month-day-note-completed" : "month-day-note";
                 noteRows.push(<div key={`wdNote_${key}_${i}`} className={noteClass}>
-                                    <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '', moment(note.noteTimestamp).toDate(), note.isCompleted ?? false)}>{noteText}</span>
-                                    <span className="note-x"><FaX onClick={() => confirmDeleteNote(note.noteId)} /></span>
-                            </div>)
+                    <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '', moment(note.noteTimestamp).toDate(), note.isCompleted ?? false)}>{nText}</span>
+                    <span className="note-x"><FaX onClick={() => confirmDeleteNote(note.noteId)} /></span>
+                </div>)
             }
         });
     }
@@ -195,7 +197,7 @@ export default function MonthDay(props: MonthDayProps) {
             const statusText = getEventStatusText(evt, true);
             let statusClass = "month-day-event";
             let title = '';
-            if (statusSlug != "active") {
+            if (statusSlug !== "active") {
                 statusClass += ` month-day-event-${statusSlug}`;
                 title = statusText;
             }
@@ -214,8 +216,8 @@ export default function MonthDay(props: MonthDayProps) {
 
             const listSent = (evt.listSentToBand ?? false);
             const listSentVips = evt.listSentNumVips ?? 0;
-            const showVipAlert = (listSent && (listSentVips != sold));
-            
+            const showVipAlert = (listSent && (listSentVips !== sold));
+
             let alertIcon: ReactElement = <></>;
             if (showVipAlert) {
                 alertIcon = <FaExclamationTriangle className="month-day-event-alert" title={`Current total of ${sold} differs from the count of ${listSentVips} when the list was sent to the band`}></FaExclamationTriangle>
@@ -233,7 +235,7 @@ export default function MonthDay(props: MonthDayProps) {
             <div title={`Add a note for ${displayDate}`} onClick={handleNotesOpen} className="month-day-number">{monthDate?.format('D')}</div>
             {noteRows}
             {eventRows}
-            <AddNoteModal 
+            <AddNoteModal
                 Id="addNoteModal"
                 NotesOpen={notesOpen}
                 HandleNotesClose={handleNotesClose}

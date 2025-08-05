@@ -1,16 +1,16 @@
-import moment from 'moment';
-import { Note, VipEvent } from '@/types/event';
 import { Col, Row } from 'react-bootstrap';
-import WeekDay from './weekDayComponent';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
+import { Note, VipEvent } from '@/types/event';
+import { useDispatch, useSelector } from 'react-redux';
 import { EventTabView } from '@/types/user';
-import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
-import { WeekViewProps } from '@/types/props';
 import { ReactElement } from 'react';
+import { RootState } from '@/lib/store';
+import WeekDay from './weekDayComponent';
+import { WeekViewProps } from '@/types/props';
+import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
+import moment from 'moment';
+import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 
 export default function WeekView(props: WeekViewProps) {
     const startOfWeek = props.StartOfWeek;
@@ -45,14 +45,15 @@ export default function WeekView(props: WeekViewProps) {
     const weekdays: ReactElement[] = [];
     if (startOfWeek) {
         let displayDate = moment(startOfWeek);
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 7; i += 1) {
             let filteredEvents: VipEvent[] = [];
             let filteredNotes: Note[] = [];
+            const currentDate = displayDate;
             if (events && events.length > 0) {
-                filteredEvents = events.filter(x => moment(x.eventDate).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.eventDate).valueOf() <= displayDate.endOf('day').valueOf());
+                filteredEvents = events.filter(x => moment(x.eventDate).valueOf() >= currentDate.startOf('day').valueOf() && moment(x.eventDate).valueOf() <= currentDate.endOf('day').valueOf());
             }
             if (notes && notes.length > 0) {
-                filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= displayDate.endOf('day').valueOf())
+                filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= currentDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= currentDate.endOf('day').valueOf())
             }
             weekdays.push(<WeekDay key={i} WeekDayNumber={i}
                 WeekDate={displayDate.format('MM/DD/YYYY')}

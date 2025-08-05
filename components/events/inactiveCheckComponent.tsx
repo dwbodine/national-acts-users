@@ -1,9 +1,10 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { ChangeEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import type { RootState } from '../../src/lib/store';
 import { FormCheck } from 'react-bootstrap';
-import { setShowInactive } from '@/lib/adminEventsSelectionSlice';
+import type { RootState } from '../../src/lib/store';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { setShowInactive } from '@/lib/adminEventsSelectionSlice';
+
 
 export default function InactiveCheck() {
   const dispatch = useDispatch();
