@@ -1,4 +1,3 @@
-/* eslint-disable no-undef-init */
 import { User } from '@/types/user';
 
 export const useCurrentUser = () => {

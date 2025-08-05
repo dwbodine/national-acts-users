@@ -1,7 +1,7 @@
-import { ActivePageKey } from '@/constants';
-import AdminPage from '../../../../components/common/adminPageComponent';
-import AdminOrdersIndex from '../../../../components/admin/events/orders/adminOrderIndexComponent';
 import { useEffect, useState } from 'react';
+import { ActivePageKey } from '@/constants';
+import AdminOrdersIndex from '../../../../components/admin/events/orders/adminOrderIndexComponent';
+import AdminPage from '../../../../components/common/adminPageComponent';
 
 export default function AdminOrders() {
   const title = 'Client Portal - Admin Orders';

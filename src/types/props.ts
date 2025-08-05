@@ -1,4 +1,16 @@
-import { ActivePageKey } from '@/constants';
+import { Country, PageSeller } from './public';
+import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
+import { Dispatch, JSX, ReactElement, SetStateAction } from 'react';
+import {
+  IAverageDailyData,
+  IDashboardData,
+  IDashboardTotals,
+  ISalesData,
+  ITopSeller,
+  ITopSellingLocation,
+  Role,
+  UserActivityType,
+} from './user';
 import {
   IShirtData,
   ITicketData,
@@ -12,19 +24,7 @@ import {
   TicketType,
   VipEvent,
 } from './event';
-import { Country, PageSeller } from './public';
-import {
-  IAverageDailyData,
-  IDashboardData,
-  IDashboardTotals,
-  ISalesData,
-  ITopSeller,
-  ITopSellingLocation,
-  Role,
-  UserActivityType,
-} from './user';
-import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import { Dispatch, JSX, ReactElement, SetStateAction } from 'react';
+import { ActivePageKey } from '@/constants';
 import { CellProps } from 'rsuite';
 
 export interface EditProps {
