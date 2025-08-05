@@ -1,5 +1,6 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
+import { GetEventsResponse, GetToursResponse } from '@/types/responses';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
 import { setDateRange, setEvents, setReloadEvents, setTours } from '@/lib/reportSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +8,6 @@ import { useEffect, useMemo, useState } from 'react';
 import EventMobileRow from '../../common/eventMobileRowComponent';
 import EventRow from '../../common/eventRowComponent';
 import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
-import { GetToursResponse } from '@/types/responses';
 import { RingLoader } from 'react-spinners';
 import type { RootState } from '../../../src/lib/store';
 import TicketSalesChart from '../../common/ticketSalesChartComponent';
@@ -121,8 +121,8 @@ export default function CurrentEvents() {
       if (currentReportSelection.reloadEvents) {
         setChartsHidden(true);
         dispatch(setReloadEvents(false));
-        getEvents(currentReportSelection).then((response) => {
-          if (!response.eventError) {
+        getEvents(currentReportSelection).then((response: GetEventsResponse) => {
+          if (!response.error) {
             if (response.events && response.events.length > 0) {
               dispatch(setEvents(response.events));
               const start = moment(response.events[0].eventDate).unix();

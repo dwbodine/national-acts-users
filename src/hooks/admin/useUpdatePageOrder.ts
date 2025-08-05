@@ -1,4 +1,4 @@
-import { ModifyPageResponse } from '@/types/admin';
+import { ModifyPageResponse } from '@/types/responses';
 import { Page } from '@/types/public';
 import { adminService } from '../../services';
 

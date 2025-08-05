@@ -3,6 +3,7 @@ import { KeyboardEvent, useEffect, useState } from 'react';
 import CheckAuth from '../components/common/checkAuthComponent';
 import Container from 'react-bootstrap/Container';
 import Image from 'next/image';
+import { UserLoginResponse } from '@/types/responses';
 import { setForAdmin } from '@/lib/reportSelectionSlice';
 import { useDispatch } from 'react-redux';
 import { useLogin } from '../src/hooks/user/useLogin';
@@ -44,7 +45,7 @@ export default function Login() {
       setLoginError('Please enter username and password');
     } else {
       login(name, password)
-        .then((response) => {
+        .then((response: UserLoginResponse) => {
           if (response) {
             if (response.user && response.user.isAuthenticated) {
               dispatch(setForAdmin(response.user.isAdmin));
@@ -57,8 +58,8 @@ export default function Login() {
               } else {
                 router.push('/');
               }
-            } else if (response.loginError) {
-              setLoginError(response.loginError);
+            } else if (response.error) {
+              setLoginError(response.error);
             } else {
               setLoginError(
                 'Unknown error during login - please contact your administrator',

@@ -1,4 +1,4 @@
-import { GetEventsResponse } from '@/types/event';
+import { GetEventsResponse } from '@/types/responses';
 import { eventService } from '../../services';
 
 export const useGetAdminSellerEvents = () => {

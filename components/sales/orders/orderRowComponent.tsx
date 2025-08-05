@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import AttendeeRow from './attendeeRowComponent';
 import { OrderRowProps } from '@/types/props';
+import { getOrderStatusText } from '@/utils/eventUtils';
 import moment from 'moment';
-import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
 
 export default function OrderRow(props: OrderRowProps) {
   const ticketTypes = props.TicketTypes;
@@ -16,8 +16,6 @@ export default function OrderRow(props: OrderRowProps) {
   const canCheckInTickets = props.CanCheckInTickets;
   const showOnlyEmails = props.ShowOnlyEmails;
   const showOnlyPhones = props.ShowOnlyPhones;
-
-  const { getOrderStatusText } = useGetOrderStatus();
 
   let statusClass = '';
   if (order?.isDeleted) {

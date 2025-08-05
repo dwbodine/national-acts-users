@@ -1,5 +1,6 @@
 import { Button, Col, Row } from 'react-bootstrap';
 import { ChangeEvent, useEffect, useState } from 'react';
+import { GetSellersResponse, UserResponse } from '@/types/responses';
 import Container from 'react-bootstrap/Container';
 import { Seller } from '@/types/event';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
@@ -28,9 +29,9 @@ export default function Register() {
     if (!dummyVal) {
       setDummyVal(true);
       getSellers()
-        .then((response) => {
-          if (response.sellersError) {
-            setRegisterError(response.sellersError);
+        .then((response: GetSellersResponse) => {
+          if (response.error) {
+            setRegisterError(response.error);
           } else {
             setSellers(response.sellers);
           }
@@ -79,9 +80,9 @@ export default function Register() {
     }
 
     register(username, firstName, lastName, sellerId, password, confirmPassword, notes)
-      .then((response) => {
-        if (response.errorMessage) {
-          setRegisterError(response.errorMessage);
+      .then((response: UserResponse) => {
+        if (response.error) {
+          setRegisterError(response.error);
         } else {
           setRegisterSuccess(
             'User registration succeeded, please wait for response from the administrator',

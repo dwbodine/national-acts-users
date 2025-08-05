@@ -1,4 +1,4 @@
-import { GetNotesResponse } from '@/types/event';
+import { GetNotesResponse } from '@/types/responses';
 import { eventService } from '../../services';
 
 export const useGetCalendarNotes = () => {

@@ -1,4 +1,4 @@
-import { GetFaqCategoriesResponse } from '@/types/admin';
+import { GetFaqCategoriesResponse } from '@/types/responses';
 import { adminService } from '../../services';
 
 export const useGetAllFaqCategories = () => {

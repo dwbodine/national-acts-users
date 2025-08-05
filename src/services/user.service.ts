@@ -17,7 +17,7 @@ import {
   UserSeller,
 } from '@/types/user';
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
+import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
 
 export class UserService {
   protected readonly instance: AxiosInstance;

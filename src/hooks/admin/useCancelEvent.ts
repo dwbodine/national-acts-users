@@ -1,4 +1,4 @@
-import { ModifyEventResponse } from '@/types/event';
+import { ModifyEventResponse } from '@/types/responses';
 import { eventService } from '../../services';
 
 export const useCancelEvent = () => {

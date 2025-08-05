@@ -1,4 +1,4 @@
-import { GetTicketSocketAccountsResponse } from '@/types/admin';
+import { GetTicketSocketAccountsResponse } from '@/types/responses';
 import { adminService } from '../../services';
 
 export const useGetTicketSocketAccounts = () => {

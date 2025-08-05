@@ -1,4 +1,4 @@
-import { ModifyFaqResponse } from '@/types/admin';
+import { ModifyFaqResponse } from '@/types/responses';
 import { adminService } from '../../services';
 
 export const useDeleteFaq = () => {

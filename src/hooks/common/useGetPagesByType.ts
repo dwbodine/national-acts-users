@@ -1,4 +1,4 @@
-import { GetPagesResponse } from '@/types/admin';
+import { GetPagesResponse } from '@/types/responses';
 import { publicService } from '../../services';
 
 export const useGetPagesByType = () => {

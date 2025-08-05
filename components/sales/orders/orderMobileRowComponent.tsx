@@ -2,8 +2,8 @@ import { Col, Container, Row } from 'react-bootstrap';
 import React, { ReactElement } from 'react';
 import AttendeeRow from './attendeeRowComponent';
 import { OrderRowProps } from '@/types/props';
+import { getOrderStatusText } from '@/utils/eventUtils';
 import moment from 'moment';
-import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
 
 export default function OrderMobileRow(props: OrderRowProps) {
   const ticketTypes = props.TicketTypes;
@@ -18,8 +18,6 @@ export default function OrderMobileRow(props: OrderRowProps) {
   const showOnlyEmails = props.ShowOnlyEmails;
   const showOnlyPhones = props.ShowOnlyPhones;
   const isAdmin = props.IsAdmin;
-
-  const { getOrderStatusText } = useGetOrderStatus();
 
   let statusClass = '';
   if (order?.isDeleted) {

@@ -1,5 +1,7 @@
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
+import { GetEventResponse, GetEventsResponse, ModifyOrderResponse } from '@/types/responses';
 import { SelectPicker, Table } from 'rsuite';
+import { getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
 import {
   setAdminEvent,
   setAdminEvents,
@@ -12,7 +14,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 import { EditProps } from '@/types/props';
 import { FaArrowTurnDown } from 'react-icons/fa6';
-import { GetEventsResponse } from '@/types/responses';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { Order } from '@/types/event';
 import { RootState } from '@/lib/store';
@@ -24,7 +25,6 @@ import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
-import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
 import { useSetOrdersDeleted } from '@/hooks/order/useSetOrdersDeleted';
 import { useSetOrdersInactive } from '@/hooks/order/useSetOrdersInactive';
 
@@ -36,7 +36,6 @@ export default function AdminOrdersIndex(props: EditProps) {
   const [tableLoading, setTableLoading] = useState(true);
   const dispatch = useDispatch();
   const { getLocation } = useGetLocation();
-  const { getOrderStatusSlug, getOrderStatusText } = useGetOrderStatus();
   const { getEventStatusText } = useGetEventStatus();
   const { getAdminEvents } = useGetAdminEvents();
   const { getEventById } = useGetEventById();
@@ -54,9 +53,9 @@ export default function AdminOrdersIndex(props: EditProps) {
 
     dispatch(setIsLoading(true));
     getEventById(id)
-      .then((response) => {
+      .then((response: GetEventResponse) => {
         setOrderIdList([]);
-        if (response.event && !response.eventError) {
+        if (response.event && !response.error) {
           dispatch(
             setAdminEvent(response.event)
           );
@@ -163,15 +162,15 @@ export default function AdminOrdersIndex(props: EditProps) {
       return;
     }
     setOrdersInactive(orderIdList, isActive)
-      .then((response) => {
-        if (response.success && !response.orderError) {
+      .then((response: ModifyOrderResponse) => {
+        if (response.success && !response.error) {
           const successMessage = isActive ? "Orders activated successfully" : "Orders deactivated successfully";
           toast.success(successMessage);
           setOrderIdList([]);
           setSelectedAction(null);
           dispatch(setReloadEvents(true));
         } else {
-          let errorMessage = response.orderError;
+          let errorMessage = response.error;
           if (!errorMessage) {
             errorMessage = isActive ? 'Unexpected error occurred while activating orders' : 'Unexpected error occurred while deactivating orders';
           }
@@ -185,15 +184,15 @@ export default function AdminOrdersIndex(props: EditProps) {
       return;
     }
     setOrdersDeleted(orderIdList, setDeleted)
-      .then((response) => {
-        if (response.success && !response.orderError) {
+      .then((response: ModifyOrderResponse) => {
+        if (response.success && !response.error) {
           const successMessage = setDeleted ? "Orders deleted successfully" : "Orders undeleted successfully";
           toast.success(successMessage);
           setOrderIdList([]);
           setSelectedAction(null);
           dispatch(setReloadEvents(true));
         } else {
-          let errorMessage = response.orderError;
+          let errorMessage = response.error;
           if (!errorMessage) {
             errorMessage = setDeleted ? 'Unexpected error occurred while deleting orders' : 'Unexpected error occurred while undeleting orders';
           }

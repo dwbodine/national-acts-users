@@ -1,4 +1,5 @@
-import { ExternalVenue, ModifyExternalVenueResponse } from '@/types/admin';
+import { ExternalVenue } from '@/types/admin';
+import { ModifyExternalVenueResponse } from '@/types/responses';
 import { adminService } from '../../services';
 
 export const useUpdateVenue = () => {

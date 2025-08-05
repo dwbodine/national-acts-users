@@ -1,14 +1,12 @@
 import { AdminDashboardSelection } from '@/types/user';
 import { VipEvent } from '@/types/event';
-import { eventService } from '../../services';
 
 export const useGetExport = () => {
   const exportEventsToCsv = (
     vipEvents: VipEvent[],
     viewServiceFees: boolean,
     showRevenueData: boolean,
-  ): string =>
-    eventService.exportEventsToCsv(vipEvents, viewServiceFees, showRevenueData);
+  ): string => exportEventsToCsv(vipEvents, viewServiceFees, showRevenueData);
 
   const exportEventCustomerDataToCsv = (
     vipEvent: VipEvent,
@@ -20,7 +18,7 @@ export const useGetExport = () => {
     showOnlyEmails?: boolean,
     showOnlyPhones?: boolean,
   ): string =>
-    eventService.exportEventCustomerDataToCsv(
+    exportEventCustomerDataToCsv(
       vipEvent,
       viewServiceFees,
       showRevenueData,
@@ -40,7 +38,7 @@ export const useGetExport = () => {
     hasNonUsaOrders: boolean,
     currencySymbol?: string,
   ): string =>
-    eventService.exportCustomerDataToCsv(
+    exportCustomerDataToCsv(
       vipEvents,
       viewServiceFees,
       showRevenueData,
@@ -52,7 +50,7 @@ export const useGetExport = () => {
 
   const exportDashboardOrdersToCsv = (
     currentDashboardSelection: AdminDashboardSelection,
-  ): string => eventService.exportDashboardOrdersToCsv(currentDashboardSelection);
+  ): string => exportDashboardOrdersToCsv(currentDashboardSelection);
 
   return {
     exportCustomerDataToCsv,

@@ -2,11 +2,11 @@ import { Button, Col, Row } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import { ForgotPasswordMode } from '@/types/user';
+import { UserResponse } from '@/types/responses';
 import { useForgotPassword } from '@/hooks/user/useForgotPassword';
 import { useResetPassword } from '@/hooks/user/useResetPassword';
 import { useRouter } from 'next/router';
 import { useValidateResetCode } from '@/hooks/user/useValidateResetCode';
-
 
 export default function ForgotPassword() {
   const [mode, setMode] = useState(ForgotPasswordMode.SendPasswordReset);
@@ -43,9 +43,9 @@ export default function ForgotPassword() {
       return;
     }
     forgotPassword(username)
-      .then((response) => {
-        if (response.errorMessage) {
-          setResetError(response.errorMessage);
+      .then((response: UserResponse) => {
+        if (response.error) {
+          setResetError(response.error);
         } else {
           setMode(ForgotPasswordMode.ValidateResetCode);
         }
@@ -64,9 +64,9 @@ export default function ForgotPassword() {
       return;
     }
     validateResetCode(username, code)
-      .then((response) => {
-        if (response.errorMessage) {
-          setResetError(response.errorMessage);
+      .then((response: UserResponse) => {
+        if (response.error) {
+          setResetError(response.error);
         } else {
           setMode(ForgotPasswordMode.ResetPassword);
         }
@@ -94,9 +94,9 @@ export default function ForgotPassword() {
       return;
     }
     resetPassword(username, password, confirmPassword, code)
-      .then((response) => {
-        if (response.errorMessage) {
-          setResetError(response.errorMessage);
+      .then((response: UserResponse) => {
+        if (response.error) {
+          setResetError(response.error);
         } else {
           setResetSuccess('Password changed successfully, redirecting to login...');
           setTimeout(() => {

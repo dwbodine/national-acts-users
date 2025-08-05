@@ -1,4 +1,5 @@
-import { GetActivityResponse, UserActivityType } from '@/types/user';
+import { GetActivityResponse } from '@/types/responses';
+import { UserActivityType } from '@/types/user';
 import { userService } from '@/services';
 
 export const useGetActivityData = () => {

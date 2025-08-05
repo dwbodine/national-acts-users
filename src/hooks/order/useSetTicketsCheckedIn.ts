@@ -1,4 +1,4 @@
-import { ModifyTicketResponse } from '@/types/event';
+import { ModifyTicketResponse } from '@/types/responses';
 import { eventService } from '../../services';
 
 export const useSetTicketsCheckedIn = () => {

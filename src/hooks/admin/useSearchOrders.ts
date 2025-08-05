@@ -1,4 +1,4 @@
-import { GetOrdersResponse } from '@/types/event';
+import { GetOrdersResponse } from '@/types/responses';
 import { eventService } from '../../services';
 
 export const useSearchOrders = () => {

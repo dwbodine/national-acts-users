@@ -1,4 +1,4 @@
-import { GetPermissionsResponse } from '@/types/user';
+import { GetPermissionsResponse } from '@/types/responses';
 import { userService } from '../../services';
 
 export const useGetAllPermissions = () => {

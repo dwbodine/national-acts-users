@@ -1,11 +1,11 @@
 import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
 import { Modal, TimePicker } from 'rsuite';
+import { ModifyEventResponse, ModifyNoteResponse } from '@/types/responses';
 import { Note, VipEvent } from '@/types/event';
 import { ReactElement, useState } from 'react';
 import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents, setUpdateListStatus } from '@/lib/adminEventsSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { EventDataExpandedProps } from '@/types/props';
-import { ModifyEventResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import moment from 'moment';
 import { resetAdmin } from '@/lib/adminSelectionSlice';
@@ -58,14 +58,14 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
             return;
         }
         addNote(noteText, vipEvent.externalEventId)
-            .then((response) => {
+            .then((response: ModifyNoteResponse) => {
                 setNotesOpen(false);
-                if (response.success && !response.noteError) {
+                if (response.success && !response.error) {
                     toast.success("Note added successfully");
                     setNoteText('');
                     dispatch(setReloadAdminEvents(true));
                 } else {
-                    toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+                    toast.error(response.error ?? "Unexpected error occurred while adding note");
                 }
             });
     };
@@ -147,8 +147,8 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                 }
             }
             updateEvent(currentEvent)
-                .then((response) => {
-                    if (response.success && !response.eventError) {
+                .then((response: ModifyEventResponse) => {
+                    if (response.success && !response.error) {
                         if (updateListStatus) {
                             sendListToBand(vipEvent.externalEventId, currentEvent.listSentToBand ?? false)
                                 .then((resp: ModifyEventResponse) => {
@@ -166,7 +166,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                                         dispatch(
                                             setIsLoading(false)
                                         );
-                                        const errMsg = response.eventError ?? "unknown error";
+                                        const errMsg = response.error ?? "unknown error";
                                         toast.error(`Send list failed - ${errMsg}`);
                                     }
                                     dispatch(
@@ -183,7 +183,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                         dispatch(
                             setIsLoading(false)
                         );
-                        const errMsg = response.eventError ?? "unknown error";
+                        const errMsg = response.error ?? "unknown error";
                         toast.error(`Event update failed - ${errMsg}`);
                     }
                 });
@@ -214,14 +214,14 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
             currentEvent.checkInLocation = modalCheckInLocation;
             currentEvent.checkInNotes = modalCheckInNotes;
             updateEvent(currentEvent)
-                .then((response) => {
-                    if (response.success && !response.eventError) {
+                .then((response: ModifyEventResponse) => {
+                    if (response.success && !response.error) {
                         toast.success("Event data updated successfully");
                         dispatch(
                             setReloadAdminEvents(true)
                         );
                     } else {
-                        const errMsg = response.eventError ?? "unknown error";
+                        const errMsg = response.error ?? "unknown error";
                         toast.error(`Event update failed - ${errMsg}`);
                     }
                     handleDoorsClose();

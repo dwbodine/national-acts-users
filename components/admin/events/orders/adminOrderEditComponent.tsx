@@ -1,5 +1,6 @@
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { DatePicker, SelectPicker } from 'rsuite';
+import { GetOrderResponse, ModifyOrderResponse, ModifyTicketResponse } from '@/types/responses';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
 import {
   setAdminOrder,
@@ -11,14 +12,13 @@ import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 import { EditProps } from '@/types/props';
 import { FaArrowTurnDown } from 'react-icons/fa6';
 import { ItemDataType } from 'rsuite/esm/internals/types';
-import { ModifyOrderResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
+import { getOrderStatusText } from '@/utils/eventUtils';
 import moment from 'moment';
 import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetOrderById } from '@/hooks/common/useGetOrderById';
-import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
 import { useRefundOrder } from '@/hooks/admin/useRefundOrder';
 import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
 import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
@@ -32,7 +32,6 @@ export default function AdminOrderEdit(props: EditProps) {
   const { refundTicket } = useRefundTicket();
   const { updateOrder } = useUpdateOrder();
   const { getOrderById } = useGetOrderById();
-  const { getOrderStatusText } = useGetOrderStatus();
   const [markChargeback, setMarkChargeback] = useState<boolean>(false);
   const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
   const { setTicketsCheckedIn } = useSetTicketsCheckedIn();
@@ -49,14 +48,14 @@ export default function AdminOrderEdit(props: EditProps) {
     dispatch(setMustSaveOrder(false));
     dispatch(setIsLoading(true));
     getOrderById(id)
-      .then((response) => {
+      .then((response: GetOrderResponse) => {
         setTicketIdList([]);
-        if (response.order && !response.orderError) {
+        if (response.order && !response.error) {
           dispatch(
             setAdminOrder(response.order)
           );
         } else {
-          toast.error(response.orderError);
+          toast.error(response.error);
         }
         dispatch(setIsLoading(false));
       });
@@ -614,8 +613,8 @@ export default function AdminOrderEdit(props: EditProps) {
       return;
     }
     setTicketsCheckedIn(ticketIdList, isCheckedIn)
-      .then((response) => {
-        if (response.success && !response.ticketError) {
+      .then((response: ModifyTicketResponse) => {
+        if (response.success && !response.error) {
           const successMessage = isCheckedIn ? "Tickets checked in successfully" : "Tickets unchecked successfully";
           toast.success(successMessage);
           setTicketIdList([]);
@@ -630,7 +629,7 @@ export default function AdminOrderEdit(props: EditProps) {
             }, 500);
           }
         } else {
-          let errorMessage = response.ticketError;
+          let errorMessage = response.error;
           if (!errorMessage) {
             errorMessage = isCheckedIn ? 'Unexpected error occurred while checking in tickets' : 'Unexpected error occurred while unchecking tickets';
           }

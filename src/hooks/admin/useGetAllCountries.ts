@@ -1,4 +1,4 @@
-import { GetCountriesResponse } from '@/types/admin';
+import { GetCountriesResponse } from '@/types/responses';
 import { adminService } from '../../services';
 
 export const useGetAllCountries = () => {

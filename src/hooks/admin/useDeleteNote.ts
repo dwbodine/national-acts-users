@@ -1,4 +1,4 @@
-import { ModifyNoteResponse } from '@/types/event';
+import { ModifyNoteResponse } from '@/types/responses';
 import { eventService } from '../../services';
 
 export const useDeleteNote = () => {

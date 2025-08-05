@@ -1,4 +1,4 @@
-import { GetExternalVenuesResponse } from '@/types/admin';
+import { GetExternalVenuesResponse } from '@/types/responses';
 import { adminService } from '../../services';
 
 export const useGetAllVenues = () => {

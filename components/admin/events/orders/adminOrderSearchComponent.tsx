@@ -1,5 +1,6 @@
 import { Button, Col, Row } from 'react-bootstrap';
 import { KeyboardEvent, useEffect, useState } from 'react';
+import { getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetOrdersResponse } from '@/types/responses';
 import { Order } from '@/types/event';
@@ -10,7 +11,6 @@ import router from 'next/router';
 import { setAdminOrders } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
-import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
 import { useSearchOrders } from '@/hooks/admin/useSearchOrders';
 
 export default function AdminOrdersSearch() {
@@ -19,7 +19,6 @@ export default function AdminOrdersSearch() {
   const [tableLoading, setTableLoading] = useState(true);
   const dispatch = useDispatch();
   const { searchOrders } = useSearchOrders();
-  const { getOrderStatusSlug, getOrderStatusText } = useGetOrderStatus();
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {

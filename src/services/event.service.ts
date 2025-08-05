@@ -23,7 +23,7 @@ import {
 import { Note, Order, TicketSocketRefreshHistory, Tour, VipEvent } from '../types/event';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
-import { getAuthorizationHeader } from '../utils/getAuthorizationHeader';
+import getAuthorizationHeader from '../utils/getAuthorizationHeader';
 import moment from 'moment';
 
 export class EventService {

@@ -1,4 +1,4 @@
-import { GetRefreshHistoryResponse } from '@/types/event';
+import { GetRefreshHistoryResponse } from '@/types/responses';
 import { eventService } from '../../services';
 
 export const useGetRefreshHistory = () => {

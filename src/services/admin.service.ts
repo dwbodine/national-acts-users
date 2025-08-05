@@ -17,7 +17,7 @@ import {
 } from '@/types/responses';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { Seller } from '@/types/event';
-import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
+import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
 
 export class AdminService {
   protected readonly instance: AxiosInstance;

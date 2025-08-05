@@ -1,6 +1,7 @@
 import { Button, ButtonGroup } from 'rsuite';
 import { Col, Row } from 'react-bootstrap';
 import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
+import { GetEventsResponse, GetNotesResponse } from '@/types/responses';
 import { ReactElement, useEffect } from 'react';
 import { setActiveEventTab, setAdminDateRange, setAdminEvents, setAdminNotes, setExpandedEvent, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +9,6 @@ import AllEventsAgenda from './agenda/allEventsAgendaComponent';
 import AllEventsMonth from './month/allEventsMonthComponent';
 import AllEventsWeek from './week/allEventsWeekComponent';
 import { EventTabView } from '@/types/user';
-import { GetEventsResponse } from '@/types/responses';
 import { Note } from '@/types/event';
 import type { RootState } from '../../src/lib/store';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
@@ -73,8 +73,8 @@ export default function AllEvents() {
             }
             if (currentReportSelection.start && currentReportSelection.end) {
               getCalendarNotes(currentReportSelection.start, currentReportSelection.end)
-                .then((resp) => {
-                  if (resp.noteError) {
+                .then((resp: GetNotesResponse) => {
+                  if (resp.error) {
                     dispatch(setAdminEvents(filteredEvents));
                     dispatch(setAdminNotes([]));
                   } else {

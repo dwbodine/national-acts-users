@@ -9,6 +9,7 @@ import EditNoteModal from '../common/editNoteModalComponent';
 import EventDataExpanded from '../../common/eventDataExpandedComponent';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import { FaX } from 'react-icons/fa6';
+import { ModifyNoteResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
 import moment from 'moment';
@@ -71,15 +72,15 @@ export default function AgendaDay(props: AgendaDayProps) {
         }
         const calendarDate = agendaDate.format('YYYY-MM-DD');
         addNote(noteText, undefined, calendarDate, noteTitle)
-            .then((response) => {
+            .then((response: ModifyNoteResponse) => {
                 setNotesOpen(false);
-                if (response.success && !response.noteError) {
+                if (response.success && !response.error) {
                     toast.success("Calendar note added successfully");
                     setNoteText('');
                     setNoteTitle('');
                     dispatch(setReloadAdminEvents(true));
                 } else {
-                    toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+                    toast.error(response.error ?? "Unexpected error occurred while adding note");
                 }
             });
     };
@@ -89,13 +90,13 @@ export default function AgendaDay(props: AgendaDayProps) {
             return;
         }
         editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true)
-            .then((response) => {
+            .then((response: ModifyNoteResponse) => {
                 handleDisplayNoteClose();
-                if (response.success && !response.noteError) {
+                if (response.success && !response.error) {
                     toast.success("Calendar note edited successfully");
                     dispatch(setReloadAdminEvents(true));
                 } else {
-                    toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+                    toast.error(response.error ?? "Unexpected error occurred while adding note");
                 }
             });
     };
@@ -105,13 +106,13 @@ export default function AgendaDay(props: AgendaDayProps) {
             return;
         }
         editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, noteIsCompleted)
-            .then((response) => {
+            .then((response: ModifyNoteResponse) => {
                 handleDisplayNoteClose();
-                if (response.success && !response.noteError) {
+                if (response.success && !response.error) {
                     toast.success("Calendar note edited successfully");
                     dispatch(setReloadAdminEvents(true));
                 } else {
-                    toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+                    toast.error(response.error ?? "Unexpected error occurred while adding note");
                 }
             });
     };
@@ -119,12 +120,12 @@ export default function AgendaDay(props: AgendaDayProps) {
     const deleteSelectedNote = (nId: number) => {
         toast.dismiss();
         deleteNote(nId)
-            .then((response) => {
-                if (response.success && !response.noteError) {
+            .then((response: ModifyNoteResponse) => {
+                if (response.success && !response.error) {
                     toast.success("Calendar note deleted");
                     dispatch(setReloadAdminEvents(true));
                 } else {
-                    toast.error(response.noteError ?? "Unexpected error occurred while deleting note");
+                    toast.error(response.error ?? "Unexpected error occurred while deleting note");
                 }
             });
     };

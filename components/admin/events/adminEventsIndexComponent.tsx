@@ -1,5 +1,5 @@
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
-import { GetCountriesResponse, GetEventsResponse, GetSellersResponse, GetToursResponse } from '@/types/responses';
+import { GetCountriesResponse, GetEventsResponse, GetSellersResponse, GetToursResponse, ModifyEventResponse } from '@/types/responses';
 import { SelectPicker, Table } from 'rsuite';
 import {
   setAdminDates,
@@ -268,15 +268,15 @@ export default function AdminEventsIndex() {
       return;
     }
     setEventsInactive(eventIdList, isActive)
-      .then((response) => {
-        if (response.success && !response.eventError) {
+      .then((response: ModifyEventResponse) => {
+        if (response.success && !response.error) {
           const successMessage = isActive ? "Events activated successfully" : "Events deactivated successfully";
           toast.success(successMessage);
           setEventIdList([]);
           setSelectedAction(null);
           dispatch(setReloadEvents(true));
         } else {
-          let errorMessage = response.eventError;
+          let errorMessage = response.error;
           if (!errorMessage) {
             errorMessage = isActive ? 'Unexpected error occurred while activating events' : 'Unexpected error occurred while deactivating events';
           }
@@ -290,15 +290,15 @@ export default function AdminEventsIndex() {
       return;
     }
     setEventsDeleted(eventIdList, setDeleted)
-      .then((response) => {
-        if (response.success && !response.eventError) {
+      .then((response: ModifyEventResponse) => {
+        if (response.success && !response.error) {
           const successMessage = setDeleted ? "Events deleted successfully" : "Events undeleted successfully";
           toast.success(successMessage);
           setEventIdList([]);
           setSelectedAction(null);
           dispatch(setReloadEvents(true));
         } else {
-          let errorMessage = response.eventError;
+          let errorMessage = response.error;
           if (!errorMessage) {
             errorMessage = setDeleted ? 'Unexpected error occurred while deleting events' : 'Unexpected error occurred while undeleting events';
           }
@@ -312,15 +312,15 @@ export default function AdminEventsIndex() {
       return;
     }
     setEventsHidden(eventIdList, setHidden)
-      .then((response) => {
-        if (response.success && !response.eventError) {
+      .then((response: ModifyEventResponse) => {
+        if (response.success && !response.error) {
           const successMessage = setHidden ? "Events hidden successfully" : "Events unhidden successfully";
           toast.success(successMessage);
           setEventIdList([]);
           setSelectedAction(null);
           dispatch(setReloadEvents(true));
         } else {
-          let errorMessage = response.eventError;
+          let errorMessage = response.error;
           if (!errorMessage) {
             errorMessage = setHidden ? 'Unexpected error occurred while hiding events' : 'Unexpected error occurred while unhiding events';
           }

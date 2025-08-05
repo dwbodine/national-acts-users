@@ -1,9 +1,9 @@
 import { Button, FormCheck } from 'react-bootstrap';
+import { GetRolesResponse, UpdateRoleResponse } from '@/types/responses';
 import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { GetRolesResponse } from '@/types/responses';
 import { Role } from '@/types/user';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
@@ -89,13 +89,13 @@ export default function AdminRolesIndex() {
     if (selectedRoles.length === 0) {
       return;
     }
-    deleteRoles(selectedRoles).then((response) => {
+    deleteRoles(selectedRoles).then((response: UpdateRoleResponse) => {
       if (response.success) {
         setSelectedRoles([]);
         toast.success('Roles deleted successfully');
         dispatch(setReloadRoles(true));
       } else {
-        toast.error(response.roleError);
+        toast.error(response.error);
       }
     });
   };

@@ -1,4 +1,4 @@
-import { ModifySellerResponse } from '@/types/admin';
+import { ModifySellerResponse } from '@/types/responses';
 import { Seller } from '@/types/event';
 import { adminService } from '../../services';
 

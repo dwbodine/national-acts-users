@@ -2,6 +2,7 @@ import { Button, Col, Row } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import CheckAuth from '../components/common/checkAuthComponent';
 import Container from 'react-bootstrap/Container';
+import { UserResponse } from '@/types/responses';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useResetPasswordSecure } from '../src/hooks/user/useResetPasswordSecure';
 import { useRouter } from 'next/router';
@@ -28,9 +29,9 @@ export default function ResetPassword() {
     setPasswordError('');
     setPasswordSuccess('');
     resetPasswordSecure(username, password, confirmPassword)
-      .then((response) => {
-        if (response.errorMessage) {
-          setPasswordError(response.errorMessage);
+      .then((response: UserResponse) => {
+        if (response.error) {
+          setPasswordError(response.error);
         } else {
           setPasswordSuccess(
             'Password changed successfully, please use new password to log back in...',

@@ -1,6 +1,6 @@
 import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
 import { DatePicker, Modal, SelectPicker, TimePicker } from 'rsuite';
-import { GetCountriesResponse, GetEventResponse, GetEventsResponse, GetExternalVenuesResponse, GetSellersResponse, ModifyEventResponse, ModifyExternalVenueResponse, ModifyOrderResponse } from '@/types/responses';
+import { GetCountriesResponse, GetEventResponse, GetEventsResponse, GetExternalVenuesResponse, GetSellersResponse, ModifyEventResponse, ModifyExternalVenueResponse, ModifyNoteResponse, ModifyOrderResponse } from '@/types/responses';
 import { Note, Seller, VipEvent } from '@/types/event';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
 import {
@@ -228,8 +228,8 @@ export default function AdminEventEdit(props: EditProps) {
       return;
     }
     addNote(noteText, currentAdminSelection.selectedEvent.externalEventId)
-      .then((response) => {
-        if (response.success && !response.noteError) {
+      .then((response: ModifyNoteResponse) => {
+        if (response.success && !response.error) {
           toast.success("Note added successfully");
           setNoteText('');
           if (id) {
@@ -240,7 +240,7 @@ export default function AdminEventEdit(props: EditProps) {
             goBack(false);
           }
         } else {
-          toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+          toast.error(response.error ?? "Unexpected error occurred while adding note");
         }
         setNotesOpen(false);
       });
