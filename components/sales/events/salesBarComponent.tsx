@@ -1,36 +1,34 @@
-import SelectSeller from './selectSellerComponent';
-import DateRangeSelector from '../../common/dateRangeSelectorComponent';
-import InactiveCheck from './inactiveCheckComponent';
-import DeletedCheck from './deletedCheckComponent';
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '../../../src/lib/store';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import ResetButton from '../../common/resetButtonComponent';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { Button } from 'react-bootstrap';
-import { useGetExport } from '@/hooks/common/useGetExport';
-import getFileNameFromReportSelection from '@/utils/getFileNameFromReportSelection';
-import downloadFile from '@/utils/downloadFile';
-import PrintButton from '../../common/printButtonComponent';
-import RevenueCheck from './revenueCheckComponent';
+import { Button, Col, Row } from 'react-bootstrap';
 import {
   resetSelection,
   setDateRange,
   setReloadEvents,
   setSelectedTourId,
 } from '@/lib/reportSelectionSlice';
-import { EnumPermission } from '@/types/user';
-import ServiceFeesCheck from './serviceFeesCheckComponent';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import DateRangeSelector from '../../common/dateRangeSelectorComponent';
+import DeletedCheck from './deletedCheckComponent';
+import { EnumPermission } from '@/types/user';
+import { GetEventsResponse } from '@/types/responses';
+import HiddenCheck from './hiddenCheckComponent';
+import InactiveCheck from './inactiveCheckComponent';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+import PrintButton from '../../common/printButtonComponent';
+import ResetButton from '../../common/resetButtonComponent';
+import RevenueCheck from './revenueCheckComponent';
+import type { RootState } from '../../../src/lib/store';
+import { SelectPicker } from 'rsuite';
+import SelectSeller from './selectSellerComponent';
+import ServiceFeesCheck from './serviceFeesCheckComponent';
+import downloadFile from '@/utils/downloadFile';
+import getFileNameFromReportSelection from '@/utils/getFileNameFromReportSelection';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
+import { useGetExport } from '@/hooks/common/useGetExport';
 import { useHasPermission } from '@/hooks/user/useHasPermission';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
-import HiddenCheck from './hiddenCheckComponent';
-import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
-import { GetEventsResponse } from '@/types/event';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { SelectPicker } from 'rsuite';
 
 export default function SalesBar() {
   const dispatch = useDispatch();
@@ -40,7 +38,7 @@ export default function SalesBar() {
   const { userHasPermission } = useHasPermission();
   const { exportEventsToCsv, exportCustomerDataToCsv } = useGetExport();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
-  const hasEvents = currentReportSelection?.currentEvents?.length ?? 0 > 0;
+  const hasEvents = (currentReportSelection?.currentEvents?.length ?? 0) > 0;
   const dateRangeTitle = 'Event date range';
   const { getAllEvents } = useGetAllEvents();
 
@@ -66,7 +64,7 @@ export default function SalesBar() {
       dispatch(setIsLoading(true));
       getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
         (response: GetEventsResponse) => {
-          if (response && !response.eventError && response.events != undefined) {
+          if (response && !response.error && response.events !== undefined) {
             const showServiceFees =
               viewServiceFees && !currentReportSelection.hideServiceFees;
             const showRevenueData =
@@ -96,18 +94,18 @@ export default function SalesBar() {
       dispatch(setIsLoading(true));
       getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
         (response: GetEventsResponse) => {
-          if (response && !response.eventError && response.events != undefined) {
+          if (response && !response.error && response.events !== undefined) {
             const vipEvents = response.events;
             const hasPhoneData =
-              vipEvents.find((x) => x.hasPhoneData == true) != undefined;
+              vipEvents.find((x) => x.hasPhoneData === true) !== undefined;
             const hasShirtData =
-              vipEvents.find((x) => x.hasShirtData == true) != undefined;
+              vipEvents.find((x) => x.hasShirtData === true) !== undefined;
             const hasNonUsaOrders =
-              vipEvents.find((x) => x.hasNonUSAOrders == true) != undefined;
+              vipEvents.find((x) => x.hasNonUSAOrders === true) !== undefined;
             let currencySymbol: string | undefined = undefined;
             if (hasNonUsaOrders) {
-              const symbolOrder = vipEvents.find((x) => x.hasNonUSAOrders == true);
-              if (symbolOrder != undefined) {
+              const symbolOrder = vipEvents.find((x) => x.hasNonUSAOrders === true);
+              if (symbolOrder !== undefined) {
                 currencySymbol = symbolOrder.nonUsaCurrencySymbol;
               }
             }
@@ -138,7 +136,7 @@ export default function SalesBar() {
 
   let pageTitle: string = 'Sales Overview';
   if (currentReportSelection.seller.sellerId > 0) {
-    pageTitle += ' - ' + currentReportSelection.seller.sellerName;
+    pageTitle += ` - ${currentReportSelection.seller.sellerName}`;
   }
 
   const onDateChange = (selectedStart: number, selectedEnd: number) => {
@@ -157,10 +155,11 @@ export default function SalesBar() {
   };
 
   const setSelectedTour = (selectedTourId: number | null) => {
-    if (!selectedTourId || selectedTourId <= 0) {
-      selectedTourId = null;
+    let stId: number | null = null;
+    if (selectedTourId && selectedTourId > 0) {
+      stId = selectedTourId;
     }
-    dispatch(setSelectedTourId(selectedTourId ? selectedTourId : undefined));
+    dispatch(setSelectedTourId(stId ? stId : undefined));
     dispatch(setReloadEvents(true));
     dispatch(setIsLoading(true));
   };
@@ -169,12 +168,12 @@ export default function SalesBar() {
   if (currentReportSelection.tours && currentReportSelection.tours.length > 0) {
     const activeTours = currentReportSelection.tours.filter(x => x.isActive);
     if (activeTours && activeTours.length > 0) {
-      tourList = activeTours.map((tour) => {
-          return {
+      tourList = activeTours.map(tour => 
+          ({
             label: `${tour.tourName}`,
             value: tour.tourId
-          }
-      });
+          })
+      );
     }
   }
 
@@ -214,7 +213,7 @@ export default function SalesBar() {
         </Col>
       </Row>
       <SelectSeller />
-      <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourList.length == 0}>
+      <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourList.length === 0}>
         <Col xs={1}>
             Tour:
         </Col>
@@ -234,17 +233,17 @@ export default function SalesBar() {
       </Row>
       <Row className="admin-check-row">
         <Col md={10} sm={12}>
-          {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) == 0  ? (
+          {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0  ? (
             <InactiveCheck />
           ) : (
             ''
           )}
-          {viewDeletedEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) == 0 ? (
+          {viewDeletedEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0 ? (
             <DeletedCheck />
           ) : (
             ''
           )}
-          {viewHiddenEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) == 0 ? (
+          {viewHiddenEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0 ? (
             <HiddenCheck />
           ) : (
             ''

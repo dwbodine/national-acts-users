@@ -1,13 +1,13 @@
-import { useDispatch } from 'react-redux';
-import { setReloadEvents, setFocusControl } from '@/lib/reportSelectionSlice';
-import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
-import router from 'next/router';
 import { FaCheck, FaX } from 'react-icons/fa6';
-import moment from 'moment';
+import { setFocusControl, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { AttendeeRowProps } from '@/types/props';
+import { ModifyTicketResponse } from '@/types/responses';
+import moment from 'moment';
+import router from 'next/router';
+import { useDispatch } from 'react-redux';
+import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 
 export default function AttendeeRow(props: AttendeeRowProps) {
-  
   const canCheckInTickets = props.CanCheckInTickets;
   const ticket = props.Ticket;
 
@@ -21,32 +21,19 @@ export default function AttendeeRow(props: AttendeeRowProps) {
     attendeeName += ` (${checkedInTime})`;
   }
   const id = `ticket_${ticket?.ticketSocketOrderTicketId}`;
-  let className = '';
-  if (canCheckInTickets) {
-    className = currentCheckIn ? 'attendee-check-highlight' : 'attendee-check';
-  } else {
-    className = currentCheckIn ? 'attendee-highlight' : 'attendee';
-  }
+  const className = canCheckInTickets ? (currentCheckIn ? 'attendee-check-highlight' : 'attendee-check') : (currentCheckIn ? 'attendee-highlight' : 'attendee');
   const { setTicketsCheckedIn } = useSetTicketsCheckedIn();
   let titleText: string = '';
 
   const checkIn = (checkedIn: boolean) => {
     setTicketsCheckedIn([ticketId], checkedIn)
-      .then((response) => {
-        if (!response.success) {
-          if (response.statusCode == 401 || response.statusCode == 422) {
-            router.push('/logout/');
-          } else {
-            console.log(response.ticketError);
-          }
-          return;
-        } else {
+      .then((response: ModifyTicketResponse) => {
+        if (response.success) {
           dispatch(setFocusControl(id));
           dispatch(setReloadEvents(true));
+        } else if (response.statusCode === 401 || response.statusCode === 422) {
+          router.push('/logout/');
         }
-      })
-      .catch((e) => {
-        console.log(e);
       });
   };
 
@@ -65,7 +52,7 @@ export default function AttendeeRow(props: AttendeeRowProps) {
 
   if (canCheckInTickets) {
     checkOutClass = currentCheckIn ? 'check-out-show' : 'check-out-hide';
-    checkInClass = !currentCheckIn ? 'check-in-show' : 'check-in-hide';
+    checkInClass = currentCheckIn ? 'check-in-hide' : 'check-in-show';
   }
 
   checkInClass += ' no-print';

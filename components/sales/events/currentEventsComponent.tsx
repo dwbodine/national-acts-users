@@ -1,30 +1,30 @@
-import { useSelector, useDispatch } from 'react-redux';
-import type { RootState } from '../../../src/lib/store';
-import { useGetEvents } from '@/hooks/event/useGetEvents';
-import { setEvents, setDateRange, setReloadEvents, setTours } from '@/lib/reportSelectionSlice';
-import { GetToursResponse, IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
-import { useEffect, useMemo, useState } from 'react';
-import moment from 'moment';
+import { Col, Container, Row } from 'react-bootstrap';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { RingLoader } from 'react-spinners';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { getTicketDataFromEvents } from '@/utils/getTicketDataFromEvents';
-import { getShirtDataFromEvents } from '@/utils/getShirtData';
-import EventRow from '../../common/eventRowComponent';
-import router from 'next/router';
-import WidgetBar from '../../common/widgets/widgetBarComponent';
-import TicketSalesChart from '../../common/ticketSalesChartComponent';
-import { getPurchaseDataFromEvents } from '@/utils/getPurchaseData';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
+import { setDateRange, setEvents, setReloadEvents, setTours } from '@/lib/reportSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
 import EventMobileRow from '../../common/eventMobileRowComponent';
-import { useHasPermission } from '@/hooks/user/useHasPermission';
-import debouce from 'lodash.debounce';
+import EventRow from '../../common/eventRowComponent';
 import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
+import { GetToursResponse } from '@/types/responses';
+import { RingLoader } from 'react-spinners';
+import type { RootState } from '../../../src/lib/store';
+import TicketSalesChart from '../../common/ticketSalesChartComponent';
+import WidgetBar from '../../common/widgets/widgetBarComponent';
+import debouce from 'lodash.debounce';
+import getPurchaseDataFromEvents from '@/utils/getPurchaseData';
+import getShirtDataFromEvents from '@/utils/getShirtData';
+import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
+import moment from 'moment';
+import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { Container } from 'react-bootstrap';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useGetEvents } from '@/hooks/event/useGetEvents';
 import { useGetTours } from '@/hooks/admin/useGetTours';
+import { useHasPermission } from '@/hooks/user/useHasPermission';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
+
 
 export default function CurrentEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -56,12 +56,10 @@ export default function CurrentEvents() {
   let ticketSalesData: ITicketSalesData[] | undefined = undefined;
   let searchBarHidden = true;
 
-  const debouncedResults = useMemo(() => {
-    return debouce(setSearchTerm, 300);
-  }, []);
+  const debouncedResults = useMemo(() => debouce(setSearchTerm, 300), []);
 
   const getTicketData = (events: VipEvent[]): ITicketData | undefined => {
-    if (!events || events.length == 0) {
+    if (!events || events.length === 0) {
       return undefined;
     }
 
@@ -69,7 +67,7 @@ export default function CurrentEvents() {
   };
 
   const getTicketSalesData = (events: VipEvent[]): ITicketSalesData[] | undefined => {
-    if (!events || events.length == 0) {
+    if (!events || events.length === 0) {
       return undefined;
     }
 
@@ -77,7 +75,7 @@ export default function CurrentEvents() {
   };
 
   const getShirtData = (events: VipEvent[]): IShirtData | undefined => {
-    if (!events || events.length == 0) {
+    if (!events || events.length === 0) {
       return undefined;
     }
 
@@ -85,9 +83,9 @@ export default function CurrentEvents() {
   };
 
   useEffect(() => {
-    if (user == undefined) {
+    if (user === undefined) {
       const currentUser = getUser();
-      if (currentUser != undefined) {
+      if (currentUser !== undefined) {
         setUser(currentUser);
       }
     } else {
@@ -108,7 +106,7 @@ export default function CurrentEvents() {
     if (currentReportSelection.seller.sellerId > 0) {
       if (alwaysShowRevenue) {
         setHideRevItem(false);
-      } else if (!viewRevenueData) {
+      } else if (viewRevenueData === false) {
         setHideRevItem(true);
       } else {
         setHideRevItem(currentReportSelection.hideRevenue ?? true);
@@ -133,8 +131,8 @@ export default function CurrentEvents() {
               ).unix();
               const selection: UserReportSelection = {
                 ...currentReportSelection,
-                start: start,
-                end: end,
+                end,
+                start,                
               };
               dispatch(setDateRange(selection));
             } else {
@@ -143,7 +141,7 @@ export default function CurrentEvents() {
             if (currentReportSelection.reloadTours) {
               getTours(currentReportSelection.seller.sellerId)
                   .then((tourResponse: GetToursResponse) => {
-                      if (!tourResponse.tourError && tourResponse.tours) {
+                      if (!tourResponse.error && tourResponse.tours) {
                         dispatch(setTours(tourResponse.tours));
                       } else {
                         dispatch(setTours(undefined));
@@ -155,7 +153,7 @@ export default function CurrentEvents() {
               dispatch(setIsLoading(false));
               setChartsHidden(false);
             }
-          } else if (response.statusCode == 401 || response.statusCode == 422) {
+          } else if (response.statusCode === 401 || response.statusCode === 422) {
             router.push('/logout/');
           } else {
             dispatch(setEvents([]));
@@ -186,21 +184,13 @@ export default function CurrentEvents() {
     getTours,
   ]);
 
-  const filterEvents = (events: VipEvent[]) => {
-    let filteredEvents: VipEvent[] = [];
+  const filterEvents = (events: VipEvent[]) => {    
     visibleEvents = [];
-
     if (events && events.length > 0) {
       if (currentReportSelection.selectedTourId && currentReportSelection.selectedTourId > 0) {
-        visibleEvents = events.filter((evt) => {
-          return (
-            (!evt.isDeleted)
-          );
-        });
+        visibleEvents = events.filter(evt => !evt.isDeleted);
       } else {
-        visibleEvents = events.filter((evt) => {
-          return (
-            (currentReportSelection.showDeleted && evt.isDeleted) ||
+        visibleEvents = events.filter(evt => (currentReportSelection.showDeleted && evt.isDeleted) ||
             (currentReportSelection.showInactive && !evt.isActive && !evt.isDeleted) ||
             (currentReportSelection.showHidden && evt.isHidden) ||
             (!evt.isHidden &&
@@ -209,23 +199,19 @@ export default function CurrentEvents() {
               !currentReportSelection.showInactive &&
               evt.isActive)
           );
-        });
       }      
     }
 
+    let filteredEvents: VipEvent[] = visibleEvents ?? [];
     if (visibleEvents.length > 0 && searchTerm && searchTerm.length >= 2) {
       const srch = searchTerm.toLowerCase();
-      filteredEvents = visibleEvents.filter((evt) => {
-        return (
+      filteredEvents = visibleEvents.filter(evt => (
           evt.title.toLowerCase().includes(srch) ||
           evt.venue?.name?.toLowerCase().includes(srch) ||
           evt.venue?.city?.toLowerCase().includes(srch) ||
           evt.venue?.state?.toLowerCase().includes(srch) ||
           evt.venue?.country?.countryName?.toLowerCase().includes(srch)
-        );
-      });
-    } else {
-      filteredEvents = visibleEvents;
+        ));
     }
     return filteredEvents;
   };
@@ -288,7 +274,7 @@ export default function CurrentEvents() {
         serviceFeesRefunded += evt.serviceFeeRevenueRefunded ?? 0;
         totalServiceFees += evt.totalServiceFees ?? 0 - (evt.serviceFeeRevenueRefunded ?? 0);        
       }
-      i++;
+      i += 1;
     }
   }
 
@@ -307,7 +293,7 @@ export default function CurrentEvents() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="form-control search-text-input no-print"
           placeholder="Search for events..."
-          hidden={searchBarHidden || !visibleEvents || visibleEvents.length == 0}
+          hidden={searchBarHidden || !visibleEvents || visibleEvents.length === 0}
         />
         <WidgetBar
           TotalShows={totalEvents}
@@ -369,7 +355,7 @@ export default function CurrentEvents() {
             ) : (
               ''
             )}
-            {(!visibleEvents || visibleEvents.length == 0) &&
+            {(!visibleEvents || visibleEvents.length === 0) &&
             currentReportSelection.seller.sellerId > 0 ? (
               <Col className="no-events">No events found</Col>
             ) : (
