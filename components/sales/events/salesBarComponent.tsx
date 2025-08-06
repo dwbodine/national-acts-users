@@ -22,8 +22,9 @@ import type { RootState } from '../../../src/lib/store';
 import { SelectPicker } from 'rsuite';
 import SelectSeller from './selectSellerComponent';
 import ServiceFeesCheck from './serviceFeesCheckComponent';
-import downloadFile from '@/utils/downloadFile';
-import getFileNameFromReportSelection from '@/utils/getFileNameFromReportSelection';
+import VIPItineraryModal from './vipItineraryModalComponent';
+import { downloadCsvFile } from '@/utils/downloadFile';
+import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReportSelection';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
@@ -51,6 +52,11 @@ export default function SalesBar() {
   const [viewRevenueData, setViewRevenueData] = useState(false);
   const [viewHiddenEvents, setViewHiddenEvents] = useState(false);
   const [viewTourSelect, setViewTourSelect] = useState(false);
+  const [viewVIPItinerary, setViewVIPItinerary] = useState(false);
+  const [vipItineraryOpen, setVipItineraryOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const handleItineraryClose = () => setVipItineraryOpen(false);
 
   const exportEventData = () => {
     if (
@@ -73,8 +79,8 @@ export default function SalesBar() {
               showServiceFees,
               showRevenueData,
             );
-            const fileName = getFileNameFromReportSelection(currentReportSelection);
-            downloadFile(fileName, csvData);
+            const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
+            downloadCsvFile(fileName, csvData);
           }
           dispatch(setIsLoading(false));
         },
@@ -121,11 +127,11 @@ export default function SalesBar() {
               hasNonUsaOrders,
               currencySymbol,
             );
-            const fileName = getFileNameFromReportSelection(
+            const fileName = getCsvFileNameFromReportSelection(
               currentReportSelection,
               'customer',
             );
-            downloadFile(fileName, csvData);
+            downloadCsvFile(fileName, csvData);
           }
           dispatch(setIsLoading(false));
         },
@@ -181,6 +187,7 @@ export default function SalesBar() {
   useEffect(() => {
     const user = getUser();
     if (user) {
+      setIsAdmin(user.isAdmin);
       setViewInactiveEvents(userHasPermission(user, EnumPermission.ViewInactiveEvents));
       setViewDeletedEvents(userHasPermission(user, EnumPermission.ViewDeletedEvents));
       setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
@@ -193,6 +200,7 @@ export default function SalesBar() {
       setViewRevenueData(userHasPermission(user, EnumPermission.ViewRevenueData));
       setViewHiddenEvents(userHasPermission(user, EnumPermission.ViewHiddenEvents));
       setViewTourSelect(userHasPermission(user, EnumPermission.ViewTourSelect));
+      setViewVIPItinerary(userHasPermission(user, EnumPermission.ViewVIPItinerary));
     }
   }, [windowSizeJson, getUser, userHasPermission]);
   return (
@@ -299,6 +307,25 @@ export default function SalesBar() {
             <span className="admin-button">
               <Button onClick={exportCustomerData}>Export Customer Data</Button>
             </span>
+          ) : (
+            ''
+          )}
+          {!windowSize.isMobile &&
+          viewVIPItinerary &&
+          currentReportSelection.seller.sellerId > 0 &&
+          hasEvents ? (
+            <>
+              <span className="admin-button">
+                <Button onClick={() => setVipItineraryOpen(true)}>VIP Itinerary</Button>
+              </span>
+              <VIPItineraryModal 
+                IsAdmin={isAdmin}
+                IsOpen={vipItineraryOpen}
+                Seller={currentReportSelection.seller}
+                Events={currentReportSelection.currentEvents}
+                OnClose={handleItineraryClose}
+              />
+            </>
           ) : (
             ''
           )}

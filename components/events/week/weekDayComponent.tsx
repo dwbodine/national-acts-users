@@ -1,4 +1,5 @@
 import { ReactElement, useState } from 'react';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AddNoteModal from '../common/addNoteModalComponent';
@@ -16,7 +17,6 @@ import { toast } from 'react-toastify';
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
 import { useEditNote } from '@/hooks/admin/useEditNote';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 
 export default function WeekDay(props: WeekDayProps) {
     const weekDate = props.WeekDate ? moment(props.WeekDate) : undefined;
@@ -25,7 +25,6 @@ export default function WeekDay(props: WeekDayProps) {
     const key = props.WeekDayNumber;
 
     const dispatch = useDispatch();
-    const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
     const [notesOpen, setNotesOpen] = useState(false);
     const [displayNoteOpen, setDisplayNoteOpen] = useState(false);

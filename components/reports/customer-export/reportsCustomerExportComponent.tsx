@@ -7,7 +7,7 @@ import ReportsListHomeButton from '../reportsListHomeButton';
 import { RootState } from '@/lib/store';
 import { UserActivityType } from '@/types/user';
 import { VipEvent } from '@/types/event';
-import downloadFile from '@/utils/downloadFile';
+import { downloadCsvFile } from '@/utils/downloadFile';
 import { exportCustomerDataToCsv } from '@/utils/eventUtils';
 import getFileNameFromReportAdminSelection from '@/utils/getFileNameFromAdminReportSelection';
 import moment from 'moment';
@@ -66,7 +66,7 @@ export default function ReportsCustomerExport() {
         'customer_export',
         currentAdminReportSelection,
       );
-      downloadFile(fileName, csvData);
+      downloadCsvFile(fileName, csvData);
     } else {
       toast.warning('No events found');
     }

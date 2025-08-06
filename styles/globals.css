@@ -1377,8 +1377,8 @@ input.rs-input:hover {
   float: left;
 }
 
-.refresh-results-table {
-  width: 100%;
+.itinerary-dates {
+  margin-top: 25px;
 }
 
 

@@ -10,6 +10,7 @@ import {
   ITopSellingLocation,
   Role,
   UserActivityType,
+  UserSeller,
 } from './user';
 import {
   IShirtData,
@@ -140,6 +141,8 @@ export interface PrintButtonProps {
 export interface ReportDatePickerProps {
   Start?: number;
   End?: number;
+  Disabled?: boolean;
+  LabelColumnWidth?: number;
   OnChange?: (start: number, end: number) => void;
   OnStartClear?: () => void;
   OnEndClear?: () => void;
@@ -353,4 +356,13 @@ export interface CustomToolTipParams {
   active?: boolean;
   payload?: CustomToolTipParamsPayload[];
   label?: string;
+}
+
+export interface VIPModalProps {
+  IsOpen?: boolean;
+  Seller?: UserSeller;
+  SellerHomePage?: string;
+  Events?: VipEvent[];
+  IsAdmin?: boolean;
+  OnClose?: () => void;
 }

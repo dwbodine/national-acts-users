@@ -1,6 +1,7 @@
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { GetCountriesResponse, GetEventsResponse, GetSellersResponse, GetToursResponse, ModifyEventResponse } from '@/types/responses';
 import { SelectPicker, Table } from 'rsuite';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import {
   setAdminDates,
   setAdminEvent,
@@ -35,7 +36,6 @@ import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
@@ -50,7 +50,6 @@ export default function AdminEventsIndex() {
   const { getSellers } = useGetSellers();
   const { getAdminEvents } = useGetAdminEvents();
   const { getLocation } = useGetLocation();
-  const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
   const dispatch = useDispatch();
   const [tableLoading, setTableLoading] = useState(true);
   const { setEventsInactive } = useSetEventsInactive();

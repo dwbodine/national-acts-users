@@ -7,10 +7,10 @@ import AdminListHomeButton from '../adminListHomeButton';
 import { Button } from 'react-bootstrap';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
+import { getSellerStatusSlug } from '@/utils/eventUtils';
 import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
 
 export default function AdminSellerGlobalIndex() {
@@ -21,7 +21,6 @@ export default function AdminSellerGlobalIndex() {
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const { getSellerStatusSlug } = useGetEventStatus();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

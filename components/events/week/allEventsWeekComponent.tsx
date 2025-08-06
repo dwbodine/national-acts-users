@@ -1,6 +1,7 @@
 import { Col, Row } from 'react-bootstrap';
 import { IconButton, Table } from 'rsuite';
 import { Note, VipEvent } from '@/types/event';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import { setExpandedEvent, setExpandedRow, setFocusControl } from '@/lib/adminEventsSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -13,7 +14,6 @@ import WeekView from './weekViewComponent';
 import moment from 'moment';
 import setFocusToControl from '@/utils/setFocusToControl';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 
@@ -26,7 +26,6 @@ export default function AllEventsWeek() {
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
   const { getLocation } = useGetLocation();
-  const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
 
   const [vipEvents, setVipEvents] = useState<VipEvent[] | undefined>(undefined);
   const [notes, setNotes] = useState<Note[] | undefined>(undefined);

@@ -9,7 +9,7 @@ import { AdminDashboardSelection } from '@/types/user';
 import DateRangeSelector from '../common/dateRangeSelectorComponent';
 import { GetOrdersResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
-import downloadFile from '@/utils/downloadFile';
+import { downloadCsvFile } from '@/utils/downloadFile';
 import { exportDashboardOrdersToCsv } from '@/utils/eventUtils';
 import getFileNameFromDashboardReportSelection from '@/utils/getFileNameFromDashboardReportSelection';
 import moment from 'moment';
@@ -102,7 +102,7 @@ export default function DashboardBar() {
               'dashboard-orders',
               dashboardSelection,
             );
-            downloadFile(fileName, csvData);
+            downloadCsvFile(fileName, csvData);
             dispatch(setCurrentDashboardData(dashboardSelection.currentDashboardData));
           }
         }

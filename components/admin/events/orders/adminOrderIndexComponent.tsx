@@ -1,7 +1,7 @@
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { GetEventResponse, GetEventsResponse, ModifyOrderResponse } from '@/types/responses';
 import { SelectPicker, Table } from 'rsuite';
-import { getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
+import { getEventStatusText, getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
 import {
   setAdminEvent,
   setAdminEvents,
@@ -23,7 +23,6 @@ import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useSetOrdersDeleted } from '@/hooks/order/useSetOrdersDeleted';
 import { useSetOrdersInactive } from '@/hooks/order/useSetOrdersInactive';
@@ -36,7 +35,6 @@ export default function AdminOrdersIndex(props: EditProps) {
   const [tableLoading, setTableLoading] = useState(true);
   const dispatch = useDispatch();
   const { getLocation } = useGetLocation();
-  const { getEventStatusText } = useGetEventStatus();
   const { getAdminEvents } = useGetAdminEvents();
   const { getEventById } = useGetEventById();
   const { setOrdersInactive } = useSetOrdersInactive();

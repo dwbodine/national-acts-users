@@ -3,9 +3,9 @@ import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
 import React, { ReactElement } from 'react';
 import { EventRowProps } from '@/types/props';
 import { RootState } from '@/lib/store';
+import { getEventStatusSlug } from '@/utils/eventUtils';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 import moment from 'moment';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useSelector } from 'react-redux';
 
@@ -20,7 +20,6 @@ export default function EventMobileRow(props: EventRowProps) {
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const currentSellerType = currentReportSelection.seller.sellerType;
   const id = `event_${vipEvent.externalEventId}`;
-  const { getEventStatusSlug } = useGetEventStatus();
   const isAdmin = props.IsAdmin;
 
   const setDetailEvent = () => {

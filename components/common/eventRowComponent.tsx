@@ -1,7 +1,7 @@
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import { EventRowProps } from '@/types/props';
 import React from 'react';
 import moment from 'moment';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 
 export default function EventRow(props: EventRowProps) {
@@ -12,7 +12,6 @@ export default function EventRow(props: EventRowProps) {
   const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
   const id = `event_${vipEvent.externalEventId}`;
-  const { getEventStatusText, getEventStatusSlug } = useGetEventStatus();
 
   const venueName = vipEvent.venue?.name;
   let location = '';

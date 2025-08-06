@@ -32,7 +32,7 @@ import PrintButton from '../../common/printButtonComponent';
 import { RingLoader } from 'react-spinners';
 import { RootState } from '@/lib/store';
 import debouce from 'lodash.debounce';
-import downloadFile from '@/utils/downloadFile';
+import { downloadCsvFile } from '@/utils/downloadFile';
 import { exportEventCustomerDataToCsv } from '@/utils/eventUtils';
 import getFileNameFromEvent from '@/utils/getFileNameFromEvent';
 import getShirtDataFromOrders from '@/utils/getShirtDataFromOrders';
@@ -297,7 +297,7 @@ export default function EventDetail(props: EditProps) {
         currentReportSelection.currentDetailEvent,
         `orders`,
       );
-      downloadFile(fileName, csvData);
+      downloadCsvFile(fileName, csvData);
     }
   };
 

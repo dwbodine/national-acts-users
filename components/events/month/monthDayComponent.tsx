@@ -1,4 +1,5 @@
 import { ReactElement, useState } from 'react';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AddNoteModal from '../common/addNoteModalComponent';
@@ -15,11 +16,9 @@ import { toast } from 'react-toastify';
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
 import { useEditNote } from '@/hooks/admin/useEditNote';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
 
 export default function MonthDay(props: MonthDayProps) {
     const dispatch = useDispatch();
-    const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
     const monthDate = props.MonthDate ? moment(props.MonthDate) : undefined;
     const events = props.Events;
     const notes = props.Notes;
