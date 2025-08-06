@@ -113,7 +113,7 @@ export default function Register() {
             <input
               type="text"
               autoComplete="off"
-              value={username}
+              value={username ?? ''}
               onChange={(e) => setUsername(e.target.value)}
               className="form-control"
               placeholder="Enter email address"
@@ -128,7 +128,7 @@ export default function Register() {
             <input
               type="text"
               autoComplete="off"
-              value={firstName}
+              value={firstName ?? ''}
               onChange={(e) => setFirstName(e.target.value)}
               className="form-control"
               placeholder="First name"
@@ -143,7 +143,7 @@ export default function Register() {
             <input
               type="text"
               autoComplete="off"
-              value={lastName}
+              value={lastName ?? ''}
               onChange={(e) => setLastName(e.target.value)}
               className="form-control"
               placeholder="Last name"
@@ -179,7 +179,7 @@ export default function Register() {
               placeholder="Password"
               autoComplete="off"
               className="form-control"
-              value={password}
+              value={password ?? ''}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
@@ -194,7 +194,7 @@ export default function Register() {
               placeholder="Confirm Password"
               autoComplete="off"
               className="form-control"
-              value={confirmPassword}
+              value={confirmPassword ?? ''}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
@@ -205,7 +205,7 @@ export default function Register() {
           <div className="form-group">
             <label>Notes for the admin (optional):</label>
             <textarea
-              value={notes}
+              value={notes ?? ''}
               autoComplete="off"
               onChange={(e) => setNotes(e.target.value)}
               className="form-control"

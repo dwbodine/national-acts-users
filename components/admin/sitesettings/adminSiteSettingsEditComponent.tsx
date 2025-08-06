@@ -194,7 +194,7 @@ export default function AdminSiteSettingsEdit() {
                                 <input
                                     type="number"
                                     name={setting.name}
-                                    value={setting.value}
+                                    value={setting.value ?? ''}
                                     onChange={(e) => onNumberChange(setting.name, parseFloat(e.target.value))}
                                 />
                             </Col>
@@ -209,7 +209,7 @@ export default function AdminSiteSettingsEdit() {
                                 <input
                                     type="text"
                                     name={setting.name}
-                                    value={setting.value}
+                                    value={setting.value ?? ''}
                                     onChange={(e) => onTextChange(setting.name, e.target.value)}
                                 />
                             </Col>

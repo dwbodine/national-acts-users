@@ -41,7 +41,7 @@ export default function AllEventsMonth() {
         </Row> :
         <Row>
             <Col>
-                <MonthView StartOfMonth={startOfMonth?.format('MM/DD/YYYY')} EndOfMonth={endOfMonth?.format('MM/DD/YYYY')} Events={vipEvents} Notes={currentReportSelection?.notes} /> 
+                <MonthView StartOfMonth={startOfMonth?.format('YYYY-MM-DD')} EndOfMonth={endOfMonth?.format('YYYY-MM-DD')} Events={vipEvents} Notes={currentReportSelection?.notes} /> 
             </Col>
         </Row>        
     )

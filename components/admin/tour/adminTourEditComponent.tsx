@@ -347,7 +347,7 @@ export default function AdminTourEdit() {
       <div className="form-group">
         <label className="mt-4">Tour Name</label>
         <input
-          value={tourName}
+          value={tourName ?? ''}
           onChange={(e) => setTourName(e.target.value)}
           className="form-control"
           placeholder="tour name"

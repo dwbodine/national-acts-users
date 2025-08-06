@@ -8,6 +8,7 @@ import { RootState } from '@/lib/store';
 import { UserActivityType } from '@/types/user';
 import { VipEvent } from '@/types/event';
 import downloadFile from '@/utils/downloadFile';
+import { exportCustomerDataToCsv } from '@/utils/eventUtils';
 import getFileNameFromReportAdminSelection from '@/utils/getFileNameFromAdminReportSelection';
 import moment from 'moment';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
@@ -15,7 +16,6 @@ import { setReportDates } from '@/lib/adminReportsSelectionSlice';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
-import { useGetExport } from '@/hooks/common/useGetExport';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 
 export default function ReportsCustomerExport() {
@@ -26,7 +26,6 @@ export default function ReportsCustomerExport() {
   const dispatch = useDispatch();
   const { getAllEvents } = useGetAllEvents();
   const { logActivityData } = useLogActivityData();
-  const { exportCustomerDataToCsv } = useGetExport();
 
   useEffect(() => {
     // Do nothing, just refresh

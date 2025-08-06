@@ -184,7 +184,7 @@ export default function ForgotPassword() {
                 <label>New Password:</label>
                 <input
                   type="password"
-                  value={password}
+                  value={password ?? ''}
                   onChange={(e) => setPassword(e.target.value)}
                   className="form-control"
                   autoComplete="off"
@@ -198,7 +198,7 @@ export default function ForgotPassword() {
                 <label>Confirm Password:</label>
                 <input
                   type="password"
-                  value={confirmPassword}
+                  value={confirmPassword ?? ''}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="form-control"
                   autoComplete="off"
@@ -246,7 +246,7 @@ export default function ForgotPassword() {
                 <label>Username:</label>
                 <input
                   type="text"
-                  value={username}
+                  value={username ?? ''}
                   onChange={(e) => setUsername(e.target.value)}
                   className="form-control"
                   placeholder="Please enter email address"

@@ -26,11 +26,11 @@ export default function AdminUserEdit() {
   const { deleteUser } = useDeleteUser();
   const [allSellers, setAllSellers] = useState<Seller[] | undefined>(undefined);
   const [allRoles, setAllRoles] = useState<Role[] | undefined>(undefined);
-  const [username, setUsername] = useState<string | undefined>(undefined);
-  const [firstName, setFirstName] = useState<string | undefined>(undefined);
-  const [lastName, setLastName] = useState<string | undefined>(undefined);
-  const [mobile, setMobile] = useState<string | undefined>(undefined);
-  const [notes, setNotes] = useState<string | undefined>(undefined);
+  const [username, setUsername] = useState<string | undefined>('');
+  const [firstName, setFirstName] = useState<string | undefined>('');
+  const [lastName, setLastName] = useState<string | undefined>('');
+  const [mobile, setMobile] = useState<string | undefined>('');
+  const [notes, setNotes] = useState<string | undefined>('');
   const [isActive, setIsActive] = useState<boolean>(false);
   const [requireResetPassword, setRequireResetPassword] = useState<boolean>(false);
   const [sendEmailReset, setSendEmailReset] = useState<boolean>(false);
@@ -50,12 +50,12 @@ export default function AdminUserEdit() {
       allRoles === undefined
     ) {
       dispatch(setIsLoading(true));
-      setUsername(currentAdminSelection.selectedUser.username);
-      setFirstName(currentAdminSelection.selectedUser.firstName);
-      setLastName(currentAdminSelection.selectedUser.lastName);
-      setMobile(currentAdminSelection.selectedUser.mobile);
-      setNotes(currentAdminSelection.selectedUser.notes);
-      setIsActive(currentAdminSelection.selectedUser.isActive);
+      setUsername(currentAdminSelection.selectedUser.username ?? '');
+      setFirstName(currentAdminSelection.selectedUser.firstName ?? '');
+      setLastName(currentAdminSelection.selectedUser.lastName ?? '');
+      setMobile(currentAdminSelection.selectedUser.mobile ?? '');
+      setNotes(currentAdminSelection.selectedUser.notes ?? '');
+      setIsActive(currentAdminSelection.selectedUser.isActive ?? false);
       setRequireResetPassword(
         currentAdminSelection.selectedUser.requireResetPassword ?? false,
       );
@@ -306,7 +306,7 @@ export default function AdminUserEdit() {
       <div className="form-group">
         <label className="mt-4">First Name</label>
         <input
-          value={firstName}
+          value={firstName ?? ''}
           onChange={(e) => setFirstName(e.target.value)}
           className="form-control"
           placeholder="first name"
@@ -316,7 +316,7 @@ export default function AdminUserEdit() {
       <div className="form-group">
         <label className="mt-4">Last Name</label>
         <input
-          value={lastName}
+          value={lastName ?? ''}
           onChange={(e) => setLastName(e.target.value)}
           className="form-control"
           placeholder="last name"
@@ -326,7 +326,7 @@ export default function AdminUserEdit() {
       <div className="form-group">
         <label className="mt-4">Mobile number</label>
         <input
-          value={mobile}
+          value={mobile ?? ''}
           onChange={(e) => setMobile(e.target.value)}
           className="form-control"
           placeholder="mobile number"
@@ -366,7 +366,7 @@ export default function AdminUserEdit() {
       </div>
       <div className="form-group">
         <label className="mt-4">Notes:</label>
-        <textarea onChange={(e) => setNotes(e.target.value)} value={notes} />
+        <textarea onChange={(e) => setNotes(e.target.value)} value={notes ?? ''} />
       </div>
       <div className="admin-button-group">
         <Button onClick={onSubmit}>Submit</Button>{' '}

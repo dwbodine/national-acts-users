@@ -537,7 +537,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Seller Name</label></Col>
           <Col>
             <input
-              value={currentSeller?.name}
+              value={currentSeller?.name ?? ''}
               onChange={(e) => setSellerName(e.target.value)}
               className="form-control form-control-half"
               placeholder="seller name"
@@ -588,7 +588,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Address</label></Col>
           <Col>
             <input
-              value={currentSeller?.address}
+              value={currentSeller?.address ?? ''}
               onChange={(e) => setAddress(e.target.value)}
               className="form-control form-control-half"
               placeholder="address"
@@ -600,7 +600,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">City</label></Col>
           <Col>
             <input
-              value={currentSeller?.city}
+              value={currentSeller?.city ?? ''}
               onChange={(e) => setCity(e.target.value)}
               className="form-control form-control-half"
               placeholder="city"
@@ -612,7 +612,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">State</label></Col>
           <Col>
             <input
-              value={currentSeller?.state}
+              value={currentSeller?.state ?? ''}
               onChange={(e) => setState(e.target.value)}
               className="form-control form-control-half"
               placeholder="state"
@@ -624,7 +624,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Postal Code</label></Col>
           <Col>
             <input
-              value={currentSeller?.zip}
+              value={currentSeller?.zip ?? ''}
               onChange={(e) => setZip(e.target.value)}
               className="form-control form-control-half"
               placeholder="postal code"
@@ -650,7 +650,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Phone</label></Col>
           <Col>
             <input
-              value={currentSeller?.phone}
+              value={currentSeller?.phone ?? ''}
               onChange={(e) => setPhone(e.target.value)}
               className="form-control form-control-half"
               placeholder="phone"
@@ -662,7 +662,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Email</label></Col>
           <Col>
             <input
-              value={currentSeller?.email}
+              value={currentSeller?.email ?? ''}
               onChange={(e) => setEmail(e.target.value)}
               className="form-control form-control-half"
               placeholder="email"
@@ -674,7 +674,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Twitter</label></Col>
           <Col>
             <input
-              value={currentSeller?.twitter}
+              value={currentSeller?.twitter ?? ''}
               onChange={(e) => setTwitter(e.target.value)}
               className="form-control form-control-half"
               placeholder="Twitter (X) url"
@@ -686,7 +686,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Facebook</label></Col>
           <Col>
             <input
-              value={currentSeller?.facebook}
+              value={currentSeller?.facebook ?? ''}
               onChange={(e) => setFacebook(e.target.value)}
               className="form-control form-control-half"
               placeholder="Facebook url"
@@ -698,7 +698,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Instagram</label></Col>
           <Col>
             <input
-              value={currentSeller?.instagram}
+              value={currentSeller?.instagram ?? ''}
               onChange={(e) => setInstagram(e.target.value)}
               className="form-control form-control-half"
               placeholder="Instagram url"
@@ -710,7 +710,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">YouTube</label></Col>
           <Col>
             <input
-              value={currentSeller?.youtube}
+              value={currentSeller?.youtube ?? ''}
               onChange={(e) => setYouTube(e.target.value)}
               className="form-control form-control-half"
               placeholder="YouTube url"
@@ -722,7 +722,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Spotify</label></Col>
           <Col>
             <input
-              value={currentSeller?.spotify}
+              value={currentSeller?.spotify ?? ''}
               onChange={(e) => setSpotify(e.target.value)}
               className="form-control form-control-half"
               placeholder="Spotify url"
@@ -734,7 +734,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Website</label></Col>
           <Col>
             <input
-              value={currentSeller?.website}
+              value={currentSeller?.website ?? ''}
               onChange={(e) => setWebsite(e.target.value)}
               className="form-control form-control-half"
               placeholder="Website url"
@@ -746,7 +746,7 @@ export default function AdminSellerGlobalEdit() {
           <Col xs={2}><label className="mt-4">Website Display Text</label></Col>
           <Col>
             <input
-              value={currentSeller?.websiteDisplayText}
+              value={currentSeller?.websiteDisplayText ?? ''}
               onChange={(e) => setWebsiteDisplayText(e.target.value)}
               className="form-control form-control-half"
               placeholder="Website display text (shown instead of url)"

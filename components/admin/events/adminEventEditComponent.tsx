@@ -1066,7 +1066,7 @@ export default function AdminEventEdit(props: EditProps) {
           <td>{ticketType.ticketTypeId === 0 ?
             <input
               type="text"
-              value={ticketType.ticketTypeName}
+              value={ticketType.ticketTypeName ?? ''}
               onChange={(e) => setCompTicketTypeName(e.target.value)}
             /> :
             ticketType.ticketTypeName
@@ -1152,7 +1152,7 @@ export default function AdminEventEdit(props: EditProps) {
         <Col className="form-group">
           <label className="mt-4">Event title</label>
           <input
-            value={eventTitle}
+            value={eventTitle ?? ''}
             onChange={(e) => setEventTitle(e.target.value)}
             className="form-control"
             placeholder="event title"
@@ -1204,7 +1204,7 @@ export default function AdminEventEdit(props: EditProps) {
               <div className="form-group">
                 <label className="mt-4">Venue name</label>
                 <input
-                  value={venueName}
+                  value={venueName ?? ''}
                   onChange={(e) => setVenueName(e.target.value)}
                   placeholder="venue name"
                   style={{ width: '80%' }}
@@ -1214,7 +1214,7 @@ export default function AdminEventEdit(props: EditProps) {
               <div className="form-group">
                 <label className="mt-4">Address</label>
                 <input
-                  value={address}
+                  value={address ?? ''}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="address"
                   style={{ width: '80%' }}
@@ -1224,7 +1224,7 @@ export default function AdminEventEdit(props: EditProps) {
               <div className="form-group">
                 <label className="mt-4">City</label>
                 <input
-                  value={city}
+                  value={city ?? ''}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="city"
                   type="text"
@@ -1233,7 +1233,7 @@ export default function AdminEventEdit(props: EditProps) {
               <div className="form-group">
                 <label className="mt-4">State</label>
                 <input
-                  value={state}
+                  value={state ?? ''}
                   onChange={(e) => setState(e.target.value)}
                   placeholder="state"
                   type="text"
@@ -1242,7 +1242,7 @@ export default function AdminEventEdit(props: EditProps) {
               <div className="form-group">
                 <label className="mt-4">Postal Code</label>
                 <input
-                  value={zipCode}
+                  value={zipCode ?? ''}
                   onChange={(e) => setZipCode(e.target.value)}
                   placeholder="postal code"
                   type="text"
@@ -1345,7 +1345,7 @@ export default function AdminEventEdit(props: EditProps) {
             rows={3}
             id="externalVipLink"
             onChange={(e) => setExternalVipLink(e.currentTarget.value)}
-            value={externalVipLink}
+            value={externalVipLink ?? ''}
             placeholder='VIP/Website Link (VIP tickets)'
           />
         </Col>
@@ -1357,7 +1357,7 @@ export default function AdminEventEdit(props: EditProps) {
             rows={3}
             id="externalUrl"
             onChange={(e) => setExternalUrl(e.currentTarget.value)}
-            value={externalUrl}
+            value={externalUrl ?? ''}
             placeholder='Ticket/Website Link (regular tickets)'
           />
         </Col>
@@ -1371,7 +1371,7 @@ export default function AdminEventEdit(props: EditProps) {
           />
           <label className="mt-4">Alternate text for Tickets Button (10 chars or less)</label>
           <input
-            value={disableLinkReason}
+            value={disableLinkReason ?? ''}
             onChange={(e) => setDisableLinkReason(e.target.value)}
             className="form-control"
             placeholder="Alternate text for Tickets button"
@@ -1388,7 +1388,7 @@ export default function AdminEventEdit(props: EditProps) {
           />
           <label className="mt-4">Alternate text for VIP Button (10 chars or less)</label>
           <input
-            value={disableVipLinkReason}
+            value={disableVipLinkReason ?? ''}
             onChange={(e) => setDisableVipLinkReason(e.target.value)}
             className="form-control"
             placeholder="Alternate text for VIP button"
@@ -1405,7 +1405,7 @@ export default function AdminEventEdit(props: EditProps) {
             rows={3}
             id="checkInLocation"
             onChange={(e) => onCheckInLocationChange(e.currentTarget.value)}
-            value={checkInLocation}
+            value={checkInLocation ?? ''}
           />
         </Col>
       </Row>
@@ -1418,7 +1418,7 @@ export default function AdminEventEdit(props: EditProps) {
             id="checkInNotes"
             rows={5}
             onChange={(e) => onCheckInNotesChange(e.currentTarget.value)}
-            value={checkInNotes}
+            value={checkInNotes ?? ''}
           />
         </Col>
       </Row>
@@ -1539,7 +1539,7 @@ export default function AdminEventEdit(props: EditProps) {
                 id="addNote"
                 rows={5}
                 onChange={(e) => setNoteText(e.currentTarget.value)}
-                value={noteText}
+                value={noteText ?? ''}
                 placeholder="Note text"
               />
             </Modal.Body>

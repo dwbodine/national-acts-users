@@ -289,7 +289,8 @@ export default function CurrentEvents() {
       </Container>
       <div hidden={globalSelection.isLoading}>
         <input
-          value={searchTerm}
+          type="text" 
+          value={searchTerm ?? ''}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="form-control search-text-input no-print"
           placeholder="Search for events..."

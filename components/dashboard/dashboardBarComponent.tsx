@@ -10,17 +10,16 @@ import DateRangeSelector from '../common/dateRangeSelectorComponent';
 import { GetOrdersResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import downloadFile from '@/utils/downloadFile';
+import { exportDashboardOrdersToCsv } from '@/utils/eventUtils';
 import getFileNameFromDashboardReportSelection from '@/utils/getFileNameFromDashboardReportSelection';
 import moment from 'moment';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAllOrders } from '@/hooks/order/useGetAllOrders';
-import { useGetExport } from '@/hooks/common/useGetExport';
 
 export default function DashboardBar() {
   const dispatch = useDispatch();
   const { getAllOrders } = useGetAllOrders();
-  const { exportDashboardOrdersToCsv } = useGetExport();
   const currentDashboardSelection = useSelector(
     (state: RootState) => state.dashboardSelecton,
   );

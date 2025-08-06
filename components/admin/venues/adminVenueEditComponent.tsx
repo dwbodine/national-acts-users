@@ -148,7 +148,7 @@ export default function AdminVenueEdit() {
       <div className="form-group">
         <label className="mt-4">Venue name</label>
         <input
-          value={venueName}
+          value={venueName ?? ''}
           onChange={(e) => setVenueName(e.target.value)}
           className="form-control"
           placeholder="venue name"
@@ -158,7 +158,7 @@ export default function AdminVenueEdit() {
       <div className="form-group">
         <label className="mt-4">Address</label>
         <input
-          value={address}
+          value={address ?? ''}
           onChange={(e) => setAddress(e.target.value)}
           className="form-control"
           placeholder="address"
@@ -168,7 +168,7 @@ export default function AdminVenueEdit() {
       <div className="form-group">
         <label className="mt-4">City</label>
         <input
-          value={city}
+          value={city ?? ''}
           onChange={(e) => setCity(e.target.value)}
           className="form-control"
           placeholder="city"
@@ -178,7 +178,7 @@ export default function AdminVenueEdit() {
       <div className="form-group">
         <label className="mt-4">State</label>
         <input
-          value={state}
+          value={state ?? ''}
           onChange={(e) => setState(e.target.value)}
           className="form-control"
           placeholder="state"
@@ -188,7 +188,7 @@ export default function AdminVenueEdit() {
       <div className="form-group">
         <label className="mt-4">Postal Code</label>
         <input
-          value={zipCode}
+          value={zipCode ?? ''}
           onChange={(e) => setZipCode(e.target.value)}
           className="form-control"
           placeholder="postal code"

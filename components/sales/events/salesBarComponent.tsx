@@ -1,4 +1,5 @@
 import { Button, Col, Row } from 'react-bootstrap';
+import { exportCustomerDataToCsv, exportEventsToCsv } from '@/utils/eventUtils';
 import {
   resetSelection,
   setDateRange,
@@ -26,7 +27,6 @@ import getFileNameFromReportSelection from '@/utils/getFileNameFromReportSelecti
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
-import { useGetExport } from '@/hooks/common/useGetExport';
 import { useHasPermission } from '@/hooks/user/useHasPermission';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 
@@ -36,7 +36,6 @@ export default function SalesBar() {
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
   const { userHasPermission } = useHasPermission();
-  const { exportEventsToCsv, exportCustomerDataToCsv } = useGetExport();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const hasEvents = (currentReportSelection?.currentEvents?.length ?? 0) > 0;
   const dateRangeTitle = 'Event date range';

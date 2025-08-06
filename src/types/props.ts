@@ -323,7 +323,7 @@ export interface WeekViewProps {
 }
 
 export interface ExpandCellProps extends CellProps<VipEvent> {
-  expandedRowKeys?: number[];
+  expandedrowkeys?: number[];
 }
 
 export interface AttendeeRowProps {

@@ -77,7 +77,7 @@ export default function ResetPassword() {
                     placeholder="Password"
                     name="new_password"
                     className="w-80 h-8 px-2 border border-solid border-black rounded"
-                    value={password}
+                    value={password ?? ''}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
@@ -92,7 +92,7 @@ export default function ResetPassword() {
                     placeholder="Confirm Password"
                     name="confirm_password"
                     className="w-80 h-8 px-2 border border-solid border-black rounded"
-                    value={confirmPassword}
+                    value={confirmPassword ?? ''}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>

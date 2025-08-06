@@ -213,7 +213,7 @@ export default function AdminPageOrderIndex() {
               <HeaderCell>Order</HeaderCell>
               <Cell className='page-order-cell'>
                 {(rowData) => (
-                  <input className='page-order-input' id={rowData.pageId} type="text" value={rowData.pageOrder} onChange={(e) => onPageOrderChange(e, parseInt(`${rowData.pageId}`), parseInt(`${rowData.pageOrder}`), parseInt(e.currentTarget.value))} />
+                  <input className='page-order-input' id={rowData.pageId} type="text" value={rowData.pageOrder ?? ''} onChange={(e) => onPageOrderChange(e, parseInt(`${rowData.pageId}`), parseInt(`${rowData.pageOrder}`), parseInt(e.currentTarget.value))} />
                 )}
               </Cell>
             </Column>

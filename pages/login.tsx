@@ -138,7 +138,7 @@ export default function Login() {
             <div className="form-group">
               <label className="mt-4">PASSWORD</label>
               <input
-                value={password}
+                value={password ?? ''}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyUp={(e) => submitOnEnter(e)}
                 className="form-control"

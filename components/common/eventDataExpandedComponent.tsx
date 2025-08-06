@@ -390,7 +390,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                                                         rows={3}
                                                         id="checkInLocation"
                                                         onChange={(e) => setModalCheckInLocation(e.currentTarget.value)}
-                                                        value={modalCheckInLocation}
+                                                        value={modalCheckInLocation ?? ''}
                                                     />
                                                 </Col>
                                             </Row>
@@ -403,7 +403,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                                                         id="checkInNotes"
                                                         rows={5}
                                                         onChange={(e) => setModalCheckInNotes(e.currentTarget.value)}
-                                                        value={modalCheckInNotes}
+                                                        value={modalCheckInNotes ?? ''}
                                                     />
                                                 </Col>
                                             </Row>
@@ -436,7 +436,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                                         id="addNote"
                                         rows={5}
                                         onChange={(e) => setNoteText(e.currentTarget.value)}
-                                        value={noteText}
+                                        value={noteText ?? ''}
                                         placeholder="Note text"
                                     />
                                 </Modal.Body>

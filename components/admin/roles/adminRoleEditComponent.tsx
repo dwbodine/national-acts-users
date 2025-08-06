@@ -22,7 +22,7 @@ export default function AdminRoleEdit() {
   const [allPermissions, setAllPermissions] = useState<Permission[] | undefined>(
     undefined,
   );
-  const [roleName, setRoleName] = useState<string | undefined>(undefined);
+  const [roleName, setRoleName] = useState<string | undefined>('');
 
   const goBack = () => {
     router.push('/admin/roles/');
@@ -32,7 +32,7 @@ export default function AdminRoleEdit() {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.selectedRole === undefined) {
         goBack();
-      } else if (allPermissions === undefined && roleName === undefined) {
+      } else if (allPermissions === undefined && (roleName === undefined || roleName === '')) {
         dispatch(setIsLoading(true));
         setRoleName(currentAdminSelection.selectedRole.roleName);
         getAllPermissions().then((response: GetPermissionsResponse) => {
@@ -148,7 +148,7 @@ export default function AdminRoleEdit() {
       <div className="form-group">
         <label className="mt-4">Role Name</label>
         <input
-          value={roleName}
+          value={roleName ?? ''}
           onChange={(e) => setRoleName(e.target.value)}
           className="form-control"
           placeholder="role name"

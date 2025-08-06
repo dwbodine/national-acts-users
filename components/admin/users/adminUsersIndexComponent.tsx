@@ -98,7 +98,8 @@ export default function AdminUsersIndex() {
     <div className="admin-container">
       <h3>Users Admin</h3>
       <input
-        value={searchTerm}
+        type="text" 
+        value={searchTerm ?? ''}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="form-control search-text-input no-print"
         placeholder="Search for users by name, username or client name..."

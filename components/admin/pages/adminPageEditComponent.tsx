@@ -631,7 +631,7 @@ export default function AdminPageEdit() {
           <Col>
             <label className="mt-4">Main Page Title (most viewed on the site)</label>
             <input
-              value={title}
+              value={title ?? ''}
               onChange={(e) => setPageTitle(e.target.value)}
               className="form-control form-control-half"
               placeholder="page title"
@@ -643,7 +643,7 @@ export default function AdminPageEdit() {
           <Col>
             <label className="mt-4">Route (how it shows up in the url)</label>
             <input
-              value={route}
+              value={route ?? ''}
               onChange={(e) => setPageRoute(e.target.value)}
               className="form-control form-control-half"
               placeholder="page route"
@@ -738,7 +738,7 @@ export default function AdminPageEdit() {
           <Col>
             <label className="mt-4">Subtitle 1</label>
             <input
-              value={subtitle1}
+              value={subtitle1 ?? ''}
               onChange={(e) => setSubTitle1(e.target.value)}
               className="form-control form-control-half"
               placeholder="Shows up underneath page title"
@@ -750,7 +750,7 @@ export default function AdminPageEdit() {
           <Col>
             <label className="mt-4">Subtitle 2</label>
             <input
-              value={subtitle2}
+              value={subtitle2 ?? ''}
               onChange={(e) => setSubTitle2(e.target.value)}
               className="form-control form-control-half"
               placeholder="Shows up underneath subtitle 1"
@@ -765,7 +765,7 @@ export default function AdminPageEdit() {
               rows={10}
               id="htmlText"
               onChange={(e) => setHtmlText(e.currentTarget.value)}
-              value={htmlText}
+              value={htmlText ?? ''}
               placeholder='Free-form html text to be placed in header'
             />
           </Col>
@@ -836,7 +836,7 @@ export default function AdminPageEdit() {
           <Col>
             <label className="mt-4">Google Analytics ID</label>
             <input
-              value={googleAnalyticsId}
+              value={googleAnalyticsId ?? ''}
               onChange={(e) => setGoogleAnalyticsId(e.target.value)}
               className="form-control form-control-half"
               placeholder="e.g.: UA-xxxxxxxxx-x"

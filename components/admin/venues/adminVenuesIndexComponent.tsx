@@ -141,7 +141,8 @@ export default function AdminVenuesIndex() {
       <Row>
         <Col xs={2}>
           <input
-            value={searchTerm}
+            type="text" 
+            value={searchTerm ?? ''}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={(e) => submitOnEnter(e)}
             className="form-control search-text-input no-print"

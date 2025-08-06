@@ -27,22 +27,22 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   const handlePageSellerSettingsOpen = () => setPageSellerSettingsOpen(true);
   const handlePageSellerSettingsClose = () => setPageSellerSettingsOpen(false);
 
-  const [displayName, setDisplayName] = useState(pageSeller?.displayName);
+  const [displayName, setDisplayName] = useState(pageSeller?.displayName ?? '');
   const [showDisplayName, setShowDisplayName] = useState(pageSeller?.showDisplayName ?? false);
-  const [address, setAddress] = useState(pageSeller?.address);
-  const [city, setCity] = useState(pageSeller?.city);
-  const [state, setState] = useState(pageSeller?.state);
-  const [zip, setZip] = useState(pageSeller?.zip);
+  const [address, setAddress] = useState(pageSeller?.address ?? '');
+  const [city, setCity] = useState(pageSeller?.city ?? '');
+  const [state, setState] = useState(pageSeller?.state ?? '');
+  const [zip, setZip] = useState(pageSeller?.zip ?? '');
   const [countryId, setCountryId] = useState(pageSeller?.country?.countryId);
-  const [phone, setPhone] = useState(pageSeller?.phone);
-  const [email, setEmail] = useState(pageSeller?.email);
-  const [twitter, setTwitter] = useState(pageSeller?.twitter);
-  const [facebook, setFacebook] = useState(pageSeller?.facebook);
-  const [instagram, setInstagram] = useState(pageSeller?.instagram);
-  const [youtube, setYoutube] = useState(pageSeller?.youtube);
-  const [spotify, setSpotify] = useState(pageSeller?.spotify);
-  const [website, setWebsite] = useState(pageSeller?.website);
-  const [websiteDisplayText, setWebsiteDisplayText] = useState(pageSeller?.websiteDisplayText);
+  const [phone, setPhone] = useState(pageSeller?.phone ?? '');
+  const [email, setEmail] = useState(pageSeller?.email ?? '');
+  const [twitter, setTwitter] = useState(pageSeller?.twitter ?? '');
+  const [facebook, setFacebook] = useState(pageSeller?.facebook ?? '');
+  const [instagram, setInstagram] = useState(pageSeller?.instagram ?? '');
+  const [youtube, setYoutube] = useState(pageSeller?.youtube ?? '');
+  const [spotify, setSpotify] = useState(pageSeller?.spotify ?? '');
+  const [website, setWebsite] = useState(pageSeller?.website ?? '');
+  const [websiteDisplayText, setWebsiteDisplayText] = useState(pageSeller?.websiteDisplayText ?? '');
 
   if (sellers && sellerType) {
     sellers = sellers.filter(x => x.sellerType === sellerType);
@@ -146,7 +146,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Display Name</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is &quot;{selectedSeller?.name}&quot;</div>
                   <input
-                    value={displayName}
+                    value={displayName ?? ''}
                     onChange={(e) => setDisplayName(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Display Name override"
@@ -164,7 +164,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Address</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.address ?? 'n/a'}`}</div>
                   <input
-                    value={address}
+                    value={address ?? ''}
                     onChange={(e) => setAddress(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Street address override"
@@ -177,7 +177,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">City</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.city ?? 'n/a'}`}</div>
                   <input
-                    value={city}
+                    value={city ?? ''}
                     onChange={(e) => setCity(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="City override"
@@ -190,7 +190,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">State</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.state ?? 'n/a'}`}</div>
                   <input
-                    value={state}
+                    value={state ?? ''}
                     onChange={(e) => setState(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="State override"
@@ -203,7 +203,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Postal Code</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.zip ?? 'n/a'}`}</div>
                   <input
-                    value={zip}
+                    value={zip ?? ''}
                     onChange={(e) => setZip(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Postal code override"
@@ -231,7 +231,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Phone</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.phone ?? 'n/a'}`}</div>
                   <input
-                    value={phone}
+                    value={phone ?? ''}
                     onChange={(e) => setPhone(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Phone override"
@@ -244,7 +244,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Email</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.email ?? 'n/a'}`}</div>
                   <input
-                    value={email}
+                    value={email ?? ''}
                     onChange={(e) => setEmail(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Email override"
@@ -257,7 +257,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Twitter</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.twitter ?? 'n/a'}`}</div>
                   <input
-                    value={twitter}
+                    value={twitter ?? ''}
                     onChange={(e) => setTwitter(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Twitter override"
@@ -270,7 +270,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Facebook</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.facebook ?? 'n/a'}`}</div>
                   <input
-                    value={facebook}
+                    value={facebook ?? ''}
                     onChange={(e) => setFacebook(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Facebook override"
@@ -283,7 +283,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Instagram</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.instagram ?? 'n/a'}`}</div>
                   <input
-                    value={instagram}
+                    value={instagram ?? ''}
                     onChange={(e) => setInstagram(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Instagram override"
@@ -296,7 +296,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">YouTube</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.youtube ?? 'n/a'}`}</div>
                   <input
-                    value={youtube}
+                    value={youtube ?? ''}
                     onChange={(e) => setYoutube(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="YouTube override"
@@ -309,7 +309,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Spotify</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.spotify ?? 'n/a'}`}</div>
                   <input
-                    value={spotify}
+                    value={spotify ?? ''}
                     onChange={(e) => setSpotify(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Spotify override"
@@ -322,7 +322,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Website</label>
                   <div className="pageseller-default">Default is {`${selectedSeller?.website ?? 'n/a'}`}</div>
                   <input
-                    value={website}
+                    value={website ?? ''}
                     onChange={(e) => setWebsite(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Website override"
@@ -335,7 +335,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <label className="page-seller-label">Website Display Text</label>
                   <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.websiteDisplayText ?? '(none)'}`}</div>
                   <input
-                    value={websiteDisplayText}
+                    value={websiteDisplayText ?? ''}
                     onChange={(e) => setWebsiteDisplayText(e.target.value)}
                     className="form-control form-control-half"
                     placeholder="Website display text override"

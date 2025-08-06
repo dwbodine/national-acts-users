@@ -181,7 +181,7 @@ export default function AllEventsWeek() {
               </Column>
               <Column width={70} align="center">
                 <HeaderCell>&nbsp;</HeaderCell>
-                <ExpandCell dataKey="id" expandedRowKeys={expandedRowKey ? [expandedRowKey] : []} rowData={undefined} />
+                <ExpandCell dataKey="id" expandedrowkeys={expandedRowKey ? [expandedRowKey] : []} rowData={undefined} />
               </Column>
             </Table>
           </Col>

@@ -1377,6 +1377,10 @@ input.rs-input:hover {
   float: left;
 }
 
+.refresh-results-table {
+  width: 100%;
+}
+
 
 /* MOBILE QUERIES */
 /* Bootstrap xxl */

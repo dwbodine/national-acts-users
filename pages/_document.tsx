@@ -3,7 +3,7 @@ import Script from 'next/script';
 
 export default function Document() {
   return (
-    <Html>
+    <Html data-scroll-behavior="smooth">
       <Head>
         <meta name="theme-color" content="#FFFFFF" />
         <link rel="icon" href="/images/favicon.png"></link>

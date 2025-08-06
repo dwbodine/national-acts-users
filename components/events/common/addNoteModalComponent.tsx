@@ -29,7 +29,7 @@ export default function AddNoteModal(props: AddNoteModalProps) {
                     id="addNote"
                     rows={5}
                     onChange={(e) => setNoteText ? setNoteText(e.currentTarget.value) : null}
-                    value={noteText}
+                    value={noteText ?? ''}
                     placeholder="Note text"
                 />
             </Modal.Body>

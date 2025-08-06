@@ -71,7 +71,7 @@ export default function MonthView(props: MonthViewProps) {
                 Notes={filteredNotes} />);        
                 
             if (parseInt(displayDate.format('d')) === 6) {
-                monthDayRows.push(<MonthWeek WeekDays={monthDays} />);
+                monthDayRows.push(<MonthWeek key={`monthWeek_${i}`} WeekDays={monthDays} />);
                 monthDays = [];
             }
 

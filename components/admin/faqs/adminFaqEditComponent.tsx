@@ -188,7 +188,7 @@ export default function AdminFaqEdit() {
           <Col>
             <label className="mt-4">Question</label>
             <input
-              value={question}
+              value={question ?? ''}
               onChange={(e) => setQuestion(e.target.value)}
               className="form-control form-control-half"
               placeholder="FAQ question"
@@ -203,7 +203,7 @@ export default function AdminFaqEdit() {
               rows={3}
               id="answer"
               onChange={(e) => setAnswer(e.currentTarget.value)}
-              value={answer}
+              value={answer ?? ''}
               placeholder='Free-form html text to be used as answer'
             />
           </Col>

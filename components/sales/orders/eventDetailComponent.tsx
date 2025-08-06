@@ -33,6 +33,7 @@ import { RingLoader } from 'react-spinners';
 import { RootState } from '@/lib/store';
 import debouce from 'lodash.debounce';
 import downloadFile from '@/utils/downloadFile';
+import { exportEventCustomerDataToCsv } from '@/utils/eventUtils';
 import getFileNameFromEvent from '@/utils/getFileNameFromEvent';
 import getShirtDataFromOrders from '@/utils/getShirtDataFromOrders';
 import getTicketDataFromOrders from '@/utils/getTicketDataFromOrders';
@@ -41,7 +42,6 @@ import router from 'next/router';
 import setFocusToControl from '@/utils/setFocusToControl';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
-import { useGetExport } from '@/hooks/common/useGetExport';
 import { useGetUserSeller } from '@/hooks/order/useGetUserSeller';
 import { useHasPermission } from '@/hooks/user/useHasPermission';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
@@ -52,7 +52,6 @@ export default function EventDetail(props: EditProps) {
   const { getUser } = useCurrentUser();
   const [user, setUser] = useState<User | undefined>(undefined);
   const { userHasPermission } = useHasPermission();
-  const { exportEventCustomerDataToCsv } = useGetExport();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const [checkChanged, setCheckChanged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -700,7 +699,8 @@ export default function EventDetail(props: EditProps) {
                 </Col>
                 <Col md={10} sm={12} className="no-print" hidden={searchBarHidden}>
                   <input
-                    value={searchTerm}
+                    type="text" 
+                    value={searchTerm ?? ''}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="form-control search-text-input"
                     placeholder="Search for orders..."
