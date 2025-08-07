@@ -1,6 +1,6 @@
 import { Button } from 'react-bootstrap';
-import parse from 'html-react-parser';
 import { ConfirmationDialogProps } from '@/types/props';
+import parse from 'html-react-parser';
 
 export default function ConfirmationDialog(props: ConfirmationDialogProps) {
   const message = props.Message ? parse(props.Message) : '';

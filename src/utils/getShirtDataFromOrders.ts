@@ -1,22 +1,22 @@
 import { IShirtData, IShirtSizeData, Order } from '@/types/event';
 import moment from 'moment';
 
-export function getShirtDataFromOrders(orders: Order[]): IShirtData | undefined {
+export default function getShirtDataFromOrders(orders: Order[]): IShirtData | undefined {
   const map = new Map<string, IShirtSizeData[]>();
   const shirtSizes: string[] = [];
   orders.forEach((order: Order) => {
     const key = moment(order.purchaseDate).format('MM/DD/YYYY');
-    if (order.totalShirts ?? 0 > 0) {
+    if ((order.totalShirts ?? 0) > 0) {
       order.tickets?.forEach((ticket) => {
         if (ticket.shirtSize) {
-          if (!shirtSizes.find((x) => x == ticket.shirtSize)) {
+          if (!shirtSizes.find((x) => x === ticket.shirtSize)) {
             shirtSizes.push(ticket.shirtSize);
           }
           const collection = map.get(key);
-          if (!collection) {
+          if (collection === undefined) {
             const data: IShirtSizeData = {
-              ShirtSize: ticket.shirtSize,
               Number: 1,
+              ShirtSize: ticket.shirtSize,
             };
             map.set(key, [data]);
           } else {
@@ -29,8 +29,8 @@ export function getShirtDataFromOrders(orders: Order[]): IShirtData | undefined 
               collection[indexToUpdate] = item;
             } else {
               collection.push({
-                ShirtSize: ticket.shirtSize,
                 Number: 1,
+                ShirtSize: ticket.shirtSize,
               });
             }
           }
@@ -42,22 +42,22 @@ export function getShirtDataFromOrders(orders: Order[]): IShirtData | undefined 
   });
   shirtSizes.sort();
   const shirtSizeSorted: string[] = [];
-  if (shirtSizes.find((x) => x == 'S')) {
+  if (shirtSizes.find((x) => x === 'S')) {
     shirtSizeSorted.push('S');
   }
-  if (shirtSizes.find((x) => x == 'M')) {
+  if (shirtSizes.find((x) => x === 'M')) {
     shirtSizeSorted.push('M');
   }
-  if (shirtSizes.find((x) => x == 'L')) {
+  if (shirtSizes.find((x) => x === 'L')) {
     shirtSizeSorted.push('L');
   }
   shirtSizes.forEach((size) => {
-    if (size != 'S' && size != 'M' && size != 'L') {
+    if (size !== 'S' && size !== 'M' && size !== 'L') {
       shirtSizeSorted.push(size);
     }
   });
   return {
-    ShirtSizes: shirtSizeSorted,
     ShirtData: map,
+    ShirtSizes: shirtSizeSorted,
   };
 }

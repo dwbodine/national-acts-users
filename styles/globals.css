@@ -17,7 +17,7 @@ div hidden {
 select,
 input[type='text'],
 input[type='password'],
-input[type='number']{
+input[type='number'] {
   margin: 10px 5px;
   padding: 7px;
   min-width: 220px;
@@ -235,7 +235,8 @@ input.rs-input:hover {
   margin: 15px 0;
 }
 
-.edit-event-link, a.edit-event-link {
+.edit-event-link,
+a.edit-event-link {
   float: left;
   display: block;
   margin-bottom: 5px;
@@ -511,11 +512,13 @@ input.rs-input:hover {
   font-weight: bold;
 }
 
-.vipTable .inactive, .vipTitle .sold-out {
+.vipTable .inactive,
+.vipTitle .sold-out {
   color: red;
 }
 
-.vipTable .hidden, .vipTable .active-pending {
+.vipTable .hidden,
+.vipTable .active-pending {
   color: orange;
 }
 
@@ -964,7 +967,7 @@ input.rs-input:hover {
 }
 
 .form-control-half {
-  max-width: 50%;  
+  max-width: 50%;
 }
 
 .admin-container {
@@ -1079,7 +1082,8 @@ input.rs-input:hover {
   font-weight: bold;
 }
 
-.page-order-cell, .page-order-cell div {
+.page-order-cell,
+.page-order-cell div {
   padding: 0;
 }
 
@@ -1369,7 +1373,7 @@ input.rs-input:hover {
 .shirt-size-container {
   width: 100%;
   clear: both;
-  margin: 10px 0;
+  margin: 10px 0; 
 }
 
 .shirt-sizes {
@@ -1377,6 +1381,86 @@ input.rs-input:hover {
   float: left;
 }
 
+.itinerary-dates {
+  margin-top: 25px;
+}
+
+.pdf-container {
+  width: 100%;
+}
+
+.pdf-toolbar {
+  text-align: right;
+  margin: 15px 25px 0 0;
+}
+
+.pdf-toolbar button {
+  margin: 0 5px;
+}
+
+.pdf-header {
+  width: 100%;
+  text-align: center;
+}
+
+.pdf-header h1 {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 auto;
+  text-transform: uppercase;
+}
+
+.pdf-header p {
+  font-size: 10px;
+  margin: 0 auto;
+}
+
+.pdf-body {
+  width: 100%;
+  text-align: left;
+  padding: 15px;
+}
+
+.pdf-table {
+  width: 100%;
+  border: 1px solid black;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+
+.pdf-table tr,
+.pdf-table td,
+.pdf-table th {
+  border: 1px solid black;
+  border-collapse: collapse;
+  color: black;
+  text-wrap: wrap;
+  padding: 5px !important;
+}
+
+.pdf-table th {
+  color: white;
+  background-color: #26A69A
+}
+
+.pdf-table tr {
+  background-color: white;
+}
+
+.pdf-table tr:nth-child(even) {
+  background-color: #DDF2F0;
+}
+
+.pdf-table td {
+  font-size: 12px;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.pdf-table td a {
+  color: black;
+  text-decoration: underline;
+}
 
 /* MOBILE QUERIES */
 /* Bootstrap xxl */
@@ -1473,7 +1557,7 @@ input.rs-input:hover {
 /* Bootstrap md */
 @media (max-width: 768px) {
   .form-control-half {
-    max-width: unset;  
+    max-width: unset;
   }
 
   .wrapper {
@@ -1754,5 +1838,10 @@ input.rs-input:hover {
   .check-out-show,
   .check-in-show {
     display: none;
+  }
+
+  .pdf-container, .pdf-header, .pdf-body {
+    margin: 0;
+    padding: 0;
   }
 }

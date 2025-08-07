@@ -1,10 +1,11 @@
-import Container from 'react-bootstrap/Container';
-import { Col, Row, Button } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { GetSellersResponse, UserResponse } from '@/types/responses';
+import Container from 'react-bootstrap/Container';
 import { Seller } from '@/types/event';
-import { useRouter } from 'next/router';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRegister } from '@/hooks/user/useRegister';
+import { useRouter } from 'next/router';
 
 export default function Register() {
   const router = useRouter();
@@ -28,23 +29,22 @@ export default function Register() {
     if (!dummyVal) {
       setDummyVal(true);
       getSellers()
-        .then((response) => {
-          if (response.sellersError) {
-            setRegisterError(response.sellersError);
+        .then((response: GetSellersResponse) => {
+          if (response.error) {
+            setRegisterError(response.error);
           } else {
             setSellers(response.sellers);
           }
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
           setRegisterError('Unknown error occurred while fetching sellers');
         });
     }
   }, [dummyVal, getSellers]);
 
   const handleSellerChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const sellerId = parseInt(event.currentTarget.value);
-    setSellerId(sellerId);
+    const selectedSellerId = parseInt(event.currentTarget.value);
+    setSellerId(selectedSellerId);
   };
 
   const onSubmit = () => {
@@ -74,23 +74,22 @@ export default function Register() {
       setRegisterError('Confirm password cannot be blank');
       return;
     }
-    if (password != confirmPassword) {
+    if (password !== confirmPassword) {
       setRegisterError('Passwords do not match');
       return;
     }
 
     register(username, firstName, lastName, sellerId, password, confirmPassword, notes)
-      .then((response) => {
-        if (response.errorMessage) {
-          setRegisterError(response.errorMessage);
+      .then((response: UserResponse) => {
+        if (response.error) {
+          setRegisterError(response.error);
         } else {
           setRegisterSuccess(
             'User registration succeeded, please wait for response from the administrator',
           );
         }
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setRegisterError('Unknown error occurred during user registration');
       });
   };
@@ -114,7 +113,7 @@ export default function Register() {
             <input
               type="text"
               autoComplete="off"
-              value={username}
+              value={username ?? ''}
               onChange={(e) => setUsername(e.target.value)}
               className="form-control"
               placeholder="Enter email address"
@@ -129,7 +128,7 @@ export default function Register() {
             <input
               type="text"
               autoComplete="off"
-              value={firstName}
+              value={firstName ?? ''}
               onChange={(e) => setFirstName(e.target.value)}
               className="form-control"
               placeholder="First name"
@@ -144,7 +143,7 @@ export default function Register() {
             <input
               type="text"
               autoComplete="off"
-              value={lastName}
+              value={lastName ?? ''}
               onChange={(e) => setLastName(e.target.value)}
               className="form-control"
               placeholder="Last name"
@@ -162,13 +161,11 @@ export default function Register() {
               className="form-control"
             >
               <option value="0"> -- Select One --</option>
-              {sellers?.map((seller) => {
-                return (
-                  <option key={seller.sellerId} value={seller.sellerId}>
-                    {seller.name}
-                  </option>
-                );
-              })}
+              {sellers?.map(seller =>
+                <option key={seller.sellerId} value={seller.sellerId}>
+                  {seller.name}
+                </option>
+              )}
             </select>
           </div>
         </Col>
@@ -182,7 +179,7 @@ export default function Register() {
               placeholder="Password"
               autoComplete="off"
               className="form-control"
-              value={password}
+              value={password ?? ''}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
@@ -197,7 +194,7 @@ export default function Register() {
               placeholder="Confirm Password"
               autoComplete="off"
               className="form-control"
-              value={confirmPassword}
+              value={confirmPassword ?? ''}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
@@ -208,7 +205,7 @@ export default function Register() {
           <div className="form-group">
             <label>Notes for the admin (optional):</label>
             <textarea
-              value={notes}
+              value={notes ?? ''}
               autoComplete="off"
               onChange={(e) => setNotes(e.target.value)}
               className="form-control"

@@ -1,7 +1,7 @@
+import { Col, Row } from 'react-bootstrap';
+import { ReactElement } from 'react';
 import { SalesPerDayOfWeekWidgetProps } from '@/types/props';
 import moment from 'moment';
-import { ReactElement } from 'react';
-import { Col, Row } from 'react-bootstrap';
 
 export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetProps) {
   const salesPerDayMonth = props.SalesPerDayMonth;
@@ -18,8 +18,8 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
 
   const salesRows: ReactElement[] = [];
 
-  if (salesPerDayMonth != undefined || salesPerDayYear != undefined) {
-    for (let i = 1; i <= 7; i++) {
+  if (salesPerDayMonth !== undefined || salesPerDayYear !== undefined) {
+    for (let i = 1; i <= 7; i += 1) {
       const dayNumber = i % 7;
       const dayName = moment().day(dayNumber).format('ddd');
 
@@ -33,25 +33,17 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
         numberOfWeeksInMonth += 1;
       }
 
-      let monthVal = salesPerDayMonth?.find((x) => x.key == dayNumber)?.value ?? 0;
+      let monthVal = salesPerDayMonth?.find((x) => x.key === dayNumber)?.value ?? 0;
       if (monthVal > 0 && numberOfWeeksInMonth > 0) {
-        monthVal = monthVal / numberOfWeeksInMonth;
+        monthVal /= numberOfWeeksInMonth;
       }
-      let yearVal = salesPerDayYear?.find((x) => x.key == dayNumber)?.value ?? 0;
+      let yearVal = salesPerDayYear?.find((x) => x.key === dayNumber)?.value ?? 0;
       if (yearVal > 0 && numberOfWeeksInYear > 0) {
-        yearVal = yearVal / numberOfWeeksInYear;
+        yearVal /= numberOfWeeksInYear;
       }
 
       const key = `salePerDay${i}`;
-      if (currentYear != selectedYear) {
-        salesRows.push(
-          <Row key={key}>
-            <Col>
-              {dayName} ${yearVal.toFixed(2)}
-            </Col>
-          </Row>,
-        );
-      } else {
+      if (currentYear === selectedYear) {
         salesRows.push(
           <Row key={key}>
             <Col>
@@ -62,6 +54,14 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
             </Col>
           </Row>,
         );
+      } else {
+        salesRows.push(
+          <Row key={key}>
+            <Col>
+              {dayName} ${yearVal.toFixed(2)}
+            </Col>
+          </Row>,
+        );        
       }    
     }
   }
@@ -70,9 +70,9 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
     <Row className="sales-stat-block">
       <Col>
         <Row>
-          <Col className="sales-stat-block-title">Average Sales by Day of Week {(currentYear != selectedYear) ? selectedYear : ''}</Col>
+          <Col className="sales-stat-block-title">Average Sales by Day of Week {(currentYear === selectedYear) ? '' : selectedYear}</Col>
         </Row>
-        <Row hidden={currentYear != selectedYear}>
+        <Row hidden={currentYear !== selectedYear}>
           <Col className="sales-stat-block-subtitle">Current Month</Col>
           <Col className="sales-stat-block-subtitle">Average For Year</Col>
         </Row>

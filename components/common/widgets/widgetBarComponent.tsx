@@ -1,4 +1,4 @@
-import { Row, Col } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import RevenueWidget from './revenueWidgetComponent';
 import ShirtSizesWidget from './shirtSizesWidgetComponent';
 import ShowsListedWidget from './showsListedWidgetComponent';
@@ -19,8 +19,8 @@ export default function WidgetBar(props: WidgetBarProps) {
   const hideTicketBreakdown = props.HideTicketBreakDown;
   const isAdmin = props.IsAdmin;
 
-  const hideTickets = !ticketData || totalTickets == 0;
-  const hideShirts = !shirtData || totalShirts == 0;
+  const hideTickets = !ticketData || totalTickets === 0;
+  const hideShirts = !shirtData || totalShirts === 0;
 
   return (
     <Row className="no-print widget-row" hidden={!totalShows}>

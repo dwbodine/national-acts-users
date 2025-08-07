@@ -1,5 +1,5 @@
-import React, { ReactElement } from 'react';
 import { IShirtData, IShirtSizeData } from '@/types/event';
+import React, { ReactElement } from 'react';
 import { FaShirtsinbulk } from 'react-icons/fa';
 import { ShirtSizesWidgetProps } from '@/types/props';
 
@@ -13,7 +13,7 @@ export default function ShirtSizesWidget(props: ShirtSizesWidgetProps) {
   if (shirtSizes?.length > 0) {
     shirtSizes.forEach((shirtSize: string) => {
       shirtPropData.ShirtData?.forEach((shirSizeData: IShirtSizeData[]) => {
-        const data = shirSizeData.find((x) => x.ShirtSize == shirtSize);
+        const data = shirSizeData.find((x) => x.ShirtSize === shirtSize);
         let number = shirtMap.get(shirtSize) ?? 0;
         if (data) {
           number += data.Number;
@@ -40,8 +40,8 @@ export default function ShirtSizesWidget(props: ShirtSizesWidgetProps) {
           </div>,
         );
       }
-      
-      i++;
+
+      i += 1;
     }
 
     return (
@@ -54,12 +54,11 @@ export default function ShirtSizesWidget(props: ShirtSizesWidgetProps) {
           </div>
           <div className="shirt-sizes">
             {sSizesTwo}
-          </div>        
+          </div>
         </div>
         <span>Total: {totalShirts}</span>
       </>
     );
-  } else {
-    return <></>;
   }
+  return <></>;
 }

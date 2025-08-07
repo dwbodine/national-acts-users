@@ -1,6 +1,6 @@
-import { TopSellersWidgetProps } from '@/types/props';
-import { ReactElement } from 'react';
 import { Col, Row } from 'react-bootstrap';
+import { ReactElement } from 'react';
+import { TopSellersWidgetProps } from '@/types/props';
 
 export default function TopSellersWidget(props: TopSellersWidgetProps) {
   const topSellers = props.TopSellers;

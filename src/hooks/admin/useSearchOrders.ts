@@ -1,15 +1,9 @@
+import { GetOrdersResponse } from '@/types/responses';
 import { eventService } from '../../services';
-import { GetOrdersResponse } from '@/types/event';
 
 export const useSearchOrders = () => {
-  const searchOrders = async (searchTerm: string): Promise<GetOrdersResponse> => {
-    let response: GetOrdersResponse = {
-      orders: undefined,
-      orderError: undefined,
-    };
-    response = await eventService.searchOrders(searchTerm);
-    return response;
-  };
+  const searchOrders = async (searchTerm: string): Promise<GetOrdersResponse> =>
+    await eventService.searchOrders(searchTerm);
 
   return { searchOrders };
 };

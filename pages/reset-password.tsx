@@ -1,10 +1,11 @@
-import { useRouter } from 'next/router';
-import { useResetPasswordSecure } from '../src/hooks/user/useResetPasswordSecure';
+import { Button, Col, Row } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import { Col, Row, Button } from 'react-bootstrap';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import CheckAuth from '../components/common/checkAuthComponent';
+import Container from 'react-bootstrap/Container';
+import { UserResponse } from '@/types/responses';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useResetPasswordSecure } from '../src/hooks/user/useResetPasswordSecure';
+import { useRouter } from 'next/router';
 
 export default function ResetPassword() {
   const { resetPasswordSecure } = useResetPasswordSecure();
@@ -24,13 +25,13 @@ export default function ResetPassword() {
     if (!user) {
       return;
     }
-    const username = user.username;
+    const { username } = user;
     setPasswordError('');
     setPasswordSuccess('');
     resetPasswordSecure(username, password, confirmPassword)
-      .then((response) => {
-        if (response.errorMessage) {
-          setPasswordError(response.errorMessage);
+      .then((response: UserResponse) => {
+        if (response.error) {
+          setPasswordError(response.error);
         } else {
           setPasswordSuccess(
             'Password changed successfully, please use new password to log back in...',
@@ -40,8 +41,7 @@ export default function ResetPassword() {
           }, 2000);
         }
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setPasswordError(
           'Unknown error while resetting password - please contact your administrator',
         );
@@ -77,7 +77,7 @@ export default function ResetPassword() {
                     placeholder="Password"
                     name="new_password"
                     className="w-80 h-8 px-2 border border-solid border-black rounded"
-                    value={password}
+                    value={password ?? ''}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
@@ -92,7 +92,7 @@ export default function ResetPassword() {
                     placeholder="Confirm Password"
                     name="confirm_password"
                     className="w-80 h-8 px-2 border border-solid border-black rounded"
-                    value={confirmPassword}
+                    value={confirmPassword ?? ''}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>

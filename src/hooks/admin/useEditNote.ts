@@ -1,5 +1,5 @@
+import { ModifyNoteResponse } from '@/types/responses';
 import { eventService } from '../../services';
-import { ModifyNoteResponse } from '@/types/event';
 
 export const useEditNote = () => {
   const editNote = async (
@@ -8,20 +8,8 @@ export const useEditNote = () => {
     noteTitle?: string,
     noteDate?: Date,
     isCompleted?: boolean,
-  ): Promise<ModifyNoteResponse> => {
-    let response: ModifyNoteResponse = {
-      success: false,
-      noteError: undefined,
-    };
-    response = await eventService.editNote(
-      noteId,
-      note,
-      noteTitle,
-      noteDate,
-      isCompleted,
-    );
-    return response;
-  };
+  ): Promise<ModifyNoteResponse> =>
+    await eventService.editNote(noteId, note, noteTitle, noteDate, isCompleted);
 
   return { editNote };
 };

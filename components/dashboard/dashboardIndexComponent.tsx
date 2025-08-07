@@ -1,39 +1,39 @@
 import { Col, Container, Row } from 'react-bootstrap';
-import DashboardBar from './dashboardBarComponent';
-import TicketSalesChart from '../common/ticketSalesChartComponent';
+import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from 'react-icons/fa';
+import { ReactElement, useEffect, useState } from 'react';
 import {
-  GetDashboardOrdersResponse,
+  setCurrentDashboardData,
+  setReloadDashboardOrders,  
+} from '@/lib/dashboardSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import AverageSalesWidget from './widgets/averageSalesWidgetComponent';
+import DashboardBar from './dashboardBarComponent';
+import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
+import { GetDashboardOrdersResponse } from '@/types/responses';
+import {
   ITicketSalesData,
 } from '@/types/event';
-import { ReactElement, useEffect, useState } from 'react';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
-import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
-import {
-  setReloadDashboardOrders,
-  setCurrentDashboardData,
-} from '@/lib/dashboardSelectionSlice';
-import { Table } from 'rsuite';
-import { getDashboardDataFromOrders } from '@/utils/getDashboardDataFromOrders';
-import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from 'react-icons/fa';
-import { useGetDashboardData } from '@/hooks/dashboard/useGetDashboardData';
-import YearToDateWidget from './widgets/yearToDateWidgetComponent';
-import RevenueGoalsWidget from './widgets/revenueGoalsWidgetComponent';
 import MonthToDateWidget from './widgets/monthToDateWidgetComponent';
-import SalesPerMonthWidget from './widgets/salesPerMonthWidgetComponent';
-import SalesPerDayOfWeekWidget from './widgets/salesPerDayOfWeekWidgetComponent';
-import { eventService } from '@/services';
+import RevenueGoalsWidget from './widgets/revenueGoalsWidgetComponent';
+import { RootState } from '@/lib/store';
 import SalesByAccountWidget from './widgets/salesByAccountWidgetComponent';
+import SalesPerDayOfWeekWidget from './widgets/salesPerDayOfWeekWidgetComponent';
+import SalesPerMonthWidget from './widgets/salesPerMonthWidgetComponent';
+import { Table } from 'rsuite';
+import TicketSalesChart from '../common/ticketSalesChartComponent';
 import TopSellersWidget from './widgets/topSellersWidgetComponent';
 import TopSellingLocationsWidget from './widgets/topSellingLocationsWidgetComponent';
+import YearToDateWidget from './widgets/yearToDateWidgetComponent';
+import { getAccountNameFromTicketSocketId } from '@/utils/eventUtils';
+import getDashboardDataFromOrders from '@/utils/getDashboardDataFromOrders';
 import moment from 'moment';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import AverageSalesWidget from './widgets/averageSalesWidgetComponent';
+import { useGetDashboardData } from '@/hooks/dashboard/useGetDashboardData';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function DashboardIndex() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
-  const isLoading = globalSelection.isLoading;
+  const {isLoading} = globalSelection;
   const currentDashboardSelection = useSelector(
     (state: RootState) => state.dashboardSelecton,
   );
@@ -54,7 +54,7 @@ export default function DashboardIndex() {
         setChartsHidden(true);
         getDashboardData(currentDashboardSelection).then(
           (response: GetDashboardOrdersResponse) => {
-            if (response.totals && !response.dashError) {
+            if (response.totals && !response.error) {
               const dashData = getDashboardDataFromOrders(
                 currentDashboardSelection,
                 response.totals,
@@ -71,10 +71,8 @@ export default function DashboardIndex() {
             }
           },
         );
-      } else {
-        if (chartsHidden && !isLoading) {
-          setChartsHidden(false);
-        }
+      } else if (chartsHidden && !isLoading) {
+        setChartsHidden(false);
       }
     }, 500);
     return () => {
@@ -113,9 +111,9 @@ export default function DashboardIndex() {
   const chartSalesData: ITicketSalesData[] = [];
   if (ticketSalesData) {
     let j = 0;
-    for (let i = ticketSalesData.length - 1; i >= 0; i--) {
+    for (let i = ticketSalesData.length - 1; i >= 0; i -= 1) {
       chartSalesData[j] = ticketSalesData[i];
-      j++;
+      j += 1;
     }
   }
 
@@ -123,14 +121,14 @@ export default function DashboardIndex() {
   const accountTotals = currentDashboardSelection.currentDashboardData?.totalsByAccount;
   if (accountTotals && accountTotals.length > 0) {
     accountTotals.forEach((accountTotal, i) => {
-      const accountTotals = accountTotal.totals;
-      const accountName = eventService.getAccountNameFromTicketSocketId(
+      const aTotals = accountTotal.totals;
+      const accountName = getAccountNameFromTicketSocketId(
         accountTotal.ticketSocketId,
       );
       const key = `accountTotal${i}`;
       accountTotalWidgets.push(
         <Col key={key} xl={3} lg={4} md={6} className="stat-block-container">
-          <SalesByAccountWidget SelectedYear={selectedYear} AccountName={accountName} AccountTotals={accountTotals} />
+          <SalesByAccountWidget SelectedYear={selectedYear} AccountName={accountName} AccountTotals={aTotals} />
         </Col>,
       );
     });
@@ -203,12 +201,12 @@ export default function DashboardIndex() {
               DateRange={dateRange}
             />
           </Col>
-          <Col xl={3} lg={4} md={6} className="stat-block-container" hidden={selectedYear != currentYear}>
+          <Col xl={3} lg={4} md={6} className="stat-block-container" hidden={selectedYear !== currentYear}>
             <MonthToDateWidget
               DashBoardData={currentDashboardSelection.currentDashboardData}
             />
           </Col>
-          <Col xl={3} lg={4} md={6} className="stat-block-container" hidden={selectedYear != currentYear}>
+          <Col xl={3} lg={4} md={6} className="stat-block-container" hidden={selectedYear !== currentYear}>
             <RevenueGoalsWidget
               PercentTitle="Monthly Goal"
               Amount={

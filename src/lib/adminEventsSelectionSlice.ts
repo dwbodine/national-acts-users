@@ -1,86 +1,27 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { DateRange, EventReportSelection, EventTabView } from '../types/user';
 import { Note, VipEvent } from '@/types/event';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 const initialState: EventReportSelection = {
-  start: undefined,
-  end: undefined,
-  showDeleted: false,
-  showInactive: false,
-  reloadEvents: true,
   currentEvents: undefined,
-  notes: [],
-  expandedRow: undefined,
-  showHidden: false,
-  focusControl: '',
-  expandedEvent: undefined,
-  updateListStatus: false,
+  end: undefined,
   eventTabView: undefined,
+  expandedEvent: undefined,
+  expandedRow: undefined,
+  focusControl: '',
+  notes: [],
+  reloadEvents: true,
+  showDeleted: false,
+  showHidden: false,
+  showInactive: false,
+  start: undefined,
+  updateListStatus: false,
 };
 
 export const adminEventsSelectionSlice = createSlice({
-  name: 'adminEventReportSelection',
   initialState,
+  name: 'adminEventReportSelection',
   reducers: {
-    setActiveEventTab: (state, action: PayloadAction<EventTabView>) => {
-      state.eventTabView = action.payload;
-      return state;
-    },
-    setAdminDateRange: (state, action: PayloadAction<DateRange>) => {
-      state.start = action.payload.start;
-      state.end = action.payload.end;
-      state.periodStart = action.payload.periodStart;
-      state.currentEvents = undefined;
-      state.expandedEvent = undefined;
-      state.expandedRow = undefined;
-      state.reloadEvents = true;
-      return state;
-    },
-    setShowInactive: (state, action: PayloadAction<boolean>) => {
-      state.showInactive = action.payload;
-      state.reloadEvents = true;
-      return state;
-    },
-    setShowDeleted: (state, action: PayloadAction<boolean>) => {
-      state.showDeleted = action.payload;
-      state.showInactive = state.showDeleted;
-      state.reloadEvents = true;
-      return state;
-    },
-    setShowHidden: (state, action: PayloadAction<boolean>) => {
-      state.showHidden = action.payload;
-      state.reloadEvents = true;
-      return state;
-    },
-    setAdminEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
-      state.currentEvents = action.payload;
-      return state;
-    },
-    setAdminNotes: (state, action: PayloadAction<Note[] | undefined>) => {
-      state.notes = action.payload ?? [];
-      return state;
-    },
-    setReloadAdminEvents: (state, action: PayloadAction<boolean>) => {
-      state.reloadEvents = action.payload;
-      return state;
-    },
-    setExpandedRow: (state, action: PayloadAction<number | undefined>) => {
-      state.expandedRow = action.payload;
-      return state;
-    },
-    setExpandedEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
-      state.expandedEvent = action.payload;
-      return state;
-    },
-    setFocusControl: (state, action: PayloadAction<string>) => {
-      state.focusControl = action.payload;
-      return state;
-    },
-    setUpdateListStatus: (state, action: PayloadAction<boolean>) => {
-      state.updateListStatus = action.payload;
-      return state;
-    },
     resetAdminSelection: (state) => {
       state.start = undefined;
       state.end = undefined;
@@ -109,6 +50,64 @@ export const adminEventsSelectionSlice = createSlice({
       state.expandedEvent = undefined;
       state.focusControl = '';
       state.updateListStatus = false;
+      return state;
+    },
+    setActiveEventTab: (state, action: PayloadAction<EventTabView>) => {
+      state.eventTabView = action.payload;
+      return state;
+    },
+    setAdminDateRange: (state, action: PayloadAction<DateRange>) => {
+      state.start = action.payload.start;
+      state.end = action.payload.end;
+      state.periodStart = action.payload.periodStart;
+      state.currentEvents = undefined;
+      state.expandedEvent = undefined;
+      state.expandedRow = undefined;
+      state.reloadEvents = true;
+      return state;
+    },
+    setAdminEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
+      state.currentEvents = action.payload;
+      return state;
+    },
+    setAdminNotes: (state, action: PayloadAction<Note[] | undefined>) => {
+      state.notes = action.payload ?? [];
+      return state;
+    },
+    setExpandedEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
+      state.expandedEvent = action.payload;
+      return state;
+    },
+    setExpandedRow: (state, action: PayloadAction<number | undefined>) => {
+      state.expandedRow = action.payload;
+      return state;
+    },
+    setFocusControl: (state, action: PayloadAction<string>) => {
+      state.focusControl = action.payload;
+      return state;
+    },
+    setReloadAdminEvents: (state, action: PayloadAction<boolean>) => {
+      state.reloadEvents = action.payload;
+      return state;
+    },
+    setShowDeleted: (state, action: PayloadAction<boolean>) => {
+      state.showDeleted = action.payload;
+      state.showInactive = state.showDeleted;
+      state.reloadEvents = true;
+      return state;
+    },
+    setShowHidden: (state, action: PayloadAction<boolean>) => {
+      state.showHidden = action.payload;
+      state.reloadEvents = true;
+      return state;
+    },
+    setShowInactive: (state, action: PayloadAction<boolean>) => {
+      state.showInactive = action.payload;
+      state.reloadEvents = true;
+      return state;
+    },
+    setUpdateListStatus: (state, action: PayloadAction<boolean>) => {
+      state.updateListStatus = action.payload;
       return state;
     },
   },

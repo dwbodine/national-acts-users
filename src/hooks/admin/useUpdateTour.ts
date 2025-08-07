@@ -1,16 +1,10 @@
+import { ModifyTourResponse } from '@/types/responses';
+import { Tour } from '@/types/event';
 import { eventService } from '../../services';
-import { ModifyTourResponse, Tour } from '@/types/event';
 
 export const useUpdateTour = () => {
-  const updateTour = async (tourToUpdate: Tour): Promise<ModifyTourResponse> => {
-    let response: ModifyTourResponse = {
-      success: false,
-      updatedTour: undefined,
-      tourError: undefined,
-    };
-    response = await eventService.updateTour(tourToUpdate);
-    return response;
-  };
+  const updateTour = async (tourToUpdate: Tour): Promise<ModifyTourResponse> =>
+    await eventService.updateTour(tourToUpdate);
 
   return { updateTour };
 };

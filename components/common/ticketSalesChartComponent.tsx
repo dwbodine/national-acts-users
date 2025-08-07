@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
 import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Label,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Label,
-  AreaChart,
-  Area,
-  TooltipProps,
 } from 'recharts';
-import { Row, Col } from 'react-bootstrap';
-import { LabelPosition } from 'recharts/types/component/Label';
-import { TicketSalesChartProps } from '@/types/props';
+import { Col, Row } from 'react-bootstrap';
+import { CustomToolTipParams, CustomToolTipParamsPayload, TicketSalesChartProps } from '@/types/props';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import React, { useEffect, useState } from 'react';
+import { LabelPosition } from 'recharts/types/component/Label';
 
 export default function TicketSalesChart(props: TicketSalesChartProps) {
   const ticketSalesData = props.TicketSalesData;
@@ -32,17 +32,17 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
     }
   }, [setChartsHidden, hideCharts]);
 
-  const CustomTooltip = (params: TooltipProps<ValueType, NameType>) => {
-    const { active, payload, label } = params;
-    if (active && payload && payload.length) {
+  const CustomTooltip = (tooltipProps: TooltipProps<ValueType, NameType>) => {
+    const params = tooltipProps as CustomToolTipParams;
+    const { active, label } = params;
+    const payload = params.payload as CustomToolTipParamsPayload[];
+    if (active && payload && payload.length > 0) {
       return (
         <div className="custom-tooltip">
           <p className="label">{`Purchase Date: ${label}`}</p>
           <p className="label">{`Ticket Sales: ${payload[0].value}`}</p>
-          {!hideRev ? (
+          {hideRev ? '' : (
             <p className="label">{`Ticket Revenue: $${parseFloat(payload[1]?.value?.toString() ?? '0').toFixed(2)}`}</p>
-          ) : (
-            ''
           )}
         </div>
       );
@@ -61,10 +61,10 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
           <AreaChart
             data={ticketSalesData ? [...ticketSalesData] : []}
             margin={{
-              top: 10,
-              right: 15,
-              left: 0,
               bottom: 5,
+              left: 0,
+              right: 15,
+              top: 10,
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -75,12 +75,10 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
               <Label value={yLabel} position={yPosition} angle={-90} offset={15} />
             </YAxis>
             <Tooltip content={<CustomTooltip />} />
-            {!chartsHidden ? (
+            {chartsHidden ? '' : (
               <Area type="monotone" dataKey="Tickets" stroke="#000000" fill="#d88884" />
-            ) : (
-              ''
             )}
-            {!chartsHidden && !hideRev ? (
+            {(!chartsHidden && !hideRev) ? (
               <Area type="monotone" dataKey="Revenue" stroke="#FF0000" fill="#8884d8" />
             ) : (
               ''

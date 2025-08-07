@@ -1,15 +1,14 @@
-import { useRouter } from 'next/router';
-import { useState, KeyboardEvent, useEffect } from 'react';
-import { useLogin } from '../src/hooks/user/useLogin';
-import Container from 'react-bootstrap/Container';
-import { Col, Row, Button } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
+import { KeyboardEvent, useEffect, useState } from 'react';
 import CheckAuth from '../components/common/checkAuthComponent';
+import Container from 'react-bootstrap/Container';
 import Image from 'next/image';
-import { useResetStores } from '@/hooks/common/useResetStores';
+import { UserLoginResponse } from '@/types/responses';
+import { setForAdmin } from '@/lib/reportSelectionSlice';
 import { useDispatch } from 'react-redux';
-import {
-  setForAdmin,
-} from '@/lib/reportSelectionSlice';
+import { useLogin } from '../src/hooks/user/useLogin';
+import { useResetStores } from '@/hooks/common/useResetStores';
+import { useRouter } from 'next/router';
 
 export default function Login() {
   const [name, setName] = useState('');
@@ -39,12 +38,6 @@ export default function Login() {
     router.push('/forgot-password');
   };
 
-  const submitOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key == 'Enter') {
-      onSubmit();
-    }
-  };
-
   const onSubmit = () => {
     resetStores();
 
@@ -52,7 +45,7 @@ export default function Login() {
       setLoginError('Please enter username and password');
     } else {
       login(name, password)
-        .then((response) => {
+        .then((response: UserLoginResponse) => {
           if (response) {
             if (response.user && response.user.isAuthenticated) {
               dispatch(setForAdmin(response.user.isAdmin));
@@ -65,8 +58,8 @@ export default function Login() {
               } else {
                 router.push('/');
               }
-            } else if (response.loginError) {
-              setLoginError(response.loginError);
+            } else if (response.error) {
+              setLoginError(response.error);
             } else {
               setLoginError(
                 'Unknown error during login - please contact your administrator',
@@ -78,10 +71,15 @@ export default function Login() {
             );
           }
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
           setLoginError('Unknown error during login - please contact your administrator');
         });
+    }
+  };
+
+  const submitOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onSubmit();
     }
   };
 
@@ -140,7 +138,7 @@ export default function Login() {
             <div className="form-group">
               <label className="mt-4">PASSWORD</label>
               <input
-                value={password}
+                value={password ?? ''}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyUp={(e) => submitOnEnter(e)}
                 className="form-control"

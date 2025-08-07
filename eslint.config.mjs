@@ -1,17 +1,31 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
-
-const eslintConfig = [...compat.extends('next/core-web-vitals', 'next/typescript')];
+const eslintConfig = [
+  ...new FlatCompat({ baseDirectory: import.meta.dirname, }).extends('next', 'prettier'),
+  ...tseslint.config(eslint.configs.all, tseslint.configs.strict),
+  {
+    rules: {
+      "complexity": "off",
+      "id-length": "off",
+      "max-depth": "off",
+      "max-lines": "off",
+      "max-lines-per-function": "off",
+      "max-params": "off",
+      "max-statements": "off",
+      "no-continue": "off",
+      "no-magic-numbers": "off",
+      "no-nested-ternary": "off",
+      "no-ternary": "off",      
+      "no-undef-init": "off",
+      "no-undefined": "off",      
+      "one-var": "off",
+      "prefer-named-capture-group": "off",
+      "radix": "off",
+      "require-unicode-regexp": "off",
+    }
+  }
+];
 
 export default eslintConfig;

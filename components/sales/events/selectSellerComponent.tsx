@@ -1,13 +1,13 @@
-import { useEffect, useCallback, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { Col, Row } from 'react-bootstrap';
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { ItemDataType } from 'rsuite/esm/internals/types';
 import type { RootState } from '../../../src/lib/store';
+import { SelectPicker } from 'rsuite';
+import { User } from '@/types/user';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setSeller } from '@/lib/reportSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { User } from '@/types/user';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { SelectPicker } from 'rsuite';
-import { Col, Row } from 'react-bootstrap';
 
 export default function SelectSeller() {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ export default function SelectSeller() {
   const getSelectedSeller = useCallback(
     (sellerId: number) => {
       const currentUser = getUser();
-      const seller = currentUser?.sellers?.find((x) => x.sellerId == sellerId);
+      const seller = currentUser?.sellers?.find((x) => x.sellerId === sellerId);
       if (seller) {
         document.title = `Client Portal - ${seller.sellerName}`;
       } else {
@@ -27,10 +27,10 @@ export default function SelectSeller() {
       }
       return (
         seller || {
-          userSellerId: 0,
           sellerId: 0,
           sellerName: '',
           sellerType: 1,
+          userSellerId: 0,
         }
       );
     },
@@ -63,12 +63,12 @@ export default function SelectSeller() {
   };
 
   const userSellerList: ItemDataType<number>[] = user?.sellers ?
-        user.sellers.map((seller) => {
-          return {
+        user.sellers.map((seller) => (
+          {
             label: `${seller.sellerName}`,
             value: seller.sellerId
           }
-      }) : [];
+        )) : [];
 
   if (userSellerList.length > 0) {
     if (userSellerList.length > 1) {
@@ -91,8 +91,8 @@ export default function SelectSeller() {
         </Row>
       );
     } else if (user && user.sellers) {
-      const seller = user.sellers[0];
-      if (seller.sellerId != selectedSellerId) {
+      const [ seller ] = user.sellers;
+      if (seller.sellerId !== selectedSellerId) {
         dispatch(setSeller(seller));
       }
       return <Row className="no-print admin-seller-row"><Col>{seller.sellerName}</Col></Row>;

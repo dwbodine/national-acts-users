@@ -1,5 +1,6 @@
+import { GetActivityResponse } from '@/types/responses';
+import { UserActivityType } from '@/types/user';
 import { userService } from '@/services';
-import { GetActivityResponse, UserActivityType } from '@/types/user';
 
 export const useGetActivityData = () => {
   const getActivityData = async (

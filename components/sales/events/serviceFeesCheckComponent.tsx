@@ -1,7 +1,7 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { ChangeEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import type { RootState } from '../../../src/lib/store';
 import { FormCheck } from 'react-bootstrap';
+import type { RootState } from '../../../src/lib/store';
 import { setHideServiceFees } from '@/lib/reportSelectionSlice';
 
 export default function ServiceFeesCheck() {

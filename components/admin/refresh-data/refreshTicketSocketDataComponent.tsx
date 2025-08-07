@@ -1,28 +1,24 @@
 import { Button, Col, Row } from 'react-bootstrap';
-import AdminListHomeButton from '../adminListHomeButton';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import { useEffect, useState } from 'react';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import {
-  GetRefreshHistoryResponse,
-  GetSellersResponse,
-  RefreshHistoryResponse,
-  TicketSocketRefreshHistory,
-} from '@/types/event';
-import { useDispatch, useSelector } from 'react-redux';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import ReportDatePicker from '../../common/reportDatePicker';
-import { RootState } from '@/lib/store';
+import { GetRefreshHistoryResponse, GetSellersResponse, RefreshHistoryResponse } from '@/types/responses';
 import {
   setAdminDates,
   setAdminSellerId,
   setAllSellers,
 } from '@/lib/adminSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import AdminListHomeButton from '../adminListHomeButton';
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import RefreshTicketSocketDataResults from './refreshTicketSocketDataResults';
 import RefreshTicketSocketHistoryTable from './refreshTicketSocketHistoryTable';
-import { useGetRefreshHistory } from '@/hooks/admin/useGetRefreshHistory';
-import { useRefreshEventsFromTicketSocket } from '@/hooks/admin/useRefreshEventsFromTicketSocket';
+import ReportDatePicker from '../../common/reportDatePicker';
+import { RootState } from '@/lib/store';
+import { TicketSocketRefreshHistory } from '@/types/event';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { useGetRefreshHistory } from '@/hooks/admin/useGetRefreshHistory';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { useRefreshEventsFromTicketSocket } from '@/hooks/admin/useRefreshEventsFromTicketSocket';
 
 export default function RefreshTicketSocketData() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -38,14 +34,14 @@ export default function RefreshTicketSocketData() {
   );
 
   useEffect(() => {
-    if (currentAdminSelection.allSellers == undefined) {
+    if (currentAdminSelection.allSellers === undefined) {
       dispatch(setIsLoading(true));
       dispatch(setAdminSellerId(undefined));
       getSellers().then((response: GetSellersResponse) => {
         dispatch(setAllSellers(response.sellers));
         dispatch(setIsLoading(false));
       });
-    } else if (history == undefined) {
+    } else if (history === undefined) {
       dispatch(setIsLoading(true));
       getRefreshHistory().then((response: GetRefreshHistoryResponse) => {
         setHistory(response.history);

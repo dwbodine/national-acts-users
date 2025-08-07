@@ -1,18 +1,19 @@
+import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
+import { Modal, TimePicker } from 'rsuite';
+import { ModifyEventResponse, ModifyNoteResponse } from '@/types/responses';
+import { Note, VipEvent } from '@/types/event';
+import { ReactElement, useState } from 'react';
+import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents, setUpdateListStatus } from '@/lib/adminEventsSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { EventDataExpandedProps } from '@/types/props';
+import { RootState } from '@/lib/store';
+import moment from 'moment';
+import { resetAdmin } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { toast } from 'react-toastify';
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { useSendListToBand } from '@/hooks/admin/useSendListToBand';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
-import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents, setUpdateListStatus } from '@/lib/adminEventsSelectionSlice';
-import { resetAdmin } from '@/lib/adminSelectionSlice';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { RootState } from '@/lib/store';
-import { Note, VipEvent } from '@/types/event';
-import { EventDataExpandedProps } from '@/types/props';
-import moment from 'moment';
-import { ReactElement, useState } from 'react';
-import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { Modal, TimePicker } from 'rsuite';
 
 export default function EventDataExpanded(props: EventDataExpandedProps) {
     const focusControl = props.FocusControl;
@@ -34,7 +35,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     const handleNotesClose = () => setNotesOpen(false);
 
     const handleDoorsOpen = () => {
-        if (vipEvent != undefined) {
+        if (vipEvent !== undefined) {
             const doorsOpenDate = vipEvent.doorsOpen ? moment(vipEvent.doorsOpen).toDate() : undefined;
             const meetAndGreetDate = vipEvent.meetAndGreetTime ? moment(vipEvent.meetAndGreetTime).toDate() : undefined;
             setModalDoorsOpenDate(doorsOpenDate);
@@ -57,28 +58,28 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
             return;
         }
         addNote(noteText, vipEvent.externalEventId)
-            .then((response) => {
+            .then((response: ModifyNoteResponse) => {
                 setNotesOpen(false);
-                if (response.success && !response.noteError) {
+                if (response.success && !response.error) {
                     toast.success("Note added successfully");
                     setNoteText('');
                     dispatch(setReloadAdminEvents(true));
                 } else {
-                    toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+                    toast.error(response.error ?? "Unexpected error occurred while adding note");
                 }
             });
     };
 
 
     const editEvent = () => {
-        if (vipEvent != undefined) {
+        if (vipEvent !== undefined) {
             dispatch(resetAdmin());
             window.open(`/admin/events/edit?id=${vipEvent.externalEventId}`)
         }
     };
 
     const viewEvent = () => {
-        if (vipEvent != undefined) {
+        if (vipEvent !== undefined) {
             window.open(`/event/?id=${vipEvent.externalEventId}`)
         }
     };
@@ -96,7 +97,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     }
 
     const setSentEmail = (isSent: boolean) => {
-        if (vipEvent != undefined) {
+        if (vipEvent !== undefined) {
             const currentEvent = { ...vipEvent };
             currentEvent.emailSentToVips = isSent;
             dispatch(
@@ -106,7 +107,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     };
 
     const setSentText = (isSent: boolean) => {
-        if (vipEvent != undefined) {
+        if (vipEvent !== undefined) {
             const currentEvent = { ...vipEvent };
             currentEvent.textSentToVips = isSent;
             dispatch(
@@ -116,9 +117,9 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     };
 
     const setSentList = (isSent: boolean) => {
-        if (vipEvent != undefined) {
+        if (vipEvent !== undefined) {
             const currentEvent = { ...vipEvent };
-            if (isSent != currentEvent.listSentToBand) {
+            if (isSent !== currentEvent.listSentToBand) {
                 dispatch(
                     setUpdateListStatus(true)
                 );
@@ -131,7 +132,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     };
 
     const updateTasks = (completeAll: boolean = false) => {
-        if (vipEvent != undefined) {
+        if (vipEvent !== undefined) {
             let updateListStatus = currentReportSelection.updateListStatus ?? false;
             dispatch(
                 setIsLoading(true)
@@ -146,16 +147,16 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                 }
             }
             updateEvent(currentEvent)
-                .then((response) => {
-                    if (response.success && !response.eventError) {
+                .then((response: ModifyEventResponse) => {
+                    if (response.success && !response.error) {
                         if (updateListStatus) {
                             sendListToBand(vipEvent.externalEventId, currentEvent.listSentToBand ?? false)
-                                .then((response) => {
-                                    if (response.success && !response.eventError) {
+                                .then((resp: ModifyEventResponse) => {
+                                    if (resp.success && !resp.error) {
                                         toast.success("Event updated successfully");
-                                        if (response.updatedEvent != undefined) {
+                                        if (resp.updatedEvent !== undefined) {
                                             dispatch(
-                                                setExpandedEvent(response.updatedEvent)
+                                                setExpandedEvent(resp.updatedEvent)
                                             );
                                         }
                                         dispatch(
@@ -165,7 +166,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                                         dispatch(
                                             setIsLoading(false)
                                         );
-                                        const errMsg = response.eventError ?? "unknown error";
+                                        const errMsg = response.error ?? "unknown error";
                                         toast.error(`Send list failed - ${errMsg}`);
                                     }
                                     dispatch(
@@ -182,7 +183,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                         dispatch(
                             setIsLoading(false)
                         );
-                        const errMsg = response.eventError ?? "unknown error";
+                        const errMsg = response.error ?? "unknown error";
                         toast.error(`Event update failed - ${errMsg}`);
                     }
                 });
@@ -190,7 +191,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     };
 
     const editDoors = () => {
-        if (vipEvent != undefined) {
+        if (vipEvent !== undefined) {
             const currentEvent: VipEvent = { ...vipEvent };
             let doorsOpen: string | undefined = undefined;
             if (modalDoorsOpenDate) {
@@ -213,14 +214,14 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
             currentEvent.checkInLocation = modalCheckInLocation;
             currentEvent.checkInNotes = modalCheckInNotes;
             updateEvent(currentEvent)
-                .then((response) => {
-                    if (response.success && !response.eventError) {
+                .then((response: ModifyEventResponse) => {
+                    if (response.success && !response.error) {
                         toast.success("Event data updated successfully");
                         dispatch(
                             setReloadAdminEvents(true)
                         );
                     } else {
-                        const errMsg = response.eventError ?? "unknown error";
+                        const errMsg = response.error ?? "unknown error";
                         toast.error(`Event update failed - ${errMsg}`);
                     }
                     handleDoorsClose();
@@ -254,8 +255,8 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
         setModalMeetAndGreetDate(meetAndGreet.toDate());
     };
 
-    const listSent = (vipEvent?.listSentTime != undefined) ? moment.utc(vipEvent.listSentTime).format('MM/DD/YYYY h:mm A') : 'n/a';
-    const numVips = (vipEvent?.listSentNumVips ?? 0 > 0) ? (vipEvent?.listSentNumVips ?? 0).toString() : 'n/a';
+    const listSent = (vipEvent?.listSentTime === undefined) ? 'n/a' : moment.utc(vipEvent.listSentTime).format('MM/DD/YYYY h:mm A');
+    const numVips = ((vipEvent?.listSentNumVips ?? 0) > 0) ? (vipEvent?.listSentNumVips ?? 0).toString() : 'n/a';
     let doorsOpenTime = (vipEvent?.doorsOpen) ? moment(vipEvent.doorsOpen).format('h:mm A') : undefined;
     if (doorsOpenTime && vipEvent?.venue?.timezone) {
         doorsOpenTime += ` ${vipEvent.venue.timezone}`
@@ -270,7 +271,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     }
     const checkInLocation = (vipEvent?.checkInLocation) ? vipEvent.checkInLocation : 'n/a';
     const checkInNotes = (vipEvent?.checkInNotes) ? vipEvent.checkInNotes : 'n/a';
-    const hasVips = (vipEvent?.totalTickets ?? 0 > 0);
+    const hasVips = ((vipEvent?.totalTickets ?? 0) > 0);
 
     const notes: ReactElement[] = [];
     if (vipEvent?.notes) {
@@ -279,7 +280,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
         });
     }
 
-    if (notes.length == 0) {
+    if (notes.length === 0) {
         notes.push(<div key={`note_${vipEvent?.externalEventId ?? 0}`}>n/a</div>)
     }
 
@@ -287,13 +288,13 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     const eventDate = vipEvent?.eventDate ? moment(vipEvent.eventDate).format('M/D/YYYY') : '';
 
     return (
-        (vipEvent != undefined) ?
+        (vipEvent === undefined) ? '' :
             <Row className="expanded-event-row" key={`expandedRow_${vipEvent.externalEventId}`} id={`expandedRow_${vipEvent.externalEventId}`}>
                 <Col>
                     <Row className="expanded-event-title-row">
                         <Col>{eventTitle} - {eventDate}</Col>
                         <Col className="expand-edit-event">
-                            <Button onClick={viewEvent} hidden={vipEvent.totalTickets == 0}>View</Button>
+                            <Button onClick={viewEvent} hidden={vipEvent.totalTickets === 0}>View</Button>
                             <Button onClick={editEvent}>Edit</Button>
                             <Button onClick={closeEvent}>Close</Button>
                         </Col>
@@ -389,7 +390,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                                                         rows={3}
                                                         id="checkInLocation"
                                                         onChange={(e) => setModalCheckInLocation(e.currentTarget.value)}
-                                                        value={modalCheckInLocation}
+                                                        value={modalCheckInLocation ?? ''}
                                                     />
                                                 </Col>
                                             </Row>
@@ -402,7 +403,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                                                         id="checkInNotes"
                                                         rows={5}
                                                         onChange={(e) => setModalCheckInNotes(e.currentTarget.value)}
-                                                        value={modalCheckInNotes}
+                                                        value={modalCheckInNotes ?? ''}
                                                     />
                                                 </Col>
                                             </Row>
@@ -435,7 +436,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                                         id="addNote"
                                         rows={5}
                                         onChange={(e) => setNoteText(e.currentTarget.value)}
-                                        value={noteText}
+                                        value={noteText ?? ''}
                                         placeholder="Note text"
                                     />
                                 </Modal.Body>
@@ -452,6 +453,5 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                     </Row>
                 </Col>
             </Row>
-            : ''
     );
 }

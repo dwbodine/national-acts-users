@@ -1,5 +1,5 @@
-import { ShowsListedWidgetProps } from '@/types/props';
 import { FaCalendar } from 'react-icons/fa';
+import { ShowsListedWidgetProps } from '@/types/props';
 
 export default function ShowsListedWidget(props: ShowsListedWidgetProps) {
   const totalShows = props.TotalShows ?? 0;

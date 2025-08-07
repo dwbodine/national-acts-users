@@ -1,9 +1,9 @@
+import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import { useEffect, useState } from 'react';
 import { DateRangePicker } from 'rsuite';
-import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import moment from 'moment';
-import { FaCalendar } from 'react-icons/fa';
 import { DateRangeSelectorProps } from '@/types/props';
+import { FaCalendar } from 'react-icons/fa';
+import moment from 'moment';
 
 export default function DateRangeSelector(props: DateRangeSelectorProps) {
   const title = props.DateRangeTitle;
@@ -51,10 +51,10 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
   const handleChange = (
     value: DateRange | null
   ) => {
-    const selectedStart = value ? moment(value[0]).unix() : 0;
-    const selectedEnd = value ? moment(value[1]).unix() : 0;
+    const sStart = value ? moment(value[0]).unix() : 0;
+    const sEnd = value ? moment(value[1]).unix() : 0;
     if (onDateChange) {
-      onDateChange(selectedStart, selectedEnd);
+      onDateChange(sStart, sEnd);
     }
   };
 

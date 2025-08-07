@@ -1,17 +1,12 @@
+import { SiteSetting } from '@/types/public';
+import { UpdateSettingResponse } from '@/types/responses';
 import { adminService } from '../../services';
-import { SiteSetting, UpdateSettingResponse } from '@/types/public';
 
 export const useUpdateSiteSetting = () => {
   const updateSiteSettings = async (
     settingsToUpdate: SiteSetting[],
-  ): Promise<UpdateSettingResponse> => {
-    let response: UpdateSettingResponse = {
-      success: false,
-      settingsError: undefined,
-    };
-    response = await adminService.updateSiteSettings(settingsToUpdate);
-    return response;
-  };
+  ): Promise<UpdateSettingResponse> =>
+    await adminService.updateSiteSettings(settingsToUpdate);
 
   return { updateSiteSettings };
 };

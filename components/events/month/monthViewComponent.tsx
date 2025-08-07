@@ -1,19 +1,18 @@
-import { setAdminDateRange } from "@/lib/adminEventsSelectionSlice";
-import { setIsLoading } from "@/lib/globalSelectionSlice";
-import { RootState } from "@/lib/store";
-import { Note, VipEvent } from "@/types/event";
-import { EventTabView } from "@/types/user";
-import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
 import { Col, Row } from "react-bootstrap";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import getSelectedAdminEventDateRange from "@/utils/getSelectedAdminEventDateRange";
-import MonthDay from "./monthDayComponent";
-import MonthWeek from "./monthWeekComponent";
+import { Note, VipEvent } from "@/types/event";
+import { useDispatch, useSelector } from "react-redux";
 import EventDataExpanded from "../../common/eventDataExpandedComponent";
-import { ReactElement } from "react";
+import { EventTabView } from "@/types/user";
+import MonthDay from "./monthDayComponent";
 import { MonthViewProps } from "@/types/props";
-
+import MonthWeek from "./monthWeekComponent";
+import { ReactElement } from "react";
+import { RootState } from "@/lib/store";
+import getSelectedAdminEventDateRange from "@/utils/getSelectedAdminEventDateRange";
+import moment from "moment";
+import { setAdminDateRange } from "@/lib/adminEventsSelectionSlice";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
 
 export default function MonthView(props: MonthViewProps) {
     const startOfMonth = props.StartOfMonth ? moment(props.StartOfMonth).startOf('day') : undefined;
@@ -29,8 +28,8 @@ export default function MonthView(props: MonthViewProps) {
         if (!reportSelection || !reportSelection.periodStart) {
             return;
         }
-        const previousMonth = moment.unix(reportSelection.periodStart).subtract(1, 'month').startOf('day').unix();
-        const dateRange = getSelectedAdminEventDateRange(previousMonth, EventTabView.Month);
+        const pMonth = moment.unix(reportSelection.periodStart).subtract(1, 'month').startOf('day').unix();
+        const dateRange = getSelectedAdminEventDateRange(pMonth, EventTabView.Month);
         dispatch(setIsLoading(true));
         dispatch(setAdminDateRange(dateRange));
     };
@@ -40,8 +39,8 @@ export default function MonthView(props: MonthViewProps) {
         if (!reportSelection || !reportSelection.periodStart) {
             return;
         }
-        const nextMonth = moment.unix(reportSelection.periodStart).add(1, 'month').startOf('day').unix();
-        const dateRange = getSelectedAdminEventDateRange(nextMonth, EventTabView.Month);
+        const nxtMonth = moment.unix(reportSelection.periodStart).add(1, 'month').startOf('day').unix();
+        const dateRange = getSelectedAdminEventDateRange(nxtMonth, EventTabView.Month);
         dispatch(setIsLoading(true));
         dispatch(setAdminDateRange(dateRange));
     };
@@ -56,11 +55,12 @@ export default function MonthView(props: MonthViewProps) {
             let filteredEvents: VipEvent[] = [];
             let filteredNotes: Note[] = [];
             
+            const currentDate = displayDate;
             if (events && events.length > 0) {
-                filteredEvents = events.filter(x => moment(x.eventDate).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.eventDate).valueOf() <= displayDate.endOf('day').valueOf());
+                filteredEvents = events.filter(x => moment(x.eventDate).valueOf() >= currentDate.startOf('day').valueOf() && moment(x.eventDate).valueOf() <= currentDate.endOf('day').valueOf());
             }
             if (notes && notes.length > 0) {
-                filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= displayDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= displayDate.endOf('day').valueOf())
+                filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= currentDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= currentDate.endOf('day').valueOf())
             }        
 
             monthDays.push(<MonthDay key={i} 
@@ -70,12 +70,12 @@ export default function MonthView(props: MonthViewProps) {
                 Events={filteredEvents}
                 Notes={filteredNotes} />);        
                 
-            if (parseInt(displayDate.format('d')) == 6) {
-                monthDayRows.push(<MonthWeek WeekDays={monthDays} />);
+            if (parseInt(displayDate.format('d')) === 6) {
+                monthDayRows.push(<MonthWeek key={`monthWeek_${i}`} WeekDays={monthDays} />);
                 monthDays = [];
             }
 
-            i++;
+            i += 1;
             displayDate = displayDate.add(1, 'day');
         }
         if (monthDays.length > 0) {

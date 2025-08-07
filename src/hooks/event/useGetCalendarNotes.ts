@@ -1,20 +1,11 @@
+import { GetNotesResponse } from '@/types/responses';
 import { eventService } from '../../services';
-import { GetNotesResponse } from '@/types/event';
 
 export const useGetCalendarNotes = () => {
   const getCalendarNotes = async (
     start: number,
     end: number,
-  ): Promise<GetNotesResponse> => {
-    let response: GetNotesResponse = {
-      notes: [],
-      noteError: undefined,
-    };
-
-    response = await eventService.getCalendarNotes(start, end);
-
-    return response;
-  };
+  ): Promise<GetNotesResponse> => await eventService.getCalendarNotes(start, end);
 
   return { getCalendarNotes };
 };

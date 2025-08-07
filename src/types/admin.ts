@@ -1,5 +1,4 @@
-import { Seller, VipEvent } from './event';
-import { Country, Faq, FaqCategory, Page, TimeZone } from './public';
+import { Country, TimeZone } from './public';
 
 export interface ExternalVenue {
   venueId: number;
@@ -28,80 +27,4 @@ export interface TicketSocketAccount {
   mulitiplier?: number;
   currencySymbol?: string;
   categories?: TicketSocketCategory[];
-}
-
-export interface GetFaqCategoriesResponse {
-  categories?: FaqCategory[];
-  statusCode?: number;
-  categoryError?: string;
-}
-
-export interface GetFaqsResponse {
-  faqs?: Faq[];
-  statusCode?: number;
-  faqError?: string;
-}
-
-export interface ModifyFaqResponse {
-  statusCode?: number;
-  faqError?: string;
-  success: boolean;
-}
-
-export interface GetPagesResponse {
-  pages?: Page[];
-  statusCode?: number;
-  pageError?: string;
-}
-
-export interface ModifyPageResponse {
-  statusCode?: number;
-  pageError?: string;
-  success: boolean;
-  updatedPage?: Page;
-}
-
-export interface GetExternalVenuesResponse {
-  venues?: ExternalVenue[];
-  statusCode?: number;
-  venueError?: string;
-}
-
-export interface GetCountriesResponse {
-  countries?: Country[];
-  statusCode?: number;
-  countryError?: string;
-}
-
-export interface ModifyExternalVenueResponse {
-  statusCode?: number;
-  venueError?: string;
-  success: boolean;
-  updatedVenue?: ExternalVenue;
-}
-
-export interface GetExternalEventsResponse {
-  events?: VipEvent[];
-  statusCode?: number;
-  eventError?: string;
-}
-
-export interface ModifyExternalEventResponse {
-  statusCode?: number;
-  eventError?: string;
-  success: boolean;
-  updatedEvent?: VipEvent;
-}
-
-export interface GetTicketSocketAccountsResponse {
-  accounts?: TicketSocketAccount[];
-  statusCode?: number;
-  accountError?: string;
-}
-
-export interface ModifySellerResponse {
-  statusCode?: number;
-  sellerError?: string;
-  success: boolean;
-  updatedSeller?: Seller;
 }

@@ -1,14 +1,13 @@
-import { ActivePageKey } from "@/constants";
-import { setReloadAdminEvents } from "@/lib/adminEventsSelectionSlice";
-import { setIsLoading } from "@/lib/globalSelectionSlice";
-import { setReloadEvents } from "@/lib/reportSelectionSlice";
-import { AdminTabsProps } from "@/types/props";
-import router from "next/router";
 import { Col, Container, Row } from "react-bootstrap";
-import { CirclesWithBar } from "react-loader-spinner";
-import { useDispatch } from "react-redux";
+import { ActivePageKey } from "@/constants";
+import { AdminTabsProps } from "@/types/props";
+import { RingLoader } from 'react-spinners';
 import { Tabs } from "rsuite";
-
+import router from "next/router";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
+import { setReloadAdminEvents } from "@/lib/adminEventsSelectionSlice";
+import { setReloadEvents } from "@/lib/reportSelectionSlice";
+import { useDispatch } from "react-redux";
 
 export default function AdminTabs(props: AdminTabsProps) {
     const activeKey = props.ActiveKey;
@@ -18,7 +17,7 @@ export default function AdminTabs(props: AdminTabsProps) {
 
     const onSelectTab = (eventKey: string | number | undefined) => {
         let key: ActivePageKey = activeKey;
-        if (eventKey != undefined) {
+        if (eventKey !== undefined) {
             key = parseInt(eventKey as string);
         }
         dispatch(setIsLoading(true));
@@ -60,12 +59,12 @@ export default function AdminTabs(props: AdminTabsProps) {
                         className="admin-tabs"
                     >
                         <Tabs.Tab eventKey={ActivePageKey.Dashboard.toString()} title="HOME">
-                            {activeKey == ActivePageKey.Dashboard && (
+                            {activeKey === ActivePageKey.Dashboard && (
                                 <>
                                     <Container fluid hidden={!isLoading || !props.DashboardComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -80,12 +79,12 @@ export default function AdminTabs(props: AdminTabsProps) {
                             )}
                         </Tabs.Tab>
                         <Tabs.Tab eventKey={ActivePageKey.Events.toString()} title="EVENTS">
-                            {activeKey == ActivePageKey.Events && (
+                            {activeKey === ActivePageKey.Events && (
                                 <>
                                     <Container fluid hidden={!isLoading || !props.EventsComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -103,12 +102,12 @@ export default function AdminTabs(props: AdminTabsProps) {
                             eventKey={ActivePageKey.SalesOverview.toString()}
                             title="SALES OVERVIEW"
                         >
-                            {activeKey == ActivePageKey.SalesOverview && (
+                            {activeKey === ActivePageKey.SalesOverview && (
                                 <>
                                     <Container fluid hidden={!isLoading || !props.SalesComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -123,12 +122,12 @@ export default function AdminTabs(props: AdminTabsProps) {
                             )}
                         </Tabs.Tab>
                         <Tabs.Tab eventKey={ActivePageKey.Admin.toString()} title="ADMIN">
-                            {activeKey == ActivePageKey.Admin && (
+                            {activeKey === ActivePageKey.Admin && (
                                 <>
                                     <Container fluid hidden={!isLoading || !props.AdminComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -143,12 +142,12 @@ export default function AdminTabs(props: AdminTabsProps) {
                             )}
                         </Tabs.Tab>
                         <Tabs.Tab eventKey={ActivePageKey.Reports.toString()} title="REPORTS">
-                            {activeKey == ActivePageKey.Reports && (
+                            {activeKey === ActivePageKey.Reports && (
                                 <>
                                     <Container fluid hidden={!isLoading || !props.ReportComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -163,12 +162,12 @@ export default function AdminTabs(props: AdminTabsProps) {
                             )}
                         </Tabs.Tab>
                         <Tabs.Tab eventKey={ActivePageKey.Users.toString()} title="USERS">
-                            {activeKey == ActivePageKey.Users && (
+                            {activeKey === ActivePageKey.Users && (
                                 <>
                                     <Container fluid hidden={!isLoading || !props.UsersComponent}>
                                         <Row>
                                             <Col className="spinner-container">
-                                                <CirclesWithBar height="100" width="100" color="#d12610" />
+                                                <RingLoader size={150} color="#d12610" />
                                             </Col>
                                         </Row>
                                     </Container>

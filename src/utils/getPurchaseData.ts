@@ -1,20 +1,22 @@
 import { ITicketSalesData, VipEvent } from '@/types/event';
 import moment from 'moment';
 
-export function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[] {
+export default function getPurchaseDataFromEvents(
+  events: VipEvent[],
+): ITicketSalesData[] {
   const map = new Map<string, ITicketSalesData>();
   events?.forEach((evt) => {
     evt.orders?.forEach((order) => {
       if (order.isActive && !order.isDeleted) {
         const key = moment(order.purchaseDate).format('YYYY-MM-DD');
         const salesData = map.get(key);
-        if (!salesData) {
+        if (salesData === undefined) {
           const data: ITicketSalesData = {
             PurchaseDate: moment(key).format('MM/DD/YYYY'),
-            Tickets: order.numTickets,
             Purchases: 1,
             Revenue: order.revenueUsd,
             ServiceFees: order.serviceFees ?? 0,
+            Tickets: order.numTickets,
             TotalRevenue: order.revenueUsd + (order.serviceFeesUsd ?? 0),
           };
           map.set(key, data);
@@ -38,13 +40,13 @@ export function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[
     while (start.unix() <= end.unix()) {
       const key = start.format('YYYY-MM-DD');
       const salesData = map.get(key);
-      if (!salesData) {
+      if (salesData === undefined) {
         const data: ITicketSalesData = {
           PurchaseDate: moment(key).format('MM/DD/YYYY'),
-          Tickets: 0,
           Purchases: 0,
           Revenue: 0,
           ServiceFees: 0,
+          Tickets: 0,
           TotalRevenue: 0,
         };
         ticketSalesData.push(data);

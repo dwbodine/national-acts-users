@@ -1,3 +1,4 @@
+import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from './public';
 import { ExternalVenue, TicketSocketAccount } from './admin';
 import {
   ITicketSalesData,
@@ -8,12 +9,6 @@ import {
   Tour,
   VipEvent,
 } from './event';
-import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from './public';
-
-export type LoginResponse = {
-  user?: User;
-  loginError?: string;
-};
 
 export type UserSeller = {
   sellerId: number;
@@ -21,6 +16,7 @@ export type UserSeller = {
   sellerType: SellerType;
   roleId?: number;
   permissions?: number[];
+  routes?: string[];
 };
 
 export type Role = {
@@ -32,12 +28,6 @@ export type Role = {
 export type Permission = {
   permissionId: number;
   permissionName: string;
-};
-
-export type UserSellerResponse = {
-  userSeller?: UserSeller;
-  userSellerError?: string;
-  statusCode?: number;
 };
 
 export enum EnumPermission {
@@ -52,6 +42,7 @@ export enum EnumPermission {
   ExportCustomerData = 11,
   ViewHiddenEvents = 12,
   ViewTourSelect = 13,
+  ViewVIPItinerary = 14,
 }
 
 export type User = {
@@ -368,64 +359,8 @@ export type AdminReportsSelection = {
   reloadData?: boolean;
 };
 
-export type UserLoginResponse = {
-  user?: User;
-  loginError?: string;
-};
-
-export type UserResponse = {
-  user?: User;
-  errorMessage?: string;
-};
-
-export type LogResponse = {
-  logs?: string;
-  errorMessage?: string;
-};
-
 export enum ForgotPasswordMode {
   SendPasswordReset,
   ValidateResetCode,
   ResetPassword,
-}
-
-export interface GetUsersResponse {
-  users?: User[];
-  statusCode?: number;
-  userError?: string;
-}
-
-export interface GetRolesResponse {
-  roles?: Role[];
-  statusCode?: number;
-  roleError?: string;
-}
-
-export interface UpdateRoleResponse {
-  success: boolean;
-  statusCode?: number;
-  roleError?: string;
-}
-
-export interface UpdateUserResponse {
-  success: boolean;
-  statusCode?: number;
-  userError?: string;
-}
-
-export interface GetPermissionsResponse {
-  permissions?: Permission[];
-  statusCode?: number;
-  permissionError?: string;
-}
-
-export interface LogActivityResponse {
-  statusCode?: number;
-  logActivityError?: string;
-}
-
-export interface GetActivityResponse {
-  activities?: UserActivity[];
-  statusCode?: number;
-  logActivityError?: string;
 }

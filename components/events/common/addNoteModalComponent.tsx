@@ -1,5 +1,5 @@
-import { AddNoteModalProps } from "@/types/props";
 import { Button, Form } from "react-bootstrap";
+import { AddNoteModalProps } from "@/types/props";
 import { Modal } from "rsuite";
 
 export default function AddNoteModal(props: AddNoteModalProps) {
@@ -29,7 +29,7 @@ export default function AddNoteModal(props: AddNoteModalProps) {
                     id="addNote"
                     rows={5}
                     onChange={(e) => setNoteText ? setNoteText(e.currentTarget.value) : null}
-                    value={noteText}
+                    value={noteText ?? ''}
                     placeholder="Note text"
                 />
             </Modal.Body>

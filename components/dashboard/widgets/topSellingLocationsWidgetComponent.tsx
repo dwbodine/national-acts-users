@@ -1,6 +1,6 @@
-import { TopSellingLocationsWidgetProps } from '@/types/props';
-import { ReactElement } from 'react';
 import { Col, Row } from 'react-bootstrap';
+import { ReactElement } from 'react';
+import { TopSellingLocationsWidgetProps } from '@/types/props';
 
 export default function TopSellingLocationsWidget(props: TopSellingLocationsWidgetProps) {
   const topSellers = props.TopSellingLocations;

@@ -1,19 +1,18 @@
-import { RootState } from '@/lib/store';
-import { ReactElement, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import router from 'next/router';
+import { Button, FormCheck } from 'react-bootstrap';
+import { GetPermissionsResponse, UpdateRoleResponse } from '@/types/responses';
 import {
-  GetPermissionsResponse,
   Permission,
   Role,
-  UpdateRoleResponse,
 } from '@/types/user';
-import { Button, FormCheck } from 'react-bootstrap';
-import { useGetAllPermissions } from '@/hooks/user/useGetAllPermissions';
+import { ReactElement, useEffect, useState } from 'react';
 import { setReloadRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
-import { useUpdateRole } from '@/hooks/admin/useUpdateRole';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/lib/store';
+import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { useGetAllPermissions } from '@/hooks/user/useGetAllPermissions';
+import { useUpdateRole } from '@/hooks/admin/useUpdateRole';
 
 export default function AdminRoleEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -23,13 +22,17 @@ export default function AdminRoleEdit() {
   const [allPermissions, setAllPermissions] = useState<Permission[] | undefined>(
     undefined,
   );
-  const [roleName, setRoleName] = useState<string | undefined>(undefined);
+  const [roleName, setRoleName] = useState<string | undefined>('');
+
+  const goBack = () => {
+    router.push('/admin/roles/');
+  };
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.selectedRole == undefined) {
+      if (currentAdminSelection.selectedRole === undefined) {
         goBack();
-      } else if (allPermissions == undefined && roleName == undefined) {
+      } else if (allPermissions === undefined && (roleName === undefined || roleName === '')) {
         dispatch(setIsLoading(true));
         setRoleName(currentAdminSelection.selectedRole.roleName);
         getAllPermissions().then((response: GetPermissionsResponse) => {
@@ -43,10 +46,6 @@ export default function AdminRoleEdit() {
     };
   }, [currentAdminSelection, roleName, allPermissions, getAllPermissions, dispatch]);
 
-  const goBack = () => {
-    router.push('/admin/roles/');
-  };
-
   const hasPermission = (permissionId: number) => {
     if (
       !currentAdminSelection.selectedRole ||
@@ -56,8 +55,8 @@ export default function AdminRoleEdit() {
     }
     return (
       currentAdminSelection.selectedRole.permissions.find(
-        (x) => x.permissionId == permissionId,
-      ) != undefined
+        (x) => x.permissionId === permissionId,
+      ) !== undefined
     );
   };
 
@@ -72,14 +71,14 @@ export default function AdminRoleEdit() {
       : [];
     let changed = false;
     if (isChecked && !hasPerm) {
-      const permissionToAdd = allPermissions.find((x) => x.permissionId == permissionId);
+      const permissionToAdd = allPermissions.find((x) => x.permissionId === permissionId);
       if (permissionToAdd) {
         currentPermissions.push(permissionToAdd);
         changed = true;
       }
     } else if (!isChecked && hasPerm) {
       currentPermissions = currentPermissions.filter(
-        (x) => x.permissionId != permissionId,
+        (x) => x.permissionId !== permissionId,
       );
       changed = true;
     }
@@ -91,12 +90,11 @@ export default function AdminRoleEdit() {
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedRole) {
-      return false;
+      return;
     }
     const newRoleName: string = roleName ? roleName : '';
 
-    if (!newRoleName)
-    {
+    if (!newRoleName) {
       toast.warn("Role name cannot be blank");
       return;
     }
@@ -113,7 +111,7 @@ export default function AdminRoleEdit() {
         toast.success('Save role succeeded');
         router.push('/admin/roles/');
       } else {
-        toast.error(response.roleError ?? 'Error occurred while saving role');
+        toast.error(response.error ?? 'Error occurred while saving role');
       }
       dispatch(setIsLoading(false));
     });
@@ -121,7 +119,7 @@ export default function AdminRoleEdit() {
 
   const permissionRows: ReactElement[] = [];
   if (allPermissions && allPermissions.length > 0) {
-    allPermissions.map((item, index) => {
+    allPermissions.forEach((item, index) => {
       const checked: boolean = hasPermission(item.permissionId);
       const key = `perm${index}`;
       permissionRows.push(
@@ -137,20 +135,20 @@ export default function AdminRoleEdit() {
   }
 
   const pageHeader =
-    (currentAdminSelection.selectedRole?.roleId ?? 0 > 0) ? 'Edit role' : 'Add role';
+    ((currentAdminSelection.selectedRole?.roleId ?? 0) > 0) ? 'Edit role' : 'Add role';
 
   return (
     <div
       className="admin-container"
       hidden={
-        !(permissionRows.length > 0 && currentAdminSelection.selectedRole != undefined)
+        !(permissionRows.length > 0 && currentAdminSelection.selectedRole !== undefined)
       }
     >
       <h1>{pageHeader}</h1>
       <div className="form-group">
         <label className="mt-4">Role Name</label>
         <input
-          value={roleName}
+          value={roleName ?? ''}
           onChange={(e) => setRoleName(e.target.value)}
           className="form-control"
           placeholder="role name"

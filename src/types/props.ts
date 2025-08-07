@@ -1,4 +1,17 @@
-import { ActivePageKey } from '@/constants';
+import { Country, PageSeller } from './public';
+import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
+import { Dispatch, JSX, ReactElement, SetStateAction } from 'react';
+import {
+  IAverageDailyData,
+  IDashboardData,
+  IDashboardTotals,
+  ISalesData,
+  ITopSeller,
+  ITopSellingLocation,
+  Role,
+  UserActivityType,
+  UserSeller,
+} from './user';
 import {
   IShirtData,
   ITicketData,
@@ -12,19 +25,7 @@ import {
   TicketType,
   VipEvent,
 } from './event';
-import { Country, PageSeller } from './public';
-import {
-  IAverageDailyData,
-  IDashboardData,
-  IDashboardTotals,
-  ISalesData,
-  ITopSeller,
-  ITopSellingLocation,
-  Role,
-  UserActivityType,
-} from './user';
-import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import { Dispatch, ReactElement, SetStateAction } from 'react';
+import { ActivePageKey } from '@/constants';
 import { CellProps } from 'rsuite';
 
 export interface EditProps {
@@ -140,6 +141,8 @@ export interface PrintButtonProps {
 export interface ReportDatePickerProps {
   Start?: number;
   End?: number;
+  Disabled?: boolean;
+  LabelColumnWidth?: number;
   OnChange?: (start: number, end: number) => void;
   OnStartClear?: () => void;
   OnEndClear?: () => void;
@@ -323,7 +326,7 @@ export interface WeekViewProps {
 }
 
 export interface ExpandCellProps extends CellProps<VipEvent> {
-  expandedRowKeys?: number[];
+  expandedrowkeys?: number[];
 }
 
 export interface AttendeeRowProps {
@@ -343,4 +346,27 @@ export interface OrderRowProps {
   ShowOnlyEmails?: boolean;
   ShowOnlyPhones?: boolean;
   IsAdmin?: boolean;
+}
+
+export interface CustomToolTipParamsPayload {
+  value?: string;
+}
+
+export interface CustomToolTipParams {
+  active?: boolean;
+  payload?: CustomToolTipParamsPayload[];
+  label?: string;
+}
+
+export interface VIPModalProps {
+  IsOpen?: boolean;
+  Seller?: UserSeller;
+  SellerHomePage?: string;
+  Events?: VipEvent[];
+  IsAdmin?: boolean;
+  OnClose?: () => void;
+}
+
+export interface VipHtmlProps {
+  PdfHtml?: string;
 }

@@ -1,19 +1,21 @@
-import { RootState } from '@/lib/store';
-import { ReactElement, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import router from 'next/router';
-import { GetRolesResponse, Role, UpdateUserResponse, User } from '@/types/user';
 import { Button, FormCheck } from 'react-bootstrap';
+import { GetRolesResponse, GetSellersResponse, UpdateUserResponse } from '@/types/responses';
+import { ReactElement, useEffect, useState } from 'react';
+import { Role, User } from '@/types/user';
+import { Seller, SellerType } from '@/types/event';
 import { setReloadUsers, setSelectedUser } from '@/lib/adminSelectionSlice';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { GetSellersResponse, Seller, SellerType } from '@/types/event';
-import { useUpdateUser } from '@/hooks/admin/useUpdateUser';
+import { useDispatch, useSelector } from 'react-redux';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { FaPlus } from 'react-icons/fa';
-import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
-import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
+import { RootState } from '@/lib/store';
+import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
+import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { useUpdateUser } from '@/hooks/admin/useUpdateUser';
 
 export default function AdminUserEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -24,32 +26,36 @@ export default function AdminUserEdit() {
   const { deleteUser } = useDeleteUser();
   const [allSellers, setAllSellers] = useState<Seller[] | undefined>(undefined);
   const [allRoles, setAllRoles] = useState<Role[] | undefined>(undefined);
-  const [username, setUsername] = useState<string | undefined>(undefined);
-  const [firstName, setFirstName] = useState<string | undefined>(undefined);
-  const [lastName, setLastName] = useState<string | undefined>(undefined);
-  const [mobile, setMobile] = useState<string | undefined>(undefined);
-  const [notes, setNotes] = useState<string | undefined>(undefined);
+  const [username, setUsername] = useState<string | undefined>('');
+  const [firstName, setFirstName] = useState<string | undefined>('');
+  const [lastName, setLastName] = useState<string | undefined>('');
+  const [mobile, setMobile] = useState<string | undefined>('');
+  const [notes, setNotes] = useState<string | undefined>('');
   const [isActive, setIsActive] = useState<boolean>(false);
   const [requireResetPassword, setRequireResetPassword] = useState<boolean>(false);
   const [sendEmailReset, setSendEmailReset] = useState<boolean>(false);
   const [sendTextReset, setSendTextReset] = useState<boolean>(false);
   const [disableCheckIn, setDisableCheckIn] = useState<boolean>(false);
 
+  const goBack = () => {
+    router.push('/admin/users/');
+  };
+
   useEffect(() => {
-    if (currentAdminSelection.selectedUser == undefined) {
+    if (currentAdminSelection.selectedUser === undefined) {
       goBack();
     } else if (
-      username == undefined ||
-      allSellers == undefined ||
-      allRoles == undefined
+      username === undefined ||
+      allSellers === undefined ||
+      allRoles === undefined
     ) {
       dispatch(setIsLoading(true));
-      setUsername(currentAdminSelection.selectedUser.username);
-      setFirstName(currentAdminSelection.selectedUser.firstName);
-      setLastName(currentAdminSelection.selectedUser.lastName);
-      setMobile(currentAdminSelection.selectedUser.mobile);
-      setNotes(currentAdminSelection.selectedUser.notes);
-      setIsActive(currentAdminSelection.selectedUser.isActive);
+      setUsername(currentAdminSelection.selectedUser.username ?? '');
+      setFirstName(currentAdminSelection.selectedUser.firstName ?? '');
+      setLastName(currentAdminSelection.selectedUser.lastName ?? '');
+      setMobile(currentAdminSelection.selectedUser.mobile ?? '');
+      setNotes(currentAdminSelection.selectedUser.notes ?? '');
+      setIsActive(currentAdminSelection.selectedUser.isActive ?? false);
       setRequireResetPassword(
         currentAdminSelection.selectedUser.requireResetPassword ?? false,
       );
@@ -59,7 +65,7 @@ export default function AdminUserEdit() {
       getSellers().then((response: GetSellersResponse) => {
         setAllSellers(response.sellers);
         getAllRoles().then((resp: GetRolesResponse) => {
-          const roles = resp.roles?.filter((x) => x.roleId != 1);
+          const roles = resp.roles?.filter((x) => x.roleId !== 1);
           setAllRoles(roles);
           dispatch(setIsLoading(false));
         });
@@ -75,10 +81,6 @@ export default function AdminUserEdit() {
     dispatch,
   ]);
 
-  const goBack = () => {
-    router.push('/admin/users/');
-  };
-
   const updateSeller = (sellerId: number, newSellerId: number | null) => {
     if (isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
       return;
@@ -86,10 +88,10 @@ export default function AdminUserEdit() {
     if (currentAdminSelection.selectedUser) {
       const user: User = { ...currentAdminSelection.selectedUser };
       const userSellers = user.sellers ? [...user.sellers] : [];
-      const newSeller = allSellers?.find((x) => x.sellerId == newSellerId);
+      const newSeller = allSellers?.find((x) => x.sellerId === newSellerId);
       if (newSeller) {
-        for (let i = 0; i < userSellers.length; i++) {
-          if (userSellers[i].sellerId == sellerId) {
+        for (let i = 0; i < userSellers.length; i += 1) {
+          if (userSellers[i].sellerId === sellerId) {
             const userSeller = { ...userSellers[i] };
             userSeller.sellerId = newSellerId;
             userSeller.sellerName = newSeller.name;
@@ -112,11 +114,11 @@ export default function AdminUserEdit() {
     }
     if (currentAdminSelection.selectedUser) {
       const user: User = { ...currentAdminSelection.selectedUser };
-      const newRole = allRoles?.find((x) => x.roleId == newRoleId);
+      const newRole = allRoles?.find((x) => x.roleId === newRoleId);
       if (newRole && user.sellers) {
         user.sellers = user.sellers.map((us) => {
-          const userSeller = {...us};
-          if (userSeller.sellerId == sellerId) {
+          const userSeller = { ...us };
+          if (userSeller.sellerId === sellerId) {
             userSeller.roleId = newRoleId;
           }
           return userSeller;
@@ -132,7 +134,7 @@ export default function AdminUserEdit() {
     if (currentAdminSelection.selectedUser) {
       const user: User = { ...currentAdminSelection.selectedUser };
       const userSellers = user.sellers ? [...user.sellers] : [];
-      const existingAdd = userSellers.find((x) => x.sellerId == 0);
+      const existingAdd = userSellers.find((x) => x.sellerId === 0);
       if (!existingAdd) {
         userSellers.push({
           sellerId: 0,
@@ -147,14 +149,15 @@ export default function AdminUserEdit() {
     }
   };
 
-  const removeSeller = (sellerId: number) => {
+  const removeSeller = (sId: number) => {
+    let sellerId: number = sId;
     if (!sellerId || isNaN(sellerId)) {
       sellerId = 0;
     }
     if (currentAdminSelection.selectedUser) {
       const user: User = { ...currentAdminSelection.selectedUser };
       let userSellers = user.sellers ? [...user.sellers] : [];
-      userSellers = userSellers.filter((x) => x.sellerId != sellerId);
+      userSellers = userSellers.filter((x) => x.sellerId !== sellerId);
       user.sellers = userSellers;
       dispatch(setSelectedUser(user));
     } else {
@@ -164,29 +167,50 @@ export default function AdminUserEdit() {
 
   const deleteCurrentUser = () => {
     if (!currentAdminSelection.selectedUser) {
-      return false;
+      return;
     }
 
-    const userId = currentAdminSelection.selectedUser.userId;
+    const { userId } = currentAdminSelection.selectedUser;
 
-    const result = confirm('Are you sure you want to delete this user?');
-
-    if (result) {
-      deleteUser(userId).then((response: UpdateUserResponse) => {
-        if (response.success) {
-          dispatch(setReloadUsers(true));
-          toast.success('User deleted successfully');
-          router.push('/admin/users/');
-        } else {
-          toast.error(response.userError);
-        }
-      });
-    }
+    deleteUser(userId).then((response: UpdateUserResponse) => {
+      if (response.success) {
+        dispatch(setReloadUsers(true));
+        toast.success('User deleted successfully');
+        router.push('/admin/users/');
+      } else {
+        toast.error(response.error);
+      }
+    });
   };
+
+  const confirmDeleteUser = () => {
+    if (!currentAdminSelection.selectedUser) {
+      return;
+    }
+
+    const message: string =
+      'Are you sure you want to delete this user?';
+    toast.warning(
+      <ConfirmationDialog
+        Message={message}
+        ConfirmText="Yes"
+        CancelText="No"
+        OnConfirm={deleteCurrentUser}
+        OnCancel={() => {
+          toast.dismiss();
+        }}
+      />,
+      {
+        autoClose: false,
+        closeOnClick: false,
+        position: 'top-center',
+      },
+    );
+  }
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedUser) {
-      return false;
+      return;
     }
 
     if (!firstName) {
@@ -201,24 +225,24 @@ export default function AdminUserEdit() {
 
     const userToUpdate: User = {
       ...currentAdminSelection.selectedUser,
+      disableCheckIn: disableCheckIn || false,
       firstName: firstName || '',
+      isActive: isActive || false,
       lastName: lastName || '',
       mobile: mobile || '',
       notes: notes || '',
-      isActive: isActive || false,
       requireResetPassword: requireResetPassword || false,
       sendEmailReset: sendEmailReset || false,
       sendTextReset: sendTextReset || false,
-      disableCheckIn: disableCheckIn || false,
     };
 
     const sellersInvalid =
-      userToUpdate.sellers == undefined ||
-      userToUpdate.sellers.length == 0 ||
-      userToUpdate.sellers.find((x) => x.sellerId == 0) != undefined;
+      userToUpdate.sellers === undefined ||
+      userToUpdate.sellers.length === 0 ||
+      userToUpdate.sellers.find((x) => x.sellerId === 0) !== undefined;
     if (sellersInvalid) {
       toast.warning('Seller selection invalid, please correct before submitting');
-      return false;
+      return;
     }
 
     dispatch(setIsLoading(true));
@@ -228,7 +252,7 @@ export default function AdminUserEdit() {
         toast.success('User updated successfully');
         router.push('/admin/users/');
       } else {
-        toast.error(response.userError ?? 'Error occurred while saving user');
+        toast.error(response.error ?? 'Error occurred while saving user');
       }
       dispatch(setIsLoading(false));
     });
@@ -236,14 +260,14 @@ export default function AdminUserEdit() {
 
   const sellerRows: ReactElement[] = [];
   if (
-    allSellers != undefined &&
-    allRoles != undefined &&
+    allSellers !== undefined &&
+    allRoles !== undefined &&
     currentAdminSelection.selectedUser &&
     !currentAdminSelection.selectedUser.isAdmin &&
     currentAdminSelection.selectedUser.sellers &&
     currentAdminSelection.selectedUser.sellers.length > 0
   ) {
-    currentAdminSelection.selectedUser.sellers.map((item, index) => {
+    currentAdminSelection.selectedUser.sellers.forEach((item, index) => {
       sellerRows.push(
         <AdminSellerSelect
           Id={item.sellerId.toString()}
@@ -273,7 +297,7 @@ export default function AdminUserEdit() {
   }
 
   return currentAdminSelection.selectedUser &&
-    (sellerRows != null || currentAdminSelection.selectedUser.isAdmin) ? (
+    (sellerRows !== null || currentAdminSelection.selectedUser.isAdmin) ? (
     <div className="admin-container">
       <h1>Edit User</h1>
       <div className="form-group">
@@ -282,7 +306,7 @@ export default function AdminUserEdit() {
       <div className="form-group">
         <label className="mt-4">First Name</label>
         <input
-          value={firstName}
+          value={firstName ?? ''}
           onChange={(e) => setFirstName(e.target.value)}
           className="form-control"
           placeholder="first name"
@@ -292,7 +316,7 @@ export default function AdminUserEdit() {
       <div className="form-group">
         <label className="mt-4">Last Name</label>
         <input
-          value={lastName}
+          value={lastName ?? ''}
           onChange={(e) => setLastName(e.target.value)}
           className="form-control"
           placeholder="last name"
@@ -302,7 +326,7 @@ export default function AdminUserEdit() {
       <div className="form-group">
         <label className="mt-4">Mobile number</label>
         <input
-          value={mobile}
+          value={mobile ?? ''}
           onChange={(e) => setMobile(e.target.value)}
           className="form-control"
           placeholder="mobile number"
@@ -342,11 +366,11 @@ export default function AdminUserEdit() {
       </div>
       <div className="form-group">
         <label className="mt-4">Notes:</label>
-        <textarea onChange={(e) => setNotes(e.target.value)} value={notes} />
+        <textarea onChange={(e) => setNotes(e.target.value)} value={notes ?? ''} />
       </div>
       <div className="admin-button-group">
         <Button onClick={onSubmit}>Submit</Button>{' '}
-        <Button onClick={deleteCurrentUser}>Delete User</Button>
+        <Button onClick={confirmDeleteUser}>Delete User</Button>
       </div>
       <div className="admin-button-group">
         <Button onClick={goBack}>Back</Button>

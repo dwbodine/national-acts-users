@@ -1,11 +1,12 @@
-import { ForgotPasswordMode } from '@/types/user';
+import { Button, Col, Row } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
-import { Col, Row, Button } from 'react-bootstrap';
-import { useRouter } from 'next/router';
+import { ForgotPasswordMode } from '@/types/user';
+import { UserResponse } from '@/types/responses';
 import { useForgotPassword } from '@/hooks/user/useForgotPassword';
-import { useValidateResetCode } from '@/hooks/user/useValidateResetCode';
 import { useResetPassword } from '@/hooks/user/useResetPassword';
+import { useRouter } from 'next/router';
+import { useValidateResetCode } from '@/hooks/user/useValidateResetCode';
 
 export default function ForgotPassword() {
   const [mode, setMode] = useState(ForgotPasswordMode.SendPasswordReset);
@@ -42,16 +43,14 @@ export default function ForgotPassword() {
       return;
     }
     forgotPassword(username)
-      .then((response) => {
-        if (response.errorMessage) {
-          setResetError(response.errorMessage);
-          return;
+      .then((response: UserResponse) => {
+        if (response.error) {
+          setResetError(response.error);
         } else {
           setMode(ForgotPasswordMode.ValidateResetCode);
         }
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setResetError(
           'Unknown error during send of password reset email - please contact your administrator',
         );
@@ -65,16 +64,14 @@ export default function ForgotPassword() {
       return;
     }
     validateResetCode(username, code)
-      .then((response) => {
-        if (response.errorMessage) {
-          setResetError(response.errorMessage);
-          return;
+      .then((response: UserResponse) => {
+        if (response.error) {
+          setResetError(response.error);
         } else {
           setMode(ForgotPasswordMode.ResetPassword);
         }
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setResetError(
           'Unknown error while validating code - please contact your administrator',
         );
@@ -92,15 +89,14 @@ export default function ForgotPassword() {
       setResetError('Confirm password is required');
       return;
     }
-    if (password != confirmPassword) {
+    if (password !== confirmPassword) {
       setResetError('Passwords do not match');
       return;
     }
     resetPassword(username, password, confirmPassword, code)
-      .then((response) => {
-        if (response.errorMessage) {
-          setResetError(response.errorMessage);
-          return;
+      .then((response: UserResponse) => {
+        if (response.error) {
+          setResetError(response.error);
         } else {
           setResetSuccess('Password changed successfully, redirecting to login...');
           setTimeout(() => {
@@ -108,8 +104,7 @@ export default function ForgotPassword() {
           }, 2000);
         }
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setResetError(
           'Unknown error while resetting password - please contact your administrator',
         );
@@ -117,9 +112,9 @@ export default function ForgotPassword() {
   };
 
   const onBack = () => {
-    if (mode == ForgotPasswordMode.ValidateResetCode) {
+    if (mode === ForgotPasswordMode.ValidateResetCode) {
       setMode(ForgotPasswordMode.SendPasswordReset);
-    } else if (mode == ForgotPasswordMode.ResetPassword) {
+    } else if (mode === ForgotPasswordMode.ResetPassword) {
       setMode(ForgotPasswordMode.ValidateResetCode);
     } else {
       router.push('/login/');
@@ -189,7 +184,7 @@ export default function ForgotPassword() {
                 <label>New Password:</label>
                 <input
                   type="password"
-                  value={password}
+                  value={password ?? ''}
                   onChange={(e) => setPassword(e.target.value)}
                   className="form-control"
                   autoComplete="off"
@@ -203,7 +198,7 @@ export default function ForgotPassword() {
                 <label>Confirm Password:</label>
                 <input
                   type="password"
-                  value={confirmPassword}
+                  value={confirmPassword ?? ''}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="form-control"
                   autoComplete="off"
@@ -251,7 +246,7 @@ export default function ForgotPassword() {
                 <label>Username:</label>
                 <input
                   type="text"
-                  value={username}
+                  value={username ?? ''}
                   onChange={(e) => setUsername(e.target.value)}
                   className="form-control"
                   placeholder="Please enter email address"

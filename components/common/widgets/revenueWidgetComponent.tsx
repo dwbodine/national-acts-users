@@ -1,5 +1,5 @@
-import { RevenueWidgetProps } from '@/types/props';
 import { FaMoneyBillAlt } from 'react-icons/fa';
+import { RevenueWidgetProps } from '@/types/props';
 
 export default function RevenueWidget(props: RevenueWidgetProps) {
   const totalRevenue = (props.TotalRevenue ?? 0);

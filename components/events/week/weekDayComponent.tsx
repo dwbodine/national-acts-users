@@ -1,21 +1,22 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { Col } from 'react-bootstrap';
-import moment from 'moment';
-import { VipEvent } from '@/types/event';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
-import { RootState } from '@/lib/store';
 import { ReactElement, useState } from 'react';
-import { useAddNote } from '@/hooks/admin/useAddNote';
-import { toast } from 'react-toastify';
-import { useEditNote } from '@/hooks/admin/useEditNote';
-import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
-import { FaX } from 'react-icons/fa6';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { FaExclamationTriangle } from 'react-icons/fa';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import AddNoteModal from '../common/addNoteModalComponent';
+import { Col } from 'react-bootstrap';
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import EditNoteModal from '../common/editNoteModalComponent';
+import { FaExclamationTriangle } from 'react-icons/fa';
+import { FaX } from 'react-icons/fa6';
+import { ModifyNoteResponse } from '@/types/responses';
+import { RootState } from '@/lib/store';
+import { VipEvent } from '@/types/event';
 import { WeekDayProps } from '@/types/props';
+import moment from 'moment';
+import { toast } from 'react-toastify';
+import { useAddNote } from '@/hooks/admin/useAddNote';
+import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
+import { useEditNote } from '@/hooks/admin/useEditNote';
 
 export default function WeekDay(props: WeekDayProps) {
     const weekDate = props.WeekDate ? moment(props.WeekDate) : undefined;
@@ -24,7 +25,6 @@ export default function WeekDay(props: WeekDayProps) {
     const key = props.WeekDayNumber;
 
     const dispatch = useDispatch();
-    const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
     const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
     const [notesOpen, setNotesOpen] = useState(false);
     const [displayNoteOpen, setDisplayNoteOpen] = useState(false);
@@ -40,10 +40,10 @@ export default function WeekDay(props: WeekDayProps) {
     const { deleteNote } = useDeleteNote();
 
     const handleNotesOpen = () => setNotesOpen(true);
-    const handleDisplayNoteOpen = (noteId: number, noteText: string, noteTitle: string, noteDate: Date, isCompleted: boolean) => {
-        setNoteId(noteId);
-        setDisplayNoteTitle(noteTitle);
-        setDisplayNoteText(noteText);
+    const handleDisplayNoteOpen = (nId: number, nText: string, nTitle: string, noteDate: Date, isCompleted: boolean) => {
+        setNoteId(nId);
+        setDisplayNoteTitle(nTitle);
+        setDisplayNoteText(nText);
         setDisplayNoteDate(noteDate);
         setNoteIsCompleted(isCompleted);
         setDisplayNoteOpen(true);
@@ -70,53 +70,66 @@ export default function WeekDay(props: WeekDayProps) {
         }
         const calendarDate = weekDate.format('YYYY-MM-DD');
         addNote(noteText, undefined, calendarDate, noteTitle)
-            .then((response) => {
+            .then((response: ModifyNoteResponse) => {
                 setNotesOpen(false);
-                if (response.success && !response.noteError) {
+                if (response.success && !response.error) {
                     toast.success("Calendar note added successfully");
                     setNoteText('');
                     setNoteTitle('');
                     dispatch(setReloadAdminEvents(true));
                 } else {
-                    toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+                    toast.error(response.error ?? "Unexpected error occurred while adding note");
                 }                
             });
     };
 
     const editNewNoteAndMarkComplete = () => {
-        if (!weekDate || !displayNoteText || !displayNoteTitle || noteId == 0 || !displayNoteDate) {
+        if (!weekDate || !displayNoteText || !displayNoteTitle || noteId === 0 || !displayNoteDate) {
             return;
         }
         editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true)
-            .then((response) => {
+            .then((response: ModifyNoteResponse) => {
                 handleDisplayNoteClose();
-                if (response.success && !response.noteError) {
+                if (response.success && !response.error) {
                     toast.success("Calendar note edited successfully");
                     dispatch(setReloadAdminEvents(true));
                 } else {
-                    toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+                    toast.error(response.error ?? "Unexpected error occurred while adding note");
                 }
             });
     };
 
     const editNewNote = () => {
-        if (!weekDate || !displayNoteText || !displayNoteTitle || noteId == 0 || !displayNoteDate) {
+        if (!weekDate || !displayNoteText || !displayNoteTitle || noteId === 0 || !displayNoteDate) {
             return;
         }
         editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, noteIsCompleted)
-            .then((response) => {
+            .then((response: ModifyNoteResponse) => {
                 handleDisplayNoteClose();
-                if (response.success && !response.noteError) {
+                if (response.success && !response.error) {
                     toast.success("Calendar note edited successfully");
                     dispatch(setReloadAdminEvents(true));
                 } else {
-                    toast.error(response.noteError ?? "Unexpected error occurred while adding note");
+                    toast.error(response.error ?? "Unexpected error occurred while adding note");
                 }                
             });
     };
 
-    const confirmDeleteNote = (noteId: number) => {
-        if (!noteId) {
+    const deleteSelectedNote = (nId: number) => {
+        toast.dismiss();
+        deleteNote(nId)
+            .then((response: ModifyNoteResponse) => {
+                if (response.success && !response.error) {
+                    toast.success("Calendar note deleted");
+                    dispatch(setReloadAdminEvents(true));
+                } else {
+                    toast.error(response.error ?? "Unexpected error occurred while deleting note");
+                }
+            });
+    };
+
+    const confirmDeleteNote = (nId: number) => {
+        if (!nId) {
             return;
         }
     
@@ -127,38 +140,27 @@ export default function WeekDay(props: WeekDayProps) {
             Message={message}
             ConfirmText="Yes"
             CancelText="No"
-            OnConfirm={() => deleteSelectedNote(noteId)}
+            OnConfirm={() => deleteSelectedNote(nId)}
             OnCancel={() => {
                 toast.dismiss();
             }}
         />,
         {
-            position: 'top-center',
             autoClose: false,
             closeOnClick: false,
+            position: 'top-center',
         },
         );
     };
     
-    const deleteSelectedNote = (noteId: number) => {
-        toast.dismiss();
-        deleteNote(noteId)
-            .then((response) => {
-                if (response.success && !response.noteError) {
-                    toast.success("Calendar note deleted");
-                    dispatch(setReloadAdminEvents(true));
-                } else {
-                    toast.error(response.noteError ?? "Unexpected error occurred while deleting note");
-                }
-            });
-    }
+    
 
     const setRowExpanded = (vipEvent: VipEvent) => {
         const eventId = vipEvent.externalEventId;
         let expandedRowKey = currentReportSelection.expandedRow;
         let expandedEvent: VipEvent | undefined = vipEvent;
         let focusControlId = `expandedRow_${eventId}`;
-        if (expandedRowKey == eventId) {
+        if (expandedRowKey === eventId) {
             expandedRowKey = undefined;
             expandedEvent = undefined;
             focusControlId = '';
@@ -180,10 +182,10 @@ export default function WeekDay(props: WeekDayProps) {
     if (notes && notes.length > 0) {
         notes.forEach((note, i) => {
             if (!note.ticketSocketEventId) {
-                const noteText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
+                const nText = note.noteTitle ? note.noteTitle : (note.note.length > 35 ? `${note.note.substring(0, 35)}...` : note.note);
                 const noteClass = note.isCompleted ? "week-day-note-completed" : "week-day-note";
                 noteRows.push(<div key={`wdNote_${key}_${i}`} className={noteClass}>
-                                    <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '', moment(note.noteTimestamp).toDate(), note.isCompleted ?? false)}>{noteText}</span>
+                                    <span className="note-text" onClick={() => handleDisplayNoteOpen(note.noteId, note.note, note.noteTitle ?? '', moment(note.noteTimestamp).toDate(), note.isCompleted ?? false)}>{nText}</span>
                                     <span className="note-x"><FaX onClick={() => confirmDeleteNote(note.noteId)} /></span>
                             </div>)
             }
@@ -197,7 +199,7 @@ export default function WeekDay(props: WeekDayProps) {
             const statusText = getEventStatusText(evt, true);
             let statusClass = "week-day-event";
             let title = '';
-            if (statusSlug != "active") {
+            if (statusSlug !== "active") {
                 statusClass += ` week-day-event-${statusSlug}`;
                 title = statusText;
             }
@@ -208,7 +210,7 @@ export default function WeekDay(props: WeekDayProps) {
             const listSent = (evt.listSentToBand ?? false);
             const listSentVips = evt.listSentNumVips ?? 0;
             const currentVips = evt.totalTickets ?? 0;
-            const showVipAlert = (listSent && (listSentVips != currentVips));
+            const showVipAlert = (listSent && (listSentVips !== currentVips));
             
             let alertIcon: ReactElement = <></>;
             if (showVipAlert) {

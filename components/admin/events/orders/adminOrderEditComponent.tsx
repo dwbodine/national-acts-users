@@ -1,28 +1,28 @@
-import { RootState } from '@/lib/store';
-import { ReactElement, useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import router from 'next/router';
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
+import { DatePicker, SelectPicker } from 'rsuite';
+import { GetOrderResponse, ModifyOrderResponse, ModifyTicketResponse } from '@/types/responses';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
 import {
   setAdminOrder,
   setMustSaveOrder,
   setReloadEvents,
 } from '@/lib/adminSelectionSlice';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useRefundOrder } from '@/hooks/admin/useRefundOrder';
-import { useUpdateOrder } from '@/hooks/admin/useUpdateOrder';
-import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
-import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
 import ConfirmationDialog from '../../../common/confirmationDialogComponent';
-import { ModifyOrderResponse } from '@/types/event';
-import moment from 'moment';
-import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
-import { DatePicker, SelectPicker } from 'rsuite';
-import { useGetOrderById } from '@/hooks/common/useGetOrderById';
-import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
+import { EditProps } from '@/types/props';
 import { FaArrowTurnDown } from 'react-icons/fa6';
 import { ItemDataType } from 'rsuite/esm/internals/types';
-import { EditProps } from '@/types/props';
+import { RootState } from '@/lib/store';
+import { getOrderStatusText } from '@/utils/eventUtils';
+import moment from 'moment';
+import router from 'next/router';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { toast } from 'react-toastify';
+import { useGetOrderById } from '@/hooks/common/useGetOrderById';
+import { useRefundOrder } from '@/hooks/admin/useRefundOrder';
+import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
+import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
+import { useUpdateOrder } from '@/hooks/admin/useUpdateOrder';
 
 export default function AdminOrderEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;
@@ -32,14 +32,13 @@ export default function AdminOrderEdit(props: EditProps) {
   const { refundTicket } = useRefundTicket();
   const { updateOrder } = useUpdateOrder();
   const { getOrderById } = useGetOrderById();
-  const { getOrderStatusText } = useGetOrderStatus();
   const [markChargeback, setMarkChargeback] = useState<boolean>(false);
   const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
   const { setTicketsCheckedIn } = useSetTicketsCheckedIn();
 
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [ticketIdList, setTicketIdList] = useState<number[]>([]);
-  const allTicketIds: number[] = currentAdminSelection.selectedOrder?.tickets?.map(t => { return t.ticketSocketOrderTicketId }) ?? [];
+  const allTicketIds: number[] = currentAdminSelection.selectedOrder?.tickets?.map(t => t.ticketSocketOrderTicketId) ?? [];
 
   const loadOrderById = useCallback(() => {
     if (!id) {
@@ -49,14 +48,14 @@ export default function AdminOrderEdit(props: EditProps) {
     dispatch(setMustSaveOrder(false));
     dispatch(setIsLoading(true));
     getOrderById(id)
-      .then((response) => {
+      .then((response: GetOrderResponse) => {
         setTicketIdList([]);
-        if (response.order && !response.orderError) {
-            dispatch(
-              setAdminOrder(response.order)
-            );
+        if (response.order && !response.error) {
+          dispatch(
+            setAdminOrder(response.order)
+          );
         } else {
-          toast.error(response.orderError);
+          toast.error(response.error);
         }
         dispatch(setIsLoading(false));
       });
@@ -64,7 +63,7 @@ export default function AdminOrderEdit(props: EditProps) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.selectedOrder == undefined && id != undefined) {
+      if (currentAdminSelection.selectedOrder === undefined && id !== undefined) {
         loadOrderById();
       }
     }, 300);
@@ -72,6 +71,10 @@ export default function AdminOrderEdit(props: EditProps) {
       clearTimeout(timeoutId);
     };
   }, [currentAdminSelection, dispatch, id, loadOrderById]);
+
+  const markDirty = () => {
+    markDirty();
+  };
 
   const setPrice = (ticketId: number, newPrice: number) => {
     if (
@@ -87,7 +90,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets && !currentOrder.isComped) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId == ticketId) {
+        if (ticket.ticketSocketOrderTicketId === ticketId) {
           ticket.price = newPrice;
           orderRevenue += newPrice;
         } else {
@@ -97,7 +100,7 @@ export default function AdminOrderEdit(props: EditProps) {
       });
     }
 
-    if (currentOrder.revenue != orderRevenue) {
+    if (currentOrder.revenue !== orderRevenue) {
       currentOrder.revenue = orderRevenue;
       currentOrder.revenueUsd = orderRevenue * currentOrder.exchangeRate;
 
@@ -138,16 +141,14 @@ export default function AdminOrderEdit(props: EditProps) {
         }}
       />,
       {
-        position: 'top-center',
         autoClose: false,
         closeOnClick: false,
+        position: 'top-center',
       },
     );
   };
 
-  const markDirty = () => {
-    markDirty();
-  };
+
 
   const setIsActive = (isActive: boolean) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedOrder) {
@@ -195,7 +196,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets && !currentOrder.isComped) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId == ticketId) {
+        if (ticket.ticketSocketOrderTicketId === ticketId) {
           ticket.serviceFee = newServiceFee;
           orderServiceFees += newServiceFee;
         } else {
@@ -205,7 +206,7 @@ export default function AdminOrderEdit(props: EditProps) {
       });
     }
 
-    if (currentOrder.serviceFees != orderServiceFees) {
+    if (currentOrder.serviceFees !== orderServiceFees) {
       currentOrder.serviceFees = orderServiceFees;
       currentOrder.serviceFeesUsd = orderServiceFees * currentOrder.exchangeRate;
 
@@ -223,7 +224,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId == ticketId) {
+        if (ticket.ticketSocketOrderTicketId === ticketId) {
           ticket.isActive = isActive;
         }
         return ticket;
@@ -243,7 +244,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId == ticketId) {
+        if (ticket.ticketSocketOrderTicketId === ticketId) {
           ticket.isCheckedIn = isCheckedIn;
         }
         return ticket;
@@ -263,7 +264,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId == ticketId) {
+        if (ticket.ticketSocketOrderTicketId === ticketId) {
           ticket.attendeeFirstName = firstName;
         }
         return ticket;
@@ -283,7 +284,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId == ticketId) {
+        if (ticket.ticketSocketOrderTicketId === ticketId) {
           ticket.attendeeLastName = lastName;
         }
         return ticket;
@@ -303,7 +304,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId == ticketId) {
+        if (ticket.ticketSocketOrderTicketId === ticketId) {
           ticket.attendeeEmail = email;
         }
         return ticket;
@@ -323,7 +324,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId == ticketId) {
+        if (ticket.ticketSocketOrderTicketId === ticketId) {
           ticket.attendeePhone = phone;
         }
         return ticket;
@@ -343,7 +344,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId == ticketId) {
+        if (ticket.ticketSocketOrderTicketId === ticketId) {
           ticket.shirtSize = shirtSize;
         }
         return ticket;
@@ -364,7 +365,7 @@ export default function AdminOrderEdit(props: EditProps) {
       const refundDate = moment(newDate).format('YYYY-MM-DD');
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId == ticketId) {
+        if (ticket.ticketSocketOrderTicketId === ticketId) {
           if (ticket.isChargedBack) {
             ticket.chargebackDate = refundDate;
           } else if (ticket.isRefunded) {
@@ -380,13 +381,41 @@ export default function AdminOrderEdit(props: EditProps) {
     }
   };
 
+  const cancelRefundTicket = () => {
+    toast.dismiss();
+  };
+
+  const doRefundTicket = (refundTicketId: number, refundSvcFees: boolean) => {
+    toast.dismiss();
+    dispatch(setIsLoading(true));
+
+    refundTicket(refundTicketId, refundSvcFees).then(
+      (response: ModifyOrderResponse) => {
+        const { success } = response;
+        dispatch(setIsLoading(false));
+        if (success) {
+          toast.success('Refund succeeded');
+          if (id) {
+            loadOrderById();
+          } else {
+            dispatch(setAdminOrder(undefined));
+            dispatch(setReloadEvents(true));
+            goBack(false);
+          }
+        } else {
+          toast.error('Refund failed');
+        }
+      },
+    );
+  };
+
   const confirmRefundTicket = (ticketId: number) => {
     if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId)) {
       return;
     }
 
     const ticket = currentAdminSelection.selectedOrder.tickets?.find(
-      (x) => x.ticketSocketOrderTicketId == ticketId,
+      (x) => x.ticketSocketOrderTicketId === ticketId,
     );
     if (!ticket) {
       toast.warning('Ticket not found');
@@ -398,7 +427,7 @@ export default function AdminOrderEdit(props: EditProps) {
       return;
     }
 
-    if ((ticket.price ?? 0) == 0) {
+    if ((ticket.price ?? 0) === 0) {
       toast.warning('Ticket price must be set and saved before attempting refund');
       return;
     }
@@ -413,9 +442,9 @@ export default function AdminOrderEdit(props: EditProps) {
         OnCancel={cancelRefundTicket}
       />,
       {
-        position: 'top-center',
         autoClose: false,
         closeOnClick: false,
+        position: 'top-center',
       },
     );
   };
@@ -426,7 +455,7 @@ export default function AdminOrderEdit(props: EditProps) {
     }
 
     const ticket = currentAdminSelection.selectedOrder.tickets?.find(
-      (x) => x.ticketSocketOrderTicketId == ticketId,
+      (x) => x.ticketSocketOrderTicketId === ticketId,
     );
     if (!ticket) {
       toast.warning('Ticket not found');
@@ -438,7 +467,7 @@ export default function AdminOrderEdit(props: EditProps) {
       return;
     }
 
-    if ((ticket.price ?? 0) == 0) {
+    if ((ticket.price ?? 0) === 0) {
       toast.warning('Ticket price must be set and saved before attempting refund');
       return;
     }
@@ -454,33 +483,32 @@ export default function AdminOrderEdit(props: EditProps) {
         OnCancel={cancelRefundTicket}
       />,
       {
-        position: 'top-center',
         autoClose: false,
         closeOnClick: false,
+        position: 'top-center',
       },
     );
   };
 
-  const cancelRefundTicket = () => {
+  const handleRefund = () => {
     toast.dismiss();
-  };
-
-  const doRefundTicket = (refundTicketId: number, refundServiceFees: boolean) => {
-    toast.dismiss();
+    if (!currentAdminSelection.selectedOrder) {
+      return;
+    }
     dispatch(setIsLoading(true));
-
-    refundTicket(refundTicketId, refundServiceFees).then(
+    const orderId = currentAdminSelection.selectedOrder.ticketSocketOrderId;
+    refundOrder(orderId, refundServiceFees, markChargeback).then(
       (response: ModifyOrderResponse) => {
-        const success = response.success;
+        const { success } = response;
         dispatch(setIsLoading(false));
         if (success) {
           toast.success('Refund succeeded');
-          if (!id) {
+          if (id) {
+            loadOrderById();
+          } else {
             dispatch(setAdminOrder(undefined));
             dispatch(setReloadEvents(true));
             goBack(false);
-          } else {
-            loadOrderById();
           }
         } else {
           toast.error('Refund failed');
@@ -500,9 +528,9 @@ export default function AdminOrderEdit(props: EditProps) {
     }
 
     const missingPriceTicket = currentAdminSelection.selectedOrder?.tickets?.find(
-      (x) => (x.price ?? 0) == 0,
+      (x) => (x.price ?? 0) === 0,
     );
-    if (missingPriceTicket != undefined) {
+    if (missingPriceTicket !== undefined) {
       toast.warning(
         'One or more tickets have a zero price, please correct before attempting refund',
       );
@@ -524,62 +552,37 @@ export default function AdminOrderEdit(props: EditProps) {
         }}
       />,
       {
-        position: 'top-center',
         autoClose: false,
         closeOnClick: false,
+        position: 'top-center',
       },
     );
   };
 
-  const handleRefund = () => {
-    toast.dismiss();
-    if (!currentAdminSelection.selectedOrder) {
-      return false;
-    }
-    dispatch(setIsLoading(true));
-    const orderId = currentAdminSelection.selectedOrder.ticketSocketOrderId;
-    refundOrder(orderId, refundServiceFees, markChargeback).then(
-      (response: ModifyOrderResponse) => {
-        const success = response.success;
-        dispatch(setIsLoading(false));
-        if (success) {
-          toast.success('Refund succeeded');
-          if (!id) {            
-            dispatch(setAdminOrder(undefined));
-            dispatch(setReloadEvents(true));
-            goBack(false);
-          } else {
-            loadOrderById();
-          }
-        } else {
-          toast.error('Refund failed');
-        }
-      },
-    );
-  };
 
-  
+
+
   const onSubmit = () => {
     if (!currentAdminSelection.selectedOrder) {
-      return false;
+      return;
     }
     dispatch(setIsLoading(true));
     const currentOrder = { ...currentAdminSelection.selectedOrder };
     updateOrder(currentOrder).then((results: ModifyOrderResponse) => {
       dispatch(setIsLoading(false));
-      if (results.success && !results.orderError) {
+      if (results.success && !results.error) {
         toast.success('Order updated successfully');
-        if (!id) {
+        if (id) {
+          loadOrderById();
+        } else {
           dispatch(setAdminOrder(undefined));
           dispatch(setReloadEvents(true));
           setTimeout(() => {
             goBack(false);
           }, 500);
-        } else {
-          loadOrderById();
-        }    
+        }
       } else {
-        toast.error(results.orderError ?? 'Unknown error occurred while saving order');
+        toast.error(results.error ?? 'Unknown error occurred while saving order');
       }
     });
   };
@@ -587,7 +590,7 @@ export default function AdminOrderEdit(props: EditProps) {
   const updateTicketIdList = (ticketId: number, addToList: boolean) => {
     let idList: number[] = ticketIdList ? [...ticketIdList] : [];
     if (!addToList && idList.includes(ticketId)) {
-      idList = idList.filter(id => id != ticketId);
+      idList = idList.filter(i => i !== ticketId);
     } else if (addToList && !idList.includes(ticketId)) {
       idList.push(ticketId);
     }
@@ -605,8 +608,56 @@ export default function AdminOrderEdit(props: EditProps) {
     }
   };
 
+  const checkInTickets = (isCheckedIn: boolean) => {
+    if (ticketIdList.length === 0) {
+      return;
+    }
+    setTicketsCheckedIn(ticketIdList, isCheckedIn)
+      .then((response: ModifyTicketResponse) => {
+        if (response.success && !response.error) {
+          const successMessage = isCheckedIn ? "Tickets checked in successfully" : "Tickets unchecked successfully";
+          toast.success(successMessage);
+          setTicketIdList([]);
+          setSelectedAction(null);
+          if (id) {
+            loadOrderById();
+          } else {
+            dispatch(setAdminOrder(undefined));
+            dispatch(setReloadEvents(true));
+            setTimeout(() => {
+              goBack(false);
+            }, 500);
+          }
+        } else {
+          let errorMessage = response.error;
+          if (!errorMessage) {
+            errorMessage = isCheckedIn ? 'Unexpected error occurred while checking in tickets' : 'Unexpected error occurred while unchecking tickets';
+          }
+          toast.error(errorMessage);
+        }
+      });
+  };
+
+  const handleBulkEdit = () => {
+    toast.dismiss();
+    if (ticketIdList.length === 0 || !selectedAction) {
+      return;
+    }
+
+    switch (selectedAction) {
+      case "checkin":
+        checkInTickets(true);
+        break;
+      case "checkout":
+        checkInTickets(false);
+        break;
+      default:
+        break;
+    }
+  };
+
   const bulkEditConfirm = () => {
-    if (ticketIdList.length == 0 || !selectedAction) {
+    if (ticketIdList.length === 0 || !selectedAction) {
       return;
     }
 
@@ -617,6 +668,8 @@ export default function AdminOrderEdit(props: EditProps) {
         break;
       case "checkout":
         message = `You are about to undo check-in for ${ticketIdList.length} tickets`;
+        break;
+      default:
         break;
     }
 
@@ -635,62 +688,16 @@ export default function AdminOrderEdit(props: EditProps) {
         }}
       />,
       {
-        position: 'top-center',
         autoClose: false,
         closeOnClick: false,
+        position: 'top-center',
       },
     );
   };
 
-  const handleBulkEdit = () => {
-    toast.dismiss();
-    if (ticketIdList.length == 0 || !selectedAction) {
-      return;
-    }
-
-    switch (selectedAction) {
-      case "checkin":
-        checkInTickets(true);
-        break;
-      case "checkout":
-        checkInTickets(false);
-        break;
-    }
-  };
-
-  const checkInTickets = (isCheckedIn: boolean) => {
-    if (ticketIdList.length == 0) {
-      return;
-    }
-    setTicketsCheckedIn(ticketIdList, isCheckedIn)
-      .then((response) => {
-        if (response.success && !response.ticketError) {
-          const successMessage = isCheckedIn ? "Tickets checked in successfully" : "Tickets unchecked successfully";
-          toast.success(successMessage);
-          setTicketIdList([]);
-          setSelectedAction(null);
-          if (!id) {
-            dispatch(setAdminOrder(undefined));
-            dispatch(setReloadEvents(true));
-            setTimeout(() => {
-              goBack(false);
-            }, 500);
-          } else {
-            loadOrderById();
-          }        
-        } else {
-          let errorMessage = response.ticketError;
-          if (!errorMessage) {
-            errorMessage = isCheckedIn ? 'Unexpected error occurred while checking in tickets' : 'Unexpected error occurred while unchecking tickets';
-          }
-          toast.error(errorMessage);
-        }
-      });
-  };
-
   const pageHeader = 'Edit Order';
-    const purchaseDate =
-    currentAdminSelection.selectedOrder?.purchaseDate != undefined
+  const purchaseDate =
+    currentAdminSelection.selectedOrder?.purchaseDate
       ? moment(currentAdminSelection.selectedOrder.purchaseDate).format('MM/DD/YYYY')
       : '';
   const purchaserName = `${currentAdminSelection.selectedOrder?.purchaserFirstName} ${currentAdminSelection.selectedOrder?.purchaserLastName}`;
@@ -698,13 +705,13 @@ export default function AdminOrderEdit(props: EditProps) {
     ? moment(currentAdminSelection.selectedOrder.eventDate).format('MM/DD/YYYY')
     : '';
   const refundsDisabled =
-  currentAdminSelection.selectedOrder?.numTickets == 0 ||
+    currentAdminSelection.selectedOrder?.numTickets === 0 ||
     (currentAdminSelection.selectedOrder?.hasRefunds &&
-      currentAdminSelection.selectedOrder?.tickets?.find((x) => !x.isRefunded) == undefined);
+      currentAdminSelection.selectedOrder?.tickets?.find((x) => !x.isRefunded) === undefined);
   const chargebackDisabled =
-  currentAdminSelection.selectedOrder?.numTickets == 0 ||
+    currentAdminSelection.selectedOrder?.numTickets === 0 ||
     (currentAdminSelection.selectedOrder?.hasChargebacks &&
-      currentAdminSelection.selectedOrder?.tickets?.find((x) => !x.isChargedBack) == undefined);
+      currentAdminSelection.selectedOrder?.tickets?.find((x) => !x.isChargedBack) === undefined);
   const chargebackTitle = chargebackDisabled ? 'Order has already been charged back' : '';
   const currencyAbbrev = currentAdminSelection.selectedOrder?.currencyAbbrev;
   const isActive = currentAdminSelection.selectedOrder?.isActive ?? false;
@@ -876,7 +883,7 @@ export default function AdminOrderEdit(props: EditProps) {
     });
   }
 
-  if (ticketRows.length == 0) {
+  if (ticketRows.length === 0) {
     ticketRows.push(
       <tr key="tr-empty">
         <td colSpan={2}>n/a</td>
@@ -885,27 +892,27 @@ export default function AdminOrderEdit(props: EditProps) {
   }
 
   const actions = [
-  {
-    label: "Check In",
-    value: "checkin"
-  },
-  {
-    label: "Undo check-in",
-    value: "checkout"
-  }
-];
+    {
+      label: "Check In",
+      value: "checkin"
+    },
+    {
+      label: "Undo check-in",
+      value: "checkout"
+    }
+  ];
 
-const actionList: ItemDataType<string>[] = actions.map((action) => {
-      return {
-        label: action.label,
-        value: action.value
-      }
-  });
+  const actionList: ItemDataType<string>[] = actions.map((action) => (
+    {
+      label: action.label,
+      value: action.value
+    }
+  ));
 
   return (
     <Col
       className="admin-container"
-      hidden={currentAdminSelection.selectedOrder == undefined}
+      hidden={currentAdminSelection.selectedOrder === undefined}
     >
       <Row>
         <Col>
@@ -931,7 +938,7 @@ const actionList: ItemDataType<string>[] = actions.map((action) => {
           <br />
           <span className="title">Number Tickets Sold:</span> {currentAdminSelection.selectedOrder?.numTickets}
           <br />
-          <div hidden={!currentAdminSelection.selectedOrder || currencyAbbrev == 'USD'}>
+          <div hidden={!currentAdminSelection.selectedOrder || currencyAbbrev === 'USD'}>
             <span className="title">Exchange Rate:</span> {currentAdminSelection.selectedOrder?.exchangeRate}{' '}
             <br />
             <span className="title">Ticket Revenue {currencyAbbrev}:</span>{' '}
@@ -957,7 +964,7 @@ const actionList: ItemDataType<string>[] = actions.map((action) => {
           <span className="title">Number Tickets Refunded:</span>{' '}
           {currentAdminSelection.selectedOrder?.numTicketsRefunded}
           <br />
-          <div hidden={!currentAdminSelection.selectedOrder || currentAdminSelection.selectedOrder.currencyAbbrev == 'USD'}>
+          <div hidden={!currentAdminSelection.selectedOrder || currentAdminSelection.selectedOrder.currencyAbbrev === 'USD'}>
             <span className="title">Ticket Revenue Refunded:</span>{' '}
             {(currentAdminSelection.selectedOrder?.revenueRefunded ?? 0).toFixed(2)} <br />
             <span className="title">Service Fee Revenue Refunded:</span>{' '}
@@ -998,7 +1005,7 @@ const actionList: ItemDataType<string>[] = actions.map((action) => {
           <h5>Tickets</h5>
         </Col>
       </Row>
-      <Row hidden={allTicketIds.length == 0}>
+      <Row hidden={allTicketIds.length === 0}>
         <Col className="bulk-arrow-row">
           <div><FaArrowTurnDown className="bulk-arrow" /></div>
           <div>With selected:</div>
@@ -1007,7 +1014,7 @@ const actionList: ItemDataType<string>[] = actions.map((action) => {
               className="bulk-select"
               value={selectedAction}
               data={actionList}
-              size="lg"        
+              size="lg"
               onChange={(a) => setSelectedAction(a)}
               cleanable={true}
               menuAutoWidth={true}
@@ -1027,7 +1034,7 @@ const actionList: ItemDataType<string>[] = actions.map((action) => {
                 <th>
                   <FormCheck
                     id={`tId_selectAll`}
-                    checked={allTicketIds.length > 0 && (ticketIdList.length == allTicketIds.length)}
+                    checked={allTicketIds.length > 0 && (ticketIdList.length === allTicketIds.length)}
                     onChange={(e) => selectAllTickets(e.currentTarget.checked)}
                   />
                 </th>
@@ -1078,7 +1085,7 @@ const actionList: ItemDataType<string>[] = actions.map((action) => {
       <Row>
         <Col>
           <Button onClick={onSubmit}>Submit</Button>{' '}
-          <Button hidden={id != undefined} onClick={confirmGoBack}>Back</Button>
+          <Button hidden={id !== undefined} onClick={confirmGoBack}>Back</Button>
         </Col>
       </Row>
     </Col>

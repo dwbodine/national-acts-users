@@ -1,29 +1,23 @@
-import axios, { AxiosInstance } from 'axios';
+import { Country, Faq, FaqCategory, Page, SiteSetting } from '@/types/public';
+import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import {
-  Country,
-  Faq,
-  FaqCategory,
-  Page,
-  SiteSetting,
-  UpdateSettingResponse,
-} from '@/types/public';
-import { getAuthorizationHeader } from '@/utils/getAuthorizationHeader';
-import {
-  ExternalVenue,
   GetCountriesResponse,
   GetExternalVenuesResponse,
   GetFaqCategoriesResponse,
   GetFaqsResponse,
   GetPagesResponse,
+  GetSellersResponse,
   GetTicketSocketAccountsResponse,
   ModifyExternalEventResponse,
   ModifyExternalVenueResponse,
   ModifyFaqResponse,
   ModifyPageResponse,
   ModifySellerResponse,
-  TicketSocketAccount,
-} from '@/types/admin';
-import { GetSellersResponse, Seller } from '@/types/event';
+  UpdateSettingResponse,
+} from '@/types/responses';
+import axios, { AxiosError, AxiosInstance } from 'axios';
+import { Seller } from '@/types/event';
+import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
 
 export class AdminService {
   protected readonly instance: AxiosInstance;
@@ -39,345 +33,221 @@ export class AdminService {
   getAllFaqs = async (): Promise<GetFaqsResponse> => {
     const url = `/public/faq/0`;
 
-    const response: GetFaqsResponse = {
-      faqs: undefined,
-      faqError: undefined,
-      statusCode: 200,
-    };
+    const response: GetFaqsResponse = {};
 
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        response.faqs = res.data ? (res.data as Faq[]) : undefined;
-        return response;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          response.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching faqs - please contact your administrator';
-        }
-        response.faqError = errorMessage;
-        return response;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.faqs = res.data ? (res.data as Faq[]) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while fetching faqs - please contact your administrator';
+    }
+
+    return response;
   };
 
   getAllFaqCategories = async (): Promise<GetFaqCategoriesResponse> => {
     const url = `/public/faq_categories`;
 
-    const response: GetFaqCategoriesResponse = {
-      categories: undefined,
-      categoryError: undefined,
-      statusCode: 200,
-    };
+    const response: GetFaqCategoriesResponse = {};
 
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
     };
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        response.categories = res.data ? (res.data as FaqCategory[]) : undefined;
-        return response;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          response.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching faq categories - please contact your administrator';
-        }
-        response.categoryError = errorMessage;
-        return response;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.categories = res.data ? (res.data as FaqCategory[]) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while fetching faq categories - please contact your administrator';
+    }
+
+    return response;
   };
 
   updateFaq = async (faqToUpdate: Faq): Promise<ModifyFaqResponse> => {
     const url = `/admin/faq/update`;
 
-    const modifyResponse: ModifyFaqResponse = {
-      success: false,
-      faqError: undefined,
-      statusCode: 200,
-    };
+    const response: ModifyFaqResponse = {};
 
     const data = JSON.stringify(faqToUpdate);
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while updating FAQ';
-        }
-        modifyResponse.faqError = errorMessage;
-        return modifyResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while updating FAQ - please contact your administrator';
+    }
+
+    return response;
   };
 
   deleteFaq = async (faqId: number): Promise<ModifyFaqResponse> => {
     const url = `/admin/faq/delete`;
 
-    const modifyResponse: ModifyFaqResponse = {
-      success: false,
-      faqError: undefined,
-      statusCode: 200,
-    };
+    const response: ModifyFaqResponse = {};
 
-    const data = JSON.stringify({
-      faqId: faqId,
-    });
+    const data = JSON.stringify({ faqId });
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while deleting FAQ';
-        }
-        modifyResponse.faqError = errorMessage;
-        return modifyResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while deleting FAQ - please contact your administrator';
+    }
+
+    return response;
   };
 
   moveFaqUp = async (faqId: number): Promise<ModifyFaqResponse> => {
     const url = `/admin/faq/moveup`;
 
-    const modifyResponse: ModifyFaqResponse = {
-      success: false,
-      faqError: undefined,
-      statusCode: 200,
-    };
+    const response: ModifyFaqResponse = {};
 
     const data = JSON.stringify({
-      faqId: faqId,
+      faqId,
     });
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while moving up FAQ';
-        }
-        modifyResponse.faqError = errorMessage;
-        return modifyResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while moving up FAQ - please contact your administrator';
+    }
+
+    return response;
   };
 
   moveFaqDown = async (faqId: number): Promise<ModifyFaqResponse> => {
     const url = `/admin/faq/movedown`;
 
-    const modifyResponse: ModifyFaqResponse = {
-      success: false,
-      faqError: undefined,
-      statusCode: 200,
-    };
+    const response: ModifyFaqResponse = {};
 
-    const data = JSON.stringify({
-      faqId: faqId,
-    });
+    const data = JSON.stringify({ faqId });
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while moving down FAQ';
-        }
-        modifyResponse.faqError = errorMessage;
-        return modifyResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while moving down FAQ - please contact your administrator';
+    }
+
+    return response;
   };
 
   getAllPages = async (): Promise<GetPagesResponse> => {
     const url = `/admin/pages`;
 
-    const pagesResponse: GetPagesResponse = {
-      pages: undefined,
-      pageError: undefined,
-      statusCode: 200,
-    };
+    const response: GetPagesResponse = {};
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        pagesResponse.pages = res.data ? (res.data as Page[]) : undefined;
-        return pagesResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          pagesResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching pages - please contact your administrator';
-        }
-        pagesResponse.pageError = errorMessage;
-        return pagesResponse;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.pages = res.data ? (res.data as Page[]) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while fetching pages - please contact your administrator';
+    }
+
+    return response;
   };
 
   updatePage = async (pageToUpdate: Page): Promise<ModifyPageResponse> => {
     const url = `/admin/pages/update`;
 
-    const modifyResponse: ModifyPageResponse = {
-      success: false,
-      pageError: undefined,
-      statusCode: 200,
-    };
+    const response: ModifyPageResponse = {};
 
     const data = JSON.stringify(pageToUpdate);
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        modifyResponse.updatedPage = res.data ? (res.data as Page) : undefined;
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while updating page';
-        }
-        modifyResponse.pageError = errorMessage;
-        return modifyResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+      response.updatedPage = res.data ? (res.data as Page) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while updating page - please contact your administrator';
+    }
+
+    return response;
   };
 
   updatePageOrder = async (pagesToUpdate: Page[]): Promise<ModifyPageResponse> => {
     const url = `/admin/pages/order`;
 
-    const modifyResponse: ModifyPageResponse = {
-      success: false,
-      pageError: undefined,
-      statusCode: 200,
-    };
+    const response: ModifyPageResponse = {};
 
     const data = JSON.stringify(pagesToUpdate);
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        modifyResponse.updatedPage = res.data ? (res.data as Page) : undefined;
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while updating page order';
-        }
-        modifyResponse.pageError = errorMessage;
-        return modifyResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+      response.updatedPage = res.data ? (res.data as Page) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while updating page order - please contact your administrator';
+    }
+
+    return response;
   };
 
   updateSiteSettings = async (
@@ -385,38 +255,25 @@ export class AdminService {
   ): Promise<UpdateSettingResponse> => {
     const url = `/admin/settings/update`;
 
-    const settingResponse: UpdateSettingResponse = {
-      success: false,
-      settingsError: undefined,
-      statusCode: 200,
-    };
+    const response: UpdateSettingResponse = {};
 
     const data = JSON.stringify(settingsToUpdate);
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        settingResponse.success = res.data;
-        return settingResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          settingResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while updating site setting';
-        }
-        settingResponse.settingsError = errorMessage;
-        return settingResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.data;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while updating site setting - please contact your administrator';
+    }
+
+    return response;
   };
 
   getAllVenues = async (searchTerm?: string): Promise<GetExternalVenuesResponse> => {
@@ -425,73 +282,45 @@ export class AdminService {
       url += `?search=${encodeURIComponent(searchTerm)}`;
     }
 
-    const venuesResponse: GetExternalVenuesResponse = {
-      venues: undefined,
-      venueError: undefined,
-      statusCode: 200,
-    };
+    const response: GetExternalVenuesResponse = {};
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        venuesResponse.venues = res.data ? (res.data as ExternalVenue[]) : undefined;
-        return venuesResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          venuesResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching venues - please contact your administrator';
-        }
-        venuesResponse.venueError = errorMessage;
-        return venuesResponse;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.venues = res.data ? (res.data as ExternalVenue[]) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while fetching venues - please contact your administrator';
+    }
+
+    return response;
   };
 
   getAllCountries = async (): Promise<GetCountriesResponse> => {
     const url = `/admin/countries`;
 
-    const countryResponse: GetCountriesResponse = {
-      countries: undefined,
-      countryError: undefined,
-      statusCode: 200,
-    };
+    const response: GetCountriesResponse = {};
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        countryResponse.countries = res.data ? (res.data as Country[]) : undefined;
-        return countryResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          countryResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching countries - please contact your administrator';
-        }
-        countryResponse.countryError = errorMessage;
-        return countryResponse;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.countries = res.data ? (res.data as Country[]) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while fetching countries - please contact your administrator';
+    }
+
+    return response;
   };
 
   updateVenue = async (
@@ -499,187 +328,117 @@ export class AdminService {
   ): Promise<ModifyExternalVenueResponse> => {
     const url = `/admin/venues/edit`;
 
-    const modifyResponse: ModifyExternalVenueResponse = {
-      success: false,
-      venueError: undefined,
-      statusCode: 200,
-    };
+    const response: ModifyExternalVenueResponse = {};
 
     const data = JSON.stringify(venueToUpdate);
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        modifyResponse.updatedVenue = res.data ? (res.data as ExternalVenue) : undefined;
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while updating venue';
-        }
-        modifyResponse.venueError = errorMessage;
-        return modifyResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+      response.updatedVenue = res.data ? (res.data as ExternalVenue) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while updating venue - please contact your administrator';
+    }
+
+    return response;
   };
 
   deleteVenue = async (venueId: number): Promise<ModifyExternalVenueResponse> => {
     const url = '/admin/venues/delete';
     const headers = getAuthorizationHeader();
 
-    const modifyResponse: ModifyExternalVenueResponse = {
-      success: false,
-      venueError: undefined,
-      statusCode: 200,
-      updatedVenue: undefined,
-    };
+    const response: ModifyExternalVenueResponse = {};
 
-    const data = {
-      venueId: venueId,
-    };
+    const data = { venueId };
 
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while deleting venue - please contact your administrator';
-        }
-        modifyResponse.venueError = errorMessage;
-        return modifyResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while deleting venue - please contact your administrator';
+    }
+
+    return response;
   };
 
   getTicketSocketAccounts = async (): Promise<GetTicketSocketAccountsResponse> => {
     const url = `/admin/ticketSocketAccounts`;
 
-    const accountsResponse: GetTicketSocketAccountsResponse = {
-      accounts: undefined,
-      accountError: undefined,
-      statusCode: 200,
-    };
+    const response: GetTicketSocketAccountsResponse = {};
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        accountsResponse.accounts = res.data
-          ? (res.data as TicketSocketAccount[])
-          : undefined;
-        return accountsResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          accountsResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching ticket socket accounts - please contact your administrator';
-        }
-        accountsResponse.accountError = errorMessage;
-        return accountsResponse;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.accounts = res.data ? (res.data as TicketSocketAccount[]) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while fetching ticket socket accounts - please contact your administrator';
+    }
+
+    return response;
   };
 
   getSellers = async (): Promise<GetSellersResponse> => {
     const url = `/admin/sellers`;
 
-    const sellersResponse: GetSellersResponse = {
-      sellers: undefined,
-      sellersError: undefined,
-    };
+    const response: GetSellersResponse = {};
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .get(url, {
-        headers: headers,
-      })
-      .then((res) => {
-        const sellers = res.data;
-        sellersResponse.sellers = sellers.length ? (sellers as Seller[]) : [];
-        return sellersResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage =
-            'Unknown error while fetching sellers - please contact your administrator';
-        }
-        sellersResponse.sellersError = errorMessage;
-        return sellersResponse;
-      });
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.sellers = res.data ? (res.data as Seller[]) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while fetching sellers - please contact your administrator';
+    }
+
+    return response;
   };
 
   updateSeller = async (sellerToUpdate: Seller): Promise<ModifyExternalEventResponse> => {
     const url = `/admin/seller/update`;
 
-    const modifyResponse: ModifySellerResponse = {
-      success: false,
-      sellerError: undefined,
-      statusCode: 200,
-    };
+    const response: ModifySellerResponse = {};
 
     const data = JSON.stringify(sellerToUpdate);
 
     const headers = getAuthorizationHeader();
 
-    return this.instance
-      .post(url, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        modifyResponse.success = res.status == 200;
-        modifyResponse.updatedSeller = res.data ? (res.data as Seller) : undefined;
-        return modifyResponse;
-      })
-      .catch((err) => {
-        console.log(err);
-        let errorMessage = '';
-        if (err?.response?.status) {
-          modifyResponse.statusCode = parseInt(err.response.status);
-        }
-        if (err?.response?.data?.msg) {
-          errorMessage = err.response.data.msg;
-        } else {
-          errorMessage = 'Unknown error while updating seller';
-        }
-        modifyResponse.sellerError = errorMessage;
-        return modifyResponse;
-      });
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+      response.updatedSeller = res.data ? (res.data as Seller) : undefined;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while updating seller - please contact your administrator';
+    }
+
+    return response;
   };
 }

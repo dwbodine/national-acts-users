@@ -1,6 +1,6 @@
-import { RevenueGoalsWidgetProps } from '@/types/props';
 import { Col, Row } from 'react-bootstrap';
 import { Progress } from 'rsuite';
+import { RevenueGoalsWidgetProps } from '@/types/props';
 
 export default function RevenueGoalsWidget(props: RevenueGoalsWidgetProps) {
   const percentGoal = props.PercentGoal;

@@ -94,14 +94,3 @@ export interface Page {
   lastUpdate?: string;
   sellers?: PageSeller[];
 }
-
-export interface GetSettingsResponse {
-  settings?: SiteSetting[];
-  settingsError?: string;
-}
-
-export interface UpdateSettingResponse {
-  success: boolean;
-  statusCode?: number;
-  settingsError?: string;
-}

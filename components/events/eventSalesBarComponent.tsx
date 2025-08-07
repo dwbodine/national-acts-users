@@ -1,17 +1,16 @@
+import { Col, Row } from 'react-bootstrap';
+import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
 import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '../../src/lib/store';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
-import { useEffect } from 'react';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
-import router from 'next/router';
-import moment from 'moment';
 import { DatePicker } from 'rsuite';
 import { EventTabView } from '@/types/user';
+import type { RootState } from '../../src/lib/store';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
-import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
+import moment from 'moment';
+import router from 'next/router';
+import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useEffect } from 'react';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function EventSalesBar() {
   const dispatch = useDispatch();
@@ -34,7 +33,7 @@ export default function EventSalesBar() {
     const user = getUser();
     if (!user?.isAdmin) {
       router.push('/');
-    } else if (currentReportSelection.start == undefined) {
+    } else if (currentReportSelection.start === undefined) {
       const selectedDate = moment().unix();
       const tabView = currentReportSelection.eventTabView ?? (agendaOnly ? EventTabView.Agenda : DEFAULT_EVENT_TAB_VIEW);
       const dateRange = getSelectedAdminEventDateRange(selectedDate, tabView)
@@ -42,21 +41,18 @@ export default function EventSalesBar() {
     }
   }, [windowSizeJson, getUser, currentReportSelection, dispatch, agendaOnly]);
 
-  let startDate = undefined;
-  if (currentReportSelection.eventTabView == EventTabView.Month) {
+  let startDate = currentReportSelection.start ? moment.unix(currentReportSelection.start).toDate() : null;
+  if (currentReportSelection.eventTabView === EventTabView.Month) {
     startDate = currentReportSelection.periodStart ? moment.unix(currentReportSelection.periodStart).toDate() : null;
-  } else {
-    startDate = currentReportSelection.start ? moment.unix(currentReportSelection.start).toDate() : null;
   }
 
-  let datePickerlabel = '';
+  let datePickerlabel = "Week beginning (Monday)";
   switch (currentReportSelection.eventTabView) {
     case EventTabView.Agenda:
     case EventTabView.Month:
       datePickerlabel = "Month beginning";
       break;
     default:
-      datePickerlabel = "Week beginning (Monday)";
       break;
   }
 

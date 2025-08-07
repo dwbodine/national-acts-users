@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
+import { Button, Col, FormCheck, Row } from 'react-bootstrap';
+import { GetCountriesResponse, GetEventsResponse, GetSellersResponse, GetToursResponse, ModifyEventResponse } from '@/types/responses';
 import { SelectPicker, Table } from 'rsuite';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import {
   setAdminDates,
   setAdminEvent,
@@ -19,30 +18,31 @@ import {
   setTicketSocketEventsOnly,
   setTours,
 } from '@/lib/adminSelectionSlice';
-import { Button, Col, FormCheck, Row } from 'react-bootstrap';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import AdminListHomeButton from '../adminListHomeButton';
+import { AdminSelection } from '@/types/user';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import { FaArrowTurnDown } from 'react-icons/fa6';
+import { ItemDataType } from 'rsuite/esm/internals/types';
 import ReportDatePicker from '../../common/reportDatePicker';
-import { GetEventsResponse, GetSellersResponse, GetToursResponse, VipEvent } from '@/types/event';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
+import { RootState } from '@/lib/store';
+import { VipEvent } from '@/types/event';
 import moment from 'moment';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
 import router from 'next/router';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { toast } from 'react-toastify';
+import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
+import { useGetTours } from '@/hooks/admin/useGetTours';
 import { useSetEventsDeleted } from '@/hooks/event/useSetEventsDeleted';
 import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
-import { FaArrowTurnDown } from 'react-icons/fa6';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { toast } from 'react-toastify';
-import { useGetTours } from '@/hooks/admin/useGetTours';
-import { AdminSelection } from '@/types/user';
-import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
-import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
-import { GetCountriesResponse } from '@/types/admin';
+import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -50,7 +50,6 @@ export default function AdminEventsIndex() {
   const { getSellers } = useGetSellers();
   const { getAdminEvents } = useGetAdminEvents();
   const { getLocation } = useGetLocation();
-  const { getEventStatusSlug, getEventStatusText } = useGetEventStatus();
   const dispatch = useDispatch();
   const [tableLoading, setTableLoading] = useState(true);
   const { setEventsInactive } = useSetEventsInactive();
@@ -62,7 +61,7 @@ export default function AdminEventsIndex() {
 
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [eventIdList, setEventIdList] = useState<number[]>([]);
-  const allEventIds: number[] = currentAdminSelection.events?.map(evt => { return evt.externalEventId }) ?? [];
+  const allEventIds: number[] = currentAdminSelection.events?.map(evt => evt.externalEventId) ?? [];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -70,10 +69,10 @@ export default function AdminEventsIndex() {
         dispatch(setReloadCountries(false));
         dispatch(setIsLoading(true));
         getAllCountries().then((response: GetCountriesResponse) => {
-          if (response.countries && !response.countryError) {
+          if (response.countries && !response.error) {
             dispatch(setCountries(response.countries));
           } else {
-            toast.error(response.countryError);
+            toast.error(response.error);
             dispatch(setIsLoading(false));
           }
         });
@@ -96,18 +95,16 @@ export default function AdminEventsIndex() {
         setSelectedAction(null);
         dispatch(setReloadEvents(false));
         const adminSelection = { ...currentAdminSelection };
-        let sellerId: number = 0;
-        if (!adminSelection.sellerId) {
+        const sellerId: number = adminSelection.sellerId ?? 0;
+        if (sellerId === 0) {
           setTableLoading(false);
           return;
-        } else {
-          sellerId = adminSelection.sellerId;
         }
 
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
-          if (response.events && !response.eventError) {
+          if (response.events && !response.error) {
             dispatch(setAdminEvents(response.events));
             const start = moment(response.events[0].eventDate).unix();
             const end = moment(
@@ -115,16 +112,16 @@ export default function AdminEventsIndex() {
             ).unix();
             const selection: AdminSelection = {
               ...adminSelection,
-              start: start,
-              end: end,
+              end,
+              start,
             };
             dispatch(setAdminDates(selection));
             getTours(sellerId)
               .then((tourResponse: GetToursResponse) => {
-                if (!tourResponse.tourError && tourResponse.tours) {
+                if (!tourResponse.error && tourResponse.tours) {
                   dispatch(setTours(tourResponse.tours));
-                  getTicketSocketEventsOnly(adminSelection.sellerId).then((response) => {
-                    if (response.events && !response.eventError) {
+                  getTicketSocketEventsOnly(adminSelection.sellerId).then((resp: GetEventsResponse) => {
+                    if (resp.events && !resp.error) {
                       dispatch(setTicketSocketEventsOnly(response.events));
                     }
                     dispatch(setIsLoading(false));
@@ -140,7 +137,7 @@ export default function AdminEventsIndex() {
             setTableLoading(false);
           }
         });
-      } else if (currentAdminSelection.events != undefined && tableLoading) {
+      } else if (currentAdminSelection.events !== undefined && tableLoading) {
         setTimeout(() => {
           setTableLoading(false);
         }, 300);
@@ -185,20 +182,20 @@ export default function AdminEventsIndex() {
       return;
     }
     const vipEvent: VipEvent = {
-      externalEventId: 0,
-      isExternal: true,
-      title: '',
-      eventDate: '',
-      isActive: true,
-      isDeleted: false,
-      sellerId: currentAdminSelection.sellerId,
+      announceDate: undefined,
       disableLinkButton: false,
       disableLinkReason: undefined,
       disableVipLinkButton: false,
       disableVipLinkReason: undefined,
+      eventDate: '',
+      externalEventId: 0,
       externalUrl: undefined,
       externalVipLink: undefined,
-      announceDate: undefined,
+      isActive: true,
+      isDeleted: false,
+      isExternal: true,
+      sellerId: currentAdminSelection.sellerId,
+      title: '',
     };
     dispatch(setReloadAdminEvents(false));
     dispatch(setReloadVenues(true));
@@ -211,12 +208,12 @@ export default function AdminEventsIndex() {
       !eventId ||
       isNaN(eventId) ||
       !currentAdminSelection.events ||
-      currentAdminSelection.events.length == 0
+      currentAdminSelection.events.length === 0
     ) {
       return;
     }
     const vipEvent = currentAdminSelection.events.find(
-      (x) => x.externalEventId == eventId,
+      (x) => x.externalEventId === eventId,
     );
     if (!vipEvent) {
       return;
@@ -229,14 +226,14 @@ export default function AdminEventsIndex() {
     if (
       isNaN(eventId) ||
       !currentAdminSelection.events ||
-      currentAdminSelection.events.length == 0
+      currentAdminSelection.events.length === 0
     ) {
       return;
     }
     const vipEvent = currentAdminSelection.events.find(
-      (x) => x.externalEventId == eventId,
+      (x) => x.externalEventId === eventId,
     );
-    if (!vipEvent || !vipEvent.orders || vipEvent.orders.length == 0) {
+    if (!vipEvent || !vipEvent.orders || vipEvent.orders.length === 0) {
       return;
     }
     dispatch(setAdminEvent(vipEvent));
@@ -247,7 +244,7 @@ export default function AdminEventsIndex() {
   const updateEventIdList = (eventId: number | undefined, addToList: boolean) => {
     let idList: number[] = eventIdList ? [...eventIdList] : [];
     if (!addToList && eventId && idList.includes(eventId)) {
-      idList = idList.filter(id => id != eventId);
+      idList = idList.filter(id => id !== eventId);
     } else if (addToList && eventId && !idList.includes(eventId)) {
       idList.push(eventId);
     }
@@ -265,8 +262,104 @@ export default function AdminEventsIndex() {
     }
   };
 
+  const deactivateEvents = (isActive: boolean) => {
+    if (eventIdList.length === 0) {
+      return;
+    }
+    setEventsInactive(eventIdList, isActive)
+      .then((response: ModifyEventResponse) => {
+        if (response.success && !response.error) {
+          const successMessage = isActive ? "Events activated successfully" : "Events deactivated successfully";
+          toast.success(successMessage);
+          setEventIdList([]);
+          setSelectedAction(null);
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.error;
+          if (!errorMessage) {
+            errorMessage = isActive ? 'Unexpected error occurred while activating events' : 'Unexpected error occurred while deactivating events';
+          }
+          toast.error(errorMessage);
+        }
+      });
+  };
+
+  const deleteEvents = (setDeleted: boolean) => {
+    if (eventIdList.length === 0) {
+      return;
+    }
+    setEventsDeleted(eventIdList, setDeleted)
+      .then((response: ModifyEventResponse) => {
+        if (response.success && !response.error) {
+          const successMessage = setDeleted ? "Events deleted successfully" : "Events undeleted successfully";
+          toast.success(successMessage);
+          setEventIdList([]);
+          setSelectedAction(null);
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.error;
+          if (!errorMessage) {
+            errorMessage = setDeleted ? 'Unexpected error occurred while deleting events' : 'Unexpected error occurred while undeleting events';
+          }
+          toast.error(errorMessage);
+        }
+      });
+  };
+
+  const hideEvents = (setHidden: boolean) => {
+    if (eventIdList.length === 0) {
+      return;
+    }
+    setEventsHidden(eventIdList, setHidden)
+      .then((response: ModifyEventResponse) => {
+        if (response.success && !response.error) {
+          const successMessage = setHidden ? "Events hidden successfully" : "Events unhidden successfully";
+          toast.success(successMessage);
+          setEventIdList([]);
+          setSelectedAction(null);
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.error;
+          if (!errorMessage) {
+            errorMessage = setHidden ? 'Unexpected error occurred while hiding events' : 'Unexpected error occurred while unhiding events';
+          }
+          toast.error(errorMessage);
+        }
+      });
+  };
+
+  const handleBulkEdit = () => {
+    toast.dismiss();
+    if (eventIdList.length === 0 || !selectedAction) {
+      return;
+    }
+
+    switch (selectedAction) {
+      case "inactive":
+        deactivateEvents(false);
+        break;
+      case "active":
+        deactivateEvents(true);
+        break;
+      case "delete":
+        deleteEvents(true);
+        break;
+      case "undelete":
+        deleteEvents(false);
+        break;
+      case "hidden":
+        hideEvents(true);
+        break;
+      case "unhide":
+        hideEvents(false);
+        break;
+      default:
+        break;
+    }
+  };
+
   const bulkEditConfirm = () => {
-    if (eventIdList.length == 0 || !selectedAction) {
+    if (eventIdList.length === 0 || !selectedAction) {
       return;
     }
 
@@ -290,6 +383,8 @@ export default function AdminEventsIndex() {
       case "unhide":
         message = `You are about to unhide ${eventIdList.length} events`;
         break;
+      default:
+        break;
     }
 
     if (!message) {
@@ -307,123 +402,30 @@ export default function AdminEventsIndex() {
         }}
       />,
       {
-        position: 'top-center',
         autoClose: false,
         closeOnClick: false,
+        position: 'top-center',
       },
     );
   };
 
-  const handleBulkEdit = () => {
-    toast.dismiss();
-    if (eventIdList.length == 0 || !selectedAction) {
-      return;
-    }
-
-    switch (selectedAction) {
-      case "inactive":
-        deactivateEvents(false);
-        break;
-      case "active":
-        deactivateEvents(true);
-        break;
-      case "delete":
-        deleteEvents(true);
-        break;
-      case "undelete":
-        deleteEvents(false);
-        break;
-      case "hidden":
-        hideEvents(true);
-        break;
-      case "unhide":
-        hideEvents(false);
-        break;
-    }
-  };
-
-  const deactivateEvents = (isActive: boolean) => {
-    if (eventIdList.length == 0) {
-      return;
-    }
-    setEventsInactive(eventIdList, isActive)
-      .then((response) => {
-        if (response.success && !response.eventError) {
-          const successMessage = isActive ? "Events activated successfully" : "Events deactivated successfully";
-          toast.success(successMessage);
-          setEventIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.eventError;
-          if (!errorMessage) {
-            errorMessage = isActive ? 'Unexpected error occurred while activating events' : 'Unexpected error occurred while deactivating events';
-          }
-          toast.error(errorMessage);
-        }
-      });
-  };
-
-  const deleteEvents = (setDeleted: boolean) => {
-    if (eventIdList.length == 0) {
-      return;
-    }
-    setEventsDeleted(eventIdList, setDeleted)
-      .then((response) => {
-        if (response.success && !response.eventError) {
-          const successMessage = setDeleted ? "Events deleted successfully" : "Events undeleted successfully";
-          toast.success(successMessage);
-          setEventIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.eventError;
-          if (!errorMessage) {
-            errorMessage = setDeleted ? 'Unexpected error occurred while deleting events' : 'Unexpected error occurred while undeleting events';
-          }
-          toast.error(errorMessage);
-        }
-      });
-  };
-
-  const hideEvents = (setHidden: boolean) => {
-    if (eventIdList.length == 0) {
-      return;
-    }
-    setEventsHidden(eventIdList, setHidden)
-      .then((response) => {
-        if (response.success && !response.eventError) {
-          const successMessage = setHidden ? "Events hidden successfully" : "Events unhidden successfully";
-          toast.success(successMessage);
-          setEventIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.eventError;
-          if (!errorMessage) {
-            errorMessage = setHidden ? 'Unexpected error occurred while hiding events' : 'Unexpected error occurred while unhiding events';
-          }
-          toast.error(errorMessage);
-        }
-      });
-  };
-
   const setSelectedTour = (selectedTourId: number | null) => {
-    if (!selectedTourId || isNaN(selectedTourId) || selectedTourId <= 0) {
-      selectedTourId = 0;
+    let tourId = selectedTourId;
+    if (!tourId || isNaN(tourId) || tourId <= 0) {
+      tourId = 0;
     }
-    const tour = currentAdminSelection.tours?.find(x => x.tourId == selectedTourId);
+    const tour = currentAdminSelection.tours?.find(x => x.tourId === tourId);
     dispatch(setAdminTour(tour));
     dispatch(setReloadEvents(true));
   };
 
   const tourList: ItemDataType<number>[] = currentAdminSelection?.tours ?
-    currentAdminSelection?.tours?.map((tour) => {
-      return {
+    currentAdminSelection?.tours?.map((tour) => (
+      {
         label: `${tour.tourName}`,
         value: tour.tourId
       }
-    }) : [];
+    )) : [];
 
   const resetEvents = () => {
     onDateChange(undefined, undefined);
@@ -459,19 +461,19 @@ export default function AdminEventsIndex() {
     }
   ];
 
-  const actionList: ItemDataType<string>[] = actions.map((action) => {
-    return {
+  const actionList: ItemDataType<string>[] = actions.map((action) => (
+    {
       label: action.label,
       value: action.value
     }
-  });
+  ));
 
   return (
     <div className="admin-container">
       <Row className="refresh-results-header">
         <Col>
           <AdminListHomeButton />
-          <Button hidden={sellectedSellerId == undefined} onClick={addEvent}>Add New Event</Button>
+          <Button hidden={sellectedSellerId === undefined} onClick={addEvent}>Add New Event</Button>
         </Col>
       </Row>
       <Row className="refresh-results-header">
@@ -486,7 +488,7 @@ export default function AdminEventsIndex() {
         OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
         Countries={currentAdminSelection.countries}
       />
-      <Row className="admin-select" hidden={tourList.length == 0}>
+      <Row className="admin-select" hidden={tourList.length === 0}>
         <Col xs={1}>
           Tour:
         </Col>
@@ -513,10 +515,10 @@ export default function AdminEventsIndex() {
       />
       <Row>
         <Col>
-          <Button disabled={sellectedSellerId == undefined} onClick={resetEvents}>Reset</Button>
+          <Button disabled={sellectedSellerId === undefined} onClick={resetEvents}>Reset</Button>
         </Col>
       </Row>
-      <Row hidden={allEventIds.length == 0}>
+      <Row hidden={allEventIds.length === 0}>
         <Col className="bulk-arrow-row">
           <div><FaArrowTurnDown className="bulk-arrow" /></div>
           <div>With selected:</div>
@@ -545,15 +547,13 @@ export default function AdminEventsIndex() {
             bordered
             cellBordered
             loading={tableLoading}
-            rowClassName={(rowData: VipEvent) => {
-              return getEventStatusSlug(rowData);
-            }}
+            rowClassName={(rowData: VipEvent) => getEventStatusSlug(rowData)}
           >
             <Column width={50}>
               <HeaderCell>
                 <FormCheck
                   id={`evtId_selectAll`}
-                  checked={allEventIds.length > 0 && (eventIdList.length == allEventIds.length)}
+                  checked={allEventIds.length > 0 && (eventIdList.length === allEventIds.length)}
                   onChange={(e) => selectAllEvents(e.currentTarget.checked)}
                 />
               </HeaderCell>

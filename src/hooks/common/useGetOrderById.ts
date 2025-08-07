@@ -1,11 +1,11 @@
+import { GetOrderResponse } from '@/types/responses';
 import { eventService } from '../../services';
-import { GetOrderResponse } from '@/types/event';
 
 export const useGetOrderById = () => {
   const getOrderById = async (orderId: number): Promise<GetOrderResponse> => {
     let response: GetOrderResponse = {
+      error: undefined,
       order: undefined,
-      orderError: undefined,
     };
     if (orderId > 0) {
       response = await eventService.getOrderById(orderId);

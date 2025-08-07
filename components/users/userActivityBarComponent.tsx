@@ -1,12 +1,11 @@
-import DateRangeSelector from '../common/dateRangeSelectorComponent';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
+import { Col, Row} from 'react-bootstrap';
 import {
   setReloadActivities,
   setUserActivityDateRange,
 } from '@/lib/userActivitySelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import DateRangeSelector from '../common/dateRangeSelectorComponent';
+import { RootState } from '@/lib/store';
 
 export default function UserActivityBar() {
   const dispatch = useDispatch();
@@ -17,17 +16,17 @@ export default function UserActivityBar() {
 
   const pageTitle: string = `User Activity`;
 
+  const submitReport = () => {
+    dispatch(setReloadActivities(true));
+  };
+
   const onDateChange = (selectedStart: number, selectedEnd: number) => {
     const userActivitySelection = { ...currentUserActivitySelection };
     userActivitySelection.start = selectedStart;
     userActivitySelection.end = selectedEnd;
     dispatch(setUserActivityDateRange(userActivitySelection));
     submitReport();
-  };
-
-  const submitReport = () => {
-    dispatch(setReloadActivities(true));
-  };
+  };  
 
   return (
     <>

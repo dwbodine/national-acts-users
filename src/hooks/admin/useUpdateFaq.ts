@@ -1,16 +1,10 @@
 import { Faq } from '@/types/public';
+import { ModifyFaqResponse } from '@/types/responses';
 import { adminService } from '../../services';
-import { ModifyFaqResponse } from '@/types/admin';
 
 export const useUpdateFaq = () => {
-  const updateFaq = async (faqToUpdate: Faq): Promise<ModifyFaqResponse> => {
-    let response: ModifyFaqResponse = {
-      success: false,
-      faqError: undefined,
-    };
-    response = await adminService.updateFaq(faqToUpdate);
-    return response;
-  };
+  const updateFaq = async (faqToUpdate: Faq): Promise<ModifyFaqResponse> =>
+    await adminService.updateFaq(faqToUpdate);
 
   return { updateFaq };
 };

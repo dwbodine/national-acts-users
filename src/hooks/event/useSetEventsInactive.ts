@@ -1,13 +1,12 @@
+import { ModifyEventResponse } from '@/types/responses';
 import { eventService } from '../../services';
-import { ModifyEventResponse } from '@/types/event';
 
 export const useSetEventsInactive = () => {
   const setEventsInactive = async (
     eventIdList: number[],
     isActive: boolean,
-  ): Promise<ModifyEventResponse> => {
-    return await eventService.setEventsInactive(eventIdList, isActive);
-  };
+  ): Promise<ModifyEventResponse> =>
+    await eventService.setEventsInactive(eventIdList, isActive);
 
   return { setEventsInactive };
 };

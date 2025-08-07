@@ -1,8 +1,8 @@
-import moment from 'moment';
 import React, { ReactElement } from 'react';
 import AttendeeRow from './attendeeRowComponent';
 import { OrderRowProps } from '@/types/props';
-import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
+import { getOrderStatusText } from '@/utils/eventUtils';
+import moment from 'moment';
 
 export default function OrderRow(props: OrderRowProps) {
   const ticketTypes = props.TicketTypes;
@@ -16,8 +16,6 @@ export default function OrderRow(props: OrderRowProps) {
   const canCheckInTickets = props.CanCheckInTickets;
   const showOnlyEmails = props.ShowOnlyEmails;
   const showOnlyPhones = props.ShowOnlyPhones;
-
-  const { getOrderStatusText } = useGetOrderStatus();
 
   let statusClass = '';
   if (order?.isDeleted) {
@@ -33,8 +31,8 @@ export default function OrderRow(props: OrderRowProps) {
 
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
   const purchaseDate = order?.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
-  const revenue = new Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0)).toFixed(2);
-  const serviceFees = new Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2);
+  const revenue = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0)).toFixed(2);
+  const serviceFees = Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2);
 
   const ticketTypeRows: ReactElement[] = [];
 
@@ -42,9 +40,9 @@ export default function OrderRow(props: OrderRowProps) {
     const ticketMap = new Map<string, number>();
     order.tickets?.forEach((ticket) => {
       let ticketTypeName = ticket.ticketType;
-      const ticketType = ticketTypes?.find(t => t.ticketTypeId == ticket.ticketTypeId);
+      const ticketType = ticketTypes?.find(t => t.ticketTypeId === ticket.ticketTypeId);
       if (ticketType) {
-        ticketTypeName = ticketType.ticketTypeName;
+        ({ ticketTypeName } = ticketType);
       }
       const item = ticketMap.get(ticketTypeName);
       let num: number = 1;
@@ -61,7 +59,7 @@ export default function OrderRow(props: OrderRowProps) {
           {ticketType} ({tickets.toString()})
         </div>,
       );
-      i++;
+      i += 1;
     });
   }
 
@@ -76,10 +74,10 @@ export default function OrderRow(props: OrderRowProps) {
           num = item + 1;
         }
         shirtMap.set(ticket.shirtSize, num);
-      }      
+      }
     });
     let i = 0;
-    
+
     shirtMap.forEach((numShirts: number, shirtSize: string) => {
       const key = `sm${i}`;
       shirtSizeRows.push(
@@ -87,7 +85,7 @@ export default function OrderRow(props: OrderRowProps) {
           {shirtSize} ({numShirts.toString()})
         </div>,
       );
-      i++;
+      i += 1;
     });
   }
 
@@ -101,7 +99,7 @@ export default function OrderRow(props: OrderRowProps) {
     });
   }
 
-  const phone = order?.phone?.startsWith("+1 ") ? 
+  const phone = order?.phone?.startsWith("+1 ") ?
     order.phone.replace("+1 ", "") : order?.phone;
 
   return (

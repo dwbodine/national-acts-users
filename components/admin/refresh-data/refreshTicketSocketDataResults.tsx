@@ -1,6 +1,6 @@
+import { Col, Row } from 'react-bootstrap';
 import { RefreshTicketSocketDataResultProps } from '@/types/props';
 import moment from 'moment';
-import { Col, Row } from 'react-bootstrap';
 
 export default function RefreshTicketSocketDataResults(props: RefreshTicketSocketDataResultProps) {
   const results = props.UpdateResults;
@@ -112,7 +112,7 @@ export default function RefreshTicketSocketDataResults(props: RefreshTicketSocke
       : '0';
   }
 
-  return results != undefined ? (
+  return results ? (
     <>
       <Row>
         <Col>

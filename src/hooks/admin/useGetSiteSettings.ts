@@ -1,15 +1,9 @@
-import { GetSettingsResponse } from '@/types/public';
+import { GetSettingsResponse } from '@/types/responses';
 import { publicService } from '../../services';
 
 export const useGetSiteSettings = () => {
-  const getAllSettings = async (): Promise<GetSettingsResponse> => {
-    let response: GetSettingsResponse = {
-      settings: undefined,
-      settingsError: undefined,
-    };
-    response = await publicService.getSiteSettings();
-    return response;
-  };
+  const getAllSettings = async (): Promise<GetSettingsResponse> =>
+    await publicService.getSiteSettings();
 
   return { getAllSettings };
 };

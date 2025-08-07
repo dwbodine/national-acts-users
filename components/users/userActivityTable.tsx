@@ -1,18 +1,18 @@
-import { useGetActivityData } from '@/hooks/user/useGetActivityData';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { Col, Container, FormCheck, Row } from 'react-bootstrap';
 import {
   setCurrentActivities,
   setFilterAdmins,
   setReloadActivities,
   setUserActivityDateRange,
 } from '@/lib/userActivitySelectionSlice';
-import { RootState } from '@/lib/store';
-import { GetActivityResponse } from '@/types/user';
-import { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { GetActivityResponse } from '@/types/responses';
+import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import moment from 'moment';
-import { Col, Container, FormCheck, Row } from 'react-bootstrap';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useGetActivityData } from '@/hooks/user/useGetActivityData';
 
 export default function UserActivityTable() {
   const { getActivityData } = useGetActivityData();
@@ -29,7 +29,7 @@ export default function UserActivityTable() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentUserActivitySelection.start == undefined || currentUserActivitySelection.end == undefined) {
+      if (currentUserActivitySelection.start === undefined || currentUserActivitySelection.end === undefined) {
         const userActivitySelection = {...currentUserActivitySelection};
         userActivitySelection.start = moment().startOf('month').unix();
         userActivitySelection.end = moment().endOf('day').unix();
@@ -46,7 +46,7 @@ export default function UserActivityTable() {
           undefined,
           currentUserActivitySelection.filterAdmins,
         ).then((response: GetActivityResponse) => {
-          if (!response.logActivityError && response.activities) {
+          if (!response.error && response.activities) {
             dispatch(setCurrentActivities(response.activities));
           }
           dispatch(setReloadActivities(false));

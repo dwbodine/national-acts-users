@@ -1,7 +1,6 @@
 import { User, UserActivityType } from '@/types/user';
-import { authService } from '../../services';
-
 import Cookies from 'js-cookie';
+import { authService } from '../../services';
 import { useLogActivityData } from '../common/useLogActivityData';
 
 export const useLogin = () => {
@@ -18,7 +17,7 @@ export const useLogin = () => {
       localStorage.setItem('currentUser', JSON.stringify(user));
       const now = new Date().getTime();
       const expires = new Date(now + 24 * 60 * 60 * 1000);
-      Cookies.set('authToken', user.token || '', { expires: expires });
+      Cookies.set('authToken', user.token || '', { expires });
     }
     return response;
   };

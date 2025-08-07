@@ -1,15 +1,9 @@
+import { GetTicketSocketAccountsResponse } from '@/types/responses';
 import { adminService } from '../../services';
-import { GetTicketSocketAccountsResponse } from '@/types/admin';
 
 export const useGetTicketSocketAccounts = () => {
-  const getTicketSocketAccounts = async (): Promise<GetTicketSocketAccountsResponse> => {
-    let response: GetTicketSocketAccountsResponse = {
-      accounts: [],
-      accountError: undefined,
-    };
-    response = await adminService.getTicketSocketAccounts();
-    return response;
-  };
+  const getTicketSocketAccounts = async (): Promise<GetTicketSocketAccountsResponse> =>
+    await adminService.getTicketSocketAccounts();
 
   return { getTicketSocketAccounts };
 };

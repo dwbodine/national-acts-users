@@ -1,19 +1,18 @@
 import { UserReportSelection } from '@/types/user';
 import moment from 'moment';
 
-export default function getFileNameFromReportSelection(
+const getCsvFileNameFromReportSelection = (
   currentReportSelection: UserReportSelection | undefined,
   fileNameStub?: string,
-) {
+) => {
   let fileName = '';
   if (
     currentReportSelection &&
     currentReportSelection.seller &&
-    currentReportSelection.seller.sellerId != 0
+    currentReportSelection.seller.sellerId !== 0
   ) {
-    const sellerName = currentReportSelection.seller.sellerName;
-    const start = currentReportSelection.start;
-    const end = currentReportSelection.end;
+    const { sellerName } = currentReportSelection.seller;
+    const { start, end } = currentReportSelection;
     let stub = '';
     const hash = moment().unix();
     if (fileNameStub) {
@@ -22,4 +21,6 @@ export default function getFileNameFromReportSelection(
     fileName = `${sellerName}${stub}_${start}_${end}_${hash}.csv`;
   }
   return fileName;
-}
+};
+
+export { getCsvFileNameFromReportSelection };

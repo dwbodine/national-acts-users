@@ -1,23 +1,25 @@
 import { IShirtData, IShirtSizeData, VipEvent } from '@/types/event';
 import moment from 'moment';
 
-export function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefined {
+export default function getShirtDataFromEvents(
+  events: VipEvent[],
+): IShirtData | undefined {
   const map = new Map<string, IShirtSizeData[]>();
   const shirtSizes: string[] = [];
   let eventsHaveShirtData: boolean = false;
   events?.forEach((evt: VipEvent) => {
     const key = moment(evt.eventDate).format('MM/DD/YYYY');
-    if (evt.totalShirts ?? 0 > 0) {
+    if ((evt.totalShirts ?? 0) > 0) {
       eventsHaveShirtData = true;
       evt.shirtSales?.forEach((shirt) => {
-        if (!shirtSizes.find((x) => x == shirt.size)) {
+        if (!shirtSizes.find((x) => x === shirt.size)) {
           shirtSizes.push(shirt.size);
         }
         const collection = map.get(key);
-        if (!collection) {
+        if (collection === undefined) {
           const data: IShirtSizeData = {
-            ShirtSize: shirt.size,
             Number: shirt.total ?? 0,
+            ShirtSize: shirt.size,
           };
           map.set(key, [data]);
         } else {
@@ -30,8 +32,8 @@ export function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefin
             collection[indexToUpdate] = item;
           } else {
             collection.push({
-              ShirtSize: shirt.size,
               Number: shirt.total ?? 0,
+              ShirtSize: shirt.size,
             });
           }
         }
@@ -43,25 +45,24 @@ export function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefin
   if (eventsHaveShirtData) {
     shirtSizes.sort();
     const shirtSizeSorted: string[] = [];
-    if (shirtSizes.find((x) => x == 'S')) {
+    if (shirtSizes.find((x) => x === 'S')) {
       shirtSizeSorted.push('S');
     }
-    if (shirtSizes.find((x) => x == 'M')) {
+    if (shirtSizes.find((x) => x === 'M')) {
       shirtSizeSorted.push('M');
     }
-    if (shirtSizes.find((x) => x == 'L')) {
+    if (shirtSizes.find((x) => x === 'L')) {
       shirtSizeSorted.push('L');
     }
     shirtSizes.forEach((size) => {
-      if (size != 'S' && size != 'M' && size != 'L') {
+      if (size !== 'S' && size !== 'M' && size !== 'L') {
         shirtSizeSorted.push(size);
       }
     });
     return {
-      ShirtSizes: shirtSizeSorted,
       ShirtData: map,
+      ShirtSizes: shirtSizeSorted,
     };
-  } else {
-    return undefined;
   }
+  return undefined;
 }

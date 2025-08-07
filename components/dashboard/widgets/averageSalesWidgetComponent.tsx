@@ -9,10 +9,10 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
 
   return monthlyAverages && yearlyAverages ? (
     <div className="sales-stat-block-table">
-      <div className="sales-stat-block-title">Average Daily Sales {(selectedYear != currentYear) ? selectedYear : ''}</div>
+      <div className="sales-stat-block-title">Average Daily Sales {(selectedYear === currentYear) ? '' : selectedYear}</div>
       <table className="average-sales-data-table">
         <thead>
-          <tr hidden={selectedYear != currentYear}>
+          <tr hidden={selectedYear !== currentYear}>
             <th>&nbsp;</th>
             <th className="sales-stat-block-subtitle sales-stat-block-value">Month</th>
             <th className="sales-stat-block-subtitle sales-stat-block-value">Year</th>
@@ -21,7 +21,7 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
         <tbody>
           <tr>
             <td className="sales-stat-block-name">Transactions:</td>
-            <td hidden={selectedYear != currentYear}  className="sales-stat-block-value">
+            <td hidden={selectedYear !== currentYear}  className="sales-stat-block-value">
               {monthlyAverages?.transactions?.toFixed(2)}
             </td>
             <td className="sales-stat-block-value">
@@ -30,7 +30,7 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
           </tr>
           <tr>
             <td className="sales-stat-block-name">Tickets:</td>
-            <td hidden={selectedYear != currentYear}  className="sales-stat-block-value">
+            <td hidden={selectedYear !== currentYear}  className="sales-stat-block-value">
               {monthlyAverages?.tickets?.toFixed(2)}
             </td>
             <td className="sales-stat-block-value">
@@ -39,7 +39,7 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
           </tr>
           <tr>
             <td className="sales-stat-block-name">Refunds:</td>
-            <td hidden={selectedYear != currentYear} className="sales-stat-block-value">
+            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
               {monthlyAverages?.refunds?.toFixed(2)}
             </td>
             <td className="sales-stat-block-value">
@@ -48,7 +48,7 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
           </tr>
           <tr>
             <td className="sales-stat-block-name">Ticket Revenue:</td>
-            <td hidden={selectedYear != currentYear} className="sales-stat-block-value">
+            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
               {monthlyAverages?.ticketRevenue?.toFixed(2)}
             </td>
             <td className="sales-stat-block-value">
@@ -57,7 +57,7 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
           </tr>
           <tr>
             <td className="sales-stat-block-name">Service Fees:</td>
-            <td hidden={selectedYear != currentYear} className="sales-stat-block-value">
+            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
               {monthlyAverages?.serviceFees?.toFixed(2)}
             </td>
             <td className="sales-stat-block-value">
@@ -66,7 +66,7 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
           </tr>
           <tr>
             <td className="sales-stat-block-name">Revenue Refunded:</td>
-            <td hidden={selectedYear != currentYear} className="sales-stat-block-value">
+            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
               {monthlyAverages?.revenueRefunded?.toFixed(2)}
             </td>
             <td className="sales-stat-block-value">
@@ -75,7 +75,7 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
           </tr>
           <tr>
             <td className="sales-stat-block-name">S.Fees Refunded:</td>
-            <td hidden={selectedYear != currentYear} className="sales-stat-block-value">
+            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
               {monthlyAverages?.serviceFeeRevenueRefunded?.toFixed(2)}
             </td>
             <td className="sales-stat-block-value">
@@ -84,7 +84,7 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
           </tr>
           <tr>
             <td className="sales-stat-block-name">Total Revenue:</td>
-            <td hidden={selectedYear != currentYear} className="sales-stat-block-value">
+            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
               {monthlyAverages?.totalRevenue?.toFixed(2)}
             </td>
             <td className="sales-stat-block-value">

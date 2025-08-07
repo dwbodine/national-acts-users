@@ -1,9 +1,9 @@
-import moment from 'moment';
-import React, { ReactElement } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+import React, { ReactElement } from 'react';
 import AttendeeRow from './attendeeRowComponent';
 import { OrderRowProps } from '@/types/props';
-import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
+import { getOrderStatusText } from '@/utils/eventUtils';
+import moment from 'moment';
 
 export default function OrderMobileRow(props: OrderRowProps) {
   const ticketTypes = props.TicketTypes;
@@ -18,8 +18,6 @@ export default function OrderMobileRow(props: OrderRowProps) {
   const showOnlyEmails = props.ShowOnlyEmails;
   const showOnlyPhones = props.ShowOnlyPhones;
   const isAdmin = props.IsAdmin;
-
-  const { getOrderStatusText } = useGetOrderStatus();
 
   let statusClass = '';
   if (order?.isDeleted) {
@@ -36,17 +34,17 @@ export default function OrderMobileRow(props: OrderRowProps) {
   const id = `order_${order?.ticketSocketOrderId}`;
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
   const purchaseDate = order?.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
-  const revenue = `$${new Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0)).toFixed(2)}`;
-  const serviceFees = `$${new Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2)}`;
+  const revenue = `$${Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0)).toFixed(2)}`;
+  const serviceFees = `$${Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2)}`;
 
   const ticketTypeRows: ReactElement[] = [];
   if (order?.tickets && order.tickets.length > 0) {
     const ticketMap = new Map<string, number>();
     order.tickets?.forEach((ticket) => {
       let ticketTypeName = ticket.ticketType;
-      const ticketType = ticketTypes?.find(t => t.ticketTypeId == ticket.ticketTypeId);
+      const ticketType = ticketTypes?.find(t => t.ticketTypeId === ticket.ticketTypeId);
       if (ticketType) {
-        ticketTypeName = ticketType.ticketTypeName;
+        ({ ticketTypeName } = ticketType);
       }
       const item = ticketMap.get(ticketTypeName);
       let num: number = 1;
@@ -64,8 +62,8 @@ export default function OrderMobileRow(props: OrderRowProps) {
             {ticketType} ({tickets.toString()})
           </div>,
         );
-      }      
-      i++;
+      }
+      i += 1;
     });
   }
 
@@ -79,8 +77,8 @@ export default function OrderMobileRow(props: OrderRowProps) {
         if (item && item > 0) {
           num = item + 1;
         }
-        shirtMap.set(ticket.shirtSize, num);  
-      }      
+        shirtMap.set(ticket.shirtSize, num);
+      }
     });
     let i = 0;
     shirtMap.forEach((numShirts: number, shirtSize: string) => {
@@ -90,7 +88,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
           {shirtSize} ({numShirts.toString()})
         </div>,
       );
-      i++;
+      i += 1;
     });
   }
 
@@ -102,15 +100,15 @@ export default function OrderMobileRow(props: OrderRowProps) {
       attendeeNameRows.push(
         <AttendeeRow key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />,
       );
-      i++;
+      i += 1;
     });
   }
 
-  const phone = order?.phone?.startsWith("+1 ") ? 
+  const phone = order?.phone?.startsWith("+1 ") ?
     order.phone.replace("+1 ", "") : order?.phone;
 
   return (
-    <tr className={'mobile-event-card-container ' + statusClass}>
+    <tr className={`mobile-event-card-container ${statusClass}`}>
       <td>
         <Container className="mobile-event-card" id={id}>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
@@ -141,7 +139,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
             <Col xs={5} className="mobile-bold">Event Name:</Col>
             <Col>{eventName}</Col>
           </Row>
-          <Row hidden={ticketTypeRows.length == 0 || showOnlyEmails || showOnlyPhones}>
+          <Row hidden={ticketTypeRows.length === 0 || showOnlyEmails || showOnlyPhones}>
             <Col xs={5} className="mobile-bold">Ticket breakdown:</Col>
             <Col>{ticketTypeRows}</Col>
           </Row>

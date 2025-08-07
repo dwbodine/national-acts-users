@@ -1,11 +1,11 @@
-import { useDispatch } from 'react-redux';
 import { resetAdmin } from '@/lib/adminSelectionSlice';
-import { resetAll } from '@/lib/reportSelectionSlice';
-import { resetDashboard } from '@/lib/dashboardSelectionSlice';
 import { resetAdminReports } from '@/lib/adminReportsSelectionSlice';
-import { resetUserActivity } from '@/lib/userActivitySelectionSlice';
-import { resetGlobalSettings } from '@/lib/globalSelectionSlice';
+import { resetAll } from '@/lib/reportSelectionSlice';
 import { resetAllAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { resetDashboard } from '@/lib/dashboardSelectionSlice';
+import { resetGlobalSettings } from '@/lib/globalSelectionSlice';
+import { resetUserActivity } from '@/lib/userActivitySelectionSlice';
+import { useDispatch } from 'react-redux';
 
 export const useResetStores = () => {
   const dispatch = useDispatch();

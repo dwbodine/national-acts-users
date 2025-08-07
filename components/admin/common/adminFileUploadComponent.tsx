@@ -1,7 +1,7 @@
-import { useUploadFile } from "@/hooks/common/useUploadFile";
-import { AdminFileUploadProps } from "@/types/props";
 import { ChangeEvent, ReactElement, useState } from "react";
+import { AdminFileUploadProps } from "@/types/props";
 import { FaTimesCircle } from "react-icons/fa";
+import { useUploadFile } from "@/hooks/common/useUploadFile";
 
 
 export default function AdminFileUpload(props: AdminFileUploadProps) {
@@ -19,12 +19,12 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
 
     const [isUploading, setIsUploading] = useState(false);
     const [isUploaded, setIsUploaded] = useState(false);
-    
+
     const { uploadTempFile } = useUploadFile();
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target && event.target.files && event.target.files.length > 0) {
-            const file: File = event.target.files[0];
+            const file = event.target.files[0] as File;
             if (file) {
                 if (onUploadStart) {
                     onUploadStart();
@@ -53,17 +53,17 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
         }
     };
 
-    if (currentFileName == 'None') {
+    if (currentFileName === 'None') {
         currentFileName = undefined;
     } else if (!currentFileName?.startsWith("http")) {
         currentFileName = `${baseUrl}/${currentFileName}`;
     }
 
-    const currentFileLink = !isDirty && currentFileName ? 
-        <a target="_blank" href={currentFileName}>{currentFileName}</a> : 
+    const currentFileLink = !isDirty && currentFileName ?
+        <a target="_blank" href={currentFileName}>{currentFileName}</a> :
         currentFileName;
 
-    
+
 
     let removeButton: ReactElement = <></>;
     if (showRemoveButton && currentFileName) {

@@ -1,14 +1,14 @@
+import { GetEventsResponse } from '@/types/responses';
 import { UserReportSelection } from '@/types/user';
 import { eventService } from '../../services';
-import { GetEventsResponse } from '@/types/event';
 
 export const useGetEvents = () => {
   const getEvents = async (
     reportSelection: UserReportSelection,
   ): Promise<GetEventsResponse> => {
     let response: GetEventsResponse = {
+      error: undefined,
       events: [],
-      eventError: undefined,
     };
     if (reportSelection.seller.sellerId > 0) {
       if (reportSelection.reloadEvents) {

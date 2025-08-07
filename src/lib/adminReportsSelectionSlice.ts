@@ -1,31 +1,30 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AdminReportsSelection } from '../types/user';
 import moment from 'moment';
 
 const initialState: AdminReportsSelection = {
-  start: moment().unix(),
   end: moment().unix() + 86400,
   reloadData: true,
+  start: moment().unix(),
 };
 
 export const adminReportsSelectionSlice = createSlice({
-  name: 'adminReportsSelection',
   initialState,
+  name: 'adminReportsSelection',
   reducers: {
-    setReportDates: (state, action: PayloadAction<AdminReportsSelection>) => {
-      state.start = action.payload.start;
-      state.end = action.payload.end;
+    resetAdminReports: (state) => {
+      state.start = moment().unix();
+      state.end = moment().unix();
+      state.reloadData = true;
       return state;
     },
     setReloadReportData: (state, action: PayloadAction<boolean>) => {
       state.reloadData = action.payload;
       return state;
     },
-    resetAdminReports: (state) => {
-      state.start = moment().unix();
-      state.end = moment().unix();
-      state.reloadData = true;
+    setReportDates: (state, action: PayloadAction<AdminReportsSelection>) => {
+      state.start = action.payload.start;
+      state.end = action.payload.end;
       return state;
     },
   },

@@ -1,5 +1,4 @@
-import { Country, PageType } from './public';
-import { IDashboardTotals } from './user';
+import { Country } from './public';
 
 export enum SellerType {
   Artist = 1,
@@ -263,107 +262,6 @@ export interface Tour {
   events?: VipEvent[];
 }
 
-export interface GetEventsResponse {
-  events?: VipEvent[];
-  statusCode?: number;
-  eventError?: string;
-}
-
-export interface GetToursResponse {
-  tours?: Tour[];
-  statusCode?: number;
-  tourError?: string;
-}
-
-export interface GetEventResponse {
-  event?: VipEvent;
-  statusCode?: number;
-  eventError?: string;
-}
-
-export interface GetNotesResponse {
-  notes?: Note[];
-  statusCode?: number;
-  noteError?: string;
-}
-
-export interface GetDashboardOrdersResponse {
-  totals?: IDashboardTotals;
-  statusCode?: number;
-  dashError?: string;
-}
-
-export interface GetOrdersResponse {
-  orders?: Order[];
-  statusCode?: number;
-  orderError?: string;
-}
-
-export interface GetOrderResponse {
-  order?: Order;
-  statusCode?: number;
-  orderError?: string;
-}
-
-export interface ModifyEventResponse {
-  success: boolean;
-  statusCode?: number;
-  eventError?: string;
-  updatedEvent?: VipEvent;
-}
-
-export interface ModifyTourResponse {
-  success: boolean;
-  statusCode?: number;
-  tourError?: string;
-  updatedTour?: Tour;
-}
-
-export interface RefreshHistoryResponse {
-  results?: TicketSocketRefreshHistory;
-  statusCode?: number;
-  refreshError?: string;
-}
-
-export interface GetRefreshHistoryResponse {
-  history?: TicketSocketRefreshHistory[];
-  statusCode?: number;
-  refreshError?: string;
-}
-
-export interface ModifyOrderResponse {
-  success: boolean;
-  statusCode?: number;
-  orderError?: string;
-}
-
-export interface ModifyNoteResponse {
-  success: boolean;
-  statusCode?: number;
-  noteError?: string;
-}
-
-export interface ModifyTicketResponse {
-  success: boolean;
-  statusCode?: number;
-  ticketError?: string;
-}
-
-export interface GetSellerResponse {
-  seller?: Seller;
-  sellerError?: string;
-}
-
-export interface GetSellersResponse {
-  sellers?: Seller[];
-  sellersError?: string;
-}
-
-export interface GetPageTypesResponse {
-  pageTypes?: PageType[];
-  pageTypeError?: string;
-}
-
 export interface IRevenueKeys {
   EventDate: string;
   Revenue: number;
@@ -373,6 +271,7 @@ export interface IOrderKeys {
   EventDate: string;
   Orders: number;
 }
+
 export interface ITicketData {
   TicketTypes: TicketType[];
   TicketData?: Map<string, ITicketTypeData[]>;

@@ -1,4 +1,4 @@
-import { UserSellerResponse } from '@/types/user';
+import { UserSellerResponse } from '@/types/responses';
 import { userService } from '../../services';
 
 export const useGetUserSeller = () => {
@@ -7,8 +7,8 @@ export const useGetUserSeller = () => {
     userId: number,
   ): Promise<UserSellerResponse> => {
     let response: UserSellerResponse = {
+      error: undefined,
       userSeller: undefined,
-      userSellerError: undefined,
     };
     if (eventId > 0 && userId > 0) {
       response = await userService.getUserSellerFromEventId(eventId, userId);

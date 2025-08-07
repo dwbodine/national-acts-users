@@ -1,14 +1,16 @@
+import { Col, Row } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { DatePicker } from 'rsuite';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { ReportDatePickerProps } from '@/types/props';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
-import { DatePicker } from 'rsuite';
 
 export default function ReportDatePicker(props: ReportDatePickerProps) {
+  const labelColWidth = props.LabelColumnWidth ?? 1;
   const onChange = props.OnChange;
   const onStartClear = props.OnStartClear;
   const onEndClear = props.OnEndClear;
+  const isDisabled = props.Disabled ?? false;
   const [start, setStart] = useState<number | undefined>();
   const [end, setEnd] = useState<number | undefined>();
 
@@ -68,7 +70,7 @@ export default function ReportDatePicker(props: ReportDatePickerProps) {
   return (
     <>
       <Row className="admin-select">
-        <Col xs={1}>
+        <Col xs={labelColWidth}>
           <label className="admin-report-datepicker-label">Start date:</label>
         </Col>
         <Col>
@@ -80,11 +82,12 @@ export default function ReportDatePicker(props: ReportDatePickerProps) {
             oneTap
             cleanable
             onClean={onCleanStart}
+            disabled={isDisabled}
           />
         </Col>
       </Row>
       <Row className="admin-select">
-        <Col xs={1}>
+        <Col xs={labelColWidth}>
           <label className="admin-report-datepicker-label">End date:</label>
         </Col>
         <Col>
@@ -96,6 +99,7 @@ export default function ReportDatePicker(props: ReportDatePickerProps) {
             oneTap
             cleanable
             onClean={onCleanEnd}
+            disabled={isDisabled}
           />
         </Col>
       </Row>

@@ -1,6 +1,5 @@
+import { Col, Row } from "react-bootstrap"
 import { MonthWeekProps } from "@/types/props";
-import { Col, Row } from "react-bootstrap";
-
 
 export default function MonthWeek(props: MonthWeekProps) {
     const weekDays = props.WeekDays;

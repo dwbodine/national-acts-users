@@ -1,15 +1,15 @@
-import { Venue } from '@/types/event';
-import { eventService } from '../../services';
+import {
+  getAddressFromExternalVenue,
+  getLocationInfoFromVenue,
+} from '@/utils/eventUtils';
 import { ExternalVenue } from '@/types/admin';
+import { Venue } from '@/types/event';
 
 export const useGetLocation = () => {
-  const getLocation = (venue: Venue): string => {
-    return eventService.getLocationInfoFromVenue(venue);
-  };
+  const getExternalVenueLocation = (venue: ExternalVenue): string =>
+    getAddressFromExternalVenue(venue);
 
-  const getExternalVenueLocation = (venue: ExternalVenue): string => {
-    return eventService.getAddressFromExternalVenue(venue);
-  };
+  const getLocation = (venue: Venue): string => getLocationInfoFromVenue(venue);
 
-  return { getLocation, getExternalVenueLocation };
+  return { getExternalVenueLocation, getLocation };
 };

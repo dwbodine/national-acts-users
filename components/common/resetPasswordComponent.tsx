@@ -1,5 +1,4 @@
 import { FaUnlockAlt } from 'react-icons/fa';
-
 import router from 'next/router';
 
 export default function ResetPasswordButton() {

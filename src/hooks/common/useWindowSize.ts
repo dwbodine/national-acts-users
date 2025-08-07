@@ -1,13 +1,14 @@
-import { WindowSize } from '@/types/windowSize';
-import { MOBILE_WIDTH_BREAKPOINT } from '@/constants';
 import { useEffect, useState } from 'react';
+import { MOBILE_WIDTH_BREAKPOINT } from '@/constants';
+import { WindowSize } from '@/types/windowSize';
+
 export const useWindowSize = (): WindowSize => {
   const [windowSize, setWindowSize] = useState<WindowSize>({
-    width: 0,
-    height: 0,
-    orientation: undefined,
-    isMobile: false,
     angle: 0,
+    height: 0,
+    isMobile: false,
+    orientation: undefined,
+    width: 0,
   });
 
   const windowSizeJson = JSON.stringify(windowSize);
@@ -28,7 +29,7 @@ export const useWindowSize = (): WindowSize => {
           windowWidth = windowHeight;
           windowHeight = temp;
         }
-      } else if (!isLandscape && currentAngle == 0) {
+      } else if (!isLandscape && currentAngle === 0) {
         if (windowWidth >= windowHeight) {
           const temp = windowWidth;
           windowWidth = windowHeight;
@@ -37,16 +38,16 @@ export const useWindowSize = (): WindowSize => {
       }
       const isMobileWidth: boolean = windowWidth < MOBILE_WIDTH_BREAKPOINT;
       setWindowSize({
-        width: windowWidth,
-        height: windowHeight,
-        orientation: currentOrientation,
-        isMobile: isMobileWidth,
         angle: currentAngle,
+        height: windowHeight,
+        isMobile: isMobileWidth,
+        orientation: currentOrientation,
+        width: windowWidth,
       });
     };
     screen.orientation.addEventListener('change', windowSizeHandler);
     window.addEventListener('resize', windowSizeHandler);
-    if (!windowSize.orientation || windowSize.width == 0) {
+    if (!windowSize.orientation || windowSize.width === 0) {
       windowSizeHandler();
     }
     return () => {

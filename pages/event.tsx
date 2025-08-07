@@ -1,9 +1,11 @@
-import EventDetail from '../components/sales/orders/eventDetailComponent';
+
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 import CheckAuth from '../components/common/checkAuthComponent';
+import Cookies from 'js-cookie';
+import EventDetail from '../components/sales/orders/eventDetailComponent';
 import NavBar from '../components/common/navBarComponent';
+import { useRouter } from 'next/navigation';
+
 
 export default function EventPage() {
   const [detailHidden, setDetailHidden] = useState(true);

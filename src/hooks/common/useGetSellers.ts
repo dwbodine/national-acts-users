@@ -1,11 +1,9 @@
+import { GetSellersResponse } from '@/types/responses';
 import { publicService } from '../../services';
-import { GetSellersResponse } from '@/types/event';
 
 export const useGetSellers = () => {
-  const getSellers = async (): Promise<GetSellersResponse> => {
-    const response = await publicService.getSellers();
-    return response;
-  };
+  const getSellers = async (): Promise<GetSellersResponse> =>
+    await publicService.getSellers();
 
   return { getSellers };
 };

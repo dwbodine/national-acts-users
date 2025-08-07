@@ -1,3 +1,5 @@
+import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
+import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import {
   IShirtData,
   IShirtSizeData,
@@ -8,45 +10,41 @@ import {
   VipEvent,
 } from '@/types/event';
 import React, { ChangeEvent, ReactElement, useEffect, useMemo, useState } from 'react';
-import moment from 'moment';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { Button, FormCheck } from 'react-bootstrap';
-import OrderRow from './orderRowComponent';
-import { useGetExport } from '@/hooks/common/useGetExport';
-import downloadFile from '@/utils/downloadFile';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { CirclesWithBar } from 'react-loader-spinner';
-import PrintButton from '../../common/printButtonComponent';
-import { useGetEventById } from '@/hooks/common/useGetEventById';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
 import {
+  setCurrentDetailEvent,
+  setEventSeller,
   setEvents,
+  setFocusControl,
   setHideRevenue,
+  setHideServiceFees,
   setReloadEvents,
   setShowDeletedOrders,
   setShowInactiveOrders,
-  setHideServiceFees,
-  setFocusControl,
-  setEventSeller,
-  setCurrentDetailEvent,
   setShowOnlyEmails,
   setShowOnlyPhones,
 } from '@/lib/reportSelectionSlice';
-import getFileNameFromEvent from '@/utils/getFileNameFromEvent';
-import { EnumPermission, User, UserReportSelection } from '@/types/user';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
-import OrderMobileRow from './orderMobileRowComponent';
-import { useHasPermission } from '@/hooks/user/useHasPermission';
-import debouce from 'lodash.debounce';
-import setFocusToControl from '@/utils/setFocusToControl';
-import { getTicketDataFromOrders } from '@/utils/getTicketDataFromOrders';
-import { getShirtDataFromOrders } from '@/utils/getShirtDataFromOrders';
-import { useGetUserSeller } from '@/hooks/order/useGetUserSeller';
-import router from 'next/router';
+
+import { useDispatch, useSelector } from 'react-redux';
 import { EditProps } from '@/types/props';
+import OrderMobileRow from './orderMobileRowComponent';
+import OrderRow from './orderRowComponent';
+import PrintButton from '../../common/printButtonComponent';
+import { RingLoader } from 'react-spinners';
+import { RootState } from '@/lib/store';
+import debouce from 'lodash.debounce';
+import { downloadCsvFile } from '@/utils/downloadFile';
+import { exportEventCustomerDataToCsv } from '@/utils/eventUtils';
+import getFileNameFromEvent from '@/utils/getFileNameFromEvent';
+import getShirtDataFromOrders from '@/utils/getShirtDataFromOrders';
+import getTicketDataFromOrders from '@/utils/getTicketDataFromOrders';
+import moment from 'moment';
+import router from 'next/router';
+import setFocusToControl from '@/utils/setFocusToControl';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useGetEventById } from '@/hooks/common/useGetEventById';
+import { useGetUserSeller } from '@/hooks/order/useGetUserSeller';
+import { useHasPermission } from '@/hooks/user/useHasPermission';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function EventDetail(props: EditProps) {
   const id = props.Id;
@@ -54,7 +52,6 @@ export default function EventDetail(props: EditProps) {
   const { getUser } = useCurrentUser();
   const [user, setUser] = useState<User | undefined>(undefined);
   const { userHasPermission } = useHasPermission();
-  const { exportEventCustomerDataToCsv } = useGetExport();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const [checkChanged, setCheckChanged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +63,7 @@ export default function EventDetail(props: EditProps) {
   const [showOnlyEmailsDisplay, setShowOnlyEmailsDisplay] = useState(false);
   const [showOnlyPhonesDisplay, setShowOnlyPhonesDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
 
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
@@ -81,11 +78,8 @@ export default function EventDetail(props: EditProps) {
   const [canCheckInTickets, setCanCheckInTickets] = useState(false);
   const [alwaysShowRevenue, setAlwaysShowRevenue] = useState(false);
 
-  const debouncedResults = useMemo(() => {
-    return debouce(setSearchTerm, 300);
-  }, []);
+  const debouncedResults = useMemo(() => debouce(setSearchTerm, 300), []);
 
-  let ticketData: ITicketData | undefined = undefined;
   let shirtData: IShirtData | undefined = undefined;
   const hasPhoneData = currentReportSelection.currentDetailEvent?.hasPhoneData ?? false;
   let hasTicketData: boolean = false;
@@ -133,21 +127,20 @@ export default function EventDetail(props: EditProps) {
 
       if (!currentReportSelection.seller || currentReportSelection.seller.sellerId <= 0) {
         const reportSelection = { ...currentReportSelection };
-        if (user?.selectedSellerId ?? 0 > 0) {
-          // use cached user to transfer detail to redux in new window
-          const seller = user.sellers.find((x) => x.sellerId == user.selectedSellerId);
+        if ((user?.selectedSellerId ?? 0) > 0) {
+          // Use cached user to transfer detail to redux in new window
+          const seller = user.sellers.find((x) => x.sellerId === user.selectedSellerId);
           if (seller) {
             reportSelection.seller = seller;
             reportSelection.hideRevenue = user.selectedHideRevenue;
             reportSelection.hideServiceFees = user.selectedHideServiceFees;
             dispatch(setEventSeller(reportSelection));
           } else {
-            // not found, log out
+            // Not found, log out
             router.push('/logout');
-            return;
           }
         } else {
-          // user is logged in without selected seller, check for permission to load
+          // User is logged in without selected seller, check for permission to load
           const sellerResult = await getUserSellerFromEventId(id, user.userId);
           if (sellerResult && sellerResult.userSeller) {
             reportSelection.seller = sellerResult.userSeller;
@@ -155,26 +148,25 @@ export default function EventDetail(props: EditProps) {
             reportSelection.hideServiceFees = user.selectedHideServiceFees;
             dispatch(setEventSeller(reportSelection));
           } else {
-            // not found or no permission, log out
+            // Not found or no permission, log out
             router.push('/logout');
-            return;
           }
         }
       } else if (currentReportSelection?.seller?.sellerId > 0) {
         if (alwaysShowRevenue) {
           setHideRevItem(false);
-        } else if (!viewRevenueData) {
+        } else if (viewRevenueData === false) {
           setHideRevItem(true);
         } else {
           setHideRevItem(currentReportSelection.hideRevenue ?? true);
         }
 
-        if (!user.isAdmin) {
-          setShowOnlyEmailsDisplay(false);
-          setShowOnlyPhonesDisplay(false);
-        } else {
+        if (user.isAdmin) {
           setShowOnlyEmailsDisplay(currentReportSelection.showOnlyEmails ?? false);
           setShowOnlyPhonesDisplay(currentReportSelection.showOnlyPhones ?? false);
+        } else {
+          setShowOnlyEmailsDisplay(false);
+          setShowOnlyPhonesDisplay(false);
         }
 
         if (viewServiceFees) {
@@ -199,30 +191,30 @@ export default function EventDetail(props: EditProps) {
                 for (const order of newEvent.orders) {
                   if (order.isComped && order.tickets) {
                     for (const ticket of order.tickets) {
-                      if (ticket.ticketTypeId != 0 || !newEvent.ticketSocketEventId) {
+                      if (ticket.ticketTypeId !== 0 || !newEvent.ticketSocketEventId) {
                         continue;
                       }
                       const newOrder: Order = {
-                        ticketSocketEventId: newEvent.ticketSocketEventId,
-                        ticketSocketOrderId: order.ticketSocketOrderId,
-                        purchaserLastName: ticket.attendeeLastName ?? '',
-                        purchaserFirstName: ticket.attendeeFirstName ?? '',
+                        currencyAbbrev: '',
+                        currencySymbol: '',
+                        email: ticket.attendeeEmail ?? '',
+                        eventId: 0,
+                        exchangeRate: 0,
+                        hasChargebacks: false,
+                        hasRefunds: false,
+                        isActive: true,
+                        isDeleted: false,
+                        numTickets: 1,
+                        orderId: 0,
+                        phone: ticket.attendeePhone,
                         purchaseDate: '',
                         purchaseTimestamp: '',
-                        eventId: 0,
-                        orderId: 0,
-                        isActive: true,
-                        numTickets: 1,
-                        isDeleted: false,
-                        hasRefunds: false,
-                        hasChargebacks: false,
+                        purchaserFirstName: ticket.attendeeFirstName ?? '',
+                        purchaserLastName: ticket.attendeeLastName ?? '',
                         revenue: 0,
                         revenueUsd: 0,
-                        exchangeRate: 0,
-                        currencySymbol: '',
-                        currencyAbbrev: '',
-                        email: ticket.attendeeEmail ?? '',
-                        phone: ticket.attendeePhone,
+                        ticketSocketEventId: newEvent.ticketSocketEventId,
+                        ticketSocketOrderId: order.ticketSocketOrderId,
                         tickets: [ticket]
                       };
                       orders.push(newOrder);
@@ -239,13 +231,11 @@ export default function EventDetail(props: EditProps) {
               }
 
               dispatch(setCurrentDetailEvent(newEvent));
-              if (currentReportSelection.currentEvents != undefined) {
+              if (currentReportSelection.currentEvents !== undefined) {
                 document.title = newEvent.title;
-                currentReportSelection.currentEvents.map((evt) => {
-                  return evt.externalEventId == newEvent.externalEventId
-                    ? newEvent
-                    : evt;
-                });
+                currentReportSelection.currentEvents.map(evt => (evt.externalEventId === newEvent.externalEventId
+                  ? newEvent
+                  : evt));
                 dispatch(setEvents(currentReportSelection.currentEvents));
               }
             }
@@ -253,9 +243,9 @@ export default function EventDetail(props: EditProps) {
           setIsLoading(false);
           if (
             currentReportSelection.focusControl &&
-            currentReportSelection.focusControl != ''
+            currentReportSelection.focusControl !== ''
           ) {
-            const focusControl: string = currentReportSelection.focusControl;
+            const { focusControl } = currentReportSelection;
             setTimeout(() => {
               setFocusToControl(focusControl);
             }, 300);
@@ -307,43 +297,36 @@ export default function EventDetail(props: EditProps) {
         currentReportSelection.currentDetailEvent,
         `orders`,
       );
-      downloadFile(fileName, csvData);
+      downloadCsvFile(fileName, csvData);
     }
   };
 
   const filterOrders = (orders: Order[] | undefined) => {
-    let filteredOrders: Order[] = [];
     visibleOrders = [];
 
     if (orders && orders.length > 0) {
-      visibleOrders = orders.filter((order) => {
-        return ((
-          (currentReportSelection.showDeletedOrders && order.isDeleted) ||
-          (currentReportSelection.showInactiveOrders &&
-            !order.isActive &&
-            !order.isDeleted) ||
-          (!order.isDeleted && order.isActive))
-        );
-      });
+      visibleOrders = orders.filter(order => ((
+        (currentReportSelection.showDeletedOrders && order.isDeleted) ||
+        (currentReportSelection.showInactiveOrders &&
+          !order.isActive &&
+          !order.isDeleted) ||
+        (!order.isDeleted && order.isActive))
+      ));
     }
 
+    let fOrders: Order[] = visibleOrders ?? [];
     if (visibleOrders.length > 0 && searchTerm && searchTerm.length >= 2) {
       const srch = searchTerm.toLowerCase();
-      filteredOrders = visibleOrders.filter((order) => {
-        return (
-          order.purchaserFirstName.toLowerCase().includes(srch) ||
-          order.purchaserLastName.toLowerCase().includes(srch)
-        );
-      });
-    } else {
-      filteredOrders = visibleOrders;
+      fOrders = visibleOrders.filter((order) => (
+        order.purchaserFirstName.toLowerCase().includes(srch) ||
+        order.purchaserLastName.toLowerCase().includes(srch)
+      ));
     }
-    return filteredOrders;
+    return fOrders;
   };
 
-  let filteredOrders: Order[] | undefined = undefined;
   let totalTickets = 0;
-  if (currentReportSelection.currentDetailEvent != undefined) {
+  if (currentReportSelection.currentDetailEvent !== undefined) {
     if (
       windowSize.isMobile ||
       (currentReportSelection.currentDetailEvent.orders &&
@@ -352,7 +335,7 @@ export default function EventDetail(props: EditProps) {
       searchBarHidden = false;
     }
 
-    filteredOrders = filterOrders(currentReportSelection.currentDetailEvent.orders);
+    const filteredOrders: Order[] | undefined = filterOrders(currentReportSelection.currentDetailEvent.orders);
     filteredOrders?.forEach((order, i) => {
       if (order.isActive && !order.isDeleted && !order.isComped) {
         totalTickets += order.numTickets;
@@ -395,7 +378,7 @@ export default function EventDetail(props: EditProps) {
       }
     });
 
-    ticketData = getTicketDataFromOrders(
+    const ticketData: ITicketData | undefined = getTicketDataFromOrders(
       filteredOrders,
       currentReportSelection.currentDetailEvent,
     );
@@ -407,7 +390,7 @@ export default function EventDetail(props: EditProps) {
         ticketTypes.forEach((ticketType: TicketType) => {
           const key = `ttd${i}`;
           const data = ticketTypeData.find(
-            (x) => x.TicketType == ticketType.ticketTypeName,
+            (x) => x.TicketType === ticketType.ticketTypeName,
           );
           let number = 0;
           let total = '';
@@ -424,8 +407,8 @@ export default function EventDetail(props: EditProps) {
                 {total})
               </div>,
             );
-          }          
-          i++;
+          }
+          i += 1;
         });
       });
     }
@@ -436,7 +419,7 @@ export default function EventDetail(props: EditProps) {
       hasShirtData = true;
       shirtSizes.forEach((shirtSize: string) => {
         shirtData?.ShirtData?.forEach((shirSizeData: IShirtSizeData[]) => {
-          const data = shirSizeData.find((x) => x.ShirtSize == shirtSize);
+          const data = shirSizeData.find((x) => x.ShirtSize === shirtSize);
           let number = arr.get(shirtSize) ?? 0;
           if (data) {
             number += data.Number;
@@ -452,38 +435,38 @@ export default function EventDetail(props: EditProps) {
             {shirtSize} ({arr.get(shirtSize)})
           </div>,
         );
-        i++;
+        i += 1;
       }
     }
   }
 
-  const handleShowInactive = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowInactive = (event: ChangeEvent<HTMLInputElement>) => {
     if (currentReportSelection) {
       dispatch(setShowInactiveOrders(event.target.checked));
     }
   };
 
-  const handleShowDeleted = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowDeleted = (event: ChangeEvent<HTMLInputElement>) => {
     if (currentReportSelection) {
       dispatch(setShowDeletedOrders(event.target.checked));
     }
   };
 
-  const handleHideRevenue = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleHideRevenue = (event: ChangeEvent<HTMLInputElement>) => {
     if (currentReportSelection) {
       dispatch(setHideRevenue(event.target.checked));
       setCheckChanged(!checkChanged);
     }
   };
 
-  const handleHideServiceFees = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleHideServiceFees = (event: ChangeEvent<HTMLInputElement>) => {
     if (currentReportSelection) {
       dispatch(setHideServiceFees(event.target.checked));
       setCheckChanged(!checkChanged);
     }
   };
 
-  const handleShowOnlyEmails = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowOnlyEmails = (event: ChangeEvent<HTMLInputElement>) => {
     if (currentReportSelection) {
       dispatch(setShowOnlyEmails(event.target.checked));
       if (event.target.checked) {
@@ -493,7 +476,7 @@ export default function EventDetail(props: EditProps) {
     }
   };
 
-  const handleShowOnlyPhones = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowOnlyPhones = (event: ChangeEvent<HTMLInputElement>) => {
     if (currentReportSelection) {
       dispatch(setShowOnlyPhones(event.target.checked))
       if (event.target.checked) {
@@ -504,16 +487,16 @@ export default function EventDetail(props: EditProps) {
   };
 
   let eventDate = '';
-  if (currentReportSelection.currentDetailEvent?.eventDate != undefined) {
-    if (currentReportSelection.currentDetailEvent?.eventTime != undefined) {
+  if (currentReportSelection.currentDetailEvent?.eventDate !== undefined) {
+    if (currentReportSelection.currentDetailEvent?.eventTime === undefined) {
+      eventDate = moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY');
+    } else {
       eventDate = moment(currentReportSelection.currentDetailEvent.eventTime).format('MM/DD/YYYY h:mm A');
       if (currentReportSelection.currentDetailEvent.venue?.timezone) {
         eventDate += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
       }
-    } else {
-      eventDate = moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY');
     }
-  }  
+  }
 
   let doorsOpen = '';
   if (currentReportSelection.currentDetailEvent?.doorsOpen) {
@@ -529,7 +512,7 @@ export default function EventDetail(props: EditProps) {
     if (currentReportSelection.currentDetailEvent.venue?.timezone) {
       meetAndGreet += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
     }
-  } 
+  }
 
   const venue = currentReportSelection.currentDetailEvent?.venue;
   const venueName = venue?.name;
@@ -537,10 +520,10 @@ export default function EventDetail(props: EditProps) {
   const location = `${venue?.city}, ${venue?.state}`;
   const zip = venue?.postalCode;
   const country = venue?.country?.countryName;
-  
+
   return (
     <>
-      {currentReportSelection.currentDetailEvent != undefined ? (
+      {currentReportSelection.currentDetailEvent === undefined ? '' : (
         <Container fluid className="vipContainer">
           <Row>
             <Col>
@@ -559,7 +542,7 @@ export default function EventDetail(props: EditProps) {
                         <td>
                           {venueName && <div>{venueName}</div>}
                           {address && <div>{address}</div>}
-                          {location && <div>{location} { zip && <span>{zip}</span>}</div>}
+                          {location && <div>{location} {zip && <span>{zip}</span>}</div>}
                           {country && <div>{country}</div>}
                         </td>
                       </tr>
@@ -611,8 +594,8 @@ export default function EventDetail(props: EditProps) {
                 </Col>
                 <Col hidden={
                   !currentReportSelection.currentDetailEvent.doorsOpen &&
-                  !currentReportSelection.currentDetailEvent.meetAndGreetTime && 
-                  !currentReportSelection.currentDetailEvent.checkInLocation && 
+                  !currentReportSelection.currentDetailEvent.meetAndGreetTime &&
+                  !currentReportSelection.currentDetailEvent.checkInLocation &&
                   !currentReportSelection.currentDetailEvent.checkInNotes
                 }>
                   <table className="vipDetailsTable">
@@ -645,12 +628,7 @@ export default function EventDetail(props: EditProps) {
               </Row>
               <Row hidden={!isLoading}>
                 <Col className="spinner-container" hidden={!isLoading}>
-                  <CirclesWithBar
-                    height="100"
-                    width="100"
-                    color="#d12610"
-                    visible={isLoading}
-                  />
+                  <RingLoader size={150} color="#d12610" />
                 </Col>
               </Row>
               <Row hidden={isLoading} className="no-print">
@@ -721,11 +699,12 @@ export default function EventDetail(props: EditProps) {
                 </Col>
                 <Col md={10} sm={12} className="no-print" hidden={searchBarHidden}>
                   <input
-                    value={searchTerm}
+                    type="text" 
+                    value={searchTerm ?? ''}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="form-control search-text-input"
                     placeholder="Search for orders..."
-                    hidden={isLoading || !orderRows || orderRows.length == 0}
+                    hidden={isLoading || !orderRows || orderRows.length === 0}
                   />
                 </Col>
               </Row>
@@ -760,8 +739,6 @@ export default function EventDetail(props: EditProps) {
             </Col>
           </Row>
         </Container>
-      ) : (
-        ''
       )}
     </>
   );

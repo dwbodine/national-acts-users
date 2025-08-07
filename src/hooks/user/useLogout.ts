@@ -1,16 +1,17 @@
 import Cookies from 'js-cookie';
 
 export const useLogout = () => {
-  const logout = async () => {
+  const logout = (): Promise<boolean> => {
     let success = true;
     try {
       Cookies.remove('authToken');
       localStorage.clear();
-    } catch (e) {
-      console.log(e);
+    } catch {
       success = false;
     }
-    return success;
+    return new Promise<boolean>((resolve) => {
+      resolve(success);
+    });
   };
 
   return { logout };

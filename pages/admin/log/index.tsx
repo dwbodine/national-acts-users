@@ -1,6 +1,6 @@
 import { ActivePageKey } from '@/constants';
-import AdminPage from '../../../components/common/adminPageComponent';
 import AdminLogIndex from '../../../components/admin/log/adminLogIndexComponent';
+import AdminPage from '../../../components/common/adminPageComponent';
 
 export default function AdminLog() {
   const title = 'Client Portal - Log';

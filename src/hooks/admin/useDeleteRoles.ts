@@ -1,15 +1,9 @@
-import { UpdateRoleResponse } from '@/types/user';
+import { UpdateRoleResponse } from '@/types/responses';
 import { userService } from '../../services';
 
 export const useDeleteRoles = () => {
-  const deleteRoles = async (roleIds: number[]): Promise<UpdateRoleResponse> => {
-    let response: UpdateRoleResponse = {
-      success: false,
-      roleError: undefined,
-    };
-    response = await userService.deleteRoles(roleIds);
-    return response;
-  };
+  const deleteRoles = async (roleIds: number[]): Promise<UpdateRoleResponse> =>
+    await userService.deleteRoles(roleIds);
 
   return { deleteRoles };
 };

@@ -1,16 +1,15 @@
-import { useEffect, useState, KeyboardEvent } from 'react';
-import { Table } from 'rsuite';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
-import {
-  setAdminOrders,
-} from '@/lib/adminSelectionSlice';
 import { Button, Col, Row } from 'react-bootstrap';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { GetOrdersResponse, Order } from '@/types/event';
-import router from 'next/router';
+import { KeyboardEvent, useEffect, useState } from 'react';
+import { getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
+import { useDispatch, useSelector } from 'react-redux';
+import { GetOrdersResponse } from '@/types/responses';
+import { Order } from '@/types/event';
+import { RootState } from '@/lib/store';
+import { Table } from 'rsuite';
 import moment from 'moment';
-import { useGetOrderStatus } from '@/hooks/common/useGetOrderStatus';
+import router from 'next/router';
+import { setAdminOrders } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useSearchOrders } from '@/hooks/admin/useSearchOrders';
 
@@ -20,10 +19,8 @@ export default function AdminOrdersSearch() {
   const [tableLoading, setTableLoading] = useState(true);
   const dispatch = useDispatch();
   const { searchOrders } = useSearchOrders();
-  const { getOrderStatusSlug, getOrderStatusText } = useGetOrderStatus();
   const [searchTerm, setSearchTerm] = useState('');
 
-  
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (tableLoading) {
@@ -37,12 +34,6 @@ export default function AdminOrdersSearch() {
     };
   }, [tableLoading]);
 
-  const submitOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key == 'Enter') {
-      searchAllOrders();
-    }
-  };
-
   const searchAllOrders = () => {
     if (!searchTerm) {
       return;
@@ -54,15 +45,21 @@ export default function AdminOrdersSearch() {
     dispatch(setIsLoading(true));
     setTableLoading(true);
     searchOrders(searchTerm).then((response: GetOrdersResponse) => {
-      if (!response.orderError) {
+      if (response.orders && !response.error) {
         dispatch(setAdminOrders(response.orders));
       } else {
-        toast.error(response.orderError);
+        toast.error(response.error);
         dispatch(setAdminOrders(undefined));
       }
       setTableLoading(false);
       dispatch(setIsLoading(false));
     });
+  };
+
+  const submitOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      searchAllOrders();
+    }
   };
 
   const viewOrder = (ticketSocketOrderId: number) => {
@@ -74,7 +71,7 @@ export default function AdminOrdersSearch() {
       return;
     }
     const order = currentAdminSelection.orders.find(
-      (x) => x.ticketSocketOrderId == ticketSocketOrderId,
+      (x) => x.ticketSocketOrderId === ticketSocketOrderId,
     );
     if (!order) {
       return;
@@ -85,7 +82,7 @@ export default function AdminOrdersSearch() {
 
   const goBack = () => {
     dispatch(setAdminOrders(undefined));
-    router.push('/admin/');    
+    router.push('/admin/');
   };
 
   const numOrders = currentAdminSelection.orders?.length ?? 0;
@@ -112,7 +109,7 @@ export default function AdminOrdersSearch() {
             placeholder="Search for orders by purchaser name, email, order ID, event title or seller name..."
           />
           <Button disabled={!searchTerm || searchTerm.length < 3} onClick={searchAllOrders}>Search</Button>
-          <div hidden={numOrders == 0} className="success">{numOrders} order(s) found</div>
+          <div hidden={numOrders === 0} className="success">{numOrders} order(s) found</div>
         </Col>
       </Row>
       <Row>
@@ -123,9 +120,7 @@ export default function AdminOrdersSearch() {
             bordered
             cellBordered
             loading={tableLoading}
-            rowClassName={(rowData: Order) => {
-              return getOrderStatusSlug(rowData);
-            }}
+            rowClassName={(rowData: Order) => getOrderStatusSlug(rowData)}
           >
             <Column flexGrow={3}>
               <HeaderCell>Purchaser Name</HeaderCell>

@@ -1,11 +1,9 @@
+import { GetSellersResponse } from '@/types/responses';
 import { adminService } from '../../services';
-import { GetSellersResponse } from '@/types/event';
 
 export const useGetAdminSellers = () => {
-  const getAdminSellers = async (): Promise<GetSellersResponse> => {
-    const response = await adminService.getSellers();
-    return response;
-  };
+  const getAdminSellers = async (): Promise<GetSellersResponse> =>
+    await adminService.getSellers();
 
   return { getAdminSellers };
 };

@@ -1,14 +1,13 @@
-import { ActivePageKey } from "@/constants";
-import { setReloadAdminEvents } from "@/lib/adminEventsSelectionSlice";
-import { setIsLoading } from "@/lib/globalSelectionSlice";
-import { setReloadEvents } from "@/lib/reportSelectionSlice";
-import { AdminTabsProps } from "@/types/props";
-import router from "next/router";
-import { Col, Container, Row } from "react-bootstrap";
-import { CirclesWithBar } from "react-loader-spinner";
-import { useDispatch } from "react-redux";
 import { Button, ButtonGroup } from "rsuite";
-
+import { Col, Container, Row } from "react-bootstrap";
+import { ActivePageKey } from "@/constants";
+import { AdminTabsProps } from "@/types/props";
+import { RingLoader } from 'react-spinners';
+import router from "next/router";
+import { setIsLoading } from "@/lib/globalSelectionSlice";
+import { setReloadAdminEvents } from "@/lib/adminEventsSelectionSlice";
+import { setReloadEvents } from "@/lib/reportSelectionSlice";
+import { useDispatch } from "react-redux";
 
 export default function AdminTabsMobile(props: AdminTabsProps) {
   const activeKey = props.ActiveKey;
@@ -21,7 +20,7 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
 
   const onSelectTab = (eventKey: string | number | undefined) => {
     let key: ActivePageKey = activeKey;
-    if (eventKey != undefined) {
+    if (eventKey !== undefined) {
       key = parseInt(eventKey as string);
     }
     dispatch(setIsLoading(true));
@@ -52,52 +51,53 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
     }
   };
 
-  let activeComponent: JSX.Element | undefined;
-  switch (activeKey) {
-    case ActivePageKey.Dashboard:
-      activeComponent = props.DashboardComponent;
-      break;
-    case ActivePageKey.Events:
-      activeComponent = props.EventsComponent;
-      break;
-    case ActivePageKey.Admin:
-      activeComponent = props.AdminComponent;
-      break;
-    case ActivePageKey.Reports:
-      activeComponent = props.ReportComponent;
-      break;
-    case ActivePageKey.Users:
-      activeComponent = props.UsersComponent;
-      break;
-    default:
-      activeComponent = props.SalesComponent;
-      break;
-  }
-
   const getTabViewText = (key: ActivePageKey) => {
-    let text = '';
     switch (key) {
       case ActivePageKey.Dashboard:
-        text = "HOME";
+        return "HOME";
         break;
       case ActivePageKey.Events:
-        text = "EVENTS";
+        return "EVENTS";
         break;
       case ActivePageKey.Admin:
-        text = "ADMIN";
+        return "ADMIN";
         break;
       case ActivePageKey.Reports:
-        text = "REPORTS";
+        return "REPORTS";
         break;
       case ActivePageKey.Users:
-        text = "USERS";
+        return "USERS";
         break;
       default:
-        text = "SALES OVERVIEW";
+        return "SALES OVERVIEW";
         break;
     }
-    return text;
   };
+
+  const getActiveComponent = () => {
+    switch (activeKey) {
+      case ActivePageKey.Dashboard:
+        return props.DashboardComponent;
+        break;
+      case ActivePageKey.Events:
+        return props.EventsComponent;
+        break;
+      case ActivePageKey.Admin:
+        return props.AdminComponent;
+        break;
+      case ActivePageKey.Reports:
+        return props.ReportComponent;
+        break;
+      case ActivePageKey.Users:
+        return props.UsersComponent;
+        break;
+      default:
+        return props.SalesComponent;
+        break;
+    }
+  };
+
+  const activeComponent = getActiveComponent();
 
   return (
     <>
@@ -107,7 +107,7 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
           justified
         >
           {allTabsTop.map(key => (
-            <Button appearance="subtle" key={key} active={key.valueOf() == activeKey?.valueOf()} onClick={() => onSelectTab(key)}>
+            <Button appearance="subtle" key={key} active={key.valueOf() === activeKey?.valueOf()} onClick={() => onSelectTab(key)}>
               {getTabViewText(key)}
             </Button>
           ))}
@@ -117,7 +117,7 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
           justified
         >
           {allTabsBottom.map(key => (
-            <Button appearance="subtle" key={key} active={key.valueOf() == activeKey?.valueOf()} onClick={() => onSelectTab(key)}>
+            <Button appearance="subtle" key={key} active={key.valueOf() === activeKey?.valueOf()} onClick={() => onSelectTab(key)}>
               {getTabViewText(key)}
             </Button>
           ))}
@@ -128,7 +128,7 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
           <Container fluid hidden={!isLoading || !activeComponent}>
             <Row>
               <Col className="spinner-container">
-                <CirclesWithBar height="100" width="100" color="#d12610" />
+                <RingLoader size={150} color="#d12610" />
               </Col>
             </Row>
           </Container>

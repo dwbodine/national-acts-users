@@ -1,8 +1,8 @@
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+import { EventRowProps } from '@/types/props';
 import React from 'react';
 import moment from 'moment';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
-import { useGetEventStatus } from '@/hooks/common/useGetEventStatus';
-import { EventRowProps } from '@/types/props';
 
 export default function EventRow(props: EventRowProps) {
   const vipEvent = props.VipEvent;
@@ -12,7 +12,6 @@ export default function EventRow(props: EventRowProps) {
   const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
   const id = `event_${vipEvent.externalEventId}`;
-  const { getEventStatusText, getEventStatusSlug } = useGetEventStatus();
 
   const venueName = vipEvent.venue?.name;
   let location = '';
@@ -21,14 +20,14 @@ export default function EventRow(props: EventRowProps) {
   }
 
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
-  const revenue = new Number(vipEvent.totalRevenue ?? 0 - (vipEvent.revenueRefunded ?? 0)).toFixed(2);
-  const serviceFees = new Number(vipEvent.totalServiceFees ?? 0 - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2);
+  const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0)).toFixed(2);
+  const serviceFees = Number((vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2);
   const url = `/event/?id=${vipEvent.externalEventId}`;
 
   const statusSlug = getEventStatusSlug(vipEvent);
   const statusText = getEventStatusText(vipEvent);
   let statusClass = '';
-  if (statusSlug != 'active') {
+  if (statusSlug !== 'active') {
     statusClass = `event-${statusSlug}`
   }
 
@@ -36,7 +35,7 @@ export default function EventRow(props: EventRowProps) {
     <tr className={statusClass} id={id}>
       <td>{eventDate}</td>
       <td>
-        {vipEvent.orders?.length ?? 0 > 0 ?
+        {(vipEvent.orders?.length ?? 0) > 0 ?
           <a href={url} target="_blank">
             {vipEvent.title}
           </a>

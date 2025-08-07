@@ -1,6 +1,6 @@
-import { EditNoteModalProps } from "@/types/props";
 import { Button, Form } from "react-bootstrap";
 import { DatePicker, Modal } from "rsuite";
+import { EditNoteModalProps } from "@/types/props";
 
 export default function EditNoteModal(props: EditNoteModalProps) {
     const id = props.Id;
@@ -44,7 +44,7 @@ export default function EditNoteModal(props: EditNoteModalProps) {
                     rows={5}
                     disabled={noteIsCompleted}
                     onChange={(e) => setNoteText ? setNoteText(e.currentTarget.value) : null}
-                    value={noteText}
+                    value={noteText ?? ''}
                     placeholder="Note text"
                 />
             </Modal.Body>

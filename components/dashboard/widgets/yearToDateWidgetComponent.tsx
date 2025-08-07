@@ -1,6 +1,6 @@
+import { Col, Row } from 'react-bootstrap';
 import { YearToDateWidgetProps } from '@/types/props';
 import moment from 'moment';
-import { Col, Row } from 'react-bootstrap';
 
 export default function YearToDateWidget(props: YearToDateWidgetProps) {
   const totals = props.Totals;
@@ -15,7 +15,7 @@ export default function YearToDateWidget(props: YearToDateWidgetProps) {
     averagePurchaseAmount = (totals?.totalRevenueUsd ?? 0) / totals.orders;
   }
 
-  const title = (selectedYear != currentYear) ? `${selectedYear} Yearly Stats` : "Year-to-Date stats";
+  const title = (selectedYear === currentYear) ? "Year-to-Date stats" : `${selectedYear} Yearly Stats`;
 
   return (
     <Row className="sales-stat-block">
@@ -91,7 +91,7 @@ export default function YearToDateWidget(props: YearToDateWidgetProps) {
             ${totals?.serviceFeePerTicket?.toFixed(2) ?? 'n/a'}
           </Col>
         </Row>
-        <Row hidden={selectedYear != currentYear}>
+        <Row hidden={selectedYear !== currentYear}>
           <Col className="sales-stat-block-name">Yearly Proj.:</Col>
           <Col className="sales-stat-block-value">
             ${projectedYearTotalRevenue?.toFixed(2) ?? 'n/a'}

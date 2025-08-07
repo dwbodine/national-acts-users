@@ -1,5 +1,5 @@
-import { SalesByAccountWidgetProps } from '@/types/props';
 import { Col, Row } from 'react-bootstrap';
+import { SalesByAccountWidgetProps } from '@/types/props';
 
 export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
   const accountName = props.AccountName;

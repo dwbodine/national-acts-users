@@ -1,27 +1,28 @@
-import { useSelector, useDispatch } from 'react-redux';
-import type { RootState } from '../../src/lib/store';
-import { setAdminEvents, setReloadAdminEvents, setAdminNotes, setActiveEventTab, setAdminDateRange, setExpandedEvent } from '@/lib/adminEventsSelectionSlice';
-import { ReactElement, useEffect } from 'react';
-import router from 'next/router';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
-import { useGetCalendarNotes } from '@/hooks/event/useGetCalendarNotes';
-import AllEventsWeek from './week/allEventsWeekComponent';
-import { toast } from 'react-toastify';
 import { Button, ButtonGroup } from 'rsuite';
+import { Col, Row } from 'react-bootstrap';
+import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
+import { GetEventsResponse, GetNotesResponse } from '@/types/responses';
+import { ReactElement, useEffect } from 'react';
+import { setActiveEventTab, setAdminDateRange, setAdminEvents, setAdminNotes, setExpandedEvent, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import AllEventsAgenda from './agenda/allEventsAgendaComponent';
 import AllEventsMonth from './month/allEventsMonthComponent';
-import { Col, Row } from 'react-bootstrap';
+import AllEventsWeek from './week/allEventsWeekComponent';
 import { EventTabView } from '@/types/user';
-import moment from 'moment';
-import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 import { Note } from '@/types/event';
-import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
+import type { RootState } from '../../src/lib/store';
+import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
+import moment from 'moment';
+import router from 'next/router';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { toast } from 'react-toastify';
+import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
+import { useGetCalendarNotes } from '@/hooks/event/useGetCalendarNotes';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
-  const isLoading = globalSelection.isLoading;
+  const { isLoading } = globalSelection;
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const { getAllEvents } = useGetAllEvents();
   const { getCalendarNotes } = useGetCalendarNotes();
@@ -43,7 +44,7 @@ export default function AllEvents() {
         dispatch(
           setAdminDateRange(dateRange)
         );
-      } else if (agendaOnly && currentReportSelection.eventTabView != EventTabView.Agenda) {
+      } else if (agendaOnly && currentReportSelection.eventTabView !== EventTabView.Agenda) {
         dispatch(
           setActiveEventTab(EventTabView.Agenda)
         );
@@ -53,17 +54,17 @@ export default function AllEvents() {
         );
       } else if (currentReportSelection &&
         currentReportSelection.reloadEvents &&
-        currentReportSelection.start && 
+        currentReportSelection.start &&
         currentReportSelection.end) {
         dispatch(setReloadAdminEvents(false));
         dispatch(setAdminEvents(undefined));
         dispatch(setAdminNotes(undefined));
         dispatch(setIsLoading(true));
-        getAllEvents(currentReportSelection.start, currentReportSelection.end).then((response) => {
-          if (!response.eventError && response.events) {
+        getAllEvents(currentReportSelection.start, currentReportSelection.end).then((response: GetEventsResponse) => {
+          if (!response.error && response.events) {
             const filteredEvents = response.events.filter(x => !x.isDeleted && (x.isActive || x.isHidden || x.isCancelled));
-            if (currentReportSelection.expandedEvent != undefined) {
-              const updatedEvent = filteredEvents.find(x => x.externalEventId == currentReportSelection.expandedEvent?.externalEventId);
+            if (currentReportSelection.expandedEvent !== undefined) {
+              const updatedEvent = filteredEvents.find(x => x.externalEventId === currentReportSelection.expandedEvent?.externalEventId);
               if (updatedEvent) {
                 dispatch(
                   setExpandedEvent(updatedEvent)
@@ -72,30 +73,30 @@ export default function AllEvents() {
             }
             if (currentReportSelection.start && currentReportSelection.end) {
               getCalendarNotes(currentReportSelection.start, currentReportSelection.end)
-                .then((resp) => {
-                  if (!resp.noteError) {
+                .then((resp: GetNotesResponse) => {
+                  if (resp.error) {
+                    dispatch(setAdminEvents(filteredEvents));
+                    dispatch(setAdminNotes([]));
+                  } else {
                     dispatch(setAdminEvents(filteredEvents));
                     const notes: Note[] = resp.notes ? resp.notes : [];
                     dispatch(
                       setAdminNotes(notes)
                     );
-                  } else {
-                    dispatch(setAdminEvents(filteredEvents));
-                    dispatch(setAdminNotes([]));
                   }
                 });
             } else {
               dispatch(setAdminEvents(filteredEvents));
               dispatch(setAdminNotes([]));
             }
-          } else if (response.statusCode == 401 || response.statusCode == 422) {
+          } else if (response.statusCode === 401 || response.statusCode === 422) {
             dispatch(setIsLoading(false));
             router.push('/logout/');
           } else {
             dispatch(setIsLoading(false));
             dispatch(setAdminEvents(undefined));
             dispatch(setAdminNotes(undefined));
-            toast.error(response.eventError);
+            toast.error(response.error);
           }
 
         });
@@ -115,7 +116,7 @@ export default function AllEvents() {
   ]);
 
   const switchView = (key: EventTabView) => {
-    if (key != currentReportSelection.eventTabView) {
+    if (key !== currentReportSelection.eventTabView) {
       dispatch(
         setIsLoading(true)
       );
@@ -130,22 +131,20 @@ export default function AllEvents() {
   };
 
   const getTabViewText = (key: EventTabView) => {
-    let text = '';
     switch (key) {
       case EventTabView.Month:
-        text = "Month";
+        return "Month";
         break;
       case EventTabView.Agenda:
-        text = "Agenda";
+        return "Agenda";
         break;
       default:
-        text = "Week";
+        return "Week";
         break;
     }
-    return text;
   };
 
-  let activeComponent: ReactElement = <></>;
+  let activeComponent: ReactElement = <AllEventsWeek />;
   switch (currentReportSelection.eventTabView) {
     case EventTabView.Month:
       activeComponent = <AllEventsMonth />;
@@ -154,7 +153,6 @@ export default function AllEvents() {
       activeComponent = <AllEventsAgenda />;
       break;
     default:
-      activeComponent = <AllEventsWeek />;
       break;
   }
 
@@ -164,7 +162,7 @@ export default function AllEvents() {
         <Col className="all-events-buttons">
           <ButtonGroup hidden={agendaOnly}>
             {allEventsViews.map(key => (
-              <Button key={key} active={key.valueOf() == currentReportSelection.eventTabView?.valueOf()} onClick={() => switchView(key)}>
+              <Button key={key} active={key.valueOf() === currentReportSelection.eventTabView?.valueOf()} onClick={() => switchView(key)}>
                 {getTabViewText(key)}
               </Button>
             ))}

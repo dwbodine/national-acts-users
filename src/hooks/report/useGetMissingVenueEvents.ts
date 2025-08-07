@@ -1,14 +1,9 @@
+import { GetEventsResponse } from '@/types/responses';
 import { eventService } from '@/services';
-import { GetEventsResponse } from '@/types/event';
 
 export const useGetMissingVenueEvents = () => {
-  const getMissingVenueEvents = async () => {
-    let response: GetEventsResponse = {
-      statusCode: 200,
-    };
-    response = await eventService.getMissingVenueEvents();
-    return response;
-  };
+  const getMissingVenueEvents = async (): Promise<GetEventsResponse> =>
+    await eventService.getMissingVenueEvents();
 
   return { getMissingVenueEvents };
 };
