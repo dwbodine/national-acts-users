@@ -32,6 +32,7 @@ import { useHasPermission } from '@/hooks/user/useHasPermission';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function SalesBar() {
+  const webBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/`;
   const dispatch = useDispatch();
   const { getUser } = useCurrentUser();
   const windowSize = useWindowSize();
@@ -55,6 +56,7 @@ export default function SalesBar() {
   const [viewVIPItinerary, setViewVIPItinerary] = useState(false);
   const [vipItineraryOpen, setVipItineraryOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [sellerHomePage, setSellerHomePage] = useState('');
 
   const handleItineraryClose = () => setVipItineraryOpen(false);
 
@@ -201,8 +203,17 @@ export default function SalesBar() {
       setViewHiddenEvents(userHasPermission(user, EnumPermission.ViewHiddenEvents));
       setViewTourSelect(userHasPermission(user, EnumPermission.ViewTourSelect));
       setViewVIPItinerary(userHasPermission(user, EnumPermission.ViewVIPItinerary));
+      if (currentReportSelection.seller && currentReportSelection.seller.sellerId > 0) {
+        const userSeller = user.sellers?.find(x => x.sellerId === currentReportSelection.seller.sellerId);
+        if (userSeller) {
+          const route = userSeller.routes?.[0];
+          if (route) {
+            setSellerHomePage(`${webBaseUrl}${route}`);
+          }
+        }
+      }
     }
-  }, [windowSizeJson, getUser, userHasPermission]);
+  }, [windowSizeJson, getUser, userHasPermission, currentReportSelection.seller, webBaseUrl]);
   return (
     <>
       <Row className="page-header">
@@ -324,6 +335,7 @@ export default function SalesBar() {
                 Seller={currentReportSelection.seller}
                 Events={currentReportSelection.currentEvents}
                 OnClose={handleItineraryClose}
+                SellerHomePage={sellerHomePage}
               />
             </>
           ) : (

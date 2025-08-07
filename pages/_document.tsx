@@ -8,7 +8,7 @@ export default function Document() {
         <meta name="theme-color" content="#FFFFFF" />
         <link rel="icon" href="/images/favicon.png"></link>
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter&display=optional"
+          href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
           rel="stylesheet"
         />
         <link

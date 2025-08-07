@@ -16,6 +16,7 @@ export type UserSeller = {
   sellerType: SellerType;
   roleId?: number;
   permissions?: number[];
+  routes?: string[];
 };
 
 export type Role = {

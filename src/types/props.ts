@@ -366,3 +366,7 @@ export interface VIPModalProps {
   IsAdmin?: boolean;
   OnClose?: () => void;
 }
+
+export interface VipHtmlProps {
+  PdfHtml?: string;
+}

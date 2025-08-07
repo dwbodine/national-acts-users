@@ -1,7 +1,6 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Modal, Radio, RadioGroup } from "rsuite";
-import { exportVipItineraryToCSV, exportVipItineraryToPdf } from "@/utils/exportVipItinerary";
-import { getCsvFileNameFromReportSelection, getPdfFileNameFromReportSelection } from "@/utils/getFileNameFromReportSelection";
+import { exportVipItineraryToCSV, exportVipItineraryToHtml } from "@/utils/exportVipItinerary";
 import ReportDatePicker from "../../common/reportDatePicker";
 import { RootState } from "@/lib/store";
 import { UserSeller } from "@/types/user";
@@ -9,6 +8,7 @@ import { VIPModalProps } from "@/types/props";
 import { ValueType } from "rsuite/esm/Radio";
 import { VipEvent } from "@/types/event";
 import { downloadCsvFile } from "@/utils/downloadFile";
+import { getCsvFileNameFromReportSelection } from "@/utils/getFileNameFromReportSelection";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
@@ -30,7 +30,12 @@ export default function VIPItineraryModal(props: VIPModalProps) {
 
     const currentSellerName = currentSeller?.sellerName;
     const startEventDateStr = currentEvents.length > 0 ? currentEvents[0].eventDate : '';
-    const endEventDateStr = currentEvents.length > 0 ? currentEvents[currentEvents.length-1].eventDate : '';
+    const endEventDateStr = currentEvents.length > 0 ? currentEvents[currentEvents.length - 1].eventDate : '';
+
+    const submitPdfToNewWindow = (htmlText: string) => {
+        localStorage.setItem('htmlText', htmlText);
+        window.open('/pdf/');
+    };
 
     const getVipItinerary = () => {
         if (currentSeller === undefined) {
@@ -58,15 +63,17 @@ export default function VIPItineraryModal(props: VIPModalProps) {
                 setIsReportLoading(false);
                 if (onClose) {
                     onClose();
-                }                
+                }
             });
         } else {
-            exportVipItineraryToPdf(eventsToExport, currentSeller, sellerHomePage, isAdmin).then(() => {
-                getPdfFileNameFromReportSelection(currentReportSelection);
+            const title = `${currentSeller.sellerName} VIP Itinerary`;
+            localStorage.setItem('pdfTitle', title);
+            exportVipItineraryToHtml(eventsToExport, title, sellerHomePage, isAdmin).then((htmlString: string) => {
                 setIsReportLoading(false);
+                submitPdfToNewWindow(htmlString);
                 if (onClose) {
                     onClose();
-                }  
+                }
             });
         }
     };
@@ -108,10 +115,10 @@ export default function VIPItineraryModal(props: VIPModalProps) {
         }
         if (endUnix === 0) {
             setEndUnix(moment(endEventDateStr).unix());
-        }     
+        }
         currentRangeLabel = `(${moment(startEventDateStr).format('MM/DD/YYYY')} - ${moment(endEventDateStr).format('MM/DD/YYYY')})`;
     }
-    
+
 
     return (
         <Modal open={isOpen} onClose={props.OnClose} size={'lg'}>
@@ -130,9 +137,9 @@ export default function VIPItineraryModal(props: VIPModalProps) {
                                 <Radio value="1">
                                     Selected current dates
                                     <div className="itinerary-dates">
-                                        <ReportDatePicker 
-                                            Disabled={dateRangeValue !== '1' || isReportLoading} 
-                                            LabelColumnWidth={3} 
+                                        <ReportDatePicker
+                                            Disabled={dateRangeValue !== '1' || isReportLoading}
+                                            LabelColumnWidth={3}
                                             Start={startUnix}
                                             End={endUnix}
                                             OnChange={onDateRangeChange}
@@ -147,7 +154,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
                             <label className="mt-4" htmlFor="format-radio-group">Export To:</label>
                             <RadioGroup name="format-radio-group" value={formatValue} onChange={onFormatSelect} disabled={isReportLoading}>
                                 <Radio value="0">
-                                    PDF
+                                    Print / PDF
                                 </Radio>
                                 <Radio value="1">
                                     CSV
