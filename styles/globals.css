@@ -1462,6 +1462,10 @@ a.edit-event-link {
   text-decoration: underline;
 }
 
+.pdf-link-column {
+  max-width: 200px;
+}
+
 /* MOBILE QUERIES */
 /* Bootstrap xxl */
 @media (max-width: 1400px) {

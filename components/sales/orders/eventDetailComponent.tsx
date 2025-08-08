@@ -488,13 +488,13 @@ export default function EventDetail(props: EditProps) {
 
   let eventDate = '';
   if (currentReportSelection.currentDetailEvent?.eventDate !== undefined) {
-    if (currentReportSelection.currentDetailEvent?.eventTime === undefined || currentReportSelection.currentDetailEvent?.eventTime === null) {
-      eventDate = moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY');
-    } else {
+    if (currentReportSelection.currentDetailEvent?.eventTime) {
       eventDate = moment(currentReportSelection.currentDetailEvent.eventTime).format('MM/DD/YYYY h:mm A');
       if (currentReportSelection.currentDetailEvent.venue?.timezone) {
         eventDate += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
       }
+    } else {
+      eventDate = moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY');      
     }
   }
 

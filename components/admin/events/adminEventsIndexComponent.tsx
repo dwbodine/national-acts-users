@@ -43,6 +43,7 @@ import { useGetTours } from '@/hooks/admin/useGetTours';
 import { useSetEventsDeleted } from '@/hooks/event/useSetEventsDeleted';
 import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
 import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
+import { useSetEventsLiveInBandsInTown } from '@/hooks/event/useSetEventsLiveInBandsInTown';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -55,6 +56,7 @@ export default function AdminEventsIndex() {
   const { setEventsInactive } = useSetEventsInactive();
   const { setEventsDeleted } = useSetEventsDeleted();
   const { setEventsHidden } = useSetEventsHidden();
+  const { setEventsLiveInBandsInTown } = useSetEventsLiveInBandsInTown();
   const { getTours } = useGetTours();
   const { getTicketSocketEventsOnly } = useGetTicketSocketEventsOnly();
   const { getAllCountries } = useGetAllCountries();
@@ -306,6 +308,28 @@ export default function AdminEventsIndex() {
       });
   };
 
+  const setLiveInBandsInTown = () => {
+    if (eventIdList.length === 0) {
+      return;
+    }
+    setEventsLiveInBandsInTown(eventIdList)
+      .then((response: ModifyEventResponse) => {
+        if (response.success && !response.error) {
+          const successMessage = "Events updated successfully";
+          toast.success(successMessage);
+          setEventIdList([]);
+          setSelectedAction(null);
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.error;
+          if (!errorMessage) {
+            errorMessage = 'Unexpected error occurred while updating events';
+          }
+          toast.error(errorMessage);
+        }
+      });
+  };
+
   const hideEvents = (setHidden: boolean) => {
     if (eventIdList.length === 0) {
       return;
@@ -353,6 +377,9 @@ export default function AdminEventsIndex() {
       case "unhide":
         hideEvents(false);
         break;
+      case "bandsintown":
+        setLiveInBandsInTown();
+        break;
       default:
         break;
     }
@@ -382,6 +409,9 @@ export default function AdminEventsIndex() {
         break;
       case "unhide":
         message = `You are about to unhide ${eventIdList.length} events`;
+        break;
+      case "bandsintown":
+        message = `You are about to mark ${eventIdList.length} events as live in BandsInTown`;
         break;
       default:
         break;
@@ -458,6 +488,10 @@ export default function AdminEventsIndex() {
     {
       label: "Unhide",
       value: "unhide"
+    },
+    {
+      label: "Mark Live In BandsInTown",
+      value: "bandsintown"
     }
   ];
 

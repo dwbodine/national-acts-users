@@ -32,10 +32,11 @@ export default function VIPItineraryModal(props: VIPModalProps) {
     const currentSellerName = currentSeller?.sellerName;
     const startEventDateStr = currentEvents.length > 0 ? currentEvents[0].eventDate : '';
     const endEventDateStr = currentEvents.length > 0 ? currentEvents[currentEvents.length - 1].eventDate : '';
+    const nowUnix = moment().unix();
+    const firstEvent = currentEvents.find(x => moment(x.eventDate).unix() >= nowUnix);
 
     useEffect(() => {
-        if (currentEvents.length > 0) {
-            const nowUnix = moment().unix();
+        if (startEventDateStr && endEventDateStr) {
             const seUnix = moment(startEventDateStr).unix();
             const enUnix = moment(endEventDateStr).unix();
             if (startEventUnix === 0) {
@@ -43,10 +44,12 @@ export default function VIPItineraryModal(props: VIPModalProps) {
             }
             if (startCurrentUnix === 0) {
                 if (seUnix > nowUnix) {
-                    setStartCurrentUnix(seUnix);
+                    setStartCurrentUnix(seUnix);                    
+                } else if (firstEvent) {
+                    setStartCurrentUnix(moment(firstEvent.eventDate).unix());
                 } else {
                     setStartCurrentUnix(nowUnix);
-                }
+                }                    
             }
             if (endUnix === 0) {
                 setEndUnix(enUnix);
@@ -56,7 +59,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
             setStartEventUnix(0);
             setEndUnix(0);
         }
-    }, [currentEvents.length, endEventDateStr, endUnix, startCurrentUnix, startEventDateStr, startEventUnix]);
+    }, [endEventDateStr, endUnix, startCurrentUnix, startEventDateStr, startEventUnix, firstEvent, nowUnix]);
 
     const submitPdfToNewWindow = (htmlText: string) => {
         localStorage.setItem('htmlText', htmlText);
@@ -155,10 +158,10 @@ export default function VIPItineraryModal(props: VIPModalProps) {
                             <label className="mt-4" htmlFor="date-radio-group">Date Range</label>
                             <RadioGroup name="date-radio-group" value={dateRangeValue} onChange={onDateRangeSelect} disabled={isReportLoading}>
                                 <Radio value="0">
-                                    All current dates {currentRangeLabel}
+                                    Upcoming dates only {currentRangeLabel}
                                 </Radio>
                                 <Radio value="1">
-                                    Selected current dates
+                                    Selected date range
                                     <div className="itinerary-dates">
                                         <ReportDatePicker
                                             Disabled={dateRangeValue !== '1' || isReportLoading}

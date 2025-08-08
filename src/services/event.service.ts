@@ -951,6 +951,33 @@ export class EventService {
     return response;
   };
 
+  setEventsLiveInBandsInTown = async (
+    eventIdList: number[],
+  ): Promise<ModifyEventResponse> => {
+    const url = '/events/setEventsLiveInBandsInTown';
+    const headers = getAuthorizationHeader();
+
+    const response: ModifyEventResponse = {};
+
+    const data = {
+      eventIdList,
+    };
+
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while modifying event(s) - please contact your administrator';
+    }
+
+    return response;
+  };
+
   setOrdersDeleted = async (
     orderIdList: number[],
     isDeleted: boolean,
