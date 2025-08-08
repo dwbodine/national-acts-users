@@ -175,11 +175,11 @@ export default function SalesBar() {
   if (currentReportSelection.tours && currentReportSelection.tours.length > 0) {
     const activeTours = currentReportSelection.tours.filter(x => x.isActive);
     if (activeTours && activeTours.length > 0) {
-      tourList = activeTours.map(tour => 
-          ({
-            label: `${tour.tourName}`,
-            value: tour.tourId
-          })
+      tourList = activeTours.map(tour =>
+      ({
+        label: `${tour.tourName}`,
+        value: tour.tourId
+      })
       );
     }
   }
@@ -233,25 +233,25 @@ export default function SalesBar() {
       <SelectSeller />
       <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourList.length === 0}>
         <Col xs={1}>
-            Tour:
+          Tour:
         </Col>
-        <Col sm={11} md={5}>          
+        <Col sm={11} md={5}>
           <SelectPicker
-              value={selectedTourId}
-              data={tourList}
-              size="lg"        
-              onChange={(tId) => setSelectedTour(tId)}
-              cleanable={true}
-              placeholder="All Events"
-              menuAutoWidth={true}
-              className="admin-seller-select-value"
-              onClean={() => setSelectedTour(0)}
-            />
+            value={selectedTourId}
+            data={tourList}
+            size="lg"
+            onChange={(tId) => setSelectedTour(tId)}
+            cleanable={true}
+            placeholder="All Events"
+            menuAutoWidth={true}
+            className="admin-seller-select-value"
+            onClean={() => setSelectedTour(0)}
+          />
         </Col>
       </Row>
       <Row className="admin-check-row">
         <Col md={10} sm={12}>
-          {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0  ? (
+          {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0 ? (
             <InactiveCheck />
           ) : (
             ''
@@ -267,8 +267,8 @@ export default function SalesBar() {
             ''
           )}
           {viewRevenueControls &&
-          currentReportSelection.seller.sellerId > 0 &&
-          hasEvents ? (
+            currentReportSelection.seller.sellerId > 0 &&
+            hasEvents ? (
             <RevenueCheck />
           ) : (
             ''
@@ -294,17 +294,17 @@ export default function SalesBar() {
             ''
           )}
           {!windowSize.isMobile &&
-          viewPrintButton &&
-          currentReportSelection.seller.sellerId > 0 &&
-          hasEvents ? (
+            viewPrintButton &&
+            currentReportSelection.seller.sellerId > 0 &&
+            hasEvents ? (
             <PrintButton />
           ) : (
             ''
           )}
           {!windowSize.isMobile &&
-          canExportData &&
-          currentReportSelection.seller.sellerId > 0 &&
-          hasEvents ? (
+            canExportData &&
+            currentReportSelection.seller.sellerId > 0 &&
+            hasEvents ? (
             <span className="admin-button">
               <Button onClick={exportEventData}>Export Summary</Button>
             </span>
@@ -312,9 +312,9 @@ export default function SalesBar() {
             ''
           )}
           {!windowSize.isMobile &&
-          canExportCustomerData &&
-          currentReportSelection.seller.sellerId > 0 &&
-          hasEvents ? (
+            canExportCustomerData &&
+            currentReportSelection.seller.sellerId > 0 &&
+            hasEvents ? (
             <span className="admin-button">
               <Button onClick={exportCustomerData}>Export Customer Data</Button>
             </span>
@@ -322,14 +322,14 @@ export default function SalesBar() {
             ''
           )}
           {!windowSize.isMobile &&
-          viewVIPItinerary &&
-          currentReportSelection.seller.sellerId > 0 &&
-          hasEvents ? (
+            viewVIPItinerary &&
+            currentReportSelection.seller.sellerId > 0 &&
+            hasEvents ? (
             <>
               <span className="admin-button">
                 <Button onClick={() => setVipItineraryOpen(true)}>VIP Itinerary</Button>
               </span>
-              <VIPItineraryModal 
+              <VIPItineraryModal
                 IsAdmin={isAdmin}
                 IsOpen={vipItineraryOpen}
                 Seller={currentReportSelection.seller}

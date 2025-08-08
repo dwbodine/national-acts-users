@@ -1,6 +1,7 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Modal, Radio, RadioGroup } from "rsuite";
 import { exportVipItineraryToCSV, exportVipItineraryToHtml } from "@/utils/exportVipItinerary";
+import { useEffect, useState } from "react";
 import ReportDatePicker from "../../common/reportDatePicker";
 import { RootState } from "@/lib/store";
 import { UserSeller } from "@/types/user";
@@ -12,7 +13,6 @@ import { getCsvFileNameFromReportSelection } from "@/utils/getFileNameFromReport
 import moment from "moment";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { useState } from "react";
 
 export default function VIPItineraryModal(props: VIPModalProps) {
     const isOpen = props.IsOpen ?? false;
@@ -24,13 +24,39 @@ export default function VIPItineraryModal(props: VIPModalProps) {
     const [dateRangeValue, setDateRangeValue] = useState('0');
     const [formatValue, setFormatValue] = useState('0');
     const [isReportLoading, setIsReportLoading] = useState(false);
-    const [startUnix, setStartUnix] = useState(0);
+    const [startCurrentUnix, setStartCurrentUnix] = useState(0);
+    const [startEventUnix, setStartEventUnix] = useState(0);
     const [endUnix, setEndUnix] = useState(0);
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
 
     const currentSellerName = currentSeller?.sellerName;
     const startEventDateStr = currentEvents.length > 0 ? currentEvents[0].eventDate : '';
     const endEventDateStr = currentEvents.length > 0 ? currentEvents[currentEvents.length - 1].eventDate : '';
+
+    useEffect(() => {
+        if (currentEvents.length > 0) {
+            const nowUnix = moment().unix();
+            const seUnix = moment(startEventDateStr).unix();
+            const enUnix = moment(endEventDateStr).unix();
+            if (startEventUnix === 0) {
+                setStartEventUnix(seUnix);
+            }
+            if (startCurrentUnix === 0) {
+                if (seUnix > nowUnix) {
+                    setStartCurrentUnix(seUnix);
+                } else {
+                    setStartCurrentUnix(nowUnix);
+                }
+            }
+            if (endUnix === 0) {
+                setEndUnix(enUnix);
+            }
+        } else {
+            setStartCurrentUnix(0);
+            setStartEventUnix(0);
+            setEndUnix(0);
+        }
+    }, [currentEvents.length, endEventDateStr, endUnix, startCurrentUnix, startEventDateStr, startEventUnix]);
 
     const submitPdfToNewWindow = (htmlText: string) => {
         localStorage.setItem('htmlText', htmlText);
@@ -46,15 +72,20 @@ export default function VIPItineraryModal(props: VIPModalProps) {
             toast.warn("No events to export");
             return;
         }
-        if (startUnix === 0 || endUnix === 0) {
+        if (dateRangeValue === '0' && (startCurrentUnix === 0 || endUnix === 0) || 
+            dateRangeValue === '1' && (startEventUnix === 0 || endUnix === 0)) {
             toast.warn("No dates supplied");
             return;
         }
-        if (startUnix > endUnix) {
+        if ((dateRangeValue === '0' && startCurrentUnix > endUnix) || 
+            (dateRangeValue === '1' && startEventUnix > endUnix)) {
             toast.warn("Start date cannot be later than end date");
             return;
         }
-        const eventsToExport = currentEvents.filter(x => moment(x.eventDate).unix() >= startUnix && moment(x.eventDate).unix() <= endUnix);
+        const eventsToExport = dateRangeValue === '1' ?
+                currentEvents.filter(x => moment(x.eventDate).unix() >= startEventUnix && moment(x.eventDate).unix() <= endUnix) :
+                currentEvents.filter(x => moment(x.eventDate).unix() >= startCurrentUnix && moment(x.eventDate).unix() <= endUnix);
+
         setIsReportLoading(true);
         if (formatValue === "1") {
             exportVipItineraryToCSV(eventsToExport, currentSeller, isAdmin).then((csvData: string) => {
@@ -81,12 +112,14 @@ export default function VIPItineraryModal(props: VIPModalProps) {
     const onDateRangeSelect = (value: ValueType) => {
         const drVal = value ? value.toString() : '0';
         setDateRangeValue(drVal);
-        setStartUnix(0);
+        setStartCurrentUnix(0);
+        setStartEventUnix(0);
         setEndUnix(0);
     };
 
     const onStartClear = () => {
-        setStartUnix(0);
+        setStartCurrentUnix(0);
+        setStartEventUnix(0);
     }
 
     const onEndClear = () => {
@@ -94,7 +127,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
     };
 
     const onDateRangeChange = (start: number, end: number) => {
-        setStartUnix(start);
+        setStartEventUnix(start);
         setEndUnix(end);
     };
 
@@ -108,17 +141,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
         reportTitle = `${reportTitle} for ${currentSellerName}`;
     }
 
-    let currentRangeLabel = '';
-    if (currentEvents.length > 0) {
-        if (startUnix === 0) {
-            setStartUnix(moment(startEventDateStr).unix());
-        }
-        if (endUnix === 0) {
-            setEndUnix(moment(endEventDateStr).unix());
-        }
-        currentRangeLabel = `(${moment(startEventDateStr).format('MM/DD/YYYY')} - ${moment(endEventDateStr).format('MM/DD/YYYY')})`;
-    }
-
+    const currentRangeLabel = `(${moment.unix(startCurrentUnix).format('MM/DD/YYYY')} - ${moment(endEventDateStr).format('MM/DD/YYYY')})`;
 
     return (
         <Modal open={isOpen} onClose={props.OnClose} size={'lg'}>
@@ -140,7 +163,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
                                         <ReportDatePicker
                                             Disabled={dateRangeValue !== '1' || isReportLoading}
                                             LabelColumnWidth={3}
-                                            Start={startUnix}
+                                            Start={startEventUnix}
                                             End={endUnix}
                                             OnChange={onDateRangeChange}
                                             OnEndClear={onEndClear}

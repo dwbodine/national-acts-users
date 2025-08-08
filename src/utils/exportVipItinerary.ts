@@ -17,7 +17,7 @@ const exportVipItineraryToHtml = (
   htmlString += `Your admin for tracking VIP sales is located here: <a href="https://users.national-acts.com/login/" target="_blank">https://users.national-acts.com/login/</a></p></div>`;
   htmlString += `<div class="pdf-body">`;
   htmlString += `<table class="pdf-table">`;
-  htmlString += `<tr><th>Date</th><th>Venue</th><th>City/State</th><th>Full Address</th><th>Ticket Link</th><th>VIP Link</th><th>VIP Link Status</th><th>VIP Link in BandsInTown</th></tr>`;
+  htmlString += `<tr><th>Date</th><th>Venue</th><th>City / State</th><th>Full Address</th><th class="pdf-link-column">Ticket Link</th><th class="pdf-link-column">VIP Link</th><th>VIP Link Status</th><th>VIP Link in BandsInTown</th></tr>`;
   events.forEach((evt) => {
     if (evt.isDeleted === false) {
       htmlString += `<tr><td>${moment(evt.eventDate).format('MM/DD/YYYY')}</td>`;
@@ -38,14 +38,14 @@ const exportVipItineraryToHtml = (
       }
       htmlString += `<td>${fullAddress}</td>`;
       if (evt.externalUrl) {
-        htmlString += `<td><a title="Ticket Link" href="${evt.externalUrl}" target="_blank">${evt.externalUrl}</a></td>`;
+        htmlString += `<td class="pdf-link-column"><a title="Ticket Link" href="${evt.externalUrl}" target="_blank">${evt.externalUrl}</a></td>`;
       } else {
-        htmlString += `<td>'n/a'</td>`;
+        htmlString += `<td class="pdf-link-column">'n/a'</td>`;
       }
       if (evt.ticketSocketUrl) {
-        htmlString += `<td><a title="VIP Link" href="${evt.ticketSocketUrl}" target="_blank">${evt.ticketSocketUrl}</a></td>`;
+        htmlString += `<td class="pdf-link-column"><a title="VIP Link" href="${evt.ticketSocketUrl}" target="_blank">${evt.ticketSocketUrl}</a></td>`;
       } else {
-        htmlString += `<td>'n/a'</td>`;
+        htmlString += `<td class="pdf-link-column">'n/a'</td>`;
       }
       let linkStatus = getEventStatusText(evt, isAdmin);
       if (!evt.ticketSocketUrl) {
@@ -70,7 +70,7 @@ const exportVipItineraryToCSV = (
   let csvString = '';
   if (seller && events.length > 0) {
     csvString +=
-      '"Date","Venue","City/State","Full Address","Ticket Link","VIP Link","VIP Link Status","VIP Link in BandsInTown"\n';
+      '"Date","Venue","City / State","Full Address","Ticket Link","VIP Link","VIP Link Status","VIP Link in BandsInTown"\n';
     events.forEach((evt) => {
       if (evt.isDeleted === false) {
         csvString += `"${moment(evt.eventDate).format('MM/DD/YYYY')}",`;

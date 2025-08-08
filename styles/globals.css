@@ -1512,6 +1512,14 @@ a.edit-event-link {
     padding: 0 10px;
     text-align: left;
   }
+
+  .pdf-table {
+    width: fit-content;
+  }
+
+  .pdf-link-column {
+    max-width: 200px;
+  }
 }
 
 /* Bootstrap lg */
@@ -1544,6 +1552,10 @@ a.edit-event-link {
   .sales-stat-block {
     padding: 5px;
     font-size: 10px;
+  }
+
+  .pdf-link-column {
+    max-width: 150px;
   }
 }
 
@@ -1607,6 +1619,10 @@ a.edit-event-link {
 
   .search-text-input {
     max-width: 360px;
+  }
+
+  .pdf-link-column {
+    max-width: 100px;
   }
 }
 
