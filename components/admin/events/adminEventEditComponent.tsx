@@ -495,8 +495,8 @@ export default function AdminEventEdit(props: EditProps) {
   };
 
   const onCountryChange = (cId: number | null) => {
-    setCountryId(countryId ?? undefined);
-    if (countryId) {
+    setCountryId(cId ?? undefined);
+    if (cId) {
       const country = currentAdminSelection.countries?.find(x => x.countryId === cId);
       const tzList: ItemDataType<string>[] = country?.timezones ?
         country.timezones.map((tz) => (
