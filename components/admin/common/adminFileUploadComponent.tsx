@@ -13,7 +13,7 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
     const onUploadComplete = props?.OnUploadComplete;
     const showRemoveButton = props?.ShowRemoveButton ?? false;
     const onFileRemove = props?.OnFileRemove;
-    let currentFileName: string | undefined = props?.CurrentFileName;
+    let currentFileName: string | undefined = props?.CurrentFileName ?? undefined;
     const isDirty = props?.IsDirty ?? false;
     const baseUrl = props?.BaseUrl ?? '';
 
@@ -55,7 +55,7 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
 
     if (currentFileName === 'None') {
         currentFileName = undefined;
-    } else if (!currentFileName?.startsWith("http")) {
+    } else if (currentFileName && !currentFileName?.startsWith("http")) {
         currentFileName = `${baseUrl}/${currentFileName}`;
     }
 

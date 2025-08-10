@@ -354,7 +354,7 @@ export default function AdminEventEdit(props: EditProps) {
 
     const eventDate = moment(date).startOf('day');
     const currentEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.eventDate = eventDate.format('YYYY-MM-DD HH:mm:ss');
+    currentEvent.eventDate = eventDate.format('YYYY-MM-DD');
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -453,11 +453,11 @@ export default function AdminEventEdit(props: EditProps) {
       return;
     }
 
-    const eventTime = moment(date);
+    const theTime = moment(date);
     const currentEvent = { ...currentAdminSelection.selectedEvent };
     let eventDate = moment(currentEvent.eventDate);
-    eventDate = eventDate.hours(eventTime.hours());
-    eventDate = eventDate.minutes(eventTime.minutes());
+    eventDate = eventDate.hours(theTime.hours());
+    eventDate = eventDate.minutes(theTime.minutes());
     eventDate = eventDate.seconds(0);
     currentEvent.eventTime = eventDate.format('YYYY-MM-DD HH:mm:ss');
     dispatch(setAdminEvent(currentEvent));
@@ -980,14 +980,12 @@ export default function AdminEventEdit(props: EditProps) {
       : null;
 
   const eventTime =
-    selectedEvent !== undefined &&
-      selectedEvent.eventTime !== null
+      selectedEvent?.eventTime
       ? moment(selectedEvent.eventTime).toDate()
       : null;
 
   const announceDate =
-    selectedEvent !== undefined &&
-      selectedEvent.announceDate !== null
+      selectedEvent?.announceDate
       ? moment(selectedEvent.announceDate).toDate()
       : null;
 
