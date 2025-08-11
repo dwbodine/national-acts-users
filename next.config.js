@@ -2,9 +2,9 @@
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  reactStrictMode: true,
-  output: 'export',
   images: { unoptimized: true },
+  output: 'standalone',
+  reactStrictMode: true,  
   trailingSlash: true,
 };
 
