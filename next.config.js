@@ -4,7 +4,7 @@
 const nextConfig = {
   images: { unoptimized: true },
   output: 'standalone',
-  reactStrictMode: true,  
+  reactStrictMode: true,
   trailingSlash: true,
 };
 

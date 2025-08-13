@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from 'react-bootstrap';
 import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
@@ -44,10 +46,10 @@ export default function AdminList() {
         router.push('/admin/sellers/');
         break;
       case 'manage-pages':
-        router.push('/admin/pages');
+        router.push('/admin/page-manager');
         break;
       case 'manage-order':
-        router.push('/admin/pages/order');
+        router.push('/admin/page-manager/order');
         break;
       case 'manage-faqs':
         router.push('/admin/faqs/');

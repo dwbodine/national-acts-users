@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
 import { setAllFaqCategories, setMustSavePage, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';

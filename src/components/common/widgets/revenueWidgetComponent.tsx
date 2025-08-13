@@ -1,3 +1,5 @@
+"use client";
+
 import { FaMoneyBillAlt } from 'react-icons/fa';
 import { RevenueWidgetProps } from '@/types/props';
 

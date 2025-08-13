@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from 'react-bootstrap';
 import { ResetButtonProps } from '@/types/props';
 

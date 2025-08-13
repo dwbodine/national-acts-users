@@ -1,3 +1,5 @@
+"use client";
+
 import React, { ReactElement } from 'react';
 import AttendeeRow from './attendeeRowComponent';
 import { OrderRowProps } from '@/types/props';

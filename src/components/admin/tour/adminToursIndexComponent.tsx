@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Row } from 'react-bootstrap';
 import { GetEventsResponse, GetSellersResponse, GetToursResponse } from '@/types/responses';
 import {

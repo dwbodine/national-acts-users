@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Modal, Radio, RadioGroup } from "rsuite";
 import { exportVipItineraryToCSV, exportVipItineraryToHtml } from "@/utils/exportVipItinerary";

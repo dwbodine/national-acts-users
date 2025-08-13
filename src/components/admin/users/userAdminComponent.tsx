@@ -1,3 +1,5 @@
+"use client";
+
 import UserActivityBar from "../../users/userActivityBarComponent";
 import UserActivityTable from "../../users/userActivityTable";
 

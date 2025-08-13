@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from 'react-bootstrap';
 import { PrintButtonProps } from '@/types/props';
 

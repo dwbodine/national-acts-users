@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from 'react-bootstrap';
 import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
 import { useDispatch, useSelector } from 'react-redux';

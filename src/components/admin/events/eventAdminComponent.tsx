@@ -1,3 +1,5 @@
+"use client";
+
 import AllEvents from "../../events/allEventsComponent";
 import EventSalesBar from "../../events/eventSalesBarComponent";
 

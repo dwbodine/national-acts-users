@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from 'react-bootstrap';
 import { IconButton, Table } from 'rsuite';
 import { Note, VipEvent } from '@/types/event';

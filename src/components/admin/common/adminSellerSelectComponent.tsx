@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
 import { Country, PageSeller } from '@/types/public';
 import { Modal, SelectPicker } from 'rsuite';

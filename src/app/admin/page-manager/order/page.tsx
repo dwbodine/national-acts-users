@@ -1,6 +1,6 @@
 import { ActivePageKey } from '@/constants';
 import AdminPage from '../../../../components/common/adminPageComponent';
-import AdminPageOrderIndex from '../../../../components/admin/pages/order/adminPageOrderIndexComponent';
+import AdminPageOrderIndex from '../../../../components/admin/page-manager/order/adminPageOrderIndexComponent';
 
 export default function AdminPages() {
   const title = 'Client Portal - Manage Client Page Order';

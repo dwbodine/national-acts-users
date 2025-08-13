@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Row } from 'react-bootstrap';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import {

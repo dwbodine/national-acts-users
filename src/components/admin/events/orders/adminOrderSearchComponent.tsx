@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Row } from 'react-bootstrap';
 import { KeyboardEvent, useEffect, useState } from 'react';
 import { getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';

@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from 'react-bootstrap';
 import { ReactElement } from 'react';
 import { SalesPerDayOfWeekWidgetProps } from '@/types/props';

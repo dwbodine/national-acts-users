@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Form } from "react-bootstrap";
 import { AddNoteModalProps } from "@/types/props";
 import { Modal } from "rsuite";

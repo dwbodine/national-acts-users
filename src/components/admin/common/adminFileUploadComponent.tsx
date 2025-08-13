@@ -1,3 +1,5 @@
+"use client";
+
 import { ChangeEvent, ReactElement, useState } from "react";
 import { AdminFileUploadProps } from "@/types/props";
 import { FaTimesCircle } from "react-icons/fa";

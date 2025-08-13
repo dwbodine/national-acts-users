@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from 'react-bootstrap';
 import router from 'next/router';
 import { setIsLoading } from '@/lib/globalSelectionSlice';

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
 import React, { ReactElement } from 'react';

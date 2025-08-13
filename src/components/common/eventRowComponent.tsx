@@ -1,3 +1,5 @@
+"use client";
+
 import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import { EventRowProps } from '@/types/props';
 import React from 'react';

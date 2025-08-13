@@ -1,3 +1,5 @@
+"use client";
+
 import { GetRolesResponse, GetUsersResponse } from '@/types/responses';
 import { Role, User } from '@/types/user';
 import { setSelectedUser, setUsers } from '@/lib/adminSelectionSlice';

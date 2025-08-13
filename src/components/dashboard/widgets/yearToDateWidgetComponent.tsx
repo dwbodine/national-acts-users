@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from 'react-bootstrap';
 import { YearToDateWidgetProps } from '@/types/props';
 import moment from 'moment';

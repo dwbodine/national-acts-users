@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import {

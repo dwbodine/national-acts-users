@@ -1,3 +1,5 @@
+"use client";
+
 import { AverageSalesWidgetProps } from '@/types/props';
 import moment from 'moment';
 

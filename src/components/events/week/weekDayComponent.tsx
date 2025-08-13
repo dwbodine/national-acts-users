@@ -1,3 +1,5 @@
+"use client";
+
 import { ReactElement, useState } from 'react';
 import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import { setExpandedEvent, setExpandedRow, setFocusControl, setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';

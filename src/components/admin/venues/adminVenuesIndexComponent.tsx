@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Row } from 'react-bootstrap';
 import { GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/responses';
 import { Pagination, Table } from 'rsuite';

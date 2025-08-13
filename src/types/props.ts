@@ -28,6 +28,10 @@ import {
 import { ActivePageKey } from '@/constants';
 import { CellProps } from 'rsuite';
 
+export interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
 export interface EditProps {
   Id?: number;
 }

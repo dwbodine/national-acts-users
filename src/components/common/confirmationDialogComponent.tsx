@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from 'react-bootstrap';
 import { ConfirmationDialogProps } from '@/types/props';
 import parse from 'html-react-parser';

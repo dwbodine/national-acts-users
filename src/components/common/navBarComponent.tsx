@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from 'react-bootstrap';
 import Image from 'next/image';
 import LogoutButton from './logoutButtonComponent';

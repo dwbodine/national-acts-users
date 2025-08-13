@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
 import { DatePicker, Modal, SelectPicker, TimePicker } from 'rsuite';
 import { GetCountriesResponse, GetEventResponse, GetEventsResponse, GetExternalVenuesResponse, GetSellersResponse, ModifyEventResponse, ModifyExternalVenueResponse, ModifyNoteResponse, ModifyOrderResponse } from '@/types/responses';

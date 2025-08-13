@@ -1,3 +1,5 @@
+"use client";
+
 import { FaSignOutAlt } from 'react-icons/fa';
 import router from 'next/router';
 

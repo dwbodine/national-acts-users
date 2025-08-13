@@ -1,3 +1,5 @@
+"use client";
+
 import { FaCheck, FaX } from 'react-icons/fa6';
 import { setFocusControl, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { AttendeeRowProps } from '@/types/props';

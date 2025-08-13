@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from 'react';
 import { AdminPageProps } from '@/types/props';
 import AdminTabs from './adminTabsComponent';

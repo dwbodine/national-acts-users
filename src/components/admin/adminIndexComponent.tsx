@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Container, Row } from 'react-bootstrap';
 import { resetAdmin, setCountries, setReloadCountries } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';

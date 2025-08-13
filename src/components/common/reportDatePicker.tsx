@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { DatePicker } from 'rsuite';

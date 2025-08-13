@@ -1,3 +1,5 @@
+"use client";
+
 import { IShirtData, IShirtSizeData } from '@/types/event';
 import React, { ReactElement } from 'react';
 import { FaShirtsinbulk } from 'react-icons/fa';

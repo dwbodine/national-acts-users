@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from 'react-bootstrap';
 import { Progress } from 'rsuite';
 import { RevenueGoalsWidgetProps } from '@/types/props';

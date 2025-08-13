@@ -1,3 +1,5 @@
+"use client";
+
 import { FaCalendar } from 'react-icons/fa';
 import { ShowsListedWidgetProps } from '@/types/props';
 

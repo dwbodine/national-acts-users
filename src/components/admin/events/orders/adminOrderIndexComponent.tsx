@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { GetEventResponse, GetEventsResponse, ModifyOrderResponse } from '@/types/responses';
 import { SelectPicker, Table } from 'rsuite';

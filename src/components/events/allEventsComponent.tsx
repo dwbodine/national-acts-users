@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, ButtonGroup } from 'rsuite';
 import { Col, Row } from 'react-bootstrap';
 import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';

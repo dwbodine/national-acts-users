@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Row } from "react-bootstrap";
 import { GetSettingsResponse, UpdateSettingResponse } from "@/types/responses";
 import { ReactElement, useEffect, useState } from "react";

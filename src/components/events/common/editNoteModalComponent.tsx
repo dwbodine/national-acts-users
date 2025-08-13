@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Form } from "react-bootstrap";
 import { DatePicker, Modal } from "rsuite";
 import { EditNoteModalProps } from "@/types/props";

@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from "react-bootstrap";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Note, VipEvent } from "@/types/event";

@@ -1,3 +1,5 @@
+"use client";
+
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
 import { setAllFaqs, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';

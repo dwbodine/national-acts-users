@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, FormCheck } from 'react-bootstrap';
 import { GetRolesResponse, UpdateRoleResponse } from '@/types/responses';
 import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';

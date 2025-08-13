@@ -1,3 +1,5 @@
+"use client";
+
 import { GetSellersResponse, GetTicketSocketAccountsResponse } from '@/types/responses';
 import { Seller, SellerType } from '@/types/event';
 import { setAdminSeller, setAllSellers, setReloadSellers, setTicketSocketAccounts } from '@/lib/adminSelectionSlice';

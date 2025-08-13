@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Row } from 'react-bootstrap';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';

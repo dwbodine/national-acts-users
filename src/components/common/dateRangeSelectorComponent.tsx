@@ -1,3 +1,5 @@
+"use client";
+
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import { useEffect, useState } from 'react';
 import { DateRangePicker } from 'rsuite';

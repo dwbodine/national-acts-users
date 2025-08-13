@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
 import { DatePicker, SelectPicker } from 'rsuite';
 import { GetPageTypesResponse, GetSellersResponse, ModifyPageResponse } from '@/types/responses';
@@ -46,7 +48,7 @@ export default function AdminPageEdit() {
 
   const goBack = () => {
     toast.dismiss();
-    router.push('/admin/pages/');
+    router.push('/admin/page-manager/');
   };
 
   useEffect(() => {
@@ -516,7 +518,7 @@ export default function AdminPageEdit() {
       if (response.success) {
         dispatch(setReloadPages(true));
         toast.success('Save page succeeded');
-        router.push('/admin/pages/');
+        router.push('/admin/page-manager/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving page');
       }

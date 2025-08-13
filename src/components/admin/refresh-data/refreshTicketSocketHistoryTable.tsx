@@ -1,3 +1,5 @@
+"use client";
+
 import { RefreshTicketSocketHistoryTableProps } from '@/types/props';
 import { Table } from 'rsuite';
 import moment from 'moment';

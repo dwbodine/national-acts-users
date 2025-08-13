@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Container, Row } from 'react-bootstrap';
 import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from 'react-icons/fa';
 import { ReactElement, useEffect, useState } from 'react';

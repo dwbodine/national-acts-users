@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, ButtonGroup } from "rsuite";
 import { Col, Container, Row } from "react-bootstrap";
 import { ActivePageKey } from "@/constants";

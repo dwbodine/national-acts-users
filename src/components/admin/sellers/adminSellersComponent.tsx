@@ -1,3 +1,5 @@
+"use client";
+
 import CurrentEvents from "../../sales/events/currentEventsComponent";
 import SalesBar from "../../sales/events/salesBarComponent";
 

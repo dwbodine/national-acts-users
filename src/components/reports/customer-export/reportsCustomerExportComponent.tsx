@@ -1,3 +1,5 @@
+"use client";
+
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-bootstrap';
 import { GetEventsResponse } from '@/types/responses';

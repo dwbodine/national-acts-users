@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Container, Row } from 'react-bootstrap';
 import React, { ReactElement } from 'react';
 import AttendeeRow from './attendeeRowComponent';

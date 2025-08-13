@@ -1,45 +1,30 @@
-'use client';
+import { User } from '@/types/user';
+import { redirect } from 'next/navigation';
 
-import { User, UserActivityType } from '@/types/user';
-import { useEffect, useState } from 'react';
-import AdminBar from '../components/sales/events/salesBarComponent';
-import Container from 'react-bootstrap/Container';
-import CurrentEvents from '../components/sales/events/currentEventsComponent';
-import NavBar from '../components/common/navBarComponent';
-import router from 'next/router';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useLogActivityData } from '@/hooks/common/useLogActivityData';
+export default function HomePage() {
 
-export default function Home() {
-  const { getUser } = useCurrentUser();
-  const [user, setUser] = useState<User | undefined>(undefined);
-  const { logActivityData } = useLogActivityData();
-
-  useEffect(() => {
-    if (!user) {
-      const currentUser = getUser();
-      setUser(currentUser);
+  let user: User | undefined = undefined;
+  try {
+    const currentUserStr = localStorage.getItem('currentUser') || undefined;
+    if (currentUserStr) {
+      user = JSON.parse(currentUserStr) as User;
     }
-    if (user && user.isAuthenticated) {
-      if (user.isAdmin) {
-        router.push('/dashboard/');
-      } else {
-        document.title = 'Client Portal - Sales Overview';
-        logActivityData(UserActivityType.AccessSalesOverView);
-      }
-    }
-  }, [user, logActivityData, getUser]);
+  } catch {
+    user = undefined;
+  }
 
-  const notLoggedIn = !user || !user.isAuthenticated;
-  const adminUser = user && user.isAuthenticated && user.isAdmin;
+  if (user && user.isAuthenticated) {
+    if (user.isAdmin) {
+      redirect('/dashboard/');
+    } else {
+      redirect('sellers');
+    }
+  }
+  else {
+    redirect('login')
+  }
 
   return (
-    <>
-      <NavBar Hidden={notLoggedIn || adminUser} />
-      <Container fluid hidden={notLoggedIn || adminUser} className="vipContainer">
-        <AdminBar />
-        <CurrentEvents />
-      </Container>
-    </>
+    <></>
   );
 }

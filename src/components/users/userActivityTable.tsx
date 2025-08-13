@@ -1,3 +1,5 @@
+"use client";
+
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Col, Container, FormCheck, Row } from 'react-bootstrap';
 import {

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, FormCheck } from 'react-bootstrap';
 import { GetPermissionsResponse, UpdateRoleResponse } from '@/types/responses';
 import {

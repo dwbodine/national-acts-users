@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, FormCheck } from 'react-bootstrap';
 import { CheckPicker, DatePicker, PickerHandle, TimePicker } from 'rsuite';
 import { GetEventsResponse, ModifyTourResponse } from '@/types/responses';

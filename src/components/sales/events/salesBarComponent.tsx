@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Row } from 'react-bootstrap';
 import { exportCustomerDataToCsv, exportEventsToCsv } from '@/utils/eventUtils';
 import {

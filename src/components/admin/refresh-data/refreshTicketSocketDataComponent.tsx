@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, Row } from 'react-bootstrap';
 import { GetRefreshHistoryResponse, GetSellersResponse, RefreshHistoryResponse } from '@/types/responses';
 import {

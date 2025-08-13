@@ -1,3 +1,5 @@
+"use client";
+
 import { GetPageTypesResponse, GetPagesResponse, GetSellersResponse } from '@/types/responses';
 import { setAllPages, setAllSellers, setPageTypes, setReloadPages, setReloadSellers, setSelectedPage } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -83,7 +85,7 @@ export default function AdminPagesIndex() {
     };
     dispatch(setSelectedPage(page));
     setTableLoading(true);
-    router.push('/admin/pages/edit');
+    router.push('/admin/page-manager/edit');
   };
 
   const editPage = (pageId: number) => {
@@ -94,7 +96,7 @@ export default function AdminPagesIndex() {
     if (page) {
       dispatch(setSelectedPage(page));
       setTableLoading(true);
-      router.push('/admin/pages/edit');
+      router.push('/admin/page-manager/edit');
     }
   };
 

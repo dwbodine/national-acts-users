@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
 import { ReactElement, useEffect } from 'react';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';

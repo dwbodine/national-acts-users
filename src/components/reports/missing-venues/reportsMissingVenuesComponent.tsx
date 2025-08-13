@@ -1,3 +1,5 @@
+"use client";
+
 import { Venue, VipEvent } from '@/types/event';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';

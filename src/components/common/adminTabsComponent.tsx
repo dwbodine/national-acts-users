@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Container, Row } from "react-bootstrap";
 import { ActivePageKey } from "@/constants";
 import { AdminTabsProps } from "@/types/props";

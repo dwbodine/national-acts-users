@@ -1,3 +1,5 @@
+"use client";
+
 import { Col, Row } from 'react-bootstrap';
 import { ReactElement, useState } from 'react';
 import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
