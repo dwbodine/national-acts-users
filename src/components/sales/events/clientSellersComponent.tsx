@@ -2,14 +2,14 @@
 
 import { User, UserActivityType } from '@/types/user';
 import { useEffect, useState } from 'react';
-import AdminBar from '../components/sales/events/salesBarComponent';
+import AdminBar from './salesBarComponent';
 import Container from 'react-bootstrap/Container';
-import CurrentEvents from '../components/sales/events/currentEventsComponent';
-import NavBar from '../components/common/navBarComponent';
+import CurrentEvents from './currentEventsComponent';
+import NavBar from '../../common/navBarComponent';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 
-export default function Home() {
+export default function ClientSellersComponent() {
     const { getUser } = useCurrentUser();
     const [user, setUser] = useState<User | undefined>(undefined);
     const { logActivityData } = useLogActivityData();

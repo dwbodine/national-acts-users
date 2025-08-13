@@ -5,7 +5,7 @@ const nextConfig = {
   images: { unoptimized: true },
   output: 'standalone',
   reactStrictMode: true,
-  trailingSlash: true,
+  trailingSlash: false,
 };
 
 module.exports = nextConfig;
