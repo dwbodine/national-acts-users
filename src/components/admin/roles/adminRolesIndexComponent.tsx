@@ -9,7 +9,7 @@ import AdminListHomeButton from '../adminListHomeButton';
 import { Role } from '@/types/user';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useDeleteRoles } from '@/hooks/admin/useDeleteRoles';
@@ -56,7 +56,7 @@ export default function AdminRolesIndex() {
     if (role) {
       dispatch(setSelectedRole(role));
       setTableLoading(true);
-      router.push('/admin/roles/edit');
+      redirect('/admin/roles/edit');
     }
   };
 
@@ -68,7 +68,7 @@ export default function AdminRolesIndex() {
     };
     dispatch(setSelectedRole(role));
     setTableLoading(true);
-    router.push('/admin/roles/edit');
+    redirect('/admin/roles/edit');
   };
 
   const updateSelectedRoles = (roleId: number, isChecked: boolean) => {

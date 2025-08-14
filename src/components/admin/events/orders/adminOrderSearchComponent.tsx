@@ -9,7 +9,7 @@ import { Order } from '@/types/event';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setAdminOrders } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
@@ -84,7 +84,7 @@ export default function AdminOrdersSearch() {
 
   const goBack = () => {
     dispatch(setAdminOrders(undefined));
-    router.push('/admin/');
+    redirect('/admin/');
   };
 
   const numOrders = currentAdminSelection.orders?.length ?? 0;

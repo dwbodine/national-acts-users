@@ -4,13 +4,13 @@ import { Button, Col, Row } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import { UserResponse } from '@/types/responses';
+import { redirect } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useResetPasswordSecure } from '@/hooks/user/useResetPasswordSecure';
-import { useRouter } from 'next/router';
+
 
 export default function ResetPasswordComponent() {
   const { resetPasswordSecure } = useResetPasswordSecure();
-  const router = useRouter();
   const { getUser } = useCurrentUser();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,7 +19,7 @@ export default function ResetPasswordComponent() {
 
   useEffect(() => {
     document.title = 'Client Portal - Reset Password';
-  }, [router]);
+  }, []);
 
   const handleSubmit = () => {
     const user = getUser();
@@ -38,7 +38,7 @@ export default function ResetPasswordComponent() {
             'Password changed successfully, please use new password to log back in...',
           );
           setTimeout(() => {
-            router.push('/logout');
+            redirect('/logout');
           }, 2000);
         }
       })
@@ -50,7 +50,7 @@ export default function ResetPasswordComponent() {
   };
 
   const handleCancel = () => {
-    router.push('/');
+    redirect('/');
   };
 
   return (

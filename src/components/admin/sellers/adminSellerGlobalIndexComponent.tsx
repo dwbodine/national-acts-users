@@ -10,7 +10,7 @@ import { Button } from 'react-bootstrap';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import { getSellerStatusSlug } from '@/utils/eventUtils';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
@@ -67,7 +67,7 @@ export default function AdminSellerGlobalIndex() {
     };
     dispatch(setAdminSeller(seller));
     setTableLoading(true);
-    router.push('/admin/sellers/edit');
+    redirect('/admin/sellers/edit');
   };
 
   const editSeller = (sellerId: number) => {
@@ -78,7 +78,7 @@ export default function AdminSellerGlobalIndex() {
     if (seller) {
       dispatch(setAdminSeller(seller));
       setTableLoading(true);
-      router.push('/admin/sellers/edit');
+      redirect('/admin/sellers/edit');
     }
   };
 

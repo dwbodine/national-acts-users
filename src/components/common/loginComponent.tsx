@@ -5,11 +5,11 @@ import { KeyboardEvent, useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Image from 'next/image';
 import { UserLoginResponse } from '@/types/responses';
+import { redirect } from 'next/navigation';
 import { setForAdmin } from '@/lib/reportSelectionSlice';
 import { useDispatch } from 'react-redux';
 import { useLogin } from '@/hooks/user/useLogin';
 import { useResetStores } from '@/hooks/common/useResetStores';
-import { redirect } from 'next/navigation';
 
 export default function LoginComponent() {
   const [name, setName] = useState('');

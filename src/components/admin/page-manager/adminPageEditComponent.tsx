@@ -15,7 +15,7 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import { SellerType } from '@/types/event';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
@@ -48,7 +48,7 @@ export default function AdminPageEdit() {
 
   const goBack = () => {
     toast.dismiss();
-    router.push('/admin/page-manager/');
+    redirect('/admin/page-manager/');
   };
 
   useEffect(() => {
@@ -518,7 +518,7 @@ export default function AdminPageEdit() {
       if (response.success) {
         dispatch(setReloadPages(true));
         toast.success('Save page succeeded');
-        router.push('/admin/page-manager/');
+        redirect('/admin/page-manager/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving page');
       }

@@ -7,7 +7,7 @@ import AdminTabsMobile from './adminTabsMobileComponent';
 import { Container } from 'react-bootstrap';
 import NavBar from './navBarComponent';
 import { RootState } from '@/lib/store';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 import { useSelector } from 'react-redux';
@@ -37,7 +37,7 @@ export default function AdminPage(props: AdminPageProps) {
             logActivityData(userActivity);
           }
         } else {
-          router.push('/logout/');
+          redirect('/logout/');
         }
       }
     }, 200);

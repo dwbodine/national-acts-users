@@ -5,7 +5,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { ActivePageKey } from "@/constants";
 import { AdminTabsProps } from "@/types/props";
 import { RingLoader } from 'react-spinners';
-import router from "next/router";
+import { redirect } from 'next/navigation';
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { setReloadAdminEvents } from "@/lib/adminEventsSelectionSlice";
 import { setReloadEvents } from "@/lib/reportSelectionSlice";
@@ -28,25 +28,25 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
     dispatch(setIsLoading(true));
     switch (key) {
       case ActivePageKey.Dashboard:
-        router.push('/dashboard/');
+        redirect('/dashboard/');
         break;
       case ActivePageKey.Admin:
-        router.push('/admin/');
+        redirect('/admin/');
         break;
       case ActivePageKey.SalesOverview:
         dispatch(setIsLoading(true));
         dispatch(setReloadEvents(true));
-        router.push('/sellers/');
+        redirect('/sellers/');
         break;
       case ActivePageKey.Reports:
-        router.push('/reports/');
+        redirect('/reports/');
         break;
       case ActivePageKey.Users:
-        router.push('/users');
+        redirect('/users');
         break;
       case ActivePageKey.Events:
         dispatch(setReloadAdminEvents(true));
-        router.push('/events/');
+        redirect('/events/');
         break;
       default:
         break;

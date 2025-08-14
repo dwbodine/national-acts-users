@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from 'react-bootstrap';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 
 export default function AdminListHomeButton() {
   const goHome = () => {
-    router.push('/admin/');
+    redirect('/admin/');
   };
   return <Button className="admin-home-button" onClick={goHome}>Back</Button>;
 }

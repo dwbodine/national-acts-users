@@ -9,7 +9,7 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { ModifyExternalVenueResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { SelectPicker } from 'rsuite';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
@@ -27,7 +27,7 @@ export default function AdminVenueEdit() {
   const [timezone, setTimezone] = useState<string | undefined>(undefined);
 
   const goBack = () => {
-    router.push('/admin/venues/');
+    redirect('/admin/venues/');
   };
 
   useEffect(() => {
@@ -117,7 +117,7 @@ export default function AdminVenueEdit() {
         dispatch(setAdminVenue(undefined))
         const message = isUpdate ? 'Venue updated successfully' : 'Venue added successfully';
         toast.success(message);
-        router.push('/admin/venues/');
+        redirect('/admin/venues/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving venue');
         dispatch(setIsLoading(false));

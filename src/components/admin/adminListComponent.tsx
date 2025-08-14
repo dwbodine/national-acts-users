@@ -1,7 +1,7 @@
 "use client";
 
 import { Col, Row } from 'react-bootstrap';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useDispatch } from 'react-redux';
@@ -16,43 +16,43 @@ export default function AdminList() {
   const goToAdminPage = (adminAction: string) => {
     switch (adminAction) {
       case 'manage-roles':
-        router.push('/admin/roles/');
+        redirect('/admin/roles/');
         break;
       case 'manage-users':
-        router.push('/admin/users/');
+        redirect('/admin/users/');
         break;
       case 'manage-refresh-data':
-        router.push('/admin/refresh-data/');
+        redirect('/admin/refresh-data/');
         break;
       case 'manage-events':
-        router.push('/admin/events/');
+        redirect('/admin/events/');
         break;
       case 'manage-orders':
-        router.push('/admin/events/orders/search');
+        redirect('/admin/events/orders/search');
         break;
       case 'view-log':
-        router.push('/admin/log/');
+        redirect('/admin/log/');
         break;
       case 'manage-tours':
-        router.push('/admin/tour');
+        redirect('/admin/tour');
         break;
       case 'manage-site-settings':
-        router.push('/admin/settings');
+        redirect('/admin/settings');
         break;
       case 'manage-venues':
-        router.push('/admin/venues');
+        redirect('/admin/venues');
         break;
       case 'manage-global-seller-settings':
-        router.push('/admin/sellers/');
+        redirect('/admin/sellers/');
         break;
       case 'manage-pages':
-        router.push('/admin/page-manager');
+        redirect('/admin/page-manager');
         break;
       case 'manage-order':
-        router.push('/admin/page-manager/order');
+        redirect('/admin/page-manager/order');
         break;
       case 'manage-faqs':
-        router.push('/admin/faqs/');
+        redirect('/admin/faqs/');
         break;
       default:
         break;

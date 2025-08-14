@@ -8,7 +8,7 @@ import { EventTabView } from '@/types/user';
 import type { RootState } from '../../lib/store';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useEffect } from 'react';
@@ -34,7 +34,7 @@ export default function EventSalesBar() {
   useEffect(() => {
     const user = getUser();
     if (!user?.isAdmin) {
-      router.push('/');
+      redirect('/');
     } else if (currentReportSelection.start === undefined) {
       const selectedDate = moment().unix();
       const tabView = currentReportSelection.eventTabView ?? (agendaOnly ? EventTabView.Agenda : DEFAULT_EVENT_TAB_VIEW);

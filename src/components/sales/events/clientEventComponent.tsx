@@ -21,9 +21,9 @@ export default function ClientEventComponent() {
       let idParam = searchParams.get('id');
       if (idParam) {
         idParam = `/event/?id=${idParam}`;
-        router.push(`/login/?returnPath=${encodeURI(idParam)}`);
+        redirect(`/login/?returnPath=${encodeURI(idParam)}`);
       } else {
-        router.push('/login/');
+        redirect('/login/');
       }
     }
 

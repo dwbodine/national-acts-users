@@ -4,8 +4,8 @@ import { Col, Row } from 'react-bootstrap';
 import Image from 'next/image';
 import LogoutButton from './logoutButtonComponent';
 import { NavBarProps } from '@/types/props';
-import ResetPasswordButton from './resetPasswordComponent';
-import router from 'next/router';
+import ResetPasswordButton from './resetPasswordButtonComponent';
+import { redirect } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useEffect } from 'react';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
@@ -24,9 +24,9 @@ export default function NavBar(props: NavBarProps) {
   const goHome = () => {
     const currentUser = getUser();
     if (currentUser?.isAdmin) {
-      router.push('/dashboard/');
+      redirect('/dashboard/');
     } else {
-      router.push('/');
+      redirect('/');
     }
   };
 

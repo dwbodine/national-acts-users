@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
@@ -27,7 +27,7 @@ export default function AdminTourEdit() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.selectedTour === undefined || currentAdminSelection.sellerId === undefined) {
-        router.push('/admin/tour/');
+        redirect('/admin/tour/');
       }
     }, 200);
     return () => {
@@ -38,7 +38,7 @@ export default function AdminTourEdit() {
   const goBack = () => {
     dispatch(setAdminTour(undefined));
     dispatch(setReloadTours(true));
-    router.push('/admin/tour/');
+    redirect('/admin/tour/');
   };
 
   const setTourName = (tourName: string) => {
@@ -209,7 +209,7 @@ export default function AdminTourEdit() {
       if (response.success) {
         dispatch(setReloadTours(true));
         toast.success('Save tour succeeded');
-        router.push('/admin/tour/');
+        redirect('/admin/tour/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving tour');
       }

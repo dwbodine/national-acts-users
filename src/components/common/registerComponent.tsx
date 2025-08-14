@@ -5,12 +5,12 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { GetSellersResponse, UserResponse } from '@/types/responses';
 import Container from 'react-bootstrap/Container';
 import { Seller } from '@/types/event';
+import { redirect } from 'next/navigation';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRegister } from '@/hooks/user/useRegister';
-import { useRouter } from 'next/router';
+
 
 export default function RegisterComponent() {
-  const router = useRouter();
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -97,7 +97,7 @@ export default function RegisterComponent() {
   };
 
   const onBack = () => {
-    router.push('/login/');
+    redirect('/login/');
   };
 
   return (

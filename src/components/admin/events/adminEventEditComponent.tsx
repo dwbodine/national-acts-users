@@ -28,7 +28,7 @@ import { ExternalVenue } from '@/types/admin';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useAddCompedOrder } from '@/hooks/admin/useAddCompOrder';
@@ -188,7 +188,7 @@ export default function AdminEventEdit(props: EditProps) {
     dispatch(setAdminEvent(undefined));
     dispatch(setMustSaveEvent(false));
     if (!id) {
-      router.push('/admin/events/');
+      redirect('/admin/events/');
     }
   };
 
@@ -551,7 +551,7 @@ export default function AdminEventEdit(props: EditProps) {
     if (id) {
       path += `?id=${id}`;
     }
-    router.push(path);
+    redirect(path);
   };
 
   const setTicketTypeStatus = (ticketTypeId: number, isActive: boolean) => {

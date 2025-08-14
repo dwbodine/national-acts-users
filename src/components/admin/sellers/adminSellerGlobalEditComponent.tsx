@@ -9,7 +9,7 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { ModifySellerResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { SelectPicker } from 'rsuite';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
@@ -24,7 +24,7 @@ export default function AdminSellerGlobalEdit() {
   const isArtist = selectedSellerType === SellerType.Artist;
 
   const goBack = () => {
-    router.push('/admin/sellers/');
+    redirect('/admin/sellers/');
   };
 
   useEffect(() => {
@@ -442,7 +442,7 @@ export default function AdminSellerGlobalEdit() {
         dispatch(setReloadSellers(true));
         toast.success('Save seller succeeded');
         dispatch(setAdminSeller(undefined));
-        router.push('/admin/sellers/');
+        redirect('/admin/sellers/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving seller');
       }

@@ -10,7 +10,7 @@ import { ReactElement, useEffect, useState } from 'react';
 import { setReloadRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAllPermissions } from '@/hooks/user/useGetAllPermissions';
@@ -27,7 +27,7 @@ export default function AdminRoleEdit() {
   const [roleName, setRoleName] = useState<string | undefined>('');
 
   const goBack = () => {
-    router.push('/admin/roles/');
+    redirect('/admin/roles/');
   };
 
   useEffect(() => {
@@ -111,7 +111,7 @@ export default function AdminRoleEdit() {
       if (response.success) {
         dispatch(setReloadRoles(true));
         toast.success('Save role succeeded');
-        router.push('/admin/roles/');
+        redirect('/admin/roles/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving role');
       }

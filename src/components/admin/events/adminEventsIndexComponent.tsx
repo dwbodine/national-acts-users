@@ -32,7 +32,7 @@ import ReportDatePicker from '../../common/reportDatePicker';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { toast } from 'react-toastify';
@@ -204,7 +204,7 @@ export default function AdminEventsIndex() {
     dispatch(setReloadAdminEvents(false));
     dispatch(setReloadVenues(true));
     dispatch(setAdminEvent(vipEvent));
-    router.push('/admin/events/edit/');
+    redirect('/admin/events/edit/');
   };
 
   const editEvent = (eventId: number) => {
@@ -223,7 +223,7 @@ export default function AdminEventsIndex() {
       return;
     }
     dispatch(setAdminEvent(vipEvent));
-    router.push('/admin/events/edit/');
+    redirect('/admin/events/edit/');
   };
 
   const manageOrders = (eventId: number) => {
@@ -242,7 +242,7 @@ export default function AdminEventsIndex() {
     }
     dispatch(setAdminEvent(vipEvent));
     setTableLoading(true);
-    router.push('/admin/events/orders/');
+    redirect('/admin/events/orders/');
   };
 
   const updateEventIdList = (eventId: number | undefined, addToList: boolean) => {

@@ -11,7 +11,7 @@ import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { FaPlus } from 'react-icons/fa';
 import { RootState } from '@/lib/store';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
@@ -40,7 +40,7 @@ export default function AdminUserEdit() {
   const [disableCheckIn, setDisableCheckIn] = useState<boolean>(false);
 
   const goBack = () => {
-    router.push('/admin/users/');
+    redirect('/admin/users/');
   };
 
   useEffect(() => {
@@ -178,7 +178,7 @@ export default function AdminUserEdit() {
       if (response.success) {
         dispatch(setReloadUsers(true));
         toast.success('User deleted successfully');
-        router.push('/admin/users/');
+        redirect('/admin/users/');
       } else {
         toast.error(response.error);
       }
@@ -252,7 +252,7 @@ export default function AdminUserEdit() {
       if (response.success) {
         dispatch(setReloadUsers(true));
         toast.success('User updated successfully');
-        router.push('/admin/users/');
+        redirect('/admin/users/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving user');
       }

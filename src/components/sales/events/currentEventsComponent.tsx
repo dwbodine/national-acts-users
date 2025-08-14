@@ -19,7 +19,7 @@ import getPurchaseDataFromEvents from '@/utils/getPurchaseData';
 import getShirtDataFromEvents from '@/utils/getShirtData';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useGetEvents } from '@/hooks/event/useGetEvents';
@@ -156,7 +156,7 @@ export default function CurrentEvents() {
               setChartsHidden(false);
             }
           } else if (response.statusCode === 401 || response.statusCode === 422) {
-            router.push('/logout/');
+            redirect('/logout/');
           } else {
             dispatch(setEvents([]));
             dispatch(setIsLoading(false));

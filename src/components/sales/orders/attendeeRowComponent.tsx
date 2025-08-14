@@ -5,7 +5,7 @@ import { setFocusControl, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { AttendeeRowProps } from '@/types/props';
 import { ModifyTicketResponse } from '@/types/responses';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 
@@ -34,7 +34,7 @@ export default function AttendeeRow(props: AttendeeRowProps) {
           dispatch(setFocusControl(id));
           dispatch(setReloadEvents(true));
         } else if (response.statusCode === 401 || response.statusCode === 422) {
-          router.push('/logout/');
+          redirect('/logout/');
         }
       });
   };

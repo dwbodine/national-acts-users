@@ -15,7 +15,7 @@ import { Note } from '@/types/event';
 import type { RootState } from '../../lib/store';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
@@ -93,7 +93,7 @@ export default function AllEvents() {
             }
           } else if (response.statusCode === 401 || response.statusCode === 422) {
             dispatch(setIsLoading(false));
-            router.push('/logout/');
+            redirect('/logout/');
           } else {
             dispatch(setIsLoading(false));
             dispatch(setAdminEvents(undefined));

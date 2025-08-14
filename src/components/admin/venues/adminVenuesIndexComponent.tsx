@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AdminListHomeButton from '../adminListHomeButton';
 import { ExternalVenue } from '@/types/admin';
 import { RootState } from '@/lib/store';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useDeleteVenue } from '@/hooks/admin/useDeleteVenue';
@@ -73,7 +73,7 @@ export default function AdminVenuesIndex() {
     if (venue) {
       dispatch(setAdminVenue(venue));
       setIsLoading(true);
-      router.push('/admin/venues/edit');
+      redirect('/admin/venues/edit');
     }
   };
 
@@ -87,7 +87,7 @@ export default function AdminVenuesIndex() {
 
     dispatch(setAdminVenue(venue));
     setIsLoading(true);
-    router.push('/admin/venues/edit');
+    redirect('/admin/venues/edit');
   };
 
   const deleteSelectedVenue = (venueId: number) => {

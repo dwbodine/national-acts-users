@@ -9,7 +9,7 @@ import { Button } from 'react-bootstrap';
 import { Page } from '@/types/public';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
@@ -85,7 +85,7 @@ export default function AdminPagesIndex() {
     };
     dispatch(setSelectedPage(page));
     setTableLoading(true);
-    router.push('/admin/page-manager/edit');
+    redirect('/admin/page-manager/edit');
   };
 
   const editPage = (pageId: number) => {
@@ -96,7 +96,7 @@ export default function AdminPagesIndex() {
     if (page) {
       dispatch(setSelectedPage(page));
       setTableLoading(true);
-      router.push('/admin/page-manager/edit');
+      redirect('/admin/page-manager/edit');
     }
   };
 

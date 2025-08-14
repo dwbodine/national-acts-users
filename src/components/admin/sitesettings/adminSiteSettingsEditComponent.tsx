@@ -9,7 +9,7 @@ import AdminFileUpload from "../common/adminFileUploadComponent";
 import AdminListHomeButton from "../adminListHomeButton";
 import { RootState } from "@/lib/store";
 import { SiteSetting } from "@/types/public";
-import router from "next/router";
+import { redirect } from 'next/navigation';
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { toast } from "react-toastify";
 import { useGetSiteSettings } from "@/hooks/admin/useGetSiteSettings"
@@ -141,7 +141,7 @@ export default function AdminSiteSettingsEdit() {
                 if (response.success) {
                     toast.success('Settings saved successfully');
                     clearDirty();
-                    router.push('/admin/');
+                    redirect('/admin/');
                 } else {
                     const err = response.error ?? 'Errors occurred while saving settings';
                     toast.error(err);

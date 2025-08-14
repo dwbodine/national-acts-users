@@ -20,7 +20,7 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { Order } from '@/types/event';
 import { RootState } from '@/lib/store';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
@@ -124,15 +124,15 @@ export default function AdminOrdersIndex(props: EditProps) {
     if (id) {
       path += `?id=${order.ticketSocketOrderId}`;
     }
-    router.push(path);
+    redirect(path);
   };
 
   const goBack = () => {
     if (id) {
-      router.push(`/admin/events/edit/?id=${id}`);
+      redirect(`/admin/events/edit/?id=${id}`);
     } else {
       dispatch(setAdminEvent(undefined));
-      router.push('/admin/events/');
+      redirect('/admin/events/');
     }
   };
 

@@ -9,7 +9,7 @@ import AdminListHomeButton from '../adminListHomeButton';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import debouce from 'lodash.debounce';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
 import { useGetAllUsers } from '@/hooks/admin/useGetAllUsers';
@@ -66,7 +66,7 @@ export default function AdminUsersIndex() {
     if (user) {
       dispatch(setSelectedUser(user));
       setTableLoading(true);
-      router.push('/admin/users/edit');
+      redirect('/admin/users/edit');
     }
   };
 

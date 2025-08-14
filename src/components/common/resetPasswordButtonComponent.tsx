@@ -1,11 +1,11 @@
 "use client";
 
 import { FaUnlockAlt } from 'react-icons/fa';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 
 export default function ResetPasswordButton() {
   const handleClick = () => {
-    router.push('/reset-password');
+    redirect('/reset-password');
   };
 
   return (

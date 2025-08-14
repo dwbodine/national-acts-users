@@ -10,7 +10,7 @@ import { Faq } from '@/types/public';
 import { GetFaqsResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useDeleteFaq } from '@/hooks/admin/useDeleteFaq';
 import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';
@@ -65,7 +65,7 @@ export default function AdminFaqsIndex() {
     };
     dispatch(setSelectedFaq(faq));
     setTableLoading(true);
-    router.push('/admin/faqs/edit');
+    redirect('/admin/faqs/edit');
   };
 
   const editFaq = (faqId: number) => {
@@ -76,7 +76,7 @@ export default function AdminFaqsIndex() {
     if (faq) {
       dispatch(setSelectedFaq(faq));
       setTableLoading(true);
-      router.push('/admin/faqs/edit');
+      redirect('/admin/faqs/edit');
     }
   };
 

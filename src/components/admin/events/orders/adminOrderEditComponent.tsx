@@ -17,7 +17,7 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import { getOrderStatusText } from '@/utils/eventUtils';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetOrderById } from '@/hooks/common/useGetOrderById';
@@ -121,7 +121,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (id && currentAdminSelection.selectedOrder) {
       path += `?id=${currentAdminSelection.selectedOrder.ticketSocketEventId}`;
     }
-    router.push(path);
+    redirect(path);
   };
 
   const confirmGoBack = () => {

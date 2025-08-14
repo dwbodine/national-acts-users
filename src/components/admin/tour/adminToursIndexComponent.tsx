@@ -18,7 +18,7 @@ import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import { Tour } from '@/types/event';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
@@ -116,7 +116,7 @@ export default function AdminToursIndex() {
     }
     dispatch(setAdminTour(tour));
     setTableLoading(true);
-    router.push('/admin/tour/edit/');
+    redirect('/admin/tour/edit/');
   };
 
   const addTour = () => {
@@ -144,7 +144,7 @@ export default function AdminToursIndex() {
     };
     dispatch(setAdminTour(tour));
     setTableLoading(true);
-    router.push('/admin/tour/edit');
+    redirect('/admin/tour/edit');
   };
 
   return (

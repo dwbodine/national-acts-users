@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import { ForgotPasswordMode } from '@/types/user';
 import { UserResponse } from '@/types/responses';
+import { redirect } from 'next/navigation';
 import { useForgotPassword } from '@/hooks/user/useForgotPassword';
 import { useResetPassword } from '@/hooks/user/useResetPassword';
-import { useRouter } from 'next/router';
 import { useValidateResetCode } from '@/hooks/user/useValidateResetCode';
 
 export default function ForgotPasswordComponent() {
@@ -19,7 +19,6 @@ export default function ForgotPasswordComponent() {
   const [resetError, setResetError] = useState('');
   const [resetSuccess, setResetSuccess] = useState('');
 
-  const router = useRouter();
   const { forgotPassword } = useForgotPassword();
   const { validateResetCode } = useValidateResetCode();
   const { resetPassword } = useResetPassword();
@@ -102,7 +101,7 @@ export default function ForgotPasswordComponent() {
         } else {
           setResetSuccess('Password changed successfully, redirecting to login...');
           setTimeout(() => {
-            router.push('/login/');
+            redirect('/login/');
           }, 2000);
         }
       })
@@ -119,7 +118,7 @@ export default function ForgotPasswordComponent() {
     } else if (mode === ForgotPasswordMode.ResetPassword) {
       setMode(ForgotPasswordMode.ValidateResetCode);
     } else {
-      router.push('/login/');
+      redirect('/login/');
     }
   };
 

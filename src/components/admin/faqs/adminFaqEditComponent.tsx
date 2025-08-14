@@ -9,7 +9,7 @@ import { Faq } from '@/types/public';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import { SelectPicker } from 'rsuite';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
@@ -24,7 +24,7 @@ export default function AdminFaqEdit() {
 
   const goBack = () => {
     toast.dismiss();
-    router.push('/admin/faqs/');
+    redirect('/admin/faqs/');
   };
 
   useEffect(() => {
@@ -140,7 +140,7 @@ export default function AdminFaqEdit() {
       if (response.success) {
         dispatch(setReloadFaqs(true));
         toast.success('Save FAQ succeeded');
-        router.push('/admin/faqs/');
+        redirect('/admin/faqs/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving FAQ');
       }

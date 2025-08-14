@@ -40,7 +40,7 @@ import getFileNameFromEvent from '@/utils/getFileNameFromEvent';
 import getShirtDataFromOrders from '@/utils/getShirtDataFromOrders';
 import getTicketDataFromOrders from '@/utils/getTicketDataFromOrders';
 import moment from 'moment';
-import router from 'next/router';
+import { redirect } from 'next/navigation';
 import setFocusToControl from '@/utils/setFocusToControl';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
@@ -139,7 +139,7 @@ export default function EventDetail(props: EditProps) {
             dispatch(setEventSeller(reportSelection));
           } else {
             // Not found, log out
-            router.push('/logout');
+            redirect('/logout');
           }
         } else {
           // User is logged in without selected seller, check for permission to load
@@ -151,7 +151,7 @@ export default function EventDetail(props: EditProps) {
             dispatch(setEventSeller(reportSelection));
           } else {
             // Not found or no permission, log out
-            router.push('/logout');
+            redirect('/logout');
           }
         }
       } else if (currentReportSelection?.seller?.sellerId > 0) {
