@@ -4,13 +4,12 @@ import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import EventDetail from '../orders/eventDetailComponent';
 import NavBar from '../../common/navBarComponent';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 
 export default function ClientEventComponent() {
   const [detailHidden, setDetailHidden] = useState(true);
   const [id, setId] = useState(0);
-  const router = useRouter();
   const [notLoggedIn, setNotLoggedIn] = useState(true);
 
   useEffect(() => {
@@ -40,7 +39,7 @@ export default function ClientEventComponent() {
         }
       }
     }
-  }, [detailHidden, setDetailHidden, id, setId, router]);
+  }, [detailHidden, setDetailHidden, id, setId]);
 
   return (
     <>
