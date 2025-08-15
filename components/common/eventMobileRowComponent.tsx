@@ -101,7 +101,7 @@ export default function EventMobileRow(props: EventRowProps) {
           </Row>
           <Row>
             <Col>Tickets refunded:</Col>
-            <Col>{vipEvent.numTicketsRefunded ?? 0}</Col>
+            <Col>{(vipEvent.numTicketsRefunded ?? 0)}</Col>
           </Row>
           <Row>
             <Col>Tickets comped:</Col>

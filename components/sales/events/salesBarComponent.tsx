@@ -184,7 +184,7 @@ export default function SalesBar() {
     }
   }
 
-  const selectedTourId = currentReportSelection?.selectedTourId ?? 0;
+  const selectedTourId = (currentReportSelection?.selectedTourId ?? 0);
 
   useEffect(() => {
     const user = getUser();

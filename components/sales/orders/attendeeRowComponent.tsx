@@ -11,7 +11,7 @@ export default function AttendeeRow(props: AttendeeRowProps) {
   const canCheckInTickets = props.CanCheckInTickets;
   const ticket = props.Ticket;
 
-  const ticketId = ticket?.ticketSocketOrderTicketId ?? 0;
+  const ticketId = (ticket?.ticketSocketOrderTicketId ?? 0);
   const dispatch = useDispatch();
   let attendeeName = `${ticket?.attendeeFirstName} ${ticket?.attendeeLastName}`;
   const currentCheckIn = ticket?.isCheckedIn;

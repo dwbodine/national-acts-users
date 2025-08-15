@@ -94,7 +94,7 @@ export default function AdminOrderEdit(props: EditProps) {
           ticket.price = newPrice;
           orderRevenue += newPrice;
         } else {
-          orderRevenue += ticket.price ?? 0;
+          orderRevenue += (ticket.price ?? 0);
         }
         return ticket;
       });
@@ -200,7 +200,7 @@ export default function AdminOrderEdit(props: EditProps) {
           ticket.serviceFee = newServiceFee;
           orderServiceFees += newServiceFee;
         } else {
-          orderServiceFees += ticket.serviceFee ?? 0;
+          orderServiceFees += (ticket.serviceFee ?? 0);
         }
         return ticket;
       });

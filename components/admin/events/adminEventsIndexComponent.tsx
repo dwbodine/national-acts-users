@@ -97,7 +97,7 @@ export default function AdminEventsIndex() {
         setSelectedAction(null);
         dispatch(setReloadEvents(false));
         const adminSelection = { ...currentAdminSelection };
-        const sellerId: number = adminSelection.sellerId ?? 0;
+        const sellerId: number = (adminSelection.sellerId ?? 0);
         if (sellerId === 0) {
           setTableLoading(false);
           return;
@@ -461,7 +461,7 @@ export default function AdminEventsIndex() {
     onDateChange(undefined, undefined);
   };
 
-  const selectedTourId = currentAdminSelection.selectedTour?.tourId ?? 0;
+  const selectedTourId = (currentAdminSelection.selectedTour?.tourId ?? 0);
   const sellectedSellerId = currentAdminSelection.sellerId;
 
   const actions = [

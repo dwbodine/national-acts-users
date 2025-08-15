@@ -33,11 +33,11 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
         numberOfWeeksInMonth += 1;
       }
 
-      let monthVal = salesPerDayMonth?.find((x) => x.key === dayNumber)?.value ?? 0;
+      let monthVal = (salesPerDayMonth?.find((x) => x.key === dayNumber)?.value ?? 0);
       if (monthVal > 0 && numberOfWeeksInMonth > 0) {
         monthVal /= numberOfWeeksInMonth;
       }
-      let yearVal = salesPerDayYear?.find((x) => x.key === dayNumber)?.value ?? 0;
+      let yearVal = (salesPerDayYear?.find((x) => x.key === dayNumber)?.value ?? 0);
       if (yearVal > 0 && numberOfWeeksInYear > 0) {
         yearVal /= numberOfWeeksInYear;
       }

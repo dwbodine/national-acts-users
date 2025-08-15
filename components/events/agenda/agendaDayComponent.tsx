@@ -205,11 +205,11 @@ export default function AgendaDay(props: AgendaDayProps) {
             }
 
             const sold = evt.totalTickets;
-            const available = evt.ticketTypes?.reduce((accumulator, current) => accumulator + current.totalAvailable, 0) ?? 0;
+            const available = (evt.ticketTypes?.reduce((accumulator, current) => accumulator + current.totalAvailable, 0) ?? 0);
 
             const listSent = (evt.listSentToBand ?? false);
-            const listSentVips = evt.listSentNumVips ?? 0;
-            const currentVips = evt.totalTickets ?? 0;
+            const listSentVips = (evt.listSentNumVips ?? 0);
+            const currentVips = (evt.totalTickets ?? 0);
             const showVipAlert = (listSent && (listSentVips !== currentVips));
 
             let alertIcon: ReactElement = <></>;

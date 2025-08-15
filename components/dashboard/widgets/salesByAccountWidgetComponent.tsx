@@ -10,7 +10,7 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
   let averagePurchaseAmount = 0;
   let pricePerTicket = 0;
   let serviceFeePerTicket = 0;
-  const tickets = accountTotals?.Tickets ?? 0;
+  const tickets = (accountTotals?.Tickets ?? 0);
   if (tickets > 0) {
     pricePerTicket = (accountTotals?.Revenue ?? 0) / tickets;
     serviceFeePerTicket = (accountTotals?.ServiceFees ?? 0) / tickets;

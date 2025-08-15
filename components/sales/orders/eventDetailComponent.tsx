@@ -420,7 +420,7 @@ export default function EventDetail(props: EditProps) {
       shirtSizes.forEach((shirtSize: string) => {
         shirtData?.ShirtData?.forEach((shirSizeData: IShirtSizeData[]) => {
           const data = shirSizeData.find((x) => x.ShirtSize === shirtSize);
-          let number = arr.get(shirtSize) ?? 0;
+          let number = (arr.get(shirtSize) ?? 0);
           if (data) {
             number += data.Number;
           }

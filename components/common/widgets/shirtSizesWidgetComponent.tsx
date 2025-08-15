@@ -14,7 +14,7 @@ export default function ShirtSizesWidget(props: ShirtSizesWidgetProps) {
     shirtSizes.forEach((shirtSize: string) => {
       shirtPropData.ShirtData?.forEach((shirSizeData: IShirtSizeData[]) => {
         const data = shirSizeData.find((x) => x.ShirtSize === shirtSize);
-        let number = shirtMap.get(shirtSize) ?? 0;
+        let number = (shirtMap.get(shirtSize) ?? 0);
         if (data) {
           number += data.Number;
         }

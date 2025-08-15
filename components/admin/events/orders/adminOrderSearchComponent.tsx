@@ -85,7 +85,7 @@ export default function AdminOrdersSearch() {
     router.push('/admin/');
   };
 
-  const numOrders = currentAdminSelection.orders?.length ?? 0;
+  const numOrders = (currentAdminSelection.orders?.length ?? 0);
 
   return (
     <div className="admin-container">

@@ -69,7 +69,7 @@ export default function getDashboardDataFromOrders(
           ServiceFeeRevenueChargedBack: dailyOrderData.serviceFeeRevenueChargedBack ?? 0,
           ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
           ServiceFees: dailyOrderData.serviceFeesRevenueUsd,
-          Tickets: dailyOrderData.tickets,
+          Tickets: dailyOrderData.tickets ?? 0,
           TicketsChargedBack: dailyOrderData.numTicketsChargedBack ?? 0,
           TicketsRefunded: dailyOrderData.numTicketsRefunded ?? 0,
           TotalRevenue: dailyOrderData.totalRevenueUsd,
