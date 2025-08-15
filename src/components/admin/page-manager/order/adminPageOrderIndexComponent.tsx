@@ -101,7 +101,7 @@ export default function AdminPageOrderIndex() {
       if (page.pageOrder === prevOrder) {
         page.pageOrder += 1;
       }
-      prevOrder = page.pageOrder ?? 0;
+      prevOrder = (page.pageOrder ?? 0);
       page.lastUpdate = lastUpdate;
     }
 
@@ -162,7 +162,7 @@ export default function AdminPageOrderIndex() {
   };
 
   const pageTypeName = currentAdminSelection?.selectedPageType?.pageTypeName;
-  const pageTypeId = currentAdminSelection?.selectedPageType?.pageTypeId ?? 0;
+  const pageTypeId = (currentAdminSelection?.selectedPageType?.pageTypeId ?? 0);
 
   const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageTypes ?
     currentAdminSelection.pageTypes.map((pageType) => (

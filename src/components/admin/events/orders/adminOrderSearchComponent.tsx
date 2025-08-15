@@ -87,7 +87,7 @@ export default function AdminOrdersSearch() {
     redirect('/admin/');
   };
 
-  const numOrders = currentAdminSelection.orders?.length ?? 0;
+  const numOrders = (currentAdminSelection.orders?.length ?? 0);
 
   return (
     <div className="admin-container">

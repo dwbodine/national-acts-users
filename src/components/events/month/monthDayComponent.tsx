@@ -214,10 +214,10 @@ export default function MonthDay(props: MonthDayProps) {
                     });
                 }
             });
-            const available = evt.ticketTypes?.reduce((accumulator, current) => accumulator + current.totalAvailable, 0) ?? 0;
+            const available = (evt.ticketTypes?.reduce((accumulator, current) => accumulator + current.totalAvailable, 0) ?? 0);
 
             const listSent = (evt.listSentToBand ?? false);
-            const listSentVips = evt.listSentNumVips ?? 0;
+            const listSentVips = (evt.listSentNumVips ?? 0);
             const showVipAlert = (listSent && (listSentVips !== sold));
 
             let alertIcon: ReactElement = <></>;

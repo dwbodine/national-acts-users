@@ -967,7 +967,7 @@ export default function AdminEventEdit(props: EditProps) {
       ? selectedEvent.externalEventId
       : 0;
 
-  const ticketSocketEventId = selectedEvent?.ticketSocketEventId ?? 0;
+  const ticketSocketEventId = (selectedEvent?.ticketSocketEventId ?? 0);
 
   const pageHeader = (eventId > 0) ? `Edit event for ${currentSeller?.name}` : `Add event for ${currentSeller?.name}`;
 
@@ -1008,7 +1008,7 @@ export default function AdminEventEdit(props: EditProps) {
     selectedEvent?.isAddedToBandsInTown ?? false;
 
   const thumbnail = selectedEvent?.externalThumbnail ?? undefined;
-  const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;
+  const externalEventVenueId = (selectedEvent?.externalEventVenueId ?? 0);
 
   const externalUrl = selectedEvent?.externalUrl ?? '';
   const externalVipLink = selectedEvent?.externalVipLink ?? '';

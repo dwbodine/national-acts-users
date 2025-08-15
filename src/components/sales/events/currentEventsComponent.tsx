@@ -266,15 +266,15 @@ export default function CurrentEvents() {
       }
 
       if (!evt.isDeleted) {
-        totalTickets += evt.totalTickets ?? 0;
-        totalTicketsComped += evt.numTicketsComped ?? 0;
-        revenueRefunded += evt.revenueRefunded ?? 0;
-        totalRevenue += evt.totalRevenue ?? 0 - (evt.revenueRefunded ?? 0);
-        ticketsRefunded += evt.numTicketsRefunded ?? 0;
+        totalTickets += (evt.totalTickets ?? 0);
+        totalTicketsComped += (evt.numTicketsComped ?? 0);
+        revenueRefunded += (evt.revenueRefunded ?? 0);
+        totalRevenue += (evt.totalRevenue ?? 0) - (evt.revenueRefunded ?? 0);
+        ticketsRefunded += (evt.numTicketsRefunded ?? 0);
         
-        totalShirts += evt.totalShirts ?? 0;
-        serviceFeesRefunded += evt.serviceFeeRevenueRefunded ?? 0;
-        totalServiceFees += evt.totalServiceFees ?? 0 - (evt.serviceFeeRevenueRefunded ?? 0);        
+        totalShirts += (evt.totalShirts ?? 0);
+        serviceFeesRefunded += (evt.serviceFeeRevenueRefunded ?? 0);
+        totalServiceFees += (evt.totalServiceFees ?? 0) - (evt.serviceFeeRevenueRefunded ?? 0);        
       }
       i += 1;
     }

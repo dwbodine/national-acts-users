@@ -92,22 +92,22 @@ export default function DashboardIndex() {
   const currentYear = moment().year();
   const selectedYear = moment.unix(currentDashboardSelection.start).year();
   
-  const totalTickets = currentDashboardSelection.currentDashboardData?.tickets ?? 0;
+  const totalTickets = (currentDashboardSelection.currentDashboardData?.tickets ?? 0);
   const totalTicketsRefunded =
-    currentDashboardSelection.currentDashboardData?.ticketsRefunded ?? 0;
-  const totalTicketRevenue = currentDashboardSelection.currentDashboardData?.revenue ?? 0;
-  const totalRevenue = currentDashboardSelection.currentDashboardData?.totalRevenue ?? 0;
+    (currentDashboardSelection.currentDashboardData?.ticketsRefunded ?? 0);
+  const totalTicketRevenue = (currentDashboardSelection.currentDashboardData?.revenue ?? 0);
+  const totalRevenue = (currentDashboardSelection.currentDashboardData?.totalRevenue ?? 0);
   const totalServiceFees =
-    currentDashboardSelection.currentDashboardData?.serviceFees ?? 0;
-  const totalPurchases = currentDashboardSelection.currentDashboardData?.purchases ?? 0;
+    (currentDashboardSelection.currentDashboardData?.serviceFees ?? 0);
+  const totalPurchases = (currentDashboardSelection.currentDashboardData?.purchases ?? 0);
   const ticketSalesData =
-    currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined;
+    (currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined);
   const topSellers =
-    currentDashboardSelection.currentDashboardData?.topSellers ?? undefined;
+    (currentDashboardSelection.currentDashboardData?.topSellers ?? undefined);
   const topLocations =
-    currentDashboardSelection.currentDashboardData?.topLocations ?? undefined;
+    (currentDashboardSelection.currentDashboardData?.topLocations ?? undefined);
   const topVenues =
-    currentDashboardSelection.currentDashboardData?.topVenues ?? undefined;
+    (currentDashboardSelection.currentDashboardData?.topVenues ?? undefined);
   const dateRange = `${moment.unix(currentDashboardSelection.start).format('MM/DD/YYYY')} - ${moment.unix(currentDashboardSelection.end).format('MM/DD/YYYY')}`;
 
   const chartSalesData: ITicketSalesData[] = [];
