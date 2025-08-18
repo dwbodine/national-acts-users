@@ -10,11 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/swc-win32-x64-msvc": "^15.4.4",
-    "@reduxjs/toolkit": "^2.8.2",
-    "@types/node": "^24.1.0",
-    "@types/react": "^19.1.9",
-    "@types/react-dom": "^19.1.7",
     "autoprefixer": "^10.4.21",
     "axios": "^1.11.0",
     "bootstrap": "^5.3.7",
@@ -32,13 +27,17 @@
     "react-spinners": "^0.17.0",
     "react-to-pdf": "^2.0.1",
     "recharts": "^3.1.0",
-    "rsuite": "^5.83.2",
-    "typescript": "^5.8.3"
+    "rsuite": "^5.83.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.32.0",
     "@next/eslint-plugin-next": "^15.4.4",
+    "@next/swc-win32-x64-msvc": "^15.4.4",
+    "@reduxjs/toolkit": "^2.8.2",
+    "@types/node": "^24.1.0",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash.debounce": "^4.0.9",
     "@typescript-eslint/eslint-plugin": "^8.38.0",
@@ -52,6 +51,7 @@
     "eslint-plugin-react-19-upgrade": "^1.7.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "react-toastify": "^11.0.5",
-    "typescript-eslint": "^8.38.0"
+    "typescript-eslint": "^8.38.0",
+    "typescript": "^5.8.3"
   }
 }

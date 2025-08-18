@@ -39,7 +39,7 @@ export default function ReportDatePicker(props: ReportDatePickerProps) {
     if (!date) {
       return;
     }
-    const endDate = moment(date).startOf('day');
+    const endDate = moment(date).endOf('day');
     let newEnd = endDate.unix();
     if (newEnd < MINIMUM_UNIX_TIMESTAMP) {
       newEnd = MINIMUM_UNIX_TIMESTAMP;
