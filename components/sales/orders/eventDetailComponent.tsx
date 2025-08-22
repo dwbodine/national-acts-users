@@ -224,8 +224,8 @@ export default function EventDetail(props: EditProps) {
                   }
                 }
                 newEvent.orders = orders.sort((a, b) =>
-                  a.purchaserLastName.localeCompare(b.purchaserLastName) ||
-                  a.purchaserFirstName.localeCompare(b.purchaserFirstName) ||
+                  a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
+                  a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
                   (a.purchaseTimestamp && b.purchaseTimestamp ? moment(b.purchaseTimestamp).unix() - moment(a.purchaseTimestamp).unix() : 0)
                 );
               }
