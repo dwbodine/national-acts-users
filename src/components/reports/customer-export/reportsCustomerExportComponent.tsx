@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-bootstrap';
 import { GetEventsResponse } from '@/types/responses';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
-import ReportDatePicker from '../../common/reportDatePicker';
+import ReportDatePicker from '../../common/reportDatePickerControl';
 import ReportsListHomeButton from '../reportsListHomeButton';
 import { RootState } from '@/lib/store';
 import { UserActivityType } from '@/types/user';

@@ -4,7 +4,7 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import { Modal, Radio, RadioGroup } from "rsuite";
 import { exportVipItineraryToCSV, exportVipItineraryToHtml } from "@/utils/exportVipItinerary";
 import { useEffect, useState } from "react";
-import ReportDatePicker from "../../common/reportDatePicker";
+import ReportDatePicker from "../../common/reportDatePickerControl";
 import { RootState } from "@/lib/store";
 import { UserSeller } from "@/types/user";
 import { VIPModalProps } from "@/types/props";
