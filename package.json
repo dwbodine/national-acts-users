@@ -7,7 +7,13 @@
     "build": "next build",
     "start": "next start",
     "format": "prettier '**/*.{json,yaml,js,ts}' --write",
-    "lint": "next lint"
+    "lint": "next lint",
+    "login-repo": "aws ecr get-login-password --region us-east-1 --profile deployment_nationalacts | docker login --username AWS --password-stdin 804363746695.dkr.ecr.us-east-1.amazonaws.com",
+    "build-image": "docker build -t nationalactsvip/nationalactsusers .",
+    "tag": "docker tag nationalactsvip/nationalactsusers:latest 804363746695.dkr.ecr.us-east-1.amazonaws.com/nationalactsvip/nationalactsusers:latest",
+    "push": "docker push 804363746695.dkr.ecr.us-east-1.amazonaws.com/nationalactsvip/nationalactsusers:latest",
+    "pre-deploy": "npm run format && npm run lint && npm run build",
+    "deploy": "npm run login-repo && npm run build-image && npm run tag && npm run push"
   },
   "dependencies": {
     "autoprefixer": "^10.4.21",
