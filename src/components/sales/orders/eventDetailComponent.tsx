@@ -519,7 +519,10 @@ export default function EventDetail(props: EditProps) {
   const venue = currentReportSelection.currentDetailEvent?.venue;
   const venueName = venue?.name;
   const address = venue?.address1;
-  const location = `${venue?.city}, ${venue?.state}`;
+  let location = `${venue?.city}`
+  if (venue?.state) {
+    location += `, ${venue?.state}`;
+  }
   const zip = venue?.postalCode;
   const country = venue?.country?.countryName;
 
@@ -565,7 +568,7 @@ export default function EventDetail(props: EditProps) {
                           {totalTickets}
                         </td>
                       </tr>
-                      <tr hidden={hideRevItem}>
+                      <tr hidden={hideRevItem} className="no-print">
                         <td className="vipLabel">Total Revenue:</td>
                         <td>
                           $
@@ -723,7 +726,7 @@ export default function EventDetail(props: EditProps) {
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Name</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Ticket Type</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}># of tickets</th>
-                      <th hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Revenue</th>
+                      <th hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay} className="no-print">Revenue</th>
                       <th
                         className="no-print"
                         hidden={hideServiceFeeDisplay || !viewServiceFees || showOnlyEmailsDisplay || showOnlyPhonesDisplay}

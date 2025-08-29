@@ -4,6 +4,7 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import { Modal, Radio, RadioGroup } from "rsuite";
 import { exportVipItineraryToCSV, exportVipItineraryToHtml } from "@/utils/exportVipItinerary";
 import { useEffect, useState } from "react";
+import { GetEventsResponse } from "@/types/responses";
 import ReportDatePicker from "../../common/reportDatePickerControl";
 import { RootState } from "@/lib/store";
 import { UserSeller } from "@/types/user";
@@ -14,6 +15,7 @@ import { downloadCsvFile } from "@/utils/downloadFile";
 import { getCsvFileNameFromReportSelection } from "@/utils/getFileNameFromReportSelection";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { useGetPublicEvents } from "@/hooks/event/useGetPublicEvents";
 import { useSelector } from "react-redux";
 
 export default function VIPItineraryModal(props: VIPModalProps) {
@@ -30,6 +32,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
     const [startEventUnix, setStartEventUnix] = useState(0);
     const [endUnix, setEndUnix] = useState(0);
     const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
+    const { getPublicEvents } = useGetPublicEvents();
 
     const currentSellerName = currentSeller?.sellerName;
     const startEventDateStr = currentEvents.length > 0 ? currentEvents[0].eventDate : '';
@@ -69,7 +72,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
     };
 
     const getVipItinerary = () => {
-        if (currentSeller === undefined) {
+        if (!currentSeller || !currentSeller.sellerId) {
             toast.warn("Seller is undefined");
             return;
         }
@@ -87,31 +90,43 @@ export default function VIPItineraryModal(props: VIPModalProps) {
             toast.warn("Start date cannot be later than end date");
             return;
         }
-        const eventsToExport = dateRangeValue === '1' ?
-                currentEvents.filter(x => moment(x.eventDate).unix() >= startEventUnix && moment(x.eventDate).unix() <= endUnix) :
-                currentEvents.filter(x => moment(x.eventDate).unix() >= startCurrentUnix && moment(x.eventDate).unix() <= endUnix);
 
         setIsReportLoading(true);
-        if (formatValue === "1") {
-            exportVipItineraryToCSV(eventsToExport, currentSeller, isAdmin).then((csvData: string) => {
-                const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
-                downloadCsvFile(fileName, csvData);
-                setIsReportLoading(false);
-                if (onClose) {
-                    onClose();
-                }
-            });
-        } else {
-            const title = `${currentSeller.sellerName} VIP Itinerary`;
-            localStorage.setItem('pdfTitle', title);
-            exportVipItineraryToHtml(eventsToExport, title, sellerHomePage, isAdmin).then((htmlString: string) => {
-                setIsReportLoading(false);
-                submitPdfToNewWindow(htmlString);
-                if (onClose) {
-                    onClose();
-                }
-            });
-        }
+
+        const start = dateRangeValue === '1' ? startEventUnix : startCurrentUnix;
+        const end = endUnix;
+        const {sellerId} = currentSeller;
+        
+        getPublicEvents(start, end, sellerId)
+            .then((response: GetEventsResponse) => {
+                if (response.events && !response.error) {
+                    const eventsToExport = response.events;
+                    if (formatValue === "1") {
+                        exportVipItineraryToCSV(eventsToExport, currentSeller, isAdmin).then((csvData: string) => {
+                            const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
+                            downloadCsvFile(fileName, csvData);
+                            setIsReportLoading(false);
+                            if (onClose) {
+                                onClose();
+                            }
+                        });
+                    } else {
+                        const title = `${currentSeller.sellerName} Event Itinerary`;
+                        localStorage.setItem('pdfTitle', title);
+                        exportVipItineraryToHtml(eventsToExport, title, sellerHomePage, isAdmin).then((htmlString: string) => {
+                            setIsReportLoading(false);
+                            submitPdfToNewWindow(htmlString);
+                            if (onClose) {
+                                onClose();
+                            }
+                        });
+                    }
+                } else {
+                    const err = response.error ? `Error: ${response.error}` : 'Error occured while fetching events for itinerary';
+                    toast.error(err);
+                    setIsReportLoading(false);
+                }                
+            });        
     };
 
     const onDateRangeSelect = (value: ValueType) => {
@@ -141,7 +156,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
         setFormatValue(fmVal);
     };
 
-    let reportTitle = "Export VIP Itinerary";
+    let reportTitle = "Export Event Itinerary";
     if (currentSellerName) {
         reportTitle = `${reportTitle} for ${currentSellerName}`;
     }

@@ -3,6 +3,7 @@ import { GlobalSelection } from '../types/user';
 
 const initialState: GlobalSelection = {
   isLoading: false,
+  saveInProgress: false,
 };
 
 export const globalSelectionSlice = createSlice({
@@ -17,9 +18,14 @@ export const globalSelectionSlice = createSlice({
       state.isLoading = action.payload;
       return state;
     },
+    setSaveInProgress: (state, action: PayloadAction<boolean>) => {
+      state.saveInProgress = action.payload;
+      return state;
+    },
   },
 });
 
-export const { setIsLoading, resetGlobalSettings } = globalSelectionSlice.actions;
+export const { setIsLoading, setSaveInProgress, resetGlobalSettings } =
+  globalSelectionSlice.actions;
 
 export default globalSelectionSlice.reducer;

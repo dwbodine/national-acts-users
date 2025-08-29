@@ -251,7 +251,7 @@ export default function SalesBar() {
           />
         </Col>
       </Row>
-      <Row className="admin-check-row">
+      <Row className="admin-check-row no-print">
         <Col md={10} sm={12}>
           {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0 ? (
             <InactiveCheck />
@@ -326,10 +326,11 @@ export default function SalesBar() {
           {!windowSize.isMobile &&
             viewVIPItinerary &&
             currentReportSelection.seller.sellerId > 0 &&
+            !currentReportSelection.showInactive && 
             hasEvents ? (
             <>
               <span className="admin-button">
-                <Button onClick={() => setVipItineraryOpen(true)}>VIP Itinerary</Button>
+                <Button onClick={() => setVipItineraryOpen(true)}>Event Itinerary</Button>
               </span>
               <VIPItineraryModal
                 IsAdmin={isAdmin}

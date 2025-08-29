@@ -14,7 +14,6 @@ const exportVipItineraryToHtml = (
   if (sellerHomePage) {
     htmlString += `Your homepage for all of your VIPs is located here: <a href="${sellerHomePage}" target="_blank">${sellerHomePage}</a><br />`;
   }
-  htmlString += `Your admin for tracking VIP sales is located here: <a href="https://users.national-acts.com/login/" target="_blank">https://users.national-acts.com/login/</a></p></div>`;
   htmlString += `<div class="pdf-body">`;
   htmlString += `<table class="pdf-table">`;
   htmlString += `<tr><th>Date</th><th>Venue</th><th>City / State</th><th>Full Address</th><th class="pdf-link-column">Ticket Link</th><th class="pdf-link-column">VIP Link</th><th>VIP Link Status</th><th>VIP Link in BandsInTown</th></tr>`;
@@ -40,12 +39,12 @@ const exportVipItineraryToHtml = (
       if (evt.externalUrl) {
         htmlString += `<td class="pdf-link-column"><a title="Ticket Link" href="${evt.externalUrl}" target="_blank">${evt.externalUrl}</a></td>`;
       } else {
-        htmlString += `<td class="pdf-link-column">'n/a'</td>`;
+        htmlString += `<td class="pdf-link-column">n/a</td>`;
       }
       if (evt.ticketSocketUrl) {
         htmlString += `<td class="pdf-link-column"><a title="VIP Link" href="${evt.ticketSocketUrl}" target="_blank">${evt.ticketSocketUrl}</a></td>`;
       } else {
-        htmlString += `<td class="pdf-link-column">'n/a'</td>`;
+        htmlString += `<td class="pdf-link-column">n/a</td>`;
       }
       let linkStatus = getEventStatusText(evt, isAdmin);
       if (!evt.ticketSocketUrl) {

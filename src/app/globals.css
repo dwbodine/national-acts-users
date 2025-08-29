@@ -1404,14 +1404,14 @@ a.edit-event-link {
 }
 
 .pdf-header h1 {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   margin: 0 auto;
   text-transform: uppercase;
 }
 
 .pdf-header p {
-  font-size: 10px;
+  font-size: 18px;
   margin: 0 auto;
 }
 
@@ -1452,7 +1452,7 @@ a.edit-event-link {
 }
 
 .pdf-table td {
-  font-size: 12px;
+  font-size: 16px;
   overflow-wrap: break-word;
   hyphens: auto;
 }

@@ -145,7 +145,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
             <Col xs={5} className="mobile-bold">Ticket breakdown:</Col>
             <Col>{ticketTypeRows}</Col>
           </Row>
-          <Row hidden={hideRev || showOnlyEmails || showOnlyPhones}>
+          <Row hidden={hideRev || showOnlyEmails || showOnlyPhones} className="no-print">
             <Col xs={5} className="mobile-bold">Revenue:</Col>
             <Col>{revenue}</Col>
           </Row>

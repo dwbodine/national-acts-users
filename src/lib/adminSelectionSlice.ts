@@ -17,6 +17,7 @@ const initialState: AdminSelection = {
   mustSaveOrder: false,
   mustSavePage: false,
   orders: undefined,
+  pageOrders: undefined,
   pageTypes: undefined,
   reloadCountries: true,
   reloadEvents: true,
@@ -75,6 +76,7 @@ export const adminSelectionSlice = createSlice({
       state.selectedSeller = undefined;
       state.selectedTour = undefined;
       state.selectedVenue = undefined;
+      state.pageOrders = undefined;
       state.pageTypes = undefined;
       state.roles = undefined;
       state.users = undefined;
@@ -172,6 +174,10 @@ export const adminSelectionSlice = createSlice({
     },
     setMustSavePage: (state, action: PayloadAction<boolean>) => {
       state.mustSavePage = action.payload;
+      return state;
+    },
+    setPageOrders: (state, action: PayloadAction<Map<number, Page>>) => {
+      state.pageOrders = action.payload;
       return state;
     },
     setPageTypes: (state, action: PayloadAction<PageType[]>) => {
@@ -339,6 +345,7 @@ export const {
   setSelectedPage,
   setSelectedPageType,
   setAllPages,
+  setPageOrders,
   setPageTypes,
   setTicketSocketEventsOnly,
   setAdminOrders,
