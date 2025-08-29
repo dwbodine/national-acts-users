@@ -113,7 +113,7 @@ export default function OrderRow(props: OrderRowProps) {
       <td hidden={showOnlyEmails || showOnlyPhones}>{eventName}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{ticketTypeRows}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{order?.numTickets}</td>
-      <td className="pull-right" hidden={hideRev || showOnlyEmails || showOnlyPhones}>
+      <td className="pull-right no-print" hidden={hideRev || showOnlyEmails || showOnlyPhones}>
         {revenue}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}>

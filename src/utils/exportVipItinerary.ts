@@ -14,7 +14,6 @@ const exportVipItineraryToHtml = (
   if (sellerHomePage) {
     htmlString += `Your homepage for all of your VIPs is located here: <a href="${sellerHomePage}" target="_blank">${sellerHomePage}</a><br />`;
   }
-  htmlString += `Your admin for tracking VIP sales is located here: <a href="https://users.national-acts.com/login/" target="_blank">https://users.national-acts.com/login/</a></p></div>`;
   htmlString += `<div class="pdf-body">`;
   htmlString += `<table class="pdf-table">`;
   htmlString += `<tr><th>Date</th><th>Venue</th><th>City / State</th><th>Full Address</th><th class="pdf-link-column">Ticket Link</th><th class="pdf-link-column">VIP Link</th><th>VIP Link Status</th><th>VIP Link in BandsInTown</th></tr>`;

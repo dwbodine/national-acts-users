@@ -117,7 +117,7 @@ export default function EventMobileRow(props: EventRowProps) {
             <Col>Ticket type breakdown:</Col>
             <Col>{ticketBreakdownRows}</Col>
           </Row>
-          <Row hidden={hideRevItem}>
+          <Row hidden={hideRevItem} className="no-print">
             <Col>Revenue:</Col>
             <Col>{revenue}</Col>
           </Row>

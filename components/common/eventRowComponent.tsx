@@ -50,7 +50,7 @@ export default function EventRow(props: EventRowProps) {
       <td className="pull-right">{vipEvent.totalTickets}</td>
       <td className="pull-right">{(vipEvent.numTicketsRefunded ?? 0)}</td>
       <td className="pull-right">{(vipEvent.numTicketsComped ?? 0)}</td>
-      <td className="pull-right" hidden={hideRevItem}>
+      <td className="pull-right no-print" hidden={hideRevItem}>
         {revenue}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees}>

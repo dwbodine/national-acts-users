@@ -100,7 +100,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
                 }
             });
         } else {
-            const title = `${currentSeller.sellerName} VIP Itinerary`;
+            const title = `${currentSeller.sellerName} Event Itinerary`;
             localStorage.setItem('pdfTitle', title);
             exportVipItineraryToHtml(eventsToExport, title, sellerHomePage, isAdmin).then((htmlString: string) => {
                 setIsReportLoading(false);
@@ -139,7 +139,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
         setFormatValue(fmVal);
     };
 
-    let reportTitle = "Export VIP Itinerary";
+    let reportTitle = "Export Event Itinerary";
     if (currentSellerName) {
         reportTitle = `${reportTitle} for ${currentSellerName}`;
     }

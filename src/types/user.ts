@@ -337,6 +337,7 @@ export type AdminSelection = {
   allSellers?: Seller[] | undefined;
   allSettings?: SiteSetting[] | undefined;
   allPages?: Page[] | undefined;
+  pageOrders?: Map<number, Page>;
   allFaqs?: Faq[] | undefined;
   faqCategories?: FaqCategory[] | undefined;
   countries: Country[] | undefined;
