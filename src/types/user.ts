@@ -265,6 +265,7 @@ export type UserActivitySelection = {
 
 export type GlobalSelection = {
   isLoading: boolean;
+  saveInProgress: boolean;
 };
 
 export enum UserActivityType {

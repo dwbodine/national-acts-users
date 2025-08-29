@@ -39,12 +39,12 @@ const exportVipItineraryToHtml = (
       if (evt.externalUrl) {
         htmlString += `<td class="pdf-link-column"><a title="Ticket Link" href="${evt.externalUrl}" target="_blank">${evt.externalUrl}</a></td>`;
       } else {
-        htmlString += `<td class="pdf-link-column">'n/a'</td>`;
+        htmlString += `<td class="pdf-link-column">n/a</td>`;
       }
       if (evt.ticketSocketUrl) {
         htmlString += `<td class="pdf-link-column"><a title="VIP Link" href="${evt.ticketSocketUrl}" target="_blank">${evt.ticketSocketUrl}</a></td>`;
       } else {
-        htmlString += `<td class="pdf-link-column">'n/a'</td>`;
+        htmlString += `<td class="pdf-link-column">n/a</td>`;
       }
       let linkStatus = getEventStatusText(evt, isAdmin);
       if (!evt.ticketSocketUrl) {

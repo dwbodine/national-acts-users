@@ -1,12 +1,14 @@
 import {
+  GetEventsResponse,
   GetPageTypesResponse,
   GetPagesResponse,
   GetSellersResponse,
   GetSettingsResponse,
 } from '@/types/responses';
 import { Page, PageType, SiteSetting } from '@/types/public';
+import { Seller, VipEvent } from '../types/event';
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { Seller } from '../types/event';
+import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 
 export class PublicService {
   protected readonly instance: AxiosInstance;
@@ -18,6 +20,70 @@ export class PublicService {
       timeoutErrorMessage: 'Time out!',
     });
   }
+
+  getEvents = async (
+    start: number = 0,
+    end: number = 0,
+    sellerId: number = 0,
+  ): Promise<GetEventsResponse> => {
+    let startUnix: number = start;
+    let endUnix: number = end;
+    if (startUnix > 0 && startUnix < MINIMUM_UNIX_TIMESTAMP) {
+      startUnix = MINIMUM_UNIX_TIMESTAMP;
+    }
+
+    if (startUnix > 0 && endUnix > 0 && endUnix <= startUnix) {
+      endUnix = startUnix + 7 * 24 * 60 * 60;
+    }
+
+    let url = `/public/events`;
+
+    if (startUnix > 0 || endUnix > 0 || sellerId > 0) {
+      url += '?';
+    }
+
+    if (startUnix > 0) {
+      if (!url.endsWith('?')) {
+        url += '&';
+      }
+      url += `start=${startUnix}`;
+    }
+
+    if (endUnix > 0) {
+      if (!url.endsWith('?')) {
+        url += '&';
+      }
+      url += `end=${endUnix}`;
+    }
+
+    if (sellerId > 0) {
+      if (!url.endsWith('?')) {
+        url += '&';
+      }
+      url += `sellerId=${sellerId}`;
+    }
+
+    const response: GetEventsResponse = {};
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+    };
+
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.events = res.data ? (res.data as VipEvent[]) : [];
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while fetching events - please contact your administrator';
+    }
+
+    return response;
+  };
 
   getSellers = async (): Promise<GetSellersResponse> => {
     const url = `/public/sellers`;

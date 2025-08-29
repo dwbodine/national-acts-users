@@ -18,6 +18,7 @@ import {
   setTicketSocketEventsOnly,
   setVenues,
 } from '@/lib/adminSelectionSlice';
+import { setIsLoading, setSaveInProgress } from '@/lib/globalSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AdminFileUpload from '../common/adminFileUploadComponent';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
@@ -27,7 +28,6 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import moment from 'moment';
 import router from 'next/router';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useAddCompedOrder } from '@/hooks/admin/useAddCompOrder';
 import { useAddNote } from '@/hooks/admin/useAddNote';
@@ -163,7 +163,8 @@ export default function AdminEventEdit(props: EditProps) {
         && currentAdminSelection.countries !== undefined
         && currentAdminSelection.allSellers !== undefined
         && currentAdminSelection.venues !== undefined
-        && globalSelection.isLoading) {
+        && globalSelection.isLoading
+        && !globalSelection.saveInProgress) {
         dispatch(setIsLoading(false));
       }
     }, 300);
@@ -931,6 +932,7 @@ export default function AdminEventEdit(props: EditProps) {
     }
 
     dispatch(setIsLoading(true));
+    dispatch(setSaveInProgress(true));
 
     updateEvent(eventToUpdate).then((response: ModifyEventResponse) => {
       if (response.success) {
@@ -954,6 +956,7 @@ export default function AdminEventEdit(props: EditProps) {
       } else {
         toast.error(response.error ?? 'Error occurred while updating event');
       }
+      dispatch(setSaveInProgress(false));
       dispatch(setIsLoading(false));
     });
   };
@@ -980,12 +983,12 @@ export default function AdminEventEdit(props: EditProps) {
       : null;
 
   const eventTime =
-      selectedEvent?.eventTime
+    selectedEvent?.eventTime
       ? moment(selectedEvent.eventTime).toDate()
       : null;
 
   const announceDate =
-      selectedEvent?.announceDate
+    selectedEvent?.announceDate
       ? moment(selectedEvent.announceDate).toDate()
       : null;
 
@@ -1038,8 +1041,11 @@ export default function AdminEventEdit(props: EditProps) {
       if (
         selectedEvent && selectedEvent.orders
       ) {
-        for (let j = 0; i < selectedEvent.orders.length; j += 1) {
+        for (let j = 0; j < selectedEvent.orders.length; j += 1) {
           const order = selectedEvent.orders[j];
+          if (!order) {
+            continue;
+          }
           if (order.isComped) {
             ticketTypeDisabled = true;
           } else {

@@ -324,6 +324,7 @@ export default function SalesBar() {
           {!windowSize.isMobile &&
             viewVIPItinerary &&
             currentReportSelection.seller.sellerId > 0 &&
+            !currentReportSelection.showInactive && 
             hasEvents ? (
             <>
               <span className="admin-button">
