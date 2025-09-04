@@ -3,8 +3,10 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
 const eslintConfig = [
-  ...new FlatCompat({ baseDirectory: import.meta.dirname, }).extends('next', 'prettier'),
+    ...new FlatCompat({ baseDirectory: import.meta.dirname, }).extends('next', 'prettier'),
   ...tseslint.config(eslint.configs.all, tseslint.configs.strict),
+  { ignores: [".next/**", "public/**", "out/**", "next.config.js", "next-env.d.ts"] },
+  { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
   {
     rules: {
       "complexity": "off",
