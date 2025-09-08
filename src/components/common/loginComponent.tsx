@@ -70,9 +70,6 @@ export default function LoginComponent() {
               'Unknown error during login - please contact your administrator',
             );
           }
-        })
-        .catch(() => {
-          setLoginError('Unknown error during login - please contact your administrator');
         });
     }
   };

@@ -1,0 +1,18 @@
+name: national-acts-vip
+services:
+  nationalactsusers:
+    image: nationalactsvip/nationalactsusers:latest
+    container_name: nationalactsusers
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    networks:
+      - app-network
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app 
+
+networks:
+  app-network:
+    driver: bridge
