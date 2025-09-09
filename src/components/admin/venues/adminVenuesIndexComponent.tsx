@@ -9,12 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import AdminListHomeButton from '../adminListHomeButton';
 import { ExternalVenue } from '@/types/admin';
 import { RootState } from '@/lib/store';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useDeleteVenue } from '@/hooks/admin/useDeleteVenue';
 import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useRouter } from 'next/navigation';
 
 export default function AdminVenuesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -27,6 +27,7 @@ export default function AdminVenuesIndex() {
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
   const [searchTerm, setSearchTerm] = useState<string | undefined>(currentAdminSelection.venueSearchTerm);
+  const router = useRouter();
 
   const searchVenues = useCallback(() => {
     if (!searchTerm || searchTerm.length < 3) {
@@ -73,7 +74,7 @@ export default function AdminVenuesIndex() {
     if (venue) {
       dispatch(setAdminVenue(venue));
       setIsLoading(true);
-      redirect('/admin/venues/edit');
+      router.push('/admin/venues/edit');
     }
   };
 
@@ -87,7 +88,7 @@ export default function AdminVenuesIndex() {
 
     dispatch(setAdminVenue(venue));
     setIsLoading(true);
-    redirect('/admin/venues/edit');
+    router.push('/admin/venues/edit');
   };
 
   const deleteSelectedVenue = (venueId: number) => {

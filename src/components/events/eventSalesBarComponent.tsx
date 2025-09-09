@@ -8,10 +8,10 @@ import { EventTabView } from '@/types/user';
 import type { RootState } from '../../lib/store';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function EventSalesBar() {
@@ -21,6 +21,7 @@ export default function EventSalesBar() {
   const windowSizeJson = JSON.stringify(windowSize);
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const agendaOnly = windowSize.width < EVENTS_AGENDA_VIEW_BREAKPOINT;
+  const router = useRouter();
 
   const pageTitle: string = 'Admin Events View';
 
@@ -34,14 +35,14 @@ export default function EventSalesBar() {
   useEffect(() => {
     const user = getUser();
     if (!user?.isAdmin) {
-      redirect('/');
+      router.push('/');
     } else if (currentReportSelection.start === undefined) {
       const selectedDate = moment().unix();
       const tabView = currentReportSelection.eventTabView ?? (agendaOnly ? EventTabView.Agenda : DEFAULT_EVENT_TAB_VIEW);
       const dateRange = getSelectedAdminEventDateRange(selectedDate, tabView)
       dispatch(setAdminDateRange(dateRange));
     }
-  }, [windowSizeJson, getUser, currentReportSelection, dispatch, agendaOnly]);
+  }, [windowSizeJson, getUser, currentReportSelection, dispatch, agendaOnly, router]);
 
   let startDate = currentReportSelection.start ? moment.unix(currentReportSelection.start).toDate() : null;
   if (currentReportSelection.eventTabView === EventTabView.Month) {

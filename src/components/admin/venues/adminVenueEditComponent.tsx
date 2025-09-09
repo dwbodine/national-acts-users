@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { setAdminVenue, setReloadVenues } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-bootstrap';
@@ -9,9 +9,9 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { ModifyExternalVenueResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { SelectPicker } from 'rsuite';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 
 export default function AdminVenueEdit() {
@@ -25,10 +25,11 @@ export default function AdminVenueEdit() {
   const [zipCode, setZipCode] = useState<string | undefined>(undefined);
   const [countryId, setCountryId] = useState<number | undefined>(undefined);
   const [timezone, setTimezone] = useState<string | undefined>(undefined);
+  const router = useRouter();
 
-  const goBack = () => {
-    redirect('/admin/venues/');
-  };
+  const goBack = useCallback(() => {
+    router.push('/admin/venues/');
+  }, [router]);
 
   useEffect(() => {
     if (currentAdminSelection.selectedVenue === undefined) {
@@ -50,7 +51,8 @@ export default function AdminVenueEdit() {
     currentAdminSelection,
     venueName,
     dispatch,
-    countryId
+    countryId,
+    goBack
   ]);
 
   const onCountryChange = (cId: number | null) => {
@@ -117,7 +119,7 @@ export default function AdminVenueEdit() {
         dispatch(setAdminVenue(undefined))
         const message = isUpdate ? 'Venue updated successfully' : 'Venue added successfully';
         toast.success(message);
-        redirect('/admin/venues/');
+        router.push('/admin/venues/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving venue');
         dispatch(setIsLoading(false));

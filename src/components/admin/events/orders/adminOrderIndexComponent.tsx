@@ -20,12 +20,12 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { Order } from '@/types/event';
 import { RootState } from '@/lib/store';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useRouter } from 'next/navigation';
 import { useSetOrdersDeleted } from '@/hooks/order/useSetOrdersDeleted';
 import { useSetOrdersInactive } from '@/hooks/order/useSetOrdersInactive';
 
@@ -41,7 +41,7 @@ export default function AdminOrdersIndex(props: EditProps) {
   const { getEventById } = useGetEventById();
   const { setOrdersInactive } = useSetOrdersInactive();
   const { setOrdersDeleted } = useSetOrdersDeleted();
-
+  const router = useRouter();
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [orderIdList, setOrderIdList] = useState<number[]>([]);
   const allOrderIds: number[] = currentAdminSelection.selectedEvent?.orders?.map(o => o.ticketSocketOrderId) ?? [];
@@ -124,15 +124,15 @@ export default function AdminOrdersIndex(props: EditProps) {
     if (id) {
       path += `?id=${order.ticketSocketOrderId}`;
     }
-    redirect(path);
+    router.push(path);
   };
 
   const goBack = () => {
     if (id) {
-      redirect(`/admin/events/edit/?id=${id}`);
+      router.push(`/admin/events/edit/?id=${id}`);
     } else {
       dispatch(setAdminEvent(undefined));
-      redirect('/admin/events/');
+      router.push('/admin/events/');
     }
   };
 

@@ -40,17 +40,17 @@ import getFileNameFromEvent from '@/utils/getFileNameFromEvent';
 import getShirtDataFromOrders from '@/utils/getShirtDataFromOrders';
 import getTicketDataFromOrders from '@/utils/getTicketDataFromOrders';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import setFocusToControl from '@/utils/setFocusToControl';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useGetUserSeller } from '@/hooks/order/useGetUserSeller';
 import { useHasPermission } from '@/hooks/user/useHasPermission';
+import { useRouter } from 'next/navigation';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function EventDetail(props: EditProps) {
   const id = props.Id;
-
+  const router = useRouter();
   const { getUser } = useCurrentUser();
   const [user, setUser] = useState<User | undefined>(undefined);
   const { userHasPermission } = useHasPermission();
@@ -139,7 +139,7 @@ export default function EventDetail(props: EditProps) {
             dispatch(setEventSeller(reportSelection));
           } else {
             // Not found, log out
-            redirect('/logout');
+            router.push('/logout');
           }
         } else {
           // User is logged in without selected seller, check for permission to load
@@ -151,7 +151,7 @@ export default function EventDetail(props: EditProps) {
             dispatch(setEventSeller(reportSelection));
           } else {
             // Not found or no permission, log out
-            redirect('/logout');
+            router.push('/logout');
           }
         }
       } else if (currentReportSelection?.seller?.sellerId > 0) {
@@ -277,6 +277,7 @@ export default function EventDetail(props: EditProps) {
     userHasPermission,
     viewRevenueControls,
     getUser,
+    router,
   ]);
 
   const exportOrdersToCsv = () => {

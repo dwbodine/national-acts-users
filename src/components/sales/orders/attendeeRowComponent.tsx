@@ -5,14 +5,14 @@ import { setFocusControl, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { AttendeeRowProps } from '@/types/props';
 import { ModifyTicketResponse } from '@/types/responses';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 
 export default function AttendeeRow(props: AttendeeRowProps) {
   const canCheckInTickets = props.CanCheckInTickets;
   const ticket = props.Ticket;
-
+  const router = useRouter();
   const ticketId = (ticket?.ticketSocketOrderTicketId ?? 0);
   const dispatch = useDispatch();
   let attendeeName = `${ticket?.attendeeFirstName} ${ticket?.attendeeLastName}`;
@@ -34,7 +34,7 @@ export default function AttendeeRow(props: AttendeeRowProps) {
           dispatch(setFocusControl(id));
           dispatch(setReloadEvents(true));
         } else if (response.statusCode === 401 || response.statusCode === 422) {
-          redirect('/logout/');
+          router.push('/logout/');
         }
       });
   };

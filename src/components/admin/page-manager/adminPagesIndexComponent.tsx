@@ -9,12 +9,11 @@ import { Button } from 'react-bootstrap';
 import { Page } from '@/types/public';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
-
+import { useRouter } from 'next/navigation';
 
 export default function AdminPagesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -25,6 +24,7 @@ export default function AdminPagesIndex() {
   const [tableLoading, setTableLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const { getAdminSellers } = useGetAdminSellers();
+  const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -85,7 +85,7 @@ export default function AdminPagesIndex() {
     };
     dispatch(setSelectedPage(page));
     setTableLoading(true);
-    redirect('/admin/page-manager/edit');
+    router.push('/admin/page-manager/edit');
   };
 
   const editPage = (pageId: number) => {
@@ -96,7 +96,7 @@ export default function AdminPagesIndex() {
     if (page) {
       dispatch(setSelectedPage(page));
       setTableLoading(true);
-      redirect('/admin/page-manager/edit');
+      router.push('/admin/page-manager/edit');
     }
   };
 

@@ -9,10 +9,10 @@ import { Order } from '@/types/event';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { setAdminOrders } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 import { useSearchOrders } from '@/hooks/admin/useSearchOrders';
 
 export default function AdminOrdersSearch() {
@@ -22,6 +22,7 @@ export default function AdminOrdersSearch() {
   const dispatch = useDispatch();
   const { searchOrders } = useSearchOrders();
   const [searchTerm, setSearchTerm] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -84,7 +85,7 @@ export default function AdminOrdersSearch() {
 
   const goBack = () => {
     dispatch(setAdminOrders(undefined));
-    redirect('/admin/');
+    router.push('/admin/');
   };
 
   const numOrders = (currentAdminSelection.orders?.length ?? 0);

@@ -10,12 +10,12 @@ import { Faq } from '@/types/public';
 import { GetFaqsResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useDeleteFaq } from '@/hooks/admin/useDeleteFaq';
 import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';
 import { useMoveFaqDown } from '@/hooks/admin/useMoveFaqDown';
 import { useMoveFaqUp } from '@/hooks/admin/useMoveFaqUp';
+import { useRouter } from 'next/navigation';
 
 export default function AdminFaqsIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -26,6 +26,7 @@ export default function AdminFaqsIndex() {
   const { deleteFaq } = useDeleteFaq();
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -65,7 +66,7 @@ export default function AdminFaqsIndex() {
     };
     dispatch(setSelectedFaq(faq));
     setTableLoading(true);
-    redirect('/admin/faqs/edit');
+    router.push('/admin/faqs/edit');
   };
 
   const editFaq = (faqId: number) => {
@@ -76,7 +77,7 @@ export default function AdminFaqsIndex() {
     if (faq) {
       dispatch(setSelectedFaq(faq));
       setTableLoading(true);
-      redirect('/admin/faqs/edit');
+      router.push('/admin/faqs/edit');
     }
   };
 

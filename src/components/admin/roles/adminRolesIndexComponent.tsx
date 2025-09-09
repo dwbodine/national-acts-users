@@ -9,11 +9,11 @@ import AdminListHomeButton from '../adminListHomeButton';
 import { Role } from '@/types/user';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useDeleteRoles } from '@/hooks/admin/useDeleteRoles';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
+import { useRouter } from 'next/navigation';
 
 export default function AdminRolesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -23,6 +23,7 @@ export default function AdminRolesIndex() {
   const { Column, HeaderCell, Cell } = Table;
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
   const [tableLoading, setTableLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -56,7 +57,7 @@ export default function AdminRolesIndex() {
     if (role) {
       dispatch(setSelectedRole(role));
       setTableLoading(true);
-      redirect('/admin/roles/edit');
+      router.push('/admin/roles/edit');
     }
   };
 
@@ -68,7 +69,7 @@ export default function AdminRolesIndex() {
     };
     dispatch(setSelectedRole(role));
     setTableLoading(true);
-    redirect('/admin/roles/edit');
+    router.push('/admin/roles/edit');
   };
 
   const updateSelectedRoles = (roleId: number, isChecked: boolean) => {

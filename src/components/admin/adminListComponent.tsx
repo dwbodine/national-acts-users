@@ -1,14 +1,15 @@
 "use client";
 
 import { Col, Row } from 'react-bootstrap';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminList() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { getUser } = useCurrentUser();
   const user = getUser();
   const isDennis = (user?.isAdmin ?? false) && (user?.username === 'dwbodine@gmail.com');
@@ -16,43 +17,43 @@ export default function AdminList() {
   const goToAdminPage = (adminAction: string) => {
     switch (adminAction) {
       case 'manage-roles':
-        redirect('/admin/roles/');
+        router.push('/admin/roles/');
         break;
       case 'manage-users':
-        redirect('/admin/users/');
+        router.push('/admin/users/');
         break;
       case 'manage-refresh-data':
-        redirect('/admin/refresh-data/');
+        router.push('/admin/refresh-data/');
         break;
       case 'manage-events':
-        redirect('/admin/events/');
+        router.push('/admin/events/');
         break;
       case 'manage-orders':
-        redirect('/admin/events/orders/search');
+        router.push('/admin/events/orders/search');
         break;
       case 'view-log':
-        redirect('/admin/log/');
+        router.push('/admin/log/');
         break;
       case 'manage-tours':
-        redirect('/admin/tour');
+        router.push('/admin/tour');
         break;
       case 'manage-site-settings':
-        redirect('/admin/settings');
+        router.push('/admin/settings');
         break;
       case 'manage-venues':
-        redirect('/admin/venues');
+        router.push('/admin/venues');
         break;
       case 'manage-global-seller-settings':
-        redirect('/admin/sellers/');
+        router.push('/admin/sellers/');
         break;
       case 'manage-pages':
-        redirect('/admin/page-manager');
+        router.push('/admin/page-manager');
         break;
       case 'manage-order':
-        redirect('/admin/page-manager/order');
+        router.push('/admin/page-manager/order');
         break;
       case 'manage-faqs':
-        redirect('/admin/faqs/');
+        router.push('/admin/faqs/');
         break;
       default:
         break;

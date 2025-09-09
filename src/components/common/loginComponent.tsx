@@ -5,11 +5,11 @@ import { KeyboardEvent, useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Image from 'next/image';
 import { UserLoginResponse } from '@/types/responses';
-import { redirect } from 'next/navigation';
 import { setForAdmin } from '@/lib/reportSelectionSlice';
 import { useDispatch } from 'react-redux';
 import { useLogin } from '@/hooks/user/useLogin';
 import { useResetStores } from '@/hooks/common/useResetStores';
+import { useRouter } from 'next/navigation';
 
 export default function LoginComponent() {
   const [name, setName] = useState('');
@@ -19,6 +19,7 @@ export default function LoginComponent() {
   const { login } = useLogin();
   const { resetStores } = useResetStores();
   const dispatch = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     const curDate = new Date().getTime();
@@ -31,11 +32,11 @@ export default function LoginComponent() {
   }, [name, password, loginError, login]);
 
   const register = () => {
-    redirect('/register');
+    router.push('/register');
   };
 
   const forgotPassword = () => {
-    redirect('/forgot-password');
+    router.push('/forgot-password');
   };
 
   const onSubmit = () => {
@@ -52,11 +53,11 @@ export default function LoginComponent() {
               const searchParams = new URLSearchParams(window.location.search);
               const returnPath = searchParams.get('returnPath');
               if (returnPath) {
-                redirect(returnPath);
+                router.push(returnPath);
               } else if (response.user.isAdmin) {
-                redirect('/dashboard/');
+                router.push('/dashboard/');
               } else {
-                redirect('/');
+                router.push('/');
               }
             } else if (response.error) {
               setLoginError(response.error);

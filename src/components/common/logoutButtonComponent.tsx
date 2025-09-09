@@ -1,11 +1,13 @@
 "use client";
 
 import { FaSignOutAlt } from 'react-icons/fa';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function LogoutButton() {
+  const router = useRouter();
+
   const handleClick = () => {
-    redirect('/logout/');
+    router.push('/logout/');
   };
 
   return (

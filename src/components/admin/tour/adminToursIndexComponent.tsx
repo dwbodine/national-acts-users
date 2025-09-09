@@ -18,12 +18,12 @@ import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import { Tour } from '@/types/event';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetTours } from '@/hooks/admin/useGetTours';
+import { useRouter } from 'next/navigation';
 
 export default function AdminToursIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -33,6 +33,7 @@ export default function AdminToursIndex() {
   const { getAdminSellerEvents } = useGetAdminSellerEvents();
   const dispatch = useDispatch();
   const [tableLoading, setTableLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -116,7 +117,7 @@ export default function AdminToursIndex() {
     }
     dispatch(setAdminTour(tour));
     setTableLoading(true);
-    redirect('/admin/tour/edit/');
+    router.push('/admin/tour/edit/');
   };
 
   const addTour = () => {
@@ -144,7 +145,7 @@ export default function AdminToursIndex() {
     };
     dispatch(setAdminTour(tour));
     setTableLoading(true);
-    redirect('/admin/tour/edit');
+    router.push('/admin/tour/edit');
   };
 
   return (

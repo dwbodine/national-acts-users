@@ -19,12 +19,12 @@ import getPurchaseDataFromEvents from '@/utils/getPurchaseData';
 import getShirtDataFromEvents from '@/utils/getShirtData';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useGetEvents } from '@/hooks/event/useGetEvents';
 import { useGetTours } from '@/hooks/admin/useGetTours';
 import { useHasPermission } from '@/hooks/user/useHasPermission';
+import { useRouter } from 'next/navigation';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 
@@ -37,6 +37,7 @@ export default function CurrentEvents() {
   const { getEvents } = useGetEvents();
   const dispatch = useDispatch();
   const { getTours } = useGetTours();
+  const router = useRouter();
 
   const [chartsHidden, setChartsHidden] = useState(true);
   const [hideRevItem, setHideRevItem] = useState(true);
@@ -156,7 +157,7 @@ export default function CurrentEvents() {
               setChartsHidden(false);
             }
           } else if (response.statusCode === 401 || response.statusCode === 422) {
-            redirect('/logout/');
+            router.push('/logout/');
           } else {
             dispatch(setEvents([]));
             dispatch(setIsLoading(false));
@@ -184,6 +185,7 @@ export default function CurrentEvents() {
     userHasPermission,
     viewRevenueControls,
     getTours,
+    router,
   ]);
 
   const filterEvents = (events: VipEvent[]) => {    

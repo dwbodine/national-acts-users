@@ -9,10 +9,10 @@ import AdminListHomeButton from '../adminListHomeButton';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import debouce from 'lodash.debounce';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
 import { useGetAllUsers } from '@/hooks/admin/useGetAllUsers';
+import { useRouter } from 'next/navigation';
 
 export default function AdminUsersIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -23,6 +23,7 @@ export default function AdminUsersIndex() {
   const { Column, HeaderCell, Cell } = Table;
   const [searchTerm, setSearchTerm] = useState('');
   const [tableLoading, setTableLoading] = useState(true);
+  const router = useRouter();
 
   const debouncedResults = useMemo(() => debouce(setSearchTerm, 300), []);
 
@@ -66,7 +67,7 @@ export default function AdminUsersIndex() {
     if (user) {
       dispatch(setSelectedUser(user));
       setTableLoading(true);
-      redirect('/admin/users/edit');
+      router.push('/admin/users/edit');
     }
   };
 

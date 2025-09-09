@@ -29,7 +29,6 @@ import { ExternalVenue } from '@/types/admin';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { useAddCompedOrder } from '@/hooks/admin/useAddCompOrder';
 import { useAddNote } from '@/hooks/admin/useAddNote';
@@ -41,6 +40,7 @@ import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
 import { useRefundEvent } from '@/hooks/admin/useRefundEvent';
+import { useRouter } from 'next/navigation';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 
@@ -53,7 +53,7 @@ export default function AdminEventEdit(props: EditProps) {
   const { getExternalVenueLocation } = useGetLocation();
   const { getAllVenues } = useGetAllVenues();
   const { getAllCountries } = useGetAllCountries();
-
+  const router = useRouter();
   const { refundEvent } = useRefundEvent();
   const { cancelEvent } = useCancelEvent();
   const { updateEvent } = useUpdateEvent();
@@ -189,7 +189,7 @@ export default function AdminEventEdit(props: EditProps) {
     dispatch(setAdminEvent(undefined));
     dispatch(setMustSaveEvent(false));
     if (!id) {
-      redirect('/admin/events/');
+      router.push('/admin/events/');
     }
   };
 
@@ -552,7 +552,7 @@ export default function AdminEventEdit(props: EditProps) {
     if (id) {
       path += `?id=${id}`;
     }
-    redirect(path);
+    router.push(path);
   };
 
   const setTicketTypeStatus = (ticketTypeId: number, isActive: boolean) => {

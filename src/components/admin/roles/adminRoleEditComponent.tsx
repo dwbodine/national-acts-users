@@ -6,14 +6,14 @@ import {
   Permission,
   Role,
 } from '@/types/user';
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { setReloadRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAllPermissions } from '@/hooks/user/useGetAllPermissions';
+import { useRouter } from 'next/navigation';
 import { useUpdateRole } from '@/hooks/admin/useUpdateRole';
 
 export default function AdminRoleEdit() {
@@ -25,10 +25,11 @@ export default function AdminRoleEdit() {
     undefined,
   );
   const [roleName, setRoleName] = useState<string | undefined>('');
+  const router = useRouter();
 
-  const goBack = () => {
-    redirect('/admin/roles/');
-  };
+  const goBack = useCallback(() => {
+    router.push('/admin/roles/');
+  }, [router]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -46,7 +47,7 @@ export default function AdminRoleEdit() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, roleName, allPermissions, getAllPermissions, dispatch]);
+  }, [currentAdminSelection, roleName, allPermissions, getAllPermissions, dispatch, goBack]);
 
   const hasPermission = (permissionId: number) => {
     if (
@@ -111,7 +112,7 @@ export default function AdminRoleEdit() {
       if (response.success) {
         dispatch(setReloadRoles(true));
         toast.success('Save role succeeded');
-        redirect('/admin/roles/');
+        router.push('/admin/roles/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving role');
       }

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Col, FormCheck, Row } from 'react-bootstrap';
-import { ReactElement, useEffect } from 'react';
+import { ReactElement, useCallback, useEffect } from 'react';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { setAdminSeller, setReloadSellers } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,23 +9,23 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { ModifySellerResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { SelectPicker } from 'rsuite';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
 
 export default function AdminSellerGlobalEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
   const { updateSeller } = useUpdateSeller();
-
+  const router = useRouter();
   const currentSeller = currentAdminSelection.selectedSeller;
   const selectedSellerType = Number(currentSeller?.sellerType ?? 1);
   const isArtist = selectedSellerType === SellerType.Artist;
 
-  const goBack = () => {
-    redirect('/admin/sellers/');
-  };
+  const goBack = useCallback(() => {
+    router.push('/admin/sellers/');
+  },[router]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -36,7 +36,7 @@ export default function AdminSellerGlobalEdit() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch]);
+  }, [currentAdminSelection, dispatch, goBack]);
 
   const setSellerName = (sellerName: string) => {
     if (!currentAdminSelection.selectedSeller || !sellerName) {
@@ -442,7 +442,7 @@ export default function AdminSellerGlobalEdit() {
         dispatch(setReloadSellers(true));
         toast.success('Save seller succeeded');
         dispatch(setAdminSeller(undefined));
-        redirect('/admin/sellers/');
+        router.push('/admin/sellers/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving seller');
       }

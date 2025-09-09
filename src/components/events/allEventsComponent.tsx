@@ -15,11 +15,11 @@ import { Note } from '@/types/event';
 import type { RootState } from '../../lib/store';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
 import { useGetCalendarNotes } from '@/hooks/event/useGetCalendarNotes';
+import { useRouter } from 'next/navigation';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function AllEvents() {
@@ -32,6 +32,7 @@ export default function AllEvents() {
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
   const agendaOnly = windowSize.width < EVENTS_AGENDA_VIEW_BREAKPOINT;
+  const router = useRouter();
 
   const allEventsViews: EventTabView[] = [EventTabView.Week, EventTabView.Month, EventTabView.Agenda];
 
@@ -93,7 +94,7 @@ export default function AllEvents() {
             }
           } else if (response.statusCode === 401 || response.statusCode === 422) {
             dispatch(setIsLoading(false));
-            redirect('/logout/');
+            router.push('/logout/');
           } else {
             dispatch(setIsLoading(false));
             dispatch(setAdminEvents(undefined));
@@ -114,7 +115,8 @@ export default function AllEvents() {
     windowSizeJson,
     isLoading,
     getCalendarNotes,
-    agendaOnly
+    agendaOnly,
+    router
   ]);
 
   const switchView = (key: EventTabView) => {

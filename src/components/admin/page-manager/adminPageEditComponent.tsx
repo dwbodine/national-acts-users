@@ -4,7 +4,7 @@ import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
 import { DatePicker, SelectPicker } from 'rsuite';
 import { GetPageTypesResponse, GetSellersResponse, ModifyPageResponse } from '@/types/responses';
 import { Page, PageSeller } from '@/types/public';
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { setAllSellers, setMustSavePage, setPageTypes, setReloadPages, setSelectedPage } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AdminFileUpload from '../common/adminFileUploadComponent';
@@ -15,17 +15,17 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import { SellerType } from '@/types/event';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { useRouter } from 'next/navigation';
 import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const route = currentAdminSelection.selectedPage?.route;
-
+  const router = useRouter();
   const dispatch = useDispatch();
   const { updatePage } = useUpdatePage();
   const { getPageTypes } = useGetPageTypes();
@@ -46,10 +46,10 @@ export default function AdminPageEdit() {
   const [isLogoDirty, setIsLogoDirty] = useState(false);
   const logoBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/logos`;
 
-  const goBack = () => {
+  const goBack = useCallback(() => {
     toast.dismiss();
-    redirect('/admin/page-manager/');
-  };
+    router.push('/admin/page-manager/');
+  }, [router]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -73,7 +73,7 @@ export default function AdminPageEdit() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, getPageTypes, getSellers]);
+  }, [currentAdminSelection, dispatch, getPageTypes, getSellers, goBack]);
 
   const confirmGoBack = () => {
     if (!currentAdminSelection?.mustSavePage) {
@@ -518,7 +518,7 @@ export default function AdminPageEdit() {
       if (response.success) {
         dispatch(setReloadPages(true));
         toast.success('Save page succeeded');
-        redirect('/admin/page-manager/');
+        router.push('/admin/page-manager/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving page');
       }

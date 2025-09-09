@@ -5,9 +5,9 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { GetSellersResponse, UserResponse } from '@/types/responses';
 import Container from 'react-bootstrap/Container';
 import { Seller } from '@/types/event';
-import { redirect } from 'next/navigation';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRegister } from '@/hooks/user/useRegister';
+import { useRouter } from 'next/navigation';
 
 
 export default function RegisterComponent() {
@@ -22,7 +22,7 @@ export default function RegisterComponent() {
   const [registerSuccess, setRegisterSuccess] = useState('');
   const [sellers, setSellers] = useState<Seller[]>();
   const [dummyVal, setDummyVal] = useState(false);
-
+  const router = useRouter();
   const { getSellers } = useGetSellers();
   const { register } = useRegister();
 
@@ -97,7 +97,7 @@ export default function RegisterComponent() {
   };
 
   const onBack = () => {
-    redirect('/login/');
+    router.push('/login/');
   };
 
   return (

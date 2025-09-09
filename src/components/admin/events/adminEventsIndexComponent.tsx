@@ -32,7 +32,6 @@ import ReportDatePicker from '../../common/reportDatePickerControl';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { toast } from 'react-toastify';
@@ -42,6 +41,7 @@ import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
 import { useGetTours } from '@/hooks/admin/useGetTours';
+import { useRouter } from 'next/navigation';
 import { useSetEventsDeleted } from '@/hooks/event/useSetEventsDeleted';
 import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
 import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
@@ -62,7 +62,7 @@ export default function AdminEventsIndex() {
   const { getTours } = useGetTours();
   const { getTicketSocketEventsOnly } = useGetTicketSocketEventsOnly();
   const { getAllCountries } = useGetAllCountries();
-
+  const router = useRouter();
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [eventIdList, setEventIdList] = useState<number[]>([]);
   const allEventIds: number[] = currentAdminSelection.events?.map(evt => evt.externalEventId) ?? [];
@@ -204,7 +204,7 @@ export default function AdminEventsIndex() {
     dispatch(setReloadAdminEvents(false));
     dispatch(setReloadVenues(true));
     dispatch(setAdminEvent(vipEvent));
-    redirect('/admin/events/edit/');
+    router.push('/admin/events/edit/');
   };
 
   const editEvent = (eventId: number) => {
@@ -223,7 +223,7 @@ export default function AdminEventsIndex() {
       return;
     }
     dispatch(setAdminEvent(vipEvent));
-    redirect('/admin/events/edit/');
+    router.push('/admin/events/edit/');
   };
 
   const manageOrders = (eventId: number) => {
@@ -242,7 +242,7 @@ export default function AdminEventsIndex() {
     }
     dispatch(setAdminEvent(vipEvent));
     setTableLoading(true);
-    redirect('/admin/events/orders/');
+    router.push('/admin/events/orders/');
   };
 
   const updateEventIdList = (eventId: number | undefined, addToList: boolean) => {

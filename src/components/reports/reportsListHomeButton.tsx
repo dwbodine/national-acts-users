@@ -1,11 +1,13 @@
 "use client";
 
 import { Button } from 'react-bootstrap';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function ReportsListHomeButton() {
+  const router = useRouter();
+
   const goHome = () => {
-    redirect('/reports/');
+    router.push('/reports/');
   };
   return <Button onClick={goHome}>Back</Button>;
 }

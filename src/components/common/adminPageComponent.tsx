@@ -7,9 +7,9 @@ import AdminTabsMobile from './adminTabsMobileComponent';
 import { Container } from 'react-bootstrap';
 import NavBar from './navBarComponent';
 import { RootState } from '@/lib/store';
-import { redirect } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
+import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 
@@ -22,7 +22,7 @@ export default function AdminPage(props: AdminPageProps) {
   const userActivity = props.UserActivity;
   const globalSettings = useSelector((state: RootState) => state.globalSelection);
   const { isLoading } = globalSettings;
-
+  const router = useRouter();
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
 
@@ -37,14 +37,14 @@ export default function AdminPage(props: AdminPageProps) {
             logActivityData(userActivity);
           }
         } else {
-          redirect('/logout/');
+          router.push('/logout/');
         }
       }
     }, 200);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [title, logActivityData, userActivity, isLoading, getUser, windowSizeJson]);
+  }, [title, logActivityData, userActivity, isLoading, getUser, windowSizeJson, router]);
 
 
 

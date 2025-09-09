@@ -10,10 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
+import { useRouter } from 'next/navigation';
 import { useUpdateTour } from '@/hooks/admin/useUpdateTour';
 
 export default function AdminTourEdit() {
@@ -23,22 +23,23 @@ export default function AdminTourEdit() {
   const { getAdminSellerEvents } = useGetAdminSellerEvents();
   const { updateTour } = useUpdateTour();
   const sellerRef = React.createRef<PickerHandle>();
+  const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.selectedTour === undefined || currentAdminSelection.sellerId === undefined) {
-        redirect('/admin/tour/');
+        router.push('/admin/tour/');
       }
     }, 200);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, globalSelection.isLoading]);
+  }, [currentAdminSelection, globalSelection.isLoading, router]);
 
   const goBack = () => {
     dispatch(setAdminTour(undefined));
     dispatch(setReloadTours(true));
-    redirect('/admin/tour/');
+    router.push('/admin/tour/');
   };
 
   const setTourName = (tourName: string) => {
@@ -209,7 +210,7 @@ export default function AdminTourEdit() {
       if (response.success) {
         dispatch(setReloadTours(true));
         toast.success('Save tour succeeded');
-        redirect('/admin/tour/');
+        router.push('/admin/tour/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving tour');
       }

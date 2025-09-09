@@ -10,10 +10,10 @@ import { Button } from 'react-bootstrap';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import { getSellerStatusSlug } from '@/utils/eventUtils';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
+import { useRouter } from 'next/navigation';
 
 export default function AdminSellerGlobalIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -23,6 +23,7 @@ export default function AdminSellerGlobalIndex() {
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -67,7 +68,7 @@ export default function AdminSellerGlobalIndex() {
     };
     dispatch(setAdminSeller(seller));
     setTableLoading(true);
-    redirect('/admin/sellers/edit');
+    router.push('/admin/sellers/edit');
   };
 
   const editSeller = (sellerId: number) => {
@@ -78,7 +79,7 @@ export default function AdminSellerGlobalIndex() {
     if (seller) {
       dispatch(setAdminSeller(seller));
       setTableLoading(true);
-      redirect('/admin/sellers/edit');
+      router.push('/admin/sellers/edit');
     }
   };
 

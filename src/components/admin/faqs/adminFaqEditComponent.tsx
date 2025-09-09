@@ -3,17 +3,17 @@
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
 import { setAllFaqCategories, setMustSavePage, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { Faq } from '@/types/public';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import { SelectPicker } from 'rsuite';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
-import { useEffect } from 'react';
 import { useGetAllFaqCategories } from '@/hooks/admin/useGetAllFaqCategories';
+import { useRouter } from 'next/navigation';
 import { useUpdateFaq } from '@/hooks/admin/useUpdateFaq';
 
 export default function AdminFaqEdit() {
@@ -21,11 +21,12 @@ export default function AdminFaqEdit() {
   const dispatch = useDispatch();
   const { updateFaq } = useUpdateFaq();
   const { getAllFaqCategories } = useGetAllFaqCategories();
+  const router = useRouter();
 
-  const goBack = () => {
+  const goBack = useCallback(() => {
     toast.dismiss();
-    redirect('/admin/faqs/');
-  };
+    router.push('/admin/faqs/');
+  },[router]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -42,7 +43,7 @@ export default function AdminFaqEdit() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, dispatch, getAllFaqCategories]);
+  }, [currentAdminSelection, dispatch, getAllFaqCategories, goBack]);
 
   const confirmGoBack = () => {
     if (!currentAdminSelection?.mustSavePage) {
@@ -140,7 +141,7 @@ export default function AdminFaqEdit() {
       if (response.success) {
         dispatch(setReloadFaqs(true));
         toast.success('Save FAQ succeeded');
-        redirect('/admin/faqs/');
+        router.push('/admin/faqs/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving FAQ');
       }

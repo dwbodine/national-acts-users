@@ -2,7 +2,7 @@
 
 import { Button, FormCheck } from 'react-bootstrap';
 import { GetRolesResponse, GetSellersResponse, UpdateUserResponse } from '@/types/responses';
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Role, User } from '@/types/user';
 import { Seller, SellerType } from '@/types/event';
 import { setReloadUsers, setSelectedUser } from '@/lib/adminSelectionSlice';
@@ -11,12 +11,12 @@ import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { FaPlus } from 'react-icons/fa';
 import { RootState } from '@/lib/store';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { useRouter } from 'next/navigation';
 import { useUpdateUser } from '@/hooks/admin/useUpdateUser';
 
 export default function AdminUserEdit() {
@@ -38,10 +38,11 @@ export default function AdminUserEdit() {
   const [sendEmailReset, setSendEmailReset] = useState<boolean>(false);
   const [sendTextReset, setSendTextReset] = useState<boolean>(false);
   const [disableCheckIn, setDisableCheckIn] = useState<boolean>(false);
+  const router = useRouter();
 
-  const goBack = () => {
-    redirect('/admin/users/');
-  };
+  const goBack = useCallback(() => {
+    router.push('/admin/users/');
+  }, [router]);
 
   useEffect(() => {
     if (currentAdminSelection.selectedUser === undefined) {
@@ -81,6 +82,7 @@ export default function AdminUserEdit() {
     allRoles,
     getAllRoles,
     dispatch,
+    goBack
   ]);
 
   const updateSeller = (sellerId: number, newSellerId: number | null) => {
@@ -178,7 +180,7 @@ export default function AdminUserEdit() {
       if (response.success) {
         dispatch(setReloadUsers(true));
         toast.success('User deleted successfully');
-        redirect('/admin/users/');
+        router.push('/admin/users/');
       } else {
         toast.error(response.error);
       }
@@ -252,7 +254,7 @@ export default function AdminUserEdit() {
       if (response.success) {
         dispatch(setReloadUsers(true));
         toast.success('User updated successfully');
-        redirect('/admin/users/');
+        router.push('/admin/users/');
       } else {
         toast.error(response.error ?? 'Error occurred while saving user');
       }

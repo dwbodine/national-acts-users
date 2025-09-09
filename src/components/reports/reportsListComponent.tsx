@@ -1,21 +1,22 @@
 "use client";
 
 import { Col, Row } from 'react-bootstrap';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function ReportsList() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const goToReport = (reportId: string) => {
     switch (reportId) {
       case 'report-customer-export':
-        redirect('/reports/customer-export/');
+        router.push('/reports/customer-export/');
         break;
       case 'report-missing-venues':
-        redirect('/reports/missing-venues/');
+        router.push('/reports/missing-venues/');
         break;
       default:
         break;

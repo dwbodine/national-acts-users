@@ -5,13 +5,14 @@ import Image from 'next/image';
 import LogoutButton from './logoutButtonComponent';
 import { NavBarProps } from '@/types/props';
 import ResetPasswordButton from './resetPasswordButtonComponent';
-import { redirect } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function NavBar(props: NavBarProps) {
   const windowSize = useWindowSize();
+  const router = useRouter();
   const windowSizeJson = JSON.stringify(windowSize);
   const { getUser } = useCurrentUser();
 
@@ -24,9 +25,9 @@ export default function NavBar(props: NavBarProps) {
   const goHome = () => {
     const currentUser = getUser();
     if (currentUser?.isAdmin) {
-      redirect('/dashboard/');
+      router.push('/dashboard/');
     } else {
-      redirect('/');
+      router.push('/');
     }
   };
 

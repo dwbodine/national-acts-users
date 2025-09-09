@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import EventDetail from '../orders/eventDetailComponent';
 import NavBar from '../../common/navBarComponent';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 
 export default function ClientEventComponent() {
   const [detailHidden, setDetailHidden] = useState(true);
   const [id, setId] = useState(0);
   const [notLoggedIn, setNotLoggedIn] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const authTokenCookie = Cookies.get('authToken');
@@ -20,9 +21,9 @@ export default function ClientEventComponent() {
       let idParam = searchParams.get('id');
       if (idParam) {
         idParam = `/event/?id=${idParam}`;
-        redirect(`/login/?returnPath=${encodeURI(idParam)}`);
+        router.push(`/login/?returnPath=${encodeURI(idParam)}`);
       } else {
-        redirect('/login/');
+        router.push('/login/');
       }
     }
 
@@ -39,7 +40,7 @@ export default function ClientEventComponent() {
         }
       }
     }
-  }, [detailHidden, setDetailHidden, id, setId]);
+  }, [detailHidden, setDetailHidden, id, setId, router]);
 
   return (
     <>

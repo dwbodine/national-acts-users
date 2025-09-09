@@ -5,17 +5,18 @@ import { Col, Container, Row } from "react-bootstrap";
 import { ActivePageKey } from "@/constants";
 import { AdminTabsProps } from "@/types/props";
 import { RingLoader } from 'react-spinners';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { setReloadAdminEvents } from "@/lib/adminEventsSelectionSlice";
 import { setReloadEvents } from "@/lib/reportSelectionSlice";
 import { useDispatch } from "react-redux";
+import { useRouter } from 'next/navigation';
 
 export default function AdminTabsMobile(props: AdminTabsProps) {
   const activeKey = props.ActiveKey;
   const isLoading = props.IsLoading;
   const notAdmin = props.NotAdmin;
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const allTabsTop: ActivePageKey[] = [ActivePageKey.Dashboard, ActivePageKey.Events, ActivePageKey.SalesOverview];
   const allTabsBottom: ActivePageKey[] = [ActivePageKey.Admin, ActivePageKey.Reports, ActivePageKey.Users];
@@ -28,25 +29,25 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
     dispatch(setIsLoading(true));
     switch (key) {
       case ActivePageKey.Dashboard:
-        redirect('/dashboard/');
+        router.push('/dashboard/');
         break;
       case ActivePageKey.Admin:
-        redirect('/admin/');
+        router.push('/admin/');
         break;
       case ActivePageKey.SalesOverview:
         dispatch(setIsLoading(true));
         dispatch(setReloadEvents(true));
-        redirect('/sellers/');
+        router.push('/sellers/');
         break;
       case ActivePageKey.Reports:
-        redirect('/reports/');
+        router.push('/reports/');
         break;
       case ActivePageKey.Users:
-        redirect('/users');
+        router.push('/users');
         break;
       case ActivePageKey.Events:
         dispatch(setReloadAdminEvents(true));
-        redirect('/events/');
+        router.push('/events/');
         break;
       default:
         break;

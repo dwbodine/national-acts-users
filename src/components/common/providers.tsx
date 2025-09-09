@@ -7,9 +7,9 @@ import { store } from '@/lib/store';
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
-    <Provider store={store}>
-        {children}
-        <ToastContainer />
-    </Provider>        
+      <Provider store={store}>
+          {children}
+          <ToastContainer />
+      </Provider> 
   );
 }

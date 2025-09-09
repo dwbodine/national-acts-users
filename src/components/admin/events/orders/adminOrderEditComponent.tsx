@@ -17,12 +17,12 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import { getOrderStatusText } from '@/utils/eventUtils';
 import moment from 'moment';
-import { redirect } from 'next/navigation';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetOrderById } from '@/hooks/common/useGetOrderById';
 import { useRefundOrder } from '@/hooks/admin/useRefundOrder';
 import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
+import { useRouter } from 'next/navigation';
 import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 import { useUpdateOrder } from '@/hooks/admin/useUpdateOrder';
 
@@ -37,7 +37,7 @@ export default function AdminOrderEdit(props: EditProps) {
   const [markChargeback, setMarkChargeback] = useState<boolean>(false);
   const [refundServiceFees, setRefundServiceFees] = useState<boolean>(false);
   const { setTicketsCheckedIn } = useSetTicketsCheckedIn();
-
+  const router = useRouter();
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [ticketIdList, setTicketIdList] = useState<number[]>([]);
   const allTicketIds: number[] = currentAdminSelection.selectedOrder?.tickets?.map(t => t.ticketSocketOrderTicketId) ?? [];
@@ -121,7 +121,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (id && currentAdminSelection.selectedOrder) {
       path += `?id=${currentAdminSelection.selectedOrder.ticketSocketEventId}`;
     }
-    redirect(path);
+    router.push(path);
   };
 
   const confirmGoBack = () => {

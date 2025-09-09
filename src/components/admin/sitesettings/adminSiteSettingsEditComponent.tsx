@@ -9,10 +9,10 @@ import AdminFileUpload from "../common/adminFileUploadComponent";
 import AdminListHomeButton from "../adminListHomeButton";
 import { RootState } from "@/lib/store";
 import { SiteSetting } from "@/types/public";
-import { redirect } from 'next/navigation';
 import { setIsLoading } from "@/lib/globalSelectionSlice";
 import { toast } from "react-toastify";
-import { useGetSiteSettings } from "@/hooks/admin/useGetSiteSettings"
+import { useGetSiteSettings } from "@/hooks/admin/useGetSiteSettings";
+import { useRouter } from 'next/navigation';
 import { useUpdateSiteSetting } from "@/hooks/admin/useUpdateSiteSetting";
 
 export default function AdminSiteSettingsEdit() {
@@ -21,6 +21,7 @@ export default function AdminSiteSettingsEdit() {
     const { getAllSettings } = useGetSiteSettings();
     const { updateSiteSettings } = useUpdateSiteSetting();
     const [isUploading, setIsUploading] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -141,7 +142,7 @@ export default function AdminSiteSettingsEdit() {
                 if (response.success) {
                     toast.success('Settings saved successfully');
                     clearDirty();
-                    redirect('/admin/');
+                    router.push('/admin/');
                 } else {
                     const err = response.error ?? 'Errors occurred while saving settings';
                     toast.error(err);
