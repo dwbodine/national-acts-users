@@ -1,0 +1,34 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Local env files
+.env
+.env.development
+
+# Build output
+.next
+out
+dist
+
+# Editor directories and files
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Mac/OS files
+.DS_Store
+
+# Docker-specific
+Dockerfile*
+docker-compose*
+.dockerignore
+.gitignore

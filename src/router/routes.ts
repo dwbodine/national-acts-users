@@ -9,10 +9,8 @@ export const protectedRoutes = [
   '/reset-password',
   '/sellers',
   '/index.html',
-  '/users'
+  '/users',
 ];
-export const adminRoutes = [
-  '/admin',
-];
+export const adminRoutes = ['/admin'];
 export const authRoutes = ['/login', '/logout'];
 export const publicRoutes = ['/forgot-password', '/register', '/images', '/_next'];

@@ -15,7 +15,7 @@ export default function middleware(req: NextRequest) {
   }
 
   if (authToken && !isAdmin && adminRoutes.find((x) => path.startsWith(x))) {
-    const errUrl = '/logout?err=1';
+    const errUrl = '/logout';
     return NextResponse.redirect(new URL(errUrl, req.url));
   } else if (
     !authToken &&

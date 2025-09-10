@@ -3,9 +3,6 @@ services:
   nationalactsusers:
     image: nationalactsvip/nationalactsusers:latest
     container_name: nationalactsusers
-    build:
-      context: .
-      dockerfile: ./Dockerfile
     networks:
       - app-network
     ports:

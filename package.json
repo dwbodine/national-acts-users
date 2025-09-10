@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "standalone": "next build && cp -r public/ .next/standalone && cp -r .next/static .next/standalone/.next",
     "start": "next start",
     "format": "prettier '**/*.{json,yaml,js,ts}' --write",
     "lint": "eslint"
