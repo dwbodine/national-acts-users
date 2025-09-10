@@ -1,5 +1,5 @@
 # Base image with dependencies
-FROM node:20-alpine
+FROM node:alpine
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ ENV HOSTNAME="0.0.0.0"
 ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY package*.json ./
-RUN npm install --frozen-lockfile
+RUN npm install
 
 COPY . .
 
@@ -17,7 +17,7 @@ RUN --mount=type=secret,id=_env cat /run/secrets/_env > .env
 RUN npm run standalone
 
 # Production runner
-FROM alpine:3.20
+FROM alpine:latest
 RUN apk update && apk add --no-cache nodejs icu-data-full
 RUN addgroup -S node && adduser -S node -G node
 USER node
