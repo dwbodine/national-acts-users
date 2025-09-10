@@ -107,6 +107,7 @@ export default function LoginComponent() {
               title="National Acts Client Portal"
               width={300}
               height={231}
+              priority
             />
           </Col>
         </Row>

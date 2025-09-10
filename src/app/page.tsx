@@ -1,30 +1,35 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import ClientSellersComponent from '@/components/sales/events/clientSellersComponent';
 import { User } from '@/types/user';
-import { redirect } from 'next/navigation';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
+  const router = useRouter();
+  const { getUser } = useCurrentUser();
+  const [user, setUser] = useState<User | undefined>(undefined);
+  const [loggedInNonAdmin, setLoggedInNonAdmin] = useState<boolean>(false);
 
-  let user: User | undefined = undefined;
-  try {
-    const currentUserStr = localStorage.getItem('currentUser') || undefined;
-    if (currentUserStr) {
-      user = JSON.parse(currentUserStr) as User;
+  useEffect(() => {
+    if (!user) {
+      const currentUser = getUser();
+      setUser(currentUser);
     }
-  } catch {
-    user = undefined;
-  }
 
-  if (user && user.isAuthenticated) {
-    if (user.isAdmin) {
-      redirect('/dashboard/');
-    } else {
-      redirect('sellers');
+    if (user && user.isAuthenticated) {
+      if (user.isAdmin) {
+        router.push('/dashboard/');
+      } else {
+        setLoggedInNonAdmin(true);
+      }
     }
-  }
-  else {
-    redirect('login')
-  }
+  }, [router, getUser, user]);
+
+
 
   return (
-    <></>
+    loggedInNonAdmin ? <ClientSellersComponent /> : <></>
   );
 }

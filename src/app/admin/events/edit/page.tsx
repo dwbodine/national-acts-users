@@ -1,6 +1,6 @@
 import { ActivePageKey } from '@/constants';
-import AdminEventEdit from '../../../components/admin/events/adminEventEditComponent';
-import AdminPage from '../../../components/common/adminPageComponent';
+import AdminEventEdit from '../../../../components/admin/events/adminEventEditComponent';
+import AdminPage from '../../../../components/common/adminPageComponent';
 import { PageProps } from '@/types/props';
 
 export default async function AdminEventsEdit(props: PageProps) {
