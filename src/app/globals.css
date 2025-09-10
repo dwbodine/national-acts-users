@@ -653,7 +653,7 @@ a.edit-event-link {
   padding-bottom: 10px;
 }
 
-.month-view-month-name {
+.month-view-month-name, .week-view-week-name {
   text-align: center;
   font-size: 24px;
   font-weight: bold;

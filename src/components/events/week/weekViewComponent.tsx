@@ -66,10 +66,13 @@ export default function WeekView(props: WeekViewProps) {
         }
     }
 
+    const weekName = `Week starting ${moment(startOfWeek).format('MM/DD/YYYY')}`
+
     return (
         <Col className="week-view">
             <Row className="week-view-action">
                 <Col className="week-view-action-previous"><a href="#" onClick={previousWeek}><FaArrowLeft />Previous Week</a></Col>
+                <Col className="week-view-week-name" id="week-view-name">{weekName}</Col>
                 <Col className="week-view-action-next"><a href="#" onClick={nextWeek}>Next Week<FaArrowRight /></a></Col>
             </Row>
             <Row className="week-view-calendar">

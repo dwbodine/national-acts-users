@@ -5,8 +5,8 @@ import { IconButton, Table } from 'rsuite';
 import { Note, VipEvent } from '@/types/event';
 import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import { setExpandedEvent, setExpandedRow, setFocusControl } from '@/lib/adminEventsSelectionSlice';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
 import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
 import EventDataExpanded from '../../common/eventDataExpandedComponent';
 import { ExpandCellProps } from '@/types/props';
@@ -32,7 +32,7 @@ export default function AllEventsWeek() {
   const [vipEvents, setVipEvents] = useState<VipEvent[] | undefined>(undefined);
   const [notes, setNotes] = useState<Note[] | undefined>(undefined);
 
-  const handleExpanded = (rowData: VipEvent | undefined) => {
+  const handleExpanded = useCallback((rowData: VipEvent | undefined) => {
     if (!rowData) {
       return;
     }
@@ -63,7 +63,7 @@ export default function AllEventsWeek() {
     if (focusControlId === '') {
       window.scrollTo({ behavior: 'smooth', left: 0, top: 0 });
     }
-  };
+  }, [dispatch, expandedRowKey]);
 
   const ExpandCell = (props: ExpandCellProps) => (
     <Cell {...props} style={{ padding: 5 }}>
@@ -81,7 +81,7 @@ export default function AllEventsWeek() {
     </Cell>
   );
 
-  const renderRowExpanded = () => <EventDataExpanded />
+  const renderRowExpanded = () => <EventDataExpanded FocusControl="week-view-name" />
 
   useEffect(() => {
     if (currentReportSelection.currentEvents !== undefined && currentReportSelection.notes !== undefined) {
@@ -90,6 +90,12 @@ export default function AllEventsWeek() {
       dispatch(
         setIsLoading(false)
       );
+      if (expandedRowKey) {
+        const evt = currentReportSelection.currentEvents.find(x => x.externalEventId === expandedRowKey);
+        if (evt) {
+          handleExpanded(evt);
+        }
+      }
       if (
         currentReportSelection.focusControl &&
         currentReportSelection.focusControl !== ''
@@ -105,6 +111,8 @@ export default function AllEventsWeek() {
     currentReportSelection,
     dispatch,
     windowSizeJson,
+    expandedRowKey,
+    handleExpanded
   ]);
 
   const startOfWeek = currentReportSelection.start ? moment.unix(currentReportSelection.start) : undefined;
@@ -131,7 +139,6 @@ export default function AllEventsWeek() {
               renderRowExpanded={renderRowExpanded}
               rowClassName={(evt: VipEvent) => {
                 if (evt && evt.externalEventId === expandedRowKey) {
-                  handleExpanded(evt);
                   return 'highlighted';
                 } else if (evt) {
                   return getEventStatusSlug(evt);
