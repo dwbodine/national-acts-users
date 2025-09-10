@@ -68,7 +68,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
 
     const submitPdfToNewWindow = (htmlText: string) => {
         localStorage.setItem('htmlText', htmlText);
-        window.open('/pdf/');
+        window.open('/pdf');
     };
 
     const getVipItinerary = () => {

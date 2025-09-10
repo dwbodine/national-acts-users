@@ -28,7 +28,7 @@ export default function AdminVenueEdit() {
   const router = useRouter();
 
   const goBack = useCallback(() => {
-    router.push('/admin/venues/');
+    router.push('/admin/venues');
   }, [router]);
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export default function AdminVenueEdit() {
         dispatch(setAdminVenue(undefined))
         const message = isUpdate ? 'Venue updated successfully' : 'Venue added successfully';
         toast.success(message);
-        router.push('/admin/venues/');
+        router.push('/admin/venues');
       } else {
         toast.error(response.error ?? 'Error occurred while saving venue');
         dispatch(setIsLoading(false));

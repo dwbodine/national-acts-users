@@ -85,7 +85,7 @@ export default function AdminOrdersSearch() {
 
   const goBack = () => {
     dispatch(setAdminOrders(undefined));
-    router.push('/admin/');
+    router.push('/admin');
   };
 
   const numOrders = (currentAdminSelection.orders?.length ?? 0);

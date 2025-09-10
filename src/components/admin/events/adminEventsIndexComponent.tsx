@@ -204,7 +204,7 @@ export default function AdminEventsIndex() {
     dispatch(setReloadAdminEvents(false));
     dispatch(setReloadVenues(true));
     dispatch(setAdminEvent(vipEvent));
-    router.push('/admin/events/edit/');
+    router.push('/admin/events/edit');
   };
 
   const editEvent = (eventId: number) => {
@@ -223,7 +223,7 @@ export default function AdminEventsIndex() {
       return;
     }
     dispatch(setAdminEvent(vipEvent));
-    router.push('/admin/events/edit/');
+    router.push('/admin/events/edit');
   };
 
   const manageOrders = (eventId: number) => {
@@ -242,7 +242,7 @@ export default function AdminEventsIndex() {
     }
     dispatch(setAdminEvent(vipEvent));
     setTableLoading(true);
-    router.push('/admin/events/orders/');
+    router.push('/admin/events/orders');
   };
 
   const updateEventIdList = (eventId: number | undefined, addToList: boolean) => {

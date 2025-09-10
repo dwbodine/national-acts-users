@@ -132,7 +132,7 @@ export default function AdminOrdersIndex(props: EditProps) {
       router.push(`/admin/events/edit/?id=${id}`);
     } else {
       dispatch(setAdminEvent(undefined));
-      router.push('/admin/events/');
+      router.push('/admin/events');
     }
   };
 

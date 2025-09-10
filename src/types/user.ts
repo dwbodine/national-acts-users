@@ -10,6 +10,19 @@ import {
   VipEvent,
 } from './event';
 
+export interface JwtPayload {
+  fresh?: boolean;
+  iat?: number;
+  jti?: string;
+  type?: string;
+  sub?: string;
+  nbf?: number;
+  csrf?: string;
+  exp?: number;
+  role?: string;
+  user_id?: number;
+}
+
 export type UserSeller = {
   sellerId: number;
   sellerName: string;

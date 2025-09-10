@@ -23,7 +23,7 @@ export default function ClientEventComponent() {
         idParam = `/event/?id=${idParam}`;
         router.push(`/login/?returnPath=${encodeURI(idParam)}`);
       } else {
-        router.push('/login/');
+        router.push('/login');
       }
     }
 

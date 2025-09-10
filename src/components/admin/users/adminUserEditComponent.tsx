@@ -41,7 +41,7 @@ export default function AdminUserEdit() {
   const router = useRouter();
 
   const goBack = useCallback(() => {
-    router.push('/admin/users/');
+    router.push('/admin/users');
   }, [router]);
 
   useEffect(() => {
@@ -180,7 +180,7 @@ export default function AdminUserEdit() {
       if (response.success) {
         dispatch(setReloadUsers(true));
         toast.success('User deleted successfully');
-        router.push('/admin/users/');
+        router.push('/admin/users');
       } else {
         toast.error(response.error);
       }
@@ -254,7 +254,7 @@ export default function AdminUserEdit() {
       if (response.success) {
         dispatch(setReloadUsers(true));
         toast.success('User updated successfully');
-        router.push('/admin/users/');
+        router.push('/admin/users');
       } else {
         toast.error(response.error ?? 'Error occurred while saving user');
       }

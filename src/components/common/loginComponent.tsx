@@ -55,7 +55,7 @@ export default function LoginComponent() {
               if (returnPath) {
                 router.push(returnPath);
               } else if (response.user.isAdmin) {
-                router.push('/dashboard/');
+                router.push('/dashboard');
               } else {
                 router.push('/');
               }

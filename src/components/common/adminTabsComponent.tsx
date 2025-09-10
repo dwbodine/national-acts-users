@@ -26,25 +26,25 @@ export default function AdminTabs(props: AdminTabsProps) {
         dispatch(setIsLoading(true));
         switch (key) {
             case ActivePageKey.Dashboard:
-                router.push('/dashboard/');
+                router.push('/dashboard');
                 break;
             case ActivePageKey.Admin:
-                router.push('/admin/');
+                router.push('/admin');
                 break;
             case ActivePageKey.SalesOverview:
                 dispatch(setIsLoading(true));
                 dispatch(setReloadEvents(true));
-                router.push('/sellers/');
+                router.push('/sellers');
                 break;
             case ActivePageKey.Reports:
-                router.push('/reports/');
+                router.push('/reports');
                 break;
             case ActivePageKey.Users:
                 router.push('/users');
                 break;
             case ActivePageKey.Events:
                 dispatch(setReloadAdminEvents(true));
-                router.push('/events/');
+                router.push('/events');
                 break;
             default:
                 break;

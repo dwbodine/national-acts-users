@@ -189,7 +189,7 @@ export default function AdminEventEdit(props: EditProps) {
     dispatch(setAdminEvent(undefined));
     dispatch(setMustSaveEvent(false));
     if (!id) {
-      router.push('/admin/events/');
+      router.push('/admin/events');
     }
   };
 

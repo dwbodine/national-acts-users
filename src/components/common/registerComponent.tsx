@@ -97,7 +97,7 @@ export default function RegisterComponent() {
   };
 
   const onBack = () => {
-    router.push('/login/');
+    router.push('/login');
   };
 
   return (

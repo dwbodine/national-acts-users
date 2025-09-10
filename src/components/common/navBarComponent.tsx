@@ -25,7 +25,7 @@ export default function NavBar(props: NavBarProps) {
   const goHome = () => {
     const currentUser = getUser();
     if (currentUser?.isAdmin) {
-      router.push('/dashboard/');
+      router.push('/dashboard');
     } else {
       router.push('/');
     }

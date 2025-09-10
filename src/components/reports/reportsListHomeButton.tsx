@@ -7,7 +7,7 @@ export default function ReportsListHomeButton() {
   const router = useRouter();
 
   const goHome = () => {
-    router.push('/reports/');
+    router.push('/reports');
   };
   return <Button onClick={goHome}>Back</Button>;
 }

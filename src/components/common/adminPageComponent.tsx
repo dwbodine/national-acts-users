@@ -37,7 +37,7 @@ export default function AdminPage(props: AdminPageProps) {
             logActivityData(userActivity);
           }
         } else {
-          router.push('/logout/');
+          router.push('/logout');
         }
       }
     }, 200);

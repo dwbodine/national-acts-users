@@ -7,7 +7,7 @@ export default function LogoutButton() {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push('/logout/');
+    router.push('/logout');
   };
 
   return (

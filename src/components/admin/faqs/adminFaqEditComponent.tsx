@@ -25,7 +25,7 @@ export default function AdminFaqEdit() {
 
   const goBack = useCallback(() => {
     toast.dismiss();
-    router.push('/admin/faqs/');
+    router.push('/admin/faqs');
   },[router]);
 
   useEffect(() => {
@@ -141,7 +141,7 @@ export default function AdminFaqEdit() {
       if (response.success) {
         dispatch(setReloadFaqs(true));
         toast.success('Save FAQ succeeded');
-        router.push('/admin/faqs/');
+        router.push('/admin/faqs');
       } else {
         toast.error(response.error ?? 'Error occurred while saving FAQ');
       }

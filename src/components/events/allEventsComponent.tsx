@@ -94,7 +94,7 @@ export default function AllEvents() {
             }
           } else if (response.statusCode === 401 || response.statusCode === 422) {
             dispatch(setIsLoading(false));
-            router.push('/logout/');
+            router.push('/logout');
           } else {
             dispatch(setIsLoading(false));
             dispatch(setAdminEvents(undefined));

@@ -24,7 +24,7 @@ export default function AdminSellerGlobalEdit() {
   const isArtist = selectedSellerType === SellerType.Artist;
 
   const goBack = useCallback(() => {
-    router.push('/admin/sellers/');
+    router.push('/admin/sellers');
   },[router]);
 
   useEffect(() => {
@@ -442,7 +442,7 @@ export default function AdminSellerGlobalEdit() {
         dispatch(setReloadSellers(true));
         toast.success('Save seller succeeded');
         dispatch(setAdminSeller(undefined));
-        router.push('/admin/sellers/');
+        router.push('/admin/sellers');
       } else {
         toast.error(response.error ?? 'Error occurred while saving seller');
       }

@@ -17,22 +17,22 @@ export default function AdminList() {
   const goToAdminPage = (adminAction: string) => {
     switch (adminAction) {
       case 'manage-roles':
-        router.push('/admin/roles/');
+        router.push('/admin/roles');
         break;
       case 'manage-users':
-        router.push('/admin/users/');
+        router.push('/admin/users');
         break;
       case 'manage-refresh-data':
-        router.push('/admin/refresh-data/');
+        router.push('/admin/refresh-data');
         break;
       case 'manage-events':
-        router.push('/admin/events/');
+        router.push('/admin/events');
         break;
       case 'manage-orders':
         router.push('/admin/events/orders/search');
         break;
       case 'view-log':
-        router.push('/admin/log/');
+        router.push('/admin/log');
         break;
       case 'manage-tours':
         router.push('/admin/tour');
@@ -44,7 +44,7 @@ export default function AdminList() {
         router.push('/admin/venues');
         break;
       case 'manage-global-seller-settings':
-        router.push('/admin/sellers/');
+        router.push('/admin/sellers');
         break;
       case 'manage-pages':
         router.push('/admin/page-manager');
@@ -53,7 +53,7 @@ export default function AdminList() {
         router.push('/admin/page-manager/order');
         break;
       case 'manage-faqs':
-        router.push('/admin/faqs/');
+        router.push('/admin/faqs');
         break;
       default:
         break;

@@ -20,7 +20,7 @@ export default function HomePage() {
 
     if (user && user.isAuthenticated) {
       if (user.isAdmin) {
-        router.push('/dashboard/');
+        router.push('/dashboard');
       } else {
         setLoggedInNonAdmin(true);
       }

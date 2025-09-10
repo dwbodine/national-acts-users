@@ -117,7 +117,7 @@ export default function AdminToursIndex() {
     }
     dispatch(setAdminTour(tour));
     setTableLoading(true);
-    router.push('/admin/tour/edit/');
+    router.push('/admin/tour/edit');
   };
 
   const addTour = () => {

@@ -142,7 +142,7 @@ export default function AdminSiteSettingsEdit() {
                 if (response.success) {
                     toast.success('Settings saved successfully');
                     clearDirty();
-                    router.push('/admin/');
+                    router.push('/admin');
                 } else {
                     const err = response.error ?? 'Errors occurred while saving settings';
                     toast.error(err);

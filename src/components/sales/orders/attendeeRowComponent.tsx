@@ -34,7 +34,7 @@ export default function AttendeeRow(props: AttendeeRowProps) {
           dispatch(setFocusControl(id));
           dispatch(setReloadEvents(true));
         } else if (response.statusCode === 401 || response.statusCode === 422) {
-          router.push('/logout/');
+          router.push('/logout');
         }
       });
   };

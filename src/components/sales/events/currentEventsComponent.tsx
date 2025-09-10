@@ -157,7 +157,7 @@ export default function CurrentEvents() {
               setChartsHidden(false);
             }
           } else if (response.statusCode === 401 || response.statusCode === 422) {
-            router.push('/logout/');
+            router.push('/logout');
           } else {
             dispatch(setEvents([]));
             dispatch(setIsLoading(false));

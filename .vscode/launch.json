@@ -8,14 +8,6 @@
       "name": "Debug Chrome",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}/src"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug Node",
-      "program": "${workspaceFolder}/.next/standalone/server.js",
-      "sourceMaps": true,
-      "cwd": "${workspaceFolder}"
     }
   ]
 }

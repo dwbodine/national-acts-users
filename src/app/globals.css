@@ -149,8 +149,8 @@ input.rs-input:hover {
   -moz-border-radius: 0px;
   border-radius: 0px;
   box-shadow: none;
-  padding: 5px 15px 5px 2px;
-  margin: 0 0 15px 0;
+  padding: 5px 15px 5px 2px !important;
+  margin: 0 0 15px 0 !important;
   border: 0px !important;
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
@@ -164,8 +164,8 @@ input.rs-input:hover {
   -moz-border-radius: 0px;
   border-radius: 0px;
   box-shadow: none;
-  padding: 0 20px;
-  margin: 15px 10px 0 0;
+  padding: 0 20px !important;
+  margin: 15px 10px 0 0 !important;
   border: 0px !important;
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
@@ -204,19 +204,19 @@ input.rs-input:hover {
 }
 
 .admin-seller-row {
-  margin: 0 0 10px 0;
+  margin: 0 0 10px 0 !important;
 }
 
 .admin-tour-row {
-  margin: 0 0 10px 6px;
+  margin: 0 0 10px 6px !important;
 }
 
 .admin-check-row {
-  margin: 5px 0;
+  margin: 5px 0 !important;
 }
 
 .admin-button-row {
-  margin: 0 0 10px 10px;
+  margin: 0 0 10px 10px !important;
 }
 
 .date-range-title {
@@ -449,8 +449,8 @@ a.edit-event-link {
 }
 
 .vipContainer {
-  margin: 0;
-  padding: 10px;
+  margin: 0 !important;
+  padding: 10px !important;
 }
 
 .vipDetailsTable {

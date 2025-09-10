@@ -13,10 +13,10 @@ export default function ReportsList() {
   const goToReport = (reportId: string) => {
     switch (reportId) {
       case 'report-customer-export':
-        router.push('/reports/customer-export/');
+        router.push('/reports/customer-export');
         break;
       case 'report-missing-venues':
-        router.push('/reports/missing-venues/');
+        router.push('/reports/missing-venues');
         break;
       default:
         break;

@@ -15,10 +15,16 @@ export default function LogoutComponent() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const err = searchParams.get('err');
       logActivityData(UserActivityType.Logout).then(() => {
         resetStores();
         logout().then(() => {
-          router.push('/login/');
+          let loginUrl = '/login';
+          if (err) {
+            loginUrl += `?err=${err}`
+          }
+          router.push(loginUrl);
         });
       });
     }, 200);

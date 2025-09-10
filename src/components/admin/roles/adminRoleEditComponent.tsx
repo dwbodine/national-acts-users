@@ -28,7 +28,7 @@ export default function AdminRoleEdit() {
   const router = useRouter();
 
   const goBack = useCallback(() => {
-    router.push('/admin/roles/');
+    router.push('/admin/roles');
   }, [router]);
 
   useEffect(() => {
@@ -112,7 +112,7 @@ export default function AdminRoleEdit() {
       if (response.success) {
         dispatch(setReloadRoles(true));
         toast.success('Save role succeeded');
-        router.push('/admin/roles/');
+        router.push('/admin/roles');
       } else {
         toast.error(response.error ?? 'Error occurred while saving role');
       }
