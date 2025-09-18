@@ -60,7 +60,7 @@ export default function AgendaView(props: AgendaViewProps) {
                 filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= currentDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= currentDate.endOf('day').valueOf())
             }
             agendaDays.push(<AgendaDay key={i} AgendaDayNumber={i}
-                AgendaDate={dDate.format('MM/DD/YYYY')}
+                AgendaDate={dDate.format('YYYY-MM-DD')}
                 Events={filteredEvents}
                 Notes={filteredNotes}
             />);

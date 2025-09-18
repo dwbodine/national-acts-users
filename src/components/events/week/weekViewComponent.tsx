@@ -58,7 +58,7 @@ export default function WeekView(props: WeekViewProps) {
                 filteredNotes = notes.filter(x => moment(x.noteTimestamp).valueOf() >= currentDate.startOf('day').valueOf() && moment(x.noteTimestamp).valueOf() <= currentDate.endOf('day').valueOf())
             }
             weekdays.push(<WeekDay key={i} WeekDayNumber={i}
-                WeekDate={displayDate.format('MM/DD/YYYY')}
+                WeekDate={displayDate.format('YYYY-MM-DD')}
                 Events={filteredEvents}
                 Notes={filteredNotes}
             />);
