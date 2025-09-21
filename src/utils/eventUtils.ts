@@ -673,11 +673,32 @@ const getEventStatusText = (
   return statusText;
 };
 
+const formatCurrencyAmount = (
+  originalAmount: number,
+  amountUsd: number,
+  currencySymbol: string,
+  exchangeRate: number,
+) => {
+  if (originalAmount) {
+    let amount = `${currencySymbol}${originalAmount.toFixed(2)}`;
+    if (exchangeRate !== 1 && amountUsd) {
+      amount += ` ($${amountUsd.toFixed(2)})`;
+    }
+    return amount;
+  } else if (amountUsd) {
+    return `$${amountUsd.toFixed(2)}`;
+  } else if (currencySymbol) {
+    return `${currencySymbol}0.00`;
+  }
+  return '$0.00';
+};
+
 export {
   exportCustomerDataToCsv,
   exportDashboardOrdersToCsv,
   exportEventCustomerDataToCsv,
   exportEventsToCsv,
+  formatCurrencyAmount,
   getAccountNameFromTicketSocketId,
   getAddressFromExternalVenue,
   getLocationInfoFromDailyOrderData,

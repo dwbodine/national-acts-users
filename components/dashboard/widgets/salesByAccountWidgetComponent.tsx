@@ -7,17 +7,17 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
   const selectedYear = props.SelectedYear;
 
   let ticketsPerTransaction = 0;
-  let averagePurchaseAmount = 0;
-  let pricePerTicket = 0;
-  let serviceFeePerTicket = 0;
+  let averagePurchaseAmountUsd = 0;
+  let pricePerTicketUsd = 0;
+  let serviceFeePerTicketUsd = 0;
   const tickets = (accountTotals?.Tickets ?? 0);
   if (tickets > 0) {
-    pricePerTicket = (accountTotals?.Revenue ?? 0) / tickets;
-    serviceFeePerTicket = (accountTotals?.ServiceFees ?? 0) / tickets;
+    pricePerTicketUsd = (accountTotals?.RevenueUsd ?? 0) / tickets;
+    serviceFeePerTicketUsd = (accountTotals?.ServiceFeesUsd ?? 0) / tickets;
   }
   if (accountTotals?.Purchases) {
     ticketsPerTransaction = tickets / accountTotals.Purchases;
-    averagePurchaseAmount = (accountTotals?.TotalRevenue ?? 0) / accountTotals.Purchases;
+    averagePurchaseAmountUsd = (accountTotals?.TotalRevenueUsd ?? 0) / accountTotals.Purchases;
   }
 
   return (
@@ -37,66 +37,66 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Tickets:</Col>
-          <Col className="sales-stat-block-value">{accountTotals?.Tickets ?? 'n/a'}</Col>
+          <Col className="sales-stat-block-value">{accountTotals?.Tickets ?? '0'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Refunds:</Col>
           <Col className="sales-stat-block-value">
-            {accountTotals?.TicketsRefunded ?? 'n/a'}
+            {accountTotals?.TicketsRefunded ?? '0'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Revenue:</Col>
           <Col className="sales-stat-block-value">
-            ${accountTotals?.Revenue?.toFixed(2) ?? 'n/a'}
+            ${accountTotals?.RevenueUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Service Fees:</Col>
           <Col className="sales-stat-block-value">
-            ${accountTotals?.ServiceFees?.toFixed(2) ?? 'n/a'}
+            ${accountTotals?.ServiceFeesUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Revenue Refunded:</Col>
           <Col className="sales-stat-block-value">
-            ${accountTotals?.RevenueRefunded?.toFixed(2) ?? 'n/a'}
+            ${accountTotals?.RevenueRefundedUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">S.Fees Refunded:</Col>
           <Col className="sales-stat-block-value">
-            ${accountTotals?.ServiceFeeRevenueRefunded?.toFixed(2) ?? 'n/a'}
+            ${accountTotals?.ServiceFeeRevenueRefundedUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Total Revenue:</Col>
           <Col className="sales-stat-block-value">
-            ${accountTotals?.TotalRevenue?.toFixed(2) ?? 'n/a'}
+            ${accountTotals?.TotalRevenueUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Tickets per transaction:</Col>
           <Col className="sales-stat-block-value">
-            {ticketsPerTransaction.toFixed(2) ?? 'n/a'}
+            {ticketsPerTransaction.toFixed(2) ?? '0'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Purchase:</Col>
           <Col className="sales-stat-block-value">
-            ${averagePurchaseAmount.toFixed(2) ?? 'n/a'}
+            ${averagePurchaseAmountUsd.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Price Per Ticket:</Col>
           <Col className="sales-stat-block-value">
-            ${pricePerTicket.toFixed(2) ?? 'n/a'}
+            ${pricePerTicketUsd.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Service Fee Per Ticket:</Col>
           <Col className="sales-stat-block-value">
-            ${serviceFeePerTicket.toFixed(2) ?? 'n/a'}
+            ${serviceFeePerTicketUsd.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
       </Col>

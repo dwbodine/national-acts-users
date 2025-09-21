@@ -10,7 +10,7 @@ export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
     ticketsPerTransaction =
       (dashBoardData?.monthToDateTickets ?? 0) / dashBoardData.monthToDatePurchases;
     averagePurchaseAmount =
-      (dashBoardData?.monthToDateTotalRevenue ?? 0) / dashBoardData.monthToDatePurchases;
+      (dashBoardData?.monthToDateTotalRevenueUsd ?? 0) / dashBoardData.monthToDatePurchases;
   }
 
   return (
@@ -22,79 +22,79 @@ export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
         <Row>
           <Col className="sales-stat-block-name">Transactions:</Col>
           <Col className="sales-stat-block-value">
-            {dashBoardData?.monthToDatePurchases ?? 'n/a'}
+            {dashBoardData?.monthToDatePurchases ?? '0'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Tickets:</Col>
           <Col className="sales-stat-block-value">
-            {dashBoardData?.monthToDateTickets ?? 'n/a'}
+            {dashBoardData?.monthToDateTickets ?? '0'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Refunds:</Col>
           <Col className="sales-stat-block-value">
-            {dashBoardData?.monthToDateTicketsRefunded ?? 'n/a'}
+            {dashBoardData?.monthToDateTicketsRefunded ?? '0'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Revenue:</Col>
           <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateRevenue?.toFixed(2) ?? 'n/a'}
+            ${dashBoardData?.monthToDateRevenueUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Service Fees:</Col>
           <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateServiceFees?.toFixed(2) ?? 'n/a'}
+            ${dashBoardData?.monthToDateServiceFeesUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Revenue Refunded:</Col>
           <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateRevenueRefunded?.toFixed(2) ?? 'n/a'}
+            ${dashBoardData?.monthToDateRevenueRefundedUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">S.Fees Refunded:</Col>
           <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateServiceFeesRefunded?.toFixed(2) ?? 'n/a'}
+            ${dashBoardData?.monthToDateServiceFeesRefundedUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Total Revenue:</Col>
           <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateTotalRevenue?.toFixed(2) ?? 'n/a'}
+            ${dashBoardData?.monthToDateTotalRevenueUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Tickets per transaction:</Col>
           <Col className="sales-stat-block-value">
-            {ticketsPerTransaction.toFixed(2) ?? 'n/a'}
+            {ticketsPerTransaction.toFixed(2) ?? '0'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Purchase:</Col>
           <Col className="sales-stat-block-value">
-            ${averagePurchaseAmount.toFixed(2) ?? 'n/a'}
+            ${averagePurchaseAmount.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Price Per Ticket:</Col>
           <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDatePricePerTicket?.toFixed(2) ?? 'n/a'}
+            ${dashBoardData?.monthToDatePricePerTicketUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Service Fee Per Ticket:</Col>
           <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateServiceFeePerTicket?.toFixed(2) ?? 'n/a'}
+            ${dashBoardData?.monthToDateServiceFeePerTicketUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Monthly Proj.:</Col>
           <Col className="sales-stat-block-value">
-            ${dashBoardData?.projectedMonthTotalRevenue?.toFixed(2) ?? 'n/a'}
+            ${dashBoardData?.projectedMonthTotalRevenueUsd?.toFixed(2) ?? '0.00'}
           </Col>
         </Row>
       </Col>

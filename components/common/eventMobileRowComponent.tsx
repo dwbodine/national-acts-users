@@ -1,9 +1,9 @@
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
 import React, { ReactElement } from 'react';
+import { formatCurrencyAmount, getEventStatusSlug } from '@/utils/eventUtils';
 import { EventRowProps } from '@/types/props';
 import { RootState } from '@/lib/store';
-import { getEventStatusSlug } from '@/utils/eventUtils';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 import moment from 'moment';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
@@ -69,9 +69,13 @@ export default function EventMobileRow(props: EventRowProps) {
     });
   }
 
+  const currencySymbol = vipEvent.nonUsaCurrencySymbol ?? "$";
+  const exchangeRate = currencySymbol === "$" ? 1 : 0;
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
-  const revenue = `$${Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0)).toFixed(2)}`;
-  const serviceFees = `$${Number((vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2)}`;
+  const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0));
+  const revenueUsd = Number((vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0));
+  const serviceFees = Number((vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0));
+  const serviceFeesUsd = Number((vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0));
   const buttonText = currentSellerType === SellerType.Venue ? 'Customer List' : 'VIP List';
   const noOrders = (!vipEvent.orders || vipEvent.orders.length === 0);
 
@@ -119,11 +123,11 @@ export default function EventMobileRow(props: EventRowProps) {
           </Row>
           <Row hidden={hideRevItem} className="no-print">
             <Col>Revenue:</Col>
-            <Col>{revenue}</Col>
+            <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate)}</Col>
           </Row>
           <Row hidden={hideServiceFees} className="no-print">
             <Col>Service Fees:</Col>
-            <Col>{serviceFees}</Col>
+            <Col>{formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate)}</Col>
           </Row>
           <Row hidden={noOrders}>
             <Col>

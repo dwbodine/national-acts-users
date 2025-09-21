@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
+import { formatCurrencyAmount, getOrderStatusText } from '@/utils/eventUtils';
 import AttendeeRow from './attendeeRowComponent';
 import { OrderRowProps } from '@/types/props';
-import { getOrderStatusText } from '@/utils/eventUtils';
 import moment from 'moment';
 
 export default function OrderRow(props: OrderRowProps) {
@@ -29,10 +29,14 @@ export default function OrderRow(props: OrderRowProps) {
   const orderStatus = getOrderStatusText(order);
   const orderId = order?.orderId;
 
+  const currencySymbol = order?.currencySymbol ?? "$";
+  const exchangeRate = order?.exchangeRate ?? 1;
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
   const purchaseDate = order?.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
-  const revenue = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0)).toFixed(2);
-  const serviceFees = Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2);
+  const revenue = Number((order?.revenue ?? 0) - (order?.revenueRefunded ?? 0));
+  const revenueUsd = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0));
+  const serviceFees = Number((order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0));
+  const serviceFeesUsd = Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0));
 
   const ticketTypeRows: ReactElement[] = [];
 
@@ -114,10 +118,10 @@ export default function OrderRow(props: OrderRowProps) {
       <td hidden={showOnlyEmails || showOnlyPhones}>{ticketTypeRows}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{order?.numTickets}</td>
       <td className="pull-right no-print" hidden={hideRev || showOnlyEmails || showOnlyPhones}>
-        {revenue}
+        {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate)}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}>
-        {serviceFees}
+        {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate)}
       </td>
       <td hidden={showOnlyPhones} className="email">{order?.email}</td>
       {hasPhoneData && !showOnlyEmails ? <td>{phone}</td> : ''}

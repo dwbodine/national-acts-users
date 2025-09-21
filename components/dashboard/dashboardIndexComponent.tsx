@@ -1,6 +1,7 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from 'react-icons/fa';
 import { ReactElement, useEffect, useState } from 'react';
+import { formatCurrencyAmount, getAccountNameFromTicketSocketId } from '@/utils/eventUtils';
 import {
   setCurrentDashboardData,
   setReloadDashboardOrders,  
@@ -24,7 +25,6 @@ import TicketSalesChart from '../common/ticketSalesChartComponent';
 import TopSellersWidget from './widgets/topSellersWidgetComponent';
 import TopSellingLocationsWidget from './widgets/topSellingLocationsWidgetComponent';
 import YearToDateWidget from './widgets/yearToDateWidgetComponent';
-import { getAccountNameFromTicketSocketId } from '@/utils/eventUtils';
 import getDashboardDataFromOrders from '@/utils/getDashboardDataFromOrders';
 import moment from 'moment';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
@@ -93,10 +93,10 @@ export default function DashboardIndex() {
   const totalTickets = (currentDashboardSelection.currentDashboardData?.tickets ?? 0);
   const totalTicketsRefunded =
     (currentDashboardSelection.currentDashboardData?.ticketsRefunded ?? 0);
-  const totalTicketRevenue = (currentDashboardSelection.currentDashboardData?.revenue ?? 0);
-  const totalRevenue = (currentDashboardSelection.currentDashboardData?.totalRevenue ?? 0);
-  const totalServiceFees =
-    (currentDashboardSelection.currentDashboardData?.serviceFees ?? 0);
+  const totalTicketRevenueUsd = (currentDashboardSelection.currentDashboardData?.revenueUsd ?? 0);
+  const totalRevenueUsd = (currentDashboardSelection.currentDashboardData?.totalRevenueUsd ?? 0);
+  const totalServiceFeesUsd =
+    (currentDashboardSelection.currentDashboardData?.serviceFeesUsd ?? 0);
   const totalPurchases = (currentDashboardSelection.currentDashboardData?.purchases ?? 0);
   const ticketSalesData =
     (currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined);
@@ -151,7 +151,7 @@ export default function DashboardIndex() {
               <span>{totalPurchases}</span>
               <div className="second">
                 <div>Total revenue:</div>
-                <span>${totalRevenue.toFixed(2)}</span>
+                <span>${totalRevenueUsd.toFixed(2)}</span>
               </div>
             </div>
           </Col>
@@ -170,10 +170,10 @@ export default function DashboardIndex() {
             <div className="widget-stat-block">
               <FaMoneyBillAlt size="2em" />
               <div>Revenue:</div>
-              <span>${totalTicketRevenue.toFixed(2)}</span>
+              <span>${totalTicketRevenueUsd.toFixed(2)}</span>
               <div className="second">
                 <div>Service Fees:</div>
-                <span>${totalServiceFees.toFixed(2)}</span>
+                <span>${totalServiceFeesUsd.toFixed(2)}</span>
               </div>
             </div>
           </Col>
@@ -210,7 +210,7 @@ export default function DashboardIndex() {
             <RevenueGoalsWidget
               PercentTitle="Monthly Goal"
               Amount={
-                currentDashboardSelection.currentDashboardData?.monthToDateTotalRevenue
+                currentDashboardSelection.currentDashboardData?.monthToDateTotalRevenueUsd
               }
               TotalGoal={
                 currentDashboardSelection.currentDashboardData?.totals?.monthlyRevenueGoal
@@ -225,7 +225,7 @@ export default function DashboardIndex() {
               SelectedYear={selectedYear}
               Totals={currentDashboardSelection.currentDashboardData?.totals}
               ProjectedYearTotalRevenue={
-                currentDashboardSelection.currentDashboardData?.projectedYearTotalRevenue
+                currentDashboardSelection.currentDashboardData?.projectedYearTotalRevenueUsd
               }
             />
           </Col>
@@ -309,30 +309,24 @@ export default function DashboardIndex() {
                 <Cell dataKey="Tickets"></Cell>
               </Column>
               <Column flexGrow={1}>
-                <HeaderCell>Ticket Revenue (USD)</HeaderCell>
-                <Cell>{(rowData) => rowData.Revenue ? `$${parseFloat(rowData.Revenue).toFixed(2)}` : '$0.00'}</Cell>
+                <HeaderCell>Ticket Revenue</HeaderCell>
+                <Cell>{(rowData) => formatCurrencyAmount(rowData.Revenue, rowData.RevenueUsd, rowData.CurrencySymbol, rowData.ExchangeRate)}</Cell>
               </Column>
               <Column flexGrow={1}>
-                <HeaderCell>Revenue Refunded (USD)</HeaderCell>
-                <Cell>{(rowData) => rowData.RevenueRefunded ? `$${parseFloat(rowData.RevenueRefunded).toFixed(2)}` : '$0.00'}</Cell>
+                <HeaderCell>Revenue Refunded</HeaderCell>
+                <Cell>{(rowData) => formatCurrencyAmount(rowData.RevenueRefunded, rowData.RevenueRefundedUsd, rowData.CurrencySymbol, rowData.ExchangeRate)}</Cell>
               </Column>
               <Column flexGrow={1}>
-                <HeaderCell>Service Fees (USD)</HeaderCell>
-                <Cell>
-                  {(rowData) => rowData.ServiceFees ? `$${parseFloat(rowData.ServiceFees).toFixed(2)}` : '$0.00'}
-                </Cell>
+                <HeaderCell>Service Fees</HeaderCell>
+                <Cell>{(rowData) => formatCurrencyAmount(rowData.ServiceFees, rowData.ServiceFeesUsd, rowData.CurrencySymbol, rowData.ExchangeRate)}</Cell>
               </Column>
               <Column flexGrow={1}>
-                <HeaderCell>Service Fees Refunded (USD)</HeaderCell>
-                <Cell>
-                  {(rowData) => rowData.ServiceFeeRevenueRefunded ? `$${parseFloat(rowData.ServiceFeeRevenueRefunded).toFixed(2)}` : '$0.00'}
-                </Cell>
+                <HeaderCell>Service Fees Refunded</HeaderCell>
+                <Cell>{(rowData) => formatCurrencyAmount(rowData.ServiceFeeRevenueRefunded, rowData.ServiceFeeRevenueRefundedUsd, rowData.CurrencySymbol, rowData.ExchangeRate)}</Cell>
               </Column>
               <Column flexGrow={1}>
-                <HeaderCell>Total Revenue (USD)</HeaderCell>
-                <Cell>
-                  {(rowData) => rowData.TotalRevenue ? `$${parseFloat(rowData.TotalRevenue).toFixed(2)}` : '$0.00'}
-                </Cell>
+                <HeaderCell>Total Revenue</HeaderCell>
+                <Cell>{(rowData) => formatCurrencyAmount(rowData.TotalRevenue, rowData.TotalRevenueUds, rowData.CurrencySymbol, rowData.ExchangeRate)}</Cell>
               </Column>
             </Table>
           </Col>
