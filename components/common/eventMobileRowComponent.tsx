@@ -123,11 +123,11 @@ export default function EventMobileRow(props: EventRowProps) {
           </Row>
           <Row hidden={hideRevItem} className="no-print">
             <Col>Revenue:</Col>
-            <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate)}</Col>
+            <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
           </Row>
           <Row hidden={hideServiceFees} className="no-print">
             <Col>Service Fees:</Col>
-            <Col>{formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate)}</Col>
+            <Col>{formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
           </Row>
           <Row hidden={noOrders}>
             <Col>

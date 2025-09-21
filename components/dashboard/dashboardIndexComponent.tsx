@@ -295,6 +295,7 @@ export default function DashboardIndex() {
               rowKey="PurchaseDate"
               data={ticketSalesData}
               shouldUpdateScroll={false}
+              rowHeight={55}
             >
               <Column flexGrow={2}>
                 <HeaderCell>Date</HeaderCell>
@@ -310,23 +311,23 @@ export default function DashboardIndex() {
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Ticket Revenue</HeaderCell>
-                <Cell>{(rowData) => formatCurrencyAmount(rowData.Revenue, rowData.RevenueUsd, rowData.CurrencySymbol, rowData.ExchangeRate)}</Cell>
+                <Cell>{(rowData) => formatCurrencyAmount(rowData.Revenue, rowData.RevenueUsd, rowData.CurrencySymbol, rowData.ExchangeRate, true)}</Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Revenue Refunded</HeaderCell>
-                <Cell>{(rowData) => formatCurrencyAmount(rowData.RevenueRefunded, rowData.RevenueRefundedUsd, rowData.CurrencySymbol, rowData.ExchangeRate)}</Cell>
+                <Cell>{(rowData) => formatCurrencyAmount(rowData.RevenueRefunded, rowData.RevenueRefundedUsd, rowData.CurrencySymbol, rowData.ExchangeRate, true)}</Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Service Fees</HeaderCell>
-                <Cell>{(rowData) => formatCurrencyAmount(rowData.ServiceFees, rowData.ServiceFeesUsd, rowData.CurrencySymbol, rowData.ExchangeRate)}</Cell>
+                <Cell>{(rowData) => formatCurrencyAmount(rowData.ServiceFees, rowData.ServiceFeesUsd, rowData.CurrencySymbol, rowData.ExchangeRate, true)}</Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Service Fees Refunded</HeaderCell>
-                <Cell>{(rowData) => formatCurrencyAmount(rowData.ServiceFeeRevenueRefunded, rowData.ServiceFeeRevenueRefundedUsd, rowData.CurrencySymbol, rowData.ExchangeRate)}</Cell>
+                <Cell>{(rowData) => formatCurrencyAmount(rowData.ServiceFeeRevenueRefunded, rowData.ServiceFeeRevenueRefundedUsd, rowData.CurrencySymbol, rowData.ExchangeRate, true)}</Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Total Revenue</HeaderCell>
-                <Cell>{(rowData) => formatCurrencyAmount(rowData.TotalRevenue, rowData.TotalRevenueUds, rowData.CurrencySymbol, rowData.ExchangeRate)}</Cell>
+                <Cell>{(rowData) => formatCurrencyAmount(rowData.TotalRevenue, rowData.TotalRevenueUsd, rowData.CurrencySymbol, rowData.ExchangeRate, true)}</Cell>
               </Column>
             </Table>
           </Col>

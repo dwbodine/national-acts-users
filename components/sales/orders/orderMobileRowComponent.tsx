@@ -149,11 +149,11 @@ export default function OrderMobileRow(props: OrderRowProps) {
           </Row>
           <Row hidden={hideRev || showOnlyEmails || showOnlyPhones} className="no-print">
             <Col xs={5} className="mobile-bold">Revenue:</Col>
-            <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate)}</Col>
+            <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
           </Row>
           <Row hidden={hideServiceFees || showOnlyEmails || showOnlyPhones} className="no-print">
             <Col xs={5} className="mobile-bold">Service Fees:</Col>
-            <Col>{formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate)}</Col>
+            <Col>{formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
           </Row>
           <Row hidden={showOnlyPhones}>
             <Col xs={5} className="mobile-bold">Email:</Col>

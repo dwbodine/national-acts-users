@@ -12,6 +12,7 @@ export default function EventRow(props: EventRowProps) {
   const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
   const id = `event_${vipEvent.externalEventId}`;
+  const isAdmin = props.IsAdmin ?? false;
 
   const venueName = vipEvent.venue?.name;
   let location = '';
@@ -55,10 +56,10 @@ export default function EventRow(props: EventRowProps) {
       <td className="pull-right">{(vipEvent.numTicketsRefunded ?? 0)}</td>
       <td className="pull-right">{(vipEvent.numTicketsComped ?? 0)}</td>
       <td className="pull-right no-print" hidden={hideRevItem}>
-        {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate)}
+        {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees}>
-        {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate)}
+        {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td hidden={!showNotes}>
         <a onClick={() => showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null}>Notes</a>

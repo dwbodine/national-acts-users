@@ -259,6 +259,7 @@ export default function CurrentEvents() {
             VipEvent={evt}
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFees}
+            IsAdmin={user?.isAdmin ?? false}
           />,
         );
       }

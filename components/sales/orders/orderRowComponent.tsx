@@ -16,6 +16,7 @@ export default function OrderRow(props: OrderRowProps) {
   const canCheckInTickets = props.CanCheckInTickets;
   const showOnlyEmails = props.ShowOnlyEmails;
   const showOnlyPhones = props.ShowOnlyPhones;
+  const isAdmin = props.IsAdmin ?? false;
 
   let statusClass = '';
   if (order?.isDeleted) {
@@ -118,10 +119,10 @@ export default function OrderRow(props: OrderRowProps) {
       <td hidden={showOnlyEmails || showOnlyPhones}>{ticketTypeRows}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{order?.numTickets}</td>
       <td className="pull-right no-print" hidden={hideRev || showOnlyEmails || showOnlyPhones}>
-        {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate)}
+        {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}>
-        {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate)}
+        {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td hidden={showOnlyPhones} className="email">{order?.email}</td>
       {hasPhoneData && !showOnlyEmails ? <td>{phone}</td> : ''}
