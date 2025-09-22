@@ -14,18 +14,33 @@ export default function getPurchaseDataFromEvents(
           const data: ITicketSalesData = {
             PurchaseDate: moment(key).format('MM/DD/YYYY'),
             Purchases: 1,
-            Revenue: order.revenueUsd,
-            ServiceFees: order.serviceFees ?? 0,
+            RevenueChargedBackUsd: order.revenueChargedBackUsd ?? 0,
+            RevenueRefundedUsd: order.revenueRefundedUsd ?? 0,
+            RevenueUsd: order.revenueUsd,
+            ServiceFeeRevenueChargedBackUsd: order.serviceFeeRevenueChargedBackUsd ?? 0,
+            ServiceFeeRevenueRefundedUsd: order.serviceFeeRevenueRefundedUsd ?? 0,
+            ServiceFeesUsd: order.serviceFees ?? 0,
             Tickets: order.numTickets,
-            TotalRevenue: order.revenueUsd + (order.serviceFeesUsd ?? 0),
+            TicketsChargedBack: order.numTicketsChargedBack ?? 0,
+            TicketsRefunded: order.numTicketsRefunded ?? 0,
+            TotalRevenueUsd: order.revenueUsd + (order.serviceFeesUsd ?? 0),
           };
           map.set(key, data);
         } else {
           salesData.Purchases += 1;
           salesData.Tickets += order.numTickets;
-          salesData.Revenue += order.revenueUsd;
-          salesData.ServiceFees += order.serviceFees ?? 0;
-          salesData.TotalRevenue += (order.revenueUsd ?? 0) + (order.serviceFeesUsd ?? 0);
+          salesData.TicketsChargedBack += order.numTicketsChargedBack ?? 0;
+          salesData.TicketsRefunded += order.numTicketsRefunded ?? 0;
+          salesData.RevenueUsd += order.revenueUsd ?? 0;
+          salesData.RevenueChargedBackUsd += order.revenueChargedBackUsd ?? 0;
+          salesData.RevenueRefundedUsd += order.revenueRefundedUsd ?? 0;
+          salesData.ServiceFeesUsd += order.serviceFeesUsd ?? 0;
+          salesData.ServiceFeeRevenueRefundedUsd +=
+            order.serviceFeeRevenueRefundedUsd ?? 0;
+          salesData.ServiceFeeRevenueChargedBackUsd +=
+            order.serviceFeeRevenueChargedBackUsd ?? 0;
+          salesData.TotalRevenueUsd +=
+            (order.revenueUsd ?? 0) + (order.serviceFeesUsd ?? 0);
           map.set(key, salesData);
         }
       }
@@ -44,10 +59,16 @@ export default function getPurchaseDataFromEvents(
         const data: ITicketSalesData = {
           PurchaseDate: moment(key).format('MM/DD/YYYY'),
           Purchases: 0,
-          Revenue: 0,
-          ServiceFees: 0,
+          RevenueChargedBackUsd: 0,
+          RevenueRefundedUsd: 0,
+          RevenueUsd: 0,
+          ServiceFeeRevenueChargedBackUsd: 0,
+          ServiceFeeRevenueRefundedUsd: 0,
+          ServiceFeesUsd: 0,
           Tickets: 0,
-          TotalRevenue: 0,
+          TicketsChargedBack: 0,
+          TicketsRefunded: 0,
+          TotalRevenueUsd: 0,
         };
         ticketSalesData.push(data);
       } else {

@@ -24,73 +24,73 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
           <tr>
             <td className="sales-stat-block-name">Transactions:</td>
             <td hidden={selectedYear !== currentYear}  className="sales-stat-block-value">
-              {monthlyAverages?.transactions?.toFixed(2)}
+              {monthlyAverages?.transactions?.toFixed(2) ?? '0'}
             </td>
             <td className="sales-stat-block-value">
-              {yearlyAverages?.transactions?.toFixed(2)}
+              {yearlyAverages?.transactions?.toFixed(2) ?? '0'}
             </td>
           </tr>
           <tr>
             <td className="sales-stat-block-name">Tickets:</td>
             <td hidden={selectedYear !== currentYear}  className="sales-stat-block-value">
-              {monthlyAverages?.tickets?.toFixed(2)}
+              {monthlyAverages?.tickets?.toFixed(2) ?? '0'}
             </td>
             <td className="sales-stat-block-value">
-              {yearlyAverages?.tickets?.toFixed(2)}
+              {yearlyAverages?.tickets?.toFixed(2) ?? '0'}
             </td>
           </tr>
           <tr>
             <td className="sales-stat-block-name">Refunds:</td>
             <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              {monthlyAverages?.refunds?.toFixed(2)}
+              {monthlyAverages?.refunds?.toFixed(2) ?? '0'}
             </td>
             <td className="sales-stat-block-value">
-              {yearlyAverages?.refunds?.toFixed(2)}
+              {yearlyAverages?.refunds?.toFixed(2) ?? '0'}
             </td>
           </tr>
           <tr>
             <td className="sales-stat-block-name">Ticket Revenue:</td>
             <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              {monthlyAverages?.ticketRevenue?.toFixed(2)}
+              ${monthlyAverages?.ticketRevenueUsd?.toFixed(2) ?? '0.00'}
             </td>
             <td className="sales-stat-block-value">
-              {yearlyAverages?.ticketRevenue?.toFixed(2)}
+              ${yearlyAverages?.ticketRevenueUsd?.toFixed(2) ?? '0.00'}
             </td>
           </tr>
           <tr>
             <td className="sales-stat-block-name">Service Fees:</td>
             <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              {monthlyAverages?.serviceFees?.toFixed(2)}
+              ${monthlyAverages?.serviceFeesUsd?.toFixed(2) ?? '0.00'}
             </td>
             <td className="sales-stat-block-value">
-              {yearlyAverages?.serviceFees?.toFixed(2)}
+              ${yearlyAverages?.serviceFeesUsd?.toFixed(2) ?? '0.00'}
             </td>
           </tr>
           <tr>
             <td className="sales-stat-block-name">Revenue Refunded:</td>
             <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              {monthlyAverages?.revenueRefunded?.toFixed(2)}
+              ${monthlyAverages?.revenueRefundedUsd?.toFixed(2) ?? '0.00'}
             </td>
             <td className="sales-stat-block-value">
-              {yearlyAverages?.revenueRefunded?.toFixed(2)}
+              ${yearlyAverages?.revenueRefundedUsd?.toFixed(2) ?? '0.00'}
             </td>
           </tr>
           <tr>
             <td className="sales-stat-block-name">S.Fees Refunded:</td>
             <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              {monthlyAverages?.serviceFeeRevenueRefunded?.toFixed(2)}
+              ${monthlyAverages?.serviceFeeRevenueRefundedUsd?.toFixed(2) ?? '0.00'}
             </td>
             <td className="sales-stat-block-value">
-              {yearlyAverages?.serviceFeeRevenueRefunded?.toFixed(2)}
+              ${yearlyAverages?.serviceFeeRevenueRefundedUsd?.toFixed(2) ?? '0.00'}
             </td>
           </tr>
           <tr>
             <td className="sales-stat-block-name">Total Revenue:</td>
             <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              {monthlyAverages?.totalRevenue?.toFixed(2)}
+              ${monthlyAverages?.totalRevenueUsd?.toFixed(2) ?? '0.00'}
             </td>
             <td className="sales-stat-block-value">
-              {yearlyAverages?.totalRevenue?.toFixed(2)}
+              ${yearlyAverages?.totalRevenueUsd?.toFixed(2) ?? '0.00'}
             </td>
           </tr>
         </tbody>

@@ -2,9 +2,9 @@
 
 import { Col, Container, Row } from 'react-bootstrap';
 import React, { ReactElement } from 'react';
+import { formatCurrencyAmount, getOrderStatusText } from '@/utils/eventUtils';
 import AttendeeRow from './attendeeRowComponent';
 import { OrderRowProps } from '@/types/props';
-import { getOrderStatusText } from '@/utils/eventUtils';
 import moment from 'moment';
 
 export default function OrderMobileRow(props: OrderRowProps) {
@@ -34,10 +34,14 @@ export default function OrderMobileRow(props: OrderRowProps) {
   const orderId = order?.orderId;
 
   const id = `order_${order?.ticketSocketOrderId}`;
+  const currencySymbol = order?.currencySymbol ?? "$";
+  const exchangeRate = order?.exchangeRate ?? 1;
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
   const purchaseDate = order?.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
-  const revenue = `$${Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0)).toFixed(2)}`;
-  const serviceFees = `$${Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0)).toFixed(2)}`;
+  const revenue = Number((order?.revenue ?? 0) - (order?.revenueRefunded ?? 0));
+  const revenueUsd = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0));
+  const serviceFees = Number((order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0));
+  const serviceFeesUsd = Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0));
 
   const ticketTypeRows: ReactElement[] = [];
   if (order?.tickets && order.tickets.length > 0) {
@@ -147,11 +151,11 @@ export default function OrderMobileRow(props: OrderRowProps) {
           </Row>
           <Row hidden={hideRev || showOnlyEmails || showOnlyPhones} className="no-print">
             <Col xs={5} className="mobile-bold">Revenue:</Col>
-            <Col>{revenue}</Col>
+            <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
           </Row>
           <Row hidden={hideServiceFees || showOnlyEmails || showOnlyPhones} className="no-print">
             <Col xs={5} className="mobile-bold">Service Fees:</Col>
-            <Col>{serviceFees}</Col>
+            <Col>{formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
           </Row>
           <Row hidden={showOnlyPhones}>
             <Col xs={5} className="mobile-bold">Email:</Col>

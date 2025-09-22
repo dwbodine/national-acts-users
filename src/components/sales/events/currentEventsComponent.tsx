@@ -263,6 +263,7 @@ export default function CurrentEvents() {
             VipEvent={evt}
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFees}
+            IsAdmin={user?.isAdmin ?? false}
           />,
         );
       }
@@ -270,13 +271,13 @@ export default function CurrentEvents() {
       if (!evt.isDeleted) {
         totalTickets += (evt.totalTickets ?? 0);
         totalTicketsComped += (evt.numTicketsComped ?? 0);
-        revenueRefunded += (evt.revenueRefunded ?? 0);
-        totalRevenue += (evt.totalRevenue ?? 0) - (evt.revenueRefunded ?? 0);
+        revenueRefunded += (evt.revenueRefundedUsd ?? 0);
+        totalRevenue += (evt.totalRevenueUsd ?? 0) - (evt.revenueRefundedUsd ?? 0);
         ticketsRefunded += (evt.numTicketsRefunded ?? 0);
         
         totalShirts += (evt.totalShirts ?? 0);
-        serviceFeesRefunded += (evt.serviceFeeRevenueRefunded ?? 0);
-        totalServiceFees += (evt.totalServiceFees ?? 0) - (evt.serviceFeeRevenueRefunded ?? 0);        
+        serviceFeesRefunded += (evt.serviceFeeRevenueRefundedUsd ?? 0);
+        totalServiceFees += (evt.totalServiceFeesUsd ?? 0) - (evt.serviceFeeRevenueRefundedUsd ?? 0);        
       }
       i += 1;
     }
@@ -335,7 +336,7 @@ export default function CurrentEvents() {
                     <th>Tickets Sold</th>
                     <th>Tickets Refunded</th>
                     <th>Tickets Comped</th>
-                    <th className="no-print" hidden={hideRevItem}>Revenue (USD)</th>
+                    <th className="no-print" hidden={hideRevItem}>Revenue</th>
                     <th className="no-print" hidden={hideServiceFees}>
                       Service Fees
                     </th>
@@ -349,10 +350,10 @@ export default function CurrentEvents() {
                     <td className="pull-right">{ticketsRefunded}</td>
                     <td className="pull-right">{totalTicketsComped}</td>                    
                     <td className="pull-right no-print" hidden={hideRevItem}>
-                      {totalRevenue.toFixed(2)}
+                      ${totalRevenue.toFixed(2)}
                     </td>
                     <td className="pull-right no-print" hidden={hideServiceFees}>
-                      {totalServiceFees.toFixed(2)}
+                      ${totalServiceFees.toFixed(2)}
                     </td>
                   </tr>
                 </tfoot>

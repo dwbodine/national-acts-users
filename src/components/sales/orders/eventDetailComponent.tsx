@@ -376,6 +376,7 @@ export default function EventDetail(props: EditProps) {
             TicketTypes={currentReportSelection.currentDetailEvent?.ticketTypes}
             ShowOnlyEmails={showOnlyEmailsDisplay}
             ShowOnlyPhones={showOnlyPhonesDisplay}
+            IsAdmin={user?.isAdmin ?? false}
           />,
         );
       }

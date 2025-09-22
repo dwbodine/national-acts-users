@@ -14,6 +14,7 @@ import { ExternalVenue } from '@/types/admin';
 import getShirtDataFromEvents from './getShirtData';
 import getTicketDataFromEvents from './getTicketDataFromEvents';
 import moment from 'moment';
+import parse from 'html-react-parser';
 
 const getLocationInfoFromVenue = (venue: Venue): string => {
   let location = `${venue.city}`;
@@ -673,11 +674,33 @@ const getEventStatusText = (
   return statusText;
 };
 
+const formatCurrencyAmount = (
+  originalAmount: number,
+  amountUsd: number,
+  currencySymbol: string,
+  exchangeRate: number,
+  isAdmin: boolean = false,
+) => {
+  if (originalAmount && isAdmin) {
+    let amount = `${currencySymbol}${originalAmount.toFixed(2)}`;
+    if (exchangeRate !== 1 && amountUsd) {
+      amount += `<br />($${amountUsd.toFixed(2)})`;
+    }
+    return parse(amount);
+  } else if (amountUsd) {
+    return `$${amountUsd.toFixed(2)}`;
+  } else if (currencySymbol && isAdmin) {
+    return `${currencySymbol}0.00`;
+  }
+  return '$0.00';
+};
+
 export {
   exportCustomerDataToCsv,
   exportDashboardOrdersToCsv,
   exportEventCustomerDataToCsv,
   exportEventsToCsv,
+  formatCurrencyAmount,
   getAccountNameFromTicketSocketId,
   getAddressFromExternalVenue,
   getLocationInfoFromDailyOrderData,

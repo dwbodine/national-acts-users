@@ -161,7 +161,9 @@ export interface VipEvent {
   externalThumbnail?: string;
   ticketSocketUrl?: string;
   totalRevenue?: number;
+  totalRevenueUsd?: number;
   totalServiceFees?: number;
+  totalServiceFeesUsd?: number;
   totalTickets?: number;
   numTicketsComped?: number;
   totalCheckedIn?: number;
@@ -188,10 +190,14 @@ export interface VipEvent {
   nonUsaCurrencyAbbrev?: string;
   numTicketsRefunded?: number;
   revenueRefunded?: number;
+  revenueRefundedUsd?: number;
   serviceFeeRevenueRefunded?: number;
+  serviceFeeRevenueRefundedUsd?: number;
   numTicketsChargedBack?: number;
   revenueChargedBack?: number;
+  revenueChargedBackUsd?: number;
   serviceFeeRevenueChargedBack?: number;
+  serviceFeeRevenueChargedBackUsd?: number;
   ticketTypes?: TicketType[];
   hasTicketTypeData?: boolean;
   isAddedToBandsInTown?: boolean;
@@ -283,44 +289,61 @@ export interface ITicketTypeData {
 }
 
 export interface ITicketEventSalesData {
+  CurrencySymbol: string;
   EventId: number;
-  SellerName: string;
-  PurchaseDate?: string;
+  ExchangeRate: number;
+  PurchaseDate: string;
   Purchases: number;
-  Tickets: number;
   Revenue: number;
+  RevenueUsd: number;
+  RevenueChargedBack: number;
+  RevenueChargedBackUsd: number;
+  RevenueRefunded: number;
+  RevenueRefundedUsd: number;
+  SellerName: string;
+  ServiceFeeRevenueChargedBack: number;
+  ServiceFeeRevenueChargedBackUsd: number;
+  ServiceFeeRevenueRefunded: number;
+  ServiceFeeRevenueRefundedUsd: number;
   ServiceFees: number;
+  ServiceFeesUsd: number;
+  Tickets: number;
+  TicketsRefunded: number;
+  TicketsChargedBack: number;
   TotalRevenue: number;
-  RevenueRefunded?: number;
-  ServiceFeeRevenueRefunded?: number;
+  TotalRevenueUsd: number;
 }
 
 export interface ITicketSellerSalesData {
-  SellerName: string;
-  PurchaseDate?: string;
+  PurchaseDate: string;
   Purchases: number;
+  RevenueChargedBackUsd: number;
+  RevenueRefundedUsd: number;
+  RevenueUsd: number;
+  SellerName: string;
+  ServiceFeeRevenueChargedBackUsd: number;
+  ServiceFeeRevenueRefundedUsd: number;
+  ServiceFeesUsd: number;
   Tickets: number;
-  Revenue: number;
-  ServiceFees: number;
-  TotalRevenue: number;
-  RevenueRefunded?: number;
-  ServiceFeeRevenueRefunded?: number;
+  TicketsChargedBack: number;
+  TicketsRefunded: number;
+  TotalRevenueUsd: number;
   children?: ITicketEventSalesData[];
 }
 
 export interface ITicketSalesData {
   PurchaseDate: string;
   Purchases: number;
+  RevenueChargedBackUsd: number;
+  RevenueRefundedUsd: number;
+  RevenueUsd: number;
+  ServiceFeeRevenueChargedBackUsd: number;
+  ServiceFeeRevenueRefundedUsd: number;
+  ServiceFeesUsd: number;
   Tickets: number;
-  Revenue: number;
-  ServiceFees: number;
-  TotalRevenue: number;
-  TicketsRefunded?: number;
-  RevenueRefunded?: number;
-  ServiceFeeRevenueRefunded?: number;
-  TicketsChargedBack?: number;
-  RevenueChargedBack?: number;
-  ServiceFeeRevenueChargedBack?: number;
+  TicketsChargedBack: number;
+  TicketsRefunded: number;
+  TotalRevenueUsd: number;
   children?: ITicketSellerSalesData[];
 }
 

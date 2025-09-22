@@ -1,6 +1,6 @@
 "use client";
 
-import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+import { formatCurrencyAmount, getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import { EventRowProps } from '@/types/props';
 import React from 'react';
 import moment from 'moment';
@@ -14,6 +14,7 @@ export default function EventRow(props: EventRowProps) {
   const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
   const id = `event_${vipEvent.externalEventId}`;
+  const isAdmin = props.IsAdmin ?? false;
 
   const venueName = vipEvent.venue?.name;
   let location = '';
@@ -21,9 +22,13 @@ export default function EventRow(props: EventRowProps) {
     location = getLocation(vipEvent.venue);
   }
 
+  const currencySymbol = vipEvent.nonUsaCurrencySymbol ?? "$";
+  const exchangeRate = currencySymbol === "$" ? 1 : 0;
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
-  const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0)).toFixed(2);
-  const serviceFees = Number((vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(2);
+  const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0));
+  const revenueUsd = Number((vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0));
+  const serviceFees = Number((vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0));
+  const serviceFeesUsd = Number((vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0));
   const url = `/event/?id=${vipEvent.externalEventId}`;
 
   const statusSlug = getEventStatusSlug(vipEvent);
@@ -53,10 +58,10 @@ export default function EventRow(props: EventRowProps) {
       <td className="pull-right">{(vipEvent.numTicketsRefunded ?? 0)}</td>
       <td className="pull-right">{(vipEvent.numTicketsComped ?? 0)}</td>
       <td className="pull-right no-print" hidden={hideRevItem}>
-        {revenue}
+        {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees}>
-        {serviceFees}
+        {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td hidden={!showNotes}>
         <a onClick={() => showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null}>Notes</a>

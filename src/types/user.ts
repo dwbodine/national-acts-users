@@ -161,8 +161,11 @@ export interface IDailyOrderData {
   country?: string;
   orders: number;
   tickets: number;
+  ticketRevenue: number;
   ticketRevenueUsd: number;
+  serviceFeesRevenue: number;
   serviceFeesRevenueUsd: number;
+  totalRevenue: number;
   totalRevenueUsd: number;
   ticketSocketId: number;
   ticketSocketOrderId?: number;
@@ -170,10 +173,16 @@ export interface IDailyOrderData {
   isChargedBack?: boolean;
   numTicketsRefunded?: number;
   revenueRefunded?: number;
+  revenueRefundedUsd?: number;
   serviceFeeRevenueRefunded?: number;
+  serviceFeeRevenueRefundedUsd?: number;
   numTicketsChargedBack?: number;
   revenueChargedBack?: number;
+  revenueChargedBackUsd?: number;
   serviceFeeRevenueChargedBack?: number;
+  serviceFeeRevenueChargedBackUsd?: number;
+  exchangeRate?: number;
+  currencySymbol?: string;
 }
 
 export interface IDashboardTotals {
@@ -187,12 +196,19 @@ export interface IDashboardTotals {
   numTicketsRefunded?: number;
   numTicketsChargedBack?: number;
   revenueRefunded?: number;
+  revenueRefundedUsd?: number;
   revenueChargedBack?: number;
+  revenueChargedBackUsd?: number;
   serviceFeeRevenueRefunded?: number;
+  serviceFeeRevenueRefundedUsd?: number;
   serviceFeeRevenueChargedBack?: number;
+  serviceFeeRevenueChargedBackUsd?: number;
   orders: number;
+  ticketRevenue: number;
   ticketRevenueUsd: number;
+  serviceFeesRevenue: number;
   serviceFeesRevenueUsd: number;
+  totalRevenue: number;
   totalRevenueUsd: number;
   yearlyRevenueGoal: number;
   monthlyRevenueGoal: number;
@@ -202,14 +218,17 @@ export interface IDashboardTotals {
 }
 
 export interface IAverageDailyData {
-  ticketRevenue?: number;
-  serviceFees?: number;
-  totalRevenue?: number;
-  transactions?: number;
-  tickets?: number;
-  refunds?: number;
-  revenueRefunded?: number;
-  serviceFeeRevenueRefunded?: number;
+  ticketRevenueUsd: number;
+  serviceFeesUsd: number;
+  totalRevenueUsd: number;
+  transactions: number;
+  tickets: number;
+  refunds: number;
+  chargebacks: number;
+  revenueRefundedUsd: number;
+  revenueChargedBackUsd: number;
+  serviceFeeRevenueRefundedUsd: number;
+  serviceFeeRevenueChargedBackUsd: number;
 }
 
 export interface ISalesData {
@@ -225,38 +244,44 @@ export interface ITotalsByAccount {
 export interface IDashboardData {
   ticketSalesData?: ITicketSalesData[];
   tickets?: number;
-  monthToDateTickets?: number;
-  ticketsRefunded?: number;
-  revenueRefunded?: number;
-  serviceFeeRevenueRefunded: number;
-  monthToDateTicketsRefunded?: number;
-  monthToDateRevenueRefunded?: number;
-  monthToDateServiceFeesRefunded?: number;
-  revenue?: number;
-  monthToDateRevenue?: number;
-  serviceFees?: number;
-  monthToDateServiceFees?: number;
+  monthToDateTickets: number;
+  ticketsRefunded: number;
+  ticketsChargedBack: number;
+  revenueRefundedUsd: number;
+  revenueChargedBackUsd: number;
+  serviceFeeRevenueRefundedUsd: number;
+  serviceFeeRevenueChargedBackUsd: number;
+  monthToDateTicketsChargedBack: number;
+  monthToDateTicketsRefunded: number;
+  monthToDateRevenueRefundedUsd: number;
+  monthToDateRevenueChargedBackUsd: number;
+  monthToDateServiceFeesRefundedUsd: number;
+  monthToDateServiceFeesChargedBackUsd: number;
+  revenueUsd: number;
+  monthToDateRevenueUsd: number;
+  serviceFeesUsd: number;
+  monthToDateServiceFeesUsd: number;
   purchases?: number;
   monthToDatePurchases?: number;
-  totalRevenue?: number;
-  monthToDateTotalRevenue?: number;
-  orders?: Order[];
-  totals?: IDashboardTotals;
-  topSellers?: ITopSeller[];
-  topLocations?: ITopSellingLocation[];
-  topVenues?: ITopSellingLocation[];
-  percentMonthlyGoal?: number;
-  percentYearlyGoal?: number;
-  projectedYearTotalRevenue?: number;
-  projectedMonthTotalRevenue?: number;
-  salesPerMonth?: ISalesData[];
-  salesPerDayMonth?: ISalesData[];
-  salesPerDayYear?: ISalesData[];
-  totalsByAccount?: ITotalsByAccount[];
-  monthlyAverages?: IAverageDailyData;
-  yearlyAverages?: IAverageDailyData;
-  monthToDatePricePerTicket?: number;
-  monthToDateServiceFeePerTicket?: number;
+  totalRevenueUsd: number;
+  monthToDateTotalRevenueUsd: number;
+  orders: Order[];
+  totals: IDashboardTotals;
+  topSellers: ITopSeller[];
+  topLocations: ITopSellingLocation[];
+  topVenues: ITopSellingLocation[];
+  percentMonthlyGoal: number;
+  percentYearlyGoal: number;
+  projectedYearTotalRevenueUsd: number;
+  projectedMonthTotalRevenueUsd: number;
+  salesPerMonth: ISalesData[];
+  salesPerDayMonth: ISalesData[];
+  salesPerDayYear: ISalesData[];
+  totalsByAccount: ITotalsByAccount[];
+  monthlyAverages: IAverageDailyData;
+  yearlyAverages: IAverageDailyData;
+  monthToDatePricePerTicketUsd: number;
+  monthToDateServiceFeePerTicketUsd: number;
 }
 
 export type AdminDashboardSelection = {
