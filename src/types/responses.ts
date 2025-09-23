@@ -163,6 +163,10 @@ export interface UserLoginResponse extends PostReponseBase {
   user?: User;
 }
 
+export interface UserLoginResponseData {
+  msg?: string;
+}
+
 export interface UserResponse extends PostReponseBase {
   user?: User;
 }

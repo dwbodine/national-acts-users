@@ -1,4 +1,4 @@
-import { LogResponse, UserLoginResponse, UserResponse } from '@/types/responses';
+import { LogResponse, UserLoginResponse, UserLoginResponseData, UserResponse } from '@/types/responses';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { User } from '../types/user';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
@@ -80,8 +80,10 @@ export class AuthService {
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
+      const errData = err?.response?.data as UserLoginResponseData;
+      const errorMessage = errData?.msg ?? err?.message;
       response.error =
-        err?.message ?? 'Unknown error during login - please contact your administrator';
+        errorMessage ?? 'Unknown error during login - please contact your administrator';
     }
 
     return response;
