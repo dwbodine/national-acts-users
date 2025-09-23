@@ -167,7 +167,7 @@ export default function AdminSiteSettingsEdit() {
                 case 'file':
                     switch (setting.name) {
                         case 'HomeBanner':
-                            baseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/homebanners`;
+                            baseUrl = `${process.env.NEXT_PUBLIC_HOMEBANNERS_URL}`;
                             break;
                         default:
                             break;

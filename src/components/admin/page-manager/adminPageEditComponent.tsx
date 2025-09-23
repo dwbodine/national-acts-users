@@ -34,17 +34,17 @@ export default function AdminPageEdit() {
 
   const [isUploading, setIsUploading] = useState(false);
 
-  const headerBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/headers`;
+  const headerBaseUrl = `${process.env.NEXT_PUBLIC_HEADERS_URL}`;
   const [isHeaderDirty, setIsHeaderDirty] = useState(false);
 
-  const iconBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/thumbnails`;
+  const iconBaseUrl = `${process.env.NEXT_PUBLIC_THUMBNAILS_URL}`;
   const [isIconDirty, setIsIconDirty] = useState(false);
 
-  const linkPreviewBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/preview`;
+  const linkPreviewBaseUrl = `${process.env.NEXT_PUBLIC_PREVIEW_URL}`;
   const [isLinkPreviewDirty, setIsLinkPreviewDirty] = useState(false);
 
   const [isLogoDirty, setIsLogoDirty] = useState(false);
-  const logoBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/logos`;
+  const logoBaseUrl = `${process.env.NEXT_PUBLIC_LOGOS_URL}`;
 
   const goBack = useCallback(() => {
     toast.dismiss();

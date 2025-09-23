@@ -69,7 +69,7 @@ export default function AdminEventEdit(props: EditProps) {
   const { addNote } = useAddNote();
   const [isUploading, setIsUploading] = useState(false);
   const [isThumbnailDirty, setIsThumbnailDirty] = useState(false);
-  const thumbNailBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/common/thumbnails`;
+  const thumbNailBaseUrl = `${process.env.NEXT_PUBLIC_THUMBNAILS_URL}`;
   const [venueOpen, setVenueOpen] = useState(false);
   const [venueName, setVenueName] = useState<string | undefined>(undefined);
   const [address, setAddress] = useState<string | undefined>(undefined);
