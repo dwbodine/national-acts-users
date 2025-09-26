@@ -1,3 +1,4 @@
+import { ActivePageKey, ImageType } from '@/constants';
 import { Country, PageSeller } from './public';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import { Dispatch, JSX, ReactElement, SetStateAction } from 'react';
@@ -25,7 +26,6 @@ import {
   TicketType,
   VipEvent,
 } from './event';
-import { ActivePageKey } from '@/constants';
 import { CellProps } from 'rsuite';
 
 export interface PageProps {
@@ -51,7 +51,7 @@ export interface AdminFileUploadProps {
   ShowRemoveButton?: boolean;
   CurrentFileName?: string;
   IsDirty?: boolean;
-  BaseUrl?: string;
+  ImageType: ImageType;
   OnUpload?: (fileUploadName: string, filename: string) => void;
   OnUploadStart?: () => void;
   OnUploadComplete?: (fileName?: string) => void;

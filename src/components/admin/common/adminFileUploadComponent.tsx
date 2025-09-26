@@ -3,8 +3,8 @@
 import { ChangeEvent, ReactElement, useState } from "react";
 import { AdminFileUploadProps } from "@/types/props";
 import { FaTimesCircle } from "react-icons/fa";
-import { useUploadFile } from "@/hooks/common/useUploadFile";
-
+import { ImageType } from "@/constants";
+import { useUploadImage } from "@/hooks/common/useUploadImage";
 
 export default function AdminFileUpload(props: AdminFileUploadProps) {
     const title: string = props?.Title ?? '';
@@ -17,12 +17,37 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
     const onFileRemove = props?.OnFileRemove;
     let currentFileName: string | undefined = props?.CurrentFileName ?? undefined;
     const isDirty = props?.IsDirty ?? false;
-    const baseUrl = props?.BaseUrl ?? '';
+
+    const getBaseUrl = (uploadImageType: ImageType) => {
+        switch (uploadImageType) {
+            case ImageType.HEADERS:
+                return `${process.env.NEXT_PUBLIC_HEADERS_URL}`;
+                break;
+            case ImageType.HOMEBANNERS:
+                return `${process.env.NEXT_PUBLIC_HOMEBANNERS_URL}`;
+                break;
+            case ImageType.LOGOS:
+                return `${process.env.NEXT_PUBLIC_LOGOS_URL}`;
+                break;
+            case ImageType.PREVIEWS:
+                return `${process.env.NEXT_PUBLIC_PREVIEW_URL}`;
+                break;
+            case ImageType.THUMBNAILS:
+                return `${process.env.NEXT_PUBLIC_THUMBNAILS_URL}`;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    const imageType = props.ImageType;
+    const baseUrl = getBaseUrl(imageType);
 
     const [isUploading, setIsUploading] = useState(false);
     const [isUploaded, setIsUploaded] = useState(false);
 
-    const { uploadTempFile } = useUploadFile();
+    const { uploadImage } = useUploadImage();
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target && event.target.files && event.target.files.length > 0) {
@@ -33,16 +58,16 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
                 }
                 setIsUploaded(false);
                 setIsUploading(true);
-                uploadTempFile(file)
+                uploadImage(file, imageType)
                     .then((filename: string | undefined) => {
+                        setIsUploading(false);
+                        event.target.value = '';
                         if (onUpload && filename) {
                             onUpload(fileUploadName, filename);
-                        }
-                        setIsUploading(false);
-                        setIsUploaded(true);
-                        event.target.value = '';
-                        if (onUploadComplete) {
-                            onUploadComplete(filename);
+                            setIsUploaded(true);
+                            if (onUploadComplete) {
+                                onUploadComplete(filename);
+                            }
                         }
                     });
             }
@@ -61,9 +86,9 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
         currentFileName = `${baseUrl}/${currentFileName}`;
     }
 
-    const currentFileLink = !isDirty && currentFileName ?
+    const currentFileLink = currentFileName ?
         <a target="_blank" href={currentFileName}>{currentFileName}</a> :
-        currentFileName;
+        '';
 
 
 
@@ -78,7 +103,7 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
             <input type="file" onChange={handleFileChange} />
             <span className="danger" hidden={!isUploading}>Uploading...</span>
             <span className="success" hidden={!isUploaded && !isDirty}>Uploaded!</span>
-            <div className="admin-current-file-title" hidden={!currentFileName && !isDirty}>{currentFileTitle} {currentFileLink} {removeButton}</div>
+            <div className="admin-current-file-title" hidden={!currentFileName}>{currentFileTitle} {currentFileLink} {removeButton}</div>
         </div>
     );
 }

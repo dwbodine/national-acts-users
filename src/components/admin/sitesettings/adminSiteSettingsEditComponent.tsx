@@ -7,6 +7,7 @@ import { setAllSettings, setReloadSettings } from "@/lib/adminSelectionSlice";
 import { useDispatch, useSelector } from "react-redux";
 import AdminFileUpload from "../common/adminFileUploadComponent";
 import AdminListHomeButton from "../adminListHomeButton";
+import { ImageType } from "@/constants";
 import { RootState } from "@/lib/store";
 import { SiteSetting } from "@/types/public";
 import { setIsLoading } from "@/lib/globalSelectionSlice";
@@ -160,29 +161,21 @@ export default function AdminSiteSettingsEdit() {
             if (!hasDirtySettings) {
                 hasDirtySettings = setting.dirty ?? false;
             }
-            let baseUrl: string = '';
             const currentFileTitle = (setting.type.toLowerCase() === 'image') ? "View Current Image: " : "View Current File: ";
             switch (setting.type.toLowerCase()) {
                 case 'image':
                 case 'file':
-                    switch (setting.name) {
-                        case 'HomeBanner':
-                            baseUrl = `${process.env.NEXT_PUBLIC_HOMEBANNERS_URL}`;
-                            break;
-                        default:
-                            break;
-                    }
                     settingRows.push(
                         <Row key={setting.settingId}>
                             <Col className="admin-setting-item">
                                 <AdminFileUpload
+                                    ImageType={ImageType.HOMEBANNERS}
                                     Title={setting.displayName}
                                     FileUploadName={setting.name}
                                     OnUpload={onFileUpload}
                                     CurrentFileName={setting.value}
                                     IsDirty={setting.dirty}
                                     CurrentFileTitle={currentFileTitle}
-                                    BaseUrl={baseUrl}
                                     OnUploadStart={onUploadStart}
                                     OnUploadComplete={onUploadComplete}
                                 />

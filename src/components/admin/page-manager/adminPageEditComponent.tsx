@@ -11,6 +11,7 @@ import AdminFileUpload from '../common/adminFileUploadComponent';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { FaPlus } from 'react-icons/fa';
+import { ImageType } from "@/constants";
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import { SellerType } from '@/types/event';
@@ -33,18 +34,10 @@ export default function AdminPageEdit() {
   const pageSellerTypeIds: number[] = [7, 14, 15, 16, 17, 18, 19];
 
   const [isUploading, setIsUploading] = useState(false);
-
-  const headerBaseUrl = `${process.env.NEXT_PUBLIC_HEADERS_URL}`;
   const [isHeaderDirty, setIsHeaderDirty] = useState(false);
-
-  const iconBaseUrl = `${process.env.NEXT_PUBLIC_THUMBNAILS_URL}`;
   const [isIconDirty, setIsIconDirty] = useState(false);
-
-  const linkPreviewBaseUrl = `${process.env.NEXT_PUBLIC_PREVIEW_URL}`;
   const [isLinkPreviewDirty, setIsLinkPreviewDirty] = useState(false);
-
   const [isLogoDirty, setIsLogoDirty] = useState(false);
-  const logoBaseUrl = `${process.env.NEXT_PUBLIC_LOGOS_URL}`;
 
   const goBack = useCallback(() => {
     toast.dismiss();
@@ -671,13 +664,13 @@ export default function AdminPageEdit() {
         <Row className="form-group">
           <Col>
             <AdminFileUpload
+              ImageType={ImageType.HEADERS}
               Title="Top Image (ideally 1200-1600px wide, max is 1600px)"
               FileUploadName="Header"
               OnUpload={onFileUpload}
               CurrentFileName={topImage}
               IsDirty={isHeaderDirty}
               CurrentFileTitle={"View Current Top Image"}
-              BaseUrl={headerBaseUrl}
               OnUploadStart={onUploadStart}
               OnUploadComplete={onUploadComplete}
               ShowRemoveButton={true}
@@ -688,13 +681,13 @@ export default function AdminPageEdit() {
         <Row className="form-group">
           <Col>
             <AdminFileUpload
+              ImageType={ImageType.THUMBNAILS}
               Title="Icon (rectangle, no wider than 400px)"
               FileUploadName="Icon"
               OnUpload={onFileUpload}
               CurrentFileName={iconImage}
               IsDirty={isIconDirty}
               CurrentFileTitle={"View Current Icon Image"}
-              BaseUrl={iconBaseUrl}
               OnUploadStart={onUploadStart}
               OnUploadComplete={onUploadComplete}
               ShowRemoveButton={true}
@@ -705,13 +698,13 @@ export default function AdminPageEdit() {
         <Row className="form-group">
           <Col>
             <AdminFileUpload
+              ImageType={ImageType.PREVIEWS}
               Title="Link Preview Image (rectangle, no wider than 400px)"
               FileUploadName="Preview"
               OnUpload={onFileUpload}
               CurrentFileName={linkPreviewImage}
               IsDirty={isLinkPreviewDirty}
               CurrentFileTitle={"View Current Link Preview Image"}
-              BaseUrl={linkPreviewBaseUrl}
               OnUploadStart={onUploadStart}
               OnUploadComplete={onUploadComplete}
               ShowRemoveButton={true}
@@ -722,13 +715,13 @@ export default function AdminPageEdit() {
         <Row className="form-group">
           <Col>
             <AdminFileUpload
+              ImageType={ImageType.LOGOS}
               Title="Logo Only (rectangle, must be a PNG and between 250-400 px wide)"
               FileUploadName="Logo"
               OnUpload={onFileUpload}
               CurrentFileName={logoOnlyImage}
               IsDirty={isLogoDirty}
               CurrentFileTitle={"View Current Logo Image"}
-              BaseUrl={logoBaseUrl}
               OnUploadStart={onUploadStart}
               OnUploadComplete={onUploadComplete}
               ShowRemoveButton={true}

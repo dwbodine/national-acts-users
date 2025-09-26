@@ -26,6 +26,7 @@ import AdminFileUpload from '../common/adminFileUploadComponent';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { EditProps } from '@/types/props';
 import { ExternalVenue } from '@/types/admin';
+import { ImageType } from '@/constants';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import moment from 'moment';
@@ -69,7 +70,6 @@ export default function AdminEventEdit(props: EditProps) {
   const { addNote } = useAddNote();
   const [isUploading, setIsUploading] = useState(false);
   const [isThumbnailDirty, setIsThumbnailDirty] = useState(false);
-  const thumbNailBaseUrl = `${process.env.NEXT_PUBLIC_THUMBNAILS_URL}`;
   const [venueOpen, setVenueOpen] = useState(false);
   const [venueName, setVenueName] = useState<string | undefined>(undefined);
   const [address, setAddress] = useState<string | undefined>(undefined);
@@ -1293,13 +1293,13 @@ export default function AdminEventEdit(props: EditProps) {
       <Row>
         <Col className="form-group">
           <AdminFileUpload
+            ImageType={ImageType.EVENT_THUMBNAILS}
             Title="Event thumbnail (square, will be resized to 100px wide)"
             FileUploadName="Thumbnail"
             OnUpload={onFileUpload}
             CurrentFileName={thumbnail}
             IsDirty={isThumbnailDirty}
             CurrentFileTitle={"View Current Thumbnail"}
-            BaseUrl={thumbNailBaseUrl}
             OnUploadStart={onUploadStart}
             OnUploadComplete={onUploadComplete}
             ShowRemoveButton={true}

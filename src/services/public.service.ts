@@ -5,10 +5,10 @@ import {
   GetSellersResponse,
   GetSettingsResponse,
 } from '@/types/responses';
+import { ImageType, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { Page, PageType, SiteSetting } from '@/types/public';
 import { Seller, VipEvent } from '../types/event';
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 
 export class PublicService {
   protected readonly instance: AxiosInstance;
@@ -187,12 +187,15 @@ export class PublicService {
     return response;
   };
 
-  uploadTempFile = async (file: File): Promise<string | undefined> => {
-    const url = `/public/uploadFile`;
-
-    if (!file || !file.name) {
+  uploadImageFile = async (
+    file: File,
+    imageType: ImageType,
+  ): Promise<string | undefined> => {
+    if (!file || !file.name || !imageType) {
       return undefined;
     }
+
+    const url = `/public/uploadImage/${imageType.valueOf()}`;
 
     const data = new FormData();
     data.append('tempFile', file);

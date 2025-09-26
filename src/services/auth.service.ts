@@ -1,4 +1,9 @@
-import { LogResponse, UserLoginResponse, UserLoginResponseData, UserResponse } from '@/types/responses';
+import {
+  LogResponse,
+  UserLoginResponse,
+  UserLoginResponseData,
+  UserResponse,
+} from '@/types/responses';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { User } from '../types/user';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader';

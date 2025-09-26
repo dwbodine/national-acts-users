@@ -16,3 +16,12 @@ export enum ActivePageKey {
   Users = 5,
   Events = 6,
 }
+
+export enum ImageType {
+  HEADERS = 'headers',
+  HOMEBANNERS = 'homebanners',
+  LOGOS = 'logos',
+  PREVIEWS = 'previews',
+  THUMBNAILS = 'thumbnails',
+  EVENT_THUMBNAILS = 'event_thumbnails',
+}
