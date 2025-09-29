@@ -102,7 +102,7 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
             <div className="admin-setting-title">{title}</div>
             <input type="file" onChange={handleFileChange} />
             <span className="danger" hidden={!isUploading}>Uploading...</span>
-            <span className="success" hidden={!isUploaded && !isDirty}>Uploaded!</span>
+            <span className="success" hidden={!isUploaded && !isDirty}>Updated!</span>
             <div className="admin-current-file-title" hidden={!currentFileName}>{currentFileTitle} {currentFileLink} {removeButton}</div>
         </div>
     );

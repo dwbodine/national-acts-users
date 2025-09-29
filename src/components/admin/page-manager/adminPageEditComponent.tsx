@@ -433,19 +433,19 @@ export default function AdminPageEdit() {
       case 'Icon':
         pageToUpdate.thumbnail = undefined;
         dispatch(setSelectedPage(pageToUpdate));
-        setIsHeaderDirty(true);
+        setIsIconDirty(true);
         markDirty();
         break;
       case 'Preview':
         pageToUpdate.linkPreviewImage = undefined;
         dispatch(setSelectedPage(pageToUpdate));
-        setIsHeaderDirty(true);
+        setIsLinkPreviewDirty(true);
         markDirty();
         break;
       case 'Logo':
         pageToUpdate.logoOnlyImage = undefined;
         dispatch(setSelectedPage(pageToUpdate));
-        setIsHeaderDirty(true);
+        setIsLogoDirty(true);
         markDirty();
         break;
       default:
