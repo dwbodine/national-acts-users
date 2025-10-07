@@ -207,7 +207,7 @@ export default function EventDetail(props: EditProps) {
                         numTickets: 1,
                         orderId: 0,
                         phone: ticket.attendeePhone,
-                        purchaseDate: '',
+                        purchaseDate: order.purchaseDate,
                         purchaseTimestamp: '',
                         purchaserFirstName: ticket.attendeeFirstName ?? '',
                         purchaserLastName: ticket.attendeeLastName ?? '',
@@ -215,7 +215,8 @@ export default function EventDetail(props: EditProps) {
                         revenueUsd: 0,
                         ticketSocketEventId: newEvent.ticketSocketEventId,
                         ticketSocketOrderId: order.ticketSocketOrderId,
-                        tickets: [ticket]
+                        tickets: [ticket],
+                        totalShirts: order.totalShirts,
                       };
                       orders.push(newOrder);
                     }
