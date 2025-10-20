@@ -526,6 +526,8 @@ export default function EventDetail(props: EditProps) {
   const zip = venue?.postalCode;
   const country = venue?.country?.countryName;
 
+  const revClass = hideRevItem ? 'no-print' : '';
+
   return (
     <>
       {currentReportSelection.currentDetailEvent === undefined ? '' : (
@@ -726,7 +728,7 @@ export default function EventDetail(props: EditProps) {
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Name</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Ticket Type</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}># of tickets</th>
-                      <th hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay} className="no-print">Revenue</th>
+                      <th hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay} className={revClass}>Revenue</th>
                       <th
                         className="no-print"
                         hidden={hideServiceFeeDisplay || !viewServiceFees || showOnlyEmailsDisplay || showOnlyPhonesDisplay}

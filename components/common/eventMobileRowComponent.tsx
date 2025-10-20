@@ -79,6 +79,8 @@ export default function EventMobileRow(props: EventRowProps) {
   const buttonText = currentSellerType === SellerType.Venue ? 'Customer List' : 'VIP List';
   const noOrders = (!vipEvent.orders || vipEvent.orders.length === 0);
 
+  const revClass = hideRevItem ? 'no-print' : '';
+
   return (
     <tr className={`mobile-event-card-container ${statusClass}`}>
       <td>
@@ -121,7 +123,7 @@ export default function EventMobileRow(props: EventRowProps) {
             <Col>Ticket type breakdown:</Col>
             <Col>{ticketBreakdownRows}</Col>
           </Row>
-          <Row hidden={hideRevItem} className="no-print">
+          <Row hidden={hideRevItem} className={revClass}>
             <Col>Revenue:</Col>
             <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
           </Row>

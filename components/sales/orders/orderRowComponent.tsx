@@ -107,6 +107,8 @@ export default function OrderRow(props: OrderRowProps) {
   const phone = order?.phone?.startsWith("+1 ") ?
     order.phone.replace("+1 ", "") : order?.phone;
 
+  const revClass = hideRev ? 'no-print' : '';
+
   return (
     <tr className={statusClass}>
       <td hidden={showOnlyEmails || showOnlyPhones}>{purchaserName}</td>
@@ -118,7 +120,7 @@ export default function OrderRow(props: OrderRowProps) {
       <td hidden={showOnlyEmails || showOnlyPhones}>{eventName}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{ticketTypeRows}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{order?.numTickets}</td>
-      <td className="pull-right no-print" hidden={hideRev || showOnlyEmails || showOnlyPhones}>
+      <td className={`pull-right ${revClass}`} hidden={hideRev || showOnlyEmails || showOnlyPhones}>
         {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}>
