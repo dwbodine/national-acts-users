@@ -209,7 +209,7 @@ export default function EventDetail(props: EditProps) {
                         numTickets: 1,
                         orderId: 0,
                         phone: ticket.attendeePhone,
-                        purchaseDate: '',
+                        purchaseDate: order.purchaseDate,
                         purchaseTimestamp: '',
                         purchaserFirstName: ticket.attendeeFirstName ?? '',
                         purchaserLastName: ticket.attendeeLastName ?? '',
@@ -217,7 +217,8 @@ export default function EventDetail(props: EditProps) {
                         revenueUsd: 0,
                         ticketSocketEventId: newEvent.ticketSocketEventId,
                         ticketSocketOrderId: order.ticketSocketOrderId,
-                        tickets: [ticket]
+                        tickets: [ticket],
+                        totalShirts: order.totalShirts,
                       };
                       orders.push(newOrder);
                     }
@@ -528,6 +529,8 @@ export default function EventDetail(props: EditProps) {
   const zip = venue?.postalCode;
   const country = venue?.country?.countryName;
 
+  const revClass = hideRevItem ? 'no-print' : '';
+
   return (
     <>
       {currentReportSelection.currentDetailEvent === undefined ? '' : (
@@ -728,7 +731,7 @@ export default function EventDetail(props: EditProps) {
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Name</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Ticket Type</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}># of tickets</th>
-                      <th hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay} className="no-print">Revenue</th>
+                      <th hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay} className={revClass}>Revenue</th>
                       <th
                         className="no-print"
                         hidden={hideServiceFeeDisplay || !viewServiceFees || showOnlyEmailsDisplay || showOnlyPhonesDisplay}

@@ -113,6 +113,8 @@ export default function OrderMobileRow(props: OrderRowProps) {
   const phone = order?.phone?.startsWith("+1 ") ?
     order.phone.replace("+1 ", "") : order?.phone;
 
+  const revClass = hideRev ? 'no-print' : '';
+
   return (
     <tr className={`mobile-event-card-container ${statusClass}`}>
       <td>
@@ -149,7 +151,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
             <Col xs={5} className="mobile-bold">Ticket breakdown:</Col>
             <Col>{ticketTypeRows}</Col>
           </Row>
-          <Row hidden={hideRev || showOnlyEmails || showOnlyPhones} className="no-print">
+          <Row hidden={hideRev || showOnlyEmails || showOnlyPhones} className={revClass}>
             <Col xs={5} className="mobile-bold">Revenue:</Col>
             <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
           </Row>

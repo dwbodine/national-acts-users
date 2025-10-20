@@ -38,6 +38,8 @@ export default function EventRow(props: EventRowProps) {
     statusClass = `event-${statusSlug}`
   }
 
+  const revClass = hideRevItem ? 'pull-right no-print' : 'pull-right';
+
   return (
     <tr className={statusClass} id={id}>
       <td>{eventDate}</td>
@@ -57,7 +59,7 @@ export default function EventRow(props: EventRowProps) {
       <td className="pull-right">{vipEvent.totalTickets}</td>
       <td className="pull-right">{(vipEvent.numTicketsRefunded ?? 0)}</td>
       <td className="pull-right">{(vipEvent.numTicketsComped ?? 0)}</td>
-      <td className="pull-right no-print" hidden={hideRevItem}>
+      <td className={revClass} hidden={hideRevItem}>
         {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees}>

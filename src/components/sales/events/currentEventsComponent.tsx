@@ -283,6 +283,8 @@ export default function CurrentEvents() {
     }
   }
 
+  const revClass = hideRevItem ? 'no-print' : '';
+
   return (
     <>
       <Container fluid hidden={!globalSelection.isLoading || !user || user.isAdmin}>
@@ -336,7 +338,7 @@ export default function CurrentEvents() {
                     <th>Tickets Sold</th>
                     <th>Tickets Refunded</th>
                     <th>Tickets Comped</th>
-                    <th className="no-print" hidden={hideRevItem}>Revenue</th>
+                    <th className={revClass} hidden={hideRevItem}>Revenue</th>
                     <th className="no-print" hidden={hideServiceFees}>
                       Service Fees
                     </th>
@@ -349,7 +351,7 @@ export default function CurrentEvents() {
                     <td className="pull-right">{totalTickets}</td>
                     <td className="pull-right">{ticketsRefunded}</td>
                     <td className="pull-right">{totalTicketsComped}</td>                    
-                    <td className="pull-right no-print" hidden={hideRevItem}>
+                    <td className={`pull-right ${revClass}`} hidden={hideRevItem}>
                       ${totalRevenue.toFixed(2)}
                     </td>
                     <td className="pull-right no-print" hidden={hideServiceFees}>
