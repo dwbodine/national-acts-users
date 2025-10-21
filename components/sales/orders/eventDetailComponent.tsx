@@ -570,7 +570,7 @@ export default function EventDetail(props: EditProps) {
                           {totalTickets}
                         </td>
                       </tr>
-                      <tr hidden={hideRevItem} className="no-print">
+                      <tr hidden={hideRevItem} className={revClass}>
                         <td className="vipLabel">Total Revenue:</td>
                         <td>
                           $
