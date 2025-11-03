@@ -1,6 +1,8 @@
-import 'rsuite/dist/rsuite.min.css';
-import 'react-toastify/dist/ReactToastify.css';
-import './globals.css';
+
+import 'react-toastify/ReactToastify.css';
+import 'rsuite/dist/rsuite-no-reset.min.css';
+import '../Css/App.css';
+
 // eslint-disable-next-line camelcase
 import { Open_Sans } from "next/font/google";
 import Providers from '@/components/common/providers';
@@ -25,14 +27,9 @@ export default function RootLayout({
         />
          <meta name="theme-color" content="#FFFFFF" />
         <link rel="icon" href="/images/favicon.png"></link>
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-        />
       </head> 
       <body className={`${openSans.variable}`}>
         <Providers>{children}</Providers>    
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" async></script>
       </body>
     </html>
   );

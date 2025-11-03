@@ -1,8 +1,6 @@
 html,
 body {
-  font:
-    14px 'Open Sans',
-    sans-serif;
+  font: 14px "Open Sans", sans-serif;
   min-height: 100vh;
 }
 
@@ -15,9 +13,9 @@ div hidden {
 }
 
 select,
-input[type='text'],
-input[type='password'],
-input[type='number'] {
+input[type=text],
+input[type=password],
+input[type=number] {
   margin: 10px 5px;
   padding: 7px;
   min-width: 220px;
@@ -31,7 +29,7 @@ textarea::placeholder {
   font-style: italic;
 }
 
-input[type='checkbox'] {
+input[type=checkbox] {
   border-radius: 6px;
   border: 1px lightgray solid;
 }
@@ -45,7 +43,7 @@ input[type=submit]:hover,
 input[type=date]:hover,
 input[type=tel]:hover,
 input[type=url]:hover,
-input[type='checkbox']:hover,
+input[type=checkbox]:hover,
 textarea:hover,
 select:hover,
 button:hover {
@@ -97,7 +95,7 @@ input.rs-input:hover {
   margin-bottom: 5px;
 }
 
-.form-check-input[type='checkbox'] {
+.form-check-input[type=checkbox] {
   margin-right: 5px;
 }
 
@@ -649,7 +647,7 @@ a.edit-event-link {
   border: 1px solid #CBDCF7;
   line-height: 25px;
   vertical-align: top;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1/1;
   padding-bottom: 10px;
 }
 
@@ -762,7 +760,6 @@ a.edit-event-link {
 .month-day-note-completed .note-text {
   text-decoration: line-through;
 }
-
 
 .week-day-note .note-x,
 .agenda-day-note .note-x,
@@ -881,7 +878,6 @@ a.edit-event-link {
 }
 
 /* MOBILE CSS */
-
 .mobile-event-card-container {
   width: 100%;
   margin: 0;
@@ -978,7 +974,7 @@ a.edit-event-link {
 .admin-container h1,
 .admin-container h2,
 .admin-container h3 {
-  font-family: 'Impact', 'Carrois Gothic SC', sans-serif;
+  font-family: "Impact", "Carrois Gothic SC", sans-serif;
   margin: 0;
   padding: 0;
   text-transform: uppercase;
@@ -1373,7 +1369,7 @@ a.edit-event-link {
 .shirt-size-container {
   width: 100%;
   clear: both;
-  margin: 10px 0; 
+  margin: 10px 0;
 }
 
 .shirt-sizes {
@@ -1440,7 +1436,7 @@ a.edit-event-link {
 
 .pdf-table th {
   color: white;
-  background-color: #26A69A
+  background-color: #26A69A;
 }
 
 .pdf-table tr {
@@ -1473,65 +1469,52 @@ a.edit-event-link {
     padding: 10px;
   }
 }
-
 /* Bootstrap xl */
 @media (max-width: 1200px) {
-
   .stat-block-container,
   .widget-stat-block-container {
     min-height: 300px;
     min-width: 200px;
   }
-
   .stat-block,
   .widget-stat-block {
     font-size: 13px;
   }
-
   .sales-stat-block {
     width: 100%;
     font-size: 12px;
   }
-
   .refresh-results-header-col {
     margin-bottom: 25px;
   }
-
   .expanded-event-panel {
     padding: 0;
   }
-
   .expand-edit-doors-container,
   .expand-edit-notes,
   .expand-edit-event {
     margin: 15px 0;
   }
-
   .expand-edit-doors,
   .expand-edit-doors-data {
     padding: 0;
   }
-
   .expand-edit-event {
     padding: 0 10px;
     text-align: left;
   }
-
   .pdf-table {
     width: fit-content;
   }
-
   .pdf-link-column {
     max-width: 200px;
   }
 }
-
 /* Bootstrap lg */
 @media (max-width: 992px) {
   .command-column {
     display: none;
   }
-
   .inactive-check,
   .deleted-check,
   .hidden-check,
@@ -1539,197 +1522,156 @@ a.edit-event-link {
   .service-fees-check {
     margin-bottom: 15px;
   }
-
   .admin-button {
     width: 150px;
     margin-top: 0;
   }
-
   .vipTable .email {
     word-break: break-all;
   }
-
   .purchase-date {
     display: none;
   }
-
   .sales-stat-block {
     padding: 5px;
     font-size: 10px;
   }
-
   .pdf-link-column {
     max-width: 150px;
   }
 }
-
 /* custom desktop/tablet width */
 @media (max-width: 867px) {
   .control-container .date-range-title {
     display: none;
   }
 }
-
 /* Bootstrap md */
 @media (max-width: 768px) {
   .form-control-half {
     max-width: unset;
   }
-
   .wrapper {
     width: 368px;
   }
-
   .resultsTable,
   .widget-row {
     max-width: 100%;
   }
-
   .resultsTable th,
   .resultsTable td {
     padding: 2px;
   }
-
   .stat-block,
   .widget-stat-block {
     min-height: 200px;
     font-size: 12px;
   }
-
   .stat-block-container,
   .widget-stat-block-container {
     min-height: unset;
     height: fit-content;
   }
-
   .sales-stat-block {
     height: fit-content;
     min-height: unset;
   }
-
   .refresh-results-header {
     font-size: 12px;
   }
-
   .vipDetailsTable {
     margin: 0;
   }
-
   .agenda-day-event,
   .agenda-day-note,
   .agenda-day-note-completed {
     max-width: 360px;
   }
-
   .search-text-input {
     max-width: 360px;
   }
-
   .pdf-link-column {
     max-width: 100px;
   }
 }
-
 /* Bootstrap sm */
 @media (max-width: 576px) {
   .nav-bar {
     padding: 0;
   }
-
   .vipContainer {
     padding: 10px;
   }
-
   .vipDetailsTable {
     max-width: 100%;
     margin: 10px 0;
   }
-
   .results-container {
     margin: 0;
     padding: 10px;
   }
-
   .no-mobile {
     display: none;
   }
-
   .stat-block-container,
   .widget-stat-block-container {
     padding: 10px 10px 10px 5px;
     min-width: 150px;
   }
-
   .widget-stat-block-container {
     max-width: 50%;
   }
-
   .stat-block,
   .widget-stat-block {
     padding: 10px;
     font-size: 10px;
   }
-
   .control-container {
     text-align: unset;
     padding: 0;
     margin-right: 0;
   }
-
   .control-container .action-button {
     margin-right: 5px;
   }
-
   .admin-seller-row .col,
   .admin-tour-row .col {
     padding: 0;
   }
-
   .admin-seller-row .seller-title {
     margin: 0 5px;
   }
-
   .tour-title {
     margin: 0 5px;
   }
-
   .admin-check-row .col-sm-12 {
     padding: 0 5px;
   }
-
   .admin-button-row {
     margin: 0;
   }
-
   .admin-button-row .col-sm-12 {
     padding: 0 5px;
   }
-
   .admin-button-row button {
     font-size: 0.8rem;
     margin-left: 0;
   }
-
   .results-container {
     padding-left: 5px;
   }
-
   .results-col {
     padding: 0;
   }
-
   .vipTable-container {
     padding: 0 15px 0 5px;
   }
-
   .resultsTable {
     margin: 0;
   }
-
   .vipTable {
     margin: 0 5px;
   }
-
   .inactive-check,
   .deleted-check,
   .hidden-check,
@@ -1737,7 +1679,6 @@ a.edit-event-link {
   .service-fees-check {
     margin: 0 20px 15px 0;
   }
-
   .resultsTable,
   .resultsTable tbody,
   .resultsTable th,
@@ -1748,120 +1689,99 @@ a.edit-event-link {
   .vipTable td {
     border: unset;
   }
-
   .resultsTable th,
   .resultsTable td,
   .vipTable th,
   .vipTable td {
     padding: 5px 0;
   }
-
   .resultsTable tr:nth-child(even),
   .vipTable tr:nth-child(even) {
     background-color: unset;
   }
-
   .mobile-event-card {
     padding: 5px;
   }
-
   .resultsTable tr:hover,
   .vipTable tr:hover {
     background-color: unset;
   }
-
   .resultsTable .mobile-event-card-container:nth-child(even),
   .vipTable .mobile-event-card-container:nth-child(even) {
     .mobile-event-card {
       background-color: #efefef !important;
     }
   }
-
   .vipDetailsTable td {
     white-space: unset;
   }
-
   .vipDetailsTable .vipLabel {
     white-space: nowrap;
   }
-
   .refresh-results-header {
     font-size: 10px;
   }
-
   .rs-btn-subtle {
     border: 1px solid darkgray;
     border-radius: 6px 6px 0 0;
   }
-
   .agenda-day-event,
   .agenda-day-note,
   .agenda-day-note-completed {
     max-width: unset;
     width: 100%;
   }
-
   .bulk-arrow-row {
     font-size: 10px;
   }
-
   .bulk-arrow {
     font-size: 14px;
   }
 }
-
 /* custom mobile width */
 @media (max-width: 435px) {
   .no-mobile {
     display: none;
   }
-
   .control-container {
     text-align: unset;
   }
-
   .resultsCol {
     padding: 0;
   }
 }
-
 @media print {
-
   .no-print,
   .rs-nav-item,
   .rs-nav-bar {
     display: none !important;
   }
-
   .vipContainer {
     padding: 5px;
   }
-
   .vipDetailsTable {
     margin: 10px 5px;
   }
-
   .attendee,
   .attendee-check,
   .attendee-check-highlight,
   .attendee-highlight {
     font-weight: normal;
   }
-
   .attendee-highlight,
   .attendee-check-highlight {
     text-shadow: unset;
     cursor: unset;
     margin: 0 0 5px 0;
   }
-
   .check-out-show,
   .check-in-show {
     display: none;
   }
-
   .pdf-container, .pdf-header, .pdf-body {
     margin: 0;
     padding: 0;
   }
 }
+
+/*# sourceMappingURL=App.css.map */
