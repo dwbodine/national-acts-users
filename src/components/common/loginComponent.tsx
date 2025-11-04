@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'rsuite';
 import { KeyboardEvent, useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
+import Container from 'rsuite/Container';
 import Image from 'next/image';
 import { UserLoginResponse } from '@/types/responses';
 import { setForAdmin } from '@/lib/reportSelectionSlice';
@@ -45,33 +45,30 @@ export default function LoginComponent() {
     if (!name || !password) {
       setLoginError('Please enter username and password');
     } else {
-      login(name, password)
-        .then((response: UserLoginResponse) => {
-          if (response) {
-            if (response.user && response.user.isAuthenticated) {
-              dispatch(setForAdmin(response.user.isAdmin));
-              const searchParams = new URLSearchParams(window.location.search);
-              const returnPath = searchParams.get('returnPath');
-              if (returnPath) {
-                router.push(returnPath);
-              } else if (response.user.isAdmin) {
-                router.push('/dashboard');
-              } else {
-                router.push('/');
-              }
-            } else if (response.error) {
-              setLoginError(response.error);
+      login(name, password).then((response: UserLoginResponse) => {
+        if (response) {
+          if (response.user && response.user.isAuthenticated) {
+            dispatch(setForAdmin(response.user.isAdmin));
+            const searchParams = new URLSearchParams(window.location.search);
+            const returnPath = searchParams.get('returnPath');
+            if (returnPath) {
+              router.push(returnPath);
+            } else if (response.user.isAdmin) {
+              router.push('/dashboard');
             } else {
-              setLoginError(
-                'Unknown error during login - please contact your administrator',
-              );
+              router.push('/');
             }
+          } else if (response.error) {
+            setLoginError(response.error);
           } else {
             setLoginError(
               'Unknown error during login - please contact your administrator',
             );
           }
-        });
+        } else {
+          setLoginError('Unknown error during login - please contact your administrator');
+        }
+      });
     }
   };
 

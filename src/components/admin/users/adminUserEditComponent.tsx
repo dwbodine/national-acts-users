@@ -1,7 +1,11 @@
-"use client";
+'use client';
 
-import { Button, FormCheck } from 'react-bootstrap';
-import { GetRolesResponse, GetSellersResponse, UpdateUserResponse } from '@/types/responses';
+import { Button, FormCheck } from 'rsuite';
+import {
+  GetRolesResponse,
+  GetSellersResponse,
+  UpdateUserResponse,
+} from '@/types/responses';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Role, User } from '@/types/user';
 import { Seller, SellerType } from '@/types/event';
@@ -82,7 +86,7 @@ export default function AdminUserEdit() {
     allRoles,
     getAllRoles,
     dispatch,
-    goBack
+    goBack,
   ]);
 
   const updateSeller = (sellerId: number, newSellerId: number | null) => {
@@ -192,8 +196,7 @@ export default function AdminUserEdit() {
       return;
     }
 
-    const message: string =
-      'Are you sure you want to delete this user?';
+    const message: string = 'Are you sure you want to delete this user?';
     toast.warning(
       <ConfirmationDialog
         Message={message}
@@ -210,7 +213,7 @@ export default function AdminUserEdit() {
         position: 'top-center',
       },
     );
-  }
+  };
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedUser) {
@@ -218,12 +221,12 @@ export default function AdminUserEdit() {
     }
 
     if (!firstName) {
-      toast.warn("First name cannot be blank");
+      toast.warn('First name cannot be blank');
       return;
     }
 
     if (!lastName) {
-      toast.warn("Last name cannot be blank");
+      toast.warn('Last name cannot be blank');
       return;
     }
 
@@ -281,8 +284,12 @@ export default function AdminUserEdit() {
           Roles={allRoles}
           SellerId={item.sellerId}
           RoleId={item.roleId}
-          OnSellerChange={(newSellerId: number | null) => updateSeller(parseInt(`${item.sellerId}`), newSellerId)}
-          OnRoleChange={(newRoleId: number | null) => updateRole(parseInt(`${item.sellerId}`), newRoleId)}
+          OnSellerChange={(newSellerId: number | null) =>
+            updateSeller(parseInt(`${item.sellerId}`), newSellerId)
+          }
+          OnRoleChange={(newRoleId: number | null) =>
+            updateRole(parseInt(`${item.sellerId}`), newRoleId)
+          }
           OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
           Countries={currentAdminSelection.countries}
         />,

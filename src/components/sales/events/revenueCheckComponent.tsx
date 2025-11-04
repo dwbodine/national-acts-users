@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ChangeEvent } from 'react';
-import { FormCheck } from 'react-bootstrap';
+import { FormCheck } from 'rsuite';
 import type { RootState } from '../../../lib/store';
 import { setHideRevenue } from '@/lib/reportSelectionSlice';
 

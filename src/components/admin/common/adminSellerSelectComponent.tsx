@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
+import { Button, Col, Container, FormCheck, Row } from 'rsuite';
 import { Country, PageSeller } from '@/types/public';
 import { Modal, SelectPicker } from 'rsuite';
 import { Seller, SellerType } from '@/types/event';
@@ -14,7 +14,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   let sellers: Seller[] | undefined = props.Sellers as Seller[] | undefined;
   const roles: Role[] | undefined = props.Roles as Role[] | undefined;
   const sellerId: number = props.SellerId ? (props.SellerId as number) : 0;
-  const sellerType: SellerType | undefined = props.SellerType ? (props.SellerType as SellerType) : undefined;
+  const sellerType: SellerType | undefined = props.SellerType
+    ? (props.SellerType as SellerType)
+    : undefined;
   const roleId: number = props.RoleId ? (props.RoleId as number) : 0;
   const number: number | undefined = props.Number as number | undefined;
   const id: string = props.Id;
@@ -22,15 +24,21 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   const onRoleChange = props.OnRoleChange;
   const onPageSellerChange = props.OnPageSellerChange;
   const onDelete = props.OnDelete;
-  const pageSeller: PageSeller | undefined = props.PageSeller ? (props.PageSeller as PageSeller) : undefined;
-  const countries: Country[] | undefined = props.Countries ? (props.Countries as Country[]) : undefined;
+  const pageSeller: PageSeller | undefined = props.PageSeller
+    ? (props.PageSeller as PageSeller)
+    : undefined;
+  const countries: Country[] | undefined = props.Countries
+    ? (props.Countries as Country[])
+    : undefined;
 
   const [pageSellerSettingsOpen, setPageSellerSettingsOpen] = useState(false);
   const handlePageSellerSettingsOpen = () => setPageSellerSettingsOpen(true);
   const handlePageSellerSettingsClose = () => setPageSellerSettingsOpen(false);
 
   const [displayName, setDisplayName] = useState(pageSeller?.displayName ?? '');
-  const [showDisplayName, setShowDisplayName] = useState(pageSeller?.showDisplayName ?? false);
+  const [showDisplayName, setShowDisplayName] = useState(
+    pageSeller?.showDisplayName ?? false,
+  );
   const [address, setAddress] = useState(pageSeller?.address ?? '');
   const [city, setCity] = useState(pageSeller?.city ?? '');
   const [state, setState] = useState(pageSeller?.state ?? '');
@@ -44,14 +52,18 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   const [youtube, setYoutube] = useState(pageSeller?.youtube ?? '');
   const [spotify, setSpotify] = useState(pageSeller?.spotify ?? '');
   const [website, setWebsite] = useState(pageSeller?.website ?? '');
-  const [websiteDisplayText, setWebsiteDisplayText] = useState(pageSeller?.websiteDisplayText ?? '');
+  const [websiteDisplayText, setWebsiteDisplayText] = useState(
+    pageSeller?.websiteDisplayText ?? '',
+  );
 
   if (sellers && sellerType) {
-    sellers = sellers.filter(x => x.sellerType === sellerType);
+    sellers = sellers.filter((x) => x.sellerType === sellerType);
   }
 
   const isArtist = sellerType && sellerType === SellerType.Artist;
-  const selectedSeller: Seller | undefined = sellers?.find(x => x.sellerId === sellerId);
+  const selectedSeller: Seller | undefined = sellers?.find(
+    (x) => x.sellerId === sellerId,
+  );
 
   const updatePageSellerSettings = () => {
     if (!pageSeller || !onPageSellerChange) {
@@ -83,29 +95,26 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
     setCountryId(cId ?? undefined);
   };
 
-  const sellerList: ItemDataType<number>[] = sellers ?
-    sellers?.map(seller => (
-      {
+  const sellerList: ItemDataType<number>[] = sellers
+    ? sellers?.map((seller) => ({
         label: `${seller.name}`,
-        value: seller.sellerId
-      }
-    )) : [];
+        value: seller.sellerId,
+      }))
+    : [];
 
-  const roleList: ItemDataType<number>[] = roles ?
-    roles?.map(role => (
-      {
+  const roleList: ItemDataType<number>[] = roles
+    ? roles?.map((role) => ({
         label: `${role.roleName}`,
-        value: role.roleId
-      }
-    )) : [];
+        value: role.roleId,
+      }))
+    : [];
 
-  const countryList: ItemDataType<number>[] = countries ?
-    countries?.map(country => (
-      {
+  const countryList: ItemDataType<number>[] = countries
+    ? countries?.map((country) => ({
         label: `${country.countryName}`,
-        value: country.countryId
-      }
-    )) : [];
+        value: country.countryId,
+      }))
+    : [];
 
   return (
     <Row className="admin-select">
@@ -119,7 +128,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
           value={sellerId}
           data={sellerList}
           size="lg"
-          onChange={(sId) => onSellerChange ? onSellerChange(sId) : null}
+          onChange={(sId) => (onSellerChange ? onSellerChange(sId) : null)}
           cleanable={false}
         />
       </Col>
@@ -130,7 +139,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
           value={roleId}
           data={roleList}
           size="lg"
-          onChange={(rId) => onRoleChange ? onRoleChange(rId) : null}
+          onChange={(rId) => (onRoleChange ? onRoleChange(rId) : null)}
           cleanable={false}
           searchable={false}
         />
@@ -146,7 +155,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row>
                 <Col>
                   <label className="page-seller-label">Display Name</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is &quot;{selectedSeller?.name}&quot;</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is &quot;{selectedSeller?.name}&quot;
+                  </div>
                   <input
                     value={displayName ?? ''}
                     onChange={(e) => setDisplayName(e.target.value)}
@@ -164,7 +175,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row hidden={isArtist}>
                 <Col>
                   <label className="page-seller-label">Address</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.address ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.address ?? 'n/a'}`}
+                  </div>
                   <input
                     value={address ?? ''}
                     onChange={(e) => setAddress(e.target.value)}
@@ -177,7 +190,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row hidden={isArtist}>
                 <Col>
                   <label className="page-seller-label">City</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.city ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.city ?? 'n/a'}`}
+                  </div>
                   <input
                     value={city ?? ''}
                     onChange={(e) => setCity(e.target.value)}
@@ -190,7 +205,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row hidden={isArtist}>
                 <Col>
                   <label className="page-seller-label">State</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.state ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.state ?? 'n/a'}`}
+                  </div>
                   <input
                     value={state ?? ''}
                     onChange={(e) => setState(e.target.value)}
@@ -203,7 +220,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row hidden={isArtist}>
                 <Col>
                   <label className="page-seller-label">Postal Code</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.zip ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.zip ?? 'n/a'}`}
+                  </div>
                   <input
                     value={zip ?? ''}
                     onChange={(e) => setZip(e.target.value)}
@@ -216,7 +235,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row hidden={isArtist}>
                 <Col>
                   <label className="page-seller-label">Country</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.country?.countryName ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.country?.countryName ?? 'n/a'}`}
+                  </div>
                   <SelectPicker
                     className="admin-seller-select-value"
                     menuAutoWidth={true}
@@ -231,7 +252,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row hidden={isArtist}>
                 <Col>
                   <label className="page-seller-label">Phone</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.phone ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.phone ?? 'n/a'}`}
+                  </div>
                   <input
                     value={phone ?? ''}
                     onChange={(e) => setPhone(e.target.value)}
@@ -244,7 +267,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row hidden={isArtist}>
                 <Col>
                   <label className="page-seller-label">Email</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.email ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.email ?? 'n/a'}`}
+                  </div>
                   <input
                     value={email ?? ''}
                     onChange={(e) => setEmail(e.target.value)}
@@ -257,7 +282,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row>
                 <Col>
                   <label className="page-seller-label">Twitter</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.twitter ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.twitter ?? 'n/a'}`}
+                  </div>
                   <input
                     value={twitter ?? ''}
                     onChange={(e) => setTwitter(e.target.value)}
@@ -270,7 +297,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row>
                 <Col>
                   <label className="page-seller-label">Facebook</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.facebook ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.facebook ?? 'n/a'}`}
+                  </div>
                   <input
                     value={facebook ?? ''}
                     onChange={(e) => setFacebook(e.target.value)}
@@ -283,7 +312,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row>
                 <Col>
                   <label className="page-seller-label">Instagram</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.instagram ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.instagram ?? 'n/a'}`}
+                  </div>
                   <input
                     value={instagram ?? ''}
                     onChange={(e) => setInstagram(e.target.value)}
@@ -296,7 +327,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row>
                 <Col>
                   <label className="page-seller-label">YouTube</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.youtube ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.youtube ?? 'n/a'}`}
+                  </div>
                   <input
                     value={youtube ?? ''}
                     onChange={(e) => setYoutube(e.target.value)}
@@ -309,7 +342,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row>
                 <Col>
                   <label className="page-seller-label">Spotify</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.spotify ?? 'n/a'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.spotify ?? 'n/a'}`}
+                  </div>
                   <input
                     value={spotify ?? ''}
                     onChange={(e) => setSpotify(e.target.value)}
@@ -322,7 +357,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row>
                 <Col>
                   <label className="page-seller-label">Website</label>
-                  <div className="pageseller-default">Default is {`${selectedSeller?.website ?? 'n/a'}`}</div>
+                  <div className="pageseller-default">
+                    Default is {`${selectedSeller?.website ?? 'n/a'}`}
+                  </div>
                   <input
                     value={website ?? ''}
                     onChange={(e) => setWebsite(e.target.value)}
@@ -335,7 +372,9 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               <Row>
                 <Col>
                   <label className="page-seller-label">Website Display Text</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.websiteDisplayText ?? '(none)'}`}</div>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.websiteDisplayText ?? '(none)'}`}
+                  </div>
                   <input
                     value={websiteDisplayText ?? ''}
                     onChange={(e) => setWebsiteDisplayText(e.target.value)}
@@ -348,12 +387,8 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
             </Container>
           </Modal.Body>
           <Modal.Footer className="modal-notes-footer">
-            <Button onClick={updatePageSellerSettings}>
-              Ok
-            </Button>
-            <Button onClick={handlePageSellerSettingsClose}>
-              Cancel
-            </Button>
+            <Button onClick={updatePageSellerSettings}>Ok</Button>
+            <Button onClick={handlePageSellerSettingsClose}>Cancel</Button>
           </Modal.Footer>
         </Modal>
       </Col>
@@ -368,4 +403,3 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
     </Row>
   );
 }
-

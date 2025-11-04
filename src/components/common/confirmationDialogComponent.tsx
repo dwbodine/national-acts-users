@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
 import { ConfirmationDialogProps } from '@/types/props';
 import parse from 'html-react-parser';
 

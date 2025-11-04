@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { ITicketTypeData, TicketType } from '@/types/event';
 import React, { ReactElement } from 'react';
@@ -24,20 +24,19 @@ export default function TicketTypesWidget(props: TicketTypesWidgetProps) {
           const data = ticketTypeData.find(
             (x) => x.TicketType.toLowerCase() === ticketType.ticketTypeName.toLowerCase(),
           );
-          let number = (ticketMap.get(ticketType.ticketTypeName) ?? 0);
+          let number = ticketMap.get(ticketType.ticketTypeName) ?? 0;
           if (data !== undefined) {
             number += data.Number;
           }
           ticketMap.set(ticketType.ticketTypeName, number);
-        }
-        );
+        });
       });
 
       if (ticketTypes) {
         let i = 0;
         for (const ticketType of ticketTypes) {
           const key = `ttw${i}`;
-          const numSold = (ticketMap.get(ticketType.ticketTypeName) ?? 0);
+          const numSold = ticketMap.get(ticketType.ticketTypeName) ?? 0;
           if (!isAdmin && numSold === 0) {
             continue;
           }

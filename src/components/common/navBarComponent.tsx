@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import Image from 'next/image';
 import LogoutButton from './logoutButtonComponent';
 import { NavBarProps } from '@/types/props';
@@ -31,7 +31,9 @@ export default function NavBar(props: NavBarProps) {
     }
   };
 
-  return (navBarHidden ? '' : 
+  return navBarHidden ? (
+    ''
+  ) : (
     <>
       <Row className="no-print nav-bar">
         <Col className="logo-col">

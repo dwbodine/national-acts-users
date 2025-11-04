@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { setAdminVenue, setReloadVenues } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
 import { ExternalVenue } from '@/types/admin';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { ModifyExternalVenueResponse } from '@/types/responses';
@@ -34,9 +34,7 @@ export default function AdminVenueEdit() {
   useEffect(() => {
     if (currentAdminSelection.selectedVenue === undefined) {
       goBack();
-    } else if (
-      venueName === undefined
-    ) {
+    } else if (venueName === undefined) {
       dispatch(setIsLoading(true));
       setVenueName(currentAdminSelection.selectedVenue.venue);
       setAddress(currentAdminSelection.selectedVenue.address);
@@ -47,13 +45,7 @@ export default function AdminVenueEdit() {
       setTimezone(currentAdminSelection.selectedVenue.timezone?.timezone);
       dispatch(setIsLoading(false));
     }
-  }, [
-    currentAdminSelection,
-    venueName,
-    dispatch,
-    countryId,
-    goBack
-  ]);
+  }, [currentAdminSelection, venueName, dispatch, countryId, goBack]);
 
   const onCountryChange = (cId: number | null) => {
     setCountryId(cId ?? undefined);
@@ -68,35 +60,35 @@ export default function AdminVenueEdit() {
       return;
     }
 
-    const isUpdate = (currentAdminSelection.selectedVenue.venueId > 0);
+    const isUpdate = currentAdminSelection.selectedVenue.venueId > 0;
 
     if (!venueName) {
-      toast.error("Venue name is required");
+      toast.error('Venue name is required');
       return;
     }
 
     if (!address) {
-      toast.error("Address is required");
+      toast.error('Address is required');
       return;
     }
 
     if (!city) {
-      toast.error("City is required");
+      toast.error('City is required');
       return;
     }
 
     if (!countryId) {
-      toast.error("Country is required (even USA)");
+      toast.error('Country is required (even USA)');
       return;
     }
 
     if (!state && !zipCode) {
-      toast.error("Must provide at least one of state or zip");
+      toast.error('Must provide at least one of state or zip');
       return;
     }
 
     if (!timezone) {
-      toast.error("Timezone is required");
+      toast.error('Timezone is required');
       return;
     }
 
@@ -116,8 +108,10 @@ export default function AdminVenueEdit() {
     updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
       if (response.success) {
         dispatch(setReloadVenues(true));
-        dispatch(setAdminVenue(undefined))
-        const message = isUpdate ? 'Venue updated successfully' : 'Venue added successfully';
+        dispatch(setAdminVenue(undefined));
+        const message = isUpdate
+          ? 'Venue updated successfully'
+          : 'Venue added successfully';
         toast.success(message);
         router.push('/admin/venues');
       } else {
@@ -127,24 +121,23 @@ export default function AdminVenueEdit() {
     });
   };
 
-  const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
-    currentAdminSelection.countries.map((country) => (
-      {
+  const countryList: ItemDataType<number>[] = currentAdminSelection.countries
+    ? currentAdminSelection.countries.map((country) => ({
         label: `${country.countryName}`,
-        value: country.countryId
-      }
-    )) : [];
+        value: country.countryId,
+      }))
+    : [];
 
-  const selectedCountry = currentAdminSelection.countries?.find(x => x.countryId === countryId);
+  const selectedCountry = currentAdminSelection.countries?.find(
+    (x) => x.countryId === countryId,
+  );
 
-  const timeZoneList: ItemDataType<string>[] = selectedCountry?.timezones ?
-    selectedCountry.timezones.map((tz) => (
-      {
+  const timeZoneList: ItemDataType<string>[] = selectedCountry?.timezones
+    ? selectedCountry.timezones.map((tz) => ({
         label: `${tz.displayName}`,
-        value: tz.timezone
-      }
-    )) : [];
-
+        value: tz.timezone,
+      }))
+    : [];
 
   return currentAdminSelection.selectedVenue ? (
     <div className="admin-container">
@@ -224,7 +217,7 @@ export default function AdminVenueEdit() {
         />
       </div>
       <div className="admin-button-group">
-        <Button onClick={onSubmit}>Submit</Button>{' '}<Button onClick={goBack}>Back</Button>
+        <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
       </div>
     </div>
   ) : (

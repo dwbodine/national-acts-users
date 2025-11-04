@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Area,
@@ -11,8 +11,12 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Col, Row } from 'react-bootstrap';
-import { CustomToolTipParams, CustomToolTipParamsPayload, TicketSalesChartProps } from '@/types/props';
+import { Col, Row } from 'rsuite';
+import {
+  CustomToolTipParams,
+  CustomToolTipParamsPayload,
+  TicketSalesChartProps,
+} from '@/types/props';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import React, { useEffect, useState } from 'react';
 import { LabelPosition } from 'recharts/types/component/Label';
@@ -43,7 +47,9 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
         <div className="custom-tooltip">
           <p className="label">{`Purchase Date: ${label}`}</p>
           <p className="label">{`Ticket Sales: ${payload[0].value}`}</p>
-          {hideRev ? '' : (
+          {hideRev ? (
+            ''
+          ) : (
             <p className="label">{`Ticket Revenue: $${parseFloat(payload[1]?.value?.toString() ?? '0').toFixed(2)}`}</p>
           )}
         </div>
@@ -77,11 +83,18 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
               <Label value={yLabel} position={yPosition} angle={-90} offset={15} />
             </YAxis>
             <Tooltip content={<CustomTooltip />} />
-            {chartsHidden ? '' : (
+            {chartsHidden ? (
+              ''
+            ) : (
               <Area type="monotone" dataKey="Tickets" stroke="#000000" fill="#d88884" />
             )}
-            {(!chartsHidden && !hideRev) ? (
-              <Area type="monotone" dataKey="RevenueUsd" stroke="#FF0000" fill="#8884d8" />
+            {!chartsHidden && !hideRev ? (
+              <Area
+                type="monotone"
+                dataKey="RevenueUsd"
+                stroke="#FF0000"
+                fill="#8884d8"
+              />
             ) : (
               ''
             )}

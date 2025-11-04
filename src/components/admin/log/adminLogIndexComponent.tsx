@@ -1,13 +1,12 @@
-"use client";
+'use client';
 
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'rsuite';
 import { ReactElement, useEffect, useState } from 'react';
 import { LogResponse } from '@/types/responses';
 import moment from 'moment';
 import { useGetLogs } from '@/hooks/admin/useGetLogs';
 
 export default function AdminLogIndex() {
-
   const [logs, setLogs] = useState<string[] | undefined>(undefined);
   const [cronLogs, setCronLogs] = useState<string[] | undefined>(undefined);
   const { getAllLogs, getAllCronLogs } = useGetLogs();
@@ -55,17 +54,13 @@ export default function AdminLogIndex() {
           <h5>Cron Log - {moment().format('YYYY-MM-DD HH:mm:ss')}</h5>
         </Row>
         <Row>
-          <Col className="log-table">
-            {cronLogRows}
-          </Col>
+          <Col className="log-table">{cronLogRows}</Col>
         </Row>
         <Row>
           <h5>API Error Log - {moment().format('YYYY-MM-DD HH:mm:ss')}</h5>
         </Row>
         <Row>
-          <Col className="log-table">
-            {logRows}
-          </Col>
+          <Col className="log-table">{logRows}</Col>
         </Row>
       </Container>
     </>

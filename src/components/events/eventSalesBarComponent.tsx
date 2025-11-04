@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { DatePicker } from 'rsuite';
@@ -19,7 +19,9 @@ export default function EventSalesBar() {
   const { getUser } = useCurrentUser();
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
-  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
+  const currentReportSelection = useSelector(
+    (state: RootState) => state.eventAdminSelection,
+  );
   const agendaOnly = windowSize.width < EVENTS_AGENDA_VIEW_BREAKPOINT;
   const router = useRouter();
 
@@ -27,8 +29,10 @@ export default function EventSalesBar() {
 
   const onDateChange = (date: Date) => {
     const selectedDate = moment(date).unix();
-    const tabView = currentReportSelection.eventTabView ?? (agendaOnly ? EventTabView.Agenda : DEFAULT_EVENT_TAB_VIEW);
-    const dateRange = getSelectedAdminEventDateRange(selectedDate, tabView)
+    const tabView =
+      currentReportSelection.eventTabView ??
+      (agendaOnly ? EventTabView.Agenda : DEFAULT_EVENT_TAB_VIEW);
+    const dateRange = getSelectedAdminEventDateRange(selectedDate, tabView);
     dispatch(setAdminDateRange(dateRange));
   };
 
@@ -38,22 +42,28 @@ export default function EventSalesBar() {
       router.push('/');
     } else if (currentReportSelection.start === undefined) {
       const selectedDate = moment().unix();
-      const tabView = currentReportSelection.eventTabView ?? (agendaOnly ? EventTabView.Agenda : DEFAULT_EVENT_TAB_VIEW);
-      const dateRange = getSelectedAdminEventDateRange(selectedDate, tabView)
+      const tabView =
+        currentReportSelection.eventTabView ??
+        (agendaOnly ? EventTabView.Agenda : DEFAULT_EVENT_TAB_VIEW);
+      const dateRange = getSelectedAdminEventDateRange(selectedDate, tabView);
       dispatch(setAdminDateRange(dateRange));
     }
   }, [windowSizeJson, getUser, currentReportSelection, dispatch, agendaOnly, router]);
 
-  let startDate = currentReportSelection.start ? moment.unix(currentReportSelection.start).toDate() : null;
+  let startDate = currentReportSelection.start
+    ? moment.unix(currentReportSelection.start).toDate()
+    : null;
   if (currentReportSelection.eventTabView === EventTabView.Month) {
-    startDate = currentReportSelection.periodStart ? moment.unix(currentReportSelection.periodStart).toDate() : null;
+    startDate = currentReportSelection.periodStart
+      ? moment.unix(currentReportSelection.periodStart).toDate()
+      : null;
   }
 
-  let datePickerlabel = "Week beginning (Monday)";
+  let datePickerlabel = 'Week beginning (Monday)';
   switch (currentReportSelection.eventTabView) {
     case EventTabView.Agenda:
     case EventTabView.Month:
-      datePickerlabel = "Month beginning";
+      datePickerlabel = 'Month beginning';
       break;
     default:
       break;

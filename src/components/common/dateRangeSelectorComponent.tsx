@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import { useEffect, useState } from 'react';
@@ -17,20 +17,34 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
   const defaultRanges: RangeType<DateRange>[] = [
     {
       label: 'Today',
-      value: [moment().startOf('day').toDate(), moment().endOf('day').toDate()]
+      value: [moment().startOf('day').toDate(), moment().endOf('day').toDate()],
     },
     {
       label: 'This Week',
-      value: [moment().startOf('week').add(1, 'day').startOf('day').toDate(), moment().endOf('week').add(1, 'day').endOf('day').toDate()]
+      value: [
+        moment().startOf('week').add(1, 'day').startOf('day').toDate(),
+        moment().endOf('week').add(1, 'day').endOf('day').toDate(),
+      ],
     },
     {
       label: 'This Month',
-      value: [moment().startOf('month').startOf('day').toDate(), moment().endOf('month').endOf('day').toDate()]
+      value: [
+        moment().startOf('month').startOf('day').toDate(),
+        moment().endOf('month').endOf('day').toDate(),
+      ],
     },
     {
       label: 'Last Month',
-      value: [moment().startOf('month').subtract(1, 'month').startOf('day').toDate(), moment().startOf('month').subtract(1, 'month').endOf('month').endOf('day').toDate()]
-    }
+      value: [
+        moment().startOf('month').subtract(1, 'month').startOf('day').toDate(),
+        moment()
+          .startOf('month')
+          .subtract(1, 'month')
+          .endOf('month')
+          .endOf('day')
+          .toDate(),
+      ],
+    },
   ];
 
   const ranges = props.Ranges ? props.Ranges : defaultRanges;
@@ -50,9 +64,7 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
     setDateValues(dValues);
   }, [selectedEnd, selectedStart]);
 
-  const handleChange = (
-    value: DateRange | null
-  ) => {
+  const handleChange = (value: DateRange | null) => {
     const sStart = value ? moment(value[0]).unix() : 0;
     const sEnd = value ? moment(value[1]).unix() : 0;
     if (onDateChange) {

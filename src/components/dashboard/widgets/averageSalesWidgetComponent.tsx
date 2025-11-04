@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { AverageSalesWidgetProps } from '@/types/props';
 import moment from 'moment';
@@ -11,7 +11,9 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
 
   return monthlyAverages && yearlyAverages ? (
     <div className="sales-stat-block-table">
-      <div className="sales-stat-block-title">Average Daily Sales {(selectedYear === currentYear) ? '' : selectedYear}</div>
+      <div className="sales-stat-block-title">
+        Average Daily Sales {selectedYear === currentYear ? '' : selectedYear}
+      </div>
       <table className="average-sales-data-table">
         <thead>
           <tr hidden={selectedYear !== currentYear}>
@@ -23,7 +25,7 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
         <tbody>
           <tr>
             <td className="sales-stat-block-name">Transactions:</td>
-            <td hidden={selectedYear !== currentYear}  className="sales-stat-block-value">
+            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
               {monthlyAverages?.transactions?.toFixed(2) ?? '0'}
             </td>
             <td className="sales-stat-block-value">
@@ -32,7 +34,7 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
           </tr>
           <tr>
             <td className="sales-stat-block-name">Tickets:</td>
-            <td hidden={selectedYear !== currentYear}  className="sales-stat-block-value">
+            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
               {monthlyAverages?.tickets?.toFixed(2) ?? '0'}
             </td>
             <td className="sales-stat-block-value">

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button, Col, FormCheck, Row } from 'react-bootstrap';
+import { Button, Col, FormCheck, Row } from 'rsuite';
 import { ReactElement, useCallback, useEffect } from 'react';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { setAdminSeller, setReloadSellers } from '@/lib/adminSelectionSlice';
@@ -25,11 +25,14 @@ export default function AdminSellerGlobalEdit() {
 
   const goBack = useCallback(() => {
     router.push('/admin/sellers');
-  },[router]);
+  }, [router]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.ticketSocketAccounts === undefined || currentAdminSelection.selectedSeller === undefined) {
+      if (
+        currentAdminSelection.ticketSocketAccounts === undefined ||
+        currentAdminSelection.selectedSeller === undefined
+      ) {
         goBack();
       }
     }, 500);
@@ -47,7 +50,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.name = sellerName;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setAddress = (address: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -58,7 +61,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.address = address;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setCity = (city: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -69,7 +72,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.city = city;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setState = (state: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -80,7 +83,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.state = state;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setZip = (zip: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -91,7 +94,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.zip = zip;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const onCountryChange = (countryId: number | null) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -101,11 +104,14 @@ export default function AdminSellerGlobalEdit() {
     if (!countryId) {
       sellerToUpdate.country = undefined;
       dispatch(setAdminSeller(sellerToUpdate));
-    } else if (!sellerToUpdate.country || sellerToUpdate.country.countryId !== countryId) {
+    } else if (
+      !sellerToUpdate.country ||
+      sellerToUpdate.country.countryId !== countryId
+    ) {
       sellerToUpdate.country = { countryId };
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setPhone = (phone: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -116,7 +122,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.phone = phone;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setEmail = (email: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -127,7 +133,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.email = email;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setTwitter = (twitter: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -138,7 +144,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.twitter = twitter;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setFacebook = (facebook: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -149,7 +155,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.facebook = facebook;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setInstagram = (instagram: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -160,7 +166,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.instagram = instagram;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setYouTube = (youtube: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -171,7 +177,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.youtube = youtube;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setSpotify = (spotify: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -182,7 +188,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.spotify = spotify;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setWebsite = (website: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -193,7 +199,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.website = website;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setWebsiteDisplayText = (websiteDisplayText: string) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -204,7 +210,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.websiteDisplayText = websiteDisplayText;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setHideInList = (hide: boolean) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -215,7 +221,7 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.hideInList = hide;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
   const setIsActive = (isActive: boolean) => {
     if (!currentAdminSelection.selectedSeller) {
@@ -226,10 +232,17 @@ export default function AdminSellerGlobalEdit() {
       sellerToUpdate.isActive = isActive;
       dispatch(setAdminSeller(sellerToUpdate));
     }
-  }
+  };
 
-  const updateSellerEventCategory = (ticketSocketId: number, eventCategoryId: number | undefined) => {
-    if (!currentAdminSelection.selectedSeller || !ticketSocketId || isNaN(ticketSocketId)) {
+  const updateSellerEventCategory = (
+    ticketSocketId: number,
+    eventCategoryId: number | undefined,
+  ) => {
+    if (
+      !currentAdminSelection.selectedSeller ||
+      !ticketSocketId ||
+      isNaN(ticketSocketId)
+    ) {
       return;
     }
 
@@ -239,20 +252,21 @@ export default function AdminSellerGlobalEdit() {
       : [];
 
     let changed = false;
-    const existingCategory = currentCategories.find(x => x.ticketSocketId === ticketSocketId);
+    const existingCategory = currentCategories.find(
+      (x) => x.ticketSocketId === ticketSocketId,
+    );
     if (existingCategory) {
       if (existingCategory.eventCategoryId !== eventCategoryId) {
-        currentCategories = currentCategories.map(
-          (x) => {
-            if (x.ticketSocketId === ticketSocketId) {
-              const cat = { ...x };
-              cat.eventCategoryId = eventCategoryId;
-              cat.isVisibleOnSite = (eventCategoryId !== undefined && eventCategoryId > 0);
-              cat.isVisibleOnPortal = (eventCategoryId !== undefined && eventCategoryId > 0);
-              return cat;
-            }
-            return x;
-          });
+        currentCategories = currentCategories.map((x) => {
+          if (x.ticketSocketId === ticketSocketId) {
+            const cat = { ...x };
+            cat.eventCategoryId = eventCategoryId;
+            cat.isVisibleOnSite = eventCategoryId !== undefined && eventCategoryId > 0;
+            cat.isVisibleOnPortal = eventCategoryId !== undefined && eventCategoryId > 0;
+            return cat;
+          }
+          return x;
+        });
         changed = true;
       }
     } else if (eventCategoryId !== undefined) {
@@ -274,8 +288,18 @@ export default function AdminSellerGlobalEdit() {
     }
   };
 
-  const updateSellerEventCategorySiteVisible = (ticketSocketId: number, eventCategoryId: number, isVisibleOnSite: boolean) => {
-    if (!currentAdminSelection.selectedSeller || !ticketSocketId || isNaN(ticketSocketId) || !eventCategoryId || isNaN(eventCategoryId)) {
+  const updateSellerEventCategorySiteVisible = (
+    ticketSocketId: number,
+    eventCategoryId: number,
+    isVisibleOnSite: boolean,
+  ) => {
+    if (
+      !currentAdminSelection.selectedSeller ||
+      !ticketSocketId ||
+      isNaN(ticketSocketId) ||
+      !eventCategoryId ||
+      isNaN(eventCategoryId)
+    ) {
       return;
     }
 
@@ -284,27 +308,38 @@ export default function AdminSellerGlobalEdit() {
       ? [...sellerToUpdate.sellerEventCategories]
       : [];
 
-    const existingCategory = currentCategories.find(x => x.ticketSocketId === ticketSocketId);
+    const existingCategory = currentCategories.find(
+      (x) => x.ticketSocketId === ticketSocketId,
+    );
     if (!existingCategory) {
       return;
     }
 
-    currentCategories = currentCategories.map(
-      (x) => {
-        if (x.ticketSocketId === ticketSocketId && x.eventCategoryId === eventCategoryId) {
-          const cat = { ...x };
-          cat.isVisibleOnSite = isVisibleOnSite;
-          return cat;
-        }
-        return x;
-      });
+    currentCategories = currentCategories.map((x) => {
+      if (x.ticketSocketId === ticketSocketId && x.eventCategoryId === eventCategoryId) {
+        const cat = { ...x };
+        cat.isVisibleOnSite = isVisibleOnSite;
+        return cat;
+      }
+      return x;
+    });
 
     sellerToUpdate.sellerEventCategories = currentCategories;
     dispatch(setAdminSeller(sellerToUpdate));
   };
 
-  const updateSellerEventCategoryPortalVisible = (ticketSocketId: number, eventCategoryId: number | undefined, isVisibleOnPortal: boolean) => {
-    if (!currentAdminSelection.selectedSeller || !ticketSocketId || isNaN(ticketSocketId) || !eventCategoryId || isNaN(eventCategoryId)) {
+  const updateSellerEventCategoryPortalVisible = (
+    ticketSocketId: number,
+    eventCategoryId: number | undefined,
+    isVisibleOnPortal: boolean,
+  ) => {
+    if (
+      !currentAdminSelection.selectedSeller ||
+      !ticketSocketId ||
+      isNaN(ticketSocketId) ||
+      !eventCategoryId ||
+      isNaN(eventCategoryId)
+    ) {
       return;
     }
 
@@ -313,27 +348,32 @@ export default function AdminSellerGlobalEdit() {
       ? [...sellerToUpdate.sellerEventCategories]
       : [];
 
-    const existingCategory = currentCategories.find(x => x.ticketSocketId === ticketSocketId);
+    const existingCategory = currentCategories.find(
+      (x) => x.ticketSocketId === ticketSocketId,
+    );
     if (!existingCategory) {
       return;
     }
 
-    currentCategories = currentCategories.map(
-      (x) => {
-        if (x.ticketSocketId === ticketSocketId && x.eventCategoryId === eventCategoryId) {
-          const cat = { ...x };
-          cat.isVisibleOnPortal = isVisibleOnPortal;
-          return cat;
-        }
-        return x;
-      });
+    currentCategories = currentCategories.map((x) => {
+      if (x.ticketSocketId === ticketSocketId && x.eventCategoryId === eventCategoryId) {
+        const cat = { ...x };
+        cat.isVisibleOnPortal = isVisibleOnPortal;
+        return cat;
+      }
+      return x;
+    });
 
     sellerToUpdate.sellerEventCategories = currentCategories;
     dispatch(setAdminSeller(sellerToUpdate));
   };
 
   const updateSellerType = (sellerTypeValue: number | undefined) => {
-    if (!currentAdminSelection.selectedSeller || !sellerTypeValue || isNaN(sellerTypeValue)) {
+    if (
+      !currentAdminSelection.selectedSeller ||
+      !sellerTypeValue ||
+      isNaN(sellerTypeValue)
+    ) {
       return;
     }
 
@@ -408,7 +448,7 @@ export default function AdminSellerGlobalEdit() {
       }
     }
     return true;
-  }
+  };
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedSeller) {
@@ -416,7 +456,7 @@ export default function AdminSellerGlobalEdit() {
     }
 
     const sellerToUpdate: Seller = {
-      ...currentAdminSelection.selectedSeller
+      ...currentAdminSelection.selectedSeller,
     };
 
     if (!sellerToUpdate.name) {
@@ -424,7 +464,9 @@ export default function AdminSellerGlobalEdit() {
       return;
     }
 
-    const sellerEventCategories = sellerToUpdate.sellerEventCategories?.filter(x => (x.eventCategoryId ?? 0) > 0);
+    const sellerEventCategories = sellerToUpdate.sellerEventCategories?.filter(
+      (x) => (x.eventCategoryId ?? 0) > 0,
+    );
 
     if (!sellerEventCategories || sellerEventCategories.length === 0) {
       toast.error('Must select a category for at least one Ticket Socket account');
@@ -454,27 +496,43 @@ export default function AdminSellerGlobalEdit() {
   const categoryRows: ReactElement[] = [];
   if (allAccounts && allAccounts.length > 0 && currentAdminSelection.selectedSeller) {
     allAccounts.forEach((account, index) => {
-      const selectedCategory = currentAdminSelection.selectedSeller?.sellerEventCategories?.find(x => x.ticketSocketId === account.ticketSocketId);
+      const selectedCategory =
+        currentAdminSelection.selectedSeller?.sellerEventCategories?.find(
+          (x) => x.ticketSocketId === account.ticketSocketId,
+        );
       const disabled = selectedCategory && selectedCategory.hasEvents;
       const options: ReactElement[] = [];
-      options.push(<option key={`a${index}_00`} value={0}>
-        {' '}
-        -- Select one --
-      </option>)
+      options.push(
+        <option key={`a${index}_00`} value={0}>
+          {' '}
+          -- Select one --
+        </option>,
+      );
       account.categories?.forEach((x, i) => {
-        options.push(<option key={`a${index}_${i}`} value={x.eventCategoryId}>{x.name}</option>);
+        options.push(
+          <option key={`a${index}_${i}`} value={x.eventCategoryId}>
+            {x.name}
+          </option>,
+        );
       });
       const rowKey = `accoutnRow${index}`;
       const key = `account${index}`;
       categoryRows.push(
         <Row key={rowKey} className="form-group">
-          <Col xs={2}><label className="mt-4">Category for {account.name}</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Category for {account.name}</label>
+          </Col>
           <Col xs={2}>
             <select
               disabled={disabled}
               key={key}
               id={account.ticketSocketId.toString()}
-              onChange={(e) => updateSellerEventCategory(parseInt(`${account.ticketSocketId}`), parseInt(e.currentTarget.value))}
+              onChange={(e) =>
+                updateSellerEventCategory(
+                  parseInt(`${account.ticketSocketId}`),
+                  parseInt(e.currentTarget.value),
+                )
+              }
               defaultValue={selectedCategory?.eventCategoryId}
             >
               {options}
@@ -484,7 +542,13 @@ export default function AdminSellerGlobalEdit() {
             <FormCheck
               disabled={!selectedCategory}
               checked={selectedCategory?.isVisibleOnSite ?? false}
-              onChange={(e) => updateSellerEventCategorySiteVisible(parseInt(`${account.ticketSocketId}`), parseInt(`${selectedCategory?.eventCategoryId}`), e.target.checked)}
+              onChange={(e) =>
+                updateSellerEventCategorySiteVisible(
+                  parseInt(`${account.ticketSocketId}`),
+                  parseInt(`${selectedCategory?.eventCategoryId}`),
+                  e.target.checked,
+                )
+              }
               label={'Visible on site?'}
             />
           </Col>
@@ -492,51 +556,61 @@ export default function AdminSellerGlobalEdit() {
             <FormCheck
               disabled={!selectedCategory}
               checked={selectedCategory?.isVisibleOnPortal ?? false}
-              onChange={(e) => updateSellerEventCategoryPortalVisible(parseInt(`${account.ticketSocketId}`), parseInt(`${selectedCategory?.eventCategoryId}`), e.target.checked)}
+              onChange={(e) =>
+                updateSellerEventCategoryPortalVisible(
+                  parseInt(`${account.ticketSocketId}`),
+                  parseInt(`${selectedCategory?.eventCategoryId}`),
+                  e.target.checked,
+                )
+              }
               label={'Visible on portal?'}
             />
           </Col>
-        </Row>
+        </Row>,
       );
     });
   }
 
   const sellerTypeOptions: ReactElement[] = [];
   const sellerTypeValues = Object.values(SellerType).filter((v) => !isNaN(Number(v)));
-  sellerTypeOptions.push(<option key={`st_00`} value={0}>
-    {' '}
-    -- Select one --
-  </option>)
+  sellerTypeOptions.push(
+    <option key={`st_00`} value={0}>
+      {' '}
+      -- Select one --
+    </option>,
+  );
   sellerTypeValues.forEach((x, i) => {
-    sellerTypeOptions.push(<option key={`st_${i}`} value={x}>{SellerType[Number(x)]}</option>);
-  })
+    sellerTypeOptions.push(
+      <option key={`st_${i}`} value={x}>
+        {SellerType[Number(x)]}
+      </option>,
+    );
+  });
 
+  const pageHeader = (currentSeller?.sellerId ?? 0) > 0 ? 'Edit seller' : 'Add seller';
 
-
-  const pageHeader =
-    (currentSeller?.sellerId ?? 0) > 0 ? 'Edit seller' : 'Add seller';
-
-  const countryList: ItemDataType<number>[] = currentAdminSelection.countries ?
-    currentAdminSelection.countries.map((country) => (
-      {
+  const countryList: ItemDataType<number>[] = currentAdminSelection.countries
+    ? currentAdminSelection.countries.map((country) => ({
         label: `${country.countryName}`,
-        value: country.countryId
-      }
-    )) : [];
+        value: country.countryId,
+      }))
+    : [];
 
   return (
     <Row
       className="admin-container"
-      hidden={
-        !((allAccounts?.length ?? 0) > 0 && currentSeller !== undefined)
-      }
+      hidden={!((allAccounts?.length ?? 0) > 0 && currentSeller !== undefined)}
     >
       <Col>
         <Row>
-          <Col><h1>{pageHeader}</h1></Col>
+          <Col>
+            <h1>{pageHeader}</h1>
+          </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}><label className="mt-4">Seller Name</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Seller Name</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.name ?? ''}
@@ -587,7 +661,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}><label className="mt-4">Address</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Address</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.address ?? ''}
@@ -599,7 +675,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}><label className="mt-4">City</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">City</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.city ?? ''}
@@ -611,7 +689,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}><label className="mt-4">State</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">State</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.state ?? ''}
@@ -623,7 +703,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}><label className="mt-4">Postal Code</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Postal Code</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.zip ?? ''}
@@ -635,7 +717,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}><label className="mt-4">Country</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Country</label>
+          </Col>
           <Col>
             <SelectPicker
               className="admin-seller-select-value"
@@ -649,7 +733,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}><label className="mt-4">Phone</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Phone</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.phone ?? ''}
@@ -661,7 +747,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}><label className="mt-4">Email</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Email</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.email ?? ''}
@@ -673,7 +761,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}><label className="mt-4">Twitter</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Twitter</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.twitter ?? ''}
@@ -685,7 +775,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}><label className="mt-4">Facebook</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Facebook</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.facebook ?? ''}
@@ -697,7 +789,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}><label className="mt-4">Instagram</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Instagram</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.instagram ?? ''}
@@ -709,7 +803,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}><label className="mt-4">YouTube</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">YouTube</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.youtube ?? ''}
@@ -721,7 +817,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}><label className="mt-4">Spotify</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Spotify</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.spotify ?? ''}
@@ -733,7 +831,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}><label className="mt-4">Website</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Website</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.website ?? ''}
@@ -745,7 +845,9 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}><label className="mt-4">Website Display Text</label></Col>
+          <Col xs={2}>
+            <label className="mt-4">Website Display Text</label>
+          </Col>
           <Col>
             <input
               value={currentSeller?.websiteDisplayText ?? ''}
@@ -758,7 +860,8 @@ export default function AdminSellerGlobalEdit() {
         </Row>
         <Row>
           <Col>
-            <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+            <Button onClick={onSubmit}>Submit</Button>{' '}
+            <Button onClick={goBack}>Back</Button>
           </Col>
         </Row>
       </Col>

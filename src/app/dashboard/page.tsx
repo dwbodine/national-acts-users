@@ -5,7 +5,7 @@ import { UserActivityType } from '@/types/user';
 
 export default function Dashboard() {
   const title = 'Client Portal - Home';
-  
+
   return (
     <AdminPage
       Title={title}

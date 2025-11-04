@@ -1,10 +1,15 @@
-"use client";
+'use client';
 
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'rsuite';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import { GetEventsResponse, GetToursResponse } from '@/types/responses';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
-import { setDateRange, setEvents, setReloadEvents, setTours } from '@/lib/reportSelectionSlice';
+import {
+  setDateRange,
+  setEvents,
+  setReloadEvents,
+  setTours,
+} from '@/lib/reportSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import EventMobileRow from '../../common/eventMobileRowComponent';
@@ -26,7 +31,6 @@ import { useGetTours } from '@/hooks/admin/useGetTours';
 import { useHasPermission } from '@/hooks/user/useHasPermission';
 import { useRouter } from 'next/navigation';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
-
 
 export default function CurrentEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -135,23 +139,24 @@ export default function CurrentEvents() {
               const selection: UserReportSelection = {
                 ...currentReportSelection,
                 end,
-                start,                
+                start,
               };
               dispatch(setDateRange(selection));
             } else {
               dispatch(setEvents([]));
-            }            
+            }
             if (currentReportSelection.reloadTours) {
-              getTours(currentReportSelection.seller.sellerId)
-                  .then((tourResponse: GetToursResponse) => {
-                      if (!tourResponse.error && tourResponse.tours) {
-                        dispatch(setTours(tourResponse.tours));
-                      } else {
-                        dispatch(setTours(undefined));
-                      }
-                      dispatch(setIsLoading(false));
-                      setChartsHidden(false);
-                  });
+              getTours(currentReportSelection.seller.sellerId).then(
+                (tourResponse: GetToursResponse) => {
+                  if (!tourResponse.error && tourResponse.tours) {
+                    dispatch(setTours(tourResponse.tours));
+                  } else {
+                    dispatch(setTours(undefined));
+                  }
+                  dispatch(setIsLoading(false));
+                  setChartsHidden(false);
+                },
+              );
             } else {
               dispatch(setIsLoading(false));
               setChartsHidden(false);
@@ -188,34 +193,40 @@ export default function CurrentEvents() {
     router,
   ]);
 
-  const filterEvents = (events: VipEvent[]) => {    
+  const filterEvents = (events: VipEvent[]) => {
     visibleEvents = [];
     if (events && events.length > 0) {
-      if (currentReportSelection.selectedTourId && currentReportSelection.selectedTourId > 0) {
-        visibleEvents = events.filter(evt => !evt.isDeleted);
+      if (
+        currentReportSelection.selectedTourId &&
+        currentReportSelection.selectedTourId > 0
+      ) {
+        visibleEvents = events.filter((evt) => !evt.isDeleted);
       } else {
-        visibleEvents = events.filter(evt => (currentReportSelection.showDeleted && evt.isDeleted) ||
+        visibleEvents = events.filter(
+          (evt) =>
+            (currentReportSelection.showDeleted && evt.isDeleted) ||
             (currentReportSelection.showInactive && !evt.isActive && !evt.isDeleted) ||
             (currentReportSelection.showHidden && evt.isHidden) ||
             (!evt.isHidden &&
               !currentReportSelection.showDeleted &&
               !evt.isDeleted &&
               !currentReportSelection.showInactive &&
-              evt.isActive)
-          );
-      }      
+              evt.isActive),
+        );
+      }
     }
 
     let filteredEvents: VipEvent[] = visibleEvents ?? [];
     if (visibleEvents.length > 0 && searchTerm && searchTerm.length >= 2) {
       const srch = searchTerm.toLowerCase();
-      filteredEvents = visibleEvents.filter(evt => (
+      filteredEvents = visibleEvents.filter(
+        (evt) =>
           evt.title.toLowerCase().includes(srch) ||
           evt.venue?.name?.toLowerCase().includes(srch) ||
           evt.venue?.city?.toLowerCase().includes(srch) ||
           evt.venue?.state?.toLowerCase().includes(srch) ||
-          evt.venue?.country?.countryName?.toLowerCase().includes(srch)
-        ));
+          evt.venue?.country?.countryName?.toLowerCase().includes(srch),
+      );
     }
     return filteredEvents;
   };
@@ -269,15 +280,16 @@ export default function CurrentEvents() {
       }
 
       if (!evt.isDeleted) {
-        totalTickets += (evt.totalTickets ?? 0);
-        totalTicketsComped += (evt.numTicketsComped ?? 0);
-        revenueRefunded += (evt.revenueRefundedUsd ?? 0);
+        totalTickets += evt.totalTickets ?? 0;
+        totalTicketsComped += evt.numTicketsComped ?? 0;
+        revenueRefunded += evt.revenueRefundedUsd ?? 0;
         totalRevenue += (evt.totalRevenueUsd ?? 0) - (evt.revenueRefundedUsd ?? 0);
-        ticketsRefunded += (evt.numTicketsRefunded ?? 0);
-        
-        totalShirts += (evt.totalShirts ?? 0);
-        serviceFeesRefunded += (evt.serviceFeeRevenueRefundedUsd ?? 0);
-        totalServiceFees += (evt.totalServiceFeesUsd ?? 0) - (evt.serviceFeeRevenueRefundedUsd ?? 0);        
+        ticketsRefunded += evt.numTicketsRefunded ?? 0;
+
+        totalShirts += evt.totalShirts ?? 0;
+        serviceFeesRefunded += evt.serviceFeeRevenueRefundedUsd ?? 0;
+        totalServiceFees +=
+          (evt.totalServiceFeesUsd ?? 0) - (evt.serviceFeeRevenueRefundedUsd ?? 0);
       }
       i += 1;
     }
@@ -296,7 +308,7 @@ export default function CurrentEvents() {
       </Container>
       <div hidden={globalSelection.isLoading}>
         <input
-          type="text" 
+          type="text"
           value={searchTerm ?? ''}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="form-control search-text-input no-print"
@@ -338,7 +350,9 @@ export default function CurrentEvents() {
                     <th>Tickets Sold</th>
                     <th>Tickets Refunded</th>
                     <th>Tickets Comped</th>
-                    <th className={revClass} hidden={hideRevItem}>Revenue</th>
+                    <th className={revClass} hidden={hideRevItem}>
+                      Revenue
+                    </th>
                     <th className="no-print" hidden={hideServiceFees}>
                       Service Fees
                     </th>
@@ -350,7 +364,7 @@ export default function CurrentEvents() {
                     <td colSpan={5}>Total</td>
                     <td className="pull-right">{totalTickets}</td>
                     <td className="pull-right">{ticketsRefunded}</td>
-                    <td className="pull-right">{totalTicketsComped}</td>                    
+                    <td className="pull-right">{totalTicketsComped}</td>
                     <td className={`pull-right ${revClass}`} hidden={hideRevItem}>
                       ${totalRevenue.toFixed(2)}
                     </td>

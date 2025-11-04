@@ -1,12 +1,17 @@
-"use client";
+'use client';
 
 import { GetSellersResponse, GetTicketSocketAccountsResponse } from '@/types/responses';
 import { Seller, SellerType } from '@/types/event';
-import { setAdminSeller, setAllSellers, setReloadSellers, setTicketSocketAccounts } from '@/lib/adminSelectionSlice';
+import {
+  setAdminSeller,
+  setAllSellers,
+  setReloadSellers,
+  setTicketSocketAccounts,
+} from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import { getSellerStatusSlug } from '@/utils/eventUtils';
@@ -56,7 +61,13 @@ export default function AdminSellerGlobalIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [getAdminSellers, getTicketSocketAccounts, dispatch, currentAdminSelection, tableLoading]);
+  }, [
+    getAdminSellers,
+    getTicketSocketAccounts,
+    dispatch,
+    currentAdminSelection,
+    tableLoading,
+  ]);
 
   const addSeller = () => {
     const seller: Seller = {
@@ -87,7 +98,9 @@ export default function AdminSellerGlobalIndex() {
     let filteredSellers: Seller[] | undefined = sellers;
     if (searchTerm && searchTerm.length >= 2 && sellers && sellers.length > 0) {
       const srch = searchTerm.toLowerCase();
-      filteredSellers = sellers.filter((seller) => seller.name.toLowerCase().includes(srch));
+      filteredSellers = sellers.filter((seller) =>
+        seller.name.toLowerCase().includes(srch),
+      );
     }
     return filteredSellers;
   };
@@ -117,7 +130,10 @@ export default function AdminSellerGlobalIndex() {
           <HeaderCell>Seller Name</HeaderCell>
           <Cell className="admin-click-cell">
             {(rowData) => (
-              <div id={rowData.sellerId} onClick={() => editSeller(parseInt(`${rowData.sellerId}`))}>
+              <div
+                id={rowData.sellerId}
+                onClick={() => editSeller(parseInt(`${rowData.sellerId}`))}
+              >
                 {rowData.name}
               </div>
             )}

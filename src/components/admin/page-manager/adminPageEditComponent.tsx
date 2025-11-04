@@ -1,17 +1,27 @@
-"use client";
+'use client';
 
-import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
+import { Button, Col, Form, FormCheck, Row } from 'rsuite';
 import { DatePicker, SelectPicker } from 'rsuite';
-import { GetPageTypesResponse, GetSellersResponse, ModifyPageResponse } from '@/types/responses';
+import {
+  GetPageTypesResponse,
+  GetSellersResponse,
+  ModifyPageResponse,
+} from '@/types/responses';
 import { Page, PageSeller } from '@/types/public';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
-import { setAllSellers, setMustSavePage, setPageTypes, setReloadPages, setSelectedPage } from '@/lib/adminSelectionSlice';
+import {
+  setAllSellers,
+  setMustSavePage,
+  setPageTypes,
+  setReloadPages,
+  setSelectedPage,
+} from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AdminFileUpload from '../common/adminFileUploadComponent';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { FaPlus } from 'react-icons/fa';
-import { ImageType } from "@/constants";
+import { ImageType } from '@/constants';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import { SellerType } from '@/types/event';
@@ -59,7 +69,10 @@ export default function AdminPageEdit() {
           }
           dispatch(setIsLoading(false));
         });
-      } else if (currentAdminSelection.allPages === undefined || currentAdminSelection.selectedPage === undefined) {
+      } else if (
+        currentAdminSelection.allPages === undefined ||
+        currentAdminSelection.selectedPage === undefined
+      ) {
         goBack();
       }
     }, 500);
@@ -108,7 +121,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setPageTitle = (title: string) => {
     if (!currentAdminSelection.selectedPage || !title) {
@@ -120,23 +133,30 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setPageType = (pageTypeId: number | null) => {
-    if (!currentAdminSelection.selectedPage || !currentAdminSelection.pageTypes
-      || currentAdminSelection.pageTypes.length === 0 || !pageTypeId || isNaN(pageTypeId)) {
+    if (
+      !currentAdminSelection.selectedPage ||
+      !currentAdminSelection.pageTypes ||
+      currentAdminSelection.pageTypes.length === 0 ||
+      !pageTypeId ||
+      isNaN(pageTypeId)
+    ) {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.pageType.pageTypeId !== pageTypeId) {
-      const pageType = currentAdminSelection.pageTypes.find(x => x.pageTypeId === pageTypeId);
+      const pageType = currentAdminSelection.pageTypes.find(
+        (x) => x.pageTypeId === pageTypeId,
+      );
       if (pageType) {
         pageToUpdate.pageType = pageType;
         dispatch(setSelectedPage(pageToUpdate));
         markDirty();
       }
     }
-  }
+  };
 
   const setSubTitle1 = (title: string) => {
     if (!currentAdminSelection.selectedPage || !title) {
@@ -148,7 +168,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setSubTitle2 = (title: string) => {
     if (!currentAdminSelection.selectedPage || !title) {
@@ -160,7 +180,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const cleanHtmlText = (html: string) => {
     let htmlText: string = html;
@@ -178,7 +198,7 @@ export default function AdminPageEdit() {
     htmlText = htmlText.replace(/\\n\\n/gi, '\\n');
     htmlText = htmlText.trim();
     return htmlText;
-  }
+  };
 
   const setHtmlText = (html: string) => {
     if (!currentAdminSelection.selectedPage || !route) {
@@ -192,7 +212,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setGoogleAnalyticsId = (gaId: string) => {
     if (!currentAdminSelection.selectedPage || !route) {
@@ -204,7 +224,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setIsActive = (isActive: boolean) => {
     if (!currentAdminSelection.selectedPage) {
@@ -216,7 +236,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setUseIncludeDates = (useIncludeDates: boolean) => {
     if (!currentAdminSelection.selectedPage) {
@@ -228,7 +248,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setIncludeStart = (includeStart: Date | null) => {
     if (!currentAdminSelection.selectedPage) {
@@ -241,7 +261,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setIncludeEnd = (includeEnd: Date | null) => {
     if (!currentAdminSelection.selectedPage) {
@@ -254,7 +274,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setUseExcludeDates = (useExcludeDates: boolean) => {
     if (!currentAdminSelection.selectedPage) {
@@ -266,7 +286,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setExcludeStart = (excludeStart: Date | null) => {
     if (!currentAdminSelection.selectedPage) {
@@ -279,7 +299,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setExcludeEnd = (excludeEnd: Date | null) => {
     if (!currentAdminSelection.selectedPage) {
@@ -292,41 +312,55 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const updatePageSeller = (newPageSeller: PageSeller) => {
     if (currentAdminSelection.selectedPage && newPageSeller) {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const pageSellers: PageSeller[] | undefined = pageToUpdate.sellers;
       pageToUpdate.sellers = pageSellers?.map((ps) =>
-        (ps.pageSellerId === newPageSeller.pageSellerId && ps.sellerId === newPageSeller.sellerId)
+        ps.pageSellerId === newPageSeller.pageSellerId &&
+        ps.sellerId === newPageSeller.sellerId
           ? newPageSeller
-          : ps
-      )
+          : ps,
+      );
       dispatch(setSelectedPage(pageToUpdate));
     }
   };
 
-  const updateSeller = (pageSellerId: number | null, sellerId: number | null, newSellerId: number | null) => {
-    if (pageSellerId === null || isNaN(pageSellerId) || sellerId === null || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
+  const updateSeller = (
+    pageSellerId: number | null,
+    sellerId: number | null,
+    newSellerId: number | null,
+  ) => {
+    if (
+      pageSellerId === null ||
+      isNaN(pageSellerId) ||
+      sellerId === null ||
+      isNaN(sellerId) ||
+      !newSellerId ||
+      isNaN(newSellerId)
+    ) {
       return;
     }
     if (currentAdminSelection.selectedPage) {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const pageSellers: PageSeller[] | undefined = pageToUpdate.sellers;
-      const existingSeller = pageSellers?.find((x) => x.pageSellerId === pageSellerId && x.sellerId === sellerId);
+      const existingSeller = pageSellers?.find(
+        (x) => x.pageSellerId === pageSellerId && x.sellerId === sellerId,
+      );
       if (existingSeller) {
         pageToUpdate.sellers = pageSellers?.map((ps) =>
-          (ps.pageSellerId === existingSeller.pageSellerId)
+          ps.pageSellerId === existingSeller.pageSellerId
             ? { ...ps, sellerId: newSellerId }
-            : ps
-        )
+            : ps,
+        );
       } else {
         pageToUpdate.sellers = pageSellers?.map((ps) =>
-          (ps.pageSellerId === 0 && ps.sellerId === 0)
+          ps.pageSellerId === 0 && ps.sellerId === 0
             ? { ...ps, sellerId: newSellerId }
-            : ps
-        )
+            : ps,
+        );
       }
       dispatch(setSelectedPage(pageToUpdate));
     } else {
@@ -338,7 +372,9 @@ export default function AdminPageEdit() {
     if (currentAdminSelection.selectedPage) {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
-      const existingAdd = userSellers.find((x) => x.pageSellerId === 0 && x.sellerId === 0);
+      const existingAdd = userSellers.find(
+        (x) => x.pageSellerId === 0 && x.sellerId === 0,
+      );
       if (!existingAdd) {
         userSellers.push({
           pageId: pageToUpdate.pageId,
@@ -459,7 +495,7 @@ export default function AdminPageEdit() {
     }
 
     const pageToUpdate: Page = {
-      ...currentAdminSelection.selectedPage
+      ...currentAdminSelection.selectedPage,
     };
 
     if (!pageToUpdate.route) {
@@ -478,7 +514,7 @@ export default function AdminPageEdit() {
     }
 
     if (pageSellerTypeIds.includes(pageToUpdate.pageType.pageTypeId)) {
-      const pageSellers = pageToUpdate.sellers?.filter(x => (x.sellerId ?? 0) > 0);
+      const pageSellers = pageToUpdate.sellers?.filter((x) => (x.sellerId ?? 0) > 0);
 
       if (!pageSellers || pageSellers.length === 0) {
         toast.error('Must select at least one seller for this page');
@@ -486,17 +522,28 @@ export default function AdminPageEdit() {
       }
     }
 
-    if (pageToUpdate.useIncludeDates && (!pageToUpdate.includeStart || !pageToUpdate.includeEnd)) {
+    if (
+      pageToUpdate.useIncludeDates &&
+      (!pageToUpdate.includeStart || !pageToUpdate.includeEnd)
+    ) {
       toast.error('If using include date range, both include dates must be set');
       return;
     }
 
-    if (pageToUpdate.useExcludeDates && (!pageToUpdate.excludeStart || !pageToUpdate.excludeEnd)) {
+    if (
+      pageToUpdate.useExcludeDates &&
+      (!pageToUpdate.excludeStart || !pageToUpdate.excludeEnd)
+    ) {
       toast.error('If using exclude date range, both exclude dates must be set');
       return;
     }
 
-    if (pageToUpdate.logoOnlyImage && pageToUpdate.logoOnlyImage.length > 4 && pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length - 4) !== ".png") {
+    if (
+      pageToUpdate.logoOnlyImage &&
+      pageToUpdate.logoOnlyImage.length > 4 &&
+      pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length - 4) !==
+        '.png'
+    ) {
       toast.error('Logo image can only be a PNG');
       return;
     }
@@ -537,16 +584,15 @@ export default function AdminPageEdit() {
     return sellerType;
   };
 
-  const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageTypes ?
-    currentAdminSelection.pageTypes.map((pageType) => (
-      {
+  const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageTypes
+    ? currentAdminSelection.pageTypes.map((pageType) => ({
         label: `${pageType.pageTypeName}`,
-        value: pageType.pageTypeId
-      }
-    )) : [];
+        value: pageType.pageTypeId,
+      }))
+    : [];
 
   const pageHeader =
-    ((currentAdminSelection.selectedPage?.pageId ?? 0) > 0) ? 'Edit page' : 'Add page';
+    (currentAdminSelection.selectedPage?.pageId ?? 0) > 0 ? 'Edit page' : 'Add page';
 
   const isActive = currentAdminSelection.selectedPage?.isActive ?? false;
   const title = currentAdminSelection.selectedPage?.title;
@@ -559,11 +605,19 @@ export default function AdminPageEdit() {
   const subtitle2 = currentAdminSelection.selectedPage?.subtitle2;
   const htmlText = currentAdminSelection.selectedPage?.htmlText;
   const useIncludeDates = currentAdminSelection.selectedPage?.useIncludeDates ?? false;
-  const includeStart = currentAdminSelection.selectedPage?.includeStart ? moment(currentAdminSelection.selectedPage.includeStart).toDate() : null;
-  const includeEnd = currentAdminSelection.selectedPage?.includeEnd ? moment(currentAdminSelection.selectedPage.includeEnd).toDate() : null;
+  const includeStart = currentAdminSelection.selectedPage?.includeStart
+    ? moment(currentAdminSelection.selectedPage.includeStart).toDate()
+    : null;
+  const includeEnd = currentAdminSelection.selectedPage?.includeEnd
+    ? moment(currentAdminSelection.selectedPage.includeEnd).toDate()
+    : null;
   const useExcludeDates = currentAdminSelection.selectedPage?.useExcludeDates ?? false;
-  const excludeStart = currentAdminSelection.selectedPage?.excludeStart ? moment(currentAdminSelection.selectedPage.excludeStart).toDate() : null;
-  const excludeEnd = currentAdminSelection.selectedPage?.excludeEnd ? moment(currentAdminSelection.selectedPage.excludeEnd).toDate() : null;
+  const excludeStart = currentAdminSelection.selectedPage?.excludeStart
+    ? moment(currentAdminSelection.selectedPage.excludeStart).toDate()
+    : null;
+  const excludeEnd = currentAdminSelection.selectedPage?.excludeEnd
+    ? moment(currentAdminSelection.selectedPage.excludeEnd).toDate()
+    : null;
   const googleAnalyticsId = currentAdminSelection.selectedPage?.googleAnalyticsId;
 
   const sellerRows: ReactElement[] = [];
@@ -585,7 +639,13 @@ export default function AdminPageEdit() {
             SellerId={item.sellerId}
             SellerType={sellerType}
             PageSeller={item}
-            OnSellerChange={(newSellerId: number | null) => updateSeller(parseInt(`${item.pageSellerId}`), parseInt(`${item.sellerId}`), newSellerId)}
+            OnSellerChange={(newSellerId: number | null) =>
+              updateSeller(
+                parseInt(`${item.pageSellerId}`),
+                parseInt(`${item.sellerId}`),
+                newSellerId,
+              )
+            }
             OnPageSellerChange={(ps: PageSeller) => updatePageSeller(ps)}
             OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
             Countries={currentAdminSelection.countries}
@@ -606,12 +666,12 @@ export default function AdminPageEdit() {
   }
 
   return (
-    <Row
-      className="admin-container"
-    >
+    <Row className="admin-container">
       <Col>
         <Row>
-          <Col><h1>{pageHeader}</h1></Col>
+          <Col>
+            <h1>{pageHeader}</h1>
+          </Col>
         </Row>
         <Row className="form-group">
           <Col>
@@ -670,7 +730,7 @@ export default function AdminPageEdit() {
               OnUpload={onFileUpload}
               CurrentFileName={topImage}
               IsDirty={isHeaderDirty}
-              CurrentFileTitle={"View Current Top Image"}
+              CurrentFileTitle={'View Current Top Image'}
               OnUploadStart={onUploadStart}
               OnUploadComplete={onUploadComplete}
               ShowRemoveButton={true}
@@ -687,7 +747,7 @@ export default function AdminPageEdit() {
               OnUpload={onFileUpload}
               CurrentFileName={iconImage}
               IsDirty={isIconDirty}
-              CurrentFileTitle={"View Current Icon Image"}
+              CurrentFileTitle={'View Current Icon Image'}
               OnUploadStart={onUploadStart}
               OnUploadComplete={onUploadComplete}
               ShowRemoveButton={true}
@@ -704,7 +764,7 @@ export default function AdminPageEdit() {
               OnUpload={onFileUpload}
               CurrentFileName={linkPreviewImage}
               IsDirty={isLinkPreviewDirty}
-              CurrentFileTitle={"View Current Link Preview Image"}
+              CurrentFileTitle={'View Current Link Preview Image'}
               OnUploadStart={onUploadStart}
               OnUploadComplete={onUploadComplete}
               ShowRemoveButton={true}
@@ -721,7 +781,7 @@ export default function AdminPageEdit() {
               OnUpload={onFileUpload}
               CurrentFileName={logoOnlyImage}
               IsDirty={isLogoDirty}
-              CurrentFileTitle={"View Current Logo Image"}
+              CurrentFileTitle={'View Current Logo Image'}
               OnUploadStart={onUploadStart}
               OnUploadComplete={onUploadComplete}
               ShowRemoveButton={true}
@@ -756,12 +816,13 @@ export default function AdminPageEdit() {
         <Row className="form-group">
           <Col>
             <label className="mt-4">HTML Text</label>
-            <Form.Control as="textarea"
+            <Form.Control
+              as="textarea"
               rows={10}
               id="htmlText"
               onChange={(e) => setHtmlText(e.currentTarget.value)}
               value={htmlText ?? ''}
-              placeholder='Free-form html text to be placed in header'
+              placeholder="Free-form html text to be placed in header"
             />
           </Col>
         </Row>
@@ -839,7 +900,14 @@ export default function AdminPageEdit() {
             />
           </Col>
         </Row>
-        <Row className="form-group" hidden={!pageSellerTypeIds.includes(currentAdminSelection?.selectedPage?.pageType?.pageTypeId ?? 0)}>
+        <Row
+          className="form-group"
+          hidden={
+            !pageSellerTypeIds.includes(
+              currentAdminSelection?.selectedPage?.pageType?.pageTypeId ?? 0,
+            )
+          }
+        >
           <Col>
             <h4>Page Sellers</h4>
             {sellerRows}
@@ -847,7 +915,10 @@ export default function AdminPageEdit() {
         </Row>
         <Row>
           <Col>
-            <Button onClick={onSubmit} disabled={isUploading}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
+            <Button onClick={onSubmit} disabled={isUploading}>
+              Submit
+            </Button>{' '}
+            <Button onClick={confirmGoBack}>Back</Button>
           </Col>
         </Row>
       </Col>

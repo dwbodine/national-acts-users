@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { Button, ButtonGroup } from "rsuite";
-import { Col, Container, Row } from "react-bootstrap";
-import { ActivePageKey } from "@/constants";
-import { AdminTabsProps } from "@/types/props";
+import { Button, ButtonGroup } from 'rsuite';
+import { Col, Container, Row } from 'rsuite';
+import { ActivePageKey } from '@/constants';
+import { AdminTabsProps } from '@/types/props';
 import { RingLoader } from 'react-spinners';
-import { setIsLoading } from "@/lib/globalSelectionSlice";
-import { setReloadAdminEvents } from "@/lib/adminEventsSelectionSlice";
-import { setReloadEvents } from "@/lib/reportSelectionSlice";
-import { useDispatch } from "react-redux";
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import { setReloadEvents } from '@/lib/reportSelectionSlice';
+import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 
 export default function AdminTabsMobile(props: AdminTabsProps) {
@@ -18,8 +18,16 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const allTabsTop: ActivePageKey[] = [ActivePageKey.Dashboard, ActivePageKey.Events, ActivePageKey.SalesOverview];
-  const allTabsBottom: ActivePageKey[] = [ActivePageKey.Admin, ActivePageKey.Reports, ActivePageKey.Users];
+  const allTabsTop: ActivePageKey[] = [
+    ActivePageKey.Dashboard,
+    ActivePageKey.Events,
+    ActivePageKey.SalesOverview,
+  ];
+  const allTabsBottom: ActivePageKey[] = [
+    ActivePageKey.Admin,
+    ActivePageKey.Reports,
+    ActivePageKey.Users,
+  ];
 
   const onSelectTab = (eventKey: string | number | undefined) => {
     let key: ActivePageKey = activeKey;
@@ -57,22 +65,22 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
   const getTabViewText = (key: ActivePageKey) => {
     switch (key) {
       case ActivePageKey.Dashboard:
-        return "HOME";
+        return 'HOME';
         break;
       case ActivePageKey.Events:
-        return "EVENTS";
+        return 'EVENTS';
         break;
       case ActivePageKey.Admin:
-        return "ADMIN";
+        return 'ADMIN';
         break;
       case ActivePageKey.Reports:
-        return "REPORTS";
+        return 'REPORTS';
         break;
       case ActivePageKey.Users:
-        return "USERS";
+        return 'USERS';
         break;
       default:
-        return "SALES OVERVIEW";
+        return 'SALES OVERVIEW';
         break;
     }
   };
@@ -105,22 +113,26 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
   return (
     <>
       <Row>
-        <ButtonGroup
-          hidden={notAdmin}
-          justified
-        >
-          {allTabsTop.map(key => (
-            <Button appearance="subtle" key={key} active={key.valueOf() === activeKey?.valueOf()} onClick={() => onSelectTab(key)}>
+        <ButtonGroup hidden={notAdmin} justified>
+          {allTabsTop.map((key) => (
+            <Button
+              appearance="subtle"
+              key={key}
+              active={key.valueOf() === activeKey?.valueOf()}
+              onClick={() => onSelectTab(key)}
+            >
               {getTabViewText(key)}
             </Button>
           ))}
         </ButtonGroup>
-        <ButtonGroup
-          hidden={notAdmin}
-          justified
-        >
-          {allTabsBottom.map(key => (
-            <Button appearance="subtle" key={key} active={key.valueOf() === activeKey?.valueOf()} onClick={() => onSelectTab(key)}>
+        <ButtonGroup hidden={notAdmin} justified>
+          {allTabsBottom.map((key) => (
+            <Button
+              appearance="subtle"
+              key={key}
+              active={key.valueOf() === activeKey?.valueOf()}
+              onClick={() => onSelectTab(key)}
+            >
               {getTabViewText(key)}
             </Button>
           ))}
@@ -145,5 +157,5 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
         </Col>
       </Row>
     </>
-  )
+  );
 }

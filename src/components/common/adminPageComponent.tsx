@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from 'react';
 import { AdminPageProps } from '@/types/props';
 import AdminTabs from './adminTabsComponent';
 import AdminTabsMobile from './adminTabsMobileComponent';
-import { Container } from 'react-bootstrap';
+import { Container } from 'rsuite';
 import NavBar from './navBarComponent';
 import { RootState } from '@/lib/store';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
@@ -46,13 +46,11 @@ export default function AdminPage(props: AdminPageProps) {
     };
   }, [title, logActivityData, userActivity, isLoading, getUser, windowSizeJson, router]);
 
-
-
   return (
     <>
       <NavBar Hidden={notAdmin} />
       <Container fluid hidden={notAdmin} className="vipContainer">
-        {windowSize.isMobile ?
+        {windowSize.isMobile ? (
           <AdminTabsMobile
             ActiveKey={activeKey}
             IsLoading={isLoading}
@@ -64,7 +62,7 @@ export default function AdminPage(props: AdminPageProps) {
             ReportComponent={props.ReportComponent}
             UsersComponent={props.UsersComponent}
           />
-          :
+        ) : (
           <AdminTabs
             ActiveKey={activeKey}
             IsLoading={isLoading}
@@ -76,7 +74,7 @@ export default function AdminPage(props: AdminPageProps) {
             ReportComponent={props.ReportComponent}
             UsersComponent={props.UsersComponent}
           />
-        }
+        )}
       </Container>
     </>
   );

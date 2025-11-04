@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { ReactElement } from 'react';
 import { TopSellingLocationsWidgetProps } from '@/types/props';
 

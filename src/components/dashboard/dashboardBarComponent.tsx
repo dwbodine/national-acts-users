@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'rsuite';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import {
   setCurrentDashboardData,
@@ -32,46 +32,59 @@ export default function DashboardBar() {
   const ranges: RangeType<DateRange>[] = [
     {
       label: 'This Month',
-      value: [moment().startOf('month').startOf('day').toDate(), moment().endOf('month').endOf('day').toDate()]
+      value: [
+        moment().startOf('month').startOf('day').toDate(),
+        moment().endOf('month').endOf('day').toDate(),
+      ],
     },
     {
       label: 'Last Month',
-      value: [moment().startOf('month').subtract(1, 'month').startOf('day').toDate(), moment().startOf('month').subtract(1, 'month').endOf('month').endOf('day').toDate()]
-    }
+      value: [
+        moment().startOf('month').subtract(1, 'month').startOf('day').toDate(),
+        moment()
+          .startOf('month')
+          .subtract(1, 'month')
+          .endOf('month')
+          .endOf('day')
+          .toDate(),
+      ],
+    },
   ];
 
   for (let i = moment().quarter(); i >= 1; i -= 1) {
-    ranges.push(
-      {
-        label: `Q${i} ${moment().year()}`,
-        value: [moment().quarter(i).startOf('quarter').startOf('day').toDate(), moment().quarter(i).endOf('quarter').endOf('day').toDate()]
-      }
-    )
+    ranges.push({
+      label: `Q${i} ${moment().year()}`,
+      value: [
+        moment().quarter(i).startOf('quarter').startOf('day').toDate(),
+        moment().quarter(i).endOf('quarter').endOf('day').toDate(),
+      ],
+    });
   }
 
   for (let i = moment().year(); i >= 2022; i -= 1) {
     const startDateStr = `${i}-01-01`;
-    ranges.push(
-      {
-        label: i.toString(),
-        value: [moment(startDateStr).startOf('year').startOf('day').toDate(), moment(startDateStr).endOf('year').endOf('day').toDate()]
-      }
-    )
+    ranges.push({
+      label: i.toString(),
+      value: [
+        moment(startDateStr).startOf('year').startOf('day').toDate(),
+        moment(startDateStr).endOf('year').endOf('day').toDate(),
+      ],
+    });
   }
 
   const onDateChange = (selectedStart: number, selectedEnd: number) => {
     const startDate = moment.unix(selectedStart);
     const endDate = moment.unix(selectedEnd);
     if (startDate.year() < 2022 || endDate.year() < 2022) {
-      toast.warning("Invalid selection: no data before 2022");
+      toast.warning('Invalid selection: no data before 2022');
       return;
     }
     if (startDate.year() > moment().year() || endDate.year() > moment().year()) {
-      toast.warning("Invalid selection: dates must be from this year or earlier");
+      toast.warning('Invalid selection: dates must be from this year or earlier');
       return;
     }
     if (startDate.year() !== endDate.year()) {
-      toast.warning("Invalid selection: selected dates must both be in the same year");
+      toast.warning('Invalid selection: selected dates must both be in the same year');
       return;
     }
     const dashboardSelection = { ...currentDashboardSelection };
@@ -96,7 +109,7 @@ export default function DashboardBar() {
       (response: GetOrdersResponse) => {
         if (response.orders && !response.error) {
           if (dashboardSelection.currentDashboardData) {
-            const dashboardData = {...dashboardSelection.currentDashboardData };
+            const dashboardData = { ...dashboardSelection.currentDashboardData };
             dashboardData.orders = response.orders;
             dashboardSelection.currentDashboardData = dashboardData;
             const csvData = exportDashboardOrdersToCsv(dashboardSelection);

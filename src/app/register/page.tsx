@@ -1,7 +1,5 @@
-import RegisterComponent from "@/components/common/registerComponent";
+import RegisterComponent from '@/components/common/registerComponent';
 
 export default function Register() {
-  return (
-    <RegisterComponent />
-  );
+  return <RegisterComponent />;
 }

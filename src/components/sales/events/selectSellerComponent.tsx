@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ItemDataType } from 'rsuite/esm/internals/types';
@@ -61,45 +61,50 @@ export default function SelectSeller() {
     if (seller) {
       dispatch(setSeller(seller));
       dispatch(setIsLoading(true));
-    }    
+    }
   };
 
-  const userSellerList: ItemDataType<number>[] = user?.sellers ?
-        user.sellers.map((seller) => (
-          {
-            label: `${seller.sellerName}`,
-            value: seller.sellerId
-          }
-        )) : [];
+  const userSellerList: ItemDataType<number>[] = user?.sellers
+    ? user.sellers.map((seller) => ({
+        label: `${seller.sellerName}`,
+        value: seller.sellerId,
+      }))
+    : [];
 
   if (userSellerList.length > 0) {
     if (userSellerList.length > 1) {
       return (
         <Row className="no-print admin-seller-row">
-          <Col xs={1}>
-            Seller:
-          </Col>
-          <Col sm={11} md={5}>     
+          <Col xs={1}>Seller:</Col>
+          <Col sm={11} md={5}>
             <SelectPicker
-                value={selectedSellerId}
-                data={userSellerList}
-                size="lg"        
-                onChange={(tId) => handleChange(tId)}
-                cleanable={false}
-                menuAutoWidth={true}
-                className="admin-seller-select-value"
-              />
-            </Col>
+              value={selectedSellerId}
+              data={userSellerList}
+              size="lg"
+              onChange={(tId) => handleChange(tId)}
+              cleanable={false}
+              menuAutoWidth={true}
+              className="admin-seller-select-value"
+            />
+          </Col>
         </Row>
       );
     } else if (user && user.sellers) {
-      const [ seller ] = user.sellers;
+      const [seller] = user.sellers;
       if (seller.sellerId !== selectedSellerId) {
         dispatch(setSeller(seller));
       }
-      return <Row className="no-print admin-seller-row"><Col>{seller.sellerName}</Col></Row>;
+      return (
+        <Row className="no-print admin-seller-row">
+          <Col>{seller.sellerName}</Col>
+        </Row>
+      );
     }
   } else {
-    return <Row className="no-print admin-seller-row"><Col>No sellers returned</Col></Row>;
+    return (
+      <Row className="no-print admin-seller-row">
+        <Col>No sellers returned</Col>
+      </Row>
+    );
   }
 }

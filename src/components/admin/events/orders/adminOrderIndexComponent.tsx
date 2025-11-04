@@ -1,9 +1,17 @@
-"use client";
+'use client';
 
-import { Button, Col, FormCheck, Row } from 'react-bootstrap';
-import { GetEventResponse, GetEventsResponse, ModifyOrderResponse } from '@/types/responses';
+import { Button, Col, FormCheck, Row } from 'rsuite';
+import {
+  GetEventResponse,
+  GetEventsResponse,
+  ModifyOrderResponse,
+} from '@/types/responses';
 import { SelectPicker, Table } from 'rsuite';
-import { getEventStatusText, getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
+import {
+  getEventStatusText,
+  getOrderStatusSlug,
+  getOrderStatusText,
+} from '@/utils/eventUtils';
 import {
   setAdminEvent,
   setAdminEvents,
@@ -44,7 +52,8 @@ export default function AdminOrdersIndex(props: EditProps) {
   const router = useRouter();
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [orderIdList, setOrderIdList] = useState<number[]>([]);
-  const allOrderIds: number[] = currentAdminSelection.selectedEvent?.orders?.map(o => o.ticketSocketOrderId) ?? [];
+  const allOrderIds: number[] =
+    currentAdminSelection.selectedEvent?.orders?.map((o) => o.ticketSocketOrderId) ?? [];
 
   const loadEventById = useCallback(() => {
     if (!id) {
@@ -52,16 +61,13 @@ export default function AdminOrdersIndex(props: EditProps) {
     }
 
     dispatch(setIsLoading(true));
-    getEventById(id)
-      .then((response: GetEventResponse) => {
-        setOrderIdList([]);
-        if (response.event && !response.error) {
-          dispatch(
-            setAdminEvent(response.event)
-          );
-        }
-        dispatch(setIsLoading(false));
-      });
+    getEventById(id).then((response: GetEventResponse) => {
+      setOrderIdList([]);
+      if (response.event && !response.error) {
+        dispatch(setAdminEvent(response.event));
+      }
+      dispatch(setIsLoading(false));
+    });
   }, [dispatch, getEventById, id]);
 
   useEffect(() => {
@@ -101,7 +107,15 @@ export default function AdminOrdersIndex(props: EditProps) {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, tableLoading, dispatch, getAdminEvents, loadEventById, id, globalSelection]);
+  }, [
+    currentAdminSelection,
+    tableLoading,
+    dispatch,
+    getAdminEvents,
+    loadEventById,
+    id,
+    globalSelection,
+  ]);
 
   const viewOrder = (ticketSocketOrderId: number) => {
     if (
@@ -139,7 +153,7 @@ export default function AdminOrdersIndex(props: EditProps) {
   const updateOrderIdList = (ticketSocketOrderId: number, addToList: boolean) => {
     let idList: number[] = orderIdList ? [...orderIdList] : [];
     if (!addToList && idList.includes(ticketSocketOrderId)) {
-      idList = idList.filter(i => i !== ticketSocketOrderId);
+      idList = idList.filter((i) => i !== ticketSocketOrderId);
     } else if (addToList && !idList.includes(ticketSocketOrderId)) {
       idList.push(ticketSocketOrderId);
     }
@@ -161,44 +175,50 @@ export default function AdminOrdersIndex(props: EditProps) {
     if (orderIdList.length === 0) {
       return;
     }
-    setOrdersInactive(orderIdList, isActive)
-      .then((response: ModifyOrderResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = isActive ? "Orders activated successfully" : "Orders deactivated successfully";
-          toast.success(successMessage);
-          setOrderIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = isActive ? 'Unexpected error occurred while activating orders' : 'Unexpected error occurred while deactivating orders';
-          }
-          toast.error(errorMessage);
+    setOrdersInactive(orderIdList, isActive).then((response: ModifyOrderResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = isActive
+          ? 'Orders activated successfully'
+          : 'Orders deactivated successfully';
+        toast.success(successMessage);
+        setOrderIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = isActive
+            ? 'Unexpected error occurred while activating orders'
+            : 'Unexpected error occurred while deactivating orders';
         }
-      });
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const deleteOrders = (setDeleted: boolean) => {
     if (orderIdList.length === 0) {
       return;
     }
-    setOrdersDeleted(orderIdList, setDeleted)
-      .then((response: ModifyOrderResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = setDeleted ? "Orders deleted successfully" : "Orders undeleted successfully";
-          toast.success(successMessage);
-          setOrderIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = setDeleted ? 'Unexpected error occurred while deleting orders' : 'Unexpected error occurred while undeleting orders';
-          }
-          toast.error(errorMessage);
+    setOrdersDeleted(orderIdList, setDeleted).then((response: ModifyOrderResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = setDeleted
+          ? 'Orders deleted successfully'
+          : 'Orders undeleted successfully';
+        toast.success(successMessage);
+        setOrderIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = setDeleted
+            ? 'Unexpected error occurred while deleting orders'
+            : 'Unexpected error occurred while undeleting orders';
         }
-      });
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const handleBulkEdit = () => {
@@ -208,16 +228,16 @@ export default function AdminOrdersIndex(props: EditProps) {
     }
 
     switch (selectedAction) {
-      case "inactive":
+      case 'inactive':
         deactivateOrders(false);
         break;
-      case "active":
+      case 'active':
         deactivateOrders(true);
         break;
-      case "delete":
+      case 'delete':
         deleteOrders(true);
         break;
-      case "undelete":
+      case 'undelete':
         deleteOrders(false);
         break;
       default:
@@ -232,16 +252,16 @@ export default function AdminOrdersIndex(props: EditProps) {
 
     let message = '';
     switch (selectedAction) {
-      case "inactive":
+      case 'inactive':
         message = `You are about to deactivate ${orderIdList.length} orders`;
         break;
-      case "active":
+      case 'active':
         message = `You are about to activate ${orderIdList.length} orders`;
         break;
-      case "delete":
+      case 'delete':
         message = `You are about to delete ${orderIdList.length} orders`;
         break;
-      case "undelete":
+      case 'undelete':
         message = `You are about to undelete ${orderIdList.length} orders`;
         break;
       default:
@@ -270,36 +290,33 @@ export default function AdminOrdersIndex(props: EditProps) {
     );
   };
 
-  const location =
-    currentAdminSelection.selectedEvent?.venue
-      ? getLocation(currentAdminSelection.selectedEvent.venue)
-      : '';
+  const location = currentAdminSelection.selectedEvent?.venue
+    ? getLocation(currentAdminSelection.selectedEvent.venue)
+    : '';
 
   const actions = [
     {
-      label: "Deactivate",
-      value: "inactive"
+      label: 'Deactivate',
+      value: 'inactive',
     },
     {
-      label: "Deactivate",
-      value: "inactive"
+      label: 'Deactivate',
+      value: 'inactive',
     },
     {
-      label: "Delete",
-      value: "delete"
+      label: 'Delete',
+      value: 'delete',
     },
     {
-      label: "Undelete",
-      value: "undelete"
-    }
+      label: 'Undelete',
+      value: 'undelete',
+    },
   ];
 
-  const actionList: ItemDataType<string>[] = actions.map((action) => (
-    {
-      label: action.label,
-      value: action.value
-    }
-  ));
+  const actionList: ItemDataType<string>[] = actions.map((action) => ({
+    label: action.label,
+    value: action.value,
+  }));
 
   return (
     <div className="admin-container">
@@ -331,7 +348,9 @@ export default function AdminOrdersIndex(props: EditProps) {
       </Row>
       <Row hidden={allOrderIds.length === 0}>
         <Col className="bulk-arrow-row">
-          <div><FaArrowTurnDown className="bulk-arrow" /></div>
+          <div>
+            <FaArrowTurnDown className="bulk-arrow" />
+          </div>
           <div>With selected:</div>
           <div>
             <SelectPicker
@@ -364,18 +383,25 @@ export default function AdminOrdersIndex(props: EditProps) {
               <HeaderCell>
                 <FormCheck
                   id={`oId_selectAll`}
-                  checked={allOrderIds.length > 0 && (orderIdList.length === allOrderIds.length)}
+                  checked={
+                    allOrderIds.length > 0 && orderIdList.length === allOrderIds.length
+                  }
                   onChange={(e) => selectAllOrders(e.currentTarget.checked)}
                 />
               </HeaderCell>
               <Cell>
-                {(rowData: Order) =>
+                {(rowData: Order) => (
                   <FormCheck
                     id={`oId_${rowData.ticketSocketOrderId}`}
                     checked={orderIdList.includes(rowData.ticketSocketOrderId)}
-                    onChange={(e) => updateOrderIdList(rowData.ticketSocketOrderId, e.currentTarget.checked)}
+                    onChange={(e) =>
+                      updateOrderIdList(
+                        rowData.ticketSocketOrderId,
+                        e.currentTarget.checked,
+                      )
+                    }
                   />
-                }
+                )}
               </Cell>
             </Column>
             <Column flexGrow={1}>
@@ -410,7 +436,9 @@ export default function AdminOrdersIndex(props: EditProps) {
                     <a
                       href="#"
                       id={rowData.ticketSocketOrderId.toString()}
-                      onClick={() => viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))}
+                      onClick={() =>
+                        viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))
+                      }
                     >
                       Edit
                     </a>

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button, FormCheck } from 'react-bootstrap';
+import { Button, FormCheck } from 'rsuite';
 import { GetRolesResponse, UpdateRoleResponse } from '@/types/responses';
 import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -121,7 +121,12 @@ export default function AdminRolesIndex() {
                 <FormCheck
                   id={rowData.roleId}
                   checked={selectedRoles.includes(rowData.roleId)}
-                  onChange={(e) => updateSelectedRoles(parseInt(`${rowData.roleId}`), e.currentTarget.checked)}
+                  onChange={(e) =>
+                    updateSelectedRoles(
+                      parseInt(`${rowData.roleId}`),
+                      e.currentTarget.checked,
+                    )
+                  }
                 />
               ) : (
                 ''
@@ -133,7 +138,10 @@ export default function AdminRolesIndex() {
           <HeaderCell>Role</HeaderCell>
           <Cell className="admin-click-cell">
             {(rowData) => (
-              <div id={rowData.roleId} onClick={() => editRole(parseInt(`${rowData.roleId}`))}>
+              <div
+                id={rowData.roleId}
+                onClick={() => editRole(parseInt(`${rowData.roleId}`))}
+              >
                 {rowData.roleName}
               </div>
             )}

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'rsuite';
 import { KeyboardEvent, useEffect, useState } from 'react';
 import { getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,7 +42,7 @@ export default function AdminOrdersSearch() {
       return;
     }
     if (searchTerm.length < 3) {
-      toast.warn("Need to enter at least three characters to search");
+      toast.warn('Need to enter at least three characters to search');
       return;
     }
     dispatch(setIsLoading(true));
@@ -80,7 +80,7 @@ export default function AdminOrdersSearch() {
       return;
     }
 
-    window.open(`/admin/events/orders/edit/?id=${order.ticketSocketOrderId}`)
+    window.open(`/admin/events/orders/edit/?id=${order.ticketSocketOrderId}`);
   };
 
   const goBack = () => {
@@ -88,7 +88,7 @@ export default function AdminOrdersSearch() {
     router.push('/admin');
   };
 
-  const numOrders = (currentAdminSelection.orders?.length ?? 0);
+  const numOrders = currentAdminSelection.orders?.length ?? 0;
 
   return (
     <div className="admin-container">
@@ -111,8 +111,15 @@ export default function AdminOrdersSearch() {
             className="form-control search-text-input no-print"
             placeholder="Search for orders by purchaser name, email, order ID, event title or seller name..."
           />
-          <Button disabled={!searchTerm || searchTerm.length < 3} onClick={searchAllOrders}>Search</Button>
-          <div hidden={numOrders === 0} className="success">{numOrders} order(s) found</div>
+          <Button
+            disabled={!searchTerm || searchTerm.length < 3}
+            onClick={searchAllOrders}
+          >
+            Search
+          </Button>
+          <div hidden={numOrders === 0} className="success">
+            {numOrders} order(s) found
+          </div>
         </Col>
       </Row>
       <Row>
@@ -135,11 +142,7 @@ export default function AdminOrdersSearch() {
             </Column>
             <Column flexGrow={2}>
               <HeaderCell>Email</HeaderCell>
-              <Cell>
-                {(rowData: Order) =>
-                  `${rowData.email}`
-                }
-              </Cell>
+              <Cell>{(rowData: Order) => `${rowData.email}`}</Cell>
             </Column>
             <Column flexGrow={3}>
               <HeaderCell>Event / Date</HeaderCell>
@@ -157,9 +160,7 @@ export default function AdminOrdersSearch() {
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>Ticket Socket OrderId</HeaderCell>
-              <Cell>
-                {(rowData: Order) => (rowData.orderId ? rowData.orderId : '')}
-              </Cell>
+              <Cell>{(rowData: Order) => (rowData.orderId ? rowData.orderId : '')}</Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell># of Tickets</HeaderCell>
@@ -179,7 +180,9 @@ export default function AdminOrdersSearch() {
                     <a
                       href="#"
                       id={rowData.ticketSocketOrderId.toString()}
-                      onClick={() => viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))}
+                      onClick={() =>
+                        viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))
+                      }
                     >
                       Edit
                     </a>

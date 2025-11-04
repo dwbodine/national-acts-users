@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { IShirtData, IShirtSizeData } from '@/types/event';
 import React, { ReactElement } from 'react';
@@ -16,7 +16,7 @@ export default function ShirtSizesWidget(props: ShirtSizesWidgetProps) {
     shirtSizes.forEach((shirtSize: string) => {
       shirtPropData.ShirtData?.forEach((shirSizeData: IShirtSizeData[]) => {
         const data = shirSizeData.find((x) => x.ShirtSize === shirtSize);
-        let number = (shirtMap.get(shirtSize) ?? 0);
+        let number = shirtMap.get(shirtSize) ?? 0;
         if (data) {
           number += data.Number;
         }
@@ -51,12 +51,8 @@ export default function ShirtSizesWidget(props: ShirtSizesWidgetProps) {
         <FaShirtsinbulk size="2em" />
         <div>Shirt sizes sold:</div>
         <div className="shirt-size-container">
-          <div className="shirt-sizes">
-            {sSizes}
-          </div>
-          <div className="shirt-sizes">
-            {sSizesTwo}
-          </div>
+          <div className="shirt-sizes">{sSizes}</div>
+          <div className="shirt-sizes">{sSizesTwo}</div>
         </div>
         <span>Total: {totalShirts}</span>
       </>

@@ -1,21 +1,22 @@
-"use client";
+'use client';
 
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'rsuite';
 import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from 'react-icons/fa';
 import { ReactElement, useEffect, useState } from 'react';
-import { formatCurrencyAmount, getAccountNameFromTicketSocketId } from '@/utils/eventUtils';
+import {
+  formatCurrencyAmount,
+  getAccountNameFromTicketSocketId,
+} from '@/utils/eventUtils';
 import {
   setCurrentDashboardData,
-  setReloadDashboardOrders,  
+  setReloadDashboardOrders,
 } from '@/lib/dashboardSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AverageSalesWidget from './widgets/averageSalesWidgetComponent';
 import DashboardBar from './dashboardBarComponent';
 import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
 import { GetDashboardOrdersResponse } from '@/types/responses';
-import {
-  ITicketSalesData,
-} from '@/types/event';
+import { ITicketSalesData } from '@/types/event';
 import MonthToDateWidget from './widgets/monthToDateWidgetComponent';
 import RevenueGoalsWidget from './widgets/revenueGoalsWidgetComponent';
 import { RootState } from '@/lib/store';
@@ -35,7 +36,7 @@ import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function DashboardIndex() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
-  const {isLoading} = globalSelection;
+  const { isLoading } = globalSelection;
   const currentDashboardSelection = useSelector(
     (state: RootState) => state.dashboardSelecton,
   );
@@ -91,23 +92,25 @@ export default function DashboardIndex() {
 
   const currentYear = moment().year();
   const selectedYear = moment.unix(currentDashboardSelection.start).year();
-  
-  const totalTickets = (currentDashboardSelection.currentDashboardData?.tickets ?? 0);
+
+  const totalTickets = currentDashboardSelection.currentDashboardData?.tickets ?? 0;
   const totalTicketsRefunded =
-    (currentDashboardSelection.currentDashboardData?.ticketsRefunded ?? 0);
-  const totalTicketRevenueUsd = (currentDashboardSelection.currentDashboardData?.revenueUsd ?? 0);
-  const totalRevenueUsd = (currentDashboardSelection.currentDashboardData?.totalRevenueUsd ?? 0);
+    currentDashboardSelection.currentDashboardData?.ticketsRefunded ?? 0;
+  const totalTicketRevenueUsd =
+    currentDashboardSelection.currentDashboardData?.revenueUsd ?? 0;
+  const totalRevenueUsd =
+    currentDashboardSelection.currentDashboardData?.totalRevenueUsd ?? 0;
   const totalServiceFeesUsd =
-    (currentDashboardSelection.currentDashboardData?.serviceFeesUsd ?? 0);
-  const totalPurchases = (currentDashboardSelection.currentDashboardData?.purchases ?? 0);
+    currentDashboardSelection.currentDashboardData?.serviceFeesUsd ?? 0;
+  const totalPurchases = currentDashboardSelection.currentDashboardData?.purchases ?? 0;
   const ticketSalesData =
-    (currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined);
+    currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined;
   const topSellers =
-    (currentDashboardSelection.currentDashboardData?.topSellers ?? undefined);
+    currentDashboardSelection.currentDashboardData?.topSellers ?? undefined;
   const topLocations =
-    (currentDashboardSelection.currentDashboardData?.topLocations ?? undefined);
+    currentDashboardSelection.currentDashboardData?.topLocations ?? undefined;
   const topVenues =
-    (currentDashboardSelection.currentDashboardData?.topVenues ?? undefined);
+    currentDashboardSelection.currentDashboardData?.topVenues ?? undefined;
   const dateRange = `${moment.unix(currentDashboardSelection.start).format('MM/DD/YYYY')} - ${moment.unix(currentDashboardSelection.end).format('MM/DD/YYYY')}`;
 
   const chartSalesData: ITicketSalesData[] = [];
@@ -124,13 +127,15 @@ export default function DashboardIndex() {
   if (accountTotals && accountTotals.length > 0) {
     accountTotals.forEach((accountTotal, i) => {
       const aTotals = accountTotal.totals;
-      const accountName = getAccountNameFromTicketSocketId(
-        accountTotal.ticketSocketId,
-      );
+      const accountName = getAccountNameFromTicketSocketId(accountTotal.ticketSocketId);
       const key = `accountTotal${i}`;
       accountTotalWidgets.push(
         <Col key={key} xl={3} lg={4} md={6} className="stat-block-container">
-          <SalesByAccountWidget SelectedYear={selectedYear} AccountName={accountName} AccountTotals={aTotals} />
+          <SalesByAccountWidget
+            SelectedYear={selectedYear}
+            AccountName={accountName}
+            AccountTotals={aTotals}
+          />
         </Col>,
       );
     });
@@ -203,12 +208,24 @@ export default function DashboardIndex() {
               DateRange={dateRange}
             />
           </Col>
-          <Col xl={3} lg={4} md={6} className="stat-block-container" hidden={selectedYear !== currentYear}>
+          <Col
+            xl={3}
+            lg={4}
+            md={6}
+            className="stat-block-container"
+            hidden={selectedYear !== currentYear}
+          >
             <MonthToDateWidget
               DashBoardData={currentDashboardSelection.currentDashboardData}
             />
           </Col>
-          <Col xl={3} lg={4} md={6} className="stat-block-container" hidden={selectedYear !== currentYear}>
+          <Col
+            xl={3}
+            lg={4}
+            md={6}
+            className="stat-block-container"
+            hidden={selectedYear !== currentYear}
+          >
             <RevenueGoalsWidget
               PercentTitle="Monthly Goal"
               Amount={
@@ -227,7 +244,8 @@ export default function DashboardIndex() {
               SelectedYear={selectedYear}
               Totals={currentDashboardSelection.currentDashboardData?.totals}
               ProjectedYearTotalRevenue={
-                currentDashboardSelection.currentDashboardData?.projectedYearTotalRevenueUsd
+                currentDashboardSelection.currentDashboardData
+                  ?.projectedYearTotalRevenueUsd
               }
             />
           </Col>
@@ -313,23 +331,73 @@ export default function DashboardIndex() {
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Ticket Revenue</HeaderCell>
-                <Cell>{(rowData) => formatCurrencyAmount(rowData.Revenue, rowData.RevenueUsd, rowData.CurrencySymbol, rowData.ExchangeRate, true)}</Cell>
+                <Cell>
+                  {(rowData) =>
+                    formatCurrencyAmount(
+                      rowData.Revenue,
+                      rowData.RevenueUsd,
+                      rowData.CurrencySymbol,
+                      rowData.ExchangeRate,
+                      true,
+                    )
+                  }
+                </Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Revenue Refunded</HeaderCell>
-                <Cell>{(rowData) => formatCurrencyAmount(rowData.RevenueRefunded, rowData.RevenueRefundedUsd, rowData.CurrencySymbol, rowData.ExchangeRate, true)}</Cell>
+                <Cell>
+                  {(rowData) =>
+                    formatCurrencyAmount(
+                      rowData.RevenueRefunded,
+                      rowData.RevenueRefundedUsd,
+                      rowData.CurrencySymbol,
+                      rowData.ExchangeRate,
+                      true,
+                    )
+                  }
+                </Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Service Fees</HeaderCell>
-                <Cell>{(rowData) => formatCurrencyAmount(rowData.ServiceFees, rowData.ServiceFeesUsd, rowData.CurrencySymbol, rowData.ExchangeRate, true)}</Cell>
+                <Cell>
+                  {(rowData) =>
+                    formatCurrencyAmount(
+                      rowData.ServiceFees,
+                      rowData.ServiceFeesUsd,
+                      rowData.CurrencySymbol,
+                      rowData.ExchangeRate,
+                      true,
+                    )
+                  }
+                </Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Service Fees Refunded</HeaderCell>
-                <Cell>{(rowData) => formatCurrencyAmount(rowData.ServiceFeeRevenueRefunded, rowData.ServiceFeeRevenueRefundedUsd, rowData.CurrencySymbol, rowData.ExchangeRate, true)}</Cell>
+                <Cell>
+                  {(rowData) =>
+                    formatCurrencyAmount(
+                      rowData.ServiceFeeRevenueRefunded,
+                      rowData.ServiceFeeRevenueRefundedUsd,
+                      rowData.CurrencySymbol,
+                      rowData.ExchangeRate,
+                      true,
+                    )
+                  }
+                </Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Total Revenue</HeaderCell>
-                <Cell>{(rowData) => formatCurrencyAmount(rowData.TotalRevenue, rowData.TotalRevenueUsd, rowData.CurrencySymbol, rowData.ExchangeRate, true)}</Cell>
+                <Cell>
+                  {(rowData) =>
+                    formatCurrencyAmount(
+                      rowData.TotalRevenue,
+                      rowData.TotalRevenueUsd,
+                      rowData.CurrencySymbol,
+                      rowData.ExchangeRate,
+                      true,
+                    )
+                  }
+                </Cell>
               </Column>
             </Table>
           </Col>

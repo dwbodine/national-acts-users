@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Col, Container, FormCheck, Row } from 'react-bootstrap';
+import { Col, Container, FormCheck, Row } from 'rsuite';
 import {
   setCurrentActivities,
   setFilterAdmins,
@@ -31,14 +31,19 @@ export default function UserActivityTable() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentUserActivitySelection.start === undefined || currentUserActivitySelection.end === undefined) {
-        const userActivitySelection = {...currentUserActivitySelection};
+      if (
+        currentUserActivitySelection.start === undefined ||
+        currentUserActivitySelection.end === undefined
+      ) {
+        const userActivitySelection = { ...currentUserActivitySelection };
         userActivitySelection.start = moment().startOf('month').unix();
         userActivitySelection.end = moment().endOf('day').unix();
-        dispatch(
-          setUserActivityDateRange(userActivitySelection)
-        );
-      } else if (currentUserActivitySelection.start && currentUserActivitySelection.end && currentUserActivitySelection.reloadActivities) {
+        dispatch(setUserActivityDateRange(userActivitySelection));
+      } else if (
+        currentUserActivitySelection.start &&
+        currentUserActivitySelection.end &&
+        currentUserActivitySelection.reloadActivities
+      ) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         getActivityData(
@@ -64,7 +69,7 @@ export default function UserActivityTable() {
     }, 500);
     return () => {
       clearTimeout(timeoutId);
-    };    
+    };
   }, [currentUserActivitySelection, getActivityData, dispatch, tableLoading]);
 
   return (

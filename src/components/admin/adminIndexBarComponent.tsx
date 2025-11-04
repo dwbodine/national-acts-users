@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 
 export default function AdminIndexBar() {
   const pageTitle: string = 'Admin';

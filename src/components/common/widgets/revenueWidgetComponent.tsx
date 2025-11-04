@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 import { FaMoneyBillAlt } from 'react-icons/fa';
 import { RevenueWidgetProps } from '@/types/props';
 
 export default function RevenueWidget(props: RevenueWidgetProps) {
-  const totalRevenue = (props.TotalRevenue ?? 0);
-  const totalServiceFees = (props.TotalServiceFees ?? 0);  
+  const totalRevenue = props.TotalRevenue ?? 0;
+  const totalServiceFees = props.TotalServiceFees ?? 0;
   const hideServiceFees = props.HideServiceFees;
 
   return (

@@ -1,8 +1,13 @@
-"use client";
+'use client';
 
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button, Col, Form, Row } from 'rsuite';
 import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
-import { setAllFaqCategories, setMustSavePage, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
+import {
+  setAllFaqCategories,
+  setMustSavePage,
+  setReloadFaqs,
+  setSelectedFaq,
+} from '@/lib/adminSelectionSlice';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
@@ -26,7 +31,7 @@ export default function AdminFaqEdit() {
   const goBack = useCallback(() => {
     toast.dismiss();
     router.push('/admin/faqs');
-  },[router]);
+  }, [router]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -36,7 +41,10 @@ export default function AdminFaqEdit() {
           dispatch(setAllFaqCategories(response.categories));
         });
         dispatch(setIsLoading(false));
-      } else if (currentAdminSelection.allFaqs === undefined || currentAdminSelection.selectedFaq === undefined) {
+      } else if (
+        currentAdminSelection.allFaqs === undefined ||
+        currentAdminSelection.selectedFaq === undefined
+      ) {
         goBack();
       }
     }, 500);
@@ -85,7 +93,7 @@ export default function AdminFaqEdit() {
       dispatch(setSelectedFaq(faqToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setQuestion = (question: string) => {
     if (!currentAdminSelection.selectedFaq || !question) {
@@ -97,7 +105,7 @@ export default function AdminFaqEdit() {
       dispatch(setSelectedFaq(faqToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setAnswer = (answer: string) => {
     if (!currentAdminSelection.selectedFaq || !answer) {
@@ -109,7 +117,7 @@ export default function AdminFaqEdit() {
       dispatch(setSelectedFaq(faqToUpdate));
       markDirty();
     }
-  }
+  };
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedFaq) {
@@ -117,7 +125,7 @@ export default function AdminFaqEdit() {
     }
 
     const faqToUpdate: Faq = {
-      ...currentAdminSelection.selectedFaq
+      ...currentAdminSelection.selectedFaq,
     };
 
     if (!faqToUpdate.category || !faqToUpdate.category.categoryId) {
@@ -149,28 +157,27 @@ export default function AdminFaqEdit() {
     });
   };
 
-  const faqCategories: ItemDataType<number>[] = currentAdminSelection?.faqCategories ?
-    currentAdminSelection.faqCategories.map((category) => (
-      {
+  const faqCategories: ItemDataType<number>[] = currentAdminSelection?.faqCategories
+    ? currentAdminSelection.faqCategories.map((category) => ({
         label: `${category.categoryName ?? ''}`,
-        value: category.categoryId
-      }
-    )) : [];
+        value: category.categoryId,
+      }))
+    : [];
 
   const pageHeader =
-    ((currentAdminSelection.selectedFaq?.faqId ?? 0) > 0) ? 'Edit FAQ' : 'Add FAQ';
+    (currentAdminSelection.selectedFaq?.faqId ?? 0) > 0 ? 'Edit FAQ' : 'Add FAQ';
 
   const categoryId = currentAdminSelection.selectedFaq?.category?.categoryId ?? 0;
   const question = currentAdminSelection.selectedFaq?.question;
   const answer = currentAdminSelection.selectedFaq?.answer;
 
   return (
-    <Row
-      className="admin-container"
-    >
+    <Row className="admin-container">
       <Col>
         <Row>
-          <Col><h1>{pageHeader}</h1></Col>
+          <Col>
+            <h1>{pageHeader}</h1>
+          </Col>
         </Row>
         <Row className="form-group">
           <Col>
@@ -202,18 +209,20 @@ export default function AdminFaqEdit() {
         <Row className="form-group">
           <Col>
             <label className="mt-4">HTML Text</label>
-            <Form.Control as="textarea"
+            <Form.Control
+              as="textarea"
               rows={3}
               id="answer"
               onChange={(e) => setAnswer(e.currentTarget.value)}
               value={answer ?? ''}
-              placeholder='Free-form html text to be used as answer'
+              placeholder="Free-form html text to be used as answer"
             />
           </Col>
         </Row>
         <Row>
           <Col>
-            <Button onClick={onSubmit}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
+            <Button onClick={onSubmit}>Submit</Button>{' '}
+            <Button onClick={confirmGoBack}>Back</Button>
           </Col>
         </Row>
       </Col>

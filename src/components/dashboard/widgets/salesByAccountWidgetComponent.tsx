@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { SalesByAccountWidgetProps } from '@/types/props';
 
 export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
@@ -12,21 +12,24 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
   let averagePurchaseAmountUsd = 0;
   let pricePerTicketUsd = 0;
   let serviceFeePerTicketUsd = 0;
-  const tickets = (accountTotals?.Tickets ?? 0);
+  const tickets = accountTotals?.Tickets ?? 0;
   if (tickets > 0) {
     pricePerTicketUsd = (accountTotals?.RevenueUsd ?? 0) / tickets;
     serviceFeePerTicketUsd = (accountTotals?.ServiceFeesUsd ?? 0) / tickets;
   }
   if (accountTotals?.Purchases) {
     ticketsPerTransaction = tickets / accountTotals.Purchases;
-    averagePurchaseAmountUsd = (accountTotals?.TotalRevenueUsd ?? 0) / accountTotals.Purchases;
+    averagePurchaseAmountUsd =
+      (accountTotals?.TotalRevenueUsd ?? 0) / accountTotals.Purchases;
   }
 
   return (
     <Row className="sales-stat-block">
       <Col>
         <Row>
-          <Col className="sales-stat-block-title">Summary By Account {selectedYear ? selectedYear : ''}</Col>
+          <Col className="sales-stat-block-title">
+            Summary By Account {selectedYear ? selectedYear : ''}
+          </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-subtitle">{accountName}</Col>

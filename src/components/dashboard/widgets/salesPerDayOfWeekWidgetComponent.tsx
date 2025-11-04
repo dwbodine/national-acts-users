@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { ReactElement } from 'react';
 import { SalesPerDayOfWeekWidgetProps } from '@/types/props';
 import moment from 'moment';
@@ -35,11 +35,11 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
         numberOfWeeksInMonth += 1;
       }
 
-      let monthVal = (salesPerDayMonth?.find((x) => x.key === dayNumber)?.value ?? 0);
+      let monthVal = salesPerDayMonth?.find((x) => x.key === dayNumber)?.value ?? 0;
       if (monthVal > 0 && numberOfWeeksInMonth > 0) {
         monthVal /= numberOfWeeksInMonth;
       }
-      let yearVal = (salesPerDayYear?.find((x) => x.key === dayNumber)?.value ?? 0);
+      let yearVal = salesPerDayYear?.find((x) => x.key === dayNumber)?.value ?? 0;
       if (yearVal > 0 && numberOfWeeksInYear > 0) {
         yearVal /= numberOfWeeksInYear;
       }
@@ -63,8 +63,8 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
               {dayName} ${yearVal.toFixed(2)}
             </Col>
           </Row>,
-        );        
-      }    
+        );
+      }
     }
   }
 
@@ -72,7 +72,10 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
     <Row className="sales-stat-block">
       <Col>
         <Row>
-          <Col className="sales-stat-block-title">Average Sales by Day of Week {(currentYear === selectedYear) ? '' : selectedYear}</Col>
+          <Col className="sales-stat-block-title">
+            Average Sales by Day of Week{' '}
+            {currentYear === selectedYear ? '' : selectedYear}
+          </Col>
         </Row>
         <Row hidden={currentYear !== selectedYear}>
           <Col className="sales-stat-block-subtitle">Current Month</Col>

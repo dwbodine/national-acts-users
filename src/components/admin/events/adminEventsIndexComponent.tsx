@@ -1,7 +1,13 @@
-"use client";
+'use client';
 
-import { Button, Col, FormCheck, Row } from 'react-bootstrap';
-import { GetCountriesResponse, GetEventsResponse, GetSellersResponse, GetToursResponse, ModifyEventResponse } from '@/types/responses';
+import { Button, Col, FormCheck, Row } from 'rsuite';
+import {
+  GetCountriesResponse,
+  GetEventsResponse,
+  GetSellersResponse,
+  GetToursResponse,
+  ModifyEventResponse,
+} from '@/types/responses';
 import { SelectPicker, Table } from 'rsuite';
 import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import {
@@ -65,7 +71,8 @@ export default function AdminEventsIndex() {
   const router = useRouter();
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [eventIdList, setEventIdList] = useState<number[]>([]);
-  const allEventIds: number[] = currentAdminSelection.events?.map(evt => evt.externalEventId) ?? [];
+  const allEventIds: number[] =
+    currentAdminSelection.events?.map((evt) => evt.externalEventId) ?? [];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -99,7 +106,7 @@ export default function AdminEventsIndex() {
         setSelectedAction(null);
         dispatch(setReloadEvents(false));
         const adminSelection = { ...currentAdminSelection };
-        const sellerId: number = (adminSelection.sellerId ?? 0);
+        const sellerId: number = adminSelection.sellerId ?? 0;
         if (sellerId === 0) {
           setTableLoading(false);
           return;
@@ -120,22 +127,23 @@ export default function AdminEventsIndex() {
               start,
             };
             dispatch(setAdminDates(selection));
-            getTours(sellerId)
-              .then((tourResponse: GetToursResponse) => {
-                if (!tourResponse.error && tourResponse.tours) {
-                  dispatch(setTours(tourResponse.tours));
-                  getTicketSocketEventsOnly(adminSelection.sellerId).then((resp: GetEventsResponse) => {
+            getTours(sellerId).then((tourResponse: GetToursResponse) => {
+              if (!tourResponse.error && tourResponse.tours) {
+                dispatch(setTours(tourResponse.tours));
+                getTicketSocketEventsOnly(adminSelection.sellerId).then(
+                  (resp: GetEventsResponse) => {
                     if (resp.events && !resp.error) {
                       dispatch(setTicketSocketEventsOnly(response.events));
                     }
                     dispatch(setIsLoading(false));
                     setTableLoading(false);
-                  });
-                } else {
-                  dispatch(setIsLoading(false));
-                  setTableLoading(false);
-                }
-              });
+                  },
+                );
+              } else {
+                dispatch(setIsLoading(false));
+                setTableLoading(false);
+              }
+            });
           } else {
             dispatch(setIsLoading(false));
             setTableLoading(false);
@@ -150,7 +158,16 @@ export default function AdminEventsIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [dispatch, getSellers, currentAdminSelection, getAdminEvents, tableLoading, getTours, getTicketSocketEventsOnly, getAllCountries]);
+  }, [
+    dispatch,
+    getSellers,
+    currentAdminSelection,
+    getAdminEvents,
+    tableLoading,
+    getTours,
+    getTicketSocketEventsOnly,
+    getAllCountries,
+  ]);
 
   const updateSeller = (sellerId: number | null) => {
     if (!sellerId || isNaN(sellerId)) {
@@ -180,9 +197,7 @@ export default function AdminEventsIndex() {
   };
 
   const addEvent = () => {
-    if (
-      !currentAdminSelection.sellerId
-    ) {
+    if (!currentAdminSelection.sellerId) {
       return;
     }
     const vipEvent: VipEvent = {
@@ -248,7 +263,7 @@ export default function AdminEventsIndex() {
   const updateEventIdList = (eventId: number | undefined, addToList: boolean) => {
     let idList: number[] = eventIdList ? [...eventIdList] : [];
     if (!addToList && eventId && idList.includes(eventId)) {
-      idList = idList.filter(id => id !== eventId);
+      idList = idList.filter((id) => id !== eventId);
     } else if (addToList && eventId && !idList.includes(eventId)) {
       idList.push(eventId);
     }
@@ -270,88 +285,96 @@ export default function AdminEventsIndex() {
     if (eventIdList.length === 0) {
       return;
     }
-    setEventsInactive(eventIdList, isActive)
-      .then((response: ModifyEventResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = isActive ? "Events activated successfully" : "Events deactivated successfully";
-          toast.success(successMessage);
-          setEventIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = isActive ? 'Unexpected error occurred while activating events' : 'Unexpected error occurred while deactivating events';
-          }
-          toast.error(errorMessage);
+    setEventsInactive(eventIdList, isActive).then((response: ModifyEventResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = isActive
+          ? 'Events activated successfully'
+          : 'Events deactivated successfully';
+        toast.success(successMessage);
+        setEventIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = isActive
+            ? 'Unexpected error occurred while activating events'
+            : 'Unexpected error occurred while deactivating events';
         }
-      });
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const deleteEvents = (setDeleted: boolean) => {
     if (eventIdList.length === 0) {
       return;
     }
-    setEventsDeleted(eventIdList, setDeleted)
-      .then((response: ModifyEventResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = setDeleted ? "Events deleted successfully" : "Events undeleted successfully";
-          toast.success(successMessage);
-          setEventIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = setDeleted ? 'Unexpected error occurred while deleting events' : 'Unexpected error occurred while undeleting events';
-          }
-          toast.error(errorMessage);
+    setEventsDeleted(eventIdList, setDeleted).then((response: ModifyEventResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = setDeleted
+          ? 'Events deleted successfully'
+          : 'Events undeleted successfully';
+        toast.success(successMessage);
+        setEventIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = setDeleted
+            ? 'Unexpected error occurred while deleting events'
+            : 'Unexpected error occurred while undeleting events';
         }
-      });
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const setLiveInBandsInTown = () => {
     if (eventIdList.length === 0) {
       return;
     }
-    setEventsLiveInBandsInTown(eventIdList)
-      .then((response: ModifyEventResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = "Events updated successfully";
-          toast.success(successMessage);
-          setEventIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = 'Unexpected error occurred while updating events';
-          }
-          toast.error(errorMessage);
+    setEventsLiveInBandsInTown(eventIdList).then((response: ModifyEventResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = 'Events updated successfully';
+        toast.success(successMessage);
+        setEventIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = 'Unexpected error occurred while updating events';
         }
-      });
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const hideEvents = (setHidden: boolean) => {
     if (eventIdList.length === 0) {
       return;
     }
-    setEventsHidden(eventIdList, setHidden)
-      .then((response: ModifyEventResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = setHidden ? "Events hidden successfully" : "Events unhidden successfully";
-          toast.success(successMessage);
-          setEventIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = setHidden ? 'Unexpected error occurred while hiding events' : 'Unexpected error occurred while unhiding events';
-          }
-          toast.error(errorMessage);
+    setEventsHidden(eventIdList, setHidden).then((response: ModifyEventResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = setHidden
+          ? 'Events hidden successfully'
+          : 'Events unhidden successfully';
+        toast.success(successMessage);
+        setEventIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = setHidden
+            ? 'Unexpected error occurred while hiding events'
+            : 'Unexpected error occurred while unhiding events';
         }
-      });
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const handleBulkEdit = () => {
@@ -361,25 +384,25 @@ export default function AdminEventsIndex() {
     }
 
     switch (selectedAction) {
-      case "inactive":
+      case 'inactive':
         deactivateEvents(false);
         break;
-      case "active":
+      case 'active':
         deactivateEvents(true);
         break;
-      case "delete":
+      case 'delete':
         deleteEvents(true);
         break;
-      case "undelete":
+      case 'undelete':
         deleteEvents(false);
         break;
-      case "hidden":
+      case 'hidden':
         hideEvents(true);
         break;
-      case "unhide":
+      case 'unhide':
         hideEvents(false);
         break;
-      case "bandsintown":
+      case 'bandsintown':
         setLiveInBandsInTown();
         break;
       default:
@@ -394,25 +417,25 @@ export default function AdminEventsIndex() {
 
     let message = '';
     switch (selectedAction) {
-      case "inactive":
+      case 'inactive':
         message = `You are about to deactivate ${eventIdList.length} events`;
         break;
-      case "active":
+      case 'active':
         message = `You are about to activate ${eventIdList.length} events`;
         break;
-      case "delete":
+      case 'delete':
         message = `You are about to delete ${eventIdList.length} events`;
         break;
-      case "undelete":
+      case 'undelete':
         message = `You are about to undelete ${eventIdList.length} events`;
         break;
-      case "hidden":
+      case 'hidden':
         message = `You are about to hide ${eventIdList.length} events`;
         break;
-      case "unhide":
+      case 'unhide':
         message = `You are about to unhide ${eventIdList.length} events`;
         break;
-      case "bandsintown":
+      case 'bandsintown':
         message = `You are about to mark ${eventIdList.length} events as live in BandsInTown`;
         break;
       default:
@@ -446,70 +469,69 @@ export default function AdminEventsIndex() {
     if (!tourId || isNaN(tourId) || tourId <= 0) {
       tourId = 0;
     }
-    const tour = currentAdminSelection.tours?.find(x => x.tourId === tourId);
+    const tour = currentAdminSelection.tours?.find((x) => x.tourId === tourId);
     dispatch(setAdminTour(tour));
     dispatch(setReloadEvents(true));
   };
 
-  const tourList: ItemDataType<number>[] = currentAdminSelection?.tours ?
-    currentAdminSelection?.tours?.map((tour) => (
-      {
+  const tourList: ItemDataType<number>[] = currentAdminSelection?.tours
+    ? currentAdminSelection?.tours?.map((tour) => ({
         label: `${tour.tourName}`,
-        value: tour.tourId
-      }
-    )) : [];
+        value: tour.tourId,
+      }))
+    : [];
 
   const resetEvents = () => {
     onDateChange(undefined, undefined);
   };
 
-  const selectedTourId = (currentAdminSelection.selectedTour?.tourId ?? 0);
+  const selectedTourId = currentAdminSelection.selectedTour?.tourId ?? 0;
   const sellectedSellerId = currentAdminSelection.sellerId;
 
   const actions = [
     {
-      label: "Deactivate",
-      value: "inactive"
+      label: 'Deactivate',
+      value: 'inactive',
     },
     {
-      label: "Deactivate",
-      value: "inactive"
+      label: 'Deactivate',
+      value: 'inactive',
     },
     {
-      label: "Delete",
-      value: "delete"
+      label: 'Delete',
+      value: 'delete',
     },
     {
-      label: "Undelete",
-      value: "undelete"
+      label: 'Undelete',
+      value: 'undelete',
     },
     {
-      label: "Hide",
-      value: "hidden"
+      label: 'Hide',
+      value: 'hidden',
     },
     {
-      label: "Unhide",
-      value: "unhide"
+      label: 'Unhide',
+      value: 'unhide',
     },
     {
-      label: "Mark Live In BandsInTown",
-      value: "bandsintown"
-    }
+      label: 'Mark Live In BandsInTown',
+      value: 'bandsintown',
+    },
   ];
 
-  const actionList: ItemDataType<string>[] = actions.map((action) => (
-    {
-      label: action.label,
-      value: action.value
-    }
-  ));
+  const actionList: ItemDataType<string>[] = actions.map((action) => ({
+    label: action.label,
+    value: action.value,
+  }));
 
   return (
     <div className="admin-container">
       <Row className="refresh-results-header">
         <Col>
           <AdminListHomeButton />
-          <Button hidden={sellectedSellerId === undefined} onClick={addEvent}>Add New Event</Button>
+          <Button hidden={sellectedSellerId === undefined} onClick={addEvent}>
+            Add New Event
+          </Button>
         </Col>
       </Row>
       <Row className="refresh-results-header">
@@ -525,9 +547,7 @@ export default function AdminEventsIndex() {
         Countries={currentAdminSelection.countries}
       />
       <Row className="admin-select" hidden={tourList.length === 0}>
-        <Col xs={1}>
-          Tour:
-        </Col>
+        <Col xs={1}>Tour:</Col>
         <Col>
           <SelectPicker
             value={selectedTourId}
@@ -551,12 +571,16 @@ export default function AdminEventsIndex() {
       />
       <Row>
         <Col>
-          <Button disabled={sellectedSellerId === undefined} onClick={resetEvents}>Reset</Button>
+          <Button disabled={sellectedSellerId === undefined} onClick={resetEvents}>
+            Reset
+          </Button>
         </Col>
       </Row>
       <Row hidden={allEventIds.length === 0}>
         <Col className="bulk-arrow-row">
-          <div><FaArrowTurnDown className="bulk-arrow" /></div>
+          <div>
+            <FaArrowTurnDown className="bulk-arrow" />
+          </div>
           <div>With selected:</div>
           <div>
             <SelectPicker
@@ -589,18 +613,22 @@ export default function AdminEventsIndex() {
               <HeaderCell>
                 <FormCheck
                   id={`evtId_selectAll`}
-                  checked={allEventIds.length > 0 && (eventIdList.length === allEventIds.length)}
+                  checked={
+                    allEventIds.length > 0 && eventIdList.length === allEventIds.length
+                  }
                   onChange={(e) => selectAllEvents(e.currentTarget.checked)}
                 />
               </HeaderCell>
               <Cell>
-                {(rowData: VipEvent) =>
+                {(rowData: VipEvent) => (
                   <FormCheck
                     id={`evtId_${rowData.externalEventId}`}
                     checked={eventIdList.includes(rowData.externalEventId)}
-                    onChange={(e) => updateEventIdList(rowData.externalEventId, e.currentTarget.checked)}
+                    onChange={(e) =>
+                      updateEventIdList(rowData.externalEventId, e.currentTarget.checked)
+                    }
                   />
-                }
+                )}
               </Cell>
             </Column>
             <Column flexGrow={1} minWidth={100}>
@@ -642,7 +670,7 @@ export default function AdminEventsIndex() {
             <Column flexGrow={1}>
               <HeaderCell>&nbsp;</HeaderCell>
               <Cell>
-                {(rowData: VipEvent) =>
+                {(rowData: VipEvent) => (
                   <a
                     href="#"
                     id={`${rowData.externalEventId}_event`}
@@ -650,7 +678,7 @@ export default function AdminEventsIndex() {
                   >
                     Edit
                   </a>
-                }
+                )}
               </Cell>
             </Column>
             <Column flexGrow={1}>
@@ -677,4 +705,3 @@ export default function AdminEventsIndex() {
     </div>
   );
 }
-

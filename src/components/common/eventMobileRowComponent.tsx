@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button, Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, Row } from 'rsuite';
 import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
 import React, { ReactElement } from 'react';
 import { formatCurrencyAmount, getEventStatusSlug } from '@/utils/eventUtils';
@@ -32,7 +32,7 @@ export default function EventMobileRow(props: EventRowProps) {
   const statusSlug = getEventStatusSlug(vipEvent);
   let statusClass = '';
   if (statusSlug !== 'active') {
-    statusClass = `event-${statusSlug}`
+    statusClass = `event-${statusSlug}`;
   }
 
   const venueName = vipEvent.venue?.name;
@@ -49,7 +49,9 @@ export default function EventMobileRow(props: EventRowProps) {
     ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
       ticketTypes.forEach((ticketType: TicketType) => {
         const key = `ttd${i}`;
-        const data = ticketTypeData.find((x) => x.TicketType === ticketType.ticketTypeName);
+        const data = ticketTypeData.find(
+          (x) => x.TicketType === ticketType.ticketTypeName,
+        );
         let number = 0;
         let total = '';
         if (data) {
@@ -65,21 +67,28 @@ export default function EventMobileRow(props: EventRowProps) {
               {total})
             </div>,
           );
-        }        
+        }
         i += 1;
       });
     });
   }
 
-  const currencySymbol = vipEvent.nonUsaCurrencySymbol ?? "$";
-  const exchangeRate = currencySymbol === "$" ? 1 : 0;
+  const currencySymbol = vipEvent.nonUsaCurrencySymbol ?? '$';
+  const exchangeRate = currencySymbol === '$' ? 1 : 0;
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
   const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0));
-  const revenueUsd = Number((vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0));
-  const serviceFees = Number((vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0));
-  const serviceFeesUsd = Number((vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0));
-  const buttonText = currentSellerType === SellerType.Venue ? 'Customer List' : 'VIP List';
-  const noOrders = (!vipEvent.orders || vipEvent.orders.length === 0);
+  const revenueUsd = Number(
+    (vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0),
+  );
+  const serviceFees = Number(
+    (vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0),
+  );
+  const serviceFeesUsd = Number(
+    (vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0),
+  );
+  const buttonText =
+    currentSellerType === SellerType.Venue ? 'Customer List' : 'VIP List';
+  const noOrders = !vipEvent.orders || vipEvent.orders.length === 0;
 
   const revClass = hideRevItem ? 'no-print' : '';
 
@@ -109,7 +118,7 @@ export default function EventMobileRow(props: EventRowProps) {
           </Row>
           <Row>
             <Col>Tickets refunded:</Col>
-            <Col>{(vipEvent.numTicketsRefunded ?? 0)}</Col>
+            <Col>{vipEvent.numTicketsRefunded ?? 0}</Col>
           </Row>
           <Row>
             <Col>Tickets comped:</Col>
@@ -127,11 +136,27 @@ export default function EventMobileRow(props: EventRowProps) {
           </Row>
           <Row hidden={hideRevItem} className={revClass}>
             <Col>Revenue:</Col>
-            <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
+            <Col>
+              {formatCurrencyAmount(
+                revenue,
+                revenueUsd,
+                currencySymbol,
+                exchangeRate,
+                isAdmin,
+              )}
+            </Col>
           </Row>
           <Row hidden={hideServiceFees} className="no-print">
             <Col>Service Fees:</Col>
-            <Col>{formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
+            <Col>
+              {formatCurrencyAmount(
+                serviceFees,
+                serviceFeesUsd,
+                currencySymbol,
+                exchangeRate,
+                isAdmin,
+              )}
+            </Col>
           </Row>
           <Row hidden={noOrders}>
             <Col>
@@ -140,7 +165,13 @@ export default function EventMobileRow(props: EventRowProps) {
           </Row>
           <Row hidden={!showNotes}>
             <Col>
-              <Button onClick={() => showNoteDialog ? showNoteDialog(vipEvent.externalEventId): null}>Notes</Button>
+              <Button
+                onClick={() =>
+                  showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null
+                }
+              >
+                Notes
+              </Button>
             </Col>
           </Row>
         </Container>

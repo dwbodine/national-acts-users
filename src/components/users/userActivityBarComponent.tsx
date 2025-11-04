@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row} from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import {
   setReloadActivities,
   setUserActivityDateRange,
@@ -28,7 +28,7 @@ export default function UserActivityBar() {
     userActivitySelection.end = selectedEnd;
     dispatch(setUserActivityDateRange(userActivitySelection));
     submitReport();
-  };  
+  };
 
   return (
     <>

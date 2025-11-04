@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
 import { useRouter } from 'next/navigation';
 
 export default function ReportsListHomeButton() {

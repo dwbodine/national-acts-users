@@ -1,7 +1,5 @@
-import LogoutComponent from "@/components/common/logoutComponent";
+import LogoutComponent from '@/components/common/logoutComponent';
 
 export default function Logout() {
-  return (
-    <LogoutComponent />
-  );
+  return <LogoutComponent />;
 }

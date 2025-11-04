@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { FaSignOutAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';

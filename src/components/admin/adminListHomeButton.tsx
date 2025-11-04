@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
 import { useRouter } from 'next/navigation';
 
 export default function AdminListHomeButton() {
@@ -8,5 +8,9 @@ export default function AdminListHomeButton() {
   const goHome = () => {
     router.push('/admin');
   };
-  return <Button className="admin-home-button" onClick={goHome}>Back</Button>;
+  return (
+    <Button className="admin-home-button" onClick={goHome}>
+      Back
+    </Button>
+  );
 }

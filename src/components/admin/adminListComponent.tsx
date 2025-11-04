@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useDispatch } from 'react-redux';
@@ -12,7 +12,7 @@ export default function AdminList() {
   const router = useRouter();
   const { getUser } = useCurrentUser();
   const user = getUser();
-  const isDennis = (user?.isAdmin ?? false) && (user?.username === 'dwbodine@gmail.com');
+  const isDennis = (user?.isAdmin ?? false) && user?.username === 'dwbodine@gmail.com';
 
   const goToAdminPage = (adminAction: string) => {
     switch (adminAction) {
@@ -65,7 +65,7 @@ export default function AdminList() {
   }, [dispatch]);
 
   return (
-    <Row className='admin-container'>
+    <Row className="admin-container">
       <Col>
         <Row hidden={!isDennis}>
           <Col>
@@ -73,7 +73,8 @@ export default function AdminList() {
             <ul>
               <li>
                 <a className="admin-link" onClick={() => goToAdminPage('view-log')}>
-                  View Logs</a>
+                  View Logs
+                </a>
               </li>
             </ul>
           </Col>
@@ -83,12 +84,18 @@ export default function AdminList() {
             <h5>Site Admin</h5>
             <ul>
               <li>
-                <a className="admin-link" onClick={() => goToAdminPage('manage-site-settings')}>
+                <a
+                  className="admin-link"
+                  onClick={() => goToAdminPage('manage-site-settings')}
+                >
                   Manage Site Settings
                 </a>
               </li>
               <li>
-                <a className="admin-link" onClick={() => goToAdminPage('manage-global-seller-settings')}>
+                <a
+                  className="admin-link"
+                  onClick={() => goToAdminPage('manage-global-seller-settings')}
+                >
                   Manage Sellers
                 </a>
               </li>
@@ -132,7 +139,10 @@ export default function AdminList() {
             <h5>Event/Order Admin</h5>
             <ul>
               <li>
-                <a className="admin-link" onClick={() => goToAdminPage('manage-refresh-data')}>
+                <a
+                  className="admin-link"
+                  onClick={() => goToAdminPage('manage-refresh-data')}
+                >
                   Refresh Data from TicketSocket
                 </a>
               </li>

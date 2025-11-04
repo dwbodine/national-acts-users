@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
 import { GetEventsResponse } from '@/types/responses';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import ReportDatePicker from '../../common/reportDatePickerControl';
@@ -74,7 +74,6 @@ export default function ReportsCustomerExport() {
     }
   };
 
-
   const onSubmit = () => {
     if (
       currentAdminReportSelection &&
@@ -109,7 +108,6 @@ export default function ReportsCustomerExport() {
       toast.warning('No dates selected');
     }
   };
-
 
   return (
     <div className="admin-container">

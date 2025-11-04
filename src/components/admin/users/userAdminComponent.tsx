@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import UserActivityBar from "../../users/userActivityBarComponent";
-import UserActivityTable from "../../users/userActivityTable";
+import UserActivityBar from '../../users/userActivityBarComponent';
+import UserActivityTable from '../../users/userActivityTable';
 
 export default function UserAdminComponent() {
-    return (
-        <>
-            <UserActivityBar />
-            <UserActivityTable />
-        </>
-    );
+  return (
+    <>
+      <UserActivityBar />
+      <UserActivityTable />
+    </>
+  );
 }

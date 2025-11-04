@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from 'react';
 import ClientSellersComponent from '@/components/sales/events/clientSellersComponent';
@@ -27,9 +27,5 @@ export default function HomePage() {
     }
   }, [router, getUser, user]);
 
-
-
-  return (
-    loggedInNonAdmin ? <ClientSellersComponent /> : <></>
-  );
+  return loggedInNonAdmin ? <ClientSellersComponent /> : <></>;
 }

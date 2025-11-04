@@ -1,10 +1,12 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { RefreshTicketSocketDataResultProps } from '@/types/props';
 import moment from 'moment';
 
-export default function RefreshTicketSocketDataResults(props: RefreshTicketSocketDataResultProps) {
+export default function RefreshTicketSocketDataResults(
+  props: RefreshTicketSocketDataResultProps,
+) {
   const results = props.UpdateResults;
 
   let succeeded = '';

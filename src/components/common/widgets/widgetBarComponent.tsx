@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import RevenueWidget from './revenueWidgetComponent';
 import ShirtSizesWidget from './shirtSizesWidgetComponent';
 import ShowsListedWidget from './showsListedWidgetComponent';

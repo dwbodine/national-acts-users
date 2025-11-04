@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'rsuite';
 import { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
+import Container from 'rsuite/Container';
 import { ForgotPasswordMode } from '@/types/user';
 import { UserResponse } from '@/types/responses';
 import { useForgotPassword } from '@/hooks/user/useForgotPassword';

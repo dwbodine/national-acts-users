@@ -1,11 +1,22 @@
-"use client";
+'use client';
 
-import { GetPageTypesResponse, GetPagesResponse, GetSellersResponse } from '@/types/responses';
-import { setAllPages, setAllSellers, setPageTypes, setReloadPages, setReloadSellers, setSelectedPage } from '@/lib/adminSelectionSlice';
+import {
+  GetPageTypesResponse,
+  GetPagesResponse,
+  GetSellersResponse,
+} from '@/types/responses';
+import {
+  setAllPages,
+  setAllSellers,
+  setPageTypes,
+  setReloadPages,
+  setReloadSellers,
+  setSelectedPage,
+} from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
 import { Page } from '@/types/public';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
@@ -69,7 +80,14 @@ export default function AdminPagesIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [getAllPages, dispatch, currentAdminSelection, tableLoading, getAdminSellers, getPageTypes]);
+  }, [
+    getAllPages,
+    dispatch,
+    currentAdminSelection,
+    tableLoading,
+    getAdminSellers,
+    getPageTypes,
+  ]);
 
   const addPage = () => {
     const page: Page = {
@@ -78,7 +96,7 @@ export default function AdminPagesIndex() {
       pageType: {
         pageTypeId: 1,
         pageTypeName: '',
-        pageTypeTemplate: ''
+        pageTypeTemplate: '',
       },
       route: '',
       title: '',
@@ -133,7 +151,10 @@ export default function AdminPagesIndex() {
           <HeaderCell>Page Title</HeaderCell>
           <Cell className="admin-click-cell">
             {(rowData) => (
-              <div id={rowData.pageId} onClick={() => editPage(parseInt(`${rowData.pageId}`))}>
+              <div
+                id={rowData.pageId}
+                onClick={() => editPage(parseInt(`${rowData.pageId}`))}
+              >
                 {rowData.title}
               </div>
             )}

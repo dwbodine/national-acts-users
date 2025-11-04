@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import CurrentEvents from "../../sales/events/currentEventsComponent";
-import SalesBar from "../../sales/events/salesBarComponent";
+import CurrentEvents from '../../sales/events/currentEventsComponent';
+import SalesBar from '../../sales/events/salesBarComponent';
 
 export default function AdminSellersComponent() {
-    return (
-        <>
-            <SalesBar />
-            <CurrentEvents />
-        </>
-    );
+  return (
+    <>
+      <SalesBar />
+      <CurrentEvents />
+    </>
+  );
 }

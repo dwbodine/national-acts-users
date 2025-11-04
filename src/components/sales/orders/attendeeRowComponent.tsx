@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { FaCheck, FaX } from 'react-icons/fa6';
 import { setFocusControl, setReloadEvents } from '@/lib/reportSelectionSlice';
@@ -13,30 +13,37 @@ export default function AttendeeRow(props: AttendeeRowProps) {
   const canCheckInTickets = props.CanCheckInTickets;
   const ticket = props.Ticket;
   const router = useRouter();
-  const ticketId = (ticket?.ticketSocketOrderTicketId ?? 0);
+  const ticketId = ticket?.ticketSocketOrderTicketId ?? 0;
   const dispatch = useDispatch();
   let attendeeName = `${ticket?.attendeeFirstName} ${ticket?.attendeeLastName}`;
   const currentCheckIn = ticket?.isCheckedIn;
-  const checkedInDate = currentCheckIn && ticket ? moment(ticket.checkedInDate).format('MM/DD/YYYY') : '';
-  const checkedInTime = currentCheckIn && ticket ? moment(ticket.checkedInDate).format('h:mm a') : '';
+  const checkedInDate =
+    currentCheckIn && ticket ? moment(ticket.checkedInDate).format('MM/DD/YYYY') : '';
+  const checkedInTime =
+    currentCheckIn && ticket ? moment(ticket.checkedInDate).format('h:mm a') : '';
   if (currentCheckIn) {
     attendeeName += ` (${checkedInTime})`;
   }
   const id = `ticket_${ticket?.ticketSocketOrderTicketId}`;
-  const className = canCheckInTickets ? (currentCheckIn ? 'attendee-check-highlight' : 'attendee-check') : (currentCheckIn ? 'attendee-highlight' : 'attendee');
+  const className = canCheckInTickets
+    ? currentCheckIn
+      ? 'attendee-check-highlight'
+      : 'attendee-check'
+    : currentCheckIn
+      ? 'attendee-highlight'
+      : 'attendee';
   const { setTicketsCheckedIn } = useSetTicketsCheckedIn();
   let titleText: string = '';
 
   const checkIn = (checkedIn: boolean) => {
-    setTicketsCheckedIn([ticketId], checkedIn)
-      .then((response: ModifyTicketResponse) => {
-        if (response.success) {
-          dispatch(setFocusControl(id));
-          dispatch(setReloadEvents(true));
-        } else if (response.statusCode === 401 || response.statusCode === 422) {
-          router.push('/logout');
-        }
-      });
+    setTicketsCheckedIn([ticketId], checkedIn).then((response: ModifyTicketResponse) => {
+      if (response.success) {
+        dispatch(setFocusControl(id));
+        dispatch(setReloadEvents(true));
+      } else if (response.statusCode === 401 || response.statusCode === 422) {
+        router.push('/logout');
+      }
+    });
   };
 
   const handleClick = () => {
@@ -46,7 +53,9 @@ export default function AttendeeRow(props: AttendeeRowProps) {
   };
 
   if (canCheckInTickets) {
-    titleText = currentCheckIn ? `Checked in at ${checkedInTime} on ${checkedInDate}` : `Check in ${attendeeName}`;
+    titleText = currentCheckIn
+      ? `Checked in at ${checkedInTime} on ${checkedInDate}`
+      : `Check in ${attendeeName}`;
   }
 
   let checkOutClass = 'check-out-hide';

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'rsuite';
 import { resetAdmin, setCountries, setReloadCountries } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AdminIndexBar from './adminIndexBarComponent';

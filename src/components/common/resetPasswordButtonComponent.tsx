@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { FaUnlockAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';

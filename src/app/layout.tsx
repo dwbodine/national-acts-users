@@ -1,16 +1,13 @@
-
 import 'react-toastify/ReactToastify.css';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 import '../Css/App.css';
 
-// eslint-disable-next-line camelcase
-import { Open_Sans } from "next/font/google";
+import { Open_Sans } from 'next/font/google';
 import Providers from '@/components/common/providers';
 
-// eslint-disable-next-line new-cap
 const openSans = Open_Sans({
-  subsets: ["latin-ext"],
-  variable: "--font-open-sans",  
+  subsets: ['latin-ext'],
+  variable: '--font-open-sans',
 });
 
 export default function RootLayout({
@@ -18,18 +15,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-    return (
+  return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
         <meta
           name="viewport"
           content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width"
         />
-         <meta name="theme-color" content="#FFFFFF" />
+        <meta name="theme-color" content="#FFFFFF" />
         <link rel="icon" href="/images/favicon.png"></link>
-      </head> 
+      </head>
       <body className={`${openSans.variable}`}>
-        <Providers>{children}</Providers>    
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

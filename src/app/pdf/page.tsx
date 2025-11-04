@@ -1,7 +1,5 @@
-import PdfExport from "@/components/common/pdfExportComponent";
+import PdfExport from '@/components/common/pdfExportComponent';
 
-export default function ToPdfPage() {    
-    return (
-        <PdfExport />
-    );
+export default function ToPdfPage() {
+  return <PdfExport />;
 }

@@ -1,10 +1,18 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
-import { GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/responses';
+import { Button, Col, Row } from 'rsuite';
+import {
+  GetExternalVenuesResponse,
+  ModifyExternalVenueResponse,
+} from '@/types/responses';
 import { Pagination, Table } from 'rsuite';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
-import { setAdminVenue, setReloadVenues, setVenueSearchTerm, setVenues } from '@/lib/adminSelectionSlice';
+import {
+  setAdminVenue,
+  setReloadVenues,
+  setVenueSearchTerm,
+  setVenues,
+} from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AdminListHomeButton from '../adminListHomeButton';
 import { ExternalVenue } from '@/types/admin';
@@ -26,7 +34,9 @@ export default function AdminVenuesIndex() {
   const [tableLoading, setTableLoading] = useState(true);
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
-  const [searchTerm, setSearchTerm] = useState<string | undefined>(currentAdminSelection.venueSearchTerm);
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(
+    currentAdminSelection.venueSearchTerm,
+  );
   const router = useRouter();
 
   const searchVenues = useCallback(() => {
@@ -40,7 +50,6 @@ export default function AdminVenuesIndex() {
     getAllVenues(searchTerm).then((response: GetExternalVenuesResponse) => {
       if (!response.error && response.venues) {
         dispatch(setVenues(response.venues));
-
       } else {
         toast.error(response.error);
       }
@@ -54,7 +63,11 @@ export default function AdminVenuesIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.reloadVenues && currentAdminSelection.venueSearchTerm && currentAdminSelection.venueSearchTerm.length >= 3) {
+      if (
+        currentAdminSelection.reloadVenues &&
+        currentAdminSelection.venueSearchTerm &&
+        currentAdminSelection.venueSearchTerm.length >= 3
+      ) {
         searchVenues();
       } else {
         dispatch(setReloadVenues(false));
@@ -136,15 +149,20 @@ export default function AdminVenuesIndex() {
   return (
     <div className="admin-container">
       <Row>
-        <Col><h3>External Event Venues Admin</h3></Col>
+        <Col>
+          <h3>External Event Venues Admin</h3>
+        </Col>
       </Row>
       <Row>
-        <Col><Button onClick={addVenue}>Add</Button><AdminListHomeButton /></Col>
+        <Col>
+          <Button onClick={addVenue}>Add</Button>
+          <AdminListHomeButton />
+        </Col>
       </Row>
       <Row>
         <Col xs={2}>
           <input
-            type="text" 
+            type="text"
             value={searchTerm ?? ''}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={(e) => submitOnEnter(e)}
@@ -173,7 +191,10 @@ export default function AdminVenuesIndex() {
                 {(rowData) => {
                   const venue = rowData as ExternalVenue;
                   return (
-                    <div id={venue.venueId.toString()} onClick={() => editVenue(parseInt(`${venue.venueId}`))}>
+                    <div
+                      id={venue.venueId.toString()}
+                      onClick={() => editVenue(parseInt(`${venue.venueId}`))}
+                    >
                       {venue.venue}
                     </div>
                   );
@@ -186,7 +207,10 @@ export default function AdminVenuesIndex() {
                 {(rowData) => {
                   const venue = rowData as ExternalVenue;
                   return (
-                    <div id={venue.venueId.toString()} onClick={() => editVenue(parseInt(`${venue.venueId}`))}>
+                    <div
+                      id={venue.venueId.toString()}
+                      onClick={() => editVenue(parseInt(`${venue.venueId}`))}
+                    >
                       {getExternalVenueLocation(venue)}
                     </div>
                   );
@@ -198,12 +222,17 @@ export default function AdminVenuesIndex() {
               <Cell>
                 {(rowData) => {
                   const venue = rowData as ExternalVenue;
-                  return venue.hasEvents ? '' :
-                    (
-                      <a className="admin-command-link" id={rowData.venueId} onClick={() => deleteSelectedVenue(parseInt(`${rowData.venueId}`))}>
-                        Delete
-                      </a>
-                    );
+                  return venue.hasEvents ? (
+                    ''
+                  ) : (
+                    <a
+                      className="admin-command-link"
+                      id={rowData.venueId}
+                      onClick={() => deleteSelectedVenue(parseInt(`${rowData.venueId}`))}
+                    >
+                      Delete
+                    </a>
+                  );
                 }}
               </Cell>
             </Column>

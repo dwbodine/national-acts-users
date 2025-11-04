@@ -1,10 +1,12 @@
-"use client";
+'use client';
 
 import { RefreshTicketSocketHistoryTableProps } from '@/types/props';
 import { Table } from 'rsuite';
 import moment from 'moment';
 
-export default function RefreshTicketSocketHistoryTable(props: RefreshTicketSocketHistoryTableProps) {
+export default function RefreshTicketSocketHistoryTable(
+  props: RefreshTicketSocketHistoryTableProps,
+) {
   const results = props.History;
   const { Column, HeaderCell, Cell } = Table;
 
@@ -28,13 +30,7 @@ export default function RefreshTicketSocketHistoryTable(props: RefreshTicketSock
       </Column>
       <Column resizable fullText flexGrow={3}>
         <HeaderCell>Seller</HeaderCell>
-        <Cell>
-          {(rowData) =>
-            rowData.sellerName
-              ? rowData.sellerName
-              : 'n/a'
-          }
-        </Cell>
+        <Cell>{(rowData) => (rowData.sellerName ? rowData.sellerName : 'n/a')}</Cell>
       </Column>
       <Column resizable fullText flexGrow={1}>
         <HeaderCell>Start Query</HeaderCell>

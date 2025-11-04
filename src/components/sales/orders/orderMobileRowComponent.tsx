@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'rsuite';
 import React, { ReactElement } from 'react';
 import { formatCurrencyAmount, getOrderStatusText } from '@/utils/eventUtils';
 import AttendeeRow from './attendeeRowComponent';
@@ -13,7 +13,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
   const eventName = props.EventName;
   const order = props.Order;
   const hasPhoneData = props.HasPhoneData;
-  const hasShirtData = ((order?.totalShirts ?? 0) > 0);
+  const hasShirtData = (order?.totalShirts ?? 0) > 0;
   const hideRev = props.HideRevenue;
   const hideServiceFees = props.HideServiceFees;
   const canCheckInTickets = props.CanCheckInTickets;
@@ -34,21 +34,27 @@ export default function OrderMobileRow(props: OrderRowProps) {
   const orderId = order?.orderId;
 
   const id = `order_${order?.ticketSocketOrderId}`;
-  const currencySymbol = order?.currencySymbol ?? "$";
+  const currencySymbol = order?.currencySymbol ?? '$';
   const exchangeRate = order?.exchangeRate ?? 1;
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
-  const purchaseDate = order?.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
+  const purchaseDate = order?.purchaseTimestamp
+    ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT')
+    : 'n/a';
   const revenue = Number((order?.revenue ?? 0) - (order?.revenueRefunded ?? 0));
   const revenueUsd = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0));
-  const serviceFees = Number((order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0));
-  const serviceFeesUsd = Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0));
+  const serviceFees = Number(
+    (order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0),
+  );
+  const serviceFeesUsd = Number(
+    (order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0),
+  );
 
   const ticketTypeRows: ReactElement[] = [];
   if (order?.tickets && order.tickets.length > 0) {
     const ticketMap = new Map<string, number>();
     order.tickets?.forEach((ticket) => {
       let ticketTypeName = ticket.ticketType;
-      const ticketType = ticketTypes?.find(t => t.ticketTypeId === ticket.ticketTypeId);
+      const ticketType = ticketTypes?.find((t) => t.ticketTypeId === ticket.ticketTypeId);
       if (ticketType) {
         ({ ticketTypeName } = ticketType);
       }
@@ -110,8 +116,9 @@ export default function OrderMobileRow(props: OrderRowProps) {
     });
   }
 
-  const phone = order?.phone?.startsWith("+1 ") ?
-    order.phone.replace("+1 ", "") : order?.phone;
+  const phone = order?.phone?.startsWith('+1 ')
+    ? order.phone.replace('+1 ', '')
+    : order?.phone;
 
   const revClass = hideRev ? 'no-print' : '';
 
@@ -120,55 +127,100 @@ export default function OrderMobileRow(props: OrderRowProps) {
       <td>
         <Container className="mobile-event-card" id={id}>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col xs={5} className="mobile-bold">Purchaser Name:</Col>
+            <Col xs={5} className="mobile-bold">
+              Purchaser Name:
+            </Col>
             <Col>{purchaserName}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col xs={5} className="mobile-bold">Attendee Names:</Col>
+            <Col xs={5} className="mobile-bold">
+              Attendee Names:
+            </Col>
             <Col>{attendeeNameRows}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones} className="no-print">
-            <Col xs={5} className="mobile-bold">Purchase Date:</Col>
+            <Col xs={5} className="mobile-bold">
+              Purchase Date:
+            </Col>
             <Col>{purchaseDate}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col xs={5} className="mobile-bold">Order Id:</Col>
+            <Col xs={5} className="mobile-bold">
+              Order Id:
+            </Col>
             <Col>{orderId}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col xs={5} className="mobile-bold">Order Status:</Col>
+            <Col xs={5} className="mobile-bold">
+              Order Status:
+            </Col>
             <Col>{orderStatus}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col xs={5} className="mobile-bold">Event Date:</Col>
+            <Col xs={5} className="mobile-bold">
+              Event Date:
+            </Col>
             <Col>{moment(eventDate).format('MM/DD/YYYY')}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col xs={5} className="mobile-bold">Event Name:</Col>
+            <Col xs={5} className="mobile-bold">
+              Event Name:
+            </Col>
             <Col>{eventName}</Col>
           </Row>
           <Row hidden={ticketTypeRows.length === 0 || showOnlyEmails || showOnlyPhones}>
-            <Col xs={5} className="mobile-bold">Ticket breakdown:</Col>
+            <Col xs={5} className="mobile-bold">
+              Ticket breakdown:
+            </Col>
             <Col>{ticketTypeRows}</Col>
           </Row>
           <Row hidden={hideRev || showOnlyEmails || showOnlyPhones} className={revClass}>
-            <Col xs={5} className="mobile-bold">Revenue:</Col>
-            <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
+            <Col xs={5} className="mobile-bold">
+              Revenue:
+            </Col>
+            <Col>
+              {formatCurrencyAmount(
+                revenue,
+                revenueUsd,
+                currencySymbol,
+                exchangeRate,
+                isAdmin,
+              )}
+            </Col>
           </Row>
-          <Row hidden={hideServiceFees || showOnlyEmails || showOnlyPhones} className="no-print">
-            <Col xs={5} className="mobile-bold">Service Fees:</Col>
-            <Col>{formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
+          <Row
+            hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}
+            className="no-print"
+          >
+            <Col xs={5} className="mobile-bold">
+              Service Fees:
+            </Col>
+            <Col>
+              {formatCurrencyAmount(
+                serviceFees,
+                serviceFeesUsd,
+                currencySymbol,
+                exchangeRate,
+                isAdmin,
+              )}
+            </Col>
           </Row>
           <Row hidden={showOnlyPhones}>
-            <Col xs={5} className="mobile-bold">Email:</Col>
+            <Col xs={5} className="mobile-bold">
+              Email:
+            </Col>
             <Col>{order?.email}</Col>
           </Row>
           <Row hidden={!hasPhoneData || showOnlyEmails}>
-            <Col xs={5} className="mobile-bold">Phone:</Col>
+            <Col xs={5} className="mobile-bold">
+              Phone:
+            </Col>
             <Col>{phone}</Col>
           </Row>
-          <Row hidden={!hasShirtData || (showOnlyEmails || showOnlyPhones)}>
-            <Col xs={5} className="mobile-bold">Shirts:</Col>
+          <Row hidden={!hasShirtData || showOnlyEmails || showOnlyPhones}>
+            <Col xs={5} className="mobile-bold">
+              Shirts:
+            </Col>
             <Col>{shirtSizeRows}</Col>
           </Row>
         </Container>

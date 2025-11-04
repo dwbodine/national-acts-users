@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { YearToDateWidgetProps } from '@/types/props';
 import moment from 'moment';
 
@@ -17,7 +17,8 @@ export default function YearToDateWidget(props: YearToDateWidgetProps) {
     averagePurchaseAmount = (totals?.totalRevenueUsd ?? 0) / totals.orders;
   }
 
-  const title = (selectedYear === currentYear) ? "Year-to-Date stats" : `${selectedYear} Yearly Stats`;
+  const title =
+    selectedYear === currentYear ? 'Year-to-Date stats' : `${selectedYear} Yearly Stats`;
 
   return (
     <Row className="sales-stat-block">

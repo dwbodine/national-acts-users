@@ -1,8 +1,9 @@
+@use 'variables' as v;
+
 html,
 body {
-  font:
-    14px 'Open Sans',
-    sans-serif;
+  font-family: v.$main-font-family;
+  font-size: v.$main-font-size;
   min-height: 100vh;
 }
 

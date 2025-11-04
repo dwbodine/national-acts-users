@@ -1,11 +1,8 @@
-"use client";
+'use client';
 
-import { Button, FormCheck } from 'react-bootstrap';
+import { Button, FormCheck } from 'rsuite';
 import { GetPermissionsResponse, UpdateRoleResponse } from '@/types/responses';
-import {
-  Permission,
-  Role,
-} from '@/types/user';
+import { Permission, Role } from '@/types/user';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { setReloadRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,7 +32,10 @@ export default function AdminRoleEdit() {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.selectedRole === undefined) {
         goBack();
-      } else if (allPermissions === undefined && (roleName === undefined || roleName === '')) {
+      } else if (
+        allPermissions === undefined &&
+        (roleName === undefined || roleName === '')
+      ) {
         dispatch(setIsLoading(true));
         setRoleName(currentAdminSelection.selectedRole.roleName);
         getAllPermissions().then((response: GetPermissionsResponse) => {
@@ -47,7 +47,14 @@ export default function AdminRoleEdit() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminSelection, roleName, allPermissions, getAllPermissions, dispatch, goBack]);
+  }, [
+    currentAdminSelection,
+    roleName,
+    allPermissions,
+    getAllPermissions,
+    dispatch,
+    goBack,
+  ]);
 
   const hasPermission = (permissionId: number) => {
     if (
@@ -64,7 +71,13 @@ export default function AdminRoleEdit() {
   };
 
   const updateRolePermissions = (permissionId: number, isChecked: boolean) => {
-    if (!allPermissions || !currentAdminSelection.selectedRole || !permissionId || isNaN(permissionId) || permissionId <= 0) {
+    if (
+      !allPermissions ||
+      !currentAdminSelection.selectedRole ||
+      !permissionId ||
+      isNaN(permissionId) ||
+      permissionId <= 0
+    ) {
       return;
     }
     const hasPerm = hasPermission(permissionId);
@@ -98,7 +111,7 @@ export default function AdminRoleEdit() {
     const newRoleName: string = roleName ? roleName : '';
 
     if (!newRoleName) {
-      toast.warn("Role name cannot be blank");
+      toast.warn('Role name cannot be blank');
       return;
     }
 
@@ -129,7 +142,12 @@ export default function AdminRoleEdit() {
         <FormCheck
           key={key}
           id={item.permissionId.toString()}
-          onChange={(e) => updateRolePermissions(parseInt(`${item.permissionId}`), e.currentTarget.checked)}
+          onChange={(e) =>
+            updateRolePermissions(
+              parseInt(`${item.permissionId}`),
+              e.currentTarget.checked,
+            )
+          }
           checked={checked}
           label={item.permissionName}
         />,
@@ -138,7 +156,7 @@ export default function AdminRoleEdit() {
   }
 
   const pageHeader =
-    ((currentAdminSelection.selectedRole?.roleId ?? 0) > 0) ? 'Edit role' : 'Add role';
+    (currentAdminSelection.selectedRole?.roleId ?? 0) > 0 ? 'Edit role' : 'Add role';
 
   return (
     <div

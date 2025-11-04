@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
 import { Venue, VipEvent } from '@/types/event';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
 import { DEFAULT_COUNTRY_ID } from '@/constants';
 import { GetEventsResponse } from '@/types/responses';
 import ReportsListHomeButton from '../reportsListHomeButton';
@@ -25,7 +25,6 @@ export default function ReportsMissingVenues() {
   const { getMissingVenueEvents } = useGetMissingVenueEvents();
   const [events, setEvents] = useState<VipEvent[] | undefined>(undefined);
 
-
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminReportSelection.reloadData) {
@@ -34,17 +33,22 @@ export default function ReportsMissingVenues() {
         getMissingVenueEvents().then((response: GetEventsResponse) => {
           setEvents(response.events);
           dispatch(setIsLoading(false));
-        })
+        });
       }
     }, 500);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [currentAdminReportSelection, globalSelection.isLoading, dispatch, getMissingVenueEvents]);
+  }, [
+    currentAdminReportSelection,
+    globalSelection.isLoading,
+    dispatch,
+    getMissingVenueEvents,
+  ]);
 
   const editEvent = (eventId: number) => {
-      dispatch(resetAdmin());
-      window.open(`/admin/events/edit?id=${eventId}`)
+    dispatch(resetAdmin());
+    window.open(`/admin/events/edit?id=${eventId}`);
   };
 
   const getVenueInformation = (venue: Venue): string => {
@@ -60,7 +64,8 @@ export default function ReportsMissingVenues() {
       location += ` ${venue.postalCode}`;
     }
     if (
-      venue.country && venue.country.countryName && 
+      venue.country &&
+      venue.country.countryName &&
       venue.country.countryId !== DEFAULT_COUNTRY_ID
     ) {
       location += `,  ${venue.country.countryName}`;
@@ -70,19 +75,15 @@ export default function ReportsMissingVenues() {
 
   const refresh = () => {
     dispatch(setReloadReportData(true));
-  }
+  };
 
   return (
     <div className="admin-container">
       <h3>Missing Venue Report</h3>
-      <ReportsListHomeButton /><Button onClick={refresh}>Refresh</Button>
-      <div className='mt-4'>Total events missing venues: {events?.length ?? 0}</div>
-      <Table
-            autoHeight={true}
-            data={events}
-            bordered
-            cellBordered
-          >
+      <ReportsListHomeButton />
+      <Button onClick={refresh}>Refresh</Button>
+      <div className="mt-4">Total events missing venues: {events?.length ?? 0}</div>
+      <Table autoHeight={true} data={events} bordered cellBordered>
         <Column flexGrow={1} minWidth={100}>
           <HeaderCell>Date</HeaderCell>
           <Cell>
@@ -96,27 +97,26 @@ export default function ReportsMissingVenues() {
         <Column flexGrow={3}>
           <HeaderCell>Venue (from TicketSocket data)</HeaderCell>
           <Cell>
-            {(rowData: VipEvent) => (rowData.venue ? getVenueInformation(rowData.venue) : '')}
+            {(rowData: VipEvent) =>
+              rowData.venue ? getVenueInformation(rowData.venue) : ''
+            }
           </Cell>
         </Column>
         <Column flexGrow={1}>
           <HeaderCell> </HeaderCell>
           <Cell>
-            {(rowData: VipEvent) =>
-                <a
-                  href="#"
-                  id={`${rowData.externalEventId}_event`}
-                  onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
-                >
-                  Edit
-                </a>
-                }
+            {(rowData: VipEvent) => (
+              <a
+                href="#"
+                id={`${rowData.externalEventId}_event`}
+                onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
+              >
+                Edit
+              </a>
+            )}
           </Cell>
         </Column>
       </Table>
-
-      
-      
     </div>
   );
 }

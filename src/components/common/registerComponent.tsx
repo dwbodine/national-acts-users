@@ -1,14 +1,13 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'rsuite';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { GetSellersResponse, UserResponse } from '@/types/responses';
-import Container from 'react-bootstrap/Container';
+import Container from 'rsuite/Container';
 import { Seller } from '@/types/event';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRegister } from '@/hooks/user/useRegister';
 import { useRouter } from 'next/navigation';
-
 
 export default function RegisterComponent() {
   const [username, setUsername] = useState('');
@@ -163,11 +162,11 @@ export default function RegisterComponent() {
               className="form-control"
             >
               <option value="0"> -- Select One --</option>
-              {sellers?.map(seller =>
+              {sellers?.map((seller) => (
                 <option key={seller.sellerId} value={seller.sellerId}>
                   {seller.name}
                 </option>
-              )}
+              ))}
             </select>
           </div>
         </Col>

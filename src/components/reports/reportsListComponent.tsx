@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
 import { useDispatch } from 'react-redux';
@@ -34,12 +34,20 @@ export default function ReportsList() {
         <Col>
           <ul>
             <li>
-              <a id="report-customer-export" className="admin-link" onClick={() => goToReport('report-customer-export')}>
+              <a
+                id="report-customer-export"
+                className="admin-link"
+                onClick={() => goToReport('report-customer-export')}
+              >
                 Export Customer Data
               </a>
             </li>
             <li>
-              <a id="report-missing-venues" className="admin-link" onClick={() => goToReport('report-missing-venues')}>
+              <a
+                id="report-missing-venues"
+                className="admin-link"
+                onClick={() => goToReport('report-missing-venues')}
+              >
                 Missing Venues Report
               </a>
             </li>

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
 import { setAllFaqs, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
 import { Faq } from '@/types/public';
 import { GetFaqsResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
@@ -58,7 +58,7 @@ export default function AdminFaqsIndex() {
       answer: '',
       category: {
         categoryId: 0,
-        categoryName: ''
+        categoryName: '',
       },
       faqId: 0,
       order: 0,
@@ -114,7 +114,8 @@ export default function AdminFaqsIndex() {
   return (
     <div className="admin-container">
       <h3>Manage FAQs</h3>
-      <Button onClick={addFaq}>Add FAQ</Button><AdminListHomeButton />
+      <Button onClick={addFaq}>Add FAQ</Button>
+      <AdminListHomeButton />
       <Table
         autoHeight
         data={currentAdminSelection.allFaqs}
@@ -124,11 +125,7 @@ export default function AdminFaqsIndex() {
       >
         <Column flexGrow={1}>
           <HeaderCell>Category</HeaderCell>
-          <Cell>
-            {(rowData) => (
-              <span>{rowData.category?.categoryName}</span>
-            )}
-          </Cell>
+          <Cell>{(rowData) => <span>{rowData.category?.categoryName}</span>}</Cell>
         </Column>
         <Column flexGrow={1}>
           <HeaderCell>Order</HeaderCell>
@@ -143,10 +140,22 @@ export default function AdminFaqsIndex() {
           <Cell>
             {(rowData) => (
               <span>
-                <FaArrowUp className="admin-up-down-button" onClick={() => moveUp(parseInt(`${rowData.faqId}`))} title="Move Up" />
-                <FaArrowDown className="admin-up-down-button" onClick={() => moveDown(parseInt(`${rowData.faqId}`))} title="Move Down" />
-                <Button onClick={() => editFaq(parseInt(`${rowData.faqId}`))}>Edit</Button>
-                <Button onClick={() => deleteOneFaq(parseInt(`${rowData.faqId}`))}>Delete</Button>
+                <FaArrowUp
+                  className="admin-up-down-button"
+                  onClick={() => moveUp(parseInt(`${rowData.faqId}`))}
+                  title="Move Up"
+                />
+                <FaArrowDown
+                  className="admin-up-down-button"
+                  onClick={() => moveDown(parseInt(`${rowData.faqId}`))}
+                  title="Move Down"
+                />
+                <Button onClick={() => editFaq(parseInt(`${rowData.faqId}`))}>
+                  Edit
+                </Button>
+                <Button onClick={() => deleteOneFaq(parseInt(`${rowData.faqId}`))}>
+                  Delete
+                </Button>
               </span>
             )}
           </Cell>

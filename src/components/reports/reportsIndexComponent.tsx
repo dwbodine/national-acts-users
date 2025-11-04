@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'rsuite';
 import ReportsIndexBar from './reportsIndexBarComponent';
 import ReportsList from './reportsListComponent';
 

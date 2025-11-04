@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { MonthToDateWidgetProps } from '@/types/props';
 
 export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
@@ -12,7 +12,8 @@ export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
     ticketsPerTransaction =
       (dashBoardData?.monthToDateTickets ?? 0) / dashBoardData.monthToDatePurchases;
     averagePurchaseAmount =
-      (dashBoardData?.monthToDateTotalRevenueUsd ?? 0) / dashBoardData.monthToDatePurchases;
+      (dashBoardData?.monthToDateTotalRevenueUsd ?? 0) /
+      dashBoardData.monthToDatePurchases;
   }
 
   return (

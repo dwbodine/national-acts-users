@@ -4,7 +4,7 @@ import AdminTourEdit from '../../../../components/admin/tour/adminTourEditCompon
 
 export default function AdminToursEdit() {
   const title = 'Client Portal - Edit Tour';
-  
+
   return (
     <AdminPage
       Title={title}

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'rsuite';
 import { exportCustomerDataToCsv, exportEventsToCsv } from '@/utils/eventUtils';
 import {
   resetSelection,
@@ -175,18 +175,16 @@ export default function SalesBar() {
 
   let tourList: ItemDataType<number>[] = [];
   if (currentReportSelection.tours && currentReportSelection.tours.length > 0) {
-    const activeTours = currentReportSelection.tours.filter(x => x.isActive);
+    const activeTours = currentReportSelection.tours.filter((x) => x.isActive);
     if (activeTours && activeTours.length > 0) {
-      tourList = activeTours.map(tour =>
-      ({
+      tourList = activeTours.map((tour) => ({
         label: `${tour.tourName}`,
-        value: tour.tourId
-      })
-      );
+        value: tour.tourId,
+      }));
     }
   }
 
-  const selectedTourId = (currentReportSelection?.selectedTourId ?? 0);
+  const selectedTourId = currentReportSelection?.selectedTourId ?? 0;
 
   useEffect(() => {
     const user = getUser();
@@ -206,7 +204,9 @@ export default function SalesBar() {
       setViewTourSelect(userHasPermission(user, EnumPermission.ViewTourSelect));
       setViewVIPItinerary(userHasPermission(user, EnumPermission.ViewVIPItinerary));
       if (currentReportSelection.seller && currentReportSelection.seller.sellerId > 0) {
-        const userSeller = user.sellers?.find(x => x.sellerId === currentReportSelection.seller.sellerId);
+        const userSeller = user.sellers?.find(
+          (x) => x.sellerId === currentReportSelection.seller.sellerId,
+        );
         if (userSeller) {
           const route = userSeller.routes?.[0];
           if (route) {
@@ -215,7 +215,13 @@ export default function SalesBar() {
         }
       }
     }
-  }, [windowSizeJson, getUser, userHasPermission, currentReportSelection.seller, webBaseUrl]);
+  }, [
+    windowSizeJson,
+    getUser,
+    userHasPermission,
+    currentReportSelection.seller,
+    webBaseUrl,
+  ]);
   return (
     <>
       <Row className="page-header">
@@ -233,10 +239,11 @@ export default function SalesBar() {
         </Col>
       </Row>
       <SelectSeller />
-      <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourList.length === 0}>
-        <Col xs={1}>
-          Tour:
-        </Col>
+      <Row
+        className="no-print admin-tour-row"
+        hidden={!viewTourSelect || tourList.length === 0}
+      >
+        <Col xs={1}>Tour:</Col>
         <Col sm={11} md={5}>
           <SelectPicker
             value={selectedTourId}
@@ -253,24 +260,30 @@ export default function SalesBar() {
       </Row>
       <Row className="admin-check-row no-print">
         <Col md={10} sm={12}>
-          {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0 ? (
+          {viewInactiveEvents &&
+          currentReportSelection.seller.sellerId > 0 &&
+          (currentReportSelection.selectedTourId ?? 0) === 0 ? (
             <InactiveCheck />
           ) : (
             ''
           )}
-          {viewDeletedEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0 ? (
+          {viewDeletedEvents &&
+          currentReportSelection.seller.sellerId > 0 &&
+          (currentReportSelection.selectedTourId ?? 0) === 0 ? (
             <DeletedCheck />
           ) : (
             ''
           )}
-          {viewHiddenEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0 ? (
+          {viewHiddenEvents &&
+          currentReportSelection.seller.sellerId > 0 &&
+          (currentReportSelection.selectedTourId ?? 0) === 0 ? (
             <HiddenCheck />
           ) : (
             ''
           )}
           {viewRevenueControls &&
-            currentReportSelection.seller.sellerId > 0 &&
-            hasEvents ? (
+          currentReportSelection.seller.sellerId > 0 &&
+          hasEvents ? (
             <RevenueCheck />
           ) : (
             ''
@@ -296,17 +309,17 @@ export default function SalesBar() {
             ''
           )}
           {!windowSize.isMobile &&
-            viewPrintButton &&
-            currentReportSelection.seller.sellerId > 0 &&
-            hasEvents ? (
+          viewPrintButton &&
+          currentReportSelection.seller.sellerId > 0 &&
+          hasEvents ? (
             <PrintButton />
           ) : (
             ''
           )}
           {!windowSize.isMobile &&
-            canExportData &&
-            currentReportSelection.seller.sellerId > 0 &&
-            hasEvents ? (
+          canExportData &&
+          currentReportSelection.seller.sellerId > 0 &&
+          hasEvents ? (
             <span className="admin-button">
               <Button onClick={exportEventData}>Export Summary</Button>
             </span>
@@ -314,9 +327,9 @@ export default function SalesBar() {
             ''
           )}
           {!windowSize.isMobile &&
-            canExportCustomerData &&
-            currentReportSelection.seller.sellerId > 0 &&
-            hasEvents ? (
+          canExportCustomerData &&
+          currentReportSelection.seller.sellerId > 0 &&
+          hasEvents ? (
             <span className="admin-button">
               <Button onClick={exportCustomerData}>Export Customer Data</Button>
             </span>
@@ -324,10 +337,10 @@ export default function SalesBar() {
             ''
           )}
           {!windowSize.isMobile &&
-            viewVIPItinerary &&
-            currentReportSelection.seller.sellerId > 0 &&
-            !currentReportSelection.showInactive && 
-            hasEvents ? (
+          viewVIPItinerary &&
+          currentReportSelection.seller.sellerId > 0 &&
+          !currentReportSelection.showInactive &&
+          hasEvents ? (
             <>
               <span className="admin-button">
                 <Button onClick={() => setVipItineraryOpen(true)}>Event Itinerary</Button>

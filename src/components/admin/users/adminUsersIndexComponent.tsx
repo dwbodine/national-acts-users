@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { GetRolesResponse, GetUsersResponse } from '@/types/responses';
 import { Role, User } from '@/types/user';
@@ -28,9 +28,7 @@ export default function AdminUsersIndex() {
   const debouncedResults = useMemo(() => debouce(setSearchTerm, 300), []);
 
   useEffect(() => {
-    if (
-      allRoles === undefined
-    ) {
+    if (allRoles === undefined) {
       setTableLoading(true);
       dispatch(setIsLoading(true));
       getAllRoles().then((resp: GetRolesResponse) => {
@@ -57,7 +55,15 @@ export default function AdminUsersIndex() {
     return () => {
       debouncedResults.cancel();
     };
-  }, [getAllUsers, dispatch, currentAdminSelection, debouncedResults, tableLoading, allRoles, getAllRoles]);
+  }, [
+    getAllUsers,
+    dispatch,
+    currentAdminSelection,
+    debouncedResults,
+    tableLoading,
+    allRoles,
+    getAllRoles,
+  ]);
 
   const editUser = (userId: number) => {
     if (!userId || isNaN(userId)) {
@@ -75,20 +81,21 @@ export default function AdminUsersIndex() {
     let filteredUsers: User[] | undefined = users;
     if (searchTerm && searchTerm.length >= 2 && users && users.length > 0) {
       const srch = searchTerm.toLowerCase();
-      filteredUsers = users.filter((user) =>
-      (
-        user.firstName?.toLowerCase().includes(srch) ||
-        user.lastName?.toLowerCase().includes(srch) ||
-        user.username.toLowerCase().includes(srch) ||
-        (!user.isAdmin && user.sellers?.find(x => x.sellerName.toLowerCase().includes(srch)) !== undefined)
-      )
+      filteredUsers = users.filter(
+        (user) =>
+          user.firstName?.toLowerCase().includes(srch) ||
+          user.lastName?.toLowerCase().includes(srch) ||
+          user.username.toLowerCase().includes(srch) ||
+          (!user.isAdmin &&
+            user.sellers?.find((x) => x.sellerName.toLowerCase().includes(srch)) !==
+              undefined),
       );
     }
     return filteredUsers;
   };
 
   const getRoleName = (roleId: number) => {
-    const role = allRoles?.find(x => x.roleId === roleId);
+    const role = allRoles?.find((x) => x.roleId === roleId);
     if (role) {
       return role.roleName;
     }
@@ -101,7 +108,7 @@ export default function AdminUsersIndex() {
     <div className="admin-container">
       <h3>Users Admin</h3>
       <input
-        type="text" 
+        type="text"
         value={searchTerm ?? ''}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="form-control search-text-input no-print"
@@ -123,7 +130,11 @@ export default function AdminUsersIndex() {
               const name = `${rowData.firstName}`;
               const className = rowData.isActive ? '' : 'admin-inactive';
               return (
-                <div className={className} id={rowData.userId} onClick={() => editUser(parseInt(`${rowData.userId}`))}>
+                <div
+                  className={className}
+                  id={rowData.userId}
+                  onClick={() => editUser(parseInt(`${rowData.userId}`))}
+                >
                   {name}
                 </div>
               );
@@ -137,7 +148,11 @@ export default function AdminUsersIndex() {
               const name = `${rowData.lastName}`;
               const className = rowData.isActive ? '' : 'admin-inactive';
               return (
-                <div className={className} id={rowData.userId} onClick={() => editUser(parseInt(`${rowData.userId}`))}>
+                <div
+                  className={className}
+                  id={rowData.userId}
+                  onClick={() => editUser(parseInt(`${rowData.userId}`))}
+                >
                   {name}
                 </div>
               );
@@ -151,7 +166,11 @@ export default function AdminUsersIndex() {
               const name = `${rowData.username}`;
               const className = rowData.isActive ? '' : 'admin-inactive';
               return (
-                <div className={className} id={rowData.userId} onClick={() => editUser(parseInt(`${rowData.userId}`))}>
+                <div
+                  className={className}
+                  id={rowData.userId}
+                  onClick={() => editUser(parseInt(`${rowData.userId}`))}
+                >
                   {name}
                 </div>
               );
@@ -182,7 +201,11 @@ export default function AdminUsersIndex() {
               }
               const className = rowData.isActive ? '' : 'admin-inactive';
               return (
-                <div className={className} id={rowData.userId.toString()} onClick={() => editUser(parseInt(`${rowData.userId}`))}>
+                <div
+                  className={className}
+                  id={rowData.userId.toString()}
+                  onClick={() => editUser(parseInt(`${rowData.userId}`))}
+                >
                   {seller}
                 </div>
               );

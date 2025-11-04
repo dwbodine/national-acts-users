@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import EventDetail from '../orders/eventDetailComponent';
 import NavBar from '../../common/navBarComponent';
 import { useRouter } from 'next/navigation';
-
 
 export default function ClientEventComponent() {
   const [detailHidden, setDetailHidden] = useState(true);

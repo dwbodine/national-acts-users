@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { UserActivityType } from '@/types/user';
 import { useEffect } from 'react';
@@ -22,7 +22,7 @@ export default function LogoutComponent() {
         logout().then(() => {
           let loginUrl = '/login';
           if (err) {
-            loginUrl += `?err=${err}`
+            loginUrl += `?err=${err}`;
           }
           router.push(loginUrl);
         });

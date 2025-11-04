@@ -1,6 +1,7 @@
 html,
 body {
-  font: 14px "Open Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
   min-height: 100vh;
 }
 
@@ -1706,11 +1707,9 @@ a.edit-event-link {
   .vipTable tr:hover {
     background-color: unset;
   }
-  .resultsTable .mobile-event-card-container:nth-child(even),
-  .vipTable .mobile-event-card-container:nth-child(even) {
-    .mobile-event-card {
-      background-color: #efefef !important;
-    }
+  .resultsTable .mobile-event-card-container:nth-child(even) .mobile-event-card,
+  .vipTable .mobile-event-card-container:nth-child(even) .mobile-event-card {
+    background-color: #efefef !important;
   }
   .vipDetailsTable td {
     white-space: unset;
@@ -1783,5 +1782,3 @@ a.edit-event-link {
     padding: 0;
   }
 }
-
-/*# sourceMappingURL=App.css.map */

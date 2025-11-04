@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ChangeEvent } from 'react';
-import { FormCheck } from 'react-bootstrap';
+import { FormCheck } from 'rsuite';
 import type { RootState } from '../../../lib/store';
 import { setHideServiceFees } from '@/lib/reportSelectionSlice';
 
@@ -19,7 +19,10 @@ export default function ServiceFeesCheck() {
       <FormCheck
         checked={currentReportSelection.hideServiceFees}
         onChange={handleChange}
-        disabled={currentReportSelection.seller.sellerId <= 0 || currentReportSelection.hideRevenue}
+        disabled={
+          currentReportSelection.seller.sellerId <= 0 ||
+          currentReportSelection.hideRevenue
+        }
         label="Hide service fees?"
       />
     </span>

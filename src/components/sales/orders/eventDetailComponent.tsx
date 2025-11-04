@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
+import { Button, Col, Container, FormCheck, Row } from 'rsuite';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import {
   IShirtData,
@@ -65,7 +65,6 @@ export default function EventDetail(props: EditProps) {
   const [showOnlyEmailsDisplay, setShowOnlyEmailsDisplay] = useState(false);
   const [showOnlyPhonesDisplay, setShowOnlyPhonesDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
 
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
@@ -226,19 +225,23 @@ export default function EventDetail(props: EditProps) {
                     orders.push(order);
                   }
                 }
-                newEvent.orders = orders.sort((a, b) =>
-                  a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
-                  a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
-                  (a.purchaseTimestamp && b.purchaseTimestamp ? moment(b.purchaseTimestamp).unix() - moment(a.purchaseTimestamp).unix() : 0)
+                newEvent.orders = orders.sort(
+                  (a, b) =>
+                    a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
+                    a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
+                    (a.purchaseTimestamp && b.purchaseTimestamp
+                      ? moment(b.purchaseTimestamp).unix() -
+                        moment(a.purchaseTimestamp).unix()
+                      : 0),
                 );
               }
 
               dispatch(setCurrentDetailEvent(newEvent));
               if (currentReportSelection.currentEvents !== undefined) {
                 document.title = newEvent.title;
-                currentReportSelection.currentEvents.map(evt => (evt.externalEventId === newEvent.externalEventId
-                  ? newEvent
-                  : evt));
+                currentReportSelection.currentEvents.map((evt) =>
+                  evt.externalEventId === newEvent.externalEventId ? newEvent : evt,
+                );
                 dispatch(setEvents(currentReportSelection.currentEvents));
               }
             }
@@ -295,7 +298,7 @@ export default function EventDetail(props: EditProps) {
         hasNonUsaOrders,
         currencySymbol,
         showOnlyEmails,
-        showOnlyPhones
+        showOnlyPhones,
       );
       const fileName = getFileNameFromEvent(
         currentReportSelection.currentDetailEvent,
@@ -309,22 +312,24 @@ export default function EventDetail(props: EditProps) {
     visibleOrders = [];
 
     if (orders && orders.length > 0) {
-      visibleOrders = orders.filter(order => ((
-        (currentReportSelection.showDeletedOrders && order.isDeleted) ||
-        (currentReportSelection.showInactiveOrders &&
-          !order.isActive &&
-          !order.isDeleted) ||
-        (!order.isDeleted && order.isActive))
-      ));
+      visibleOrders = orders.filter(
+        (order) =>
+          (currentReportSelection.showDeletedOrders && order.isDeleted) ||
+          (currentReportSelection.showInactiveOrders &&
+            !order.isActive &&
+            !order.isDeleted) ||
+          (!order.isDeleted && order.isActive),
+      );
     }
 
     let fOrders: Order[] = visibleOrders ?? [];
     if (visibleOrders.length > 0 && searchTerm && searchTerm.length >= 2) {
       const srch = searchTerm.toLowerCase();
-      fOrders = visibleOrders.filter((order) => (
-        order.purchaserFirstName.toLowerCase().includes(srch) ||
-        order.purchaserLastName.toLowerCase().includes(srch)
-      ));
+      fOrders = visibleOrders.filter(
+        (order) =>
+          order.purchaserFirstName.toLowerCase().includes(srch) ||
+          order.purchaserLastName.toLowerCase().includes(srch),
+      );
     }
     return fOrders;
   };
@@ -339,7 +344,9 @@ export default function EventDetail(props: EditProps) {
       searchBarHidden = false;
     }
 
-    const filteredOrders: Order[] | undefined = filterOrders(currentReportSelection.currentDetailEvent.orders);
+    const filteredOrders: Order[] | undefined = filterOrders(
+      currentReportSelection.currentDetailEvent.orders,
+    );
     filteredOrders?.forEach((order, i) => {
       if (order.isActive && !order.isDeleted && !order.isComped) {
         totalTickets += order.numTickets;
@@ -425,7 +432,7 @@ export default function EventDetail(props: EditProps) {
       shirtSizes.forEach((shirtSize: string) => {
         shirtData?.ShirtData?.forEach((shirSizeData: IShirtSizeData[]) => {
           const data = shirSizeData.find((x) => x.ShirtSize === shirtSize);
-          let number = (arr.get(shirtSize) ?? 0);
+          let number = arr.get(shirtSize) ?? 0;
           if (data) {
             number += data.Number;
           }
@@ -483,7 +490,7 @@ export default function EventDetail(props: EditProps) {
 
   const handleShowOnlyPhones = (event: ChangeEvent<HTMLInputElement>) => {
     if (currentReportSelection) {
-      dispatch(setShowOnlyPhones(event.target.checked))
+      dispatch(setShowOnlyPhones(event.target.checked));
       if (event.target.checked) {
         dispatch(setShowOnlyEmails(false));
       }
@@ -494,18 +501,24 @@ export default function EventDetail(props: EditProps) {
   let eventDate = '';
   if (currentReportSelection.currentDetailEvent?.eventDate !== undefined) {
     if (currentReportSelection.currentDetailEvent?.eventTime) {
-      eventDate = moment(currentReportSelection.currentDetailEvent.eventTime).format('MM/DD/YYYY h:mm A');
+      eventDate = moment(currentReportSelection.currentDetailEvent.eventTime).format(
+        'MM/DD/YYYY h:mm A',
+      );
       if (currentReportSelection.currentDetailEvent.venue?.timezone) {
         eventDate += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
       }
     } else {
-      eventDate = moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY');      
+      eventDate = moment(currentReportSelection.currentDetailEvent.eventDate).format(
+        'MM/DD/YYYY',
+      );
     }
   }
 
   let doorsOpen = '';
   if (currentReportSelection.currentDetailEvent?.doorsOpen) {
-    doorsOpen = moment(currentReportSelection.currentDetailEvent.doorsOpen).format('h:mm A');
+    doorsOpen = moment(currentReportSelection.currentDetailEvent.doorsOpen).format(
+      'h:mm A',
+    );
     if (currentReportSelection.currentDetailEvent.venue?.timezone) {
       doorsOpen += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
     }
@@ -513,7 +526,9 @@ export default function EventDetail(props: EditProps) {
 
   let meetAndGreet = '';
   if (currentReportSelection.currentDetailEvent?.meetAndGreetTime) {
-    meetAndGreet = moment(currentReportSelection.currentDetailEvent.meetAndGreetTime).format('h:mm A');
+    meetAndGreet = moment(
+      currentReportSelection.currentDetailEvent.meetAndGreetTime,
+    ).format('h:mm A');
     if (currentReportSelection.currentDetailEvent.venue?.timezone) {
       meetAndGreet += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
     }
@@ -522,7 +537,7 @@ export default function EventDetail(props: EditProps) {
   const venue = currentReportSelection.currentDetailEvent?.venue;
   const venueName = venue?.name;
   const address = venue?.address1;
-  let location = `${venue?.city}`
+  let location = `${venue?.city}`;
   if (venue?.state) {
     location += `, ${venue?.state}`;
   }
@@ -533,7 +548,9 @@ export default function EventDetail(props: EditProps) {
 
   return (
     <>
-      {currentReportSelection.currentDetailEvent === undefined ? '' : (
+      {currentReportSelection.currentDetailEvent === undefined ? (
+        ''
+      ) : (
         <Container fluid className="vipContainer">
           <Row>
             <Col>
@@ -552,15 +569,17 @@ export default function EventDetail(props: EditProps) {
                         <td>
                           {venueName && <div>{venueName}</div>}
                           {address && <div>{address}</div>}
-                          {location && <div>{location} {zip && <span>{zip}</span>}</div>}
+                          {location && (
+                            <div>
+                              {location} {zip && <span>{zip}</span>}
+                            </div>
+                          )}
                           {country && <div>{country}</div>}
                         </td>
                       </tr>
                       <tr>
                         <td className="vipLabel">Date:</td>
-                        <td>
-                          {eventDate}
-                        </td>
+                        <td>{eventDate}</td>
                       </tr>
                       <tr>
                         <td className="vipLabel">Total Tickets:</td>
@@ -577,18 +596,19 @@ export default function EventDetail(props: EditProps) {
                         <td className="vipLabel">Total Revenue:</td>
                         <td>
                           $
-                          {((currentReportSelection.currentDetailEvent.totalRevenue ?? 0)).toFixed(
-                            2,
-                          )}
+                          {(
+                            currentReportSelection.currentDetailEvent.totalRevenue ?? 0
+                          ).toFixed(2)}
                         </td>
                       </tr>
                       <tr hidden={hideServiceFeeDisplay || !viewServiceFees}>
                         <td className="vipLabel">Total Service Fees:</td>
                         <td>
                           $
-                          {((currentReportSelection.currentDetailEvent.totalServiceFees ?? 0)).toFixed(
-                            2,
-                          )}
+                          {(
+                            currentReportSelection.currentDetailEvent.totalServiceFees ??
+                            0
+                          ).toFixed(2)}
                         </td>
                       </tr>
                       <tr hidden={!hasTicketData}>
@@ -602,35 +622,47 @@ export default function EventDetail(props: EditProps) {
                     </tbody>
                   </table>
                 </Col>
-                <Col hidden={
-                  !currentReportSelection.currentDetailEvent.doorsOpen &&
-                  !currentReportSelection.currentDetailEvent.meetAndGreetTime &&
-                  !currentReportSelection.currentDetailEvent.checkInLocation &&
-                  !currentReportSelection.currentDetailEvent.checkInNotes
-                }>
+                <Col
+                  hidden={
+                    !currentReportSelection.currentDetailEvent.doorsOpen &&
+                    !currentReportSelection.currentDetailEvent.meetAndGreetTime &&
+                    !currentReportSelection.currentDetailEvent.checkInLocation &&
+                    !currentReportSelection.currentDetailEvent.checkInNotes
+                  }
+                >
                   <table className="vipDetailsTable">
                     <tbody>
                       <tr hidden={!currentReportSelection.currentDetailEvent.doorsOpen}>
                         <td className="vipLabel">Doors Open:</td>
-                        <td>
-                          {doorsOpen}
-                        </td>
+                        <td>{doorsOpen}</td>
                       </tr>
-                      <tr hidden={!currentReportSelection.currentDetailEvent.meetAndGreetTime}>
+                      <tr
+                        hidden={
+                          !currentReportSelection.currentDetailEvent.meetAndGreetTime
+                        }
+                      >
                         <td className="vipLabel">Meet & Greet Time:</td>
-                        <td>
-                          {meetAndGreet}
-                        </td>
+                        <td>{meetAndGreet}</td>
                       </tr>
-                      <tr hidden={!currentReportSelection.currentDetailEvent.checkInLocation}>
+                      <tr
+                        hidden={
+                          !currentReportSelection.currentDetailEvent.checkInLocation
+                        }
+                      >
                         <td className="vipLabel">Check-in Location:</td>
                         <td className="vipValue">
-                          {currentReportSelection.currentDetailEvent.checkInLocation ?? 'n/a'}
+                          {currentReportSelection.currentDetailEvent.checkInLocation ??
+                            'n/a'}
                         </td>
                       </tr>
-                      <tr hidden={!currentReportSelection.currentDetailEvent.checkInNotes}>
+                      <tr
+                        hidden={!currentReportSelection.currentDetailEvent.checkInNotes}
+                      >
                         <td className="vipLabel">Check-in Notes:</td>
-                        <td className="vipValue">{currentReportSelection.currentDetailEvent.checkInNotes ?? 'n/a'}</td>
+                        <td className="vipValue">
+                          {currentReportSelection.currentDetailEvent.checkInNotes ??
+                            'n/a'}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -709,7 +741,7 @@ export default function EventDetail(props: EditProps) {
                 </Col>
                 <Col md={10} sm={12} className="no-print" hidden={searchBarHidden}>
                   <input
-                    type="text" 
+                    type="text"
                     value={searchTerm ?? ''}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="form-control search-text-input"
@@ -722,25 +754,63 @@ export default function EventDetail(props: EditProps) {
                 <table className="vipTable">
                   <thead hidden={windowSize.isMobile}>
                     <tr>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Purchaser Name</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Attendee Name</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay} className="purchase-date no-print">Purchase Date</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Order Id</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Order Status</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Date</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Name</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Ticket Type</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}># of tickets</th>
-                      <th hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay} className={revClass}>Revenue</th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>
+                        Purchaser Name
+                      </th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>
+                        Attendee Name
+                      </th>
+                      <th
+                        hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}
+                        className="purchase-date no-print"
+                      >
+                        Purchase Date
+                      </th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>
+                        Order Id
+                      </th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>
+                        Order Status
+                      </th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>
+                        Event Date
+                      </th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>
+                        Event Name
+                      </th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>
+                        Ticket Type
+                      </th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>
+                        # of tickets
+                      </th>
+                      <th
+                        hidden={
+                          hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay
+                        }
+                        className={revClass}
+                      >
+                        Revenue
+                      </th>
                       <th
                         className="no-print"
-                        hidden={hideServiceFeeDisplay || !viewServiceFees || showOnlyEmailsDisplay || showOnlyPhonesDisplay}
+                        hidden={
+                          hideServiceFeeDisplay ||
+                          !viewServiceFees ||
+                          showOnlyEmailsDisplay ||
+                          showOnlyPhonesDisplay
+                        }
                       >
                         Service Fees
                       </th>
                       <th hidden={showOnlyPhonesDisplay}>Email</th>
                       {hasPhoneData && !showOnlyEmailsDisplay ? <th>Phone #</th> : ''}
-                      {hasShirtData && !(showOnlyEmailsDisplay || showOnlyPhonesDisplay) ? <th>Shirt Sizes</th> : ''}
+                      {hasShirtData &&
+                      !(showOnlyEmailsDisplay || showOnlyPhonesDisplay) ? (
+                        <th>Shirt Sizes</th>
+                      ) : (
+                        ''
+                      )}
                     </tr>
                   </thead>
                   <tbody>{orderRows}</tbody>

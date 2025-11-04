@@ -1,7 +1,11 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
-import { GetRefreshHistoryResponse, GetSellersResponse, RefreshHistoryResponse } from '@/types/responses';
+import { Button, Col, Row } from 'rsuite';
+import {
+  GetRefreshHistoryResponse,
+  GetSellersResponse,
+  RefreshHistoryResponse,
+} from '@/types/responses';
 import {
   setAdminDates,
   setAdminSellerId,

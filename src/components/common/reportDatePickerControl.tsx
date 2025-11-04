@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
 import { useEffect, useState } from 'react';
 import { DatePicker } from 'rsuite';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';

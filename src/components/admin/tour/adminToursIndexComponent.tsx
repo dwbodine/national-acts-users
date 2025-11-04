@@ -1,7 +1,11 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
-import { GetEventsResponse, GetSellersResponse, GetToursResponse } from '@/types/responses';
+import { Button, Col, Row } from 'rsuite';
+import {
+  GetEventsResponse,
+  GetSellersResponse,
+  GetToursResponse,
+} from '@/types/responses';
 import {
   setAdminEvents,
   setAdminSellerId,
@@ -65,22 +69,22 @@ export default function AdminToursIndex() {
               dispatch(setTours(response.tours));
             }
             if (currentAdminSelection.sellerId) {
-              getAdminSellerEvents([currentAdminSelection.sellerId])
-                .then((resp: GetEventsResponse) => {
+              getAdminSellerEvents([currentAdminSelection.sellerId]).then(
+                (resp: GetEventsResponse) => {
                   if (resp.events && !resp.error) {
-                    const filteredEvents = resp.events.filter(x => !x.isDeleted);
+                    const filteredEvents = resp.events.filter((x) => !x.isDeleted);
                     if (filteredEvents) {
                       dispatch(setAdminEvents(filteredEvents));
                     }
                   }
                   dispatch(setIsLoading(false));
                   setTableLoading(false);
-                });
+                },
+              );
             } else {
               dispatch(setIsLoading(false));
               setTableLoading(false);
             }
-
           }
         });
       } else if (currentAdminSelection.tours !== undefined && tableLoading) {
@@ -92,7 +96,14 @@ export default function AdminToursIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [dispatch, getSellers, currentAdminSelection, getTours, tableLoading, getAdminSellerEvents]);
+  }, [
+    dispatch,
+    getSellers,
+    currentAdminSelection,
+    getTours,
+    tableLoading,
+    getAdminSellerEvents,
+  ]);
 
   const updateSeller = (sellerId: number | null) => {
     const updateSellerId = sellerId && !isNaN(sellerId) ? sellerId : undefined;
@@ -109,9 +120,7 @@ export default function AdminToursIndex() {
     ) {
       return;
     }
-    const tour = currentAdminSelection.tours.find(
-      (x) => x.tourId === tourId,
-    );
+    const tour = currentAdminSelection.tours.find((x) => x.tourId === tourId);
     if (!tour) {
       return;
     }
@@ -124,12 +133,17 @@ export default function AdminToursIndex() {
     if (!currentAdminSelection.sellerId) {
       toast.error('Must select a seller first');
       return;
-    } else if (!currentAdminSelection.events || currentAdminSelection.events.length === 0) {
+    } else if (
+      !currentAdminSelection.events ||
+      currentAdminSelection.events.length === 0
+    ) {
       toast.error('No future events to add to a tour');
       return;
     }
 
-    const seller = currentAdminSelection.allSellers?.find(x => x.sellerId === currentAdminSelection.sellerId);
+    const seller = currentAdminSelection.allSellers?.find(
+      (x) => x.sellerId === currentAdminSelection.sellerId,
+    );
 
     if (!seller) {
       return;
@@ -183,36 +197,42 @@ export default function AdminToursIndex() {
             <Column flexGrow={1}>
               <HeaderCell># of shows</HeaderCell>
               <Cell>
-                {(rowData: Tour) => rowData.events ? rowData.events.length : 0}
+                {(rowData: Tour) => (rowData.events ? rowData.events.length : 0)}
               </Cell>
             </Column>
             <Column flexGrow={1} minWidth={100}>
               <HeaderCell>Announce Date (in Pacific Time)</HeaderCell>
               <Cell>
-                {(rowData: Tour) => rowData.announceDate ? moment(rowData.announceDate).format('M/DD/YYYY h:mm A') : ''}
+                {(rowData: Tour) =>
+                  rowData.announceDate
+                    ? moment(rowData.announceDate).format('M/DD/YYYY h:mm A')
+                    : ''
+                }
               </Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>First show</HeaderCell>
               <Cell>
-                {(rowData: Tour) => rowData.events && rowData.events.length > 0
-                  ? `${moment(rowData.events[0].eventDate).format('M/DD/YYYY')} (${rowData.events[0].venue?.city}, ${rowData.events[0].venue?.state})`
-                  : ''}
+                {(rowData: Tour) =>
+                  rowData.events && rowData.events.length > 0
+                    ? `${moment(rowData.events[0].eventDate).format('M/DD/YYYY')} (${rowData.events[0].venue?.city}, ${rowData.events[0].venue?.state})`
+                    : ''
+                }
               </Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>Last show</HeaderCell>
               <Cell>
-                {(rowData: Tour) => rowData.events && rowData.events.length > 0
-                  ? `${moment(rowData.events[rowData.events.length - 1].eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length - 1].venue?.city}, ${rowData.events[rowData.events.length - 1].venue?.state})`
-                  : ''}
+                {(rowData: Tour) =>
+                  rowData.events && rowData.events.length > 0
+                    ? `${moment(rowData.events[rowData.events.length - 1].eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length - 1].venue?.city}, ${rowData.events[rowData.events.length - 1].venue?.state})`
+                    : ''
+                }
               </Cell>
             </Column>
             <Column flexGrow={2}>
               <HeaderCell>Status</HeaderCell>
-              <Cell>
-                {(rowData: Tour) => rowData.isActive ? "Active" : "Inactive"}
-              </Cell>
+              <Cell>{(rowData: Tour) => (rowData.isActive ? 'Active' : 'Inactive')}</Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>&nbsp;</HeaderCell>
