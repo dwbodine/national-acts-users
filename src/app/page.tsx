@@ -1,16 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import ClientSellersComponent from '@/components/sales/events/clientSellersComponent';
+import { ReactNode, useEffect, useState } from 'react';
 import { User } from '@/types/user';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useRouter } from 'next/navigation';
+import Frame from '@/components/Frame';
+import { adminAppNavs, userAppNavs } from '@/config';
+import { NavItemData } from '@/components/Frame/Frame';
 
-export default function HomePage() {
+export default function HomePage({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { getUser } = useCurrentUser();
   const [user, setUser] = useState<User | undefined>(undefined);
-  const [loggedInNonAdmin, setLoggedInNonAdmin] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     if (!user) {
@@ -19,13 +22,21 @@ export default function HomePage() {
     }
 
     if (user && user.isAuthenticated) {
-      if (user.isAdmin) {
-        router.push('/dashboard');
-      } else {
-        setLoggedInNonAdmin(true);
-      }
+      setIsAuthenticated(true);
+      setIsAdmin(user.isAdmin);
     }
   }, [router, getUser, user]);
 
-  return loggedInNonAdmin ? <ClientSellersComponent /> : <></>;
+  let appNavs: NavItemData[] = [];
+  if (isAuthenticated) {
+    if (isAdmin) {
+      router.push('/dashboard');
+      appNavs = adminAppNavs;
+    } else {
+      router.push('/sellers');
+      appNavs = userAppNavs;
+    }
+  }
+
+  return isAuthenticated ? <Frame navs={appNavs}>{children}</Frame> : <></>;
 }

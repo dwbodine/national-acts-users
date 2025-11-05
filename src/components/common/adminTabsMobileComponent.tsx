@@ -140,7 +140,7 @@ export default function AdminTabsMobile(props: AdminTabsProps) {
       </Row>
       <Row>
         <Col>
-          <Container fluid hidden={!isLoading || !activeComponent}>
+          <Container hidden={!isLoading || !activeComponent}>
             <Row>
               <Col className="spinner-container">
                 <RingLoader size={150} color="#d12610" />

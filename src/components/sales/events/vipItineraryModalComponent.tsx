@@ -190,7 +190,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
         <Modal.Title>{reportTitle}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Container fluid>
+        <Container className="fluid">
           <Row>
             <Col xs={8} className="form-group">
               <label className="mt-4" htmlFor="date-radio-group">

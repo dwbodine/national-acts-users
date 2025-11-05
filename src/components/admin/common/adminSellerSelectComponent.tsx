@@ -151,7 +151,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
             <Modal.Title>Seller Override Values</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Container fluid>
+            <Container className="fluid">
               <Row>
                 <Col>
                   <label className="page-seller-label">Display Name</label>

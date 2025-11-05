@@ -299,7 +299,10 @@ export default function CurrentEvents() {
 
   return (
     <>
-      <Container fluid hidden={!globalSelection.isLoading || !user || user.isAdmin}>
+      <Container
+        className="fluid"
+        hidden={!globalSelection.isLoading || !user || user.isAdmin}
+      >
         <Row>
           <Col className="spinner-container">
             <RingLoader size={150} color="#d12610" />

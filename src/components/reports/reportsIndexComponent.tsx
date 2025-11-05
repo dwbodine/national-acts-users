@@ -8,7 +8,7 @@ export default function ReportsIndex() {
   return (
     <>
       <ReportsIndexBar />
-      <Container fluid>
+      <Container className="fluid">
         <Row>
           <Col>
             <ReportsList />

@@ -144,7 +144,7 @@ export default function DashboardIndex() {
   return (
     <>
       <DashboardBar />
-      <Container fluid hidden={isLoading}>
+      <Container className="fluid" hidden={isLoading}>
         <Row>
           <Col>
             <h5>Current Period</h5>

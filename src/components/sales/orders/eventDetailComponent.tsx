@@ -551,7 +551,7 @@ export default function EventDetail(props: EditProps) {
       {currentReportSelection.currentDetailEvent === undefined ? (
         ''
       ) : (
-        <Container fluid className="vipContainer">
+        <Container className="fluid vipContainer">
           <Row>
             <Col>
               <Row>

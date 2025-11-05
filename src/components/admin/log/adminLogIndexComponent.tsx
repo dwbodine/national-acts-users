@@ -49,7 +49,7 @@ export default function AdminLogIndex() {
 
   return (
     <>
-      <Container fluid>
+      <Container className="fluid">
         <Row>
           <h5>Cron Log - {moment().format('YYYY-MM-DD HH:mm:ss')}</h5>
         </Row>

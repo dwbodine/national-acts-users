@@ -64,7 +64,10 @@ export default function AdminTabs(props: AdminTabsProps) {
             <Tabs.Tab eventKey={ActivePageKey.Dashboard.toString()} title="HOME">
               {activeKey === ActivePageKey.Dashboard && (
                 <>
-                  <Container fluid hidden={!isLoading || !props.DashboardComponent}>
+                  <Container
+                    className="fluid"
+                    hidden={!isLoading || !props.DashboardComponent}
+                  >
                     <Row>
                       <Col className="spinner-container">
                         <RingLoader size={150} color="#d12610" />
@@ -72,8 +75,7 @@ export default function AdminTabs(props: AdminTabsProps) {
                     </Row>
                   </Container>
                   <Container
-                    className="tab-container"
-                    fluid
+                    className="fluid tab-container"
                     hidden={isLoading || !props.DashboardComponent}
                   >
                     {props.DashboardComponent}
@@ -84,7 +86,10 @@ export default function AdminTabs(props: AdminTabsProps) {
             <Tabs.Tab eventKey={ActivePageKey.Events.toString()} title="EVENTS">
               {activeKey === ActivePageKey.Events && (
                 <>
-                  <Container fluid hidden={!isLoading || !props.EventsComponent}>
+                  <Container
+                    className="fluid"
+                    hidden={!isLoading || !props.EventsComponent}
+                  >
                     <Row>
                       <Col className="spinner-container">
                         <RingLoader size={150} color="#d12610" />
@@ -107,7 +112,10 @@ export default function AdminTabs(props: AdminTabsProps) {
             >
               {activeKey === ActivePageKey.SalesOverview && (
                 <>
-                  <Container fluid hidden={!isLoading || !props.SalesComponent}>
+                  <Container
+                    className="fluid"
+                    hidden={!isLoading || !props.SalesComponent}
+                  >
                     <Row>
                       <Col className="spinner-container">
                         <RingLoader size={150} color="#d12610" />
@@ -127,7 +135,10 @@ export default function AdminTabs(props: AdminTabsProps) {
             <Tabs.Tab eventKey={ActivePageKey.Admin.toString()} title="ADMIN">
               {activeKey === ActivePageKey.Admin && (
                 <>
-                  <Container fluid hidden={!isLoading || !props.AdminComponent}>
+                  <Container
+                    className="fluid"
+                    hidden={!isLoading || !props.AdminComponent}
+                  >
                     <Row>
                       <Col className="spinner-container">
                         <RingLoader size={150} color="#d12610" />
@@ -147,7 +158,10 @@ export default function AdminTabs(props: AdminTabsProps) {
             <Tabs.Tab eventKey={ActivePageKey.Reports.toString()} title="REPORTS">
               {activeKey === ActivePageKey.Reports && (
                 <>
-                  <Container fluid hidden={!isLoading || !props.ReportComponent}>
+                  <Container
+                    className="fluid"
+                    hidden={!isLoading || !props.ReportComponent}
+                  >
                     <Row>
                       <Col className="spinner-container">
                         <RingLoader size={150} color="#d12610" />
@@ -167,7 +181,10 @@ export default function AdminTabs(props: AdminTabsProps) {
             <Tabs.Tab eventKey={ActivePageKey.Users.toString()} title="USERS">
               {activeKey === ActivePageKey.Users && (
                 <>
-                  <Container fluid hidden={!isLoading || !props.UsersComponent}>
+                  <Container
+                    className="fluid"
+                    hidden={!isLoading || !props.UsersComponent}
+                  >
                     <Row>
                       <Col className="spinner-container">
                         <RingLoader size={150} color="#d12610" />

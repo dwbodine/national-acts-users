@@ -40,7 +40,7 @@ export default function AdminIndex() {
   return (
     <>
       <AdminIndexBar />
-      <Container fluid>
+      <Container className="fluid">
         <Row>
           <Col>
             <AdminList />

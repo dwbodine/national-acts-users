@@ -5,7 +5,16 @@ import { VscCalendar, VscTable } from 'react-icons/vsc';
 import CubesIcon from '@rsuite/icons/legacy/Cubes';
 import { Icon } from '@rsuite/icons';
 
-export const appNavs = [
+export const userAppNavs = [
+  {
+    eventKey: 'dashboard',
+    icon: <Icon as={MdDashboard} />,
+    title: 'Dashboard',
+    to: '/dashboard',
+  },
+];
+
+export const adminAppNavs = [
   {
     eventKey: 'dashboard',
     icon: <Icon as={MdDashboard} />,

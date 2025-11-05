@@ -74,7 +74,7 @@ export default function UserActivityTable() {
 
   return (
     <div className="admin-container">
-      <Container fluid>
+      <Container className="fluid">
         <Row>
           <Col>
             <h3>Current user activity</h3>

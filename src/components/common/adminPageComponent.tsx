@@ -49,7 +49,7 @@ export default function AdminPage(props: AdminPageProps) {
   return (
     <>
       <NavBar Hidden={notAdmin} />
-      <Container fluid hidden={notAdmin} className="vipContainer">
+      <Container hidden={notAdmin} className="fluid vipContainer">
         {windowSize.isMobile ? (
           <AdminTabsMobile
             ActiveKey={activeKey}
