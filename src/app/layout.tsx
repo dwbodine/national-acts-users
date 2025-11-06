@@ -1,3 +1,5 @@
+'use client';
+
 import 'react-toastify/ReactToastify.css';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 import '../Css/App.css';
