@@ -25,7 +25,7 @@ export default function AdminPage({ Title, UserActivity, children }: AdminPagePr
       if (currentUser && currentUser.isAuthenticated) {
         document.title = Title;
         if (UserActivity) {
-          logActivityData(UserActivity);
+          void logActivityData(UserActivity);
         }
       }
     }, 200);

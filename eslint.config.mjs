@@ -1,9 +1,10 @@
 // eslint.config.mjs
-import { defineConfig } from "eslint/config";
-import js from "@eslint/js";
-import tseslint from "typescript-eslint";
-import nextPlugin from "@next/eslint-plugin-next";
-import prettierPlugin from "eslint-plugin-prettier";
+import { defineConfig } from 'eslint/config';
+import importPlugin from 'eslint-plugin-import';
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import nextPlugin from '@next/eslint-plugin-next';
+import prettierPlugin from 'eslint-plugin-prettier';
 
 export default defineConfig([
   // -----------------------------------------------------
@@ -14,7 +15,7 @@ export default defineConfig([
     languageOptions: {
       parserOptions: {
         projectService: true,
-        project: "./tsconfig.json",
+        project: './tsconfig.json',
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -37,35 +38,50 @@ export default defineConfig([
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
 
     plugins: {
-      "@next/next": nextPlugin,
+      import: importPlugin,
+      '@next/next': nextPlugin,
       prettier: prettierPlugin,
     },
 
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: './tsconfig.json',
+        },
+      },
+    },
+
     rules: {
+      // Missing imports / unresolved modules
+      'import/no-unresolved': 'error',
+      'import/named': 'error',
+      'import/default': 'error',
+      'import/namespace': 'error',
+
       // Next rules
       ...nextPlugin.configs.recommended.rules,
 
       // Prettier enforcement
-      "prettier/prettier": "error",
+      'prettier/prettier': 'error',
 
       // Your overrides
-      complexity: "off",
-      "id-length": "off",
-      "max-depth": "off",
-      "max-lines": "off",
-      "max-lines-per-function": "off",
-      "max-params": "off",
-      "max-statements": "off",
-      "no-continue": "off",
-      "no-magic-numbers": "off",
-      "no-nested-ternary": "off",
-      "no-ternary": "off",
-      "no-undef-init": "off",
-      "no-undefined": "off",
-      "one-var": "off",
-      "prefer-named-capture-group": "off",
-      radix: "off",
-      "require-unicode-regexp": "off",
+      complexity: 'off',
+      'id-length': 'off',
+      'max-depth': 'off',
+      'max-lines': 'off',
+      'max-lines-per-function': 'off',
+      'max-params': 'off',
+      'max-statements': 'off',
+      'no-continue': 'off',
+      'no-magic-numbers': 'off',
+      'no-nested-ternary': 'off',
+      'no-ternary': 'off',
+      'no-undef-init': 'off',
+      'no-undefined': 'off',
+      'one-var': 'off',
+      'prefer-named-capture-group': 'off',
+      radix: 'off',
+      'require-unicode-regexp': 'off',
     },
   },
 
@@ -74,13 +90,13 @@ export default defineConfig([
   // -----------------------------------------------------
   {
     ignores: [
-      ".next/**",
-      "public/**",
-      "out/**",
-      "node_modules/**",
-      "next.config.js",
-      "next-env.d.ts",
-      "eslint.config.mjs"
+      '.next/**',
+      'public/**',
+      'out/**',
+      'node_modules/**',
+      'next.config.js',
+      'next-env.d.ts',
+      'eslint.config.mjs',
     ],
   },
 ]);
