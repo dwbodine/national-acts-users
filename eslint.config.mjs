@@ -16,10 +16,11 @@ export default [
     },
     rules: {
       ...nextPlugin.configs.recommended.rules,
-      'prettier/prettier': 'warn',
+      'prettier/prettier': 'error',
 
       // your overrides
       complexity: 'off',
+      EndOfLineState: 'off',
       'id-length': 'off',
       'max-depth': 'off',
       'max-lines': 'off',

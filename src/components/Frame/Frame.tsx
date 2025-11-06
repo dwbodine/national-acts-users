@@ -6,7 +6,6 @@ import Brand from '../Brand';
 import Header from '../Header';
 import NavLink from '../NavLink';
 import NavToggle from './NavToggle';
-import { Outlet } from 'react-router-dom';
 import classNames from 'classnames';
 
 const { getHeight, on } = DOMHelper;
@@ -39,7 +38,7 @@ export interface FrameProps {
 const Frame = (props: FrameProps) => {
   const { navs } = props;
   const [expand, setExpand] = useState(true);
-  const [windowHeight, setWindowHeight] = useState(getHeight(window));
+  const [windowHeight, setWindowHeight] = useState(500);
 
   useEffect(() => {
     setWindowHeight(getHeight(window));
@@ -108,9 +107,7 @@ const Frame = (props: FrameProps) => {
 
       <Container className={containerClasses}>
         <Header />
-        <Content>
-          <Outlet />
-        </Content>
+        <Content>{props.children}</Content>
       </Container>
     </Container>
   );

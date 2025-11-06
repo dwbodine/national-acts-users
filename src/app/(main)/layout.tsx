@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 'use client';
 
 import { adminAppNavs, userAppNavs } from '../../config';
@@ -31,10 +30,8 @@ export default function MainLayout({ children }: { children: ReactNode }) {
   let appNavs: NavItemData[] = [];
   if (isAuthenticated) {
     if (isAdmin) {
-      router.push('/dashboard');
       appNavs = adminAppNavs;
     } else {
-      router.push('/sellers');
       appNavs = userAppNavs;
     }
   }

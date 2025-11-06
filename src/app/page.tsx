@@ -17,8 +17,6 @@ export default function HomePage() {
       } else {
         router.push('/sellers');
       }
-    } else {
-      router.push('/login');
     }
   }, [router, getUser]);
 

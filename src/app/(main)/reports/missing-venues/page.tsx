@@ -1,15 +1,12 @@
-import { ActivePageKey } from '@/constants';
-import AdminPage from '../../../components/common/adminPageComponent';
-import ReportsMissingVenues from '../../../components/reports/missing-venues/reportsMissingVenuesComponent';
+import AdminPage from '@/components/common/adminPageComponent';
+import ReportsMissingVenues from '@/components/reports/missing-venues/reportsMissingVenuesComponent';
 
 export default function CustomerExportReport() {
   const title = 'Client Portal - Missing Venue Report';
 
   return (
-    <AdminPage
-      Title={title}
-      ActiveKey={ActivePageKey.Reports}
-      ReportComponent={<ReportsMissingVenues />}
-    />
+    <AdminPage Title={title}>
+      <ReportsMissingVenues />
+    </AdminPage>
   );
 }

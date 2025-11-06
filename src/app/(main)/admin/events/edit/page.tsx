@@ -1,6 +1,5 @@
-import { ActivePageKey } from '@/constants';
-import AdminEventEdit from '../../../../../components/admin/events/adminEventEditComponent';
-import AdminPage from '../../../../../components/common/adminPageComponent';
+import AdminEventEdit from '@/components/admin/events/adminEventEditComponent';
+import AdminPage from '@/components/common/adminPageComponent';
 import { PageProps } from '@/types/props';
 
 export default async function AdminEventsEdit(props: PageProps) {
@@ -9,10 +8,8 @@ export default async function AdminEventsEdit(props: PageProps) {
   const eventId = id ? Number(id) : 0;
 
   return (
-    <AdminPage
-      Title={title}
-      ActiveKey={ActivePageKey.Admin}
-      AdminComponent={<AdminEventEdit Id={eventId} />}
-    />
+    <AdminPage Title={title}>
+      <AdminEventEdit Id={eventId} />
+    </AdminPage>
   );
 }

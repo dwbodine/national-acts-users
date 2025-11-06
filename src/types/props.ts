@@ -1,7 +1,7 @@
-import { ActivePageKey, ImageType } from '@/constants';
+import { ImageType } from '@/constants';
 import { Country, PageSeller } from './public';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import { Dispatch, JSX, ReactElement, SetStateAction } from 'react';
+import { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
 import {
   IAverageDailyData,
   IDashboardData,
@@ -75,27 +75,9 @@ export interface AdminSellerSelectProps {
 }
 
 export interface AdminPageProps {
-  ActiveKey: ActivePageKey;
   Title: string;
   UserActivity?: UserActivityType;
-  DashboardComponent?: JSX.Element;
-  EventsComponent?: JSX.Element;
-  SalesComponent?: JSX.Element;
-  AdminComponent?: JSX.Element;
-  ReportComponent?: JSX.Element;
-  UsersComponent?: JSX.Element;
-}
-
-export interface AdminTabsProps {
-  ActiveKey: ActivePageKey;
-  IsLoading: boolean;
-  NotAdmin: boolean;
-  DashboardComponent?: JSX.Element;
-  EventsComponent?: JSX.Element;
-  SalesComponent?: JSX.Element;
-  AdminComponent?: JSX.Element;
-  ReportComponent?: JSX.Element;
-  UsersComponent?: JSX.Element;
+  children: ReactNode;
 }
 
 export interface ConfirmationDialogProps {
