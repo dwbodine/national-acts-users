@@ -97,6 +97,7 @@ export default defineConfig([
       'next.config.js',
       'next-env.d.ts',
       'eslint.config.mjs',
+      'tsconfig.json',
     ],
   },
 ]);
