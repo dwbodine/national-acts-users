@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Container, FormCheck, Row } from 'rsuite';
+import { Button, Checkbox, Col, Container, Row } from 'rsuite';
 import { Country, PageSeller } from '@/types/public';
 import { Modal, SelectPicker } from 'rsuite';
 import { Seller, SellerType } from '@/types/event';
@@ -165,11 +165,12 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                     placeholder="Display Name override"
                     type="text"
                   />
-                  <FormCheck
+                  <Checkbox
                     checked={showDisplayName}
-                    onChange={(e) => setShowDisplayName(e.target.checked)}
-                    label={'Show Display Name Override?'}
-                  />
+                    onChange={(_, checked) => setShowDisplayName(checked)}
+                  >
+                    Show Display Name Override?
+                  </Checkbox>
                 </Col>
               </Row>
               <Row hidden={isArtist}>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, FormCheck, Row } from 'rsuite';
+import { Button, Checkbox, Col, Row } from 'rsuite';
 import {
   GetEventResponse,
   GetEventsResponse,
@@ -381,24 +381,21 @@ export default function AdminOrdersIndex(props: EditProps) {
           >
             <Column width={50}>
               <HeaderCell>
-                <FormCheck
+                <Checkbox
                   id={`oId_selectAll`}
                   checked={
                     allOrderIds.length > 0 && orderIdList.length === allOrderIds.length
                   }
-                  onChange={(e) => selectAllOrders(e.currentTarget.checked)}
+                  onChange={(_, checked) => selectAllOrders(checked)}
                 />
               </HeaderCell>
               <Cell>
                 {(rowData: Order) => (
-                  <FormCheck
+                  <Checkbox
                     id={`oId_${rowData.ticketSocketOrderId}`}
                     checked={orderIdList.includes(rowData.ticketSocketOrderId)}
-                    onChange={(e) =>
-                      updateOrderIdList(
-                        rowData.ticketSocketOrderId,
-                        e.currentTarget.checked,
-                      )
+                    onChange={(_, checked) =>
+                      updateOrderIdList(rowData.ticketSocketOrderId, checked)
                     }
                   />
                 )}

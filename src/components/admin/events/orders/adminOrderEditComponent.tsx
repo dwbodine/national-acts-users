@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, FormCheck, Row } from 'rsuite';
+import { Button, Checkbox, Col, Row } from 'rsuite';
 import { DatePicker, SelectPicker } from 'rsuite';
 import {
   GetOrderResponse,
@@ -745,11 +745,11 @@ export default function AdminOrderEdit(props: EditProps) {
       const ticketRow = (
         <tr key={`row_${ticketId}`}>
           <td>
-            <FormCheck
+            <Checkbox
               id={`tId_${ticketId}`}
               key={`tId_${ticketId}`}
               checked={ticketIdList.includes(ticketId)}
-              onChange={(e) => updateTicketIdList(ticketId, e.currentTarget.checked)}
+              onChange={(_, checked) => updateTicketIdList(ticketId, checked)}
             />
           </td>
           <td>{ticket.ticketSocketOrderTicketId}</td>
@@ -1028,23 +1028,23 @@ export default function AdminOrderEdit(props: EditProps) {
 
       <Row className="form-group">
         <Col>
-          <FormCheck
+          <Checkbox
             checked={isActive && !isDeleted}
             disabled={isDeleted || isComped}
-            onChange={(e) => setIsActive(e.target.checked)}
-            label="Is Active?"
-          />
-          <FormCheck
+            onChange={(_, checked) => setIsActive(checked)}
+          >
+            Is Active?
+          </Checkbox>
+          <Checkbox
             checked={isDeleted}
             disabled={isComped}
-            onChange={(e) => setIsDeleted(e.target.checked)}
-            label="Is Deleted?"
-          />
-          <FormCheck
-            checked={isComped}
-            onChange={(e) => setIsComped(e.target.checked)}
-            label="Is Comped?"
-          />
+            onChange={(_, checked) => setIsDeleted(checked)}
+          >
+            Is Deleted?
+          </Checkbox>
+          <Checkbox checked={isComped} onChange={(_, checked) => setIsComped(checked)}>
+            Is Comped?
+          </Checkbox>
         </Col>
       </Row>
       <Row>
@@ -1081,13 +1081,13 @@ export default function AdminOrderEdit(props: EditProps) {
             <thead>
               <tr>
                 <th>
-                  <FormCheck
+                  <Checkbox
                     id={`tId_selectAll`}
                     checked={
                       allTicketIds.length > 0 &&
                       ticketIdList.length === allTicketIds.length
                     }
-                    onChange={(e) => selectAllTickets(e.currentTarget.checked)}
+                    onChange={(_, checked) => selectAllTickets(checked)}
                   />
                 </th>
                 <th>Ticket Id</th>
@@ -1120,20 +1120,22 @@ export default function AdminOrderEdit(props: EditProps) {
           <Button className="form-control-float" onClick={confirmDoRefund}>
             Refund All Tickets
           </Button>
-          <FormCheck
+          <Checkbox
             disabled={chargebackDisabled}
             title={chargebackTitle}
             className="form-control-float"
             checked={markChargeback}
-            onChange={(e) => setMarkChargeback(e.target.checked)}
-            label="Mark as chargeback?"
-          />
-          <FormCheck
+            onChange={(_, checked) => setMarkChargeback(checked)}
+          >
+            Mark as chargeback?
+          </Checkbox>
+          <Checkbox
             className="form-control-float"
             checked={refundServiceFees}
-            onChange={(e) => setRefundServiceFees(e.target.checked)}
-            label="Refund service fees?"
-          />
+            onChange={(_, checked) => setRefundServiceFees(checked)}
+          >
+            Refund service fees?
+          </Checkbox>
         </Col>
       </Row>
       <Row>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, FormCheck, Row } from 'rsuite';
+import { Button, Checkbox, Col, Row } from 'rsuite';
 import {
   GetCountriesResponse,
   GetEventsResponse,
@@ -611,21 +611,21 @@ export default function AdminEventsIndex() {
           >
             <Column width={50}>
               <HeaderCell>
-                <FormCheck
+                <Checkbox
                   id={`evtId_selectAll`}
                   checked={
                     allEventIds.length > 0 && eventIdList.length === allEventIds.length
                   }
-                  onChange={(e) => selectAllEvents(e.currentTarget.checked)}
+                  onChange={(_, checked) => selectAllEvents(checked)}
                 />
               </HeaderCell>
               <Cell>
                 {(rowData: VipEvent) => (
-                  <FormCheck
+                  <Checkbox
                     id={`evtId_${rowData.externalEventId}`}
                     checked={eventIdList.includes(rowData.externalEventId)}
-                    onChange={(e) =>
-                      updateEventIdList(rowData.externalEventId, e.currentTarget.checked)
+                    onChange={(_, checked) =>
+                      updateEventIdList(rowData.externalEventId, checked)
                     }
                   />
                 )}

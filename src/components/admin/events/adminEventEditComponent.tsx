@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Form, FormCheck, Row } from 'rsuite';
+import { Button, Checkbox, Col, Form, Row } from 'rsuite';
 import { DatePicker, Modal, SelectPicker, TimePicker } from 'rsuite';
 import {
   GetCountriesResponse,
@@ -1100,19 +1100,17 @@ export default function AdminEventEdit(props: EditProps) {
           </td>
           <td>
             {ticketType.ticketTypeId > 0 ? (
-              <FormCheck
+              <Checkbox
                 id={`ticketType_${ticketType.ticketTypeId}`}
                 title={rowTitle}
                 disabled={ticketTypeDisabled}
                 checked={ticketType.isActive}
-                onChange={(e) =>
-                  setTicketTypeStatus(
-                    parseInt(`${ticketType.ticketTypeId}`),
-                    e.currentTarget.checked,
-                  )
+                onChange={(_, checked) =>
+                  setTicketTypeStatus(parseInt(`${ticketType.ticketTypeId}`), checked)
                 }
-                label="Active"
-              />
+              >
+                Active
+              </Checkbox>
             ) : (
               ''
             )}
@@ -1418,11 +1416,12 @@ export default function AdminEventEdit(props: EditProps) {
       </Row>
       <Row>
         <Col className="form-group">
-          <FormCheck
+          <Checkbox
             checked={disableLinkButton}
-            onChange={(e) => setDisableLinkButton(e.target.checked)}
-            label={'Disable "Tickets" button'}
-          />
+            onChange={(_, checked) => setDisableLinkButton(checked)}
+          >
+            Disable "Tickets" button
+          </Checkbox>
           <label className="mt-4">
             Alternate text for Tickets Button (10 chars or less)
           </label>
@@ -1437,11 +1436,12 @@ export default function AdminEventEdit(props: EditProps) {
       </Row>
       <Row>
         <Col className="form-group">
-          <FormCheck
+          <Checkbox
             checked={disableVipLinkButton}
-            onChange={(e) => setDisableVipLinkButton(e.target.checked)}
-            label={'Disable "VIP" button'}
-          />
+            onChange={(_, checked) => setDisableVipLinkButton(checked)}
+          >
+            Disable "VIP" button
+          </Checkbox>
           <label className="mt-4">Alternate text for VIP Button (10 chars or less)</label>
           <input
             value={disableVipLinkReason ?? ''}
@@ -1479,29 +1479,30 @@ export default function AdminEventEdit(props: EditProps) {
 
       <Row className="form-group">
         <Col>
-          <FormCheck
+          <Checkbox
             checked={isActive && !isDeleted}
             disabled={isDeleted}
-            onChange={(e) => setIsActive(e.target.checked)}
-            label="Is Active?"
-          />
-          <FormCheck
+            onChange={(_, checked) => setIsActive(checked)}
+          >
+            Is Active?
+          </Checkbox>
+          <Checkbox
             checked={isHidden}
             disabled={isDeleted}
-            onChange={(e) => setIsHidden(e.target.checked)}
-            label="Is Hidden?"
-          />
-          <FormCheck
-            checked={isDeleted}
-            onChange={(e) => setIsDeleted(e.target.checked)}
-            label="Is Deleted?"
-          />
-          <FormCheck
+            onChange={(_, checked) => setIsHidden(checked)}
+          >
+            Is Hidden?
+          </Checkbox>
+          <Checkbox checked={isDeleted} onChange={(_, checked) => setIsDeleted(checked)}>
+            Is Deleted?
+          </Checkbox>
+          <Checkbox
             checked={isAddedToBandsInTown}
             disabled={isDeleted}
-            onChange={(e) => setIsAddedToBandsInTown(e.target.checked)}
-            label="Is Added to BandsInTown?"
-          />
+            onChange={(_, checked) => setIsAddedToBandsInTown(checked)}
+          >
+            Is Added to BandsInTown?
+          </Checkbox>
         </Col>
       </Row>
       <Row className="form-group" hidden={isExternalEvent}>
@@ -1541,20 +1542,22 @@ export default function AdminEventEdit(props: EditProps) {
           <Button className="form-control-float" onClick={confirmDoRefund}>
             Refund All Tickets
           </Button>
-          <FormCheck
+          <Checkbox
             disabled={refundCancelDisabled}
             title={refundCancelTitle}
             className="form-control-float"
             checked={markCancelled}
-            onChange={(e) => setMarkCancelled(e.target.checked)}
-            label="Mark as cancelled?"
-          />
-          <FormCheck
+            onChange={(_, checked) => setMarkCancelled(checked)}
+          >
+            Mark as cancelled?
+          </Checkbox>
+          <Checkbox
             className="form-control-float"
             checked={refundServiceFees}
-            onChange={(e) => setRefundServiceFees(e.target.checked)}
-            label="Refund service fees?"
-          />
+            onChange={(_, checked) => setRefundServiceFees(checked)}
+          >
+            Refund service fees?
+          </Checkbox>
         </Col>
       </Row>
       <Row hidden={isExternalEvent}>

@@ -1,8 +1,7 @@
 'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { ChangeEvent } from 'react';
-import { FormCheck } from 'rsuite';
+import { Checkbox } from 'rsuite';
 import type { RootState } from '../../lib/store';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setShowHidden } from '@/lib/adminEventsSelectionSlice';
@@ -13,18 +12,19 @@ export default function AdminHiddenCheck() {
     (state: RootState) => state.eventAdminSelection,
   );
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setShowHidden(event.target.checked));
+  const handleChange = (checked: boolean) => {
+    dispatch(setShowHidden(checked));
     dispatch(setIsLoading(true));
   };
 
   return (
     <span className="hidden-check">
-      <FormCheck
+      <Checkbox
         checked={currentReportSelection.showHidden}
-        onChange={handleChange}
-        label="Show hidden events?"
-      />
+        onChange={(_, checked) => handleChange(checked)}
+      >
+        Show hidden events?
+      </Checkbox>
     </span>
   );
 }

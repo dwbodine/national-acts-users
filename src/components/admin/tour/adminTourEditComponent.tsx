@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, FormCheck } from 'rsuite';
+import { Button, Checkbox } from 'rsuite';
 import { CheckPicker, DatePicker, PickerHandle, TimePicker } from 'rsuite';
 import { GetEventsResponse, ModifyTourResponse } from '@/types/responses';
 import React, { ReactNode, useEffect } from 'react';
@@ -453,11 +453,9 @@ export default function AdminTourEdit() {
         />
       </div>
       <div>
-        <FormCheck
-          checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
-          label="Is Active?"
-        />
+        <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
+          Is Active?
+        </Checkbox>
       </div>
       <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
     </div>

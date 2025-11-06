@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Container, FormCheck, Row } from 'rsuite';
+import { Button, Checkbox, Col, Container, Row } from 'rsuite';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import {
   IShirtData,
@@ -11,7 +11,7 @@ import {
   TicketType,
   VipEvent,
 } from '@/types/event';
-import React, { ChangeEvent, ReactElement, useEffect, useMemo, useState } from 'react';
+import { ReactElement, useEffect, useMemo, useState } from 'react';
 import {
   setCurrentDetailEvent,
   setEventSeller,
@@ -452,46 +452,46 @@ export default function EventDetail(props: EditProps) {
     }
   }
 
-  const handleShowInactive = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowInactive = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setShowInactiveOrders(event.target.checked));
+      dispatch(setShowInactiveOrders(checked));
     }
   };
 
-  const handleShowDeleted = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowDeleted = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setShowDeletedOrders(event.target.checked));
+      dispatch(setShowDeletedOrders(checked));
     }
   };
 
-  const handleHideRevenue = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleHideRevenue = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setHideRevenue(event.target.checked));
+      dispatch(setHideRevenue(checked));
       setCheckChanged(!checkChanged);
     }
   };
 
-  const handleHideServiceFees = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleHideServiceFees = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setHideServiceFees(event.target.checked));
+      dispatch(setHideServiceFees(checked));
       setCheckChanged(!checkChanged);
     }
   };
 
-  const handleShowOnlyEmails = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowOnlyEmails = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setShowOnlyEmails(event.target.checked));
-      if (event.target.checked) {
+      dispatch(setShowOnlyEmails(checked));
+      if (checked) {
         dispatch(setShowOnlyPhones(false));
       }
       setCheckChanged(!checkChanged);
     }
   };
 
-  const handleShowOnlyPhones = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowOnlyPhones = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setShowOnlyPhones(event.target.checked));
-      if (event.target.checked) {
+      dispatch(setShowOnlyPhones(checked));
+      if (checked) {
         dispatch(setShowOnlyEmails(false));
       }
       setCheckChanged(!checkChanged);
@@ -684,59 +684,65 @@ export default function EventDetail(props: EditProps) {
                 </Col>
                 <Col md={10} sm={12}>
                   <span className="inactive-check" hidden={!viewInactiveOrders}>
-                    <FormCheck
+                    <Checkbox
                       checked={currentReportSelection?.showInactiveOrders}
-                      onChange={handleShowInactive}
+                      onChange={(_, checked) => handleShowInactive(checked)}
                       disabled={currentReportSelection?.showDeletedOrders}
-                      label="Show Inactive Orders?"
-                    />
+                    >
+                      Show Inactive Orders?
+                    </Checkbox>
                   </span>
                   <span className="deleted-check" hidden={!viewDeletedOrders}>
-                    <FormCheck
+                    <Checkbox
                       checked={currentReportSelection?.showDeletedOrders}
-                      onChange={handleShowDeleted}
-                      label="Show Deleted Orders?"
-                    />
+                      onChange={(_, checked) => handleShowDeleted(checked)}
+                    >
+                      Show Deleted Orders?
+                    </Checkbox>
                   </span>
                   <span
                     className="revenue-check"
                     hidden={!hasOrders || !viewRevenueControls}
                   >
-                    <FormCheck
+                    <Checkbox
                       checked={currentReportSelection?.hideRevenue}
-                      onChange={handleHideRevenue}
-                      label="Hide Revenue Items?"
-                    />
+                      onChange={(_, checked) => handleHideRevenue(checked)}
+                    >
+                      Hide Revenue Items?
+                    </Checkbox>
                   </span>
                   <span
                     className="service-fees-check"
                     hidden={!hasOrders || !viewServiceFees}
                   >
-                    <FormCheck
+                    <Checkbox
                       checked={currentReportSelection?.hideServiceFees}
-                      onChange={handleHideServiceFees}
-                      label="Hide Service Fees?"
-                    />
+                      onChange={(_, checked) => handleHideServiceFees(checked)}
+                    >
+                      Hide Service Fees?
+                    </Checkbox>
                   </span>
                   <span
                     className="service-fees-check"
                     hidden={!hasOrders || !user?.isAdmin}
                   >
-                    <FormCheck
+                    <Checkbox
                       checked={currentReportSelection?.showOnlyEmails}
-                      onChange={handleShowOnlyEmails}
-                      label="Show Only Emails?"
-                    />
+                      onChange={(_, checked) => handleShowOnlyEmails(checked)}
+                    >
+                      Show Only Emails?
+                    </Checkbox>
                   </span>
                   <span
                     className="service-fees-check"
                     hidden={!hasOrders || !user?.isAdmin || !hasPhoneData}
                   >
-                    <FormCheck
+                    <Checkbox
                       checked={currentReportSelection?.showOnlyPhones}
-                      onChange={handleShowOnlyPhones}
-                      label="ShowOnlyPhones?"
-                    />
+                      onChange={(_, checked) => handleShowOnlyPhones(checked)}
+                    >
+                      Show Only Phones?
+                    </Checkbox>
                   </span>
                 </Col>
                 <Col md={10} sm={12} className="no-print" hidden={searchBarHidden}>

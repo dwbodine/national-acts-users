@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Form, FormCheck, Row } from 'rsuite';
+import { Button, Checkbox, Col, Form, Row } from 'rsuite';
 import { DatePicker, SelectPicker } from 'rsuite';
 import {
   GetPageTypesResponse,
@@ -675,11 +675,12 @@ export default function AdminPageEdit() {
         </Row>
         <Row className="form-group">
           <Col>
-            <FormCheck
+            <Checkbox
               checked={!isActive}
-              onChange={(e) => setIsActive(!e.target.checked)}
-              label={'Page inactive on website?'}
-            />
+              onChange={(_, checked) => setIsActive(!checked)}
+            >
+              Page inactive on website?
+            </Checkbox>
           </Col>
         </Row>
         <Row className="form-group">
@@ -828,11 +829,12 @@ export default function AdminPageEdit() {
         </Row>
         <Row className="form-group">
           <Col>
-            <FormCheck
+            <Checkbox
               checked={useIncludeDates}
-              onChange={(e) => setUseIncludeDates(e.target.checked)}
-              label={'Use include date range'}
-            />
+              onChange={(_, checked) => setUseIncludeDates(checked)}
+            >
+              Use include date range
+            </Checkbox>
             <label className="mt-4">Include start date</label>
             <DatePicker
               id="includeStart"
@@ -859,11 +861,12 @@ export default function AdminPageEdit() {
         </Row>
         <Row className="form-group">
           <Col>
-            <FormCheck
+            <Checkbox
               checked={useExcludeDates}
-              onChange={(e) => setUseExcludeDates(e.target.checked)}
-              label={'Use exclude date range'}
-            />
+              onChange={(_, checked) => setUseExcludeDates(checked)}
+            >
+              Use exclude date range
+            </Checkbox>
             <label className="mt-4">Exclude start date</label>
             <DatePicker
               id="excludeStart"

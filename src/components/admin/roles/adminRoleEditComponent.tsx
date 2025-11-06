@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, FormCheck } from 'rsuite';
+import { Button, Checkbox } from 'rsuite';
 import { GetPermissionsResponse, UpdateRoleResponse } from '@/types/responses';
 import { Permission, Role } from '@/types/user';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
@@ -139,18 +139,16 @@ export default function AdminRoleEdit() {
       const checked: boolean = hasPermission(item.permissionId);
       const key = `perm${index}`;
       permissionRows.push(
-        <FormCheck
+        <Checkbox
           key={key}
           id={item.permissionId.toString()}
-          onChange={(e) =>
-            updateRolePermissions(
-              parseInt(`${item.permissionId}`),
-              e.currentTarget.checked,
-            )
+          onChange={(_, checked) =>
+            updateRolePermissions(parseInt(`${item.permissionId}`), checked)
           }
           checked={checked}
-          label={item.permissionName}
-        />,
+        >
+          {item.permissionName}
+        </Checkbox>,
       );
     });
   }

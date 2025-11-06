@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Form, FormCheck, Row } from 'rsuite';
+import { Button, Checkbox, Col, Form, Row } from 'rsuite';
 import { Modal, TimePicker } from 'rsuite';
 import { ModifyEventResponse, ModifyNoteResponse } from '@/types/responses';
 import { Note, VipEvent } from '@/types/event';
@@ -315,24 +315,27 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
         </Row>
         <Row>
           <Col xl={4} lg={12} className="expanded-event-panel">
-            <FormCheck
+            <Checkbox
               checked={vipEvent?.emailSentToVips ?? false}
               disabled={!vipEvent.isActive || !hasVips}
-              onChange={(e) => setSentEmail(e.currentTarget.checked)}
-              label="Email Sent To VIPs?"
-            />
-            <FormCheck
+              onChange={(_, checked) => setSentEmail(checked)}
+            >
+              Email Sent To VIPs?
+            </Checkbox>
+            <Checkbox
               checked={vipEvent?.textSentToVips ?? false}
               disabled={!vipEvent.isActive || !hasVips}
-              onChange={(e) => setSentText(e.currentTarget.checked)}
-              label="Text Sent To VIPs?"
-            />
-            <FormCheck
+              onChange={(_, checked) => setSentText(checked)}
+            >
+              Text Sent To VIPs?
+            </Checkbox>
+            <Checkbox
               checked={vipEvent?.listSentToBand ?? false}
               disabled={!vipEvent.isActive || !hasVips}
-              onChange={(e) => setSentList(e.currentTarget.checked)}
-              label="List Sent To Band?"
-            />
+              onChange={(_, checked) => setSentList(checked)}
+            >
+              List Sent To Band?
+            </Checkbox>
             <div>Date/Time List sent to band: {listSent}</div>
             <div># of VIPs at time email was sent: {numVips}</div>
             <Button

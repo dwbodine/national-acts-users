@@ -1,8 +1,7 @@
 'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { ChangeEvent } from 'react';
-import { FormCheck } from 'rsuite';
+import { Checkbox } from 'rsuite';
 import type { RootState } from '../../lib/store';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setShowDeleted } from '@/lib/adminEventsSelectionSlice';
@@ -13,18 +12,19 @@ export default function AdminDeletedCheck() {
     (state: RootState) => state.eventAdminSelection,
   );
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setShowDeleted(event.target.checked));
+  const handleChange = (checked: boolean) => {
+    dispatch(setShowDeleted(checked));
     dispatch(setIsLoading(true));
   };
 
   return (
     <span className="deleted-check">
-      <FormCheck
+      <Checkbox
         checked={currentReportSelection.showDeleted}
-        onChange={handleChange}
-        label="Show deleted events?"
-      />
+        onChange={(_, checked) => handleChange(checked)}
+      >
+        Show deleted events?
+      </Checkbox>
     </span>
   );
 }

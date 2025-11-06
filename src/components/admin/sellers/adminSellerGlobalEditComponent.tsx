@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, FormCheck, Row } from 'rsuite';
+import { Button, Checkbox, Col, Row } from 'rsuite';
 import { ReactElement, useCallback, useEffect } from 'react';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { setAdminSeller, setReloadSellers } from '@/lib/adminSelectionSlice';
@@ -539,32 +539,34 @@ export default function AdminSellerGlobalEdit() {
             </select>
           </Col>
           <Col xs={1}>
-            <FormCheck
+            <Checkbox
               disabled={!selectedCategory}
               checked={selectedCategory?.isVisibleOnSite ?? false}
-              onChange={(e) =>
+              onChange={(_, checked) =>
                 updateSellerEventCategorySiteVisible(
                   parseInt(`${account.ticketSocketId}`),
                   parseInt(`${selectedCategory?.eventCategoryId}`),
-                  e.target.checked,
+                  checked,
                 )
               }
-              label={'Visible on site?'}
-            />
+            >
+              Visible on site?
+            </Checkbox>
           </Col>
           <Col xs={1}>
-            <FormCheck
+            <Checkbox
               disabled={!selectedCategory}
               checked={selectedCategory?.isVisibleOnPortal ?? false}
-              onChange={(e) =>
+              onChange={(_, checked) =>
                 updateSellerEventCategoryPortalVisible(
                   parseInt(`${account.ticketSocketId}`),
                   parseInt(`${selectedCategory?.eventCategoryId}`),
-                  e.target.checked,
+                  checked,
                 )
               }
-              label={'Visible on portal?'}
-            />
+            >
+              Visible on portal?
+            </Checkbox>
           </Col>
         </Row>,
       );
@@ -638,21 +640,23 @@ export default function AdminSellerGlobalEdit() {
         <Row className="form-group">
           <Col xs={2}></Col>
           <Col>
-            <FormCheck
+            <Checkbox
               checked={currentSeller?.hideInList ?? false}
-              onChange={(e) => setHideInList(e.target.checked)}
-              label={'Hide in order tickets screen'}
-            />
+              onChange={(_, checked) => setHideInList(checked)}
+            >
+              Hide in order tickets screen
+            </Checkbox>
           </Col>
         </Row>
         <Row className="form-group">
           <Col xs={2}></Col>
           <Col>
-            <FormCheck
+            <Checkbox
               checked={!(currentSeller?.isActive ?? false)}
-              onChange={(e) => setIsActive(!e.target.checked)}
-              label={'Set to inactive'}
-            />
+              onChange={(_, checked) => setIsActive(!checked)}
+            >
+              Set to inactive
+            </Checkbox>
           </Col>
         </Row>
         <Row>

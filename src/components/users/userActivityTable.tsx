@@ -1,7 +1,7 @@
 'use client';
 
-import { ChangeEvent, useEffect, useState } from 'react';
-import { Col, Container, FormCheck, Row } from 'rsuite';
+import { useEffect, useState } from 'react';
+import { Checkbox, Col, Container, Row } from 'rsuite';
 import {
   setCurrentActivities,
   setFilterAdmins,
@@ -25,8 +25,8 @@ export default function UserActivityTable() {
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
 
-  const onFilterClick = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setFilterAdmins(event.target.checked));
+  const onFilterClick = (checked: boolean) => {
+    dispatch(setFilterAdmins(checked));
   };
 
   useEffect(() => {
@@ -82,11 +82,12 @@ export default function UserActivityTable() {
         </Row>
         <Row className="admin-filter-row">
           <Col>
-            <FormCheck
+            <Checkbox
               checked={currentUserActivitySelection.filterAdmins}
-              onChange={onFilterClick}
-              label="Filter out admins?"
-            />
+              onChange={(_, checked) => onFilterClick(checked)}
+            >
+              Filter out admins?
+            </Checkbox>
           </Col>
         </Row>
         <Row>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, FormCheck } from 'rsuite';
+import { Button, Checkbox } from 'rsuite';
 import {
   GetRolesResponse,
   GetSellersResponse,
@@ -345,31 +345,33 @@ export default function AdminUserEdit() {
         />
       </div>
       <div className="form-group">
-        <FormCheck
-          checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
-          label="Is Active?"
-        />
-        <FormCheck
+        <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
+          Is Active?
+        </Checkbox>
+        <Checkbox
           checked={requireResetPassword}
-          onChange={(e) => setRequireResetPassword(e.target.checked)}
-          label="Require Reset Password?"
-        />
-        <FormCheck
+          onChange={(_, checked) => setRequireResetPassword(checked)}
+        >
+          Require Reset Password?
+        </Checkbox>
+        <Checkbox
           checked={sendEmailReset}
-          onChange={(e) => setSendEmailReset(e.target.checked)}
-          label="Send Password Reset by Email?"
-        />
-        <FormCheck
+          onChange={(_, checked) => setSendEmailReset(checked)}
+        >
+          Send Password Reset by Email?
+        </Checkbox>
+        <Checkbox
           checked={sendTextReset}
-          onChange={(e) => setSendTextReset(e.target.checked)}
-          label="Send Password Reset by Text?"
-        />
-        <FormCheck
+          onChange={(_, checked) => setSendTextReset(checked)}
+        >
+          Send Password Reset by Text?
+        </Checkbox>
+        <Checkbox
           checked={disableCheckIn}
-          onChange={(e) => setDisableCheckIn(e.target.checked)}
-          label="Disable check-in permission?"
-        />
+          onChange={(_, checked) => setDisableCheckIn(checked)}
+        >
+          Disable check-in permission?
+        </Checkbox>
       </div>
       <div className="form-group" hidden={currentAdminSelection.selectedUser.isAdmin}>
         <label className="mt-4">Sellers:</label>
