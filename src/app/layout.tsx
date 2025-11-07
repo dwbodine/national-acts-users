@@ -3,6 +3,9 @@
 import 'react-toastify/ReactToastify.css';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 import '../Css/App.css';
+import '../Css/Frame.css';
+import '../Css/Brand.css';
+import '../Css/Logo.css';
 
 import { Open_Sans } from 'next/font/google';
 import Providers from '@/components/common/providers';

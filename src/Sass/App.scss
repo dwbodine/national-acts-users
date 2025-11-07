@@ -106,9 +106,16 @@ input.rs-input:hover {
   margin: 0 10px 0 0;
 }
 
+.auth-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .wrapper input,
 .wrapper select,
 .wrapper textarea {
+  display: flex;
   width: 100%;
 }
 
@@ -134,11 +141,17 @@ input.rs-input:hover {
   margin: 0 auto;
 }
 
-.login-title-container {
+.login-container {
   width: 100%;
   margin: 0;
   padding: 0;
   text-align: center;
+}
+
+.login-container input {
+  height: 25px;
+  margin: 0 auto;
+  max-width: 300px;
 }
 
 .tab-container {

@@ -1,16 +1,25 @@
 'use client';
 
-import { MdDashboard, MdFingerprint, MdModeEditOutline } from 'react-icons/md';
-import { VscCalendar, VscTable } from 'react-icons/vsc';
-import CubesIcon from '@rsuite/icons/legacy/Cubes';
+import {
+  MdCalendarMonth,
+  MdDashboard,
+  MdEvent,
+  MdMoneyOff,
+  MdOutlineMoney,
+  MdOutlineVerifiedUser,
+  MdReport,
+  MdSupervisedUserCircle,
+  MdWebAsset,
+} from 'react-icons/md';
+
 import { Icon } from '@rsuite/icons';
 
 export const userAppNavs = [
   {
-    eventKey: 'dashboard',
-    icon: <Icon as={MdDashboard} />,
-    title: 'Dashboard',
-    to: '/dashboard',
+    eventKey: 'sales',
+    icon: <Icon as={MdOutlineMoney} />,
+    title: 'Sales Overview',
+    to: '/sellers',
   },
 ];
 
@@ -22,91 +31,123 @@ export const adminAppNavs = [
     to: '/dashboard',
   },
   {
-    eventKey: 'calendar',
-    icon: <Icon as={VscCalendar} />,
-    title: 'Calendar',
-    to: '/calendar',
+    eventKey: 'events',
+    icon: <Icon as={MdCalendarMonth} />,
+    title: 'Events',
+    to: '/events',
+  },
+  {
+    eventKey: 'sales',
+    icon: <Icon as={MdMoneyOff} />,
+    title: 'Sales Overview',
+    to: '/sellers',
   },
   {
     children: [
       {
-        eventKey: 'members',
-        title: 'Members',
-        to: '/table-members',
+        eventKey: 'site-settings',
+        title: 'Manage Site Settings',
+        to: '/admin/settings',
       },
       {
-        eventKey: 'virtualized',
-        title: 'Virtualized Table',
-        to: '/table-virtualized',
+        eventKey: 'site-sellers',
+        title: 'Manage Sellers',
+        to: '/admin/sellers',
+      },
+      {
+        eventKey: 'site-pages',
+        title: 'Manage Pages',
+        to: '/admin/pages',
+      },
+      {
+        eventKey: 'site-order',
+        title: 'Manage Page Order',
+        to: '/admin/pages/order',
+      },
+      {
+        eventKey: 'site-faqs',
+        title: 'Manage FAQs',
+        to: '/admin/faqs',
       },
     ],
-    eventKey: 'tables',
-    icon: <Icon as={VscTable} />,
-    title: 'Tables',
-    to: '/table-members',
+    eventKey: 'site-admin',
+    icon: <Icon as={MdWebAsset} />,
+    title: 'Site Admin',
+    to: '',
   },
   {
     children: [
       {
-        eventKey: 'form-basic',
-        title: 'Basic',
-        to: '/form-basic',
+        eventKey: 'user-roles',
+        title: 'Manage Roles',
+        to: '/admin/roles',
       },
       {
-        eventKey: 'form-wizard',
-        title: 'Wizard',
-        to: '/form-wizard',
+        eventKey: 'user-users',
+        title: 'Manage Users',
+        to: '/admin/users',
       },
     ],
-    eventKey: 'forms',
-    icon: <Icon as={MdModeEditOutline} />,
-    title: 'Forms',
-    to: '/form-basic',
+    eventKey: 'user-admin',
+    title: 'User Admin',
+    icon: <Icon as={MdOutlineVerifiedUser} />,
+    to: '',
   },
   {
     children: [
       {
-        eventKey: 'sign-in',
-        title: 'Sign In',
-        to: '/sign-in',
-      },
-
-      {
-        eventKey: 'sign-up',
-        title: 'Sign Up',
-        to: '/sign-up',
+        eventKey: 'event-refresh',
+        title: 'Refresh Data',
+        to: '/admin/refresh-data',
       },
       {
-        eventKey: 'error403',
-        title: 'Error 403',
-        to: '/error-403',
+        eventKey: 'event-events',
+        title: 'Manage Events',
+        to: '/admin/events',
       },
       {
-        eventKey: 'error404',
-        title: 'Error 404',
-        to: '/error-404',
+        eventKey: 'event-orders',
+        title: 'Manage Orders',
+        to: '/admin/events/orders/search',
       },
       {
-        eventKey: 'error500',
-        title: 'Error 500',
-        to: '/error-500',
+        eventKey: 'event-tour',
+        title: 'Manage Tours',
+        to: '/admin/tour',
       },
       {
-        eventKey: 'error503',
-        title: 'Error 503',
-        to: '/error-503',
+        eventKey: 'event-venues',
+        title: 'Manage Venues',
+        to: '/admin/venues',
       },
     ],
-    eventKey: 'authentication',
-    icon: <Icon as={MdFingerprint} />,
-    title: 'Authentication',
+    eventKey: 'event-admin',
+    title: 'Event/Order Admin',
+    icon: <Icon as={MdEvent} />,
+    to: '',
   },
-
   {
-    eventKey: 'components',
-    href: 'https://rsuitejs.com/components/overview/',
-    icon: <CubesIcon />,
-    target: '_blank',
-    title: 'Components',
+    children: [
+      {
+        eventKey: 'report-customer-export',
+        title: 'Export Cutomer Data',
+        to: '/reports/customer-export',
+      },
+      {
+        eventKey: 'report-missing-venues',
+        title: 'Missing Venue Report',
+        to: '/reports/missing-venues',
+      },
+    ],
+    eventKey: 'reports',
+    icon: <Icon as={MdReport} />,
+    title: 'Reports',
+    to: '/reports',
+  },
+  {
+    eventKey: 'users',
+    icon: <Icon as={MdSupervisedUserCircle} />,
+    title: 'Users',
+    to: '/users',
   },
 ];

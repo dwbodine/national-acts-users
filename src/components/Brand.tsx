@@ -18,9 +18,8 @@ const Brand = (
     StackProps & { children?: React.ReactNode | undefined },
 ) => (
   <Stack className="brand" {...props}>
-    <Logo height={26} style={{ marginTop: 6 }} />
-    <Link href="/" style={{ marginLeft: 14 }}>
-      Admin Template
+    <Link href="/" style={{ textAlign: 'center' }}>
+      <Logo height={77} width={100} />
     </Link>
   </Stack>
 );

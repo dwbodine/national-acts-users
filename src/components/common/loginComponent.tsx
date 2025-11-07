@@ -109,13 +109,13 @@ export default function LoginComponent() {
           </Col>
         </Row>
         <Row>
-          <Col className="login-title-container">
+          <Col className="login-container">
             <h2>CLIENT PORTAL</h2>
             <p>Please fill in your credentials to log in.</p>
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col className="login-container">
             <div className="form-group">
               <label>USERNAME</label>
               <input
@@ -129,7 +129,7 @@ export default function LoginComponent() {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col className="login-container">
             <div className="form-group">
               <label className="mt-4">PASSWORD</label>
               <input
@@ -144,7 +144,7 @@ export default function LoginComponent() {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col className="login-container">
             <div className="form-group">
               <Button onClick={onSubmit}>Login</Button>
               {loginError ? (
@@ -158,7 +158,7 @@ export default function LoginComponent() {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col className="login-container">
             <p>
               Don&apos;t have an account?{' '}
               <a onClick={register} title="Sign up now">

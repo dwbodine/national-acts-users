@@ -334,6 +334,13 @@ export interface OrderRowProps {
   IsAdmin?: boolean;
 }
 
+export interface SpeakerProps {
+  onClose: () => void;
+  left?: number;
+  top?: number;
+  className?: string;
+}
+
 export interface CustomToolTipParamsPayload {
   value?: string;
 }
@@ -355,4 +362,8 @@ export interface VIPModalProps {
 
 export interface VipHtmlProps {
   PdfHtml?: string;
+}
+
+export interface FrameProps {
+  children?: React.ReactNode;
 }

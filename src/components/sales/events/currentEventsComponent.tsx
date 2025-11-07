@@ -301,16 +301,13 @@ export default function CurrentEvents() {
 
   return (
     <>
-      <Container
-        className="fluid"
-        hidden={!globalSelection.isLoading || !user || user.isAdmin}
-      >
+      <div className="fluid" hidden={!globalSelection.isLoading}>
         <Row>
           <Col className="spinner-container">
             <RingLoader size={150} color="#d12610" />
           </Col>
         </Row>
-      </Container>
+      </div>
       <div hidden={globalSelection.isLoading}>
         <input
           type="text"

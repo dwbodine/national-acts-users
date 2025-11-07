@@ -1,13 +1,18 @@
 'use client';
 
 import { Container, Content, DOMHelper, Nav, Sidebar, Sidenav } from 'rsuite';
-import type { IconProps } from '@rsuite/icons/Icon';
-import React, { ReactElement, JSXElementConstructor, useEffect, useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import Brand from '../Brand';
 import Header from '../Header';
 import NavLink from '../NavLink';
 import NavToggle from './NavToggle';
 import classNames from 'classnames';
+import { FrameProps } from '@/types/props';
+import { NavItemData } from '@/types/public';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { User } from '@/types/user';
+import { adminAppNavs, userAppNavs } from '@/config';
 
 const { getHeight, on } = DOMHelper;
 
@@ -20,33 +25,34 @@ const NavItem = (props: NavItemData) => {
   );
 };
 
-export interface NavItemData {
-  eventKey: string;
-  title: string;
-  icon?: ReactElement<IconProps, string | JSXElementConstructor<unknown>>;
-  to?: string;
-  target?: string;
-  children?: NavItemData[];
-}
-
-export interface FrameProps {
-  navs: NavItemData[];
-  children?: React.ReactNode;
-}
-
 const Frame = (props: FrameProps) => {
-  const { navs } = props;
+  const [navs, setNavs] = useState<NavItemData[] | undefined>(undefined);
   const [expand, setExpand] = useState(true);
   const [windowHeight, setWindowHeight] = useState(500);
 
+  const { getUser } = useCurrentUser();
+  const [user, setUser] = useState<User | undefined>(undefined);
+
   useEffect(() => {
-    setWindowHeight(getHeight(window));
+    if (!user) {
+      const currentUser = getUser();
+      setUser(currentUser);
+    } else if (user && user.isAuthenticated) {
+      if (user.isAdmin) {
+        setNavs(adminAppNavs);
+      } else {
+        setNavs(userAppNavs);
+      }
+
+      setWindowHeight(getHeight(window));
+    }
+
     const resizeListener = on(window, 'resize', () => setWindowHeight(getHeight(window)));
 
     return () => {
       resizeListener.off();
     };
-  }, []);
+  }, [user, navs]);
 
   const containerClasses = classNames('page-container', {
     'container-full': !expand,
@@ -57,7 +63,7 @@ const Frame = (props: FrameProps) => {
     : {};
 
   return (
-    <Container className="frame">
+    <Container className="frame" hidden={!navs || navs.length == 0}>
       <Sidebar
         style={{ display: 'flex', flexDirection: 'column' }}
         width={expand ? 260 : 56}
@@ -69,7 +75,7 @@ const Frame = (props: FrameProps) => {
         <Sidenav expanded={expand} appearance="subtle" defaultOpenKeys={['2', '3']}>
           <Sidenav.Body style={navBodyStyle}>
             <Nav>
-              {navs.map((item) => {
+              {navs?.map((item) => {
                 const { children, ...rest } = item;
                 if (children) {
                   return (
@@ -102,7 +108,7 @@ const Frame = (props: FrameProps) => {
         <NavToggle expand={expand} onChange={() => setExpand(!expand)} />
       </Sidebar>
 
-      <Container className={containerClasses}>
+      <Container className={containerClasses} hidden={!navs || navs.length == 0}>
         <Header />
         <Content>{props.children}</Content>
       </Container>
