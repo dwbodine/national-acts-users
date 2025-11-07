@@ -38,9 +38,11 @@ export default function VIPItineraryModal(props: VIPModalProps) {
   const { getPublicEvents } = useGetPublicEvents();
 
   const currentSellerName = currentSeller?.sellerName;
-  const startEventDateStr = currentEvents.length > 0 ? currentEvents[0].eventDate : '';
+  const lastEvent = currentEvents[currentEvents.length - 1];
+  const startEventDateStr =
+    currentEvents.length > 0 && currentEvents[0] ? currentEvents[0].eventDate : '';
   const endEventDateStr =
-    currentEvents.length > 0 ? currentEvents[currentEvents.length - 1].eventDate : '';
+    currentEvents.length > 0 && lastEvent ? lastEvent.eventDate : '';
   const nowUnix = moment().unix();
   const firstEvent = currentEvents.find((x) => moment(x.eventDate).unix() >= nowUnix);
 
@@ -113,11 +115,11 @@ export default function VIPItineraryModal(props: VIPModalProps) {
     const end = endUnix;
     const { sellerId } = currentSeller;
 
-    getPublicEvents(start, end, sellerId).then((response: GetEventsResponse) => {
+    void getPublicEvents(start, end, sellerId).then((response: GetEventsResponse) => {
       if (response.events && !response.error) {
         const eventsToExport = response.events;
         if (formatValue === '1') {
-          exportVipItineraryToCSV(eventsToExport, currentSeller, isAdmin).then(
+          void exportVipItineraryToCSV(eventsToExport, currentSeller, isAdmin).then(
             (csvData: string) => {
               const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
               downloadCsvFile(fileName, csvData);
@@ -130,15 +132,18 @@ export default function VIPItineraryModal(props: VIPModalProps) {
         } else {
           const title = `${currentSeller.sellerName} Event Itinerary`;
           localStorage.setItem('pdfTitle', title);
-          exportVipItineraryToHtml(eventsToExport, title, sellerHomePage, isAdmin).then(
-            (htmlString: string) => {
-              setIsReportLoading(false);
-              submitPdfToNewWindow(htmlString);
-              if (onClose) {
-                onClose();
-              }
-            },
-          );
+          void exportVipItineraryToHtml(
+            eventsToExport,
+            title,
+            sellerHomePage,
+            isAdmin,
+          ).then((htmlString: string) => {
+            setIsReportLoading(false);
+            submitPdfToNewWindow(htmlString);
+            if (onClose) {
+              onClose();
+            }
+          });
         }
       } else {
         const err = response.error

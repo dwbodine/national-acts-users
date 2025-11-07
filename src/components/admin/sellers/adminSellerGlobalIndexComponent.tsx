@@ -36,16 +36,18 @@ export default function AdminSellerGlobalIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         dispatch(setAllSellers(undefined));
-        getTicketSocketAccounts().then((response: GetTicketSocketAccountsResponse) => {
-          if (!response.error && response.accounts) {
-            dispatch(setTicketSocketAccounts(response.accounts));
-          }
-        });
+        void getTicketSocketAccounts().then(
+          (response: GetTicketSocketAccountsResponse) => {
+            if (!response.error && response.accounts) {
+              dispatch(setTicketSocketAccounts(response.accounts));
+            }
+          },
+        );
       } else if (currentAdminSelection.reloadSellers) {
         dispatch(setReloadSellers(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAdminSellers().then((response: GetSellersResponse) => {
+        void getAdminSellers().then((response: GetSellersResponse) => {
           if (!response.error && response.sellers) {
             dispatch(setAllSellers(response.sellers));
           }
@@ -129,9 +131,9 @@ export default function AdminSellerGlobalIndex() {
         <Column width={300}>
           <HeaderCell>Seller Name</HeaderCell>
           <Cell className="admin-click-cell">
-            {(rowData) => (
+            {(rowData: Seller) => (
               <div
-                id={rowData.sellerId}
+                id={rowData.sellerId.toString()}
                 onClick={() => editSeller(parseInt(`${rowData.sellerId}`))}
               >
                 {rowData.name}

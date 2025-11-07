@@ -31,7 +31,7 @@ export default function AdminRolesIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         setSelectedRoles([]);
-        getAllRoles().then((response: GetRolesResponse) => {
+        void getAllRoles().then((response: GetRolesResponse) => {
           if (!response.error && response.roles) {
             dispatch(setRoles(response.roles));
           }
@@ -92,7 +92,7 @@ export default function AdminRolesIndex() {
     if (selectedRoles.length === 0) {
       return;
     }
-    deleteRoles(selectedRoles).then((response: UpdateRoleResponse) => {
+    void deleteRoles(selectedRoles).then((response: UpdateRoleResponse) => {
       if (response.success) {
         setSelectedRoles([]);
         toast.success('Roles deleted successfully');
@@ -116,10 +116,10 @@ export default function AdminRolesIndex() {
         <Column width={50} align="center">
           <HeaderCell> </HeaderCell>
           <Cell>
-            {(rowData) =>
+            {(rowData: Role) =>
               rowData.roleId > 4 ? (
                 <Checkbox
-                  id={rowData.roleId}
+                  id={rowData.roleId.toString()}
                   checked={selectedRoles.includes(rowData.roleId)}
                   onChange={(_, checked) =>
                     updateSelectedRoles(parseInt(`${rowData.roleId}`), checked)
@@ -134,9 +134,9 @@ export default function AdminRolesIndex() {
         <Column width={300}>
           <HeaderCell>Role</HeaderCell>
           <Cell className="admin-click-cell">
-            {(rowData) => (
+            {(rowData: Role) => (
               <div
-                id={rowData.roleId}
+                id={rowData.roleId.toString()}
                 onClick={() => editRole(parseInt(`${rowData.roleId}`))}
               >
                 {rowData.roleName}

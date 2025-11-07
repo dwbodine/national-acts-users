@@ -55,7 +55,7 @@ export default function DashboardIndex() {
         dispatch(setReloadDashboardOrders(false));
         dispatch(setIsLoading(true));
         setChartsHidden(true);
-        getDashboardData(currentDashboardSelection).then(
+        void getDashboardData(currentDashboardSelection).then(
           (response: GetDashboardOrdersResponse) => {
             if (response.totals && !response.error) {
               const dashData = getDashboardDataFromOrders(
@@ -117,7 +117,10 @@ export default function DashboardIndex() {
   if (ticketSalesData) {
     let j = 0;
     for (let i = ticketSalesData.length - 1; i >= 0; i -= 1) {
-      chartSalesData[j] = ticketSalesData[i];
+      const currentTicketSalesData = ticketSalesData[i];
+      if (currentTicketSalesData) {
+        chartSalesData[j] = currentTicketSalesData;
+      }
       j += 1;
     }
   }
@@ -298,7 +301,7 @@ export default function DashboardIndex() {
         <Row>
           <Col>
             <TicketSalesChart
-              TicketSalesData={chartSalesData}
+              TicketSalesData={chartSalesData ?? []}
               ChartsHidden={chartsHidden}
               HideRevenue={false}
               HideMobile={hideTicketChart}
@@ -332,12 +335,12 @@ export default function DashboardIndex() {
               <Column flexGrow={1}>
                 <HeaderCell>Ticket Revenue</HeaderCell>
                 <Cell>
-                  {(rowData) =>
+                  {(rowData: ITicketSalesData) =>
                     formatCurrencyAmount(
-                      rowData.Revenue,
+                      undefined,
                       rowData.RevenueUsd,
-                      rowData.CurrencySymbol,
-                      rowData.ExchangeRate,
+                      undefined,
+                      undefined,
                       true,
                     )
                   }
@@ -346,12 +349,12 @@ export default function DashboardIndex() {
               <Column flexGrow={1}>
                 <HeaderCell>Revenue Refunded</HeaderCell>
                 <Cell>
-                  {(rowData) =>
+                  {(rowData: ITicketSalesData) =>
                     formatCurrencyAmount(
-                      rowData.RevenueRefunded,
+                      undefined,
                       rowData.RevenueRefundedUsd,
-                      rowData.CurrencySymbol,
-                      rowData.ExchangeRate,
+                      undefined,
+                      undefined,
                       true,
                     )
                   }
@@ -360,12 +363,12 @@ export default function DashboardIndex() {
               <Column flexGrow={1}>
                 <HeaderCell>Service Fees</HeaderCell>
                 <Cell>
-                  {(rowData) =>
+                  {(rowData: ITicketSalesData) =>
                     formatCurrencyAmount(
-                      rowData.ServiceFees,
+                      undefined,
                       rowData.ServiceFeesUsd,
-                      rowData.CurrencySymbol,
-                      rowData.ExchangeRate,
+                      undefined,
+                      undefined,
                       true,
                     )
                   }
@@ -374,12 +377,12 @@ export default function DashboardIndex() {
               <Column flexGrow={1}>
                 <HeaderCell>Service Fees Refunded</HeaderCell>
                 <Cell>
-                  {(rowData) =>
+                  {(rowData: ITicketSalesData) =>
                     formatCurrencyAmount(
-                      rowData.ServiceFeeRevenueRefunded,
+                      undefined,
                       rowData.ServiceFeeRevenueRefundedUsd,
-                      rowData.CurrencySymbol,
-                      rowData.ExchangeRate,
+                      undefined,
+                      undefined,
                       true,
                     )
                   }
@@ -388,12 +391,12 @@ export default function DashboardIndex() {
               <Column flexGrow={1}>
                 <HeaderCell>Total Revenue</HeaderCell>
                 <Cell>
-                  {(rowData) =>
+                  {(rowData: ITicketSalesData) =>
                     formatCurrencyAmount(
-                      rowData.TotalRevenue,
+                      undefined,
                       rowData.TotalRevenueUsd,
-                      rowData.CurrencySymbol,
-                      rowData.ExchangeRate,
+                      undefined,
+                      undefined,
                       true,
                     )
                   }

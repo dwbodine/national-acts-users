@@ -34,7 +34,7 @@ import { useHasPermission } from '@/hooks/user/useHasPermission';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function SalesBar() {
-  const webBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/`;
+  const webBaseUrl = `${process.env['NEXT_PUBLIC_WWW_URL']}/`;
   const dispatch = useDispatch();
   const { getUser } = useCurrentUser();
   const windowSize = useWindowSize();
@@ -71,7 +71,7 @@ export default function SalesBar() {
       currentReportSelection.seller.sellerId > 0
     ) {
       dispatch(setIsLoading(true));
-      getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
+      void getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
         (response: GetEventsResponse) => {
           if (response && !response.error && response.events !== undefined) {
             const showServiceFees =
@@ -101,7 +101,7 @@ export default function SalesBar() {
       currentReportSelection.seller.sellerId > 0
     ) {
       dispatch(setIsLoading(true));
-      getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
+      void getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
         (response: GetEventsResponse) => {
           if (response && !response.error && response.events !== undefined) {
             const vipEvents = response.events;

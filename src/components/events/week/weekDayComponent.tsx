@@ -84,7 +84,7 @@ export default function WeekDay(props: WeekDayProps) {
       return;
     }
     const calendarDate = weekDate.format('YYYY-MM-DD');
-    addNote(noteText, undefined, calendarDate, noteTitle).then(
+    void addNote(noteText, undefined, calendarDate, noteTitle).then(
       (response: ModifyNoteResponse) => {
         setNotesOpen(false);
         if (response.success && !response.error) {
@@ -109,7 +109,7 @@ export default function WeekDay(props: WeekDayProps) {
     ) {
       return;
     }
-    editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true).then(
+    void editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true).then(
       (response: ModifyNoteResponse) => {
         handleDisplayNoteClose();
         if (response.success && !response.error) {
@@ -132,7 +132,7 @@ export default function WeekDay(props: WeekDayProps) {
     ) {
       return;
     }
-    editNote(
+    void editNote(
       noteId,
       displayNoteText,
       displayNoteTitle,
@@ -151,7 +151,7 @@ export default function WeekDay(props: WeekDayProps) {
 
   const deleteSelectedNote = (nId: number) => {
     toast.dismiss();
-    deleteNote(nId).then((response: ModifyNoteResponse) => {
+    void deleteNote(nId).then((response: ModifyNoteResponse) => {
       if (response.success && !response.error) {
         toast.success('Calendar note deleted');
         dispatch(setReloadAdminEvents(true));

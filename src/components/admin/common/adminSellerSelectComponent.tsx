@@ -11,25 +11,23 @@ import { Role } from '@/types/user';
 import { useState } from 'react';
 
 export default function AdminSellerSelect(props: AdminSellerSelectProps) {
-  let sellers: Seller[] | undefined = props.Sellers as Seller[] | undefined;
-  const roles: Role[] | undefined = props.Roles as Role[] | undefined;
-  const sellerId: number = props.SellerId ? (props.SellerId as number) : 0;
+  let sellers: Seller[] | undefined = props.Sellers || undefined;
+  const roles: Role[] | undefined = props.Roles || undefined;
+  const sellerId: number = props.SellerId ? props.SellerId : 0;
   const sellerType: SellerType | undefined = props.SellerType
-    ? (props.SellerType as SellerType)
+    ? props.SellerType
     : undefined;
-  const roleId: number = props.RoleId ? (props.RoleId as number) : 0;
-  const number: number | undefined = props.Number as number | undefined;
+  const roleId: number = props.RoleId ? props.RoleId : 0;
+  const number: number | undefined = props.Number || undefined;
   const id: string = props.Id;
   const onSellerChange = props.OnSellerChange;
   const onRoleChange = props.OnRoleChange;
   const onPageSellerChange = props.OnPageSellerChange;
   const onDelete = props.OnDelete;
   const pageSeller: PageSeller | undefined = props.PageSeller
-    ? (props.PageSeller as PageSeller)
+    ? props.PageSeller
     : undefined;
-  const countries: Country[] | undefined = props.Countries
-    ? (props.Countries as Country[])
-    : undefined;
+  const countries: Country[] | undefined = props.Countries ? props.Countries : undefined;
 
   const [pageSellerSettingsOpen, setPageSellerSettingsOpen] = useState(false);
   const handlePageSellerSettingsOpen = () => setPageSellerSettingsOpen(true);

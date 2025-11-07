@@ -34,7 +34,7 @@ export default function AdminFaqsIndex() {
         dispatch(setReloadFaqs(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAllFaqs().then((response: GetFaqsResponse) => {
+        void getAllFaqs().then((response: GetFaqsResponse) => {
           if (!response.error && response.faqs) {
             dispatch(setAllFaqs(response.faqs));
           }
@@ -85,7 +85,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    moveFaqUp(faqId).then(() => {
+    void moveFaqUp(faqId).then(() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
@@ -95,7 +95,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    moveFaqDown(faqId).then(() => {
+    void moveFaqDown(faqId).then(() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
@@ -105,7 +105,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    deleteFaq(faqId).then(() => {
+    void deleteFaq(faqId).then(() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
@@ -125,7 +125,11 @@ export default function AdminFaqsIndex() {
       >
         <Column flexGrow={1}>
           <HeaderCell>Category</HeaderCell>
-          <Cell>{(rowData) => <span>{rowData.category?.categoryName}</span>}</Cell>
+          <Cell>
+            {(rowData: Faq) => (
+              <span>{rowData.category ? rowData.category.categoryName : ''}</span>
+            )}
+          </Cell>
         </Column>
         <Column flexGrow={1}>
           <HeaderCell>Order</HeaderCell>
@@ -138,24 +142,20 @@ export default function AdminFaqsIndex() {
         <Column flexGrow={7}>
           <HeaderCell> </HeaderCell>
           <Cell>
-            {(rowData) => (
+            {(rowData: Faq) => (
               <span>
                 <FaArrowUp
                   className="admin-up-down-button"
-                  onClick={() => moveUp(parseInt(`${rowData.faqId}`))}
+                  onClick={() => moveUp(rowData.faqId)}
                   title="Move Up"
                 />
                 <FaArrowDown
                   className="admin-up-down-button"
-                  onClick={() => moveDown(parseInt(`${rowData.faqId}`))}
+                  onClick={() => moveDown(rowData.faqId)}
                   title="Move Down"
                 />
-                <Button onClick={() => editFaq(parseInt(`${rowData.faqId}`))}>
-                  Edit
-                </Button>
-                <Button onClick={() => deleteOneFaq(parseInt(`${rowData.faqId}`))}>
-                  Delete
-                </Button>
+                <Button onClick={() => editFaq(rowData.faqId)}>Edit</Button>
+                <Button onClick={() => deleteOneFaq(rowData.faqId)}>Delete</Button>
               </span>
             )}
           </Cell>

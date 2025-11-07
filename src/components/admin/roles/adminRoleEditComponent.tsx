@@ -38,7 +38,7 @@ export default function AdminRoleEdit() {
       ) {
         dispatch(setIsLoading(true));
         setRoleName(currentAdminSelection.selectedRole.roleName);
-        getAllPermissions().then((response: GetPermissionsResponse) => {
+        void getAllPermissions().then((response: GetPermissionsResponse) => {
           setAllPermissions(response.permissions);
           dispatch(setIsLoading(false));
         });
@@ -121,7 +121,7 @@ export default function AdminRoleEdit() {
     };
 
     dispatch(setIsLoading(true));
-    updateRole(roleToUpdate).then((response: UpdateRoleResponse) => {
+    void updateRole(roleToUpdate).then((response: UpdateRoleResponse) => {
       if (response.success) {
         dispatch(setReloadRoles(true));
         toast.success('Save role succeeded');

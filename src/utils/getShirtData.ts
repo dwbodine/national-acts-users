@@ -28,8 +28,10 @@ export default function getShirtDataFromEvents(
           );
           if (indexToUpdate >= 0) {
             const item = collection[indexToUpdate];
-            item.Number += shirt.total ?? 0;
-            collection[indexToUpdate] = item;
+            if (item) {
+              item.Number += shirt.total ?? 0;
+              collection[indexToUpdate] = item;
+            }
           } else {
             collection.push({
               Number: shirt.total ?? 0,

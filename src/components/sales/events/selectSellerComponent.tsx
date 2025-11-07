@@ -91,14 +91,16 @@ export default function SelectSeller() {
       );
     } else if (user && user.sellers) {
       const [seller] = user.sellers;
-      if (seller.sellerId !== selectedSellerId) {
+      if (seller && seller.sellerId !== selectedSellerId) {
         dispatch(setSeller(seller));
       }
       return (
         <Row className="no-print admin-seller-row">
-          <Col>{seller.sellerName}</Col>
+          <Col>{seller?.sellerName}</Col>
         </Row>
       );
+    } else {
+      return <></>;
     }
   } else {
     return (

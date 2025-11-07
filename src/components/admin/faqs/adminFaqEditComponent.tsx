@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Form, Row } from 'rsuite';
+import { Button, Col, Row } from 'rsuite';
 import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
 import {
   setAllFaqCategories,
@@ -20,6 +20,7 @@ import { toast } from 'react-toastify';
 import { useGetAllFaqCategories } from '@/hooks/admin/useGetAllFaqCategories';
 import { useRouter } from 'next/navigation';
 import { useUpdateFaq } from '@/hooks/admin/useUpdateFaq';
+import Textarea from '@/components/common/Textarea';
 
 export default function AdminFaqEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -37,7 +38,7 @@ export default function AdminFaqEdit() {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.faqCategories === undefined) {
         dispatch(setIsLoading(true));
-        getAllFaqCategories().then((response: GetFaqCategoriesResponse) => {
+        void getAllFaqCategories().then((response: GetFaqCategoriesResponse) => {
           dispatch(setAllFaqCategories(response.categories));
         });
         dispatch(setIsLoading(false));
@@ -145,7 +146,7 @@ export default function AdminFaqEdit() {
 
     dispatch(setIsLoading(true));
 
-    updateFaq(faqToUpdate).then((response: ModifyFaqResponse) => {
+    void updateFaq(faqToUpdate).then((response: ModifyFaqResponse) => {
       if (response.success) {
         dispatch(setReloadFaqs(true));
         toast.success('Save FAQ succeeded');
@@ -209,11 +210,10 @@ export default function AdminFaqEdit() {
         <Row className="form-group">
           <Col>
             <label className="mt-4">HTML Text</label>
-            <Form.Control
-              as="textarea"
+            <Textarea
               rows={3}
               id="answer"
-              onChange={(e) => setAnswer(e.currentTarget.value)}
+              onChange={setAnswer}
               value={answer ?? ''}
               placeholder="Free-form html text to be used as answer"
             />

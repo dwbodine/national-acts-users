@@ -31,7 +31,7 @@ export default function AdminUsersIndex() {
     if (allRoles === undefined) {
       setTableLoading(true);
       dispatch(setIsLoading(true));
-      getAllRoles().then((resp: GetRolesResponse) => {
+      void getAllRoles().then((resp: GetRolesResponse) => {
         const { roles } = resp;
         setAllRoles(roles);
         dispatch(setIsLoading(false));
@@ -40,7 +40,7 @@ export default function AdminUsersIndex() {
     } else if (!currentAdminSelection.users || currentAdminSelection.reloadUsers) {
       setTableLoading(true);
       dispatch(setIsLoading(true));
-      getAllUsers().then((response: GetUsersResponse) => {
+      void getAllUsers().then((response: GetUsersResponse) => {
         if (!response.error && response.users) {
           dispatch(setUsers(response.users));
         }
@@ -126,13 +126,13 @@ export default function AdminUsersIndex() {
         <Column flexGrow={1}>
           <HeaderCell>First Name</HeaderCell>
           <Cell className="admin-click-cell">
-            {(rowData) => {
+            {(rowData: User) => {
               const name = `${rowData.firstName}`;
               const className = rowData.isActive ? '' : 'admin-inactive';
               return (
                 <div
                   className={className}
-                  id={rowData.userId}
+                  id={rowData.userId.toString()}
                   onClick={() => editUser(parseInt(`${rowData.userId}`))}
                 >
                   {name}
@@ -144,13 +144,13 @@ export default function AdminUsersIndex() {
         <Column flexGrow={1}>
           <HeaderCell>Last Name</HeaderCell>
           <Cell className="admin-click-cell">
-            {(rowData) => {
+            {(rowData: User) => {
               const name = `${rowData.lastName}`;
               const className = rowData.isActive ? '' : 'admin-inactive';
               return (
                 <div
                   className={className}
-                  id={rowData.userId}
+                  id={rowData.userId.toString()}
                   onClick={() => editUser(parseInt(`${rowData.userId}`))}
                 >
                   {name}
@@ -162,13 +162,13 @@ export default function AdminUsersIndex() {
         <Column flexGrow={2}>
           <HeaderCell>Email</HeaderCell>
           <Cell className="admin-click-cell">
-            {(rowData) => {
+            {(rowData: User) => {
               const name = `${rowData.username}`;
               const className = rowData.isActive ? '' : 'admin-inactive';
               return (
                 <div
                   className={className}
-                  id={rowData.userId}
+                  id={rowData.userId.toString()}
                   onClick={() => editUser(parseInt(`${rowData.userId}`))}
                 >
                   {name}
@@ -196,7 +196,11 @@ export default function AdminUsersIndex() {
                   }
                   return `${accumulator}${name},  `;
                 }, '');
-              } else if (rowData.sellers && rowData.sellers.length > 0) {
+              } else if (
+                rowData.sellers &&
+                rowData.sellers.length > 0 &&
+                rowData.sellers[0]
+              ) {
                 seller = `${rowData.sellers[0].sellerName} (${getRoleName(rowData.sellers[0].roleId ?? 0)})`;
               }
               const className = rowData.isActive ? '' : 'admin-inactive';

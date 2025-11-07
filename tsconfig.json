@@ -5,7 +5,6 @@
     "baseUrl": "src",
     "checkJs": false,
     "esModuleInterop": true,
-    "ignoreDeprecations": "6.0",
     "isolatedModules": true,
     "jsx": "preserve",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
@@ -40,5 +39,5 @@
    *  Next.js directory Includes
    * ----------------------------------------------------- */
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cts", "**/*.mts"],
-  "exclude": ["node_modules", ".next", "out", "dist"]
+  "exclude": ["node_modules/*", ".next/*", "out/*", "dist/*"]
 }

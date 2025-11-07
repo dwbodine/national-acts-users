@@ -46,7 +46,7 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
       return (
         <div className="custom-tooltip">
           <p className="label">{`Purchase Date: ${label}`}</p>
-          <p className="label">{`Ticket Sales: ${payload[0].value}`}</p>
+          <p className="label">{`Ticket Sales: ${payload[0]?.value}`}</p>
           {hideRev ? (
             ''
           ) : (

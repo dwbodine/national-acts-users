@@ -30,7 +30,7 @@ export default function ReportsMissingVenues() {
       if (currentAdminReportSelection.reloadData) {
         dispatch(setReloadReportData(false));
         dispatch(setIsLoading(true));
-        getMissingVenueEvents().then((response: GetEventsResponse) => {
+        void getMissingVenueEvents().then((response: GetEventsResponse) => {
           setEvents(response.events);
           dispatch(setIsLoading(false));
         });

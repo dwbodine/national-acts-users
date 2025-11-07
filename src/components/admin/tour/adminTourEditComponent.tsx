@@ -89,7 +89,7 @@ export default function AdminTourEdit() {
     dispatch(setAdminTour(selectedTour));
 
     // Update available event list
-    getAdminSellerEvents(sellerIds).then((response: GetEventsResponse) => {
+    void getAdminSellerEvents(sellerIds).then((response: GetEventsResponse) => {
       if (!response.error && response.events) {
         const adminEvents = response.events.filter((x) => !x.isDeleted);
         if (adminEvents && adminEvents.length > 0) {
@@ -161,10 +161,11 @@ export default function AdminTourEdit() {
             : 0,
       );
 
-      const firstEvent = moment(selectedEvents[0].eventDate);
+      const firstEvent = moment(selectedEvents[0]?.eventDate);
       if (
-        !selectedTour.announceDate ||
-        moment(selectedTour.announceDate).valueOf() >= firstEvent.valueOf()
+        firstEvent &&
+        (!selectedTour.announceDate ||
+          moment(selectedTour.announceDate).valueOf() >= firstEvent.valueOf())
       ) {
         selectedTour.announceDate = firstEvent
           .subtract('days', 1)
@@ -230,8 +231,9 @@ export default function AdminTourEdit() {
 
     const [firstEvent] = currentAdminSelection.selectedTour.events;
     if (
+      firstEvent &&
       moment(currentAdminSelection.selectedTour.announceDate).valueOf() >=
-      moment(firstEvent.eventDate).valueOf()
+        moment(firstEvent.eventDate).valueOf()
     ) {
       toast.error('Announce date must be before the first selected event date');
       return;
@@ -239,7 +241,7 @@ export default function AdminTourEdit() {
 
     dispatch(setIsLoading(true));
     const tourToUpdate: Tour = { ...currentAdminSelection.selectedTour };
-    updateTour(tourToUpdate).then((response: ModifyTourResponse) => {
+    void updateTour(tourToUpdate).then((response: ModifyTourResponse) => {
       if (response.success) {
         dispatch(setReloadTours(true));
         toast.success('Save tour succeeded');

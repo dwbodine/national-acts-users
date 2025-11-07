@@ -23,7 +23,7 @@ export default function AdminIndex() {
       if (currentAdminSelection.reloadCountries) {
         dispatch(setReloadCountries(false));
         dispatch(setIsLoading(true));
-        getAllCountries().then((response: GetCountriesResponse) => {
+        void getAllCountries().then((response: GetCountriesResponse) => {
           if (response.countries && !response.error) {
             dispatch(setCountries(response.countries));
           } else {

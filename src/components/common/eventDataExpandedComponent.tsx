@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox, Col, Form, Row } from 'rsuite';
+import { Button, Checkbox, Col, Row } from 'rsuite';
 import { Modal, TimePicker } from 'rsuite';
 import { ModifyEventResponse, ModifyNoteResponse } from '@/types/responses';
 import { Note, VipEvent } from '@/types/event';
@@ -22,6 +22,7 @@ import { toast } from 'react-toastify';
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { useSendListToBand } from '@/hooks/admin/useSendListToBand';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
+import Textarea from './Textarea';
 
 export default function EventDataExpanded(props: EventDataExpandedProps) {
   const focusControl = props.FocusControl;
@@ -75,16 +76,18 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     if (!noteText || !vipEvent) {
       return;
     }
-    addNote(noteText, vipEvent.externalEventId).then((response: ModifyNoteResponse) => {
-      setNotesOpen(false);
-      if (response.success && !response.error) {
-        toast.success('Note added successfully');
-        setNoteText('');
-        dispatch(setReloadAdminEvents(true));
-      } else {
-        toast.error(response.error ?? 'Unexpected error occurred while adding note');
-      }
-    });
+    void addNote(noteText, vipEvent.externalEventId).then(
+      (response: ModifyNoteResponse) => {
+        setNotesOpen(false);
+        if (response.success && !response.error) {
+          toast.success('Note added successfully');
+          setNoteText('');
+          dispatch(setReloadAdminEvents(true));
+        } else {
+          toast.error(response.error ?? 'Unexpected error occurred while adding note');
+        }
+      },
+    );
   };
 
   const editEvent = () => {
@@ -146,10 +149,10 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
           currentEvent.listSentToBand = true;
         }
       }
-      updateEvent(currentEvent).then((response: ModifyEventResponse) => {
+      void updateEvent(currentEvent).then((response: ModifyEventResponse) => {
         if (response.success && !response.error) {
           if (updateListStatus) {
-            sendListToBand(
+            void sendListToBand(
               vipEvent.externalEventId,
               currentEvent.listSentToBand ?? false,
             ).then((resp: ModifyEventResponse) => {
@@ -202,7 +205,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
       currentEvent.meetAndGreetTime = meetAndGreet;
       currentEvent.checkInLocation = modalCheckInLocation;
       currentEvent.checkInNotes = modalCheckInNotes;
-      updateEvent(currentEvent).then((response: ModifyEventResponse) => {
+      void updateEvent(currentEvent).then((response: ModifyEventResponse) => {
         if (response.success && !response.error) {
           toast.success('Event data updated successfully');
           dispatch(setReloadAdminEvents(true));
@@ -397,11 +400,10 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                     <Row className="form-group">
                       <Col xs={2}>Check-in location:</Col>
                       <Col xs={10}>
-                        <Form.Control
-                          as="textarea"
+                        <Textarea
                           rows={3}
                           id="checkInLocation"
-                          onChange={(e) => setModalCheckInLocation(e.currentTarget.value)}
+                          onChange={setModalCheckInLocation}
                           value={modalCheckInLocation ?? ''}
                         />
                       </Col>
@@ -409,11 +411,10 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                     <Row className="form-group">
                       <Col xs={2}>Check-in notes:</Col>
                       <Col xs={10}>
-                        <Form.Control
-                          as="textarea"
+                        <Textarea
                           id="checkInNotes"
                           rows={5}
-                          onChange={(e) => setModalCheckInNotes(e.currentTarget.value)}
+                          onChange={setModalCheckInNotes}
                           value={modalCheckInNotes ?? ''}
                         />
                       </Col>
@@ -439,11 +440,10 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                 <Modal.Title>Add New Note</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <Form.Control
-                  as="textarea"
+                <Textarea
                   id="addNote"
                   rows={5}
-                  onChange={(e) => setNoteText(e.currentTarget.value)}
+                  onChange={setNoteText}
                   value={noteText ?? ''}
                   placeholder="Note text"
                 />

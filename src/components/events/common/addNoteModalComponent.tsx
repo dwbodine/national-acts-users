@@ -1,8 +1,9 @@
 'use client';
 
-import { Button, Form } from 'rsuite';
+import { Button, Input } from 'rsuite';
 import { AddNoteModalProps } from '@/types/props';
 import { Modal } from 'rsuite';
+import Textarea from '@/components/common/Textarea';
 
 export default function AddNoteModal(props: AddNoteModalProps) {
   const id = props.Id;
@@ -21,17 +22,16 @@ export default function AddNoteModal(props: AddNoteModalProps) {
         <Modal.Title>Add New Note for {displayDate}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form.Control
+        <Input
           id="addNoteTitle"
-          onChange={(e) => (setNoteTitle ? setNoteTitle(e.currentTarget.value) : null)}
+          onChange={(value) => setNoteTitle?.(value)}
           value={noteTitle}
           placeholder="Note title"
         />
-        <Form.Control
-          as="textarea"
+        <Textarea
           id="addNote"
           rows={5}
-          onChange={(e) => (setNoteText ? setNoteText(e.currentTarget.value) : null)}
+          onChange={(value) => setNoteText?.(value)}
           value={noteText ?? ''}
           placeholder="Note text"
         />

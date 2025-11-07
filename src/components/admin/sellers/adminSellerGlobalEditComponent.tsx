@@ -21,7 +21,7 @@ export default function AdminSellerGlobalEdit() {
   const router = useRouter();
   const currentSeller = currentAdminSelection.selectedSeller;
   const selectedSellerType = Number(currentSeller?.sellerType ?? 1);
-  const isArtist = selectedSellerType === SellerType.Artist;
+  const isArtist = selectedSellerType === Number(SellerType.Artist);
 
   const goBack = useCallback(() => {
     router.push('/admin/sellers');
@@ -378,7 +378,7 @@ export default function AdminSellerGlobalEdit() {
     }
 
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
-    if (sellerToUpdate.sellerType !== sellerTypeValue) {
+    if (Number(sellerToUpdate.sellerType) !== sellerTypeValue) {
       sellerToUpdate.sellerType = sellerTypeValue;
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -479,7 +479,7 @@ export default function AdminSellerGlobalEdit() {
 
     dispatch(setIsLoading(true));
 
-    updateSeller(sellerToUpdate).then((response: ModifySellerResponse) => {
+    void updateSeller(sellerToUpdate).then((response: ModifySellerResponse) => {
       if (response.success) {
         dispatch(setReloadSellers(true));
         toast.success('Save seller succeeded');

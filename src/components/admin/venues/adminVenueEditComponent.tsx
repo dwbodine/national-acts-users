@@ -105,7 +105,7 @@ export default function AdminVenueEdit() {
       zipCode,
     };
 
-    updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
+    void updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
       if (response.success) {
         dispatch(setReloadVenues(true));
         dispatch(setAdminVenue(undefined));

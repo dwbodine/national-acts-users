@@ -36,14 +36,16 @@ export default function AttendeeRow(props: AttendeeRowProps) {
   let titleText: string = '';
 
   const checkIn = (checkedIn: boolean) => {
-    setTicketsCheckedIn([ticketId], checkedIn).then((response: ModifyTicketResponse) => {
-      if (response.success) {
-        dispatch(setFocusControl(id));
-        dispatch(setReloadEvents(true));
-      } else if (response.statusCode === 401 || response.statusCode === 422) {
-        router.push('/logout');
-      }
-    });
+    void setTicketsCheckedIn([ticketId], checkedIn).then(
+      (response: ModifyTicketResponse) => {
+        if (response.success) {
+          dispatch(setFocusControl(id));
+          dispatch(setReloadEvents(true));
+        } else if (response.statusCode === 401 || response.statusCode === 422) {
+          router.push('/logout');
+        }
+      },
+    );
   };
 
   const handleClick = () => {

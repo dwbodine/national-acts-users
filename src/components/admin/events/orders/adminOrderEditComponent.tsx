@@ -56,7 +56,7 @@ export default function AdminOrderEdit(props: EditProps) {
 
     dispatch(setMustSaveOrder(false));
     dispatch(setIsLoading(true));
-    getOrderById(id).then((response: GetOrderResponse) => {
+    void getOrderById(id).then((response: GetOrderResponse) => {
       setTicketIdList([]);
       if (response.order && !response.error) {
         dispatch(setAdminOrder(response.order));
@@ -393,22 +393,24 @@ export default function AdminOrderEdit(props: EditProps) {
     toast.dismiss();
     dispatch(setIsLoading(true));
 
-    refundTicket(refundTicketId, refundSvcFees).then((response: ModifyOrderResponse) => {
-      const { success } = response;
-      dispatch(setIsLoading(false));
-      if (success) {
-        toast.success('Refund succeeded');
-        if (id) {
-          loadOrderById();
+    void refundTicket(refundTicketId, refundSvcFees).then(
+      (response: ModifyOrderResponse) => {
+        const { success } = response;
+        dispatch(setIsLoading(false));
+        if (success) {
+          toast.success('Refund succeeded');
+          if (id) {
+            loadOrderById();
+          } else {
+            dispatch(setAdminOrder(undefined));
+            dispatch(setReloadEvents(true));
+            goBack(false);
+          }
         } else {
-          dispatch(setAdminOrder(undefined));
-          dispatch(setReloadEvents(true));
-          goBack(false);
+          toast.error('Refund failed');
         }
-      } else {
-        toast.error('Refund failed');
-      }
-    });
+      },
+    );
   };
 
   const confirmRefundTicket = (ticketId: number) => {
@@ -500,7 +502,7 @@ export default function AdminOrderEdit(props: EditProps) {
     }
     dispatch(setIsLoading(true));
     const orderId = currentAdminSelection.selectedOrder.ticketSocketOrderId;
-    refundOrder(orderId, refundServiceFees, markChargeback).then(
+    void refundOrder(orderId, refundServiceFees, markChargeback).then(
       (response: ModifyOrderResponse) => {
         const { success } = response;
         dispatch(setIsLoading(false));
@@ -568,7 +570,7 @@ export default function AdminOrderEdit(props: EditProps) {
     }
     dispatch(setIsLoading(true));
     const currentOrder = { ...currentAdminSelection.selectedOrder };
-    updateOrder(currentOrder).then((results: ModifyOrderResponse) => {
+    void updateOrder(currentOrder).then((results: ModifyOrderResponse) => {
       dispatch(setIsLoading(false));
       if (results.success && !results.error) {
         toast.success('Order updated successfully');
@@ -612,7 +614,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (ticketIdList.length === 0) {
       return;
     }
-    setTicketsCheckedIn(ticketIdList, isCheckedIn).then(
+    void setTicketsCheckedIn(ticketIdList, isCheckedIn).then(
       (response: ModifyTicketResponse) => {
         if (response.success && !response.error) {
           const successMessage = isCheckedIn

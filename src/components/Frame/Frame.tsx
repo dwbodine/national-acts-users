@@ -1,7 +1,8 @@
 'use client';
 
 import { Container, Content, DOMHelper, Nav, Sidebar, Sidenav } from 'rsuite';
-import React, { useEffect, useState } from 'react';
+import type { IconProps } from '@rsuite/icons/Icon';
+import React, { ReactElement, JSXElementConstructor, useEffect, useState } from 'react';
 import Brand from '../Brand';
 import Header from '../Header';
 import NavLink from '../NavLink';
@@ -10,8 +11,7 @@ import classNames from 'classnames';
 
 const { getHeight, on } = DOMHelper;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const NavItem = (props: any) => {
+const NavItem = (props: NavItemData) => {
   const { title, eventKey, ...rest } = props;
   return (
     <Nav.Item eventKey={eventKey} as={NavLink} {...rest}>
@@ -23,8 +23,7 @@ const NavItem = (props: any) => {
 export interface NavItemData {
   eventKey: string;
   title: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon?: any;
+  icon?: ReactElement<IconProps, string | JSXElementConstructor<unknown>>;
   to?: string;
   target?: string;
   children?: NavItemData[];
@@ -42,12 +41,10 @@ const Frame = (props: FrameProps) => {
 
   useEffect(() => {
     setWindowHeight(getHeight(window));
-    const resizeListenner = on(window, 'resize', () =>
-      setWindowHeight(getHeight(window)),
-    );
+    const resizeListener = on(window, 'resize', () => setWindowHeight(getHeight(window)));
 
     return () => {
-      resizeListenner.off();
+      resizeListener.off();
     };
   }, []);
 

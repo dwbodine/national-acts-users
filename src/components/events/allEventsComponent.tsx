@@ -76,7 +76,7 @@ export default function AllEvents() {
         dispatch(setAdminEvents(undefined));
         dispatch(setAdminNotes(undefined));
         dispatch(setIsLoading(true));
-        getAllEvents(currentReportSelection.start, currentReportSelection.end).then(
+        void getAllEvents(currentReportSelection.start, currentReportSelection.end).then(
           (response: GetEventsResponse) => {
             if (!response.error && response.events) {
               const filteredEvents = response.events.filter(
@@ -93,7 +93,7 @@ export default function AllEvents() {
                 }
               }
               if (currentReportSelection.start && currentReportSelection.end) {
-                getCalendarNotes(
+                void getCalendarNotes(
                   currentReportSelection.start,
                   currentReportSelection.end,
                 ).then((resp: GetNotesResponse) => {

@@ -8,6 +8,7 @@ import { Seller } from '@/types/event';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRegister } from '@/hooks/user/useRegister';
 import { useRouter } from 'next/navigation';
+import Textarea from './Textarea';
 
 export default function RegisterComponent() {
   const [username, setUsername] = useState('');
@@ -205,10 +206,10 @@ export default function RegisterComponent() {
         <Col>
           <div className="form-group">
             <label>Notes for the admin (optional):</label>
-            <textarea
+            <Textarea
               value={notes ?? ''}
               autoComplete="off"
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={setNotes}
               className="form-control"
             />
           </div>

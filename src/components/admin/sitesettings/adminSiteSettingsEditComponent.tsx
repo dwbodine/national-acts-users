@@ -29,7 +29,7 @@ export default function AdminSiteSettingsEdit() {
       if (currentAdminSelection.reloadSettings) {
         dispatch(setIsLoading(true));
         dispatch(setReloadSettings(false));
-        getAllSettings().then((response: GetSettingsResponse) => {
+        void getAllSettings().then((response: GetSettingsResponse) => {
           if (response.settings && !response.error) {
             dispatch(setAllSettings(response.settings));
           }
@@ -168,7 +168,7 @@ export default function AdminSiteSettingsEdit() {
       return;
     }
 
-    updateSiteSettings(dirtySettings).then((response: UpdateSettingResponse) => {
+    void updateSiteSettings(dirtySettings).then((response: UpdateSettingResponse) => {
       if (response.success) {
         toast.success('Settings saved successfully');
         clearDirty();

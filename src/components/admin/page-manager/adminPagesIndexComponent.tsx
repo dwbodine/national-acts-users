@@ -42,7 +42,7 @@ export default function AdminPagesIndex() {
       if (currentAdminSelection.pageTypes === undefined) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getPageTypes().then((response: GetPageTypesResponse) => {
+        void getPageTypes().then((response: GetPageTypesResponse) => {
           if (!response.error && response.pageTypes) {
             dispatch(setPageTypes(response.pageTypes));
           }
@@ -53,7 +53,7 @@ export default function AdminPagesIndex() {
         dispatch(setReloadSellers(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAdminSellers().then((response: GetSellersResponse) => {
+        void getAdminSellers().then((response: GetSellersResponse) => {
           if (!response.error && response.sellers) {
             dispatch(setAllSellers(response.sellers));
           }
@@ -64,7 +64,7 @@ export default function AdminPagesIndex() {
         dispatch(setReloadPages(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAllPages().then((response: GetPagesResponse) => {
+        void getAllPages().then((response: GetPagesResponse) => {
           if (!response.error && response.pages) {
             dispatch(setAllPages(response.pages));
           }
@@ -152,10 +152,10 @@ export default function AdminPagesIndex() {
           <Cell className="admin-click-cell">
             {(rowData) => (
               <div
-                id={rowData.pageId}
-                onClick={() => editPage(parseInt(`${rowData.pageId}`))}
+                id={`${rowData['pageId']}`}
+                onClick={() => editPage(parseInt(`${rowData['pageId']}`))}
               >
-                {rowData.title}
+                {rowData['title']}
               </div>
             )}
           </Cell>

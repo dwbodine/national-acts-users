@@ -133,7 +133,7 @@ export class UserService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data != undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
@@ -157,7 +157,7 @@ export class UserService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data != undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
@@ -181,7 +181,7 @@ export class UserService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data != undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
@@ -205,7 +205,7 @@ export class UserService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data != undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
@@ -236,7 +236,7 @@ export class UserService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data != undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;

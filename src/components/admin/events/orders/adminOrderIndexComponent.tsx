@@ -61,7 +61,7 @@ export default function AdminOrdersIndex(props: EditProps) {
     }
 
     dispatch(setIsLoading(true));
-    getEventById(id).then((response: GetEventResponse) => {
+    void getEventById(id).then((response: GetEventResponse) => {
       setOrderIdList([]);
       if (response.event && !response.error) {
         dispatch(setAdminEvent(response.event));
@@ -86,7 +86,7 @@ export default function AdminOrdersIndex(props: EditProps) {
         dispatch(setAdminTour(undefined));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
+        void getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
           if (response.events && !response.error) {
             dispatch(setAdminEvents(response.events));
             const currentEvent = response.events.find(
@@ -175,50 +175,54 @@ export default function AdminOrdersIndex(props: EditProps) {
     if (orderIdList.length === 0) {
       return;
     }
-    setOrdersInactive(orderIdList, isActive).then((response: ModifyOrderResponse) => {
-      if (response.success && !response.error) {
-        const successMessage = isActive
-          ? 'Orders activated successfully'
-          : 'Orders deactivated successfully';
-        toast.success(successMessage);
-        setOrderIdList([]);
-        setSelectedAction(null);
-        dispatch(setReloadEvents(true));
-      } else {
-        let errorMessage = response.error;
-        if (!errorMessage) {
-          errorMessage = isActive
-            ? 'Unexpected error occurred while activating orders'
-            : 'Unexpected error occurred while deactivating orders';
+    void setOrdersInactive(orderIdList, isActive).then(
+      (response: ModifyOrderResponse) => {
+        if (response.success && !response.error) {
+          const successMessage = isActive
+            ? 'Orders activated successfully'
+            : 'Orders deactivated successfully';
+          toast.success(successMessage);
+          setOrderIdList([]);
+          setSelectedAction(null);
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.error;
+          if (!errorMessage) {
+            errorMessage = isActive
+              ? 'Unexpected error occurred while activating orders'
+              : 'Unexpected error occurred while deactivating orders';
+          }
+          toast.error(errorMessage);
         }
-        toast.error(errorMessage);
-      }
-    });
+      },
+    );
   };
 
   const deleteOrders = (setDeleted: boolean) => {
     if (orderIdList.length === 0) {
       return;
     }
-    setOrdersDeleted(orderIdList, setDeleted).then((response: ModifyOrderResponse) => {
-      if (response.success && !response.error) {
-        const successMessage = setDeleted
-          ? 'Orders deleted successfully'
-          : 'Orders undeleted successfully';
-        toast.success(successMessage);
-        setOrderIdList([]);
-        setSelectedAction(null);
-        dispatch(setReloadEvents(true));
-      } else {
-        let errorMessage = response.error;
-        if (!errorMessage) {
-          errorMessage = setDeleted
-            ? 'Unexpected error occurred while deleting orders'
-            : 'Unexpected error occurred while undeleting orders';
+    void setOrdersDeleted(orderIdList, setDeleted).then(
+      (response: ModifyOrderResponse) => {
+        if (response.success && !response.error) {
+          const successMessage = setDeleted
+            ? 'Orders deleted successfully'
+            : 'Orders undeleted successfully';
+          toast.success(successMessage);
+          setOrderIdList([]);
+          setSelectedAction(null);
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.error;
+          if (!errorMessage) {
+            errorMessage = setDeleted
+              ? 'Unexpected error occurred while deleting orders'
+              : 'Unexpected error occurred while undeleting orders';
+          }
+          toast.error(errorMessage);
         }
-        toast.error(errorMessage);
-      }
-    });
+      },
+    );
   };
 
   const handleBulkEdit = () => {
@@ -423,7 +427,7 @@ export default function AdminOrdersIndex(props: EditProps) {
             </Column>
             <Column flexGrow={3}>
               <HeaderCell>Order Status</HeaderCell>
-              <Cell>{(rowData: Order) => getOrderStatusText(rowData as Order)}</Cell>
+              <Cell>{(rowData: Order) => getOrderStatusText(rowData)}</Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>&nbsp;</HeaderCell>

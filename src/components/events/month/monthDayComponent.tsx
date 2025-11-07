@@ -82,7 +82,7 @@ export default function MonthDay(props: MonthDayProps) {
       return;
     }
     const calendarDate = monthDate.format('YYYY-MM-DD');
-    addNote(noteText, undefined, calendarDate, noteTitle).then(
+    void addNote(noteText, undefined, calendarDate, noteTitle).then(
       (response: ModifyNoteResponse) => {
         setNotesOpen(false);
         if (response.success && !response.error) {
@@ -107,7 +107,7 @@ export default function MonthDay(props: MonthDayProps) {
     ) {
       return;
     }
-    editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true).then(
+    void editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true).then(
       (response: ModifyNoteResponse) => {
         handleDisplayNoteClose();
         if (response.success && !response.error) {
@@ -130,7 +130,7 @@ export default function MonthDay(props: MonthDayProps) {
     ) {
       return;
     }
-    editNote(
+    void editNote(
       noteId,
       displayNoteText,
       displayNoteTitle,
@@ -149,7 +149,7 @@ export default function MonthDay(props: MonthDayProps) {
 
   const deleteSelectedNote = (nId: number) => {
     toast.dismiss();
-    deleteNote(nId).then((response: ModifyNoteResponse) => {
+    void deleteNote(nId).then((response: ModifyNoteResponse) => {
       if (response.success && !response.error) {
         toast.success('Calendar note deleted');
         dispatch(setReloadAdminEvents(true));

@@ -15,6 +15,7 @@ import { Table } from 'rsuite';
 import moment from 'moment';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetActivityData } from '@/hooks/user/useGetActivityData';
+import { UserActivity } from '@/types/user';
 
 export default function UserActivityTable() {
   const { getActivityData } = useGetActivityData();
@@ -46,7 +47,7 @@ export default function UserActivityTable() {
       ) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getActivityData(
+        void getActivityData(
           currentUserActivitySelection.start,
           currentUserActivitySelection.end,
           undefined,
@@ -102,8 +103,8 @@ export default function UserActivityTable() {
               <Column flexGrow={4}>
                 <HeaderCell>Time</HeaderCell>
                 <Cell>
-                  {(rowData) =>
-                    moment(rowData.activityTime).format('MM/DD/YYYY hh:mm:ss A')
+                  {(rowData: UserActivity) =>
+                    moment(rowData.timestamp).format('MM/DD/YYYY hh:mm:ss A')
                   }
                 </Cell>
               </Column>

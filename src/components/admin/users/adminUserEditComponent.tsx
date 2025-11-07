@@ -7,7 +7,7 @@ import {
   UpdateUserResponse,
 } from '@/types/responses';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
-import { Role, User } from '@/types/user';
+import { Role, User, UserSeller } from '@/types/user';
 import { Seller, SellerType } from '@/types/event';
 import { setReloadUsers, setSelectedUser } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -69,9 +69,9 @@ export default function AdminUserEdit() {
       setSendEmailReset(currentAdminSelection.selectedUser.sendEmailReset ?? false);
       setSendTextReset(currentAdminSelection.selectedUser.sendTextReset ?? false);
       setDisableCheckIn(currentAdminSelection.selectedUser.disableCheckIn ?? false);
-      getSellers().then((response: GetSellersResponse) => {
+      void getSellers().then((response: GetSellersResponse) => {
         setAllSellers(response.sellers);
-        getAllRoles().then((resp: GetRolesResponse) => {
+        void getAllRoles().then((resp: GetRolesResponse) => {
           const roles = resp.roles?.filter((x) => x.roleId !== 1);
           setAllRoles(roles);
           dispatch(setIsLoading(false));
@@ -99,8 +99,8 @@ export default function AdminUserEdit() {
       const newSeller = allSellers?.find((x) => x.sellerId === newSellerId);
       if (newSeller) {
         for (let i = 0; i < userSellers.length; i += 1) {
-          if (userSellers[i].sellerId === sellerId) {
-            const userSeller = { ...userSellers[i] };
+          const userSeller = { ...userSellers[i] } as UserSeller;
+          if (userSeller?.sellerId === sellerId) {
             userSeller.sellerId = newSellerId;
             userSeller.sellerName = newSeller.name;
             userSeller.sellerType = newSeller.sellerType;
@@ -180,7 +180,7 @@ export default function AdminUserEdit() {
 
     const { userId } = currentAdminSelection.selectedUser;
 
-    deleteUser(userId).then((response: UpdateUserResponse) => {
+    void deleteUser(userId).then((response: UpdateUserResponse) => {
       if (response.success) {
         dispatch(setReloadUsers(true));
         toast.success('User deleted successfully');
@@ -253,7 +253,7 @@ export default function AdminUserEdit() {
     }
 
     dispatch(setIsLoading(true));
-    updateUser(userToUpdate).then((response: UpdateUserResponse) => {
+    void updateUser(userToUpdate).then((response: UpdateUserResponse) => {
       if (response.success) {
         dispatch(setReloadUsers(true));
         toast.success('User updated successfully');

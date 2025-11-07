@@ -45,7 +45,7 @@ export default function LoginComponent() {
     if (!name || !password) {
       setLoginError('Please enter username and password');
     } else {
-      login(name, password).then((response: UserLoginResponse) => {
+      void login(name, password).then((response: UserLoginResponse) => {
         if (response) {
           if (response.user && response.user.isAuthenticated) {
             dispatch(setForAdmin(response.user.isAdmin));

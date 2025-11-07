@@ -47,7 +47,7 @@ export default function AdminOrdersSearch() {
     }
     dispatch(setIsLoading(true));
     setTableLoading(true);
-    searchOrders(searchTerm).then((response: GetOrdersResponse) => {
+    void searchOrders(searchTerm).then((response: GetOrdersResponse) => {
       if (response.orders && !response.error) {
         dispatch(setAdminOrders(response.orders));
       } else {
@@ -170,7 +170,7 @@ export default function AdminOrdersSearch() {
             </Column>
             <Column flexGrow={2}>
               <HeaderCell>Order Status</HeaderCell>
-              <Cell>{(rowData: Order) => getOrderStatusText(rowData as Order)}</Cell>
+              <Cell>{(rowData: Order) => getOrderStatusText(rowData)}</Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>&nbsp;</HeaderCell>

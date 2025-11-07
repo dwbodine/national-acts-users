@@ -67,7 +67,7 @@ export class AuthService {
     const url = '/user/login';
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_USER_API_KEY']}`,
     };
 
     const data = {
@@ -126,7 +126,7 @@ export class AuthService {
     const url = '/user/sendPasswordReset';
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_USER_API_KEY']}`,
     };
 
     const data = { username };
@@ -149,7 +149,7 @@ export class AuthService {
     const url = '/user/validateResetCode';
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_USER_API_KEY']}`,
     };
 
     const data = { code, username };
@@ -177,7 +177,7 @@ export class AuthService {
     const url = '/user/resetPassword';
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_USER_API_KEY']}`,
     };
 
     const data = {
@@ -213,7 +213,7 @@ export class AuthService {
     const url = '/user/register';
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_USER_API_KEY']}`,
     };
 
     const data = {

@@ -260,7 +260,7 @@ export default function EventDetail(props: EditProps) {
         }
       }
     };
-    fetchEvent();
+    void fetchEvent();
     return () => {
       debouncedResults.cancel();
     };

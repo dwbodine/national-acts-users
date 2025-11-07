@@ -94,8 +94,8 @@ export default function ReportsCustomerExport() {
       }
 
       dispatch(setIsLoading(true));
-      logActivityData(UserActivityType.CustomerExportReport).then(() => {
-        getAllEvents(start, end).then((response: GetEventsResponse) => {
+      void logActivityData(UserActivityType.CustomerExportReport).then(() => {
+        void getAllEvents(start, end).then((response: GetEventsResponse) => {
           if (response && !response.error) {
             exportCustomerData(response.events);
           } else {

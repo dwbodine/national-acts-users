@@ -4,7 +4,7 @@ import { EventService } from './event.service';
 import { PublicService } from './public.service';
 import { UserService } from './user.service';
 
-const baseServiceUrl: string = `${process.env.NEXT_PUBLIC_SERVICE_URL}`;
+const baseServiceUrl: string = `${process.env['NEXT_PUBLIC_SERVICE_URL']}`;
 
 export const authService = new AuthService(baseServiceUrl);
 export const eventService = new EventService(baseServiceUrl);

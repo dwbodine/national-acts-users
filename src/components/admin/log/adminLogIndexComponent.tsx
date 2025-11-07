@@ -14,14 +14,14 @@ export default function AdminLogIndex() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (logs === undefined) {
-        getAllLogs().then((response: LogResponse) => {
+        void getAllLogs().then((response: LogResponse) => {
           if (response.logs && !response.error) {
             setLogs(response.logs.split('\n'));
           }
         });
       }
       if (cronLogs === undefined) {
-        getAllCronLogs().then((response: LogResponse) => {
+        void getAllCronLogs().then((response: LogResponse) => {
           if (response.logs && !response.error) {
             setCronLogs(response.logs.split('\\r\\n'));
           }
@@ -43,7 +43,7 @@ export default function AdminLogIndex() {
   const cronLogRows: ReactElement[] = [];
   if (cronLogs && cronLogs.length > 0) {
     for (const log of cronLogs) {
-      cronLogRows.push(<p>{log.replaceAll('"', '')}</p>);
+      cronLogRows.push(<p>{log.replace('"', '')}</p>);
     }
   }
 

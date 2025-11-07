@@ -79,7 +79,7 @@ export default function AdminEventsIndex() {
       if (currentAdminSelection.reloadCountries) {
         dispatch(setReloadCountries(false));
         dispatch(setIsLoading(true));
-        getAllCountries().then((response: GetCountriesResponse) => {
+        void getAllCountries().then((response: GetCountriesResponse) => {
           if (response.countries && !response.error) {
             dispatch(setCountries(response.countries));
           } else {
@@ -96,7 +96,7 @@ export default function AdminEventsIndex() {
         dispatch(setAdminSellerId(undefined));
         dispatch(setAdminTour(undefined));
         dispatch(setReloadEvents(true));
-        getSellers().then((response: GetSellersResponse) => {
+        void getSellers().then((response: GetSellersResponse) => {
           dispatch(setAllSellers(response.sellers));
           dispatch(setIsLoading(false));
           setTableLoading(false);
@@ -114,36 +114,40 @@ export default function AdminEventsIndex() {
 
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
+        void getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
           if (response.events && !response.error) {
             dispatch(setAdminEvents(response.events));
-            const start = moment(response.events[0].eventDate).unix();
-            const end = moment(
-              response.events[response.events.length - 1].eventDate,
-            ).unix();
-            const selection: AdminSelection = {
-              ...adminSelection,
-              end,
-              start,
-            };
-            dispatch(setAdminDates(selection));
-            getTours(sellerId).then((tourResponse: GetToursResponse) => {
-              if (!tourResponse.error && tourResponse.tours) {
-                dispatch(setTours(tourResponse.tours));
-                getTicketSocketEventsOnly(adminSelection.sellerId).then(
-                  (resp: GetEventsResponse) => {
-                    if (resp.events && !resp.error) {
-                      dispatch(setTicketSocketEventsOnly(response.events));
-                    }
+            if (response.events?.length > 0) {
+              const firstEvent = response.events[0];
+              const lastEvent = response.events[response.events.length - 1];
+              if (firstEvent && lastEvent) {
+                const start = moment(firstEvent.eventDate).unix();
+                const end = moment(lastEvent.eventDate).unix();
+                const selection: AdminSelection = {
+                  ...adminSelection,
+                  end,
+                  start,
+                };
+                dispatch(setAdminDates(selection));
+                void getTours(sellerId).then((tourResponse: GetToursResponse) => {
+                  if (!tourResponse.error && tourResponse.tours) {
+                    dispatch(setTours(tourResponse.tours));
+                    void getTicketSocketEventsOnly(adminSelection.sellerId).then(
+                      (resp: GetEventsResponse) => {
+                        if (resp.events && !resp.error) {
+                          dispatch(setTicketSocketEventsOnly(response.events));
+                        }
+                        dispatch(setIsLoading(false));
+                        setTableLoading(false);
+                      },
+                    );
+                  } else {
                     dispatch(setIsLoading(false));
                     setTableLoading(false);
-                  },
-                );
-              } else {
-                dispatch(setIsLoading(false));
-                setTableLoading(false);
+                  }
+                });
               }
-            });
+            }
           } else {
             dispatch(setIsLoading(false));
             setTableLoading(false);
@@ -285,57 +289,61 @@ export default function AdminEventsIndex() {
     if (eventIdList.length === 0) {
       return;
     }
-    setEventsInactive(eventIdList, isActive).then((response: ModifyEventResponse) => {
-      if (response.success && !response.error) {
-        const successMessage = isActive
-          ? 'Events activated successfully'
-          : 'Events deactivated successfully';
-        toast.success(successMessage);
-        setEventIdList([]);
-        setSelectedAction(null);
-        dispatch(setReloadEvents(true));
-      } else {
-        let errorMessage = response.error;
-        if (!errorMessage) {
-          errorMessage = isActive
-            ? 'Unexpected error occurred while activating events'
-            : 'Unexpected error occurred while deactivating events';
+    void setEventsInactive(eventIdList, isActive).then(
+      (response: ModifyEventResponse) => {
+        if (response.success && !response.error) {
+          const successMessage = isActive
+            ? 'Events activated successfully'
+            : 'Events deactivated successfully';
+          toast.success(successMessage);
+          setEventIdList([]);
+          setSelectedAction(null);
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.error;
+          if (!errorMessage) {
+            errorMessage = isActive
+              ? 'Unexpected error occurred while activating events'
+              : 'Unexpected error occurred while deactivating events';
+          }
+          toast.error(errorMessage);
         }
-        toast.error(errorMessage);
-      }
-    });
+      },
+    );
   };
 
   const deleteEvents = (setDeleted: boolean) => {
     if (eventIdList.length === 0) {
       return;
     }
-    setEventsDeleted(eventIdList, setDeleted).then((response: ModifyEventResponse) => {
-      if (response.success && !response.error) {
-        const successMessage = setDeleted
-          ? 'Events deleted successfully'
-          : 'Events undeleted successfully';
-        toast.success(successMessage);
-        setEventIdList([]);
-        setSelectedAction(null);
-        dispatch(setReloadEvents(true));
-      } else {
-        let errorMessage = response.error;
-        if (!errorMessage) {
-          errorMessage = setDeleted
-            ? 'Unexpected error occurred while deleting events'
-            : 'Unexpected error occurred while undeleting events';
+    void setEventsDeleted(eventIdList, setDeleted).then(
+      (response: ModifyEventResponse) => {
+        if (response.success && !response.error) {
+          const successMessage = setDeleted
+            ? 'Events deleted successfully'
+            : 'Events undeleted successfully';
+          toast.success(successMessage);
+          setEventIdList([]);
+          setSelectedAction(null);
+          dispatch(setReloadEvents(true));
+        } else {
+          let errorMessage = response.error;
+          if (!errorMessage) {
+            errorMessage = setDeleted
+              ? 'Unexpected error occurred while deleting events'
+              : 'Unexpected error occurred while undeleting events';
+          }
+          toast.error(errorMessage);
         }
-        toast.error(errorMessage);
-      }
-    });
+      },
+    );
   };
 
   const setLiveInBandsInTown = () => {
     if (eventIdList.length === 0) {
       return;
     }
-    setEventsLiveInBandsInTown(eventIdList).then((response: ModifyEventResponse) => {
+    void setEventsLiveInBandsInTown(eventIdList).then((response: ModifyEventResponse) => {
       if (response.success && !response.error) {
         const successMessage = 'Events updated successfully';
         toast.success(successMessage);
@@ -356,7 +364,7 @@ export default function AdminEventsIndex() {
     if (eventIdList.length === 0) {
       return;
     }
-    setEventsHidden(eventIdList, setHidden).then((response: ModifyEventResponse) => {
+    void setEventsHidden(eventIdList, setHidden).then((response: ModifyEventResponse) => {
       if (response.success && !response.error) {
         const successMessage = setHidden
           ? 'Events hidden successfully'
@@ -663,9 +671,7 @@ export default function AdminEventsIndex() {
             </Column>
             <Column flexGrow={2}>
               <HeaderCell>Event Status</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => getEventStatusText(rowData as VipEvent)}
-              </Cell>
+              <Cell>{(rowData: VipEvent) => getEventStatusText(rowData)}</Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>&nbsp;</HeaderCell>

@@ -17,9 +17,9 @@ export default function LogoutComponent() {
     const timeoutId = setTimeout(() => {
       const searchParams = new URLSearchParams(window.location.search);
       const err = searchParams.get('err');
-      logActivityData(UserActivityType.Logout).then(() => {
+      void logActivityData(UserActivityType.Logout).then(() => {
         resetStores();
-        logout().then(() => {
+        void logout().then(() => {
           let loginUrl = '/login';
           if (err) {
             loginUrl += `?err=${err}`;

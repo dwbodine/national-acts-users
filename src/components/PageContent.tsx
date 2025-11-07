@@ -1,10 +1,9 @@
 'use client';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Copyright from '@/components/Copyright';
-import { Panel } from 'rsuite';
+import { Panel, PanelProps } from 'rsuite';
 
-const PageContent = (props: any) => (
+const PageContent = (props: PanelProps<string | number>) => (
   <>
     <Panel style={{ background: '#fff' }} {...props} />
     <Copyright />

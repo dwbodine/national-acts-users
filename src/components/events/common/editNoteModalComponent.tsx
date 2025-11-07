@@ -1,8 +1,9 @@
 'use client';
 
-import { Button, Form } from 'rsuite';
+import { Button, Input } from 'rsuite';
 import { DatePicker, Modal } from 'rsuite';
 import { EditNoteModalProps } from '@/types/props';
+import Textarea from '@/components/common/Textarea';
 
 export default function EditNoteModal(props: EditNoteModalProps) {
   const id = props.Id;
@@ -34,21 +35,20 @@ export default function EditNoteModal(props: EditNoteModalProps) {
           cleanable={false}
           disabled={noteIsCompleted}
         />
-        <Form.Control
+        <Input
           id="editNoteTitle"
           disabled={noteIsCompleted}
-          onChange={(e) => (setNoteTitle ? setNoteTitle(e.currentTarget.value) : null)}
+          onChange={(value) => setNoteTitle?.(value)}
           value={noteTitle}
           placeholder="Note title"
         />
-        <Form.Control
-          as="textarea"
+        <Textarea
           id="editNote"
           rows={5}
           disabled={noteIsCompleted}
-          onChange={(e) => (setNoteText ? setNoteText(e.currentTarget.value) : null)}
-          value={noteText ?? ''}
+          onChange={(value) => setNoteText?.(value)}
           placeholder="Note text"
+          value={noteText ?? ''}
         />
       </Modal.Body>
       <Modal.Footer className="modal-notes-footer">

@@ -46,7 +46,7 @@ export default function AdminToursIndex() {
         dispatch(setIsLoading(true));
         dispatch(setAdminSellerId(undefined));
         dispatch(setReloadTours(true));
-        getSellers().then((response: GetSellersResponse) => {
+        void getSellers().then((response: GetSellersResponse) => {
           dispatch(setAllSellers(response.sellers));
           dispatch(setIsLoading(false));
           setTableLoading(false);
@@ -60,7 +60,7 @@ export default function AdminToursIndex() {
         }
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getTours(adminSelection.sellerId).then((response: GetToursResponse) => {
+        void getTours(adminSelection.sellerId).then((response: GetToursResponse) => {
           if (response.error) {
             dispatch(setIsLoading(false));
             setTableLoading(false);
@@ -69,7 +69,7 @@ export default function AdminToursIndex() {
               dispatch(setTours(response.tours));
             }
             if (currentAdminSelection.sellerId) {
-              getAdminSellerEvents([currentAdminSelection.sellerId]).then(
+              void getAdminSellerEvents([currentAdminSelection.sellerId]).then(
                 (resp: GetEventsResponse) => {
                   if (resp.events && !resp.error) {
                     const filteredEvents = resp.events.filter((x) => !x.isDeleted);
@@ -214,7 +214,7 @@ export default function AdminToursIndex() {
               <HeaderCell>First show</HeaderCell>
               <Cell>
                 {(rowData: Tour) =>
-                  rowData.events && rowData.events.length > 0
+                  rowData.events && rowData.events.length > 0 && rowData.events[0]
                     ? `${moment(rowData.events[0].eventDate).format('M/DD/YYYY')} (${rowData.events[0].venue?.city}, ${rowData.events[0].venue?.state})`
                     : ''
                 }
@@ -224,8 +224,10 @@ export default function AdminToursIndex() {
               <HeaderCell>Last show</HeaderCell>
               <Cell>
                 {(rowData: Tour) =>
-                  rowData.events && rowData.events.length > 0
-                    ? `${moment(rowData.events[rowData.events.length - 1].eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length - 1].venue?.city}, ${rowData.events[rowData.events.length - 1].venue?.state})`
+                  rowData.events &&
+                  rowData.events.length > 0 &&
+                  rowData.events[rowData.events.length - 1]
+                    ? `${moment(rowData.events[rowData.events.length - 1]?.eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length - 1]?.venue?.city}, ${rowData.events[rowData.events.length - 1]?.venue?.state})`
                     : ''
                 }
               </Cell>

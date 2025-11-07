@@ -47,7 +47,7 @@ export default function AdminVenuesIndex() {
     dispatch(setReloadVenues(false));
     dispatch(setIsLoading(true));
     setTableLoading(true);
-    getAllVenues(searchTerm).then((response: GetExternalVenuesResponse) => {
+    void getAllVenues(searchTerm).then((response: GetExternalVenuesResponse) => {
       if (!response.error && response.venues) {
         dispatch(setVenues(response.venues));
       } else {
@@ -110,7 +110,7 @@ export default function AdminVenuesIndex() {
     }
     const venue = currentAdminSelection.venues?.find((x) => x.venueId === venueId);
     if (venue) {
-      deleteVenue(venue.venueId).then((response: ModifyExternalVenueResponse) => {
+      void deleteVenue(venue.venueId).then((response: ModifyExternalVenueResponse) => {
         if (response.success) {
           dispatch(setAdminVenue(undefined));
           dispatch(setVenueSearchTerm(''));
@@ -204,14 +204,13 @@ export default function AdminVenuesIndex() {
             <Column flexGrow={4}>
               <HeaderCell>Address</HeaderCell>
               <Cell className="admin-click-cell">
-                {(rowData) => {
-                  const venue = rowData as ExternalVenue;
+                {(rowData: ExternalVenue) => {
                   return (
                     <div
-                      id={venue.venueId.toString()}
-                      onClick={() => editVenue(parseInt(`${venue.venueId}`))}
+                      id={rowData.venueId.toString()}
+                      onClick={() => editVenue(parseInt(`${rowData.venueId}`))}
                     >
-                      {getExternalVenueLocation(venue)}
+                      {getExternalVenueLocation(rowData)}
                     </div>
                   );
                 }}
@@ -220,14 +219,13 @@ export default function AdminVenuesIndex() {
             <Column flexGrow={1}>
               <HeaderCell> </HeaderCell>
               <Cell>
-                {(rowData) => {
-                  const venue = rowData as ExternalVenue;
-                  return venue.hasEvents ? (
+                {(rowData: ExternalVenue) => {
+                  return rowData.hasEvents ? (
                     ''
                   ) : (
                     <a
                       className="admin-command-link"
-                      id={rowData.venueId}
+                      id={rowData.venueId.toString()}
                       onClick={() => deleteSelectedVenue(parseInt(`${rowData.venueId}`))}
                     >
                       Delete

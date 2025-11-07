@@ -99,7 +99,8 @@ export default function AdminPageOrderIndex() {
 
       // Reset lastUpdate and pageOrder on all after sort
       const lastUpdate = moment().format('YYYY-MM-DD HH:mm:ss');
-      pageMap.keys().forEach((key, i) => {
+      const pageMapKeys = [...pageMap.keys()];
+      pageMapKeys.forEach((key, i) => {
         const page = pageMap.get(key);
         if (page) {
           page.pageOrder = i + 1;
@@ -118,7 +119,7 @@ export default function AdminPageOrderIndex() {
       if (currentAdminSelection.pageTypes === undefined) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getPageTypes(true).then((response: GetPageTypesResponse) => {
+        void getPageTypes(true).then((response: GetPageTypesResponse) => {
           if (!response.error && response.pageTypes) {
             dispatch(setPageTypes(response.pageTypes));
             const artistPageType = response.pageTypes.find(
@@ -136,7 +137,7 @@ export default function AdminPageOrderIndex() {
         dispatch(setReloadPages(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getPagesByType(currentAdminSelection.selectedPageType.pageTypeId).then(
+        void getPagesByType(currentAdminSelection.selectedPageType.pageTypeId).then(
           (response: GetPagesResponse) => {
             if (!response.error && response.pages) {
               const pageMap = new Map<number, Page>();
@@ -215,9 +216,9 @@ export default function AdminPageOrderIndex() {
     if (!currentAdminSelection.pageOrders) {
       return;
     }
-    const pages = currentAdminSelection.pageOrders.values().toArray();
+    const pages = [...currentAdminSelection.pageOrders.values()];
     dispatch(setIsLoading(true));
-    updatePageOrder(pages).then((response: ModifyPageResponse) => {
+    void updatePageOrder(pages).then((response: ModifyPageResponse) => {
       if (response.success) {
         dispatch(setReloadPages(true));
         toast.success('Page order save succeeded');
@@ -242,8 +243,8 @@ export default function AdminPageOrderIndex() {
     : [];
 
   const pages = currentAdminSelection?.pageOrders
-    ? currentAdminSelection.pageOrders.values().toArray()
-    : undefined;
+    ? [...currentAdminSelection.pageOrders.values()]
+    : [];
 
   return (
     <Col className="admin-container">
@@ -281,12 +282,12 @@ export default function AdminPageOrderIndex() {
                 {(rowData) => (
                   <input
                     className="page-order-input"
-                    id={rowData.pageId}
+                    id={`${rowData['pageId']}`}
                     type="text"
-                    value={rowData.pageOrder ?? ''}
+                    value={`${rowData['pageOrder']}`}
                     onChange={(e) =>
                       setPageOrder(
-                        parseInt(`${rowData.pageId}`),
+                        parseInt(`${rowData['pageId']}`),
                         parseInt(e.currentTarget.value),
                       )
                     }

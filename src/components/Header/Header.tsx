@@ -1,7 +1,6 @@
 'use client';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useRef } from 'react';
+import { useRef, useCallback, JSX } from 'react';
 import {
   Dropdown,
   Popover,
@@ -20,11 +19,28 @@ import HelpOutlineIcon from '@rsuite/icons/HelpOutline';
 import GithubIcon from '@rsuite/icons/legacy/Github';
 import HeartIcon from '@rsuite/icons/legacy/HeartO';
 
-const renderAdminSpeaker = ({ onClose, left, top, className }: any, ref: any) => {
-  const handleSelect = (eventKey: any) => {
+/** --- Shared Types ------------------------------------------------------- */
+
+interface SpeakerProps {
+  onClose: () => void;
+  left?: number;
+  top?: number;
+  className?: string;
+}
+
+type SpeakerRenderFn = (
+  props: SpeakerProps,
+  ref: React.Ref<HTMLDivElement>,
+) => JSX.Element;
+
+/** --- Admin Speaker ------------------------------------------------------ */
+
+const renderAdminSpeaker: SpeakerRenderFn = ({ onClose, left, top, className }, ref) => {
+  const handleSelect = (eventKey: string | number | undefined) => {
     onClose();
     console.log(eventKey);
   };
+
   return (
     <Popover ref={ref} className={className} style={{ left, top }} full>
       <Dropdown.Menu onSelect={handleSelect}>
@@ -45,18 +61,24 @@ const renderAdminSpeaker = ({ onClose, left, top, className }: any, ref: any) =>
           target="_blank"
           as="a"
         >
-          Help{' '}
+          Help
         </Dropdown.Item>
       </Dropdown.Menu>
     </Popover>
   );
 };
 
-const renderSettingSpeaker = ({ onClose, left, top, className }: any, ref: any) => {
-  const handleSelect = (eventKey: any) => {
+/** --- Settings Speaker --------------------------------------------------- */
+
+const renderSettingSpeaker: SpeakerRenderFn = (
+  { onClose, left, top, className },
+  ref,
+) => {
+  const handleSelect = (eventKey: string | number | undefined) => {
     onClose();
     console.log(eventKey);
   };
+
   return (
     <Popover ref={ref} className={className} style={{ left, top }} full>
       <Dropdown.Menu onSelect={handleSelect}>
@@ -77,21 +99,26 @@ const renderSettingSpeaker = ({ onClose, left, top, className }: any, ref: any) 
   );
 };
 
-const renderNoticeSpeaker = ({ onClose, left, top, className }: any, ref: any) => {
-  const notifications = [
-    [
-      '7 hours ago',
-      'The charts of the dashboard have been fully upgraded and are more visually pleasing.',
-    ],
-    [
-      '13 hours ago',
-      'The function of virtualizing large lists has been added, and the style of the list can be customized as required.',
-    ],
-    ['2 days ago', 'Upgraded React 18 and Webpack 5.'],
-    [
-      '3 days ago',
-      'Upgraded React Suite 5 to support TypeScript, which is more concise and efficient.',
-    ],
+/** --- Notice Speaker ----------------------------------------------------- */
+
+const renderNoticeSpeaker: SpeakerRenderFn = ({ onClose, left, top, className }, ref) => {
+  const notifications: { time: string; content: string }[] = [
+    {
+      time: '7 hours ago',
+      content:
+        'The charts of the dashboard have been fully upgraded and are more visually pleasing.',
+    },
+    {
+      time: '13 hours ago',
+      content:
+        'The function of virtualizing large lists has been added, and the style of the list can be customized as required.',
+    },
+    { time: '2 days ago', content: 'Upgraded React 18 and Webpack 5.' },
+    {
+      time: '3 days ago',
+      content:
+        'Upgraded React Suite 5 to support TypeScript, which is more concise and efficient.',
+    },
   ];
 
   return (
@@ -102,19 +129,16 @@ const renderNoticeSpeaker = ({ onClose, left, top, className }: any, ref: any) =
       title="Last updates"
     >
       <List>
-        {notifications.map((item, index) => {
-          const [time, content] = item;
-          return (
-            <List.Item key={index}>
-              <Stack spacing={4}>
-                <Badge /> <span style={{ color: '#57606a' }}>{time}</span>
-              </Stack>
-
-              <p>{content}</p>
-            </List.Item>
-          );
-        })}
+        {notifications.map((item) => (
+          <List.Item key={item.time}>
+            <Stack spacing={4}>
+              <Badge /> <span style={{ color: '#57606a' }}>{item.time}</span>
+            </Stack>
+            <p>{item.content}</p>
+          </List.Item>
+        ))}
       </List>
+
       <div style={{ textAlign: 'center', marginTop: 20 }}>
         <Button onClick={onClose}>More notifications</Button>
       </div>
@@ -122,8 +146,18 @@ const renderNoticeSpeaker = ({ onClose, left, top, className }: any, ref: any) =
   );
 };
 
+/** --- Header Component --------------------------------------------------- */
+
 const Header = () => {
-  const trigger = useRef<WhisperInstance>(null);
+  // Each Whisper MUST have its own ref
+  const noticeRef = useRef<WhisperInstance>(null);
+  const settingsRef = useRef<WhisperInstance>(null);
+  const adminRef = useRef<WhisperInstance>(null);
+
+  // Memoized speaker functions (ESLint: react-hooks/exhaustive-deps)
+  const noticeSpeaker = useCallback(renderNoticeSpeaker, []);
+  const settingsSpeaker = useCallback(renderSettingSpeaker, []);
+  const adminSpeaker = useCallback(renderAdminSpeaker, []);
 
   return (
     <Stack className="header" spacing={8}>
@@ -132,6 +166,7 @@ const Header = () => {
         href="https://opencollective.com/rsuite"
         target="_blank"
       />
+
       <IconButton
         icon={<GithubIcon style={{ fontSize: 20 }} />}
         href="https://github.com/rsuite/rsuite-admin-template"
@@ -141,8 +176,8 @@ const Header = () => {
       <Whisper
         placement="bottomEnd"
         trigger="click"
-        ref={trigger}
-        speaker={renderNoticeSpeaker}
+        ref={noticeRef}
+        speaker={noticeSpeaker}
       >
         <IconButton
           icon={
@@ -156,8 +191,8 @@ const Header = () => {
       <Whisper
         placement="bottomEnd"
         trigger="click"
-        ref={trigger}
-        speaker={renderSettingSpeaker}
+        ref={settingsRef}
+        speaker={settingsSpeaker}
       >
         <IconButton icon={<GearIcon style={{ fontSize: 20 }} />} />
       </Whisper>
@@ -165,8 +200,8 @@ const Header = () => {
       <Whisper
         placement="bottomEnd"
         trigger="click"
-        ref={trigger}
-        speaker={renderAdminSpeaker}
+        ref={adminRef}
+        speaker={adminSpeaker}
       >
         <Avatar
           size="sm"

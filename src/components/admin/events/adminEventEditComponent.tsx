@@ -1,7 +1,15 @@
 'use client';
 
-import { Button, Checkbox, Col, Form, Row } from 'rsuite';
-import { DatePicker, Modal, SelectPicker, TimePicker } from 'rsuite';
+import {
+  Button,
+  Checkbox,
+  Col,
+  DatePicker,
+  Modal,
+  Row,
+  SelectPicker,
+  TimePicker,
+} from 'rsuite';
 import {
   GetCountriesResponse,
   GetEventResponse,
@@ -54,10 +62,14 @@ import { useRefundEvent } from '@/hooks/admin/useRefundEvent';
 import { useRouter } from 'next/navigation';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
+import { AdminSelection } from '@/types/user';
+import Textarea from '@/components/common/Textarea';
 
 export default function AdminEventEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;
-  const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminSelection: AdminSelection = useSelector(
+    (state: RootState) => state.adminSelection,
+  );
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const dispatch = useDispatch();
   const { updateVenue } = useUpdateVenue();
@@ -106,11 +118,11 @@ export default function AdminEventEdit(props: EditProps) {
 
     dispatch(setMustSaveEvent(false));
     dispatch(setIsLoading(true));
-    getEventById(id).then((response: GetEventResponse) => {
+    void getEventById(id).then((response: GetEventResponse) => {
       if (response.event && !response.error) {
         dispatch(setAdminEvent(response.event));
         dispatch(setAdminSellerId(response.event.sellerId));
-        getTicketSocketEventsOnly(response.event.sellerId).then(
+        void getTicketSocketEventsOnly(response.event.sellerId).then(
           (resp: GetEventsResponse) => {
             if (resp.events && !resp.error) {
               dispatch(setTicketSocketEventsOnly(resp.events));
@@ -125,76 +137,100 @@ export default function AdminEventEdit(props: EditProps) {
   }, [dispatch, getEventById, id, getTicketSocketEventsOnly]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(async () => {
+    const run = async () => {
+      // Branch 1: reload countries
       if (currentAdminSelection.reloadCountries) {
         dispatch(setReloadCountries(false));
-        if (!globalSelection.isLoading) {
-          dispatch(setIsLoading(true));
-        }
+        if (!globalSelection.isLoading) dispatch(setIsLoading(true));
+
         const response: GetCountriesResponse = await getAllCountries();
+
         if (response.countries && !response.error) {
           dispatch(setCountries(response.countries));
         } else {
           toast.error(response.error);
           dispatch(setIsLoading(false));
         }
-      } else if (currentAdminSelection.reloadSellers) {
+      }
+
+      // Branch 2: reload sellers
+      if (currentAdminSelection.reloadSellers) {
         dispatch(setReloadSellers(false));
-        if (!globalSelection.isLoading) {
-          dispatch(setIsLoading(true));
-        }
+        if (!globalSelection.isLoading) dispatch(setIsLoading(true));
+
         const response: GetSellersResponse = await getSellers();
+
         if (response.sellers && !response.error) {
           dispatch(setAllSellers(response.sellers));
         } else {
           toast.error(response.error);
           dispatch(setIsLoading(false));
         }
-      } else if (currentAdminSelection.reloadVenues) {
-        if (!globalSelection.isLoading) {
-          dispatch(setIsLoading(true));
-        }
+      }
+
+      // Branch 3: reload venues
+      if (currentAdminSelection.reloadVenues) {
+        if (!globalSelection.isLoading) dispatch(setIsLoading(true));
         dispatch(setReloadVenues(false));
+
         const response: GetExternalVenuesResponse = await getAllVenues();
+
         if (response.venues && !response.error) {
           dispatch(setVenues(response.venues));
         } else {
           toast.error(response.error);
           dispatch(setIsLoading(false));
         }
-      } else if (
+      }
+
+      // Branch 4: load event
+      const canLoadEvent =
         currentAdminSelection.selectedEvent === undefined &&
         id !== undefined &&
         currentAdminSelection.countries !== undefined &&
         currentAdminSelection.allSellers !== undefined &&
-        currentAdminSelection.venues !== undefined
-      ) {
-        await loadEventById();
-      } else if (
-        currentAdminSelection !== undefined &&
-        currentAdminSelection.countries !== undefined &&
-        currentAdminSelection.allSellers !== undefined &&
-        currentAdminSelection.venues !== undefined &&
+        currentAdminSelection.venues !== undefined;
+
+      if (canLoadEvent) {
+        void loadEventById();
+        return;
+      }
+
+      // Branch 5: clear loading state
+      const canClearLoading =
+        currentAdminSelection &&
+        currentAdminSelection.countries &&
+        currentAdminSelection.allSellers &&
+        currentAdminSelection.venues &&
         globalSelection.isLoading &&
-        !globalSelection.saveInProgress
-      ) {
+        !globalSelection.saveInProgress;
+
+      if (canClearLoading) {
         dispatch(setIsLoading(false));
       }
-    }, 300);
-    return () => {
-      clearTimeout(timeoutId);
     };
+
+    const timeoutId = setTimeout(() => {
+      void run;
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
   }, [
-    currentAdminSelection,
-    dispatch,
+    currentAdminSelection.reloadCountries,
+    currentAdminSelection.reloadSellers,
+    currentAdminSelection.reloadVenues,
+    currentAdminSelection.selectedEvent,
+    currentAdminSelection.countries,
+    currentAdminSelection.allSellers,
+    currentAdminSelection.venues,
     id,
-    globalSelection,
-    getAllVenues,
-    currentSeller,
-    getSellers,
-    getTicketSocketEventsOnly,
-    loadEventById,
+    globalSelection.isLoading,
+    globalSelection.saveInProgress,
+    dispatch,
     getAllCountries,
+    getSellers,
+    getAllVenues,
+    loadEventById,
   ]);
 
   const markDirty = () => {
@@ -252,7 +288,7 @@ export default function AdminEventEdit(props: EditProps) {
     if (!noteText || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    addNote(noteText, currentAdminSelection.selectedEvent.externalEventId).then(
+    void addNote(noteText, currentAdminSelection.selectedEvent.externalEventId).then(
       (response: ModifyNoteResponse) => {
         if (response.success && !response.error) {
           toast.success('Note added successfully');
@@ -606,7 +642,7 @@ export default function AdminEventEdit(props: EditProps) {
     }
     dispatch(setIsLoading(true));
     const eventId = currentAdminSelection.selectedEvent.externalEventId;
-    refundEvent(eventId, markCancelled, refundServiceFees).then(
+    void refundEvent(eventId, markCancelled, refundServiceFees).then(
       (response: ModifyEventResponse) => {
         const { success } = response;
         dispatch(setIsLoading(false));
@@ -693,22 +729,24 @@ export default function AdminEventEdit(props: EditProps) {
     }
     dispatch(setIsLoading(true));
     const eventId = currentAdminSelection.selectedEvent.externalEventId;
-    addCompedOrder(eventId, numCompedTickets).then((response: ModifyOrderResponse) => {
-      const { success } = response;
-      dispatch(setIsLoading(false));
-      if (success) {
-        toast.success('Comp order created');
-        if (id) {
-          loadEventById();
+    void addCompedOrder(eventId, numCompedTickets).then(
+      (response: ModifyOrderResponse) => {
+        const { success } = response;
+        dispatch(setIsLoading(false));
+        if (success) {
+          toast.success('Comp order created');
+          if (id) {
+            loadEventById();
+          } else {
+            dispatch(setReloadEvents(true));
+            dispatch(setAdminEvent(undefined));
+            goBack(false);
+          }
         } else {
-          dispatch(setReloadEvents(true));
-          dispatch(setAdminEvent(undefined));
-          goBack(false);
+          toast.error('Comp order creation failed');
         }
-      } else {
-        toast.error('Comp order creation failed');
-      }
-    });
+      },
+    );
   };
 
   const cancelTicketSocketEvent = () => {
@@ -721,7 +759,7 @@ export default function AdminEventEdit(props: EditProps) {
 
     dispatch(setIsLoading(true));
 
-    cancelEvent(eventId, isCancelled).then((response: ModifyEventResponse) => {
+    void cancelEvent(eventId, isCancelled).then((response: ModifyEventResponse) => {
       const { success } = response;
       dispatch(setIsLoading(false));
       if (success) {
@@ -854,7 +892,7 @@ export default function AdminEventEdit(props: EditProps) {
       zipCode,
     };
 
-    updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
+    void updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
       if (response.success) {
         const newVenue = response.updatedVenue;
         const adminSelection = { ...currentAdminSelection };
@@ -956,7 +994,7 @@ export default function AdminEventEdit(props: EditProps) {
     dispatch(setIsLoading(true));
     dispatch(setSaveInProgress(true));
 
-    updateEvent(eventToUpdate).then((response: ModifyEventResponse) => {
+    void updateEvent(eventToUpdate).then((response: ModifyEventResponse) => {
       if (response.success) {
         const adminSelection = { ...currentAdminSelection };
         adminSelection.start = undefined;
@@ -966,7 +1004,7 @@ export default function AdminEventEdit(props: EditProps) {
           loadEventById();
           window.removeEventListener('beforeunload', beforeOnUnload);
           if (window.opener) {
-            window.opener.location.reload(false);
+            (window.opener as Window).location.reload();
           }
         } else {
           dispatch(setReloadEvents(true));
@@ -1383,11 +1421,10 @@ export default function AdminEventEdit(props: EditProps) {
           >
             Visit
           </a>
-          <Form.Control
-            as="textarea"
+          <Textarea
             rows={3}
             id="externalVipLink"
-            onChange={(e) => setExternalVipLink(e.currentTarget.value)}
+            onChange={setExternalVipLink}
             value={externalVipLink ?? ''}
             placeholder="VIP/Website Link (VIP tickets)"
           />
@@ -1404,11 +1441,10 @@ export default function AdminEventEdit(props: EditProps) {
           >
             Visit
           </a>
-          <Form.Control
-            as="textarea"
+          <Textarea
             rows={3}
             id="externalUrl"
-            onChange={(e) => setExternalUrl(e.currentTarget.value)}
+            onChange={setExternalUrl}
             value={externalUrl ?? ''}
             placeholder="Ticket/Website Link (regular tickets)"
           />
@@ -1455,11 +1491,10 @@ export default function AdminEventEdit(props: EditProps) {
       <Row className="form-group" hidden={isExternalEvent}>
         <Col xs={1}>Check-in location:</Col>
         <Col xs={5}>
-          <Form.Control
-            as="textarea"
+          <Textarea
             rows={3}
             id="checkInLocation"
-            onChange={(e) => onCheckInLocationChange(e.currentTarget.value)}
+            onChange={onCheckInLocationChange}
             value={checkInLocation ?? ''}
           />
         </Col>
@@ -1467,11 +1502,10 @@ export default function AdminEventEdit(props: EditProps) {
       <Row className="form-group" hidden={isExternalEvent}>
         <Col xs={1}>Check-in notes:</Col>
         <Col xs={5}>
-          <Form.Control
-            as="textarea"
+          <Textarea
             id="checkInNotes"
             rows={5}
-            onChange={(e) => onCheckInNotesChange(e.currentTarget.value)}
+            onChange={onCheckInNotesChange}
             value={checkInNotes ?? ''}
           />
         </Col>
@@ -1586,11 +1620,10 @@ export default function AdminEventEdit(props: EditProps) {
               <Modal.Title>Add New Note:</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form.Control
-                as="textarea"
+              <Textarea
                 id="addNote"
                 rows={5}
-                onChange={(e) => setNoteText(e.currentTarget.value)}
+                onChange={setNoteText}
                 value={noteText ?? ''}
                 placeholder="Note text"
               />

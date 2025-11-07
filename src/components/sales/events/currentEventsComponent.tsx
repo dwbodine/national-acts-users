@@ -128,25 +128,27 @@ export default function CurrentEvents() {
       if (currentReportSelection.reloadEvents) {
         setChartsHidden(true);
         dispatch(setReloadEvents(false));
-        getEvents(currentReportSelection).then((response: GetEventsResponse) => {
+        void getEvents(currentReportSelection).then((response: GetEventsResponse) => {
           if (!response.error) {
             if (response.events && response.events.length > 0) {
               dispatch(setEvents(response.events));
-              const start = moment(response.events[0].eventDate).unix();
-              const end = moment(
-                response.events[response.events.length - 1].eventDate,
-              ).unix();
-              const selection: UserReportSelection = {
-                ...currentReportSelection,
-                end,
-                start,
-              };
-              dispatch(setDateRange(selection));
+              const firstEvent = response.events[0];
+              const lastEvent = response.events[response.events.length - 1];
+              if (firstEvent && lastEvent) {
+                const start = moment(firstEvent.eventDate).unix();
+                const end = moment(lastEvent.eventDate).unix();
+                const selection: UserReportSelection = {
+                  ...currentReportSelection,
+                  end,
+                  start,
+                };
+                dispatch(setDateRange(selection));
+              }
             } else {
               dispatch(setEvents([]));
             }
             if (currentReportSelection.reloadTours) {
-              getTours(currentReportSelection.seller.sellerId).then(
+              void getTours(currentReportSelection.seller.sellerId).then(
                 (tourResponse: GetToursResponse) => {
                   if (!tourResponse.error && tourResponse.tours) {
                     dispatch(setTours(tourResponse.tours));

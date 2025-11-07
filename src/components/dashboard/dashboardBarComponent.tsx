@@ -105,7 +105,7 @@ export default function DashboardBar() {
 
     dispatch(setIsLoading(true));
 
-    getAllOrders(dashboardSelection.start, dashboardSelection.end).then(
+    void getAllOrders(dashboardSelection.start, dashboardSelection.end).then(
       (response: GetOrdersResponse) => {
         if (response.orders && !response.error) {
           if (dashboardSelection.currentDashboardData) {

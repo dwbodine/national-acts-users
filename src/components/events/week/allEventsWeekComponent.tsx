@@ -176,9 +176,7 @@ export default function AllEventsWeek() {
             </Column>
             <Column flexGrow={2}>
               <HeaderCell>Event Status</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => getEventStatusText(rowData as VipEvent)}
-              </Cell>
+              <Cell>{(rowData: VipEvent) => getEventStatusText(rowData)}</Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>Tickets sold</HeaderCell>

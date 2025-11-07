@@ -21,7 +21,7 @@ export default function ClientSellersComponent() {
     }
     if (user && user.isAuthenticated) {
       document.title = 'Client Portal - Sales Overview';
-      logActivityData(UserActivityType.AccessSalesOverView);
+      void logActivityData(UserActivityType.AccessSalesOverView);
     }
   }, [user, logActivityData, getUser]);
 

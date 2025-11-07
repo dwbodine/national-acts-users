@@ -25,8 +25,10 @@ export default function getShirtDataFromOrders(orders: Order[]): IShirtData | un
             );
             if (indexToUpdate >= 0) {
               const item = collection[indexToUpdate];
-              item.Number += 1;
-              collection[indexToUpdate] = item;
+              if (item) {
+                item.Number += 1;
+                collection[indexToUpdate] = item;
+              }
             } else {
               collection.push({
                 Number: 1,

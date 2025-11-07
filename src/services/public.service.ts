@@ -67,7 +67,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -92,7 +92,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -119,7 +119,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -144,7 +144,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -169,7 +169,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -202,12 +202,12 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'multipart/form-data',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
       const res = await this.instance.post(url, data, { headers });
-      const filename = res.data;
+      const filename = res.data as string;
       return filename;
     } catch {
       return undefined;

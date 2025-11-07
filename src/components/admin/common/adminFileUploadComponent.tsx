@@ -21,19 +21,19 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
   const getBaseUrl = (uploadImageType: ImageType) => {
     switch (uploadImageType) {
       case ImageType.HEADERS:
-        return `${process.env.NEXT_PUBLIC_HEADERS_URL}`;
+        return `${process.env['NEXT_PUBLIC_HEADERS_URL']}`;
         break;
       case ImageType.HOMEBANNERS:
-        return `${process.env.NEXT_PUBLIC_HOMEBANNERS_URL}`;
+        return `${process.env['NEXT_PUBLIC_HOMEBANNERS_URL']}`;
         break;
       case ImageType.LOGOS:
-        return `${process.env.NEXT_PUBLIC_LOGOS_URL}`;
+        return `${process.env['NEXT_PUBLIC_LOGOS_URL']}`;
         break;
       case ImageType.PREVIEWS:
-        return `${process.env.NEXT_PUBLIC_PREVIEW_URL}`;
+        return `${process.env['NEXT_PUBLIC_PREVIEW_URL']}`;
         break;
       case ImageType.THUMBNAILS:
-        return `${process.env.NEXT_PUBLIC_THUMBNAILS_URL}`;
+        return `${process.env['NEXT_PUBLIC_THUMBNAILS_URL']}`;
         break;
       default:
         return '';
@@ -51,14 +51,14 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target && event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0] as File;
+      const file = event.target.files[0];
       if (file) {
         if (onUploadStart) {
           onUploadStart();
         }
         setIsUploaded(false);
         setIsUploading(true);
-        uploadImage(file, imageType).then((filename: string | undefined) => {
+        void uploadImage(file, imageType).then((filename: string | undefined) => {
           setIsUploading(false);
           event.target.value = '';
           if (onUpload && filename) {

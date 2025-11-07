@@ -37,7 +37,7 @@ export class AdminService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -62,7 +62,7 @@ export class AdminService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -264,7 +264,7 @@ export class AdminService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data != undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;

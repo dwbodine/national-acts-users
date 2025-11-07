@@ -109,10 +109,8 @@ const exportEventsToCsv = (
         arr.set(ticketType.ticketTypeName, number);
       });
     });
-    for (const ticketType in arr.keys) {
-      if (Object.hasOwn(arr.keys, ticketType)) {
-        exportStr += `"${ticketType}","${arr.get(ticketType)}"\n`;
-      }
+    for (const [ticketType, value] of arr.entries()) {
+      exportStr += `"${ticketType}","${value}"\n`;
     }
   }
 
@@ -675,10 +673,10 @@ const getEventStatusText = (
 };
 
 const formatCurrencyAmount = (
-  originalAmount: number,
+  originalAmount: number | undefined,
   amountUsd: number,
-  currencySymbol: string,
-  exchangeRate: number,
+  currencySymbol?: string,
+  exchangeRate?: number,
   isAdmin: boolean = false,
 ) => {
   if (originalAmount && isAdmin) {

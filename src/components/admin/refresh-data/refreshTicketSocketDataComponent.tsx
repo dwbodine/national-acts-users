@@ -43,13 +43,13 @@ export default function RefreshTicketSocketData() {
     if (currentAdminSelection.allSellers === undefined) {
       dispatch(setIsLoading(true));
       dispatch(setAdminSellerId(undefined));
-      getSellers().then((response: GetSellersResponse) => {
+      void getSellers().then((response: GetSellersResponse) => {
         dispatch(setAllSellers(response.sellers));
         dispatch(setIsLoading(false));
       });
     } else if (history === undefined) {
       dispatch(setIsLoading(true));
-      getRefreshHistory().then((response: GetRefreshHistoryResponse) => {
+      void getRefreshHistory().then((response: GetRefreshHistoryResponse) => {
         setHistory(response.history);
         dispatch(setIsLoading(false));
       });
@@ -84,7 +84,7 @@ export default function RefreshTicketSocketData() {
       return;
     }
     dispatch(setIsLoading(true));
-    refreshEventsFromTicketSocket(
+    void refreshEventsFromTicketSocket(
       adminSelection.sellerId,
       adminSelection.start,
       adminSelection.end,

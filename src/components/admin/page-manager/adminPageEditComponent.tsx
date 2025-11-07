@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox, Col, Form, Row } from 'rsuite';
+import { Button, Checkbox, Col, Row } from 'rsuite';
 import { DatePicker, SelectPicker } from 'rsuite';
 import {
   GetPageTypesResponse,
@@ -32,6 +32,7 @@ import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRouter } from 'next/navigation';
 import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
+import Textarea from '@/components/common/Textarea';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -58,12 +59,12 @@ export default function AdminPageEdit() {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.allSellers === undefined) {
         dispatch(setIsLoading(true));
-        getSellers().then((response: GetSellersResponse) => {
+        void getSellers().then((response: GetSellersResponse) => {
           dispatch(setAllSellers(response.sellers));
         });
       } else if (currentAdminSelection.pageTypes === undefined) {
         dispatch(setIsLoading(true));
-        getPageTypes().then((response: GetPageTypesResponse) => {
+        void getPageTypes().then((response: GetPageTypesResponse) => {
           if (!response.error && response.pageTypes) {
             dispatch(setPageTypes(response.pageTypes));
           }
@@ -554,7 +555,7 @@ export default function AdminPageEdit() {
 
     dispatch(setIsLoading(true));
 
-    updatePage(pageToUpdate).then((response: ModifyPageResponse) => {
+    void updatePage(pageToUpdate).then((response: ModifyPageResponse) => {
       if (response.success) {
         dispatch(setReloadPages(true));
         toast.success('Save page succeeded');
@@ -817,11 +818,10 @@ export default function AdminPageEdit() {
         <Row className="form-group">
           <Col>
             <label className="mt-4">HTML Text</label>
-            <Form.Control
-              as="textarea"
+            <Textarea
               rows={10}
               id="htmlText"
-              onChange={(e) => setHtmlText(e.currentTarget.value)}
+              onChange={setHtmlText}
               value={htmlText ?? ''}
               placeholder="Free-form html text to be placed in header"
             />
