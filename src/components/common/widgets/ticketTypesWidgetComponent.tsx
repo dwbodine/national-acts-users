@@ -1,7 +1,7 @@
 'use client';
 
 import { ITicketTypeData, TicketType } from '@/types/event';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { FaTicketAlt } from 'react-icons/fa';
 import { TicketTypesWidgetProps } from '@/types/props';
 

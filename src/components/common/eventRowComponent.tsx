@@ -6,7 +6,6 @@ import {
   getEventStatusText,
 } from '@/utils/eventUtils';
 import { EventRowProps } from '@/types/props';
-import React from 'react';
 import moment from 'moment';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 

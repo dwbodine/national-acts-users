@@ -1,6 +1,6 @@
 'use client';
 
-import { Col, Container, Row } from 'rsuite';
+import { Col, Row } from 'rsuite';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import { GetEventsResponse, GetToursResponse } from '@/types/responses';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';

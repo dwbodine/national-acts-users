@@ -18,7 +18,7 @@ import {
   TicketSalesChartProps,
 } from '@/types/props';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LabelPosition } from 'recharts/types/component/Label';
 
 export default function TicketSalesChart(props: TicketSalesChartProps) {

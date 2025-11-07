@@ -1,7 +1,7 @@
 'use client';
 
 import { Col, Container, Row } from 'rsuite';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { formatCurrencyAmount, getOrderStatusText } from '@/utils/eventUtils';
 import AttendeeRow from './attendeeRowComponent';
 import { OrderRowProps } from '@/types/props';

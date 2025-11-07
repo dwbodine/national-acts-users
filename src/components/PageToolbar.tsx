@@ -1,7 +1,7 @@
 'use client';
 
 import { Affix, DateRangePicker, IconButton, SelectPicker, Stack } from 'rsuite';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { RangeType } from 'rsuite/DateRangePicker';
 import SettingIcon from '@rsuite/icons/Setting';
 import addDays from 'date-fns/addDays';
