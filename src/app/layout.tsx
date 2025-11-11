@@ -8,7 +8,7 @@ import '../Css/Brand.css';
 import '../Css/Logo.css';
 
 import { Open_Sans } from 'next/font/google';
-import Providers from '@/components/common/providers';
+import Providers from '@/components/common/Frame/providers';
 
 const openSans = Open_Sans({
   subsets: ['latin-ext'],

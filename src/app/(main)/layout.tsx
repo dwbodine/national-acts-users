@@ -1,6 +1,6 @@
 'use client';
 
-import Frame from '@/components/Frame';
+import Frame from '@/components/common/Frame/Frame';
 import { ReactNode } from 'react';
 
 export default function MainLayout({ children }: { children: ReactNode }) {

@@ -1,18 +1,18 @@
 'use client';
 
 import { Container, Content, DOMHelper, Nav, Sidebar, Sidenav } from 'rsuite';
-
 import React, { useEffect, useState } from 'react';
-import Brand from '../Brand';
-import Header from '../Header';
-import NavLink from '../NavLink';
+import { adminAppNavs, userAppNavs } from './config';
+import Brand from './Brand';
+import Header from './Header';
+import NavLink from './NavLink';
 import NavToggle from './NavToggle';
 import classNames from 'classnames';
 import { FrameProps } from '@/types/props';
 import { NavItemData } from '@/types/public';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { User } from '@/types/user';
-import { adminAppNavs, userAppNavs } from '../config';
+
 
 const { getHeight, on } = DOMHelper;
 

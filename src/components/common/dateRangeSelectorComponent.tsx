@@ -80,7 +80,7 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
         placement="bottomEnd"
         appearance="default"
         format="MM/dd/yyyy"
-        character=" – "
+        character=" - "
         onChange={handleChange}
         value={dateValues}
         disabled={disabled}
