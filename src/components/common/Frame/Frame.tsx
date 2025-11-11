@@ -13,7 +13,6 @@ import { NavItemData } from '@/types/public';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { User } from '@/types/user';
 
-
 const { getHeight, on } = DOMHelper;
 
 const NavItem = (props: NavItemData) => {
