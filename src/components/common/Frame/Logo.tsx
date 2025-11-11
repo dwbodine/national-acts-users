@@ -1,23 +1,34 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
+import { LogoProps } from '@/types/props';
 import Image from 'next/image';
-import React from 'react';
 
-interface LogoProps {
-  width?: number;
-  height?: number;
-  className?: string;
-  style?: React.CSSProperties;
-}
+export default function Logo({ width, height, expanded }: LogoProps) {
+  const logoRef = useRef<HTMLDivElement>(null);
 
-export default function Logo({ width, height, className = '' }: LogoProps) {
+  useEffect(() => {
+    if (!logoRef.current) return;
+
+    // Remove animation class to reset it
+    logoRef.current.classList.remove('bounce-in');
+
+    // Trigger reflow to restart animation
+    void logoRef.current.offsetWidth;
+
+    // Add the animation class back
+    logoRef.current.classList.add('bounce-in');
+  }, [expanded]); // run whe
+
   return (
     <div
-      className={`rsuite-logo logo-animated logo-animated-delay-half-seconds bounce-in ${className} `}
+      ref={logoRef}
+      className={`rsuite-logo logo-animated ${expanded ? 'logo-anim-expanded' : 'logo-anim-collapsed'} bounce-in`}
     >
       <Image
         alt="National Acts"
-        src="/images/logo-new.png"
+        title="National Acts"
+        src={expanded ? '/images/logo-new.png' : '/images/logo-icon.jpg'}
         width={width}
         height={height}
       />

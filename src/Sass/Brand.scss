@@ -1,7 +1,21 @@
-.brand, .brand .rs-stack-item {
-    width: 100%;
+.brand .rs-stack-item {
+  width: 100%;
+}
+
+.brand {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  font-weight: bold;
+  text-transform: uppercase;
+
+  a {
+    text-decoration: none;
+  }
 }
 
 .brand a {
-    text-decoration: none;
+  text-decoration: none;
 }

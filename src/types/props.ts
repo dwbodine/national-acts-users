@@ -1,5 +1,5 @@
 import { ImageType } from '@/constants';
-import { Country, PageSeller } from './public';
+import { Country, NavItemData, PageSeller } from './public';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
 import {
@@ -366,4 +366,31 @@ export interface VipHtmlProps {
 
 export interface FrameProps {
   children?: React.ReactNode;
+}
+
+export interface LogoProps {
+  width?: number;
+  height?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  expanded?: boolean;
+}
+
+export interface ResponsiveFrameProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Brand: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Content: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Header: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  NavToggle: any;
+  navs?: NavItemData[];
+  children?: React.ReactNode;
+}
+
+export interface RenderNavProps {
+  isMobile?: boolean;
+  navs?: NavItemData[];
+  onItemClick?: () => void;
 }

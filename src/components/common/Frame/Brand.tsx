@@ -15,11 +15,17 @@ const Brand = (
       WithAsProps<'div'> & StackProps
     > &
     WithAsProps<'div'> &
-    StackProps & { children?: React.ReactNode | undefined },
+    StackProps & { children?: React.ReactNode | undefined } & {
+      expanded?: boolean | undefined;
+    },
 ) => (
   <Stack className="brand" {...props}>
     <Link href="/" style={{ textAlign: 'center' }}>
-      <Logo height={77} width={100} />
+      <Logo
+        height={props.expanded ? 77 : 35}
+        width={props.expanded ? 100 : 35}
+        expanded={props.expanded}
+      />
     </Link>
   </Stack>
 );

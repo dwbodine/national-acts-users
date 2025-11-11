@@ -23,12 +23,19 @@
 }
 
 .logo-animated {
+  animation-delay: 0.5s;
   animation-duration: 1s;
   animation-fill-mode: both;
 }
 
-.logo-animated-delay-half-seconds {
-  animation-delay: 0.5s;
+.logo-anim-expanded {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+.logo-anim-collapsed {
+  animation-duration: 1s;
+  animation-fill-mode: both;
 }
 
 .bounce-in {
