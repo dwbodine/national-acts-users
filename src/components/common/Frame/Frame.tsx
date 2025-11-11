@@ -12,7 +12,7 @@ import { FrameProps } from '@/types/props';
 import { NavItemData } from '@/types/public';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { User } from '@/types/user';
-import { adminAppNavs, userAppNavs } from '@/config';
+import { adminAppNavs, userAppNavs } from '../config';
 
 const { getHeight, on } = DOMHelper;
 

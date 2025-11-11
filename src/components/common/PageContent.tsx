@@ -1,6 +1,6 @@
 'use client';
 
-import Copyright from '@/components/Copyright';
+import Copyright from '@/components/common/Copyright';
 import { Panel, PanelProps } from 'rsuite';
 
 const PageContent = (props: PanelProps<string | number>) => (
