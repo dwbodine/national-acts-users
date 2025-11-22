@@ -373,7 +373,7 @@ export interface LogoProps {
   height?: number;
   className?: string;
   style?: React.CSSProperties;
-  expanded?: boolean;
+  expanded: boolean;
 }
 
 export interface ResponsiveFrameProps {

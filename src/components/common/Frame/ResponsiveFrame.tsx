@@ -83,7 +83,7 @@ export default function ResponsiveFrame({
       >
         <Drawer.Header>
           <Drawer.Title>
-            <Brand expanded={expand} />
+            <Brand expanded={expand ? true : false} />
           </Drawer.Title>
         </Drawer.Header>
         <Drawer.Body>
@@ -101,16 +101,20 @@ export default function ResponsiveFrame({
         collapsible
       >
         <Sidenav.Header>
-          <Brand expanded={expand} />
+          <Brand expanded={expand ? true : false} />
         </Sidenav.Header>
 
-        <Sidenav expanded={expand} appearance="subtle" defaultOpenKeys={['2', '3']}>
+        <Sidenav
+          expanded={expand ? true : false}
+          appearance="subtle"
+          defaultOpenKeys={['2', '3']}
+        >
           <Sidenav.Body>
             <RenderNav isMobile={false} navs={navs} onItemClick={handleNavClick} />
           </Sidenav.Body>
         </Sidenav>
 
-        <NavToggle expand={expand} onChange={() => setExpand(!expand)} />
+        <NavToggle expand={expand ? true : false} onChange={() => setExpand(!expand)} />
       </Sidebar>
 
       {/* ---------------- CONTENT AREA ---------------- */}

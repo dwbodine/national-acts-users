@@ -16,18 +16,21 @@ const Brand = (
     > &
     WithAsProps<'div'> &
     StackProps & { children?: React.ReactNode | undefined } & {
-      expanded?: boolean | undefined;
+      expanded: boolean;
     },
-) => (
-  <Stack className="brand" {...props}>
-    <Link href="/" style={{ textAlign: 'center' }}>
-      <Logo
-        height={props.expanded ? 77 : 35}
-        width={props.expanded ? 100 : 35}
-        expanded={props.expanded}
-      />
-    </Link>
-  </Stack>
-);
+) => {
+  const { expanded, ...rest } = props;
+  return (
+    <Stack className="brand" {...rest}>
+      <Link href="/" style={{ textAlign: 'center' }}>
+        <Logo
+          height={expanded ? 77 : 35}
+          width={expanded ? 100 : 35}
+          expanded={expanded}
+        />
+      </Link>
+    </Stack>
+  );
+};
 
 export default Brand;
