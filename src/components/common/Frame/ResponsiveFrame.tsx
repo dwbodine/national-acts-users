@@ -63,13 +63,13 @@ export default function ResponsiveFrame({
     <Container className="frame">
       {/* ---------------- MOBILE NAVBAR ---------------- */}
       <Navbar className="mobile-nav">
-        <Navbar.Header>
+        <Navbar.Brand>
           <IconButton
             icon={<MenuIcon />}
             appearance="subtle"
             onClick={() => setMobileOpen(true)}
           />
-        </Navbar.Header>
+        </Navbar.Brand>
       </Navbar>
 
       {/* ---------------- MOBILE DRAWER ---------------- */}
