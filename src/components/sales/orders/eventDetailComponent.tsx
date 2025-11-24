@@ -596,19 +596,31 @@ export default function EventDetail(props: EditProps) {
                         <td className="vipLabel">Total Revenue:</td>
                         <td>
                           $
+<<<<<<< HEAD
                           {(
                             currentReportSelection.currentDetailEvent.totalRevenue ?? 0
                           ).toFixed(2)}
+=======
+                          {((currentReportSelection.currentDetailEvent.totalRevenue ?? 0) - (currentReportSelection.currentDetailEvent.revenueRefunded ?? 0)).toFixed(
+                            2,
+                          )}
+>>>>>>> features/2025-08-routed-portal
                         </td>
                       </tr>
                       <tr hidden={hideServiceFeeDisplay || !viewServiceFees}>
                         <td className="vipLabel">Total Service Fees:</td>
                         <td>
                           $
+<<<<<<< HEAD
                           {(
                             currentReportSelection.currentDetailEvent.totalServiceFees ??
                             0
                           ).toFixed(2)}
+=======
+                          {((currentReportSelection.currentDetailEvent.totalServiceFees ?? 0) - (currentReportSelection.currentDetailEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(
+                            2,
+                          )}
+>>>>>>> features/2025-08-routed-portal
                         </td>
                       </tr>
                       <tr hidden={!hasTicketData}>
