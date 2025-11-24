@@ -1,0 +1,91 @@
+{
+  // ---------------------------------------------
+  // PRETTIER — the only formatter
+  // ---------------------------------------------
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // ---------------------------------------------
+  // ESLINT — only for code analysis + fixAll
+  // (NOT formatting)
+  // ---------------------------------------------
+  "eslint.useFlatConfig": true,
+  "eslint.experimental.useFlatConfig": true,
+
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact"
+  ],
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  "eslint.alwaysShowStatus": true,
+
+  // ---------------------------------------------
+  // TYPESCRIPT — use workspace version
+  // ---------------------------------------------
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // Turn off VSCode's built-in TS diagnostics (ESLint handles them)
+  "typescript.validate.enable": false,
+  "javascript.validate.enable": false,
+
+  // ---------------------------------------------
+  // PATH INTELLISENSE — support @/* aliases
+  // ---------------------------------------------
+  "path-intellisense.mappings": {
+    "@": "${workspaceFolder}/src"
+  },
+
+  // ---------------------------------------------
+  // FILE EXPLORER CLEANUP
+  // ---------------------------------------------
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/out": true
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/out": true
+  },
+
+  // ---------------------------------------------
+  // PRETTIER SETTINGS
+  // (matches your .prettierrc exactly)
+  // ---------------------------------------------
+  "prettier.printWidth": 100,
+  "prettier.singleQuote": true,
+  "prettier.semi": true,
+  "prettier.trailingComma": "all",
+  "prettier.arrowParens": "always",
+  "prettier.bracketSpacing": true,
+  "prettier.useTabs": false,
+  "prettier.tabWidth": 2
+}
