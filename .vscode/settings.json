@@ -1,0 +1,83 @@
+{
+  // ----------------------------------------------
+  // Formatting — Prettier as the single formatter
+  // ----------------------------------------------
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+
+  // Disable built-in TypeScript/JavaScript formatter
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // ----------------------------------------------
+  // ESLint — use it as the fixer for everything
+  // ----------------------------------------------
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  "eslint.useFlatConfig": true,
+  "eslint.experimental.useFlatConfig": true,
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+
+  "eslint.alwaysShowStatus": true,
+
+  // ----------------------------------------------
+  // TypeScript — fix duplicate errors and speed up IntelliSense
+  // ----------------------------------------------
+  // Use the project's TS version, not VSCode's built-in
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // Prevent duplicate linting from TS language service
+  "typescript.validate.enable": false,
+  "javascript.validate.enable": false,
+
+  // Faster TS project navigation
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.importModuleSpecifierEnding": "auto",
+
+  // ----------------------------------------------
+  // Path Intellisense (supports @/*)
+  // ----------------------------------------------
+  "path-intellisense.mappings": {
+    "@": "${workspaceFolder}/src"
+  },
+
+  // ----------------------------------------------
+  // Files & Explorer Quality-of-Life
+  // ----------------------------------------------
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/out": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/out": true
+  },
+
+  // ----------------------------------------------
+  // Prettier settings
+  // ----------------------------------------------
+  "prettier.printWidth": 100,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "all",
+  "prettier.semi": true
+}

@@ -1,14 +1,6 @@
 import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from './public';
 import { ExternalVenue, TicketSocketAccount } from './admin';
-import {
-  ITicketSalesData,
-  Note,
-  Order,
-  Seller,
-  SellerType,
-  Tour,
-  VipEvent,
-} from './event';
+import { ITicketSalesData, Note, Order, Seller, SellerType, Tour, VipEvent } from './event';
 
 export interface JwtPayload {
   fresh?: boolean;

@@ -16,13 +16,7 @@ export const useGetActivityData = () => {
     if (start <= 0 || end <= 0 || start > end) {
       return response;
     }
-    response = await userService.getUserActivity(
-      start,
-      end,
-      userId,
-      activityType,
-      filterAdmins,
-    );
+    response = await userService.getUserActivity(start, end, userId, activityType, filterAdmins);
     return response;
   };
 

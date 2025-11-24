@@ -5,8 +5,7 @@ export const useSetEventsHidden = () => {
   const setEventsHidden = async (
     eventIdList: number[],
     isHidden: boolean,
-  ): Promise<ModifyEventResponse> =>
-    await eventService.setEventsHidden(eventIdList, isHidden);
+  ): Promise<ModifyEventResponse> => await eventService.setEventsHidden(eventIdList, isHidden);
 
   return { setEventsHidden };
 };

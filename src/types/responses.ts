@@ -1,22 +1,7 @@
 import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from './public';
 import { ExternalVenue, TicketSocketAccount } from './admin';
-import {
-  IDashboardTotals,
-  Permission,
-  Role,
-  User,
-  UserActivity,
-  UserSeller,
-} from './user';
-import {
-  Note,
-  Order,
-  Seller,
-  Ticket,
-  TicketSocketRefreshHistory,
-  Tour,
-  VipEvent,
-} from './event';
+import { IDashboardTotals, Permission, Role, User, UserActivity, UserSeller } from './user';
+import { Note, Order, Seller, Ticket, TicketSocketRefreshHistory, Tour, VipEvent } from './event';
 
 export interface GetResponseBase {
   statusCode?: number;

@@ -2,7 +2,6 @@
   "compilerOptions": {
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "src",
     "checkJs": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -22,28 +21,18 @@
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "strictBindCallApply": true,
-    "strictFunctionTypes": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
-    "target": "ES2020",
+    "target": "esnext",
     "types": ["node"],
     "useUnknownInCatchVariables": true,
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "plugins": [{ "name": "next" }],
+    "ignoreDeprecations": "6.0"
   },
-  /* -----------------------------------------------------
-   *  Next.js directory Includes
-   * ----------------------------------------------------- */
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -53,5 +42,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules/*", ".next/*", "out/*", "dist/*"]
+  "exclude": ["node_modules", ".next", "out", "dist", "public"]
 }

@@ -34,8 +34,7 @@ export class AuthService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching logs - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching logs - please contact your administrator';
     }
 
     return response;
@@ -234,8 +233,7 @@ export class AuthService {
       const response: UserResponse = {};
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while registering user - please contact your administrator';
+        err?.message ?? 'Unknown error while registering user - please contact your administrator';
       return response;
     }
   };

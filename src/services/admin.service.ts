@@ -48,8 +48,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching faqs - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching faqs - please contact your administrator';
     }
 
     return response;
@@ -97,8 +96,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while updating FAQ - please contact your administrator';
+        err?.message ?? 'Unknown error while updating FAQ - please contact your administrator';
     }
 
     return response;
@@ -121,8 +119,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while deleting FAQ - please contact your administrator';
+        err?.message ?? 'Unknown error while deleting FAQ - please contact your administrator';
     }
 
     return response;
@@ -147,8 +144,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while moving up FAQ - please contact your administrator';
+        err?.message ?? 'Unknown error while moving up FAQ - please contact your administrator';
     }
 
     return response;
@@ -171,8 +167,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while moving down FAQ - please contact your administrator';
+        err?.message ?? 'Unknown error while moving down FAQ - please contact your administrator';
     }
 
     return response;
@@ -193,8 +188,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching pages - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching pages - please contact your administrator';
     }
 
     return response;
@@ -218,8 +212,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while updating page - please contact your administrator';
+        err?.message ?? 'Unknown error while updating page - please contact your administrator';
     }
 
     return response;
@@ -250,9 +243,7 @@ export class AdminService {
     return response;
   };
 
-  updateSiteSettings = async (
-    settingsToUpdate: SiteSetting[],
-  ): Promise<UpdateSettingResponse> => {
+  updateSiteSettings = async (settingsToUpdate: SiteSetting[]): Promise<UpdateSettingResponse> => {
     const url = `/admin/settings/update`;
 
     const response: UpdateSettingResponse = {};
@@ -294,8 +285,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching venues - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching venues - please contact your administrator';
     }
 
     return response;
@@ -323,9 +313,7 @@ export class AdminService {
     return response;
   };
 
-  updateVenue = async (
-    venueToUpdate: ExternalVenue,
-  ): Promise<ModifyExternalVenueResponse> => {
+  updateVenue = async (venueToUpdate: ExternalVenue): Promise<ModifyExternalVenueResponse> => {
     const url = `/admin/venues/edit`;
 
     const response: ModifyExternalVenueResponse = {};
@@ -343,8 +331,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while updating venue - please contact your administrator';
+        err?.message ?? 'Unknown error while updating venue - please contact your administrator';
     }
 
     return response;
@@ -366,8 +353,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while deleting venue - please contact your administrator';
+        err?.message ?? 'Unknown error while deleting venue - please contact your administrator';
     }
 
     return response;
@@ -410,8 +396,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching sellers - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching sellers - please contact your administrator';
     }
 
     return response;
@@ -435,8 +420,7 @@ export class AdminService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while updating seller - please contact your administrator';
+        err?.message ?? 'Unknown error while updating seller - please contact your administrator';
     }
 
     return response;

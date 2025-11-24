@@ -1,9 +1,7 @@
 import { IShirtData, IShirtSizeData, VipEvent } from '@/types/event';
 import moment from 'moment';
 
-export default function getShirtDataFromEvents(
-  events: VipEvent[],
-): IShirtData | undefined {
+export default function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefined {
   const map = new Map<string, IShirtSizeData[]>();
   const shirtSizes: string[] = [];
   let eventsHaveShirtData: boolean = false;
@@ -23,9 +21,7 @@ export default function getShirtDataFromEvents(
           };
           map.set(key, [data]);
         } else {
-          const indexToUpdate = collection.findIndex(
-            (item) => item.ShirtSize === shirt.size,
-          );
+          const indexToUpdate = collection.findIndex((item) => item.ShirtSize === shirt.size);
           if (indexToUpdate >= 0) {
             const item = collection[indexToUpdate];
             if (item) {
