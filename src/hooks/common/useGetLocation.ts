@@ -1,4 +1,7 @@
-import { getAddressFromExternalVenue, getLocationInfoFromVenue } from '@/utils/eventUtils';
+import {
+  getAddressFromExternalVenue,
+  getLocationInfoFromVenue,
+} from '@/utils/eventUtils';
 import { ExternalVenue } from '@/types/admin';
 import { Venue } from '@/types/event';
 

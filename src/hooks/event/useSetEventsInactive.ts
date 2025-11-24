@@ -5,7 +5,8 @@ export const useSetEventsInactive = () => {
   const setEventsInactive = async (
     eventIdList: number[],
     isActive: boolean,
-  ): Promise<ModifyEventResponse> => await eventService.setEventsInactive(eventIdList, isActive);
+  ): Promise<ModifyEventResponse> =>
+    await eventService.setEventsInactive(eventIdList, isActive);
 
   return { setEventsInactive };
 };

@@ -8,43 +8,34 @@ import prettierPlugin from 'eslint-plugin-prettier';
 
 export default defineConfig([
   // -----------------------------------------------------
-  // 1) Global parser + language settings
+  // 1) Global parser settings (must come first)
   // -----------------------------------------------------
   {
-    files: ['**/*.{js,cjs,mjs,ts,tsx,jsx}'],
-    ignores: [
-      '.next/**',
-      'node_modules/**',
-      'dist/**',
-      'out/**',
-      'public/**',
-    ],
+    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     languageOptions: {
       parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        projectService: true,        // modern TS-aware mode
-        project: undefined,          // prevents ESLint conflict
+        projectService: true,
+        project: './tsconfig.json',
         tsconfigRootDir: import.meta.dirname,
       },
     },
   },
 
   // -----------------------------------------------------
-  // 2) JavaScript recommended
+  // 2) JS recommended
   // -----------------------------------------------------
   js.configs.recommended,
 
   // -----------------------------------------------------
-  // 3) TypeScript recommended (type-aware)
+  // 3) TS recommended (type-checked)
   // -----------------------------------------------------
   ...tseslint.configs.recommendedTypeChecked,
 
   // -----------------------------------------------------
-  // 4) Next.js + Import plugin + Prettier
+  // 4) Next.js + Prettier + your rules
   // -----------------------------------------------------
   {
-    files: ['**/*.{js,cjs,mjs,ts,tsx,jsx}'],
+    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
 
     plugins: {
       import: importPlugin,
@@ -53,39 +44,27 @@ export default defineConfig([
     },
 
     settings: {
-      // absolute import support (Next.js + TS)
       'import/resolver': {
         typescript: {
-          alwaysTryTypes: true,
-        },
-        node: {
-          extensions: ['.js', '.ts', '.tsx'],
+          project: './tsconfig.json',
         },
       },
     },
 
     rules: {
-      // ---------------------------------------------------
-      // Imports
-      // ---------------------------------------------------
+      // Missing imports / unresolved modules
       'import/no-unresolved': 'error',
       'import/named': 'error',
       'import/default': 'error',
       'import/namespace': 'error',
 
-      // ---------------------------------------------------
-      // Next.js rules (includes images, links, fonts, etc.)
-      // ---------------------------------------------------
+      // Next rules
       ...nextPlugin.configs.recommended.rules,
 
-      // ---------------------------------------------------
-      // Prettier formatting enforcement
-      // ---------------------------------------------------
+      // Prettier enforcement
       'prettier/prettier': 'error',
 
-      // ---------------------------------------------------
-      // Your chosen rule overrides
-      // ---------------------------------------------------
+      // Your overrides
       complexity: 'off',
       'id-length': 'off',
       'max-depth': 'off',

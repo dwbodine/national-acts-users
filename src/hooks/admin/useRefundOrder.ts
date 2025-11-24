@@ -7,7 +7,11 @@ export const useRefundOrder = () => {
     refundServiceFees: boolean,
     markChargeback: boolean = false,
   ): Promise<ModifyOrderResponse> =>
-    await eventService.refundOrder(ticketSocketOrderId, refundServiceFees, markChargeback);
+    await eventService.refundOrder(
+      ticketSocketOrderId,
+      refundServiceFees,
+      markChargeback,
+    );
 
   return { refundOrder };
 };

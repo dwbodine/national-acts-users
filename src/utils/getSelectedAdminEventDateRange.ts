@@ -11,7 +11,11 @@ export default function getSelectedAdminEventDateRange(
   };
   switch (tabView) {
     case EventTabView.Agenda:
-      dateRange.periodStart = moment.unix(selectedUnixDate).startOf('month').startOf('day').unix();
+      dateRange.periodStart = moment
+        .unix(selectedUnixDate)
+        .startOf('month')
+        .startOf('day')
+        .unix();
       dateRange.start = dateRange.periodStart;
       dateRange.end = moment.unix(dateRange.start).endOf('month').endOf('day').unix();
       break;
@@ -38,7 +42,12 @@ export default function getSelectedAdminEventDateRange(
         .startOf('day')
         .unix();
       dateRange.start = dateRange.periodStart;
-      dateRange.end = moment.unix(dateRange.start).endOf('week').add(1, 'day').endOf('day').unix();
+      dateRange.end = moment
+        .unix(dateRange.start)
+        .endOf('week')
+        .add(1, 'day')
+        .endOf('day')
+        .unix();
       break;
   }
   return dateRange;

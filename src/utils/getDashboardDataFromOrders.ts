@@ -72,7 +72,8 @@ export default function getDashboardDataFromOrders(
           RevenueChargedBackUsd: dailyOrderData.revenueChargedBackUsd ?? 0,
           RevenueRefundedUsd: dailyOrderData.revenueRefundedUsd ?? 0,
           RevenueUsd: dailyOrderData.ticketRevenueUsd,
-          ServiceFeeRevenueChargedBackUsd: dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
+          ServiceFeeRevenueChargedBackUsd:
+            dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
           ServiceFeeRevenueRefundedUsd: dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0,
           ServiceFeesUsd: dailyOrderData.serviceFeesRevenueUsd,
           Tickets: dailyOrderData.tickets ?? 0,
@@ -84,17 +85,20 @@ export default function getDashboardDataFromOrders(
         accountOrderData.Purchases += dailyOrderData.orders;
         accountOrderData.Tickets += dailyOrderData.tickets;
         accountOrderData.TicketsRefunded =
-          (accountOrderData.TicketsRefunded ?? 0) + (dailyOrderData.numTicketsRefunded ?? 0);
+          (accountOrderData.TicketsRefunded ?? 0) +
+          (dailyOrderData.numTicketsRefunded ?? 0);
         accountOrderData.RevenueUsd += dailyOrderData.ticketRevenueUsd;
         accountOrderData.ServiceFeesUsd += dailyOrderData.serviceFeesRevenueUsd;
         accountOrderData.TotalRevenueUsd += dailyOrderData.totalRevenueUsd;
         accountOrderData.RevenueRefundedUsd =
-          (accountOrderData.RevenueRefundedUsd ?? 0) + (dailyOrderData.revenueRefundedUsd ?? 0);
+          (accountOrderData.RevenueRefundedUsd ?? 0) +
+          (dailyOrderData.revenueRefundedUsd ?? 0);
         accountOrderData.ServiceFeeRevenueRefundedUsd =
           (accountOrderData.ServiceFeeRevenueRefundedUsd ?? 0) +
           (dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0);
         accountOrderData.TicketsChargedBack =
-          (accountOrderData.TicketsChargedBack ?? 0) + (dailyOrderData.numTicketsChargedBack ?? 0);
+          (accountOrderData.TicketsChargedBack ?? 0) +
+          (dailyOrderData.numTicketsChargedBack ?? 0);
         accountOrderData.RevenueChargedBackUsd =
           (accountOrderData.RevenueChargedBackUsd ?? 0) +
           (dailyOrderData.revenueChargedBackUsd ?? 0);
@@ -167,8 +171,10 @@ export default function getDashboardDataFromOrders(
         totalTicketsChargedBack += dailyOrderData.numTicketsChargedBack ?? 0;
         totalTicketRevenueRefundedUsd += dailyOrderData.revenueRefundedUsd ?? 0;
         totalTicketRevenueChargedBackUsd += dailyOrderData.revenueChargedBackUsd ?? 0;
-        totalServiceFeeRevenueRefundedUsd += dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0;
-        totalServiceFeeRevenueChargedBackUsd += dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0;
+        totalServiceFeeRevenueRefundedUsd +=
+          dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0;
+        totalServiceFeeRevenueChargedBackUsd +=
+          dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0;
 
         // Compile data for top sellers for current time period in USD
         if (dailyOrderData.sellerId) {
@@ -235,7 +241,8 @@ export default function getDashboardDataFromOrders(
           RevenueUsd: dailyOrderData.ticketRevenueUsd,
           SellerName: sellerName,
           ServiceFeeRevenueChargedBack: dailyOrderData.serviceFeeRevenueChargedBack ?? 0,
-          ServiceFeeRevenueChargedBackUsd: dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
+          ServiceFeeRevenueChargedBackUsd:
+            dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
           ServiceFeeRevenueRefunded: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
           ServiceFeeRevenueRefundedUsd: dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0,
           ServiceFees: dailyOrderData.serviceFeesRevenue,
@@ -259,8 +266,10 @@ export default function getDashboardDataFromOrders(
             RevenueChargedBackUsd: dailyOrderData.revenueChargedBackUsd ?? 0,
             RevenueRefundedUsd: dailyOrderData.revenueRefunded ?? 0,
             RevenueUsd: dailyOrderData.ticketRevenueUsd,
-            ServiceFeeRevenueChargedBackUsd: dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
-            ServiceFeeRevenueRefundedUsd: dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0,
+            ServiceFeeRevenueChargedBackUsd:
+              dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
+            ServiceFeeRevenueRefundedUsd:
+              dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0,
             ServiceFeesUsd: dailyOrderData.serviceFeesRevenueUsd,
             Tickets: dailyOrderData.tickets,
             TicketsChargedBack: dailyOrderData.numTicketsChargedBack ?? 0,
@@ -276,7 +285,8 @@ export default function getDashboardDataFromOrders(
                 SellerName: sellerName,
                 ServiceFeeRevenueChargedBackUsd:
                   dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
-                ServiceFeeRevenueRefundedUsd: dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0,
+                ServiceFeeRevenueRefundedUsd:
+                  dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0,
                 ServiceFeesUsd: dailyOrderData.serviceFeesRevenueUsd,
                 Tickets: dailyOrderData.tickets,
                 TicketsChargedBack: dailyOrderData.numTicketsChargedBack ?? 0,
@@ -295,9 +305,11 @@ export default function getDashboardDataFromOrders(
           salesData.Purchases += dailyOrderData.orders;
           salesData.TotalRevenueUsd += dailyOrderData.totalRevenueUsd;
           salesData.RevenueRefundedUsd =
-            (salesData.RevenueRefundedUsd ?? 0) + (dailyOrderData.revenueRefundedUsd ?? 0);
+            (salesData.RevenueRefundedUsd ?? 0) +
+            (dailyOrderData.revenueRefundedUsd ?? 0);
           salesData.RevenueChargedBackUsd =
-            (salesData.RevenueChargedBackUsd ?? 0) + (dailyOrderData.revenueChargedBackUsd ?? 0);
+            (salesData.RevenueChargedBackUsd ?? 0) +
+            (dailyOrderData.revenueChargedBackUsd ?? 0);
           salesData.ServiceFeeRevenueRefundedUsd =
             (salesData.ServiceFeeRevenueRefundedUsd ?? 0) +
             (dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0);
@@ -314,7 +326,8 @@ export default function getDashboardDataFromOrders(
                   seller.Purchases += dailyOrderData.orders;
                   seller.TotalRevenueUsd += dailyOrderData.totalRevenueUsd;
                   seller.RevenueRefundedUsd =
-                    (seller.RevenueRefundedUsd ?? 0) + (dailyOrderData.revenueRefundedUsd ?? 0);
+                    (seller.RevenueRefundedUsd ?? 0) +
+                    (dailyOrderData.revenueRefundedUsd ?? 0);
                   seller.RevenueChargedBackUsd =
                     (seller.RevenueChargedBackUsd ?? 0) +
                     (dailyOrderData.revenueChargedBackUsd ?? 0);
@@ -333,7 +346,10 @@ export default function getDashboardDataFromOrders(
                       )
                     ) {
                       const eventSalesData = seller.children.map((evt) => {
-                        if (evt.SellerName === esd.SellerName && evt.EventId === esd.EventId) {
+                        if (
+                          evt.SellerName === esd.SellerName &&
+                          evt.EventId === esd.EventId
+                        ) {
                           evt.Tickets += dailyOrderData.tickets;
                           evt.Revenue += dailyOrderData.ticketRevenue;
                           evt.RevenueUsd += dailyOrderData.ticketRevenueUsd;
@@ -343,7 +359,8 @@ export default function getDashboardDataFromOrders(
                           evt.TotalRevenue += dailyOrderData.totalRevenue;
                           evt.TotalRevenueUsd += dailyOrderData.totalRevenueUsd;
                           evt.RevenueRefunded =
-                            (evt.RevenueRefunded ?? 0) + (dailyOrderData.revenueRefunded ?? 0);
+                            (evt.RevenueRefunded ?? 0) +
+                            (dailyOrderData.revenueRefunded ?? 0);
                           evt.RevenueRefundedUsd =
                             (evt.RevenueRefundedUsd ?? 0) +
                             (dailyOrderData.revenueRefundedUsd ?? 0);
@@ -389,7 +406,8 @@ export default function getDashboardDataFromOrders(
                 SellerName: sellerName,
                 ServiceFeeRevenueChargedBackUsd:
                   dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
-                ServiceFeeRevenueRefundedUsd: dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0,
+                ServiceFeeRevenueRefundedUsd:
+                  dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0,
                 ServiceFeesUsd: dailyOrderData.serviceFeesRevenueUsd,
                 Tickets: dailyOrderData.tickets,
                 TicketsChargedBack: dailyOrderData.numTicketsChargedBack ?? 0,
@@ -409,7 +427,8 @@ export default function getDashboardDataFromOrders(
                 SellerName: sellerName,
                 ServiceFeeRevenueChargedBackUsd:
                   dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
-                ServiceFeeRevenueRefundedUsd: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
+                ServiceFeeRevenueRefundedUsd:
+                  dailyOrderData.serviceFeeRevenueRefunded ?? 0,
                 ServiceFeesUsd: dailyOrderData.serviceFeesRevenueUsd,
                 Tickets: dailyOrderData.tickets,
                 TicketsChargedBack: dailyOrderData.numTicketsChargedBack ?? 0,
@@ -519,10 +538,14 @@ export default function getDashboardDataFromOrders(
     a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0,
   );
   const topSellers =
-    topSellerValuesArray.length > 10 ? topSellerValuesArray.slice(0, 10) : topSellerValuesArray;
+    topSellerValuesArray.length > 10
+      ? topSellerValuesArray.slice(0, 10)
+      : topSellerValuesArray;
 
   // Get top-selling locations
-  const topLocationValuesArray: ITopSellingLocation[] = Array.from(topSellingLocationsMap.values());
+  const topLocationValuesArray: ITopSellingLocation[] = Array.from(
+    topSellingLocationsMap.values(),
+  );
   topLocationValuesArray.sort((a, b) =>
     a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0,
   );
@@ -532,12 +555,16 @@ export default function getDashboardDataFromOrders(
       : topLocationValuesArray;
 
   // Get top-selling venues
-  const topVenueValuesArray: ITopSellingLocation[] = Array.from(topSellingVenuesMap.values());
+  const topVenueValuesArray: ITopSellingLocation[] = Array.from(
+    topSellingVenuesMap.values(),
+  );
   topVenueValuesArray.sort((a, b) =>
     a.revenueUsd > b.revenueUsd ? -1 : a.revenueUsd < b.revenueUsd ? 1 : 0,
   );
   const topVenues =
-    topVenueValuesArray.length > 10 ? topVenueValuesArray.slice(0, 10) : topVenueValuesArray;
+    topVenueValuesArray.length > 10
+      ? topVenueValuesArray.slice(0, 10)
+      : topVenueValuesArray;
 
   // Compute averages for month
   const averageDailyTransactionsPerMonth = monthlyPurchases / totals.day;
@@ -547,8 +574,10 @@ export default function getDashboardDataFromOrders(
   const averageDailyTotalRevenuePerMonthUsd = monthlyTotalRevenueUsd / totals.day;
   const averageDailyRefundsPerMonth = monthlyTicketsRefunded / totals.day;
   const averageDailyChargeBacksPerMonth = monthlyTicketsChargedBack / totals.day;
-  const averageDailyRevenueRefundedPerMonthUsd = monthlyTicketRevenueRefundedUsd / totals.day;
-  const averageDailyRevenueChargedBackPerMonthUsd = monthlyTicketRevenueChargedBackUsd / totals.day;
+  const averageDailyRevenueRefundedPerMonthUsd =
+    monthlyTicketRevenueRefundedUsd / totals.day;
+  const averageDailyRevenueChargedBackPerMonthUsd =
+    monthlyTicketRevenueChargedBackUsd / totals.day;
   const averageDailyServiceFeeRevenueRefundedPerMonthUsd =
     monthlyTicketServiceFeeRevenueRefundedUsd / totals.day;
   const averageDailyServiceFeeRevenueChargedBackPerMonthUsd =
@@ -574,11 +603,14 @@ export default function getDashboardDataFromOrders(
   const averageDailyTransactionsPerYear = totals.orders / totals.dayOfYear;
   const averageDailyTicketsPerYear = totals.tickets / totals.dayOfYear;
   const averageDailyTicketRevenuePerYearUsd = totals.ticketRevenueUsd / totals.dayOfYear;
-  const averageDailyServiceFeesPerYearUsd = totals.serviceFeesRevenueUsd / totals.dayOfYear;
+  const averageDailyServiceFeesPerYearUsd =
+    totals.serviceFeesRevenueUsd / totals.dayOfYear;
   const averageDailyTotalRevenuePerYearUsd = totals.totalRevenueUsd / totals.dayOfYear;
-  const averageDailyChargebacksPerYear = (totals.numTicketsChargedBack ?? 0) / totals.dayOfYear;
+  const averageDailyChargebacksPerYear =
+    (totals.numTicketsChargedBack ?? 0) / totals.dayOfYear;
   const averageDailyRefundsPerYear = (totals.numTicketsRefunded ?? 0) / totals.dayOfYear;
-  const averageDailyRevenueRefundedPerYearUsd = (totals.revenueRefundedUsd ?? 0) / totals.dayOfYear;
+  const averageDailyRevenueRefundedPerYearUsd =
+    (totals.revenueRefundedUsd ?? 0) / totals.dayOfYear;
   const averageDailyRevenueChargedBackPerYearUsd =
     (totals.revenueChargedBackUsd ?? 0) / totals.dayOfYear;
   const averageDailyServiceFeeRevenueRefundedPerYearUsd =

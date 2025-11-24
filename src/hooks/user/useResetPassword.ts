@@ -7,7 +7,12 @@ export const useResetPassword = () => {
     confirmPassword: string,
     code: number,
   ) => {
-    const response = await authService.resetPassword(username, password, confirmPassword, code);
+    const response = await authService.resetPassword(
+      username,
+      password,
+      confirmPassword,
+      code,
+    );
     return response;
   };
 

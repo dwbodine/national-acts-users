@@ -12,7 +12,8 @@ export default function getTicketDataFromEvents(events: VipEvent[]): ITicketData
       evt.ticketTypes?.forEach((ticketType) => {
         if (
           !ticketTypes.find(
-            (x) => x.ticketTypeName.toLowerCase() === ticketType.ticketTypeName.toLowerCase(),
+            (x) =>
+              x.ticketTypeName.toLowerCase() === ticketType.ticketTypeName.toLowerCase(),
           )
         ) {
           ticketTypes.push(ticketType);
@@ -49,7 +50,9 @@ export default function getTicketDataFromEvents(events: VipEvent[]): ITicketData
               map.set(key, [data]);
             } else {
               let ticketTypeName = ticket.ticketType;
-              const ttype = ticketTypes.find((x) => x.ticketTypeId === ticket.ticketTypeId);
+              const ttype = ticketTypes.find(
+                (x) => x.ticketTypeId === ticket.ticketTypeId,
+              );
               if (ttype) {
                 const theType = ttype.ticketTypeName;
                 ticketTypeName = theType;

@@ -39,7 +39,9 @@ export class EventService {
     });
   }
 
-  getEvents = async (reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
+  getEvents = async (
+    reportSelection: UserReportSelection,
+  ): Promise<GetEventsResponse> => {
     let url = `/events/getEventsAndOrders?portal=1&excludeExternal=1&sellerId=${reportSelection.seller.sellerId}`;
 
     if (reportSelection.selectedTourId && reportSelection.selectedTourId > 0) {
@@ -78,7 +80,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+        err?.message ??
+        'Unknown error while fetching events - please contact your administrator';
     }
 
     return response;
@@ -99,13 +102,16 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while fetching tours - please contact your administrator';
+        err?.message ??
+        'Unknown error while fetching tours - please contact your administrator';
     }
 
     return response;
   };
 
-  getAdminEvents = async (reportSelection: AdminSelection): Promise<GetEventsResponse> => {
+  getAdminEvents = async (
+    reportSelection: AdminSelection,
+  ): Promise<GetEventsResponse> => {
     let url = `/events/getEventsAndOrders?ignoreFlags=1&sellerId=${reportSelection.sellerId}`;
 
     if (reportSelection.selectedTour) {
@@ -132,7 +138,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+        err?.message ??
+        'Unknown error while fetching events - please contact your administrator';
     }
 
     return response;
@@ -153,13 +160,16 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+        err?.message ??
+        'Unknown error while fetching events - please contact your administrator';
     }
 
     return response;
   };
 
-  getTicketSocketEventsOnly = async (sellerId: number | undefined): Promise<GetEventsResponse> => {
+  getTicketSocketEventsOnly = async (
+    sellerId: number | undefined,
+  ): Promise<GetEventsResponse> => {
     let url = `/admin/events/ticketSocketOnly`;
 
     if (sellerId) {
@@ -178,7 +188,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+        err?.message ??
+        'Unknown error while fetching events - please contact your administrator';
     }
 
     return response;
@@ -199,7 +210,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while fetching orders - please contact your administrator';
+        err?.message ??
+        'Unknown error while fetching orders - please contact your administrator';
     }
 
     return response;
@@ -280,7 +292,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+        err?.message ??
+        'Unknown error while fetching events - please contact your administrator';
     }
 
     return response;
@@ -302,7 +315,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while fetching event - please contact your administrator';
+        err?.message ??
+        'Unknown error while fetching event - please contact your administrator';
     }
 
     return response;
@@ -324,7 +338,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while fetching order - please contact your administrator';
+        err?.message ??
+        'Unknown error while fetching order - please contact your administrator';
     }
 
     return response;
@@ -347,7 +362,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while updating event - please contact your administrator';
+        err?.message ??
+        'Unknown error while updating event - please contact your administrator';
     }
 
     return response;
@@ -370,7 +386,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while updating tour - please contact your administrator';
+        err?.message ??
+        'Unknown error while updating tour - please contact your administrator';
     }
 
     return response;
@@ -410,7 +427,10 @@ export class EventService {
     return response;
   };
 
-  cancelEvent = async (eventId: number, isCancelled: boolean): Promise<ModifyEventResponse> => {
+  cancelEvent = async (
+    eventId: number,
+    isCancelled: boolean,
+  ): Promise<ModifyEventResponse> => {
     const url = '/admin/events/cancel';
 
     const response: ModifyEventResponse = {};
@@ -432,13 +452,17 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while cancelling event - please contact your administrator';
+        err?.message ??
+        'Unknown error while cancelling event - please contact your administrator';
     }
 
     return response;
   };
 
-  sendListToBand = async (eventId: number, isSent: boolean): Promise<ModifyEventResponse> => {
+  sendListToBand = async (
+    eventId: number,
+    isSent: boolean,
+  ): Promise<ModifyEventResponse> => {
     const url = '/admin/events/sendListToBand';
 
     const response: ModifyEventResponse = {};
@@ -551,13 +575,17 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while updating order - please contact your administrator';
+        err?.message ??
+        'Unknown error while updating order - please contact your administrator';
     }
 
     return response;
   };
 
-  addCompedOrder = async (eventId: number, numTickets: number): Promise<ModifyOrderResponse> => {
+  addCompedOrder = async (
+    eventId: number,
+    numTickets: number,
+  ): Promise<ModifyOrderResponse> => {
     const url = `/admin/orders/comp`;
 
     const response: ModifyOrderResponse = {};
@@ -577,7 +605,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while adding comp order - please contact your administrator';
+        err?.message ??
+        'Unknown error while adding comp order - please contact your administrator';
     }
 
     return response;
@@ -627,7 +656,9 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.history = res.data ? (res.data as TicketSocketRefreshHistory[]) : undefined;
+      response.history = res.data
+        ? (res.data as TicketSocketRefreshHistory[])
+        : undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
@@ -673,7 +704,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while adding note - please contact your administrator';
+        err?.message ??
+        'Unknown error while adding note - please contact your administrator';
     }
 
     return response;
@@ -707,7 +739,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while editing note - please contact your administrator';
+        err?.message ??
+        'Unknown error while editing note - please contact your administrator';
     }
 
     return response;
@@ -729,7 +762,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while deleting note - please contact your administrator';
+        err?.message ??
+        'Unknown error while deleting note - please contact your administrator';
     }
 
     return response;
@@ -794,7 +828,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while searching orders - please contact your administrator';
+        err?.message ??
+        'Unknown error while searching orders - please contact your administrator';
     }
 
     return response;
@@ -822,7 +857,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while modifying event - please contact your administrator';
+        err?.message ??
+        'Unknown error while modifying event - please contact your administrator';
     }
 
     return response;
@@ -850,7 +886,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while modifying event - please contact your administrator';
+        err?.message ??
+        'Unknown error while modifying event - please contact your administrator';
     }
 
     return response;
@@ -878,7 +915,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while modifying event - please contact your administrator';
+        err?.message ??
+        'Unknown error while modifying event - please contact your administrator';
     }
 
     return response;
@@ -906,13 +944,16 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while modifying order - please contact your administrator';
+        err?.message ??
+        'Unknown error while modifying order - please contact your administrator';
     }
 
     return response;
   };
 
-  setEventsLiveInBandsInTown = async (eventIdList: number[]): Promise<ModifyEventResponse> => {
+  setEventsLiveInBandsInTown = async (
+    eventIdList: number[],
+  ): Promise<ModifyEventResponse> => {
     const url = '/events/setEventsLiveInBandsInTown';
     const headers = getAuthorizationHeader();
 
@@ -959,7 +1000,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while modifying order - please contact your administrator';
+        err?.message ??
+        'Unknown error while modifying order - please contact your administrator';
     }
 
     return response;
@@ -987,7 +1029,8 @@ export class EventService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ?? 'Unknown error while modifying ticket - please contact your administrator';
+        err?.message ??
+        'Unknown error while modifying ticket - please contact your administrator';
     }
 
     return response;
