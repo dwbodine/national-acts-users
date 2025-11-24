@@ -4,7 +4,6 @@ import importPlugin from 'eslint-plugin-import';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import nextPlugin from '@next/eslint-plugin-next';
-import prettierPlugin from 'eslint-plugin-prettier';
 
 export default defineConfig([
   // -----------------------------------------------------
@@ -15,7 +14,6 @@ export default defineConfig([
     languageOptions: {
       parserOptions: {
         projectService: true,
-        project: './tsconfig.json',
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -40,15 +38,6 @@ export default defineConfig([
     plugins: {
       import: importPlugin,
       '@next/next': nextPlugin,
-      prettier: prettierPlugin,
-    },
-
-    settings: {
-      'import/resolver': {
-        typescript: {
-          project: './tsconfig.json',
-        },
-      },
     },
 
     rules: {
