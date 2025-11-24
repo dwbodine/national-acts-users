@@ -574,7 +574,7 @@ export default function EventDetail(props: EditProps) {
                         <td className="vipLabel">Total Revenue:</td>
                         <td>
                           $
-                          {((currentReportSelection.currentDetailEvent.totalRevenue ?? 0)).toFixed(
+                          {((currentReportSelection.currentDetailEvent.totalRevenue ?? 0) - (currentReportSelection.currentDetailEvent.revenueRefunded ?? 0)).toFixed(
                             2,
                           )}
                         </td>
@@ -583,7 +583,7 @@ export default function EventDetail(props: EditProps) {
                         <td className="vipLabel">Total Service Fees:</td>
                         <td>
                           $
-                          {((currentReportSelection.currentDetailEvent.totalServiceFees ?? 0)).toFixed(
+                          {((currentReportSelection.currentDetailEvent.totalServiceFees ?? 0) - (currentReportSelection.currentDetailEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(
                             2,
                           )}
                         </td>
