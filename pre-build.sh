@@ -1,4 +1,4 @@
 #!/bin/bash
-npm run format
-npm run typecheck
-npm run lint
+yarn format
+yarn typecheck
+yarn lint

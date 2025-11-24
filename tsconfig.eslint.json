@@ -1,0 +1,26 @@
+{
+  "extends": "./tsconfig.json",
+
+  "compilerOptions": {
+    "noEmit": true,
+
+    /* Prevent conflicts with TS incremental builds */
+    "incremental": false,
+    "composite": false,
+
+    /* Allow ESLint to type-check JS if present */
+    "allowJs": true,
+    "checkJs": false
+  },
+
+  /* ESLint must see the same files TypeScript sees */
+  "include": [
+    "next-env.d.ts",
+    "global.d.ts",
+    "src/**/*",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+
+  "exclude": ["node_modules", ".next", "dist", "out", "public"]
+}

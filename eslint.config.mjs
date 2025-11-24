@@ -40,18 +40,23 @@ export default defineConfig([
       '@next/next': nextPlugin,
     },
 
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: './tsconfig.json',
+        },
+      },
+    },
+
     rules: {
       // Missing imports / unresolved modules
-      'import/no-unresolved': 'error',
+      'import/no-unresolved': 'off',
       'import/named': 'error',
       'import/default': 'error',
       'import/namespace': 'error',
 
       // Next rules
       ...nextPlugin.configs.recommended.rules,
-
-      // Prettier enforcement
-      'prettier/prettier': 'error',
 
       // Your overrides
       complexity: 'off',
@@ -86,7 +91,6 @@ export default defineConfig([
       'next.config.js',
       'next-env.d.ts',
       'eslint.config.mjs',
-      'tsconfig.json',
     ],
   },
 ]);

@@ -7,14 +7,15 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 ENV NEXT_TELEMETRY_DISABLED=1
 
-COPY package*.json ./
-RUN npm install
+COPY package.json ./
+COPY yarn.lock ./
+RUN yarn install
 
 COPY . .
 
 RUN --mount=type=secret,id=_env cat /run/secrets/_env > .env
 
-RUN npm run standalone
+RUN yarn standalone
 
 # Production runner
 FROM alpine:latest

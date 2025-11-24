@@ -12,7 +12,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
-import EventDataExpanded from '../../common/eventDataExpandedComponent';
+import EventDataExpanded from '@/components/common/eventDataExpandedComponent';
 import { ExpandCellProps } from '@/types/props';
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
 import type { RootState } from '@/lib/store';
