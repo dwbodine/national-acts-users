@@ -4,6 +4,7 @@ import importPlugin from 'eslint-plugin-import';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import nextPlugin from '@next/eslint-plugin-next';
+import prettierPlugin from 'eslint-plugin-prettier';
 
 export default defineConfig([
   // -----------------------------------------------------
@@ -11,13 +12,19 @@ export default defineConfig([
   // -----------------------------------------------------
   {
     files: ['**/*.{js,cjs,mjs,ts,tsx,jsx}'],
-    ignores: ['.next/**', 'node_modules/**', 'dist/**', 'out/**', 'public/**'],
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'dist/**',
+      'out/**',
+      'public/**',
+    ],
     languageOptions: {
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
-        projectService: true, // modern TS-aware mode
-        project: undefined, // prevents ESLint conflict
+        projectService: true,        // modern TS-aware mode
+        project: undefined,          // prevents ESLint conflict
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -42,6 +49,7 @@ export default defineConfig([
     plugins: {
       import: importPlugin,
       '@next/next': nextPlugin,
+      prettier: prettierPlugin,
     },
 
     settings: {
@@ -69,6 +77,11 @@ export default defineConfig([
       // Next.js rules (includes images, links, fonts, etc.)
       // ---------------------------------------------------
       ...nextPlugin.configs.recommended.rules,
+
+      // ---------------------------------------------------
+      // Prettier formatting enforcement
+      // ---------------------------------------------------
+      'prettier/prettier': 'error',
 
       // ---------------------------------------------------
       // Your chosen rule overrides

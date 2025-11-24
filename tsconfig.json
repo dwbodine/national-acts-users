@@ -30,7 +30,8 @@
     "types": ["node"],
     "useUnknownInCatchVariables": true,
     "incremental": true,
-    "plugins": [{ "name": "next" }]
+    "plugins": [{ "name": "next" }],
+    "ignoreDeprecations": "6.0"
   },
   "include": [
     "next-env.d.ts",
