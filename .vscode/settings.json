@@ -28,12 +28,7 @@
   "eslint.useFlatConfig": true,
   "eslint.experimental.useFlatConfig": true,
 
-  "eslint.validate": [
-    "javascript",
-    "typescript",
-    "javascriptreact",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
 
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
