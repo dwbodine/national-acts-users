@@ -1,7 +1,8 @@
-import { useState } from 'react';
 import { Container, Sidebar, Sidenav, Nav, Navbar, IconButton, Drawer } from 'rsuite';
-import MenuIcon from '@rsuite/icons/Menu';
 import { RenderNavProps, ResponsiveFrameProps } from '@/types/props';
+import Link from 'next/link';
+import MenuIcon from '@rsuite/icons/Menu';
+import { useState } from 'react';
 
 /**
  * NavItem renderer (you can externalize this if desired)
@@ -19,6 +20,8 @@ function RenderNav(props: RenderNavProps) {
             <Nav.Menu key={item.eventKey} placement={placement} trigger="hover" {...rest}>
               {children.map((child) => (
                 <Nav.Item
+                  as={Link}
+                  href={child.to}
                   key={child.eventKey}
                   {...child}
                   onClick={() => props.onItemClick?.()}
@@ -31,7 +34,13 @@ function RenderNav(props: RenderNavProps) {
         }
 
         return (
-          <Nav.Item key={rest.eventKey} {...rest} onClick={() => props.onItemClick?.()}>
+          <Nav.Item
+            as={Link}
+            href={rest.to}
+            key={rest.eventKey}
+            {...rest}
+            onClick={() => props.onItemClick?.()}
+          >
             {rest.title}
           </Nav.Item>
         );
