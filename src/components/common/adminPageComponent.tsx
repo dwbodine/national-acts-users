@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
 import { AdminPageProps } from '@/types/props';
 import { Container } from 'rsuite';
 import { RootState } from '@/lib/store';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useEffect } from 'react';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';

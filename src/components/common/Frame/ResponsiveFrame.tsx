@@ -8,47 +8,45 @@ import { useState } from 'react';
 /**
  * NavItem renderer (you can externalize this if desired)
  */
-function RenderNav(props: RenderNavProps) {
-  return (
-    <Nav vertical={true}>
-      {props.navs?.map((item) => {
-        const { children, ...rest } = item;
+const RenderNav = (props: RenderNavProps) => (
+  <Nav vertical={true}>
+    {props.navs?.map((item) => {
+      const { children, ...rest } = item;
 
-        const placement = props.isMobile ? 'bottomEnd' : 'bottomStart';
+      const placement = props.isMobile ? 'bottomEnd' : 'bottomStart';
 
-        if (children) {
-          return (
-            <Nav.Menu key={item.eventKey} placement={placement} trigger="hover" {...rest}>
-              {children.map((child) => (
-                <Nav.Item
-                  as={Link}
-                  href={child.to}
-                  key={child.eventKey}
-                  {...child}
-                  onClick={() => props.onItemClick?.()}
-                >
-                  {child.title}
-                </Nav.Item>
-              ))}
-            </Nav.Menu>
-          );
-        }
-
+      if (children) {
         return (
-          <Nav.Item
-            as={Link}
-            href={rest.to}
-            key={rest.eventKey}
-            {...rest}
-            onClick={() => props.onItemClick?.()}
-          >
-            {rest.title}
-          </Nav.Item>
+          <Nav.Menu key={item.eventKey} placement={placement} trigger="hover" {...rest}>
+            {children.map((child) => (
+              <Nav.Item
+                as={Link}
+                href={child.to}
+                key={child.eventKey}
+                {...child}
+                onClick={() => props.onItemClick?.()}
+              >
+                {child.title}
+              </Nav.Item>
+            ))}
+          </Nav.Menu>
         );
-      })}
-    </Nav>
-  );
-}
+      }
+
+      return (
+        <Nav.Item
+          as={Link}
+          href={rest.to}
+          key={rest.eventKey}
+          {...rest}
+          onClick={() => props.onItemClick?.()}
+        >
+          {rest.title}
+        </Nav.Item>
+      );
+    })}
+  </Nav>
+);
 
 /**
  * ResponsiveFrame:
@@ -94,7 +92,7 @@ export default function ResponsiveFrame({
       >
         <Drawer.Header>
           <Drawer.Title>
-            <Brand expanded={expand ? true : false} />
+            <Brand expanded={Boolean(expand)} />
           </Drawer.Title>
         </Drawer.Header>
         <Drawer.Body>
@@ -112,11 +110,11 @@ export default function ResponsiveFrame({
         collapsible
       >
         <Sidenav.Header>
-          <Brand expanded={expand ? true : false} />
+          <Brand expanded={Boolean(expand)} />
         </Sidenav.Header>
 
         <Sidenav
-          expanded={expand ? true : false}
+          expanded={Boolean(expand)}
           appearance="subtle"
           defaultOpenKeys={['2', '3']}
         >
@@ -125,7 +123,7 @@ export default function ResponsiveFrame({
           </Sidenav.Body>
         </Sidenav>
 
-        <NavToggle expand={expand ? true : false} onChange={() => setExpand(!expand)} />
+        <NavToggle expand={Boolean(expand)} onChange={() => setExpand(!expand)} />
       </Sidebar>
 
       {/* ---------------- CONTENT AREA ---------------- */}

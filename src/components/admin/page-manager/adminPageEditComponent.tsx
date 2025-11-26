@@ -24,6 +24,7 @@ import { ImageType } from '@/constants';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
 import { SellerType } from '@/types/event';
+import Textarea from '@/components/common/Textarea';
 import moment from 'moment';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
@@ -31,7 +32,6 @@ import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRouter } from 'next/navigation';
 import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
-import Textarea from '@/components/common/Textarea';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

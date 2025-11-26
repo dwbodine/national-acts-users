@@ -1,8 +1,8 @@
 'use client';
 
 import { IShirtData, IShirtSizeData } from '@/types/event';
-import { ReactElement } from 'react';
 import { FaShirtsinbulk } from 'react-icons/fa';
+import { ReactElement } from 'react';
 import { ShirtSizesWidgetProps } from '@/types/props';
 
 export default function ShirtSizesWidget(props: ShirtSizesWidgetProps) {

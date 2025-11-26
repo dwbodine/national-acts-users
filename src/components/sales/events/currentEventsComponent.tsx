@@ -131,7 +131,7 @@ export default function CurrentEvents() {
           if (!response.error) {
             if (response.events && response.events.length > 0) {
               dispatch(setEvents(response.events));
-              const firstEvent = response.events[0];
+              const [firstEvent] = response.events;
               const lastEvent = response.events[response.events.length - 1];
               if (firstEvent && lastEvent) {
                 const start = moment(firstEvent.eventDate).unix();

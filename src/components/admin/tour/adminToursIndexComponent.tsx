@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Row, Table } from 'rsuite';
 import {
   GetEventsResponse,
   GetSellersResponse,
@@ -19,7 +19,6 @@ import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
 import { Tour } from '@/types/event';
 import moment from 'moment';
 import { setIsLoading } from '@/lib/globalSelectionSlice';

@@ -1,7 +1,6 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
-import { Progress } from 'rsuite';
+import { Col, Progress, Row } from 'rsuite';
 import { RevenueGoalsWidgetProps } from '@/types/props';
 
 export default function RevenueGoalsWidget(props: RevenueGoalsWidgetProps) {

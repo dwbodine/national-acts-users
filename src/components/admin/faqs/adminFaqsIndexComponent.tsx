@@ -1,15 +1,14 @@
 'use client';
 
+import { Button, Table } from 'rsuite';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
 import { setAllFaqs, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Button } from 'rsuite';
 import { Faq } from '@/types/public';
 import { GetFaqsResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useDeleteFaq } from '@/hooks/admin/useDeleteFaq';
 import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';

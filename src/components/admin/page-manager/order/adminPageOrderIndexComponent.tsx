@@ -1,13 +1,12 @@
 'use client';
 
-import { Button, Col, Input, Row } from 'rsuite';
+import { Button, Col, Input, Row, SelectPicker, Table } from 'rsuite';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
 import {
   GetPageTypesResponse,
   GetPagesResponse,
   ModifyPageResponse,
 } from '@/types/responses';
-import { SelectPicker, Table } from 'rsuite';
 import {
   setPageOrders,
   setPageTypes,
@@ -300,14 +299,14 @@ export default function AdminPageOrderIndex() {
                     <span>
                       <FaArrowUp
                         className="admin-up-down-button"
-                        onClick={() => moveUp(parseInt(`${rowData.pageId}`))}
+                        onClick={() => moveUp(parseInt(`${rowData['pageId']}`))}
                         title="Move Up"
                       />
                     </span>
                     <span>
                       <FaArrowDown
                         className="admin-up-down-button"
-                        onClick={() => moveDown(parseInt(`${rowData.pageId}`))}
+                        onClick={() => moveDown(parseInt(`${rowData['pageId']}`))}
                         title="Move Down"
                       />
                     </span>

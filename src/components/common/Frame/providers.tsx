@@ -2,8 +2,8 @@
 
 import { CustomProvider } from 'rsuite';
 import { IntlProvider } from 'react-intl';
-import { Provider as ReduxProvider } from 'react-redux';
 import { ReactNode } from 'react';
+import { Provider as ReduxProvider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import enUS from 'rsuite/locales/en_US';
 import locales from '@/locales';

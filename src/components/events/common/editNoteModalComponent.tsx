@@ -1,7 +1,6 @@
 'use client';
 
-import { Button, Input } from 'rsuite';
-import { DatePicker, Modal } from 'rsuite';
+import { Button, DatePicker, Input, Modal } from 'rsuite';
 import { EditNoteModalProps } from '@/types/props';
 import Textarea from '@/components/common/Textarea';
 

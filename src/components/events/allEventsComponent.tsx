@@ -1,7 +1,6 @@
 'use client';
 
-import { Button, ButtonGroup } from 'rsuite';
-import { Col, Row } from 'rsuite';
+import { Button, ButtonGroup, Col, Row } from 'rsuite';
 import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
 import { GetEventsResponse, GetNotesResponse } from '@/types/responses';
 import { ReactElement, useEffect } from 'react';

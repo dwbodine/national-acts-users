@@ -1,8 +1,7 @@
 'use client';
 
-import { Button, Input } from 'rsuite';
+import { Button, Input, Modal } from 'rsuite';
 import { AddNoteModalProps } from '@/types/props';
-import { Modal } from 'rsuite';
 import Textarea from '@/components/common/Textarea';
 
 export default function AddNoteModal(props: AddNoteModalProps) {

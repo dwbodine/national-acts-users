@@ -1,14 +1,16 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { LogoProps } from '@/types/props';
 import Image from 'next/image';
+import { LogoProps } from '@/types/props';
 
 export default function Logo({ width, height, expanded }: LogoProps) {
   const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!logoRef.current) return;
+    if (!logoRef.current) {
+      return;
+    }
 
     // Remove animation class to reset it
     logoRef.current.classList.remove('bounce-in');
@@ -18,7 +20,7 @@ export default function Logo({ width, height, expanded }: LogoProps) {
 
     // Add the animation class back
     logoRef.current.classList.add('bounce-in');
-  }, [expanded]); // run whe
+  }, [expanded]);
 
   return (
     <div

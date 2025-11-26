@@ -1,7 +1,14 @@
 'use client';
 
-import { Button, Checkbox, Input } from 'rsuite';
-import { CheckPicker, DatePicker, PickerHandle, TimePicker } from 'rsuite';
+import {
+  Button,
+  CheckPicker,
+  Checkbox,
+  DatePicker,
+  Input,
+  PickerHandle,
+  TimePicker,
+} from 'rsuite';
 import { GetEventsResponse, ModifyTourResponse } from '@/types/responses';
 import React, { ReactNode, useEffect } from 'react';
 import { Tour, VipEvent } from '@/types/event';

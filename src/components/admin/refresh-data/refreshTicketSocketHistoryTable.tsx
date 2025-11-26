@@ -2,8 +2,8 @@
 
 import { RefreshTicketSocketHistoryTableProps } from '@/types/props';
 import { Table } from 'rsuite';
-import moment from 'moment';
 import { TicketSocketRefreshHistory } from '@/types/event';
+import moment from 'moment';
 
 export default function RefreshTicketSocketHistoryTable(
   props: RefreshTicketSocketHistoryTableProps,

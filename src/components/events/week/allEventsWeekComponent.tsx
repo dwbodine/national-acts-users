@@ -1,7 +1,6 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
-import { IconButton, Table } from 'rsuite';
+import { Col, IconButton, Row, Table } from 'rsuite';
 import { Note, VipEvent } from '@/types/event';
 import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import {

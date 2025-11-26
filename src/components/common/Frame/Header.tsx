@@ -1,21 +1,21 @@
 'use client';
 
-import { useRef, useCallback } from 'react';
 import {
-  Dropdown,
-  Popover,
-  Whisper,
-  WhisperInstance,
-  Stack,
-  Badge,
   Avatar,
+  Badge,
+  Button,
+  Dropdown,
   IconButton,
   List,
-  Button,
+  Popover,
+  Stack,
+  Whisper,
+  WhisperInstance,
 } from 'rsuite';
-import NoticeIcon from '@rsuite/icons/Notice';
+import { useCallback, useRef } from 'react';
 import GearIcon from '@rsuite/icons/Gear';
 import HelpOutlineIcon from '@rsuite/icons/HelpOutline';
+import NoticeIcon from '@rsuite/icons/Notice';
 import { SpeakerRenderFn } from '@/types/public';
 import { useRouter } from 'next/navigation';
 
@@ -30,9 +30,9 @@ export default function Header() {
     { onClose, left, top, className },
     ref,
   ) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleSelect = (eventKey: string | number | undefined) => {
       onClose();
-      console.log(eventKey);
     };
 
     return (
@@ -68,9 +68,9 @@ export default function Header() {
     { onClose, left, top, className },
     ref,
   ) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleSelect = (eventKey: string | number | undefined) => {
       onClose();
-      console.log(eventKey);
     };
 
     return (
@@ -101,20 +101,20 @@ export default function Header() {
   ) => {
     const notifications: { time: string; content: string }[] = [
       {
-        time: '7 hours ago',
         content:
           'The charts of the dashboard have been fully upgraded and are more visually pleasing.',
+        time: '7 hours ago',
       },
       {
-        time: '13 hours ago',
         content:
           'The function of virtualizing large lists has been added, and the style of the list can be customized as required.',
+        time: '13 hours ago',
       },
-      { time: '2 days ago', content: 'Upgraded React 18 and Webpack 5.' },
+      { content: 'Upgraded React 18 and Webpack 5.', time: '2 days ago' },
       {
-        time: '3 days ago',
         content:
           'Upgraded React Suite 5 to support TypeScript, which is more concise and efficient.',
+        time: '3 days ago',
       },
     ];
 
@@ -136,7 +136,7 @@ export default function Header() {
           ))}
         </List>
 
-        <div style={{ textAlign: 'center', marginTop: 20 }}>
+        <div style={{ marginTop: 20, textAlign: 'center' }}>
           <Button onClick={onClose}>More notifications</Button>
         </div>
       </Popover>

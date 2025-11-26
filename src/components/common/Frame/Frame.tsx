@@ -4,15 +4,15 @@ import { adminAppNavs, userAppNavs } from './config';
 import { useEffect, useState } from 'react';
 import Brand from './Brand';
 import { Content } from 'rsuite';
-import Header from './Header';
-import NavToggle from './NavToggle';
 import { FrameProps } from '@/types/props';
+import Header from './Header';
 import { NavItemData } from '@/types/public';
+import NavToggle from './NavToggle';
+import ResponsiveFrame from './ResponsiveFrame';
 import { RootState } from '@/lib/store';
+import { User } from '@/types/user';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useSelector } from 'react-redux';
-import { User } from '@/types/user';
-import ResponsiveFrame from './ResponsiveFrame';
 
 const Frame = (props: FrameProps) => {
   const { getUser } = useCurrentUser();

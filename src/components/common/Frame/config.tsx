@@ -89,8 +89,8 @@ export const adminAppNavs = [
       },
     ],
     eventKey: 'user-admin',
-    title: 'User Admin',
     icon: <Icon as={MdOutlineVerifiedUser} />,
+    title: 'User Admin',
     to: '',
   },
   {
@@ -122,8 +122,8 @@ export const adminAppNavs = [
       },
     ],
     eventKey: 'event-admin',
-    title: 'Event/Order Admin',
     icon: <Icon as={MdEvent} />,
+    title: 'Event/Order Admin',
     to: '',
   },
   {

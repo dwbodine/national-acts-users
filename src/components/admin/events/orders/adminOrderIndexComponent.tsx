@@ -1,12 +1,11 @@
 'use client';
 
-import { Button, Checkbox, Col, Row } from 'rsuite';
+import { Button, Checkbox, Col, Row, SelectPicker, Table } from 'rsuite';
 import {
   GetEventResponse,
   GetEventsResponse,
   ModifyOrderResponse,
 } from '@/types/responses';
-import { SelectPicker, Table } from 'rsuite';
 import {
   getEventStatusText,
   getOrderStatusSlug,

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Input } from 'rsuite';
+import { Button, Input, Table } from 'rsuite';
 import { GetSellersResponse, GetTicketSocketAccountsResponse } from '@/types/responses';
 import { Seller, SellerType } from '@/types/event';
 import {
@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
 import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
 import { getSellerStatusSlug } from '@/utils/eventUtils';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';

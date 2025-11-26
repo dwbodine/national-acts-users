@@ -1,11 +1,10 @@
 'use client';
 
-import { Button, Col, Input, Row } from 'rsuite';
+import { Button, Col, Input, Pagination, Row, Table } from 'rsuite';
 import {
   GetExternalVenuesResponse,
   ModifyExternalVenueResponse,
 } from '@/types/responses';
-import { Pagination, Table } from 'rsuite';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import {
   setAdminVenue,
@@ -203,23 +202,21 @@ export default function AdminVenuesIndex() {
             <Column flexGrow={4}>
               <HeaderCell>Address</HeaderCell>
               <Cell className="admin-click-cell">
-                {(rowData: ExternalVenue) => {
-                  return (
-                    <div
-                      id={rowData.venueId.toString()}
-                      onClick={() => editVenue(parseInt(`${rowData.venueId}`))}
-                    >
-                      {getExternalVenueLocation(rowData)}
-                    </div>
-                  );
-                }}
+                {(rowData: ExternalVenue) => (
+                  <div
+                    id={rowData.venueId.toString()}
+                    onClick={() => editVenue(parseInt(`${rowData.venueId}`))}
+                  >
+                    {getExternalVenueLocation(rowData)}
+                  </div>
+                )}
               </Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell> </HeaderCell>
               <Cell>
-                {(rowData: ExternalVenue) => {
-                  return rowData.hasEvents ? (
+                {(rowData: ExternalVenue) =>
+                  rowData.hasEvents ? (
                     ''
                   ) : (
                     <a
@@ -229,8 +226,8 @@ export default function AdminVenuesIndex() {
                     >
                       Delete
                     </a>
-                  );
-                }}
+                  )
+                }
               </Cell>
             </Column>
           </Table>

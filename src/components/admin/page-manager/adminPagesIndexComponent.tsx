@@ -1,5 +1,6 @@
 'use client';
 
+import { Button, Input, Table } from 'rsuite';
 import {
   GetPageTypesResponse,
   GetPagesResponse,
@@ -16,10 +17,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Button } from 'rsuite';
 import { Page } from '@/types/public';
 import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetAllPages } from '@/hooks/admin/useGetAllPages';

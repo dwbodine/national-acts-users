@@ -22,7 +22,7 @@ export default defineConfig([
   // -----------------------------------------------------
   // 2) JS recommended
   // -----------------------------------------------------
-  js.configs.recommended,
+  js.configs.all,
 
   // -----------------------------------------------------
   // 3) TS recommended (type-checked)
@@ -60,6 +60,7 @@ export default defineConfig([
 
       // Your overrides
       complexity: 'off',
+      'dot-notation': 'off',
       'id-length': 'off',
       'max-depth': 'off',
       'max-lines': 'off',
@@ -72,6 +73,7 @@ export default defineConfig([
       'no-ternary': 'off',
       'no-undef-init': 'off',
       'no-undefined': 'off',
+      'no-void': 'off',
       'one-var': 'off',
       'prefer-named-capture-group': 'off',
       radix: 'off',

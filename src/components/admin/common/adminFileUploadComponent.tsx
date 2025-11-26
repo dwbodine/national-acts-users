@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { Uploader, Button } from 'rsuite';
-import { FaTimesCircle } from 'react-icons/fa';
+import { Button, Uploader } from 'rsuite';
 import { AdminFileUploadProps } from '@/types/props';
-import { ImageType } from '@/constants';
-import { useUploadImage } from '@/hooks/common/useUploadImage';
+import { FaTimesCircle } from 'react-icons/fa';
 import { FileType } from 'rsuite/esm/Uploader';
+import { ImageType } from '@/constants';
+import { useState } from 'react';
+import { useUploadImage } from '@/hooks/common/useUploadImage';
 
 export default function AdminFileUpload(props: AdminFileUploadProps) {
   const {
@@ -28,15 +28,15 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
   const getBaseUrl = (uploadType: ImageType) => {
     switch (uploadType) {
       case ImageType.HEADERS:
-        return process.env.NEXT_PUBLIC_HEADERS_URL;
+        return process.env['NEXT_PUBLIC_HEADERS_URL'];
       case ImageType.HOMEBANNERS:
-        return process.env.NEXT_PUBLIC_HOMEBANNERS_URL;
+        return process.env['NEXT_PUBLIC_HOMEBANNERS_URL'];
       case ImageType.LOGOS:
-        return process.env.NEXT_PUBLIC_LOGOS_URL;
+        return process.env['NEXT_PUBLIC_LOGOS_URL'];
       case ImageType.PREVIEWS:
-        return process.env.NEXT_PUBLIC_PREVIEW_URL;
+        return process.env['NEXT_PUBLIC_PREVIEW_URL'];
       case ImageType.THUMBNAILS:
-        return process.env.NEXT_PUBLIC_THUMBNAILS_URL;
+        return process.env['NEXT_PUBLIC_THUMBNAILS_URL'];
       default:
         return '';
     }
@@ -46,7 +46,7 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
 
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState<FileType[]>([]);
 
   // Normalize current file link
   const currentFileName =
@@ -64,14 +64,18 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
     ''
   );
 
-  const handleFileChange = async (fileList: FileType[]) => {
+  const handleFileChange = async (newFiles: FileType[]) => {
     // RSuite gives an array of FileItems:
-    // fileList[0].blobFile is the raw File
-    const file = fileList?.[0]?.blobFile;
+    // FileList[0].blobFile is the raw File
+    const file = newFiles?.[0]?.blobFile;
 
-    if (!file) return;
+    if (!file) {
+      return;
+    }
 
-    if (onUploadStart) onUploadStart();
+    if (onUploadStart) {
+      onUploadStart();
+    }
 
     setIsUploaded(false);
     setIsUploading(true);
@@ -84,7 +88,9 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
       onUpload(fileUploadName, filename);
       setIsUploaded(true);
 
-      if (onUploadComplete) onUploadComplete(filename);
+      if (onUploadComplete) {
+        onUploadComplete(filename);
+      }
 
       // Reset the RSuite uploader’s file list
       setFileList([]);
@@ -92,7 +98,9 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
   };
 
   const handleFileRemove = () => {
-    if (onFileRemove) onFileRemove();
+    if (onFileRemove) {
+      onFileRemove();
+    }
   };
 
   const removeButton =
@@ -111,6 +119,7 @@ export default function AdminFileUpload(props: AdminFileUploadProps) {
       <div className="admin-setting-title">{title}</div>
 
       <Uploader
+        action=""
         autoUpload={false}
         fileList={fileList}
         onChange={(newList) => {

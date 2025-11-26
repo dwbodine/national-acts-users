@@ -1,6 +1,6 @@
 'use client';
 
-import { Col, Container, Row } from 'rsuite';
+import { Col, Container, Row, Table } from 'rsuite';
 import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from 'react-icons/fa';
 import { ReactElement, useEffect, useState } from 'react';
 import {
@@ -23,7 +23,6 @@ import { RootState } from '@/lib/store';
 import SalesByAccountWidget from './widgets/salesByAccountWidgetComponent';
 import SalesPerDayOfWeekWidget from './widgets/salesPerDayOfWeekWidgetComponent';
 import SalesPerMonthWidget from './widgets/salesPerMonthWidgetComponent';
-import { Table } from 'rsuite';
 import TicketSalesChart from '../common/ticketSalesChartComponent';
 import TopSellersWidget from './widgets/topSellersWidgetComponent';
 import TopSellingLocationsWidget from './widgets/topSellingLocationsWidgetComponent';

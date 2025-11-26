@@ -2,9 +2,9 @@
 
 import { Button, Col, Container, Row } from 'rsuite';
 import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
-import { ReactElement } from 'react';
 import { formatCurrencyAmount, getEventStatusSlug } from '@/utils/eventUtils';
 import { EventRowProps } from '@/types/props';
+import { ReactElement } from 'react';
 import { RootState } from '@/lib/store';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 import moment from 'moment';

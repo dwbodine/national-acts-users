@@ -1,8 +1,7 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
+import { Col, DatePicker, Row } from 'rsuite';
 import { useEffect, useState } from 'react';
-import { DatePicker } from 'rsuite';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { ReportDatePickerProps } from '@/types/props';
 import moment from 'moment';

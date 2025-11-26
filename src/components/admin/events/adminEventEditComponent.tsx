@@ -42,12 +42,14 @@ import {
 import { setIsLoading, setSaveInProgress } from '@/lib/globalSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AdminFileUpload from '../common/adminFileUploadComponent';
+import { AdminSelection } from '@/types/user';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { EditProps } from '@/types/props';
 import { ExternalVenue } from '@/types/admin';
 import { ImageType } from '@/constants';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
+import Textarea from '@/components/common/Textarea';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import { useAddCompedOrder } from '@/hooks/admin/useAddCompOrder';
@@ -63,8 +65,6 @@ import { useRefundEvent } from '@/hooks/admin/useRefundEvent';
 import { useRouter } from 'next/navigation';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
-import { AdminSelection } from '@/types/user';
-import Textarea from '@/components/common/Textarea';
 
 export default function AdminEventEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;
@@ -142,7 +142,9 @@ export default function AdminEventEdit(props: EditProps) {
       // Branch 1: reload countries
       if (currentAdminSelection.reloadCountries) {
         dispatch(setReloadCountries(false));
-        if (!globalSelection.isLoading) dispatch(setIsLoading(true));
+        if (!globalSelection.isLoading) {
+          dispatch(setIsLoading(true));
+        }
 
         const response: GetCountriesResponse = await getAllCountries();
 
@@ -157,7 +159,9 @@ export default function AdminEventEdit(props: EditProps) {
       // Branch 2: reload sellers
       if (currentAdminSelection.reloadSellers) {
         dispatch(setReloadSellers(false));
-        if (!globalSelection.isLoading) dispatch(setIsLoading(true));
+        if (!globalSelection.isLoading) {
+          dispatch(setIsLoading(true));
+        }
 
         const response: GetSellersResponse = await getSellers();
 
@@ -171,7 +175,9 @@ export default function AdminEventEdit(props: EditProps) {
 
       // Branch 3: reload venues
       if (currentAdminSelection.reloadVenues) {
-        if (!globalSelection.isLoading) dispatch(setIsLoading(true));
+        if (!globalSelection.isLoading) {
+          dispatch(setIsLoading(true));
+        }
         dispatch(setReloadVenues(false));
 
         const response: GetExternalVenuesResponse = await getAllVenues();

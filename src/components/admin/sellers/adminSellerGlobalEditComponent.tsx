@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox, Col, Input, Row } from 'rsuite';
+import { Button, Checkbox, Col, Input, Row, SelectPicker } from 'rsuite';
 import { ReactElement, useCallback, useEffect } from 'react';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { setAdminSeller, setReloadSellers } from '@/lib/adminSelectionSlice';
@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { ModifySellerResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
-import { SelectPicker } from 'rsuite';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
@@ -531,7 +530,7 @@ export default function AdminSellerGlobalEdit() {
               onChange={(value) =>
                 updateSellerEventCategory(
                   parseInt(`${account.ticketSocketId}`),
-                  parseInt(value),
+                  value ?? undefined,
                 )
               }
               defaultValue={selectedCategory?.eventCategoryId}
@@ -627,7 +626,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
           <Col>
             <SelectPicker
-              onChange={(value) => updateSellerType(parseInt(value))}
+              onChange={(value) => updateSellerType(value ?? undefined)}
               defaultValue={selectedSellerType}
               data={sellerTypeOptions}
             />

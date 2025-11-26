@@ -1,7 +1,6 @@
 'use client';
 
-import { Button, Checkbox, Col, Row } from 'rsuite';
-import { Modal, TimePicker } from 'rsuite';
+import { Button, Checkbox, Col, Modal, Row, TimePicker } from 'rsuite';
 import { ModifyEventResponse, ModifyNoteResponse } from '@/types/responses';
 import { Note, VipEvent } from '@/types/event';
 import { ReactElement, useState } from 'react';
@@ -15,6 +14,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { EventDataExpandedProps } from '@/types/props';
 import { RootState } from '@/lib/store';
+import Textarea from './Textarea';
 import moment from 'moment';
 import { resetAdmin } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
@@ -22,7 +22,6 @@ import { toast } from 'react-toastify';
 import { useAddNote } from '@/hooks/admin/useAddNote';
 import { useSendListToBand } from '@/hooks/admin/useSendListToBand';
 import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
-import Textarea from './Textarea';
 
 export default function EventDataExpanded(props: EventDataExpandedProps) {
   const focusControl = props.FocusControl;

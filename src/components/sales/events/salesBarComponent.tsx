@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Row, SelectPicker } from 'rsuite';
 import { exportCustomerDataToCsv, exportEventsToCsv } from '@/utils/eventUtils';
 import {
   resetSelection,
@@ -21,7 +21,6 @@ import PrintButton from '../../common/printButtonComponent';
 import ResetButton from '../../common/resetButtonComponent';
 import RevenueCheck from './revenueCheckComponent';
 import type { RootState } from '../../../lib/store';
-import { SelectPicker } from 'rsuite';
 import SelectSeller from './selectSellerComponent';
 import ServiceFeesCheck from './serviceFeesCheckComponent';
 import VIPItineraryModal from './vipItineraryModalComponent';

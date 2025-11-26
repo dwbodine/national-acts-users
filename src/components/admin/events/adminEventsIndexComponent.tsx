@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox, Col, Row } from 'rsuite';
+import { Button, Checkbox, Col, Row, SelectPicker, Table } from 'rsuite';
 import {
   GetCountriesResponse,
   GetEventsResponse,
@@ -8,7 +8,6 @@ import {
   GetToursResponse,
   ModifyEventResponse,
 } from '@/types/responses';
-import { SelectPicker, Table } from 'rsuite';
 import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import {
   setAdminDates,
@@ -118,7 +117,7 @@ export default function AdminEventsIndex() {
           if (response.events && !response.error) {
             dispatch(setAdminEvents(response.events));
             if (response.events?.length > 0) {
-              const firstEvent = response.events[0];
+              const [firstEvent] = response.events;
               const lastEvent = response.events[response.events.length - 1];
               if (firstEvent && lastEvent) {
                 const start = moment(firstEvent.eventDate).unix();

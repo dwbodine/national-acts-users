@@ -264,7 +264,7 @@ export class AdminService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data != undefined;
+      response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;

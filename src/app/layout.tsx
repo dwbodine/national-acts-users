@@ -1,3 +1,5 @@
+/* eslint-disable new-cap */
+/* eslint-disable camelcase */
 'use client';
 
 import 'react-toastify/ReactToastify.css';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox } from 'rsuite';
+import { Button, Checkbox, Table } from 'rsuite';
 import { GetRolesResponse, UpdateRoleResponse } from '@/types/responses';
 import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
 import { Role } from '@/types/user';
 import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useDeleteRoles } from '@/hooks/admin/useDeleteRoles';

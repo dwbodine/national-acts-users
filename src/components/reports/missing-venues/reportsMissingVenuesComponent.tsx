@@ -1,14 +1,13 @@
 'use client';
 
+import { Button, Table } from 'rsuite';
 import { Venue, VipEvent } from '@/types/event';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { Button } from 'rsuite';
 import { DEFAULT_COUNTRY_ID } from '@/constants';
 import { GetEventsResponse } from '@/types/responses';
 import ReportsListHomeButton from '../reportsListHomeButton';
 import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
 import moment from 'moment';
 import { resetAdmin } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';

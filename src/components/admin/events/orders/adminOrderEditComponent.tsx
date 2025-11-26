@@ -812,7 +812,9 @@ export default function AdminOrderEdit(props: EditProps) {
                 defaultValue={ticket.shirtSize}
                 searchable={false}
                 cleanable={false}
-                onChange={(value) => setShirtSize(parseInt(`${ticketId}`), value)}
+                onChange={(value) =>
+                  setShirtSize(parseInt(`${ticketId}`), value ?? undefined)
+                }
               />
             ) : ticket.shirtSize ? (
               ticket.shirtSize

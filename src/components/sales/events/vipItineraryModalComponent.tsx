@@ -1,7 +1,6 @@
 'use client';
 
-import { Button, Col, Container, Row } from 'rsuite';
-import { Modal, Radio, RadioGroup } from 'rsuite';
+import { Button, Col, Container, Modal, Radio, RadioGroup, Row } from 'rsuite';
 import {
   exportVipItineraryToCSV,
   exportVipItineraryToHtml,

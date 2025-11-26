@@ -1,11 +1,10 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
+import { Col, Row, SelectPicker } from 'rsuite';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import type { RootState } from '../../../lib/store';
-import { SelectPicker } from 'rsuite';
 import { User } from '@/types/user';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setSeller } from '@/lib/reportSelectionSlice';
@@ -99,14 +98,12 @@ export default function SelectSeller() {
           <Col>{seller?.sellerName}</Col>
         </Row>
       );
-    } else {
-      return <></>;
     }
-  } else {
-    return (
-      <Row className="no-print admin-seller-row">
-        <Col>No sellers returned</Col>
-      </Row>
-    );
+    return <></>;
   }
+  return (
+    <Row className="no-print admin-seller-row">
+      <Col>No sellers returned</Col>
+    </Row>
+  );
 }

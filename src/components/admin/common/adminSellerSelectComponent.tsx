@@ -1,8 +1,16 @@
 'use client';
 
-import { Button, Checkbox, Col, Container, Input, Row } from 'rsuite';
+import {
+  Button,
+  Checkbox,
+  Col,
+  Container,
+  Input,
+  Modal,
+  Row,
+  SelectPicker,
+} from 'rsuite';
 import { Country, PageSeller } from '@/types/public';
-import { Modal, SelectPicker } from 'rsuite';
 import { Seller, SellerType } from '@/types/event';
 import { AdminSellerSelectProps } from '@/types/props';
 import { FaMinus } from 'react-icons/fa';

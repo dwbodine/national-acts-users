@@ -1,4 +1,3 @@
-import { ImageType } from '@/constants';
 import { Country, NavItemData, PageSeller } from './public';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
@@ -27,6 +26,7 @@ import {
   VipEvent,
 } from './event';
 import { CellProps } from 'rsuite';
+import { ImageType } from '@/constants';
 
 export interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

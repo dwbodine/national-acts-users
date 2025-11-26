@@ -142,8 +142,8 @@ export default function AdminRoleEdit() {
         <Checkbox
           key={key}
           id={item.permissionId.toString()}
-          onChange={(_, checked) =>
-            updateRolePermissions(parseInt(`${item.permissionId}`), checked)
+          onChange={(_, isChecked) =>
+            updateRolePermissions(parseInt(`${item.permissionId}`), isChecked)
           }
           checked={checked}
         >

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Input, Row } from 'rsuite';
+import { Button, Col, Input, Row, SelectPicker } from 'rsuite';
 import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
 import {
   setAllFaqCategories,
@@ -14,13 +14,12 @@ import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import { Faq } from '@/types/public';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
-import { SelectPicker } from 'rsuite';
+import Textarea from '@/components/common/Textarea';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useGetAllFaqCategories } from '@/hooks/admin/useGetAllFaqCategories';
 import { useRouter } from 'next/navigation';
 import { useUpdateFaq } from '@/hooks/admin/useUpdateFaq';
-import Textarea from '@/components/common/Textarea';
 
 export default function AdminFaqEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
