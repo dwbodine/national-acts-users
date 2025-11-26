@@ -1,5 +1,6 @@
 'use client';
 
+import { Button, Input } from 'rsuite';
 import { GetSellersResponse, GetTicketSocketAccountsResponse } from '@/types/responses';
 import { Seller, SellerType } from '@/types/event';
 import {
@@ -11,7 +12,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
-import { Button } from 'rsuite';
 import { RootState } from '@/lib/store';
 import { Table } from 'rsuite';
 import { getSellerStatusSlug } from '@/utils/eventUtils';
@@ -112,9 +112,9 @@ export default function AdminSellerGlobalIndex() {
   return (
     <div className="admin-container">
       <h3>Manage Sellers</h3>
-      <input
+      <Input
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={setSearchTerm}
         className="form-control search-text-input no-print"
         placeholder="Search for sellers by name..."
         hidden={currentAdminSelection.allSellers === undefined}

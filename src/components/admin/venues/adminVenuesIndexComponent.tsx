@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Input, Row } from 'rsuite';
 import {
   GetExternalVenuesResponse,
   ModifyExternalVenueResponse,
@@ -161,11 +161,10 @@ export default function AdminVenuesIndex() {
       </Row>
       <Row>
         <Col xs={2}>
-          <input
-            type="text"
+          <Input
             value={searchTerm ?? ''}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => submitOnEnter(e)}
+            onChange={setSearchTerm}
+            onKeyDown={submitOnEnter}
             className="form-control search-text-input no-print"
             placeholder="Search for venues by name or address..."
           />

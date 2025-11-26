@@ -104,10 +104,10 @@ export default function AdminOrdersSearch() {
       </Row>
       <Row>
         <Col>
-          <input
+          <Input
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => submitOnEnter(e)}
+            onChange={setSearchTerm}
+            onKeyDown={submitOnEnter}
             className="form-control search-text-input no-print"
             placeholder="Search for orders by purchaser name, email, order ID, event title or seller name..."
           />

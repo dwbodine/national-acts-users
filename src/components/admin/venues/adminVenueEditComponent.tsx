@@ -1,9 +1,9 @@
 'use client';
 
+import { Button, Input } from 'rsuite';
 import { useCallback, useEffect, useState } from 'react';
 import { setAdminVenue, setReloadVenues } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from 'rsuite';
 import { ExternalVenue } from '@/types/admin';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 import { ModifyExternalVenueResponse } from '@/types/responses';
@@ -144,52 +144,47 @@ export default function AdminVenueEdit() {
       <h1>Edit Venue</h1>
       <div className="form-group">
         <label className="mt-4">Venue name</label>
-        <input
+        <Input
           value={venueName ?? ''}
-          onChange={(e) => setVenueName(e.target.value)}
+          onChange={setVenueName}
           className="form-control"
           placeholder="venue name"
-          type="text"
         />
       </div>
       <div className="form-group">
         <label className="mt-4">Address</label>
-        <input
+        <Input
           value={address ?? ''}
-          onChange={(e) => setAddress(e.target.value)}
+          onChange={setAddress}
           className="form-control"
           placeholder="address"
-          type="text"
         />
       </div>
       <div className="form-group">
         <label className="mt-4">City</label>
-        <input
+        <Input
           value={city ?? ''}
-          onChange={(e) => setCity(e.target.value)}
+          onChange={setCity}
           className="form-control"
           placeholder="city"
-          type="text"
         />
       </div>
       <div className="form-group">
         <label className="mt-4">State</label>
-        <input
+        <Input
           value={state ?? ''}
-          onChange={(e) => setState(e.target.value)}
+          onChange={setState}
           className="form-control"
           placeholder="state"
-          type="text"
         />
       </div>
       <div className="form-group">
         <label className="mt-4">Postal Code</label>
-        <input
+        <Input
           value={zipCode ?? ''}
-          onChange={(e) => setZipCode(e.target.value)}
+          onChange={setZipCode}
           className="form-control"
           placeholder="postal code"
-          type="text"
         />
       </div>
       <div className="form-group">

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Input, Row, SelectPicker } from 'rsuite';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { GetSellersResponse, UserResponse } from '@/types/responses';
 import Container from 'rsuite/Container';
@@ -112,11 +112,10 @@ export default function RegisterComponent() {
         <Col>
           <div className="form-group">
             <label>Email:</label>
-            <input
-              type="text"
+            <Input
               autoComplete="off"
               value={username ?? ''}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={setUsername}
               className="form-control"
               placeholder="Enter email address"
             />
@@ -127,11 +126,10 @@ export default function RegisterComponent() {
         <Col>
           <div className="form-group">
             <label>First Name:</label>
-            <input
-              type="text"
+            <Input
               autoComplete="off"
               value={firstName ?? ''}
-              onChange={(e) => setFirstName(e.target.value)}
+              onChange={setFirstName}
               className="form-control"
               placeholder="First name"
             />
@@ -142,11 +140,10 @@ export default function RegisterComponent() {
         <Col>
           <div className="form-group">
             <label>Last Name:</label>
-            <input
-              type="text"
+            <Input
               autoComplete="off"
               value={lastName ?? ''}
-              onChange={(e) => setLastName(e.target.value)}
+              onChange={setLastName}
               className="form-control"
               placeholder="Last name"
             />
@@ -157,18 +154,21 @@ export default function RegisterComponent() {
         <Col>
           <div className="form-group">
             <label>Associated Artist:</label>
-            <select
-              value={sellerId}
+            <SelectPicker
+              data={[
+                { label: '-- Select One --', value: '0' },
+                ...(sellers ?? []).map((seller) => ({
+                  label: seller.name,
+                  value: seller.sellerId.toString(),
+                })),
+              ]}
+              value={sellerId?.toString() ?? '0'}
               onChange={handleSellerChange}
+              searchable={false}
+              cleanable={false}
               className="form-control"
-            >
-              <option value="0"> -- Select One --</option>
-              {sellers?.map((seller) => (
-                <option key={seller.sellerId} value={seller.sellerId}>
-                  {seller.name}
-                </option>
-              ))}
-            </select>
+              placeholder="-- Select One --"
+            />
           </div>
         </Col>
       </Row>
@@ -176,13 +176,13 @@ export default function RegisterComponent() {
         <Col>
           <div className="form-group">
             <label>Password:</label>
-            <input
+            <Input
               type="password"
               placeholder="Password"
               autoComplete="off"
               className="form-control"
               value={password ?? ''}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={setPassword}
             />
           </div>
         </Col>
@@ -191,13 +191,13 @@ export default function RegisterComponent() {
         <Col>
           <div className="form-group">
             <label>Confirm Password:</label>
-            <input
+            <Input
               type="password"
               placeholder="Confirm Password"
               autoComplete="off"
               className="form-control"
               value={confirmPassword ?? ''}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={setConfirmPassword}
             />
           </div>
         </Col>

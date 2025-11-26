@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox } from 'rsuite';
+import { Button, Checkbox, Input } from 'rsuite';
 import { CheckPicker, DatePicker, PickerHandle, TimePicker } from 'rsuite';
 import { GetEventsResponse, ModifyTourResponse } from '@/types/responses';
 import React, { ReactNode, useEffect } from 'react';
@@ -397,12 +397,11 @@ export default function AdminTourEdit() {
       <h1>{pageHeader}</h1>
       <div className="form-group">
         <label className="mt-4">Tour Name</label>
-        <input
+        <Input
           value={tourName ?? ''}
-          onChange={(e) => setTourName(e.target.value)}
+          onChange={setTourName}
           className="form-control"
           placeholder="tour name"
-          type="text"
         />
       </div>
       <div className="form-group">

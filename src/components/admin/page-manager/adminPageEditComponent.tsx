@@ -1,7 +1,6 @@
 'use client';
 
-import { Button, Checkbox, Col, Row } from 'rsuite';
-import { DatePicker, SelectPicker } from 'rsuite';
+import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
 import {
   GetPageTypesResponse,
   GetSellersResponse,
@@ -687,24 +686,22 @@ export default function AdminPageEdit() {
         <Row className="form-group">
           <Col>
             <label className="mt-4">Main Page Title (most viewed on the site)</label>
-            <input
+            <Input
               value={title ?? ''}
-              onChange={(e) => setPageTitle(e.target.value)}
+              onChange={setPageTitle}
               className="form-control form-control-half"
               placeholder="page title"
-              type="text"
             />
           </Col>
         </Row>
         <Row className="form-group">
           <Col>
             <label className="mt-4">Route (how it shows up in the url)</label>
-            <input
+            <Input
               value={route ?? ''}
-              onChange={(e) => setPageRoute(e.target.value)}
+              onChange={setPageRoute}
               className="form-control form-control-half"
               placeholder="page route"
-              type="text"
             />
           </Col>
         </Row>
@@ -794,24 +791,22 @@ export default function AdminPageEdit() {
         <Row className="form-group">
           <Col>
             <label className="mt-4">Subtitle 1</label>
-            <input
+            <Input
               value={subtitle1 ?? ''}
-              onChange={(e) => setSubTitle1(e.target.value)}
+              onChange={setSubTitle1}
               className="form-control form-control-half"
               placeholder="Shows up underneath page title"
-              type="text"
             />
           </Col>
         </Row>
         <Row className="form-group">
           <Col>
             <label className="mt-4">Subtitle 2</label>
-            <input
+            <Input
               value={subtitle2 ?? ''}
-              onChange={(e) => setSubTitle2(e.target.value)}
+              onChange={setSubTitle2}
               className="form-control form-control-half"
               placeholder="Shows up underneath subtitle 1"
-              type="text"
             />
           </Col>
         </Row>
@@ -894,12 +889,11 @@ export default function AdminPageEdit() {
         <Row className="form-group">
           <Col>
             <label className="mt-4">Google Analytics ID</label>
-            <input
+            <Input
               value={googleAnalyticsId ?? ''}
-              onChange={(e) => setGoogleAnalyticsId(e.target.value)}
+              onChange={setGoogleAnalyticsId}
               className="form-control form-control-half"
               placeholder="e.g.: UA-xxxxxxxxx-x"
-              type="text"
             />
           </Col>
         </Row>

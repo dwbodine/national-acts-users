@@ -1,6 +1,6 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
+import { Col, Input, Row } from 'rsuite';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import { GetEventsResponse, GetToursResponse } from '@/types/responses';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
@@ -15,7 +15,6 @@ import { useEffect, useMemo, useState } from 'react';
 import EventMobileRow from '../../common/eventMobileRowComponent';
 import EventRow from '../../common/eventRowComponent';
 import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
-import { RingLoader } from 'react-spinners';
 import type { RootState } from '../../../lib/store';
 import TicketSalesChart from '../../common/ticketSalesChartComponent';
 import WidgetBar from '../../common/widgets/widgetBarComponent';
@@ -301,18 +300,10 @@ export default function CurrentEvents() {
 
   return (
     <>
-      <div className="fluid" hidden={!globalSelection.isLoading}>
-        <Row>
-          <Col className="spinner-container">
-            <RingLoader size={150} color="#d12610" />
-          </Col>
-        </Row>
-      </div>
-      <div hidden={globalSelection.isLoading}>
-        <input
-          type="text"
+      <div>
+        <Input
           value={searchTerm ?? ''}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={setSearchTerm}
           className="form-control search-text-input no-print"
           placeholder="Search for events..."
           hidden={searchBarHidden || !visibleEvents || visibleEvents.length === 0}

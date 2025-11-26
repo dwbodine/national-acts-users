@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox } from 'rsuite';
+import { Button, Checkbox, Input } from 'rsuite';
 import { GetPermissionsResponse, UpdateRoleResponse } from '@/types/responses';
 import { Permission, Role } from '@/types/user';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
@@ -166,12 +166,11 @@ export default function AdminRoleEdit() {
       <h1>{pageHeader}</h1>
       <div className="form-group">
         <label className="mt-4">Role Name</label>
-        <input
+        <Input
           value={roleName ?? ''}
-          onChange={(e) => setRoleName(e.target.value)}
+          onChange={setRoleName}
           className="form-control"
           placeholder="role name"
-          type="text"
         />
       </div>
       {permissionRows}

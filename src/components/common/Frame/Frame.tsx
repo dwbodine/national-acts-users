@@ -8,7 +8,9 @@ import Header from './Header';
 import NavToggle from './NavToggle';
 import { FrameProps } from '@/types/props';
 import { NavItemData } from '@/types/public';
+import { RootState } from '@/lib/store';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useSelector } from 'react-redux';
 import { User } from '@/types/user';
 import ResponsiveFrame from './ResponsiveFrame';
 
@@ -16,6 +18,7 @@ const Frame = (props: FrameProps) => {
   const { getUser } = useCurrentUser();
   const [navs, setNavs] = useState<NavItemData[] | undefined>(undefined);
   const [user, setUser] = useState<User | undefined>(undefined);
+  const globalSelection = useSelector((state: RootState) => state.globalSelection);
 
   useEffect(() => {
     if (!user) {
@@ -37,6 +40,7 @@ const Frame = (props: FrameProps) => {
       Header={Header}
       NavToggle={NavToggle}
       Content={Content}
+      IsLoading={globalSelection.isLoading}
     >
       {props.children}
     </ResponsiveFrame>

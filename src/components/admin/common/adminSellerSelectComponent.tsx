@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox, Col, Container, Row } from 'rsuite';
+import { Button, Checkbox, Col, Container, Input, Row } from 'rsuite';
 import { Country, PageSeller } from '@/types/public';
 import { Modal, SelectPicker } from 'rsuite';
 import { Seller, SellerType } from '@/types/event';
@@ -156,12 +156,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is &quot;{selectedSeller?.name}&quot;
                   </div>
-                  <input
+                  <Input
                     value={displayName ?? ''}
-                    onChange={(e) => setDisplayName(e.target.value)}
+                    onChange={setDisplayName}
                     className="form-control form-control-half"
                     placeholder="Display Name override"
-                    type="text"
                   />
                   <Checkbox
                     checked={showDisplayName}
@@ -177,12 +176,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.address ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={address ?? ''}
-                    onChange={(e) => setAddress(e.target.value)}
+                    onChange={setAddress}
                     className="form-control form-control-half"
                     placeholder="Street address override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -192,12 +190,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.city ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={city ?? ''}
-                    onChange={(e) => setCity(e.target.value)}
+                    onChange={setCity}
                     className="form-control form-control-half"
                     placeholder="City override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -207,12 +204,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.state ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={state ?? ''}
-                    onChange={(e) => setState(e.target.value)}
+                    onChange={setState}
                     className="form-control form-control-half"
                     placeholder="State override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -222,12 +218,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.zip ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={zip ?? ''}
-                    onChange={(e) => setZip(e.target.value)}
+                    onChange={setZip}
                     className="form-control form-control-half"
                     placeholder="Postal code override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -243,7 +238,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                     value={countryId}
                     data={countryList}
                     size="lg"
-                    onChange={(cId) => onCountryChange(cId)}
+                    onChange={onCountryChange}
                     cleanable={false}
                   />
                 </Col>
@@ -254,12 +249,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.phone ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={phone ?? ''}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={setPhone}
                     className="form-control form-control-half"
                     placeholder="Phone override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -269,12 +263,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.email ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={email ?? ''}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={setEmail}
                     className="form-control form-control-half"
                     placeholder="Email override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -284,12 +277,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.twitter ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={twitter ?? ''}
-                    onChange={(e) => setTwitter(e.target.value)}
+                    onChange={setTwitter}
                     className="form-control form-control-half"
                     placeholder="Twitter override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -299,12 +291,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.facebook ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={facebook ?? ''}
-                    onChange={(e) => setFacebook(e.target.value)}
+                    onChange={setFacebook}
                     className="form-control form-control-half"
                     placeholder="Facebook override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -314,12 +305,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.instagram ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={instagram ?? ''}
-                    onChange={(e) => setInstagram(e.target.value)}
+                    onChange={setInstagram}
                     className="form-control form-control-half"
                     placeholder="Instagram override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -329,12 +319,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.youtube ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={youtube ?? ''}
-                    onChange={(e) => setYoutube(e.target.value)}
+                    onChange={setYoutube}
                     className="form-control form-control-half"
                     placeholder="YouTube override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -344,12 +333,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.spotify ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={spotify ?? ''}
-                    onChange={(e) => setSpotify(e.target.value)}
+                    onChange={setSpotify}
                     className="form-control form-control-half"
                     placeholder="Spotify override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -359,12 +347,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div className="pageseller-default">
                     Default is {`${selectedSeller?.website ?? 'n/a'}`}
                   </div>
-                  <input
+                  <Input
                     value={website ?? ''}
-                    onChange={(e) => setWebsite(e.target.value)}
+                    onChange={setWebsite}
                     className="form-control form-control-half"
                     placeholder="Website override"
-                    type="text"
                   />
                 </Col>
               </Row>
@@ -374,12 +361,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.websiteDisplayText ?? '(none)'}`}
                   </div>
-                  <input
+                  <Input
                     value={websiteDisplayText ?? ''}
-                    onChange={(e) => setWebsiteDisplayText(e.target.value)}
+                    onChange={setWebsiteDisplayText}
                     className="form-control form-control-half"
                     placeholder="Website display text override"
-                    type="text"
                   />
                 </Col>
               </Row>

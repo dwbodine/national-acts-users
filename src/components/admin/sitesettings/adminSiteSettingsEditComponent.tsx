@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Input, Row } from 'rsuite';
 import { GetSettingsResponse, UpdateSettingResponse } from '@/types/responses';
 import { ReactElement, useEffect, useState } from 'react';
 import { setAllSettings, setReloadSettings } from '@/lib/adminSelectionSlice';
@@ -217,13 +217,11 @@ export default function AdminSiteSettingsEdit() {
             <Row key={setting.settingId}>
               <Col className="admin-setting-item">
                 <div className="admin-setting-title">{setting.displayName}</div>
-                <input
+                <Input
                   type="number"
                   name={setting.name}
                   value={setting.value ?? ''}
-                  onChange={(e) =>
-                    onNumberChange(setting.name, parseFloat(e.target.value))
-                  }
+                  onChange={(value) => onNumberChange(setting.name, parseFloat(value))}
                 />
               </Col>
             </Row>,
@@ -234,11 +232,10 @@ export default function AdminSiteSettingsEdit() {
             <Row key={setting.settingId}>
               <Col className="admin-setting-item">
                 <div className="admin-setting-title">{setting.displayName}</div>
-                <input
-                  type="text"
+                <Input
                   name={setting.name}
                   value={setting.value ?? ''}
-                  onChange={(e) => onTextChange(setting.name, e.target.value)}
+                  onChange={(value) => onTextChange(setting.name, value)}
                 />
               </Col>
             </Row>,

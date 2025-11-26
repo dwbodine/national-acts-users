@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Input, Row } from 'rsuite';
 import { useEffect, useState } from 'react';
 import Container from 'rsuite/Container';
 import { UserResponse } from '@/types/responses';
@@ -72,13 +72,13 @@ export default function ResetPasswordComponent() {
               <Col>
                 <div className="form-group">
                   <label>New Password:</label>
-                  <input
+                  <Input
                     type="password"
                     placeholder="Password"
                     name="new_password"
                     className="w-80 h-8 px-2 border border-solid border-black rounded"
                     value={password ?? ''}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={setPassword}
                   />
                 </div>
               </Col>
@@ -87,13 +87,13 @@ export default function ResetPasswordComponent() {
               <Col>
                 <div className="form-group">
                   <label>Confirm Password:</label>
-                  <input
+                  <Input
                     type="password"
                     placeholder="Confirm Password"
                     name="confirm_password"
                     className="w-80 h-8 px-2 border border-solid border-black rounded"
                     value={confirmPassword ?? ''}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={setConfirmPassword}
                   />
                 </div>
               </Col>

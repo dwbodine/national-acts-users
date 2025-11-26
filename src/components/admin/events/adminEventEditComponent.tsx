@@ -5,6 +5,7 @@ import {
   Checkbox,
   Col,
   DatePicker,
+  Input,
   Modal,
   Row,
   SelectPicker,
@@ -1127,10 +1128,9 @@ export default function AdminEventEdit(props: EditProps) {
         <tr key={key}>
           <td>
             {ticketType.ticketTypeId === 0 ? (
-              <input
-                type="text"
+              <Input
                 value={ticketType.ticketTypeName ?? ''}
-                onChange={(e) => setCompTicketTypeName(e.target.value)}
+                onChange={setCompTicketTypeName}
               />
             ) : (
               ticketType.ticketTypeName
@@ -1225,12 +1225,11 @@ export default function AdminEventEdit(props: EditProps) {
       <Row>
         <Col className="form-group">
           <label className="mt-4">Event title</label>
-          <input
+          <Input
             value={eventTitle ?? ''}
-            onChange={(e) => setEventTitle(e.target.value)}
+            onChange={setEventTitle}
             className="form-control"
             placeholder="event title"
-            type="text"
           />
         </Col>
       </Row>
@@ -1279,49 +1278,36 @@ export default function AdminEventEdit(props: EditProps) {
             <Modal.Body>
               <div className="form-group">
                 <label className="mt-4">Venue name</label>
-                <input
+                <Input
                   value={venueName ?? ''}
-                  onChange={(e) => setVenueName(e.target.value)}
+                  onChange={setVenueName}
                   placeholder="venue name"
                   style={{ width: '80%' }}
-                  type="text"
                 />
               </div>
               <div className="form-group">
                 <label className="mt-4">Address</label>
-                <input
+                <Input
                   value={address ?? ''}
-                  onChange={(e) => setAddress(e.target.value)}
+                  onChange={setAddress}
                   placeholder="address"
                   style={{ width: '80%' }}
-                  type="text"
                 />
               </div>
               <div className="form-group">
                 <label className="mt-4">City</label>
-                <input
-                  value={city ?? ''}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="city"
-                  type="text"
-                />
+                <Input value={city ?? ''} onChange={setCity} placeholder="city" />
               </div>
               <div className="form-group">
                 <label className="mt-4">State</label>
-                <input
-                  value={state ?? ''}
-                  onChange={(e) => setState(e.target.value)}
-                  placeholder="state"
-                  type="text"
-                />
+                <Input value={state ?? ''} onChange={setState} placeholder="state" />
               </div>
               <div className="form-group">
                 <label className="mt-4">Postal Code</label>
-                <input
+                <Input
                   value={zipCode ?? ''}
-                  onChange={(e) => setZipCode(e.target.value)}
+                  onChange={setZipCode}
                   placeholder="postal code"
-                  type="text"
                 />
               </div>
               <div className="form-group">
@@ -1332,7 +1318,7 @@ export default function AdminEventEdit(props: EditProps) {
                   value={countryId}
                   data={countryList}
                   size="lg"
-                  onChange={(cId) => onCountryChange(cId)}
+                  onChange={onCountryChange}
                   cleanable={false}
                 />
               </div>
@@ -1344,7 +1330,7 @@ export default function AdminEventEdit(props: EditProps) {
                   value={timezone}
                   data={timeZoneList}
                   size="lg"
-                  onChange={(tz) => onTimezoneChange(tz)}
+                  onChange={onTimezoneChange}
                   cleanable={false}
                 />
               </div>
@@ -1461,12 +1447,11 @@ export default function AdminEventEdit(props: EditProps) {
           <label className="mt-4">
             Alternate text for Tickets Button (10 chars or less)
           </label>
-          <input
+          <Input
             value={disableLinkReason ?? ''}
-            onChange={(e) => setDisableLinkReason(e.target.value)}
+            onChange={setDisableLinkReason}
             className="form-control"
             placeholder="Alternate text for Tickets button"
-            type="text"
           />
         </Col>
       </Row>
@@ -1479,12 +1464,11 @@ export default function AdminEventEdit(props: EditProps) {
             Disable "VIP" button
           </Checkbox>
           <label className="mt-4">Alternate text for VIP Button (10 chars or less)</label>
-          <input
+          <Input
             value={disableVipLinkReason ?? ''}
-            onChange={(e) => setDisableVipLinkReason(e.target.value)}
+            onChange={setDisableVipLinkReason}
             className="form-control"
             placeholder="Alternate text for VIP button"
-            type="text"
           />
         </Col>
       </Row>
@@ -1597,9 +1581,9 @@ export default function AdminEventEdit(props: EditProps) {
       <Row hidden={isExternalEvent}>
         <Col>
           Add comp order with
-          <input
+          <Input
             value={numCompedTickets}
-            onChange={(e) => setNumCompedTickets(parseInt(e.target.value))}
+            onChange={(value) => setNumCompedTickets(parseInt(value))}
             type="number"
             className="comped-tickets"
           />

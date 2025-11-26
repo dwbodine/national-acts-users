@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox } from 'rsuite';
+import { Button, Checkbox, Input } from 'rsuite';
 import {
   GetRolesResponse,
   GetSellersResponse,
@@ -316,32 +316,29 @@ export default function AdminUserEdit() {
       </div>
       <div className="form-group">
         <label className="mt-4">First Name</label>
-        <input
+        <Input
           value={firstName ?? ''}
-          onChange={(e) => setFirstName(e.target.value)}
+          onChange={setFirstName}
           className="form-control"
           placeholder="first name"
-          type="text"
         />
       </div>
       <div className="form-group">
         <label className="mt-4">Last Name</label>
-        <input
+        <Input
           value={lastName ?? ''}
-          onChange={(e) => setLastName(e.target.value)}
+          onChange={setLastName}
           className="form-control"
           placeholder="last name"
-          type="text"
         />
       </div>
       <div className="form-group">
         <label className="mt-4">Mobile number</label>
-        <input
+        <Input
           value={mobile ?? ''}
-          onChange={(e) => setMobile(e.target.value)}
+          onChange={setMobile}
           className="form-control"
           placeholder="mobile number"
-          type="text"
         />
       </div>
       <div className="form-group">

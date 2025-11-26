@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Input, Row } from 'rsuite';
 import { KeyboardEvent, useEffect, useState } from 'react';
 import Container from 'rsuite/Container';
 import Image from 'next/image';
@@ -118,10 +118,10 @@ export default function LoginComponent() {
           <Col className="login-container">
             <div className="form-group">
               <label>USERNAME</label>
-              <input
+              <Input
                 value={name}
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => submitOnEnter(e)}
+                onChange={setName}
+                onKeyDown={submitOnEnter}
                 className="form-control"
                 placeholder="username"
               />
@@ -132,10 +132,10 @@ export default function LoginComponent() {
           <Col className="login-container">
             <div className="form-group">
               <label className="mt-4">PASSWORD</label>
-              <input
+              <Input
                 value={password ?? ''}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyUp={(e) => submitOnEnter(e)}
+                onChange={setPassword}
+                onKeyUp={submitOnEnter}
                 className="form-control"
                 placeholder="password"
                 type="password"

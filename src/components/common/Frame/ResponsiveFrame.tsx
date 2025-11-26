@@ -1,7 +1,8 @@
-import { Container, Sidebar, Sidenav, Nav, Navbar, IconButton, Drawer } from 'rsuite';
+import { Container, Drawer, IconButton, Nav, Navbar, Sidebar, Sidenav } from 'rsuite';
 import { RenderNavProps, ResponsiveFrameProps } from '@/types/props';
 import Link from 'next/link';
 import MenuIcon from '@rsuite/icons/Menu';
+import { RingLoader } from 'react-spinners';
 import { useState } from 'react';
 
 /**
@@ -61,6 +62,7 @@ export default function ResponsiveFrame({
   Header,
   NavToggle,
   Content,
+  IsLoading,
 }: ResponsiveFrameProps) {
   const [expand, setExpand] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -129,7 +131,13 @@ export default function ResponsiveFrame({
       {/* ---------------- CONTENT AREA ---------------- */}
       <Container className="content-container" hidden={isNavEmpty}>
         <Header />
-        <Content>{children}</Content>
+        <Content>
+          <div hidden={IsLoading}>{children}</div>
+
+          <div hidden={!IsLoading} className="spinner-container">
+            <RingLoader size={150} color="#d12610" />
+          </div>
+        </Content>
       </Container>
     </Container>
   );

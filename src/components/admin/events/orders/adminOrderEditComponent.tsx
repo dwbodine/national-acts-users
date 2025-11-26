@@ -1,7 +1,6 @@
 'use client';
 
-import { Button, Checkbox, Col, Row } from 'rsuite';
-import { DatePicker, SelectPicker } from 'rsuite';
+import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
 import {
   GetOrderResponse,
   ModifyOrderResponse,
@@ -757,14 +756,11 @@ export default function AdminOrderEdit(props: EditProps) {
           <td>{ticket.ticketSocketOrderTicketId}</td>
           <td>
             {isComped ? (
-              <input
+              <Input
                 id={`fName_${ticketId}`}
                 key={`fName_${ticketId}`}
                 value={ticket.attendeeFirstName ?? ''}
-                type="text"
-                onChange={(e) =>
-                  setFirstName(parseInt(`${ticketId}`), e.currentTarget.value)
-                }
+                onChange={(value) => setFirstName(parseInt(`${ticketId}`), value)}
               />
             ) : (
               ticket.attendeeFirstName
@@ -772,56 +768,52 @@ export default function AdminOrderEdit(props: EditProps) {
           </td>
           <td>
             {isComped ? (
-              <input
+              <Input
                 id={`lName_${ticketId}`}
                 key={`lName_${ticketId}`}
                 value={ticket.attendeeLastName ?? ''}
-                type="text"
-                onChange={(e) =>
-                  setLastName(parseInt(`${ticketId}`), e.currentTarget.value)
-                }
+                onChange={(value) => setLastName(parseInt(`${ticketId}`), value)}
               />
             ) : (
               ticket.attendeeLastName
             )}
           </td>
           <td hidden={!isComped}>
-            <input
+            <Input
               id={`phone_${ticketId}`}
               key={`phone_${ticketId}`}
               value={ticket.attendeePhone ?? ''}
-              type="text"
-              onChange={(e) => setPhone(parseInt(`${ticketId}`), e.currentTarget.value)}
+              onChange={(value) => setPhone(parseInt(`${ticketId}`), value)}
             />
           </td>
           <td hidden={!isComped}>
-            <input
+            <Input
               id={`email_${ticketId}`}
               key={`email_${ticketId}`}
               value={ticket.attendeeEmail ?? ''}
-              type="text"
-              onChange={(e) => setEmail(parseInt(`${ticketId}`), e.currentTarget.value)}
+              onChange={(value) => setEmail(parseInt(`${ticketId}`), value)}
             />
           </td>
           <td>
             {isComped ? (
-              <select
+              <SelectPicker
                 id={`shirt_${ticketId}`}
                 key={`shirt_${ticketId}`}
+                data={[
+                  { label: '-- Select One --', value: '' },
+                  { label: 'XS', value: 'XS' },
+                  { label: 'S', value: 'S' },
+                  { label: 'M', value: 'M' },
+                  { label: 'L', value: 'L' },
+                  { label: 'XL', value: 'XL' },
+                  { label: 'XXL', value: 'XXL' },
+                  { label: 'XXXL', value: 'XXXL' },
+                ]}
                 defaultValue={ticket.shirtSize}
-                onChange={(e) =>
-                  setShirtSize(parseInt(`${ticketId}`), e.currentTarget.value)
-                }
-              >
-                <option value=""> -- Select One --</option>
-                <option value="XS">XS</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-                <option value="XXL">XXL</option>
-                <option value="XXXL">XXXL</option>
-              </select>
+                searchable={false}
+                cleanable={false}
+                onChange={(value) => setShirtSize(parseInt(`${ticketId}`), value)}
+              />
             ) : ticket.shirtSize ? (
               ticket.shirtSize
             ) : (
@@ -829,28 +821,26 @@ export default function AdminOrderEdit(props: EditProps) {
             )}
           </td>
           <td hidden={isComped}>
-            <input
+            <Input
               id={`price_${ticketId}`}
               key={`price_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               value={ticket.price?.toFixed(2)}
               type="number"
               step={0.25}
-              onChange={(e) =>
-                setPrice(parseInt(`${ticketId}`), parseFloat(e.currentTarget.value))
-              }
+              onChange={(value) => setPrice(parseInt(`${ticketId}`), parseFloat(value))}
             />
           </td>
           <td hidden={isComped}>
-            <input
+            <Input
               id={`serviceFee_${ticketId}`}
               key={`serviceFee_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               value={ticket.serviceFee?.toFixed(2)}
               type="number"
               step={0.25}
-              onChange={(e) =>
-                setServiceFee(parseInt(`${ticketId}`), parseFloat(e.currentTarget.value))
+              onChange={(value) =>
+                setServiceFee(parseInt(`${ticketId}`), parseFloat(value))
               }
             />
           </td>
@@ -868,27 +858,23 @@ export default function AdminOrderEdit(props: EditProps) {
             />
           </td>
           <td style={{ textAlign: 'center' }} hidden={isComped}>
-            <input
+            <Checkbox
               id={`checkin_${ticketId}`}
               key={`checkin_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
-              type="checkbox"
               defaultChecked={ticket.isActive && ticket.isCheckedIn}
-              onClick={(e) =>
-                setTicketCheckInStatus(parseInt(`${ticketId}`), e.currentTarget.checked)
+              onChange={(_, checked) =>
+                setTicketCheckInStatus(parseInt(`${ticketId}`), checked)
               }
             />
           </td>
           <td style={{ textAlign: 'center' }} hidden={isComped}>
-            <input
+            <Checkbox
               id={`active_${ticketId}`}
               key={`active_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
-              type="checkbox"
               defaultChecked={ticket.isActive}
-              onClick={(e) =>
-                setTicketActive(parseInt(`${ticketId}`), e.currentTarget.checked)
-              }
+              onChange={(_, checked) => setTicketActive(parseInt(`${ticketId}`), checked)}
             />
           </td>
           <td hidden={isComped}>

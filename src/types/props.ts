@@ -387,6 +387,7 @@ export interface ResponsiveFrameProps {
   NavToggle: any;
   navs?: NavItemData[];
   children?: React.ReactNode;
+  IsLoading: boolean;
 }
 
 export interface RenderNavProps {

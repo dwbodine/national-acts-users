@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Input, Row } from 'rsuite';
 import { useEffect, useState } from 'react';
 import Container from 'rsuite/Container';
 import { ForgotPasswordMode } from '@/types/user';
@@ -142,10 +142,10 @@ export default function ForgotPasswordComponent() {
             <Col>
               <div className="form-group">
                 <label>Code:</label>
-                <input
+                <Input
                   type="number"
                   value={code}
-                  onChange={(e) => setCode(parseInt(e.target.value))}
+                  onChange={(value) => setCode(parseInt(value))}
                   className="form-control"
                   autoComplete="off"
                 />
@@ -183,10 +183,10 @@ export default function ForgotPasswordComponent() {
             <Col>
               <div className="form-group">
                 <label>New Password:</label>
-                <input
+                <Input
                   type="password"
                   value={password ?? ''}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={setPassword}
                   className="form-control"
                   autoComplete="off"
                 />
@@ -197,10 +197,10 @@ export default function ForgotPasswordComponent() {
             <Col>
               <div className="form-group">
                 <label>Confirm Password:</label>
-                <input
+                <Input
                   type="password"
                   value={confirmPassword ?? ''}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={setConfirmPassword}
                   className="form-control"
                   autoComplete="off"
                 />
@@ -245,10 +245,9 @@ export default function ForgotPasswordComponent() {
             <Col>
               <div className="form-group">
                 <label>Username:</label>
-                <input
-                  type="text"
+                <Input
                   value={username ?? ''}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={setUsername}
                   className="form-control"
                   placeholder="Please enter email address"
                 />

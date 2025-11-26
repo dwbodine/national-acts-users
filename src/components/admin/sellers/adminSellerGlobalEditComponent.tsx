@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox, Col, Row } from 'rsuite';
+import { Button, Checkbox, Col, Input, Row } from 'rsuite';
 import { ReactElement, useCallback, useEffect } from 'react';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';
 import { setAdminSeller, setReloadSellers } from '@/lib/adminSelectionSlice';
@@ -523,20 +523,19 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Category for {account.name}</label>
           </Col>
           <Col xs={2}>
-            <select
+            <SelectPicker
+              data={options}
               disabled={disabled}
               key={key}
               id={account.ticketSocketId.toString()}
-              onChange={(e) =>
+              onChange={(value) =>
                 updateSellerEventCategory(
                   parseInt(`${account.ticketSocketId}`),
-                  parseInt(e.currentTarget.value),
+                  parseInt(value),
                 )
               }
               defaultValue={selectedCategory?.eventCategoryId}
-            >
-              {options}
-            </select>
+            />
           </Col>
           <Col xs={1}>
             <Checkbox
@@ -614,12 +613,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Seller Name</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.name ?? ''}
-              onChange={(e) => setSellerName(e.target.value)}
+              onChange={setSellerName}
               className="form-control form-control-half"
               placeholder="seller name"
-              type="text"
             />
           </Col>
         </Row>
@@ -628,12 +626,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Seller Type</label>
           </Col>
           <Col>
-            <select
-              onChange={(e) => updateSellerType(parseInt(e.currentTarget.value))}
+            <SelectPicker
+              onChange={(value) => updateSellerType(parseInt(value))}
               defaultValue={selectedSellerType}
-            >
-              {sellerTypeOptions}
-            </select>
+              data={sellerTypeOptions}
+            />
           </Col>
         </Row>
         {categoryRows}
@@ -669,12 +666,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Address</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.address ?? ''}
-              onChange={(e) => setAddress(e.target.value)}
+              onChange={setAddress}
               className="form-control form-control-half"
               placeholder="address"
-              type="text"
             />
           </Col>
         </Row>
@@ -683,12 +679,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">City</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.city ?? ''}
-              onChange={(e) => setCity(e.target.value)}
+              onChange={setCity}
               className="form-control form-control-half"
               placeholder="city"
-              type="text"
             />
           </Col>
         </Row>
@@ -697,12 +692,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">State</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.state ?? ''}
-              onChange={(e) => setState(e.target.value)}
+              onChange={setState}
               className="form-control form-control-half"
               placeholder="state"
-              type="text"
             />
           </Col>
         </Row>
@@ -711,12 +705,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Postal Code</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.zip ?? ''}
-              onChange={(e) => setZip(e.target.value)}
+              onChange={setZip}
               className="form-control form-control-half"
               placeholder="postal code"
-              type="text"
             />
           </Col>
         </Row>
@@ -741,12 +734,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Phone</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.phone ?? ''}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={setPhone}
               className="form-control form-control-half"
               placeholder="phone"
-              type="text"
             />
           </Col>
         </Row>
@@ -755,9 +747,9 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Email</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.email ?? ''}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={setEmail}
               className="form-control form-control-half"
               placeholder="email"
               type="email"
@@ -769,12 +761,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Twitter</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.twitter ?? ''}
-              onChange={(e) => setTwitter(e.target.value)}
+              onChange={setTwitter}
               className="form-control form-control-half"
               placeholder="Twitter (X) url"
-              type="text"
             />
           </Col>
         </Row>
@@ -783,12 +774,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Facebook</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.facebook ?? ''}
-              onChange={(e) => setFacebook(e.target.value)}
+              onChange={setFacebook}
               className="form-control form-control-half"
               placeholder="Facebook url"
-              type="text"
             />
           </Col>
         </Row>
@@ -797,12 +787,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Instagram</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.instagram ?? ''}
-              onChange={(e) => setInstagram(e.target.value)}
+              onChange={setInstagram}
               className="form-control form-control-half"
               placeholder="Instagram url"
-              type="text"
             />
           </Col>
         </Row>
@@ -811,12 +800,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">YouTube</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.youtube ?? ''}
-              onChange={(e) => setYouTube(e.target.value)}
+              onChange={setYouTube}
               className="form-control form-control-half"
               placeholder="YouTube url"
-              type="text"
             />
           </Col>
         </Row>
@@ -825,12 +813,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Spotify</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.spotify ?? ''}
-              onChange={(e) => setSpotify(e.target.value)}
+              onChange={setSpotify}
               className="form-control form-control-half"
               placeholder="Spotify url"
-              type="text"
             />
           </Col>
         </Row>
@@ -839,12 +826,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Website</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.website ?? ''}
-              onChange={(e) => setWebsite(e.target.value)}
+              onChange={setWebsite}
               className="form-control form-control-half"
               placeholder="Website url"
-              type="text"
             />
           </Col>
         </Row>
@@ -853,12 +839,11 @@ export default function AdminSellerGlobalEdit() {
             <label className="mt-4">Website Display Text</label>
           </Col>
           <Col>
-            <input
+            <Input
               value={currentSeller?.websiteDisplayText ?? ''}
-              onChange={(e) => setWebsiteDisplayText(e.target.value)}
+              onChange={setWebsiteDisplayText}
               className="form-control form-control-half"
               placeholder="Website display text (shown instead of url)"
-              type="text"
             />
           </Col>
         </Row>

@@ -132,9 +132,9 @@ export default function AdminPagesIndex() {
   return (
     <div className="admin-container">
       <h3>Manage Pages</h3>
-      <input
+      <Input
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={setSearchTerm}
         className="form-control search-text-input no-print"
         placeholder="Search for pages by title..."
         hidden={currentAdminSelection.allPages === undefined}

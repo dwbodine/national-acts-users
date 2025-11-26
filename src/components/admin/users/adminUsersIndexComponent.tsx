@@ -1,13 +1,13 @@
 'use client';
 
 import { GetRolesResponse, GetUsersResponse } from '@/types/responses';
+import { Input, Table } from 'rsuite';
 import { Role, User } from '@/types/user';
 import { setSelectedUser, setUsers } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
 import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
 import debouce from 'lodash.debounce';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
@@ -107,10 +107,9 @@ export default function AdminUsersIndex() {
   return (
     <div className="admin-container">
       <h3>Users Admin</h3>
-      <input
-        type="text"
+      <Input
         value={searchTerm ?? ''}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={setSearchTerm}
         className="form-control search-text-input no-print"
         placeholder="Search for users by name, username or client name..."
         hidden={currentAdminSelection.users === undefined}

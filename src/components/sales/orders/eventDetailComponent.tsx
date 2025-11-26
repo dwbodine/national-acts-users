@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox, Col, Container, Row } from 'rsuite';
+import { Button, Checkbox, Col, Container, Input, Row } from 'rsuite';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import {
   IShirtData,
@@ -31,7 +31,6 @@ import { EditProps } from '@/types/props';
 import OrderMobileRow from './orderMobileRowComponent';
 import OrderRow from './orderRowComponent';
 import PrintButton from '../../common/printButtonComponent';
-import { RingLoader } from 'react-spinners';
 import { RootState } from '@/lib/store';
 import debouce from 'lodash.debounce';
 import { downloadCsvFile } from '@/utils/downloadFile';
@@ -673,12 +672,7 @@ export default function EventDetail(props: EditProps) {
                   </table>
                 </Col>
               </Row>
-              <Row hidden={!isLoading}>
-                <Col className="spinner-container" hidden={!isLoading}>
-                  <RingLoader size={150} color="#d12610" />
-                </Col>
-              </Row>
-              <Row hidden={isLoading} className="no-print">
+              <Row className="no-print">
                 <Col md={10} sm={12} hidden={windowSize.isMobile}>
                   <div className="admin-button-row">
                     <span className="admin-button" hidden={!canExportCustomerData}>
@@ -751,10 +745,9 @@ export default function EventDetail(props: EditProps) {
                   </span>
                 </Col>
                 <Col md={10} sm={12} className="no-print" hidden={searchBarHidden}>
-                  <input
-                    type="text"
+                  <Input
                     value={searchTerm ?? ''}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={setSearchTerm}
                     className="form-control search-text-input"
                     placeholder="Search for orders..."
                     hidden={isLoading || !orderRows || orderRows.length === 0}

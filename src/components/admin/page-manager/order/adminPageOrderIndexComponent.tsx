@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Input, Row } from 'rsuite';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
 import {
   GetPageTypesResponse,
@@ -280,16 +280,12 @@ export default function AdminPageOrderIndex() {
               <HeaderCell>Order</HeaderCell>
               <Cell className="page-order-cell">
                 {(rowData) => (
-                  <input
+                  <Input
                     className="page-order-input"
                     id={`${rowData['pageId']}`}
-                    type="text"
                     value={`${rowData['pageOrder']}`}
-                    onChange={(e) =>
-                      setPageOrder(
-                        parseInt(`${rowData['pageId']}`),
-                        parseInt(e.currentTarget.value),
-                      )
+                    onChange={(value) =>
+                      setPageOrder(parseInt(`${rowData['pageId']}`), parseInt(value))
                     }
                     onBlur={() => reorderPages(currentAdminSelection.pageOrders)}
                   />

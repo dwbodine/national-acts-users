@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Input, Row } from 'rsuite';
 import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
 import {
   setAllFaqCategories,
@@ -198,12 +198,11 @@ export default function AdminFaqEdit() {
         <Row className="form-group">
           <Col>
             <label className="mt-4">Question</label>
-            <input
+            <Input
               value={question ?? ''}
-              onChange={(e) => setQuestion(e.target.value)}
+              onChange={setQuestion}
               className="form-control form-control-half"
               placeholder="FAQ question"
-              type="text"
             />
           </Col>
         </Row>
