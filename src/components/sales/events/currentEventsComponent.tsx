@@ -301,13 +301,14 @@ export default function CurrentEvents() {
   return (
     <>
       <div>
-        <Input
-          value={searchTerm ?? ''}
-          onChange={setSearchTerm}
-          className="form-control search-text-input no-print"
-          placeholder="Search for events..."
-          hidden={searchBarHidden || !visibleEvents || visibleEvents.length === 0}
-        />
+        <div hidden={searchBarHidden || !visibleEvents || visibleEvents.length === 0}>
+          <Input
+            value={searchTerm ?? ''}
+            onChange={setSearchTerm}
+            className="form-control search-text-input no-print"
+            placeholder="Search for events..."
+          />
+        </div>
         <WidgetBar
           TotalShows={totalEvents}
           TicketData={ticketData}

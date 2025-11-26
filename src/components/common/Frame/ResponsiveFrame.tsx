@@ -68,6 +68,8 @@ export default function ResponsiveFrame({
 
   const handleNavClick = () => setMobileOpen(false);
 
+  const spinnerDisplay = IsLoading ? 'flex' : 'none';
+
   return (
     <Container className="frame">
       {/* ---------------- MOBILE NAVBAR ---------------- */}
@@ -132,7 +134,11 @@ export default function ResponsiveFrame({
         <Content>
           <div hidden={IsLoading}>{children}</div>
 
-          <div hidden={!IsLoading} className="spinner-container">
+          <div
+            hidden={!IsLoading}
+            className="spinner-container"
+            style={{ display: `${spinnerDisplay}` }}
+          >
             <RingLoader size={150} color="#d12610" />
           </div>
         </Content>

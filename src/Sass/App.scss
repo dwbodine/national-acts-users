@@ -293,10 +293,15 @@ a.edit-event-link {
   margin: 10px;
 }
 
-.spinner-container {
+.content-container {
   display: flex;
+}
+
+.spinner-container {
   width: 100%;
+  height: 50vh;
   justify-content: center;
+  align-items: center;
   padding-top: 50px;
 }
 

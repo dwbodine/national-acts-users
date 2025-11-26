@@ -31,7 +31,7 @@ const Frame = (props: FrameProps) => {
         setNavs(userAppNavs);
       }
     }
-  }, [user, navs]);
+  }, [user, navs, globalSelection.isLoading]);
 
   return (
     <ResponsiveFrame
