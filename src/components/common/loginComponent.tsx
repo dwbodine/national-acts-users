@@ -138,15 +138,13 @@ export default function LoginComponent() {
           </Col>
         </Row>
         <Row>
-          <Col className="auth-button-container">
-            <Button onClick={onSubmit}>Login</Button>
-            {loginError ? (
-              <div className="h-fit flex flex-row gap-2 items-center justify-center danger">
-                {loginError}
-              </div>
-            ) : (
-              ''
-            )}
+          <Col>
+            <div className="auth-button-container">
+              <Button onClick={onSubmit}>Login</Button>
+            </div>
+            <div className="auth-control-container">
+              {loginError ? <div className="danger">{loginError}</div> : ''}
+            </div>
           </Col>
         </Row>
         <Row>

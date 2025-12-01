@@ -160,7 +160,6 @@ export default function ForgotPasswordComponent() {
                   type="number"
                   value={code}
                   onChange={(value) => setCode(parseInt(value))}
-                  className="form-control"
                   autoComplete="off"
                 />
               </div>
@@ -210,7 +209,6 @@ export default function ForgotPasswordComponent() {
                   type="password"
                   value={password ?? ''}
                   onChange={setPassword}
-                  className="form-control"
                   autoComplete="off"
                 />
               </div>
@@ -224,7 +222,6 @@ export default function ForgotPasswordComponent() {
                   type="password"
                   value={confirmPassword ?? ''}
                   onChange={setConfirmPassword}
-                  className="form-control"
                   autoComplete="off"
                 />
               </div>

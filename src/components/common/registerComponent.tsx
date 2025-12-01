@@ -129,7 +129,6 @@ export default function RegisterComponent() {
               autoComplete="off"
               value={username ?? ''}
               onChange={setUsername}
-              className="form-control"
               placeholder="Enter email address"
             />
           </div>
@@ -143,7 +142,6 @@ export default function RegisterComponent() {
               autoComplete="off"
               value={firstName ?? ''}
               onChange={setFirstName}
-              className="form-control"
               placeholder="First name"
             />
           </div>
@@ -157,7 +155,6 @@ export default function RegisterComponent() {
               autoComplete="off"
               value={lastName ?? ''}
               onChange={setLastName}
-              className="form-control"
               placeholder="Last name"
             />
           </div>
@@ -179,7 +176,6 @@ export default function RegisterComponent() {
               onChange={handleSellerChange}
               searchable={false}
               cleanable={false}
-              className="form-control"
               placeholder="-- Select One --"
             />
           </div>
@@ -193,7 +189,6 @@ export default function RegisterComponent() {
               type="password"
               placeholder="Password"
               autoComplete="off"
-              className="form-control"
               value={password ?? ''}
               onChange={setPassword}
             />
@@ -208,7 +203,6 @@ export default function RegisterComponent() {
               type="password"
               placeholder="Confirm Password"
               autoComplete="off"
-              className="form-control"
               value={confirmPassword ?? ''}
               onChange={setConfirmPassword}
             />
@@ -219,12 +213,7 @@ export default function RegisterComponent() {
         <Col>
           <div className="auth-control-container">
             <label>Notes for the admin (optional):</label>
-            <Textarea
-              value={notes ?? ''}
-              autoComplete="off"
-              onChange={setNotes}
-              className="form-control"
-            />
+            <Textarea value={notes ?? ''} autoComplete="off" onChange={setNotes} />
           </div>
         </Col>
       </Row>
@@ -233,6 +222,8 @@ export default function RegisterComponent() {
           <div className="auth-button-container">
             <Button onClick={onSubmit}>Submit</Button>
             <Button onClick={onBack}>Back</Button>
+          </div>
+          <div className="auth-control-container">
             {registerError ? (
               <div className="h-fit flex flex-row gap-2 items-center justify-center danger">
                 {registerError}
