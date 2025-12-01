@@ -34,5 +34,5 @@ export default function AdminPage({ Title, UserActivity, children }: AdminPagePr
     };
   }, [Title, logActivityData, UserActivity, isLoading, getUser, windowSizeJson, router]);
 
-  return <Container className="vipContainer">{children}</Container>;
+  return <Container>{children}</Container>;
 }

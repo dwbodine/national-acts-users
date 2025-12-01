@@ -1,21 +1,15 @@
-/* eslint-disable new-cap */
-/* eslint-disable camelcase */
 'use client';
 
 import 'react-toastify/ReactToastify.css';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 import '../Css/App.css';
+import '../Css/Admin.css';
+import '../Css/Auth.css';
 import '../Css/Frame.css';
 import '../Css/Brand.css';
 import '../Css/Logo.css';
 
-import { Open_Sans } from 'next/font/google';
 import Providers from '@/components/common/Frame/providers';
-
-const openSans = Open_Sans({
-  subsets: ['latin-ext'],
-  variable: '--font-open-sans',
-});
 
 export default function RootLayout({
   children,
@@ -32,7 +26,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#FFFFFF" />
         <link rel="icon" href="/images/favicon.png"></link>
       </head>
-      <body className={`${openSans.variable}`}>
+      <body>
         <Providers>{children}</Providers>
       </body>
     </html>

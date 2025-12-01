@@ -4,6 +4,7 @@ import { Button, Col, Input, Row } from 'rsuite';
 import { useEffect, useState } from 'react';
 import Container from 'rsuite/Container';
 import { ForgotPasswordMode } from '@/types/user';
+import Image from 'next/image';
 import { UserResponse } from '@/types/responses';
 import { useForgotPassword } from '@/hooks/user/useForgotPassword';
 import { useResetPassword } from '@/hooks/user/useResetPassword';
@@ -127,7 +128,20 @@ export default function ForgotPasswordComponent() {
       return (
         <Container className="wrapper">
           <Row>
-            <Col>
+            <Col className="auth-logo-container">
+              <Image
+                className="auth-logo"
+                src="/images/logo-new.png"
+                alt="National Acts Client Portal"
+                title="National Acts Client Portal"
+                width={300}
+                height={231}
+                priority
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col className="auth-title-container">
               <h2>Enter Security Code</h2>
               <p className="danger">
                 Please leave this window open while you wait for an email to be sent
@@ -140,7 +154,7 @@ export default function ForgotPasswordComponent() {
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
+              <div className="auth-control-container">
                 <label>Code:</label>
                 <Input
                   type="number"
@@ -154,16 +168,12 @@ export default function ForgotPasswordComponent() {
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
+              <div className="auth-button-container">
                 <Button onClick={onValidateCode}>Validate</Button>
                 <Button onClick={onBack}>Back</Button>
-                {resetError ? (
-                  <div className="h-fit flex flex-row gap-2 items-center justify-center danger">
-                    {resetError}
-                  </div>
-                ) : (
-                  ''
-                )}
+              </div>
+              <div className="auth-control-container">
+                {resetError ? <div className="danger">{resetError}</div> : ''}
               </div>
             </Col>
           </Row>
@@ -174,14 +184,27 @@ export default function ForgotPasswordComponent() {
       return (
         <Container className="wrapper">
           <Row>
-            <Col>
+            <Col className="auth-logo-container">
+              <Image
+                className="auth-logo"
+                src="/images/logo-new.png"
+                alt="National Acts Client Portal"
+                title="National Acts Client Portal"
+                width={300}
+                height={231}
+                priority
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col className="auth-title-container">
               <h2>Reset Password</h2>
               <p>Please fill out this form to reset your password.</p>
             </Col>
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
+              <div className="auth-control-container">
                 <label>New Password:</label>
                 <Input
                   type="password"
@@ -195,7 +218,7 @@ export default function ForgotPasswordComponent() {
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
+              <div className="auth-control-container">
                 <label>Confirm Password:</label>
                 <Input
                   type="password"
@@ -209,23 +232,13 @@ export default function ForgotPasswordComponent() {
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
+              <div className="auth-button-container">
                 <Button onClick={onResetPassword}>Reset</Button>
                 <Button onClick={onBack}>Back</Button>
-                {resetError ? (
-                  <div className="h-fit flex flex-row gap-2 items-center justify-center danger">
-                    {resetError}
-                  </div>
-                ) : (
-                  ''
-                )}
-                {resetSuccess ? (
-                  <div className="h-fit flex flex-row gap-2 items-center justify-center success">
-                    {resetSuccess}
-                  </div>
-                ) : (
-                  ''
-                )}
+              </div>
+              <div className="auth-control-container">
+                {resetError ? <div className="danger">{resetError}</div> : ''}
+                {resetSuccess ? <div className="success">{resetSuccess}</div> : ''}
               </div>
             </Col>
           </Row>
@@ -236,19 +249,31 @@ export default function ForgotPasswordComponent() {
       return (
         <Container className="wrapper">
           <Row>
-            <Col>
+            <Col className="auth-logo-container">
+              <Image
+                className="auth-logo"
+                src="/images/logo-new.png"
+                alt="National Acts Client Portal"
+                title="National Acts Client Portal"
+                width={300}
+                height={231}
+                priority
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col className="auth-title-container">
               <h2>Forgot Password</h2>
               <p>Please enter your username/email address.</p>
             </Col>
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
+              <div className="auth-control-container">
                 <label>Username:</label>
                 <Input
                   value={username ?? ''}
                   onChange={setUsername}
-                  className="form-control"
                   placeholder="Please enter email address"
                 />
               </div>
@@ -256,16 +281,12 @@ export default function ForgotPasswordComponent() {
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
+              <div className="auth-button-container">
                 <Button onClick={onForgotPassword}>Send</Button>
                 <Button onClick={onBack}>Back</Button>
-                {resetError ? (
-                  <div className="h-fit flex flex-row gap-2 items-center justify-center danger">
-                    {resetError}
-                  </div>
-                ) : (
-                  ''
-                )}
+              </div>
+              <div className="auth-control-container">
+                {resetError ? <div className="danger">{resetError}</div> : ''}
               </div>
             </Col>
           </Row>

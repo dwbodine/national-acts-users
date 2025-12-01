@@ -96,9 +96,9 @@ export default function LoginComponent() {
           </Col>
         </Row>
         <Row>
-          <Col className="login-logo-container">
+          <Col className="auth-logo-container">
             <Image
-              className="login-logo"
+              className="auth-logo"
               src="/images/logo-new.png"
               alt="National Acts Client Portal"
               title="National Acts Client Portal"
@@ -109,56 +109,48 @@ export default function LoginComponent() {
           </Col>
         </Row>
         <Row>
-          <Col className="login-container">
+          <Col className="auth-title-container">
             <h2>CLIENT PORTAL</h2>
-            <p>Please fill in your credentials to log in.</p>
+            <div>Please fill in your credentials to log in.</div>
           </Col>
         </Row>
         <Row>
-          <Col className="login-container">
-            <div className="form-group">
-              <label>USERNAME</label>
-              <Input
-                value={name}
-                onChange={setName}
-                onKeyDown={submitOnEnter}
-                className="form-control"
-                placeholder="username"
-              />
-            </div>
+          <Col className="auth-control-container">
+            <h3>USERNAME</h3>
+            <Input
+              value={name}
+              onChange={setName}
+              onKeyDown={submitOnEnter}
+              placeholder="username"
+            />
           </Col>
         </Row>
         <Row>
-          <Col className="login-container">
-            <div className="form-group">
-              <label className="mt-4">PASSWORD</label>
-              <Input
-                value={password ?? ''}
-                onChange={setPassword}
-                onKeyUp={submitOnEnter}
-                className="form-control"
-                placeholder="password"
-                type="password"
-              />
-            </div>
+          <Col className="auth-control-container">
+            <h3>PASSWORD</h3>
+            <Input
+              value={password ?? ''}
+              onChange={setPassword}
+              onKeyUp={submitOnEnter}
+              placeholder="password"
+              type="password"
+            />
           </Col>
         </Row>
         <Row>
-          <Col className="login-container">
-            <div className="form-group">
-              <Button onClick={onSubmit}>Login</Button>
-              {loginError ? (
-                <div className="h-fit flex flex-row gap-2 items-center justify-center danger">
-                  {loginError}
-                </div>
-              ) : (
-                ''
-              )}
-            </div>
+          <Col className="auth-button-container">
+            <Button onClick={onSubmit}>Login</Button>
+            {loginError ? (
+              <div className="h-fit flex flex-row gap-2 items-center justify-center danger">
+                {loginError}
+              </div>
+            ) : (
+              ''
+            )}
           </Col>
         </Row>
         <Row>
-          <Col className="login-container">
+          <Col className="auth-control-container">
             <p>
               Don&apos;t have an account?{' '}
               <a onClick={register} title="Sign up now">

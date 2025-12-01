@@ -1,122 +1,68 @@
 @use 'variables' as v;
 
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
 html,
 body {
   font-family: v.$main-font-family;
   font-size: v.$main-font-size;
+  color: v.$main-text-color;
   min-height: 100vh;
 }
 
-* {
-  box-sizing: border-box;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: v.$header-font-family;
 }
 
 div hidden {
   display: none;
 }
 
-select,
-input[type='text'],
-input[type='password'],
-input[type='number'] {
-  margin: 10px 5px;
-  padding: 7px;
-  min-width: 220px;
-  border-radius: 6px;
-  border: 1px lightgray solid;
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: lightgray;
-  font-style: italic;
-}
-
-input[type='checkbox'] {
-  border-radius: 6px;
-  border: 1px lightgray solid;
+.rs-input {
+  display: flex;
+  padding: 12px;
+  border: 1px solid v.$input-border-color;
+  cursor: pointer;
 }
 
 .rs-picker-toggle:hover,
-.rs-picker:hover,
-input[type='text']:hover,
-input[type='email']:hover,
-input[type='button']:hover,
-input[type='submit']:hover,
-input[type='date']:hover,
-input[type='tel']:hover,
-input[type='url']:hover,
-input[type='checkbox']:hover,
-textarea:hover,
-select:hover,
-button:hover {
+.rs-picker:hover {
   box-shadow: 0 0 5px #d90617 !important;
   cursor: pointer;
 }
 
-input.rs-input:hover {
-  box-shadow: none !important;
-}
-
-.btn {
+.rs-btn {
   white-space: nowrap;
+  width: fit-content;
+  color: v.$button-color;
+  border: v.$button-border;
+  background-color: v.$button-background-color;
+  font-family: v.$button-font-family;
+  text-transform: uppercase;
+  margin: 0 10px 0 0;
 }
 
 .danger {
-  color: red;
+  color: v.$danger-color;
   font-weight: bold;
 }
 
 .success {
-  color: green;
+  color: v.$success-color;
   font-weight: bold;
 }
 
 .message {
-  color: green;
+  color: v.$success-color;
   font-weight: bold;
   text-align: center;
   margin: 0 0 15px 0;
-}
-
-.wrapper {
-  width: 720px;
-  padding: 20px;
-}
-
-.wrapper a {
-  cursor: pointer;
-}
-
-.form-group {
-  margin: 10px 0;
-}
-
-.form-group label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 5px;
-}
-
-.form-check-input[type='checkbox'] {
-  margin-right: 5px;
-}
-
-.wrapper button {
-  margin: 0 10px 0 0;
-}
-
-.auth-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.wrapper input,
-.wrapper select,
-.wrapper textarea {
-  display: flex;
-  width: 100%;
 }
 
 .nav-bar {
@@ -128,30 +74,6 @@ input.rs-input:hover {
   margin: 0;
   padding: 0;
   cursor: pointer;
-}
-
-.login-logo-container {
-  width: 100%;
-  margin: 0;
-  padding: 0 0 15px 0;
-  text-align: center;
-}
-
-.login-logo {
-  margin: 0 auto;
-}
-
-.login-container {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
-
-.login-container input {
-  height: 25px;
-  margin: 0 auto;
-  max-width: 300px;
 }
 
 .tab-container {
@@ -466,12 +388,6 @@ a.edit-event-link {
   text-align: center;
   font-size: 24px;
   padding-top: 25px;
-}
-
-.vipContainer {
-  width: 100%;
-  margin: 0 !important;
-  padding: 10px !important;
 }
 
 .vipDetailsTable {
@@ -1596,10 +1512,6 @@ a.edit-event-link {
     max-width: unset;
   }
 
-  .wrapper {
-    width: 368px;
-  }
-
   .resultsTable,
   .widget-row {
     max-width: 100%;
@@ -1654,10 +1566,6 @@ a.edit-event-link {
 @media (max-width: 576px) {
   .nav-bar {
     padding: 0;
-  }
-
-  .vipContainer {
-    padding: 10px;
   }
 
   .vipDetailsTable {
@@ -1850,10 +1758,6 @@ a.edit-event-link {
   .rs-nav-item,
   .rs-nav-bar {
     display: none !important;
-  }
-
-  .vipContainer {
-    padding: 5px;
   }
 
   .vipDetailsTable {

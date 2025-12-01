@@ -31,7 +31,7 @@ export default function ClientSellersComponent() {
   return (
     <>
       <NavBar Hidden={notLoggedIn || adminUser} />
-      <Container className="fluid vipContainer" hidden={notLoggedIn || adminUser}>
+      <Container className="fluid" hidden={notLoggedIn || adminUser}>
         <AdminBar />
         <CurrentEvents />
       </Container>

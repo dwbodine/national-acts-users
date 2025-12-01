@@ -4,6 +4,7 @@ import { Button, Col, Input, Row, SelectPicker } from 'rsuite';
 import { GetSellersResponse, UserResponse } from '@/types/responses';
 import { useEffect, useState } from 'react';
 import Container from 'rsuite/Container';
+import Image from 'next/image';
 import { Seller } from '@/types/event';
 import Textarea from './Textarea';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
@@ -102,14 +103,27 @@ export default function RegisterComponent() {
   return (
     <Container className="wrapper">
       <Row>
-        <Col>
+        <Col className="auth-logo-container">
+          <Image
+            className="auth-logo"
+            src="/images/logo-new.png"
+            alt="National Acts Client Portal"
+            title="National Acts Client Portal"
+            width={300}
+            height={231}
+            priority
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col className="auth-title-container">
           <h2>Sign Up</h2>
           <p>Please fill this form to create an account.</p>
         </Col>
       </Row>
       <Row>
         <Col>
-          <div className="form-group">
+          <div className="auth-control-container">
             <label>Email:</label>
             <Input
               autoComplete="off"
@@ -123,7 +137,7 @@ export default function RegisterComponent() {
       </Row>
       <Row>
         <Col>
-          <div className="form-group">
+          <div className="auth-control-container">
             <label>First Name:</label>
             <Input
               autoComplete="off"
@@ -137,7 +151,7 @@ export default function RegisterComponent() {
       </Row>
       <Row>
         <Col>
-          <div className="form-group">
+          <div className="auth-control-container">
             <label>Last Name:</label>
             <Input
               autoComplete="off"
@@ -151,7 +165,7 @@ export default function RegisterComponent() {
       </Row>
       <Row>
         <Col>
-          <div className="form-group">
+          <div className="auth-control-container">
             <label>Associated Artist:</label>
             <SelectPicker
               data={[
@@ -173,7 +187,7 @@ export default function RegisterComponent() {
       </Row>
       <Row>
         <Col>
-          <div className="form-group">
+          <div className="auth-control-container">
             <label>Password:</label>
             <Input
               type="password"
@@ -188,7 +202,7 @@ export default function RegisterComponent() {
       </Row>
       <Row>
         <Col>
-          <div className="form-group">
+          <div className="auth-control-container">
             <label>Confirm Password:</label>
             <Input
               type="password"
@@ -203,7 +217,7 @@ export default function RegisterComponent() {
       </Row>
       <Row>
         <Col>
-          <div className="form-group">
+          <div className="auth-control-container">
             <label>Notes for the admin (optional):</label>
             <Textarea
               value={notes ?? ''}
@@ -216,7 +230,7 @@ export default function RegisterComponent() {
       </Row>
       <Row>
         <Col>
-          <div className="form-group">
+          <div className="auth-button-container">
             <Button onClick={onSubmit}>Submit</Button>
             <Button onClick={onBack}>Back</Button>
             {registerError ? (

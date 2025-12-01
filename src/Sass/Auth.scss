@@ -1,0 +1,69 @@
+@use 'variables' as v;
+
+.wrapper {
+  align-items: center;
+  padding: 20px;
+}
+
+.wrapper a {
+  cursor: pointer;
+}
+
+.auth-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.auth-title-container {
+  display: flex;
+  width: 720px;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  flex-direction: column;
+}
+
+.auth-control-container,
+.auth-button-container {
+  display: flex;
+  margin: 15px auto;
+  width: 720px;
+  justify-content: left;
+}
+
+.auth-control-container {
+  flex-direction: column;
+}
+
+.auth-button-container {
+  flex-direction: row;
+}
+
+.auth-logo-container {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 15px 0;
+  justify-content: center;
+}
+
+.auth-control-container label {
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.auth-logo {
+  margin: 0 auto;
+}
+
+.auth-control-container div {
+  display: flex;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    width: 368px;
+  }
+}

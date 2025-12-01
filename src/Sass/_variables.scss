@@ -2,15 +2,24 @@
 $main-font-family: 'Open Sans', sans-serif;
 $main-font-size: 14px;
 $main-text-color: #333333;
-$main-border-color: #000000;
-$main-background-color: #ffffff;
+$main-border-color: black;
+$main-background-color: white;
+$danger-color: red;
+$success-color: green;
 
-$header-color: #000000;
-$header-font-family: 'Impact', 'Carrois Gothic SC', sans-serif;
+$header-color: black;
+$header-font-family: 'Montserrat', sans-serif;
 $required-field: #ff0000;
 
-$input-border-color: grey;
+// Inputs
+$input-border-color: #e5e5ea;
 $input-highlight-color: white;
+
+// buttons
+$button-background-color: #f7f7fa;
+$button-color: gray;
+$button-border: 1px solid #e5e5ea;
+$button-font-family: 'Montserrat', sans-serif;
 
 // Footer
 $footer-top-border-color: darkgray;
