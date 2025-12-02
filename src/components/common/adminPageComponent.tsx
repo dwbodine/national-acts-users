@@ -25,7 +25,9 @@ export default function AdminPage({ Title, UserActivity, children }: AdminPagePr
     const timeoutId = setTimeout(() => {
       if (!globalSettings.currentUser) {
         const currentUser = getUser();
-        dispatch(setCurrentUser(currentUser));
+        if (currentUser) {
+          dispatch(setCurrentUser(currentUser));
+        }
       } else {
         const currentUser = globalSettings.currentUser;
         if (currentUser && currentUser.isAuthenticated) {

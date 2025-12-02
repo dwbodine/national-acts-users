@@ -20,7 +20,9 @@ export default function Header() {
   useEffect(() => {
     if (!globalSelection.currentUser) {
       const currentUser = getUser();
-      dispatch(setCurrentUser(currentUser));
+      if (currentUser) {
+        dispatch(setCurrentUser(currentUser));
+      }
     } else {
       const currentUser = globalSelection.currentUser;
       let init = currentUser.username.slice(0, 2);
