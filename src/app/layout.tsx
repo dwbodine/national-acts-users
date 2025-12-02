@@ -5,8 +5,9 @@ import 'rsuite/dist/rsuite-no-reset.min.css';
 import '../Css/App.css';
 import '../Css/Admin.css';
 import '../Css/Auth.css';
-import '../Css/Frame.css';
 import '../Css/Brand.css';
+import '../Css/Frame.css';
+import '../Css/Header.css';
 import '../Css/Logo.css';
 
 import Providers from '@/components/common/Frame/providers';

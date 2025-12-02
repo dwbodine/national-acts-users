@@ -53,10 +53,15 @@
   height: fit-content;
 }
 
+.frame {
+  flex-direction: column !important;
+}
+
 /* Desktop breakpoint */
 @media (min-width: 768px) {
   .frame {
     height: 100vh;
+    flex-direction: row !important;
   }
   .desktop-sidebar {
     display: block;
@@ -64,6 +69,13 @@
 
   .mobile-nav {
     display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .rs-navbar-brand {
+    padding: 0 10px;
+    height: 45px;
   }
 }
 

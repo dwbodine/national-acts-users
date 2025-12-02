@@ -1,5 +1,7 @@
 import { Container, Drawer, IconButton, Nav, Navbar, Sidebar, Sidenav } from 'rsuite';
+import { MdLockReset, MdLogout } from 'react-icons/md';
 import { RenderNavProps, ResponsiveFrameProps } from '@/types/props';
+import { Icon } from '@rsuite/icons';
 import Link from 'next/link';
 import MenuIcon from '@rsuite/icons/Menu';
 import { RingLoader } from 'react-spinners';
@@ -8,45 +10,71 @@ import { useState } from 'react';
 /**
  * NavItem renderer (you can externalize this if desired)
  */
-const RenderNav = (props: RenderNavProps) => (
-  <Nav vertical={true}>
-    {props.navs?.map((item) => {
-      const { children, ...rest } = item;
+const RenderNav = (props: RenderNavProps) => {
+  const menuItems = props.navs;
 
-      const placement = props.isMobile ? 'bottomEnd' : 'bottomStart';
+  if (props.isMobile) {
+    const resetMenuItem = menuItems?.find((x) => x.eventKey === 'reset-password');
+    if (!resetMenuItem) {
+      menuItems?.push({
+        eventKey: 'reset-password',
+        icon: <Icon as={MdLockReset} />,
+        title: 'Reset Password',
+        to: '/reset-password',
+      });
+    }
 
-      if (children) {
+    const logoutMenuItem = menuItems?.find((x) => x.eventKey === 'logout');
+    if (!logoutMenuItem) {
+      menuItems?.push({
+        eventKey: 'logout',
+        icon: <Icon as={MdLogout} />,
+        title: 'Sign Out',
+        to: '/logout',
+      });
+    }
+  }
+
+  return (
+    <Nav vertical={true}>
+      {menuItems?.map((item) => {
+        const { children, ...rest } = item;
+
+        const placement = props.isMobile ? 'bottomEnd' : 'bottomStart';
+
+        if (children) {
+          return (
+            <Nav.Menu key={item.eventKey} placement={placement} trigger="hover" {...rest}>
+              {children.map((child) => (
+                <Nav.Item
+                  as={Link}
+                  href={child.to}
+                  key={child.eventKey}
+                  {...child}
+                  onClick={() => props.onItemClick?.()}
+                >
+                  {child.title}
+                </Nav.Item>
+              ))}
+            </Nav.Menu>
+          );
+        }
+
         return (
-          <Nav.Menu key={item.eventKey} placement={placement} trigger="hover" {...rest}>
-            {children.map((child) => (
-              <Nav.Item
-                as={Link}
-                href={child.to}
-                key={child.eventKey}
-                {...child}
-                onClick={() => props.onItemClick?.()}
-              >
-                {child.title}
-              </Nav.Item>
-            ))}
-          </Nav.Menu>
+          <Nav.Item
+            as={Link}
+            href={rest.to}
+            key={rest.eventKey}
+            {...rest}
+            onClick={() => props.onItemClick?.()}
+          >
+            &nbsp;{rest.title}
+          </Nav.Item>
         );
-      }
-
-      return (
-        <Nav.Item
-          as={Link}
-          href={rest.to}
-          key={rest.eventKey}
-          {...rest}
-          onClick={() => props.onItemClick?.()}
-        >
-          {rest.title}
-        </Nav.Item>
-      );
-    })}
-  </Nav>
-);
+      })}
+    </Nav>
+  );
+};
 
 /**
  * ResponsiveFrame:
@@ -124,10 +152,10 @@ export default function ResponsiveFrame({
       <Container className="content-container" hidden={isNavEmpty}>
         <Header />
         <Content>
-          <div hidden={IsLoading}>{children}</div>
+          <div hidden={IsLoading || isNavEmpty}>{children}</div>
 
           <div
-            hidden={!IsLoading}
+            hidden={!IsLoading || isNavEmpty}
             className="spinner-container"
             style={{ display: `${spinnerDisplay}` }}
           >

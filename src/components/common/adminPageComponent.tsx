@@ -7,10 +7,12 @@ import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useEffect } from 'react';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { setCurrentUser } from '@/lib/globalSelectionSlice';
 
 export default function AdminPage({ Title, UserActivity, children }: AdminPageProps) {
+  const dispatch = useDispatch();
   const { getUser } = useCurrentUser();
   const { logActivityData } = useLogActivityData();
   const globalSettings = useSelector((state: RootState) => state.globalSelection);
@@ -21,18 +23,32 @@ export default function AdminPage({ Title, UserActivity, children }: AdminPagePr
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      const currentUser = getUser();
-      if (currentUser && currentUser.isAuthenticated) {
-        document.title = Title;
-        if (UserActivity) {
-          void logActivityData(UserActivity);
+      if (!globalSettings.currentUser) {
+        const currentUser = getUser();
+        dispatch(setCurrentUser(currentUser));
+      } else {
+        const currentUser = globalSettings.currentUser;
+        if (currentUser && currentUser.isAuthenticated) {
+          document.title = Title;
+          if (UserActivity) {
+            void logActivityData(UserActivity);
+          }
         }
       }
     }, 200);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [Title, logActivityData, UserActivity, isLoading, getUser, windowSizeJson, router]);
+  }, [
+    Title,
+    logActivityData,
+    UserActivity,
+    isLoading,
+    getUser,
+    windowSizeJson,
+    router,
+    globalSettings.currentUser,
+  ]);
 
   return <Container>{children}</Container>;
 }
