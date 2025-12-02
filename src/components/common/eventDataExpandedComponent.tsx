@@ -25,9 +25,7 @@ import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
 
 export default function EventDataExpanded(props: EventDataExpandedProps) {
   const focusControl = props.FocusControl;
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const vipEvent = currentReportSelection?.expandedEvent;
   const dispatch = useDispatch();
   const { updateEvent } = useUpdateEvent();
@@ -35,12 +33,8 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
   const [notesOpen, setNotesOpen] = useState(false);
   const [doorsModalOpen, setDoorsModalOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
-  const [modalDoorsOpenDate, setModalDoorsOpenDate] = useState<Date | undefined>(
-    undefined,
-  );
-  const [modalMeetAndGreetDate, setModalMeetAndGreetDate] = useState<Date | undefined>(
-    undefined,
-  );
+  const [modalDoorsOpenDate, setModalDoorsOpenDate] = useState<Date | undefined>(undefined);
+  const [modalMeetAndGreetDate, setModalMeetAndGreetDate] = useState<Date | undefined>(undefined);
   const [modalCheckInLocation, setModalCheckInLocation] = useState('');
   const [modalCheckInNotes, setModalCheckInNotes] = useState('');
   const { addNote } = useAddNote();
@@ -50,9 +44,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
 
   const handleDoorsOpen = () => {
     if (vipEvent !== undefined) {
-      const doorsOpenDate = vipEvent.doorsOpen
-        ? moment(vipEvent.doorsOpen).toDate()
-        : undefined;
+      const doorsOpenDate = vipEvent.doorsOpen ? moment(vipEvent.doorsOpen).toDate() : undefined;
       const meetAndGreetDate = vipEvent.meetAndGreetTime
         ? moment(vipEvent.meetAndGreetTime).toDate()
         : undefined;
@@ -75,18 +67,16 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     if (!noteText || !vipEvent) {
       return;
     }
-    void addNote(noteText, vipEvent.externalEventId).then(
-      (response: ModifyNoteResponse) => {
-        setNotesOpen(false);
-        if (response.success && !response.error) {
-          toast.success('Note added successfully');
-          setNoteText('');
-          dispatch(setReloadAdminEvents(true));
-        } else {
-          toast.error(response.error ?? 'Unexpected error occurred while adding note');
-        }
-      },
-    );
+    void addNote(noteText, vipEvent.externalEventId).then((response: ModifyNoteResponse) => {
+      setNotesOpen(false);
+      if (response.success && !response.error) {
+        toast.success('Note added successfully');
+        setNoteText('');
+        dispatch(setReloadAdminEvents(true));
+      } else {
+        toast.error(response.error ?? 'Unexpected error occurred while adding note');
+      }
+    });
   };
 
   const editEvent = () => {
@@ -248,12 +238,8 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
       ? 'n/a'
       : moment.utc(vipEvent.listSentTime).format('MM/DD/YYYY h:mm A');
   const numVips =
-    (vipEvent?.listSentNumVips ?? 0) > 0
-      ? (vipEvent?.listSentNumVips ?? 0).toString()
-      : 'n/a';
-  let doorsOpenTime = vipEvent?.doorsOpen
-    ? moment(vipEvent.doorsOpen).format('h:mm A')
-    : undefined;
+    (vipEvent?.listSentNumVips ?? 0) > 0 ? (vipEvent?.listSentNumVips ?? 0).toString() : 'n/a';
+  let doorsOpenTime = vipEvent?.doorsOpen ? moment(vipEvent.doorsOpen).format('h:mm A') : undefined;
   if (doorsOpenTime && vipEvent?.venue?.timezone) {
     doorsOpenTime += ` ${vipEvent.venue.timezone}`;
   } else if (!doorsOpenTime) {
@@ -290,9 +276,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
   }
 
   const eventTitle = vipEvent?.title ?? '';
-  const eventDate = vipEvent?.eventDate
-    ? moment(vipEvent.eventDate).format('M/D/YYYY')
-    : '';
+  const eventDate = vipEvent?.eventDate ? moment(vipEvent.eventDate).format('M/D/YYYY') : '';
 
   return vipEvent === undefined ? (
     ''

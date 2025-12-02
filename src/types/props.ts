@@ -388,6 +388,7 @@ export interface ResponsiveFrameProps {
   navs?: NavItemData[];
   children?: React.ReactNode;
   IsLoading: boolean;
+  IsAdmin?: boolean;
 }
 
 export interface RenderNavProps {

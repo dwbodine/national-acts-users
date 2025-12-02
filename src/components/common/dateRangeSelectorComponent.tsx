@@ -37,12 +37,7 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
       label: 'Last Month',
       value: [
         moment().startOf('month').subtract(1, 'month').startOf('day').toDate(),
-        moment()
-          .startOf('month')
-          .subtract(1, 'month')
-          .endOf('month')
-          .endOf('day')
-          .toDate(),
+        moment().startOf('month').subtract(1, 'month').endOf('month').endOf('day').toDate(),
       ],
     },
   ];

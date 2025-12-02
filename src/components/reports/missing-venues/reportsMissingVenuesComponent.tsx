@@ -17,9 +17,7 @@ import { useGetMissingVenueEvents } from '@/hooks/report/useGetMissingVenueEvent
 export default function ReportsMissingVenues() {
   const { Column, HeaderCell, Cell } = Table;
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
-  const currentAdminReportSelection = useSelector(
-    (state: RootState) => state.adminReportSelection,
-  );
+  const currentAdminReportSelection = useSelector((state: RootState) => state.adminReportSelection);
   const dispatch = useDispatch();
   const { getMissingVenueEvents } = useGetMissingVenueEvents();
   const [events, setEvents] = useState<VipEvent[] | undefined>(undefined);
@@ -38,12 +36,7 @@ export default function ReportsMissingVenues() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [
-    currentAdminReportSelection,
-    globalSelection.isLoading,
-    dispatch,
-    getMissingVenueEvents,
-  ]);
+  }, [currentAdminReportSelection, globalSelection.isLoading, dispatch, getMissingVenueEvents]);
 
   const editEvent = (eventId: number) => {
     dispatch(resetAdmin());
@@ -85,9 +78,7 @@ export default function ReportsMissingVenues() {
       <Table autoHeight={true} data={events} bordered cellBordered>
         <Column flexGrow={1} minWidth={100}>
           <HeaderCell>Date</HeaderCell>
-          <Cell>
-            {(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}
-          </Cell>
+          <Cell>{(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}</Cell>
         </Column>
         <Column flexGrow={2}>
           <HeaderCell>Title</HeaderCell>
@@ -96,9 +87,7 @@ export default function ReportsMissingVenues() {
         <Column flexGrow={3}>
           <HeaderCell>Venue (from TicketSocket data)</HeaderCell>
           <Cell>
-            {(rowData: VipEvent) =>
-              rowData.venue ? getVenueInformation(rowData.venue) : ''
-            }
+            {(rowData: VipEvent) => (rowData.venue ? getVenueInformation(rowData.venue) : '')}
           </Cell>
         </Column>
         <Column flexGrow={1}>

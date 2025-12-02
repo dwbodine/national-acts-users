@@ -30,10 +30,7 @@ export interface SiteSetting {
   dirty?: boolean;
 }
 
-export type SpeakerRenderFn = (
-  props: SpeakerProps,
-  ref: React.Ref<HTMLDivElement>,
-) => JSX.Element;
+export type SpeakerRenderFn = (props: SpeakerProps, ref: React.Ref<HTMLDivElement>) => JSX.Element;
 
 export interface FaqCategory {
   categoryId: number;

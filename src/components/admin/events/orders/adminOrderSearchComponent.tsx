@@ -65,11 +65,7 @@ export default function AdminOrdersSearch() {
   };
 
   const viewOrder = (ticketSocketOrderId: number) => {
-    if (
-      !ticketSocketOrderId ||
-      isNaN(ticketSocketOrderId) ||
-      !currentAdminSelection.orders
-    ) {
+    if (!ticketSocketOrderId || isNaN(ticketSocketOrderId) || !currentAdminSelection.orders) {
       return;
     }
     const order = currentAdminSelection.orders.find(
@@ -110,10 +106,7 @@ export default function AdminOrdersSearch() {
             className="form-control search-text-input no-print"
             placeholder="Search for orders by purchaser name, email, order ID, event title or seller name..."
           />
-          <Button
-            disabled={!searchTerm || searchTerm.length < 3}
-            onClick={searchAllOrders}
-          >
+          <Button disabled={!searchTerm || searchTerm.length < 3} onClick={searchAllOrders}>
             Search
           </Button>
           <div hidden={numOrders === 0} className="success">
@@ -134,9 +127,7 @@ export default function AdminOrdersSearch() {
             <Column flexGrow={3}>
               <HeaderCell>Purchaser Name</HeaderCell>
               <Cell>
-                {(rowData: Order) =>
-                  `${rowData.purchaserLastName}, ${rowData.purchaserFirstName}`
-                }
+                {(rowData: Order) => `${rowData.purchaserLastName}, ${rowData.purchaserFirstName}`}
               </Cell>
             </Column>
             <Column flexGrow={2}>
@@ -153,9 +144,7 @@ export default function AdminOrdersSearch() {
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>Purchase Date</HeaderCell>
-              <Cell>
-                {(rowData: Order) => moment(rowData.purchaseDate).format('MM/DD/YYYY')}
-              </Cell>
+              <Cell>{(rowData: Order) => moment(rowData.purchaseDate).format('MM/DD/YYYY')}</Cell>
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>Ticket Socket OrderId</HeaderCell>
@@ -163,9 +152,7 @@ export default function AdminOrdersSearch() {
             </Column>
             <Column flexGrow={1}>
               <HeaderCell># of Tickets</HeaderCell>
-              <Cell>
-                {(rowData: Order) => (rowData.numTickets ? rowData.numTickets : '')}
-              </Cell>
+              <Cell>{(rowData: Order) => (rowData.numTickets ? rowData.numTickets : '')}</Cell>
             </Column>
             <Column flexGrow={2}>
               <HeaderCell>Order Status</HeaderCell>
@@ -179,9 +166,7 @@ export default function AdminOrdersSearch() {
                     <a
                       href="#"
                       id={rowData.ticketSocketOrderId.toString()}
-                      onClick={() =>
-                        viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))
-                      }
+                      onClick={() => viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))}
                     >
                       Edit
                     </a>

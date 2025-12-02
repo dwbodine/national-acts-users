@@ -44,12 +44,7 @@ export default function SelectSeller() {
       setUser(currentUser);
     }
 
-    if (
-      selectedSellerId <= 0 &&
-      user &&
-      user.selectedSellerId &&
-      user.selectedSellerId > 0
-    ) {
+    if (selectedSellerId <= 0 && user && user.selectedSellerId && user.selectedSellerId > 0) {
       const seller = getSelectedSeller(user.selectedSellerId);
       dispatch(setSeller(seller));
     }

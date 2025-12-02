@@ -103,10 +103,7 @@ export default function AdminSellerGlobalEdit() {
     if (!countryId) {
       sellerToUpdate.country = undefined;
       dispatch(setAdminSeller(sellerToUpdate));
-    } else if (
-      !sellerToUpdate.country ||
-      sellerToUpdate.country.countryId !== countryId
-    ) {
+    } else if (!sellerToUpdate.country || sellerToUpdate.country.countryId !== countryId) {
       sellerToUpdate.country = { countryId };
       dispatch(setAdminSeller(sellerToUpdate));
     }
@@ -237,11 +234,7 @@ export default function AdminSellerGlobalEdit() {
     ticketSocketId: number,
     eventCategoryId: number | undefined,
   ) => {
-    if (
-      !currentAdminSelection.selectedSeller ||
-      !ticketSocketId ||
-      isNaN(ticketSocketId)
-    ) {
+    if (!currentAdminSelection.selectedSeller || !ticketSocketId || isNaN(ticketSocketId)) {
       return;
     }
 
@@ -251,9 +244,7 @@ export default function AdminSellerGlobalEdit() {
       : [];
 
     let changed = false;
-    const existingCategory = currentCategories.find(
-      (x) => x.ticketSocketId === ticketSocketId,
-    );
+    const existingCategory = currentCategories.find((x) => x.ticketSocketId === ticketSocketId);
     if (existingCategory) {
       if (existingCategory.eventCategoryId !== eventCategoryId) {
         currentCategories = currentCategories.map((x) => {
@@ -307,9 +298,7 @@ export default function AdminSellerGlobalEdit() {
       ? [...sellerToUpdate.sellerEventCategories]
       : [];
 
-    const existingCategory = currentCategories.find(
-      (x) => x.ticketSocketId === ticketSocketId,
-    );
+    const existingCategory = currentCategories.find((x) => x.ticketSocketId === ticketSocketId);
     if (!existingCategory) {
       return;
     }
@@ -347,9 +336,7 @@ export default function AdminSellerGlobalEdit() {
       ? [...sellerToUpdate.sellerEventCategories]
       : [];
 
-    const existingCategory = currentCategories.find(
-      (x) => x.ticketSocketId === ticketSocketId,
-    );
+    const existingCategory = currentCategories.find((x) => x.ticketSocketId === ticketSocketId);
     if (!existingCategory) {
       return;
     }
@@ -368,11 +355,7 @@ export default function AdminSellerGlobalEdit() {
   };
 
   const updateSellerType = (sellerTypeValue: number | undefined) => {
-    if (
-      !currentAdminSelection.selectedSeller ||
-      !sellerTypeValue ||
-      isNaN(sellerTypeValue)
-    ) {
+    if (!currentAdminSelection.selectedSeller || !sellerTypeValue || isNaN(sellerTypeValue)) {
       return;
     }
 
@@ -495,10 +478,9 @@ export default function AdminSellerGlobalEdit() {
   const categoryRows: ReactElement[] = [];
   if (allAccounts && allAccounts.length > 0 && currentAdminSelection.selectedSeller) {
     allAccounts.forEach((account, index) => {
-      const selectedCategory =
-        currentAdminSelection.selectedSeller?.sellerEventCategories?.find(
-          (x) => x.ticketSocketId === account.ticketSocketId,
-        );
+      const selectedCategory = currentAdminSelection.selectedSeller?.sellerEventCategories?.find(
+        (x) => x.ticketSocketId === account.ticketSocketId,
+      );
       const disabled = selectedCategory && selectedCategory.hasEvents;
       const options: ReactElement[] = [];
       options.push(
@@ -528,10 +510,7 @@ export default function AdminSellerGlobalEdit() {
               key={key}
               id={account.ticketSocketId.toString()}
               onChange={(value) =>
-                updateSellerEventCategory(
-                  parseInt(`${account.ticketSocketId}`),
-                  value ?? undefined,
-                )
+                updateSellerEventCategory(parseInt(`${account.ticketSocketId}`), value ?? undefined)
               }
               defaultValue={selectedCategory?.eventCategoryId}
             />
@@ -848,8 +827,7 @@ export default function AdminSellerGlobalEdit() {
         </Row>
         <Row>
           <Col>
-            <Button onClick={onSubmit}>Submit</Button>{' '}
-            <Button onClick={goBack}>Back</Button>
+            <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
           </Col>
         </Row>
       </Col>

@@ -164,8 +164,7 @@ export default function AdminFaqEdit() {
       }))
     : [];
 
-  const pageHeader =
-    (currentAdminSelection.selectedFaq?.faqId ?? 0) > 0 ? 'Edit FAQ' : 'Add FAQ';
+  const pageHeader = (currentAdminSelection.selectedFaq?.faqId ?? 0) > 0 ? 'Edit FAQ' : 'Add FAQ';
 
   const categoryId = currentAdminSelection.selectedFaq?.category?.categoryId ?? 0;
   const question = currentAdminSelection.selectedFaq?.question;
@@ -219,8 +218,7 @@ export default function AdminFaqEdit() {
         </Row>
         <Row>
           <Col>
-            <Button onClick={onSubmit}>Submit</Button>{' '}
-            <Button onClick={confirmGoBack}>Back</Button>
+            <Button onClick={onSubmit}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
           </Col>
         </Row>
       </Col>

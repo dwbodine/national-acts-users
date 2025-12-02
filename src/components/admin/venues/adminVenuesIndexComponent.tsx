@@ -1,10 +1,7 @@
 'use client';
 
 import { Button, Col, Input, Pagination, Row, Table } from 'rsuite';
-import {
-  GetExternalVenuesResponse,
-  ModifyExternalVenueResponse,
-} from '@/types/responses';
+import { GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/responses';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import {
   setAdminVenue,

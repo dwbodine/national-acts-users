@@ -123,14 +123,12 @@ export default function AdminEventEdit(props: EditProps) {
       if (response.event && !response.error) {
         dispatch(setAdminEvent(response.event));
         dispatch(setAdminSellerId(response.event.sellerId));
-        void getTicketSocketEventsOnly(response.event.sellerId).then(
-          (resp: GetEventsResponse) => {
-            if (resp.events && !resp.error) {
-              dispatch(setTicketSocketEventsOnly(resp.events));
-            }
-            dispatch(setIsLoading(false));
-          },
-        );
+        void getTicketSocketEventsOnly(response.event.sellerId).then((resp: GetEventsResponse) => {
+          if (resp.events && !resp.error) {
+            dispatch(setTicketSocketEventsOnly(resp.events));
+          }
+          dispatch(setIsLoading(false));
+        });
       } else {
         dispatch(setIsLoading(false));
       }
@@ -736,24 +734,22 @@ export default function AdminEventEdit(props: EditProps) {
     }
     dispatch(setIsLoading(true));
     const eventId = currentAdminSelection.selectedEvent.externalEventId;
-    void addCompedOrder(eventId, numCompedTickets).then(
-      (response: ModifyOrderResponse) => {
-        const { success } = response;
-        dispatch(setIsLoading(false));
-        if (success) {
-          toast.success('Comp order created');
-          if (id) {
-            loadEventById();
-          } else {
-            dispatch(setReloadEvents(true));
-            dispatch(setAdminEvent(undefined));
-            goBack(false);
-          }
+    void addCompedOrder(eventId, numCompedTickets).then((response: ModifyOrderResponse) => {
+      const { success } = response;
+      dispatch(setIsLoading(false));
+      if (success) {
+        toast.success('Comp order created');
+        if (id) {
+          loadEventById();
         } else {
-          toast.error('Comp order creation failed');
+          dispatch(setReloadEvents(true));
+          dispatch(setAdminEvent(undefined));
+          goBack(false);
         }
-      },
-    );
+      } else {
+        toast.error('Comp order creation failed');
+      }
+    });
   };
 
   const cancelTicketSocketEvent = () => {
@@ -770,9 +766,7 @@ export default function AdminEventEdit(props: EditProps) {
       const { success } = response;
       dispatch(setIsLoading(false));
       if (success) {
-        const message = isCancelled
-          ? 'Cancellation succeeded'
-          : 'Uncancellation succeeded';
+        const message = isCancelled ? 'Cancellation succeeded' : 'Uncancellation succeeded';
         toast.success(message);
         if (id) {
           loadEventById();
@@ -1035,35 +1029,25 @@ export default function AdminEventEdit(props: EditProps) {
   const ticketSocketEventId = selectedEvent?.ticketSocketEventId ?? 0;
 
   const pageHeader =
-    eventId > 0
-      ? `Edit event for ${currentSeller?.name}`
-      : `Add event for ${currentSeller?.name}`;
+    eventId > 0 ? `Edit event for ${currentSeller?.name}` : `Add event for ${currentSeller?.name}`;
 
   const eventTitle = selectedEvent ? selectedEvent.title : '';
 
-  const eventDate = selectedEvent?.eventDate
-    ? moment(selectedEvent.eventDate).toDate()
-    : null;
+  const eventDate = selectedEvent?.eventDate ? moment(selectedEvent.eventDate).toDate() : null;
 
-  const eventTime = selectedEvent?.eventTime
-    ? moment(selectedEvent.eventTime).toDate()
-    : null;
+  const eventTime = selectedEvent?.eventTime ? moment(selectedEvent.eventTime).toDate() : null;
 
   const announceDate = selectedEvent?.announceDate
     ? moment(selectedEvent.announceDate).toDate()
     : null;
 
   const refundsDisabled =
-    selectedEvent === undefined ||
-    selectedEvent.totalTickets === 0 ||
-    ticketSocketEventId === 0;
+    selectedEvent === undefined || selectedEvent.totalTickets === 0 || ticketSocketEventId === 0;
 
   const isCancelled = selectedEvent?.isCancelled ?? false;
   const cancelButtonText = isCancelled ? 'Uncancel Event' : 'Mark Cancelled';
   const refundCancelDisabled = isCancelled;
-  const refundCancelTitle = refundCancelDisabled
-    ? 'Event has already been cancelled'
-    : '';
+  const refundCancelTitle = refundCancelDisabled ? 'Event has already been cancelled' : '';
 
   const isActive = selectedEvent?.isActive ?? false;
   const isDeleted = selectedEvent?.isDeleted ?? false;
@@ -1097,11 +1081,7 @@ export default function AdminEventEdit(props: EditProps) {
   const checkInNotes = selectedEvent?.checkInNotes ?? '';
 
   const ticketTypeRows: ReactElement[] = [];
-  if (
-    selectedEvent &&
-    selectedEvent.ticketTypes &&
-    selectedEvent.ticketTypes.length > 0
-  ) {
+  if (selectedEvent && selectedEvent.ticketTypes && selectedEvent.ticketTypes.length > 0) {
     selectedEvent.ticketTypes.forEach((ticketType, i) => {
       const { ticketTypeId } = ticketType;
       let ticketTypeDisabled = false;
@@ -1114,9 +1094,7 @@ export default function AdminEventEdit(props: EditProps) {
           if (order.isComped) {
             ticketTypeDisabled = true;
           } else {
-            const ticketsWithType = order.tickets?.find(
-              (x) => x.ticketTypeId === ticketTypeId,
-            );
+            const ticketsWithType = order.tickets?.find((x) => x.ticketTypeId === ticketTypeId);
             if (ticketsWithType !== undefined) {
               ticketTypeDisabled = true;
               break;
@@ -1134,10 +1112,7 @@ export default function AdminEventEdit(props: EditProps) {
         <tr key={key}>
           <td>
             {ticketType.ticketTypeId === 0 ? (
-              <Input
-                value={ticketType.ticketTypeName ?? ''}
-                onChange={setCompTicketTypeName}
-              />
+              <Input value={ticketType.ticketTypeName ?? ''} onChange={setCompTicketTypeName} />
             ) : (
               ticketType.ticketTypeName
             )}
@@ -1204,8 +1179,7 @@ export default function AdminEventEdit(props: EditProps) {
       }))
     : [];
 
-  const isExternalEvent =
-    (selectedEvent?.isExternal ?? false) && ticketSocketEventId === 0;
+  const isExternalEvent = (selectedEvent?.isExternal ?? false) && ticketSocketEventId === 0;
 
   const countryList: ItemDataType<number>[] = currentAdminSelection.countries
     ? currentAdminSelection.countries.map((country) => ({
@@ -1310,11 +1284,7 @@ export default function AdminEventEdit(props: EditProps) {
               </div>
               <div className="form-group">
                 <label className="mt-4">Postal Code</label>
-                <Input
-                  value={zipCode ?? ''}
-                  onChange={setZipCode}
-                  placeholder="postal code"
-                />
+                <Input value={zipCode ?? ''} onChange={setZipCode} placeholder="postal code" />
               </div>
               <div className="form-group">
                 <label className="mt-4">Country</label>
@@ -1425,12 +1395,7 @@ export default function AdminEventEdit(props: EditProps) {
       <Row>
         <Col className="form-group">
           <label className="mt-4 edit-event-link">Tickets Link</label>
-          <a
-            target="_blank"
-            className="edit-event-link"
-            hidden={!externalUrl}
-            href={externalUrl}
-          >
+          <a target="_blank" className="edit-event-link" hidden={!externalUrl} href={externalUrl}>
             Visit
           </a>
           <Textarea
@@ -1450,9 +1415,7 @@ export default function AdminEventEdit(props: EditProps) {
           >
             Disable "Tickets" button
           </Checkbox>
-          <label className="mt-4">
-            Alternate text for Tickets Button (10 chars or less)
-          </label>
+          <label className="mt-4">Alternate text for Tickets Button (10 chars or less)</label>
           <Input
             value={disableLinkReason ?? ''}
             onChange={setDisableLinkReason}
@@ -1633,10 +1596,7 @@ export default function AdminEventEdit(props: EditProps) {
       </Row>
       <Row
         className="refund-section"
-        hidden={
-          isExternalEvent ||
-          (currentAdminSelection?.selectedEvent?.orders?.length ?? 0) <= 0
-        }
+        hidden={isExternalEvent || (currentAdminSelection?.selectedEvent?.orders?.length ?? 0) <= 0}
       >
         <Col>
           <Button onClick={manageOrders}>Manage Orders</Button>

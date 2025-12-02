@@ -49,9 +49,7 @@ export default function EventMobileRow(props: EventRowProps) {
     ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
       ticketTypes.forEach((ticketType: TicketType) => {
         const key = `ttd${i}`;
-        const data = ticketTypeData.find(
-          (x) => x.TicketType === ticketType.ticketTypeName,
-        );
+        const data = ticketTypeData.find((x) => x.TicketType === ticketType.ticketTypeName);
         let number = 0;
         let total = '';
         if (data) {
@@ -77,17 +75,14 @@ export default function EventMobileRow(props: EventRowProps) {
   const exchangeRate = currencySymbol === '$' ? 1 : 0;
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
   const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0));
-  const revenueUsd = Number(
-    (vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0),
-  );
+  const revenueUsd = Number((vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0));
   const serviceFees = Number(
     (vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0),
   );
   const serviceFeesUsd = Number(
     (vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0),
   );
-  const buttonText =
-    currentSellerType === SellerType.Venue ? 'Customer List' : 'VIP List';
+  const buttonText = currentSellerType === SellerType.Venue ? 'Customer List' : 'VIP List';
   const noOrders = !vipEvent.orders || vipEvent.orders.length === 0;
 
   const revClass = hideRevItem ? 'no-print' : '';
@@ -137,13 +132,7 @@ export default function EventMobileRow(props: EventRowProps) {
           <Row hidden={hideRevItem} className={revClass}>
             <Col>Revenue:</Col>
             <Col>
-              {formatCurrencyAmount(
-                revenue,
-                revenueUsd,
-                currencySymbol,
-                exchangeRate,
-                isAdmin,
-              )}
+              {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
             </Col>
           </Row>
           <Row hidden={hideServiceFees} className="no-print">
@@ -166,9 +155,7 @@ export default function EventMobileRow(props: EventRowProps) {
           <Row hidden={!showNotes}>
             <Col>
               <Button
-                onClick={() =>
-                  showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null
-                }
+                onClick={() => (showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null)}
               >
                 Notes
               </Button>

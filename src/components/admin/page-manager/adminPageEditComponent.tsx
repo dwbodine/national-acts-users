@@ -1,11 +1,7 @@
 'use client';
 
 import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
-import {
-  GetPageTypesResponse,
-  GetSellersResponse,
-  ModifyPageResponse,
-} from '@/types/responses';
+import { GetPageTypesResponse, GetSellersResponse, ModifyPageResponse } from '@/types/responses';
 import { Page, PageSeller } from '@/types/public';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
 import {
@@ -147,9 +143,7 @@ export default function AdminPageEdit() {
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.pageType.pageTypeId !== pageTypeId) {
-      const pageType = currentAdminSelection.pageTypes.find(
-        (x) => x.pageTypeId === pageTypeId,
-      );
+      const pageType = currentAdminSelection.pageTypes.find((x) => x.pageTypeId === pageTypeId);
       if (pageType) {
         pageToUpdate.pageType = pageType;
         dispatch(setSelectedPage(pageToUpdate));
@@ -319,8 +313,7 @@ export default function AdminPageEdit() {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const pageSellers: PageSeller[] | undefined = pageToUpdate.sellers;
       pageToUpdate.sellers = pageSellers?.map((ps) =>
-        ps.pageSellerId === newPageSeller.pageSellerId &&
-        ps.sellerId === newPageSeller.sellerId
+        ps.pageSellerId === newPageSeller.pageSellerId && ps.sellerId === newPageSeller.sellerId
           ? newPageSeller
           : ps,
       );
@@ -351,15 +344,11 @@ export default function AdminPageEdit() {
       );
       if (existingSeller) {
         pageToUpdate.sellers = pageSellers?.map((ps) =>
-          ps.pageSellerId === existingSeller.pageSellerId
-            ? { ...ps, sellerId: newSellerId }
-            : ps,
+          ps.pageSellerId === existingSeller.pageSellerId ? { ...ps, sellerId: newSellerId } : ps,
         );
       } else {
         pageToUpdate.sellers = pageSellers?.map((ps) =>
-          ps.pageSellerId === 0 && ps.sellerId === 0
-            ? { ...ps, sellerId: newSellerId }
-            : ps,
+          ps.pageSellerId === 0 && ps.sellerId === 0 ? { ...ps, sellerId: newSellerId } : ps,
         );
       }
       dispatch(setSelectedPage(pageToUpdate));
@@ -372,9 +361,7 @@ export default function AdminPageEdit() {
     if (currentAdminSelection.selectedPage) {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const userSellers = pageToUpdate.sellers ? [...pageToUpdate.sellers] : [];
-      const existingAdd = userSellers.find(
-        (x) => x.pageSellerId === 0 && x.sellerId === 0,
-      );
+      const existingAdd = userSellers.find((x) => x.pageSellerId === 0 && x.sellerId === 0);
       if (!existingAdd) {
         userSellers.push({
           pageId: pageToUpdate.pageId,
@@ -522,18 +509,12 @@ export default function AdminPageEdit() {
       }
     }
 
-    if (
-      pageToUpdate.useIncludeDates &&
-      (!pageToUpdate.includeStart || !pageToUpdate.includeEnd)
-    ) {
+    if (pageToUpdate.useIncludeDates && (!pageToUpdate.includeStart || !pageToUpdate.includeEnd)) {
       toast.error('If using include date range, both include dates must be set');
       return;
     }
 
-    if (
-      pageToUpdate.useExcludeDates &&
-      (!pageToUpdate.excludeStart || !pageToUpdate.excludeEnd)
-    ) {
+    if (pageToUpdate.useExcludeDates && (!pageToUpdate.excludeStart || !pageToUpdate.excludeEnd)) {
       toast.error('If using exclude date range, both exclude dates must be set');
       return;
     }
@@ -541,8 +522,7 @@ export default function AdminPageEdit() {
     if (
       pageToUpdate.logoOnlyImage &&
       pageToUpdate.logoOnlyImage.length > 4 &&
-      pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length - 4) !==
-        '.png'
+      pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length - 4) !== '.png'
     ) {
       toast.error('Logo image can only be a PNG');
       return;
@@ -654,12 +634,7 @@ export default function AdminPageEdit() {
       });
     }
     sellerRows.push(
-      <div
-        title="Add Seller"
-        key="addSeller"
-        className="admin-click-cell"
-        onClick={addSeller}
-      >
+      <div title="Add Seller" key="addSeller" className="admin-click-cell" onClick={addSeller}>
         <FaPlus></FaPlus> Add Seller
       </div>,
     );
@@ -675,10 +650,7 @@ export default function AdminPageEdit() {
         </Row>
         <Row className="form-group">
           <Col>
-            <Checkbox
-              checked={!isActive}
-              onChange={(_, checked) => setIsActive(!checked)}
-            >
+            <Checkbox checked={!isActive} onChange={(_, checked) => setIsActive(!checked)}>
               Page inactive on website?
             </Checkbox>
           </Col>

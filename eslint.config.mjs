@@ -4,6 +4,7 @@ import importPlugin from 'eslint-plugin-import';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import nextPlugin from '@next/eslint-plugin-next';
+import prettierPlugin from 'eslint-plugin-prettier';
 
 export default defineConfig([
   // -----------------------------------------------------
@@ -15,6 +16,7 @@ export default defineConfig([
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
+        allowDefaultProject: true,
       },
     },
   },
@@ -22,12 +24,14 @@ export default defineConfig([
   // -----------------------------------------------------
   // 2) JS recommended
   // -----------------------------------------------------
-  js.configs.all,
+  {
+    ...js.configs.recommendedTypeChecked,
+  },
 
   // -----------------------------------------------------
   // 3) TS recommended (type-checked)
   // -----------------------------------------------------
-  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.recommendedTypeChecked.map((config) => ({ ...config })),
 
   // -----------------------------------------------------
   // 4) Next.js + Prettier + your rules
@@ -38,17 +42,18 @@ export default defineConfig([
     plugins: {
       import: importPlugin,
       '@next/next': nextPlugin,
+      prettier: prettierPlugin,
     },
 
     settings: {
       'import/resolver': {
-        typescript: {
-          project: './tsconfig.json',
-        },
+        typescript: {},
       },
     },
 
     rules: {
+      'prettier/prettier': ['error'],
+
       // Missing imports / unresolved modules
       'import/no-unresolved': 'off',
       'import/named': 'error',
@@ -89,10 +94,12 @@ export default defineConfig([
       '.next/**',
       'public/**',
       'out/**',
+      'dist/**',
       'node_modules/**',
       'next.config.js',
       'next-env.d.ts',
       'eslint.config.mjs',
+      'prettier.config.cjs',
     ],
   },
 ]);

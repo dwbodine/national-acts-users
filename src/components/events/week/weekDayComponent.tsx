@@ -32,9 +32,7 @@ export default function WeekDay(props: WeekDayProps) {
   const key = props.WeekDayNumber;
 
   const dispatch = useDispatch();
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const [notesOpen, setNotesOpen] = useState(false);
   const [displayNoteOpen, setDisplayNoteOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
@@ -100,13 +98,7 @@ export default function WeekDay(props: WeekDayProps) {
   };
 
   const editNewNoteAndMarkComplete = () => {
-    if (
-      !weekDate ||
-      !displayNoteText ||
-      !displayNoteTitle ||
-      noteId === 0 ||
-      !displayNoteDate
-    ) {
+    if (!weekDate || !displayNoteText || !displayNoteTitle || noteId === 0 || !displayNoteDate) {
       return;
     }
     void editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true).then(
@@ -123,30 +115,20 @@ export default function WeekDay(props: WeekDayProps) {
   };
 
   const editNewNote = () => {
-    if (
-      !weekDate ||
-      !displayNoteText ||
-      !displayNoteTitle ||
-      noteId === 0 ||
-      !displayNoteDate
-    ) {
+    if (!weekDate || !displayNoteText || !displayNoteTitle || noteId === 0 || !displayNoteDate) {
       return;
     }
-    void editNote(
-      noteId,
-      displayNoteText,
-      displayNoteTitle,
-      displayNoteDate,
-      noteIsCompleted,
-    ).then((response: ModifyNoteResponse) => {
-      handleDisplayNoteClose();
-      if (response.success && !response.error) {
-        toast.success('Calendar note edited successfully');
-        dispatch(setReloadAdminEvents(true));
-      } else {
-        toast.error(response.error ?? 'Unexpected error occurred while adding note');
-      }
-    });
+    void editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, noteIsCompleted).then(
+      (response: ModifyNoteResponse) => {
+        handleDisplayNoteClose();
+        if (response.success && !response.error) {
+          toast.success('Calendar note edited successfully');
+          dispatch(setReloadAdminEvents(true));
+        } else {
+          toast.error(response.error ?? 'Unexpected error occurred while adding note');
+        }
+      },
+    );
   };
 
   const deleteSelectedNote = (nId: number) => {
@@ -285,9 +267,7 @@ export default function WeekDay(props: WeekDayProps) {
     });
   }
 
-  const displayDate = weekDate
-    ? `${weekDate.format('ddd')} ${weekDate.format('MM/DD/YYYY')}`
-    : '';
+  const displayDate = weekDate ? `${weekDate.format('ddd')} ${weekDate.format('MM/DD/YYYY')}` : '';
 
   return (
     <Col key={`wd_${key}`} className="week-day">

@@ -1,11 +1,7 @@
 'use client';
 
 import { Button, Checkbox, Input } from 'rsuite';
-import {
-  GetRolesResponse,
-  GetSellersResponse,
-  UpdateUserResponse,
-} from '@/types/responses';
+import { GetRolesResponse, GetSellersResponse, UpdateUserResponse } from '@/types/responses';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Role, User, UserSeller } from '@/types/user';
 import { Seller, SellerType } from '@/types/event';
@@ -51,11 +47,7 @@ export default function AdminUserEdit() {
   useEffect(() => {
     if (currentAdminSelection.selectedUser === undefined) {
       goBack();
-    } else if (
-      username === undefined ||
-      allSellers === undefined ||
-      allRoles === undefined
-    ) {
+    } else if (username === undefined || allSellers === undefined || allRoles === undefined) {
       dispatch(setIsLoading(true));
       setUsername(currentAdminSelection.selectedUser.username ?? '');
       setFirstName(currentAdminSelection.selectedUser.firstName ?? '');
@@ -63,9 +55,7 @@ export default function AdminUserEdit() {
       setMobile(currentAdminSelection.selectedUser.mobile ?? '');
       setNotes(currentAdminSelection.selectedUser.notes ?? '');
       setIsActive(currentAdminSelection.selectedUser.isActive ?? false);
-      setRequireResetPassword(
-        currentAdminSelection.selectedUser.requireResetPassword ?? false,
-      );
+      setRequireResetPassword(currentAdminSelection.selectedUser.requireResetPassword ?? false);
       setSendEmailReset(currentAdminSelection.selectedUser.sendEmailReset ?? false);
       setSendTextReset(currentAdminSelection.selectedUser.sendTextReset ?? false);
       setDisableCheckIn(currentAdminSelection.selectedUser.disableCheckIn ?? false);
@@ -296,12 +286,7 @@ export default function AdminUserEdit() {
       );
     });
     sellerRows.push(
-      <div
-        title="Add Seller"
-        key="addSeller"
-        className="admin-click-cell"
-        onClick={addSeller}
-      >
+      <div title="Add Seller" key="addSeller" className="admin-click-cell" onClick={addSeller}>
         <FaPlus></FaPlus> Add Seller
       </div>,
     );
@@ -351,22 +336,13 @@ export default function AdminUserEdit() {
         >
           Require Reset Password?
         </Checkbox>
-        <Checkbox
-          checked={sendEmailReset}
-          onChange={(_, checked) => setSendEmailReset(checked)}
-        >
+        <Checkbox checked={sendEmailReset} onChange={(_, checked) => setSendEmailReset(checked)}>
           Send Password Reset by Email?
         </Checkbox>
-        <Checkbox
-          checked={sendTextReset}
-          onChange={(_, checked) => setSendTextReset(checked)}
-        >
+        <Checkbox checked={sendTextReset} onChange={(_, checked) => setSendTextReset(checked)}>
           Send Password Reset by Text?
         </Checkbox>
-        <Checkbox
-          checked={disableCheckIn}
-          onChange={(_, checked) => setDisableCheckIn(checked)}
-        >
+        <Checkbox checked={disableCheckIn} onChange={(_, checked) => setDisableCheckIn(checked)}>
           Disable check-in permission?
         </Checkbox>
       </div>

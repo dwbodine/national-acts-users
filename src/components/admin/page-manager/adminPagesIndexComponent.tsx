@@ -1,11 +1,7 @@
 'use client';
 
 import { Button, Input, Table } from 'rsuite';
-import {
-  GetPageTypesResponse,
-  GetPagesResponse,
-  GetSellersResponse,
-} from '@/types/responses';
+import { GetPageTypesResponse, GetPagesResponse, GetSellersResponse } from '@/types/responses';
 import {
   setAllPages,
   setAllSellers,
@@ -79,14 +75,7 @@ export default function AdminPagesIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [
-    getAllPages,
-    dispatch,
-    currentAdminSelection,
-    tableLoading,
-    getAdminSellers,
-    getPageTypes,
-  ]);
+  }, [getAllPages, dispatch, currentAdminSelection, tableLoading, getAdminSellers, getPageTypes]);
 
   const addPage = () => {
     const page: Page = {
@@ -139,13 +128,7 @@ export default function AdminPagesIndex() {
         hidden={currentAdminSelection.allPages === undefined}
       />
       <Button onClick={addPage}>Add Page</Button>
-      <Table
-        height={600}
-        data={filteredPages}
-        bordered
-        cellBordered
-        loading={tableLoading}
-      >
+      <Table height={600} data={filteredPages} bordered cellBordered loading={tableLoading}>
         <Column width={300}>
           <HeaderCell>Page Title</HeaderCell>
           <Cell className="admin-click-cell">

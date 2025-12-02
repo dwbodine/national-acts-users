@@ -84,10 +84,7 @@ export default function AdminList() {
             <h5>Site Admin</h5>
             <ul>
               <li>
-                <a
-                  className="admin-link"
-                  onClick={() => goToAdminPage('manage-site-settings')}
-                >
+                <a className="admin-link" onClick={() => goToAdminPage('manage-site-settings')}>
                   Manage Site Settings
                 </a>
               </li>
@@ -139,10 +136,7 @@ export default function AdminList() {
             <h5>Event/Order Admin</h5>
             <ul>
               <li>
-                <a
-                  className="admin-link"
-                  onClick={() => goToAdminPage('manage-refresh-data')}
-                >
+                <a className="admin-link" onClick={() => goToAdminPage('manage-refresh-data')}>
                   Refresh Data from TicketSocket
                 </a>
               </li>

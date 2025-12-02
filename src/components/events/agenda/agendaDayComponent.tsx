@@ -33,9 +33,7 @@ export default function AgendaDay(props: AgendaDayProps) {
   const key = props.AgendaDayNumber;
 
   const dispatch = useDispatch();
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const [notesOpen, setNotesOpen] = useState(false);
   const [displayNoteOpen, setDisplayNoteOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
@@ -101,13 +99,7 @@ export default function AgendaDay(props: AgendaDayProps) {
   };
 
   const editNewNoteAndMarkComplete = () => {
-    if (
-      !agendaDate ||
-      !displayNoteText ||
-      !displayNoteTitle ||
-      noteId === 0 ||
-      !displayNoteDate
-    ) {
+    if (!agendaDate || !displayNoteText || !displayNoteTitle || noteId === 0 || !displayNoteDate) {
       return;
     }
     void editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true).then(
@@ -124,30 +116,20 @@ export default function AgendaDay(props: AgendaDayProps) {
   };
 
   const editNewNote = () => {
-    if (
-      !agendaDate ||
-      !displayNoteText ||
-      !displayNoteTitle ||
-      noteId === 0 ||
-      !displayNoteDate
-    ) {
+    if (!agendaDate || !displayNoteText || !displayNoteTitle || noteId === 0 || !displayNoteDate) {
       return;
     }
-    void editNote(
-      noteId,
-      displayNoteText,
-      displayNoteTitle,
-      displayNoteDate,
-      noteIsCompleted,
-    ).then((response: ModifyNoteResponse) => {
-      handleDisplayNoteClose();
-      if (response.success && !response.error) {
-        toast.success('Calendar note edited successfully');
-        dispatch(setReloadAdminEvents(true));
-      } else {
-        toast.error(response.error ?? 'Unexpected error occurred while adding note');
-      }
-    });
+    void editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, noteIsCompleted).then(
+      (response: ModifyNoteResponse) => {
+        handleDisplayNoteClose();
+        if (response.success && !response.error) {
+          toast.success('Calendar note edited successfully');
+          dispatch(setReloadAdminEvents(true));
+        } else {
+          toast.error(response.error ?? 'Unexpected error occurred while adding note');
+        }
+      },
+    );
   };
 
   const deleteSelectedNote = (nId: number) => {
@@ -212,9 +194,7 @@ export default function AgendaDay(props: AgendaDayProps) {
           : note.note.length > 35
             ? `${note.note.substring(0, 35)}...`
             : note.note;
-        const noteClass = note.isCompleted
-          ? 'agenda-day-note-completed'
-          : 'agenda-day-note';
+        const noteClass = note.isCompleted ? 'agenda-day-note-completed' : 'agenda-day-note';
         noteRows.push(
           <div key={`adNote_${key}_${i}`} className={noteClass}>
             <span

@@ -6,11 +6,7 @@ import {
   GetSellersResponse,
   RefreshHistoryResponse,
 } from '@/types/responses';
-import {
-  setAdminDates,
-  setAdminSellerId,
-  setAllSellers,
-} from '@/lib/adminSelectionSlice';
+import { setAdminDates, setAdminSellerId, setAllSellers } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
@@ -32,12 +28,10 @@ export default function RefreshTicketSocketData() {
   const { getRefreshHistory } = useGetRefreshHistory();
   const { refreshEventsFromTicketSocket } = useRefreshEventsFromTicketSocket();
   const dispatch = useDispatch();
-  const [updateResults, setUpdateResults] = useState<
-    TicketSocketRefreshHistory | undefined
-  >(undefined);
-  const [history, setHistory] = useState<TicketSocketRefreshHistory[] | undefined>(
+  const [updateResults, setUpdateResults] = useState<TicketSocketRefreshHistory | undefined>(
     undefined,
   );
+  const [history, setHistory] = useState<TicketSocketRefreshHistory[] | undefined>(undefined);
 
   useEffect(() => {
     if (currentAdminSelection.allSellers === undefined) {
@@ -54,14 +48,7 @@ export default function RefreshTicketSocketData() {
         dispatch(setIsLoading(false));
       });
     }
-  }, [
-    dispatch,
-    getSellers,
-    getRefreshHistory,
-    updateResults,
-    history,
-    currentAdminSelection,
-  ]);
+  }, [dispatch, getSellers, getRefreshHistory, updateResults, history, currentAdminSelection]);
 
   const updateSeller = (sellerId: number | null) => {
     if (!sellerId || isNaN(sellerId)) {

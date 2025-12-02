@@ -42,9 +42,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
     : 'n/a';
   const revenue = Number((order?.revenue ?? 0) - (order?.revenueRefunded ?? 0));
   const revenueUsd = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0));
-  const serviceFees = Number(
-    (order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0),
-  );
+  const serviceFees = Number((order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0));
   const serviceFeesUsd = Number(
     (order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0),
   );
@@ -116,9 +114,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
     });
   }
 
-  const phone = order?.phone?.startsWith('+1 ')
-    ? order.phone.replace('+1 ', '')
-    : order?.phone;
+  const phone = order?.phone?.startsWith('+1 ') ? order.phone.replace('+1 ', '') : order?.phone;
 
   const revClass = hideRev ? 'no-print' : '';
 
@@ -179,19 +175,10 @@ export default function OrderMobileRow(props: OrderRowProps) {
               Revenue:
             </Col>
             <Col>
-              {formatCurrencyAmount(
-                revenue,
-                revenueUsd,
-                currencySymbol,
-                exchangeRate,
-                isAdmin,
-              )}
+              {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
             </Col>
           </Row>
-          <Row
-            hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}
-            className="no-print"
-          >
+          <Row hidden={hideServiceFees || showOnlyEmails || showOnlyPhones} className="no-print">
             <Col xs={5} className="mobile-bold">
               Service Fees:
             </Col>

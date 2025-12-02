@@ -78,8 +78,7 @@ export class PublicService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching events - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
     }
 
     return response;
@@ -103,16 +102,13 @@ export class PublicService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching sellers - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching sellers - please contact your administrator';
     }
 
     return response;
   };
 
-  getPageTypes = async (
-    sellerTypesOnly: boolean = false,
-  ): Promise<GetPageTypesResponse> => {
+  getPageTypes = async (sellerTypesOnly: boolean = false): Promise<GetPageTypesResponse> => {
     const url = sellerTypesOnly ? `/public/page_seller_types` : `/public/page_types`;
 
     const response: GetPageTypesResponse = {};
@@ -180,17 +176,13 @@ export class PublicService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching settings - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching settings - please contact your administrator';
     }
 
     return response;
   };
 
-  uploadImageFile = async (
-    file: File,
-    imageType: ImageType,
-  ): Promise<string | undefined> => {
+  uploadImageFile = async (file: File, imageType: ImageType): Promise<string | undefined> => {
     if (!file || !file.name || !imageType) {
       return undefined;
     }

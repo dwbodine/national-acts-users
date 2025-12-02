@@ -12,9 +12,7 @@ import { setIsLoading } from '@/lib/globalSelectionSlice';
 
 export default function AllEventsAgenda() {
   const dispatch = useDispatch();
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const [vipEvents, setVipEvents] = useState<VipEvent[] | undefined>(undefined);
 
   useEffect(() => {
@@ -24,10 +22,7 @@ export default function AllEventsAgenda() {
     ) {
       setVipEvents(currentReportSelection.currentEvents);
       dispatch(setIsLoading(false));
-      if (
-        currentReportSelection.focusControl &&
-        currentReportSelection.focusControl !== ''
-      ) {
+      if (currentReportSelection.focusControl && currentReportSelection.focusControl !== '') {
         const { focusControl } = currentReportSelection;
         setTimeout(() => {
           setFocusToControl(focusControl);

@@ -3,11 +3,7 @@
 import { Col, IconButton, Row, Table } from 'rsuite';
 import { Note, VipEvent } from '@/types/event';
 import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
-import {
-  setExpandedEvent,
-  setExpandedRow,
-  setFocusControl,
-} from '@/lib/adminEventsSelectionSlice';
+import { setExpandedEvent, setExpandedRow, setFocusControl } from '@/lib/adminEventsSelectionSlice';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
@@ -25,9 +21,7 @@ import { useWindowSize } from '@/hooks/common/useWindowSize';
 export default function AllEventsWeek() {
   const { Column, HeaderCell, Cell } = Table;
   const rowKey = 'ticketSocketEventId';
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const dispatch = useDispatch();
   const expandedRowKey = currentReportSelection.expandedRow ?? undefined;
   const windowSize = useWindowSize();
@@ -101,10 +95,7 @@ export default function AllEventsWeek() {
           handleExpanded(evt);
         }
       }
-      if (
-        currentReportSelection.focusControl &&
-        currentReportSelection.focusControl !== ''
-      ) {
+      if (currentReportSelection.focusControl && currentReportSelection.focusControl !== '') {
         const { focusControl } = currentReportSelection;
         setTimeout(() => {
           setFocusToControl(focusControl);
@@ -153,9 +144,7 @@ export default function AllEventsWeek() {
           >
             <Column flexGrow={1} minWidth={100}>
               <HeaderCell>Date</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}
-              </Cell>
+              <Cell>{(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}</Cell>
             </Column>
             <Column flexGrow={3}>
               <HeaderCell>Title</HeaderCell>
@@ -163,9 +152,7 @@ export default function AllEventsWeek() {
             </Column>
             <Column flexGrow={2}>
               <HeaderCell>Venue</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => (rowData.venue ? rowData.venue.name : '')}
-              </Cell>
+              <Cell>{(rowData: VipEvent) => (rowData.venue ? rowData.venue.name : '')}</Cell>
             </Column>
             <Column flexGrow={3}>
               <HeaderCell>Location</HeaderCell>

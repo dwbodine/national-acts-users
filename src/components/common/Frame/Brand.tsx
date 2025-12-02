@@ -23,11 +23,7 @@ const Brand = (
   return (
     <Stack className="brand" {...rest}>
       <Link href="/" style={{ textAlign: 'center' }}>
-        <Logo
-          height={expanded ? 77 : 35}
-          width={expanded ? 100 : 35}
-          expanded={expanded}
-        />
+        <Logo height={expanded ? 77 : 35} width={expanded ? 100 : 35} expanded={expanded} />
       </Link>
     </Stack>
   );

@@ -1,11 +1,7 @@
 'use client';
 
 import { Button, Col, Row, Table } from 'rsuite';
-import {
-  GetEventsResponse,
-  GetSellersResponse,
-  GetToursResponse,
-} from '@/types/responses';
+import { GetEventsResponse, GetSellersResponse, GetToursResponse } from '@/types/responses';
 import {
   setAdminEvents,
   setAdminSellerId,
@@ -95,14 +91,7 @@ export default function AdminToursIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [
-    dispatch,
-    getSellers,
-    currentAdminSelection,
-    getTours,
-    tableLoading,
-    getAdminSellerEvents,
-  ]);
+  }, [dispatch, getSellers, currentAdminSelection, getTours, tableLoading, getAdminSellerEvents]);
 
   const updateSeller = (sellerId: number | null) => {
     const updateSellerId = sellerId && !isNaN(sellerId) ? sellerId : undefined;
@@ -132,10 +121,7 @@ export default function AdminToursIndex() {
     if (!currentAdminSelection.sellerId) {
       toast.error('Must select a seller first');
       return;
-    } else if (
-      !currentAdminSelection.events ||
-      currentAdminSelection.events.length === 0
-    ) {
+    } else if (!currentAdminSelection.events || currentAdminSelection.events.length === 0) {
       toast.error('No future events to add to a tour');
       return;
     }
@@ -195,9 +181,7 @@ export default function AdminToursIndex() {
             </Column>
             <Column flexGrow={1}>
               <HeaderCell># of shows</HeaderCell>
-              <Cell>
-                {(rowData: Tour) => (rowData.events ? rowData.events.length : 0)}
-              </Cell>
+              <Cell>{(rowData: Tour) => (rowData.events ? rowData.events.length : 0)}</Cell>
             </Column>
             <Column flexGrow={1} minWidth={100}>
               <HeaderCell>Announce Date (in Pacific Time)</HeaderCell>

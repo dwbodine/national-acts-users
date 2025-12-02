@@ -1,16 +1,8 @@
 'use client';
 
 import { Button, Checkbox, Col, Row, SelectPicker, Table } from 'rsuite';
-import {
-  GetEventResponse,
-  GetEventsResponse,
-  ModifyOrderResponse,
-} from '@/types/responses';
-import {
-  getEventStatusText,
-  getOrderStatusSlug,
-  getOrderStatusText,
-} from '@/utils/eventUtils';
+import { GetEventResponse, GetEventsResponse, ModifyOrderResponse } from '@/types/responses';
+import { getEventStatusText, getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
 import {
   setAdminEvent,
   setAdminEvents,
@@ -88,9 +80,7 @@ export default function AdminOrdersIndex(props: EditProps) {
         void getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
           if (response.events && !response.error) {
             dispatch(setAdminEvents(response.events));
-            const currentEvent = response.events.find(
-              (x) => x.externalEventId === selectedEventId,
-            );
+            const currentEvent = response.events.find((x) => x.externalEventId === selectedEventId);
             if (currentEvent) {
               dispatch(setAdminEvent(currentEvent));
             }
@@ -174,54 +164,50 @@ export default function AdminOrdersIndex(props: EditProps) {
     if (orderIdList.length === 0) {
       return;
     }
-    void setOrdersInactive(orderIdList, isActive).then(
-      (response: ModifyOrderResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = isActive
-            ? 'Orders activated successfully'
-            : 'Orders deactivated successfully';
-          toast.success(successMessage);
-          setOrderIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = isActive
-              ? 'Unexpected error occurred while activating orders'
-              : 'Unexpected error occurred while deactivating orders';
-          }
-          toast.error(errorMessage);
+    void setOrdersInactive(orderIdList, isActive).then((response: ModifyOrderResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = isActive
+          ? 'Orders activated successfully'
+          : 'Orders deactivated successfully';
+        toast.success(successMessage);
+        setOrderIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = isActive
+            ? 'Unexpected error occurred while activating orders'
+            : 'Unexpected error occurred while deactivating orders';
         }
-      },
-    );
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const deleteOrders = (setDeleted: boolean) => {
     if (orderIdList.length === 0) {
       return;
     }
-    void setOrdersDeleted(orderIdList, setDeleted).then(
-      (response: ModifyOrderResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = setDeleted
-            ? 'Orders deleted successfully'
-            : 'Orders undeleted successfully';
-          toast.success(successMessage);
-          setOrderIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = setDeleted
-              ? 'Unexpected error occurred while deleting orders'
-              : 'Unexpected error occurred while undeleting orders';
-          }
-          toast.error(errorMessage);
+    void setOrdersDeleted(orderIdList, setDeleted).then((response: ModifyOrderResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = setDeleted
+          ? 'Orders deleted successfully'
+          : 'Orders undeleted successfully';
+        toast.success(successMessage);
+        setOrderIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = setDeleted
+            ? 'Unexpected error occurred while deleting orders'
+            : 'Unexpected error occurred while undeleting orders';
         }
-      },
-    );
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const handleBulkEdit = () => {
@@ -334,8 +320,7 @@ export default function AdminOrdersIndex(props: EditProps) {
           <span className="title">Date:</span>{' '}
           {moment(currentAdminSelection.selectedEvent?.eventDate).format('MM/DD/YYYY')}
           <br />
-          <span className="title">Venue:</span>{' '}
-          {currentAdminSelection.selectedEvent?.venue?.name}
+          <span className="title">Venue:</span> {currentAdminSelection.selectedEvent?.venue?.name}
           <br />
           <span className="title">Location:</span> {location}
           <br />
@@ -386,9 +371,7 @@ export default function AdminOrdersIndex(props: EditProps) {
               <HeaderCell>
                 <Checkbox
                   id={`oId_selectAll`}
-                  checked={
-                    allOrderIds.length > 0 && orderIdList.length === allOrderIds.length
-                  }
+                  checked={allOrderIds.length > 0 && orderIdList.length === allOrderIds.length}
                   onChange={(_, checked) => selectAllOrders(checked)}
                 />
               </HeaderCell>
@@ -406,23 +389,17 @@ export default function AdminOrdersIndex(props: EditProps) {
             </Column>
             <Column flexGrow={1}>
               <HeaderCell>Purchase Date</HeaderCell>
-              <Cell>
-                {(rowData: Order) => moment(rowData.purchaseDate).format('MM/DD/YYYY')}
-              </Cell>
+              <Cell>{(rowData: Order) => moment(rowData.purchaseDate).format('MM/DD/YYYY')}</Cell>
             </Column>
             <Column flexGrow={3}>
               <HeaderCell>Purchaser Name</HeaderCell>
               <Cell>
-                {(rowData: Order) =>
-                  `${rowData.purchaserLastName}, ${rowData.purchaserFirstName}`
-                }
+                {(rowData: Order) => `${rowData.purchaserLastName}, ${rowData.purchaserFirstName}`}
               </Cell>
             </Column>
             <Column flexGrow={3}>
               <HeaderCell># of Tickets</HeaderCell>
-              <Cell>
-                {(rowData: Order) => (rowData.numTickets ? rowData.numTickets : '')}
-              </Cell>
+              <Cell>{(rowData: Order) => (rowData.numTickets ? rowData.numTickets : '')}</Cell>
             </Column>
             <Column flexGrow={3}>
               <HeaderCell>Order Status</HeaderCell>
@@ -436,9 +413,7 @@ export default function AdminOrdersIndex(props: EditProps) {
                     <a
                       href="#"
                       id={rowData.ticketSocketOrderId.toString()}
-                      onClick={() =>
-                        viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))
-                      }
+                      onClick={() => viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))}
                     >
                       Edit
                     </a>

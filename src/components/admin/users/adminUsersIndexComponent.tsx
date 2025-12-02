@@ -87,8 +87,7 @@ export default function AdminUsersIndex() {
           user.lastName?.toLowerCase().includes(srch) ||
           user.username.toLowerCase().includes(srch) ||
           (!user.isAdmin &&
-            user.sellers?.find((x) => x.sellerName.toLowerCase().includes(srch)) !==
-              undefined),
+            user.sellers?.find((x) => x.sellerName.toLowerCase().includes(srch)) !== undefined),
       );
     }
     return filteredUsers;
@@ -195,11 +194,7 @@ export default function AdminUsersIndex() {
                   }
                   return `${accumulator}${name},  `;
                 }, '');
-              } else if (
-                rowData.sellers &&
-                rowData.sellers.length > 0 &&
-                rowData.sellers[0]
-              ) {
+              } else if (rowData.sellers && rowData.sellers.length > 0 && rowData.sellers[0]) {
                 seller = `${rowData.sellers[0].sellerName} (${getRoleName(rowData.sellers[0].roleId ?? 0)})`;
               }
               const className = rowData.isActive ? '' : 'admin-inactive';

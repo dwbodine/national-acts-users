@@ -81,9 +81,7 @@ export default function RefreshTicketSocketHistoryTable(
         <HeaderCell>Order update duration</HeaderCell>
         <Cell>
           {(rowData: TicketSocketRefreshHistory) =>
-            rowData.orderDataUpdateDuration
-              ? rowData.orderDataUpdateDuration.toFixed(1)
-              : '0.0'
+            rowData.orderDataUpdateDuration ? rowData.orderDataUpdateDuration.toFixed(1) : '0.0'
           }
         </Cell>
       </Column>
@@ -98,9 +96,7 @@ export default function RefreshTicketSocketHistoryTable(
       <Column fullText flexGrow={1}>
         <HeaderCell>Success</HeaderCell>
         <Cell>
-          {(rowData: TicketSocketRefreshHistory) =>
-            rowData.succeeded ? 'true' : 'false'
-          }
+          {(rowData: TicketSocketRefreshHistory) => (rowData.succeeded ? 'true' : 'false')}
         </Cell>
       </Column>
       <Column fullText flexGrow={1}>
@@ -123,9 +119,7 @@ export default function RefreshTicketSocketHistoryTable(
         <HeaderCell>Service Events Skipped</HeaderCell>
         <Cell>
           {(rowData: TicketSocketRefreshHistory) =>
-            rowData.serviceEventsSkipped && rowData.serviceEventsSkipped.length > 0
-              ? 'yes'
-              : 'no'
+            rowData.serviceEventsSkipped && rowData.serviceEventsSkipped.length > 0 ? 'yes' : 'no'
           }
         </Cell>
       </Column>
@@ -157,9 +151,7 @@ export default function RefreshTicketSocketHistoryTable(
         <HeaderCell>Ticket types failed</HeaderCell>
         <Cell>
           {(rowData: TicketSocketRefreshHistory) =>
-            rowData.ticketTypesFailed && rowData.ticketTypesFailed.length > 0
-              ? 'yes'
-              : 'no'
+            rowData.ticketTypesFailed && rowData.ticketTypesFailed.length > 0 ? 'yes' : 'no'
           }
         </Cell>
       </Column>
@@ -167,9 +159,7 @@ export default function RefreshTicketSocketHistoryTable(
         <HeaderCell>Total Events From Service</HeaderCell>
         <Cell>
           {(rowData: TicketSocketRefreshHistory) =>
-            rowData.totalEventsFromService
-              ? rowData.totalEventsFromService.toString()
-              : '0'
+            rowData.totalEventsFromService ? rowData.totalEventsFromService.toString() : '0'
           }
         </Cell>
       </Column>

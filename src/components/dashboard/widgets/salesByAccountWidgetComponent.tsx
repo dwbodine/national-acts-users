@@ -19,8 +19,7 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
   }
   if (accountTotals?.Purchases) {
     ticketsPerTransaction = tickets / accountTotals.Purchases;
-    averagePurchaseAmountUsd =
-      (accountTotals?.TotalRevenueUsd ?? 0) / accountTotals.Purchases;
+    averagePurchaseAmountUsd = (accountTotals?.TotalRevenueUsd ?? 0) / accountTotals.Purchases;
   }
 
   return (
@@ -36,9 +35,7 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Transactions:</Col>
-          <Col className="sales-stat-block-value">
-            {accountTotals?.Purchases ?? 'n/a'}
-          </Col>
+          <Col className="sales-stat-block-value">{accountTotals?.Purchases ?? 'n/a'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Tickets:</Col>
@@ -46,9 +43,7 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Refunds:</Col>
-          <Col className="sales-stat-block-value">
-            {accountTotals?.TicketsRefunded ?? '0'}
-          </Col>
+          <Col className="sales-stat-block-value">{accountTotals?.TicketsRefunded ?? '0'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Revenue:</Col>
@@ -82,9 +77,7 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Tickets per transaction:</Col>
-          <Col className="sales-stat-block-value">
-            {ticketsPerTransaction.toFixed(2) ?? '0'}
-          </Col>
+          <Col className="sales-stat-block-value">{ticketsPerTransaction.toFixed(2) ?? '0'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Purchase:</Col>
@@ -94,9 +87,7 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Price Per Ticket:</Col>
-          <Col className="sales-stat-block-value">
-            ${pricePerTicketUsd.toFixed(2) ?? '0.00'}
-          </Col>
+          <Col className="sales-stat-block-value">${pricePerTicketUsd.toFixed(2) ?? '0.00'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Service Fee Per Ticket:</Col>

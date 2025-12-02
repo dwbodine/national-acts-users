@@ -5,8 +5,7 @@ export const useSetEventsDeleted = () => {
   const setEventsDeleted = async (
     eventIdList: number[],
     isDeleted: boolean,
-  ): Promise<ModifyEventResponse> =>
-    await eventService.setEventsDeleted(eventIdList, isDeleted);
+  ): Promise<ModifyEventResponse> => await eventService.setEventsDeleted(eventIdList, isDeleted);
 
   return { setEventsDeleted };
 };

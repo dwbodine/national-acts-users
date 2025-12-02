@@ -73,8 +73,7 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
       <Col>
         <Row>
           <Col className="sales-stat-block-title">
-            Average Sales by Day of Week{' '}
-            {currentYear === selectedYear ? '' : selectedYear}
+            Average Sales by Day of Week {currentYear === selectedYear ? '' : selectedYear}
           </Col>
         </Row>
         <Row hidden={currentYear !== selectedYear}>

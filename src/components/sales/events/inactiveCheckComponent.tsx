@@ -20,10 +20,7 @@ export default function InactiveCheck() {
       <Checkbox
         checked={currentReportSelection.showInactive}
         onChange={(_, checked) => handleChange(checked)}
-        disabled={
-          currentReportSelection.showDeleted ||
-          currentReportSelection.seller.sellerId <= 0
-        }
+        disabled={currentReportSelection.showDeleted || currentReportSelection.seller.sellerId <= 0}
       >
         Show inactive events?
       </Checkbox>

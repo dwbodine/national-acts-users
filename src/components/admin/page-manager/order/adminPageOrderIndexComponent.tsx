@@ -2,11 +2,7 @@
 
 import { Button, Col, Input, Row, SelectPicker, Table } from 'rsuite';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
-import {
-  GetPageTypesResponse,
-  GetPagesResponse,
-  ModifyPageResponse,
-} from '@/types/responses';
+import { GetPageTypesResponse, GetPagesResponse, ModifyPageResponse } from '@/types/responses';
 import {
   setPageOrders,
   setPageTypes,
@@ -45,8 +41,7 @@ export default function AdminPageOrderIndex() {
     ) {
       return;
     }
-    const newPageOrder: number | undefined =
-      pageOrder && !isNaN(pageOrder) ? pageOrder : undefined;
+    const newPageOrder: number | undefined = pageOrder && !isNaN(pageOrder) ? pageOrder : undefined;
     const pageMap = new Map<number, Page>(currentAdminSelection.pageOrders);
     const page = pageMap.get(pageId);
     if (page && page.pageOrder !== newPageOrder) {
@@ -170,9 +165,7 @@ export default function AdminPageOrderIndex() {
   ]);
 
   const onPageTypeChange = (pageTypeId: number | null) => {
-    const pageType = currentAdminSelection?.pageTypes?.find(
-      (x) => x.pageTypeId === pageTypeId,
-    );
+    const pageType = currentAdminSelection?.pageTypes?.find((x) => x.pageTypeId === pageTypeId);
     if (pageType) {
       dispatch(setSelectedPageType(pageType));
       dispatch(setReloadPages(true));

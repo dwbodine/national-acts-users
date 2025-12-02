@@ -2,10 +2,7 @@
 
 import { Button, Col, Row } from 'rsuite';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import {
-  setCurrentDashboardData,
-  setDashboardDateRange,
-} from '@/lib/dashboardSelectionSlice';
+import { setCurrentDashboardData, setDashboardDateRange } from '@/lib/dashboardSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AdminDashboardSelection } from '@/types/user';
 import DateRangeSelector from '../common/dateRangeSelectorComponent';
@@ -22,9 +19,7 @@ import { useGetAllOrders } from '@/hooks/order/useGetAllOrders';
 export default function DashboardBar() {
   const dispatch = useDispatch();
   const { getAllOrders } = useGetAllOrders();
-  const currentDashboardSelection = useSelector(
-    (state: RootState) => state.dashboardSelecton,
-  );
+  const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
   const dateRangeTitle = 'Selected date range';
 
   const pageTitle: string = `Home Dashboard`;
@@ -41,12 +36,7 @@ export default function DashboardBar() {
       label: 'Last Month',
       value: [
         moment().startOf('month').subtract(1, 'month').startOf('day').toDate(),
-        moment()
-          .startOf('month')
-          .subtract(1, 'month')
-          .endOf('month')
-          .endOf('day')
-          .toDate(),
+        moment().startOf('month').subtract(1, 'month').endOf('month').endOf('day').toDate(),
       ],
     },
   ];

@@ -35,13 +35,11 @@ export default function AdminSellerGlobalIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         dispatch(setAllSellers(undefined));
-        void getTicketSocketAccounts().then(
-          (response: GetTicketSocketAccountsResponse) => {
-            if (!response.error && response.accounts) {
-              dispatch(setTicketSocketAccounts(response.accounts));
-            }
-          },
-        );
+        void getTicketSocketAccounts().then((response: GetTicketSocketAccountsResponse) => {
+          if (!response.error && response.accounts) {
+            dispatch(setTicketSocketAccounts(response.accounts));
+          }
+        });
       } else if (currentAdminSelection.reloadSellers) {
         dispatch(setReloadSellers(false));
         setTableLoading(true);
@@ -62,13 +60,7 @@ export default function AdminSellerGlobalIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [
-    getAdminSellers,
-    getTicketSocketAccounts,
-    dispatch,
-    currentAdminSelection,
-    tableLoading,
-  ]);
+  }, [getAdminSellers, getTicketSocketAccounts, dispatch, currentAdminSelection, tableLoading]);
 
   const addSeller = () => {
     const seller: Seller = {
@@ -99,9 +91,7 @@ export default function AdminSellerGlobalIndex() {
     let filteredSellers: Seller[] | undefined = sellers;
     if (searchTerm && searchTerm.length >= 2 && sellers && sellers.length > 0) {
       const srch = searchTerm.toLowerCase();
-      filteredSellers = sellers.filter((seller) =>
-        seller.name.toLowerCase().includes(srch),
-      );
+      filteredSellers = sellers.filter((seller) => seller.name.toLowerCase().includes(srch));
     }
     return filteredSellers;
   };

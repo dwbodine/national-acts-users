@@ -99,9 +99,7 @@ const exportEventsToCsv = (
     const arr = new Map<string, number>();
     ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
       ticketTypes.forEach((ticketType: TicketType) => {
-        const data = ticketTypeData.find(
-          (x) => x.TicketType === ticketType.ticketTypeName,
-        );
+        const data = ticketTypeData.find((x) => x.TicketType === ticketType.ticketTypeName);
         let number = arr.get(ticketType.ticketTypeName) ?? 0;
         if (data) {
           number += data.Number;
@@ -409,9 +407,7 @@ const exportEventCustomerDataToCsv = (
     exportStr += '"Type","Number"\n';
     ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
       ticketTypes.forEach((ticketType: TicketType) => {
-        const data = ticketTypeData.find(
-          (x) => x.TicketType === ticketType.ticketTypeName,
-        );
+        const data = ticketTypeData.find((x) => x.TicketType === ticketType.ticketTypeName);
         let number = 0;
         if (data) {
           number = data.Number;
@@ -461,9 +457,7 @@ const exportEventCustomerDataToCsv = (
   return exportStr;
 };
 
-const exportDashboardOrdersToCsv = (
-  currentDashboardSelection: AdminDashboardSelection,
-): string => {
+const exportDashboardOrdersToCsv = (currentDashboardSelection: AdminDashboardSelection): string => {
   if (
     !currentDashboardSelection.currentDashboardData ||
     !currentDashboardSelection.currentDashboardData.orders ||
@@ -507,14 +501,7 @@ const exportDashboardOrdersToCsv = (
   );
 
   orders.forEach((order: Order) => {
-    exportStr += getOrderExportRow(
-      order,
-      true,
-      true,
-      hasPhoneData,
-      hasShirtData,
-      hasNonUsaOrders,
-    );
+    exportStr += getOrderExportRow(order, true, true, hasPhoneData, hasShirtData, hasNonUsaOrders);
   });
 
   return exportStr;
@@ -575,10 +562,7 @@ const getAccountNameFromTicketSocketId = (ticketSocketId: number): string => {
   }
 };
 
-const getEventStatusSlug = (
-  event: VipEvent | undefined,
-  isAdmin: boolean = false,
-): string => {
+const getEventStatusSlug = (event: VipEvent | undefined, isAdmin: boolean = false): string => {
   if (!event) {
     return '';
   }
@@ -623,10 +607,7 @@ const getSellerStatusSlug = (seller: Seller | undefined): string => {
   return 'active';
 };
 
-const getEventStatusText = (
-  vipEvent: VipEvent | undefined,
-  isAdmin: boolean = false,
-): string => {
+const getEventStatusText = (vipEvent: VipEvent | undefined, isAdmin: boolean = false): string => {
   const slug = getEventStatusSlug(vipEvent, isAdmin);
   let statusText: string = '';
   switch (slug) {

@@ -18,9 +18,7 @@ export default function AdminRoleEdit() {
   const dispatch = useDispatch();
   const { getAllPermissions } = useGetAllPermissions();
   const { updateRole } = useUpdateRole();
-  const [allPermissions, setAllPermissions] = useState<Permission[] | undefined>(
-    undefined,
-  );
+  const [allPermissions, setAllPermissions] = useState<Permission[] | undefined>(undefined);
   const [roleName, setRoleName] = useState<string | undefined>('');
   const router = useRouter();
 
@@ -32,10 +30,7 @@ export default function AdminRoleEdit() {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.selectedRole === undefined) {
         goBack();
-      } else if (
-        allPermissions === undefined &&
-        (roleName === undefined || roleName === '')
-      ) {
+      } else if (allPermissions === undefined && (roleName === undefined || roleName === '')) {
         dispatch(setIsLoading(true));
         setRoleName(currentAdminSelection.selectedRole.roleName);
         void getAllPermissions().then((response: GetPermissionsResponse) => {
@@ -47,20 +42,10 @@ export default function AdminRoleEdit() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [
-    currentAdminSelection,
-    roleName,
-    allPermissions,
-    getAllPermissions,
-    dispatch,
-    goBack,
-  ]);
+  }, [currentAdminSelection, roleName, allPermissions, getAllPermissions, dispatch, goBack]);
 
   const hasPermission = (permissionId: number) => {
-    if (
-      !currentAdminSelection.selectedRole ||
-      !currentAdminSelection.selectedRole.permissions
-    ) {
+    if (!currentAdminSelection.selectedRole || !currentAdminSelection.selectedRole.permissions) {
       return false;
     }
     return (
@@ -93,9 +78,7 @@ export default function AdminRoleEdit() {
         changed = true;
       }
     } else if (!isChecked && hasPerm) {
-      currentPermissions = currentPermissions.filter(
-        (x) => x.permissionId !== permissionId,
-      );
+      currentPermissions = currentPermissions.filter((x) => x.permissionId !== permissionId);
       changed = true;
     }
     if (changed) {
@@ -159,9 +142,7 @@ export default function AdminRoleEdit() {
   return (
     <div
       className="admin-container"
-      hidden={
-        !(permissionRows.length > 0 && currentAdminSelection.selectedRole !== undefined)
-      }
+      hidden={!(permissionRows.length > 0 && currentAdminSelection.selectedRole !== undefined)}
     >
       <h1>{pageHeader}</h1>
       <div className="form-group">

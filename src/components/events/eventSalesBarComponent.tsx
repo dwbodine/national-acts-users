@@ -18,9 +18,7 @@ export default function EventSalesBar() {
   const { getUser } = useCurrentUser();
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const agendaOnly = windowSize.width < EVENTS_AGENDA_VIEW_BREAKPOINT;
   const router = useRouter();
 

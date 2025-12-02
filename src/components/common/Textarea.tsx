@@ -7,10 +7,7 @@ type TextareaProps = Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
   'onChange' | 'value' | 'defaultValue'
 > &
-  Pick<
-    InputProps,
-    'onChange' | 'value' | 'defaultValue' | 'disabled' | 'id' | 'className'
-  > &
+  Pick<InputProps, 'onChange' | 'value' | 'defaultValue' | 'disabled' | 'id' | 'className'> &
   Omit<InputProps, 'onChange'> & {
     onChange?: (value: string, event: React.SyntheticEvent) => void;
   } & {

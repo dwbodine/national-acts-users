@@ -61,9 +61,7 @@ export default function LoginComponent() {
           } else if (response.error) {
             setLoginError(response.error);
           } else {
-            setLoginError(
-              'Unknown error during login - please contact your administrator',
-            );
+            setLoginError('Unknown error during login - please contact your administrator');
           }
         } else {
           setLoginError('Unknown error during login - please contact your administrator');
@@ -87,9 +85,8 @@ export default function LoginComponent() {
             <br />
             Among the many other enhancements, we have upgraded our security algorithm.
             <br />
-            For that reason, all users will have to reset their password - if you have not
-            done so, please click on the link next to &quot;Forgot Password&quot; below to
-            start the process.
+            For that reason, all users will have to reset their password - if you have not done so,
+            please click on the link next to &quot;Forgot Password&quot; below to start the process.
             <br />
             If you have any issues, please contact us as{' '}
             <a href="mailto:info@national-acts.com">info@national-acts.com</a>

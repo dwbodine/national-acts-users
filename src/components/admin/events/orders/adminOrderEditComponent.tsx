@@ -1,17 +1,9 @@
 'use client';
 
 import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
-import {
-  GetOrderResponse,
-  ModifyOrderResponse,
-  ModifyTicketResponse,
-} from '@/types/responses';
+import { GetOrderResponse, ModifyOrderResponse, ModifyTicketResponse } from '@/types/responses';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
-import {
-  setAdminOrder,
-  setMustSaveOrder,
-  setReloadEvents,
-} from '@/lib/adminSelectionSlice';
+import { setAdminOrder, setMustSaveOrder, setReloadEvents } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 import { EditProps } from '@/types/props';
@@ -44,9 +36,7 @@ export default function AdminOrderEdit(props: EditProps) {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [ticketIdList, setTicketIdList] = useState<number[]>([]);
   const allTicketIds: number[] =
-    currentAdminSelection.selectedOrder?.tickets?.map(
-      (t) => t.ticketSocketOrderTicketId,
-    ) ?? [];
+    currentAdminSelection.selectedOrder?.tickets?.map((t) => t.ticketSocketOrderTicketId) ?? [];
 
   const loadOrderById = useCallback(() => {
     if (!id) {
@@ -82,12 +72,7 @@ export default function AdminOrderEdit(props: EditProps) {
   };
 
   const setPrice = (ticketId: number, newPrice: number) => {
-    if (
-      !currentAdminSelection.selectedOrder ||
-      !ticketId ||
-      isNaN(ticketId) ||
-      isNaN(newPrice)
-    ) {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId) || isNaN(newPrice)) {
       return;
     }
     const currentOrder = { ...currentAdminSelection.selectedOrder };
@@ -392,24 +377,22 @@ export default function AdminOrderEdit(props: EditProps) {
     toast.dismiss();
     dispatch(setIsLoading(true));
 
-    void refundTicket(refundTicketId, refundSvcFees).then(
-      (response: ModifyOrderResponse) => {
-        const { success } = response;
-        dispatch(setIsLoading(false));
-        if (success) {
-          toast.success('Refund succeeded');
-          if (id) {
-            loadOrderById();
-          } else {
-            dispatch(setAdminOrder(undefined));
-            dispatch(setReloadEvents(true));
-            goBack(false);
-          }
+    void refundTicket(refundTicketId, refundSvcFees).then((response: ModifyOrderResponse) => {
+      const { success } = response;
+      dispatch(setIsLoading(false));
+      if (success) {
+        toast.success('Refund succeeded');
+        if (id) {
+          loadOrderById();
         } else {
-          toast.error('Refund failed');
+          dispatch(setAdminOrder(undefined));
+          dispatch(setReloadEvents(true));
+          goBack(false);
         }
-      },
-    );
+      } else {
+        toast.error('Refund failed');
+      }
+    });
   };
 
   const confirmRefundTicket = (ticketId: number) => {
@@ -435,8 +418,7 @@ export default function AdminOrderEdit(props: EditProps) {
       return;
     }
 
-    const message: string =
-      'By continuing, this ticket will be marked as refunded in full';
+    const message: string = 'By continuing, this ticket will be marked as refunded in full';
     toast.warning(
       <ConfirmationDialog
         Message={message}
@@ -613,35 +595,33 @@ export default function AdminOrderEdit(props: EditProps) {
     if (ticketIdList.length === 0) {
       return;
     }
-    void setTicketsCheckedIn(ticketIdList, isCheckedIn).then(
-      (response: ModifyTicketResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = isCheckedIn
-            ? 'Tickets checked in successfully'
-            : 'Tickets unchecked successfully';
-          toast.success(successMessage);
-          setTicketIdList([]);
-          setSelectedAction(null);
-          if (id) {
-            loadOrderById();
-          } else {
-            dispatch(setAdminOrder(undefined));
-            dispatch(setReloadEvents(true));
-            setTimeout(() => {
-              goBack(false);
-            }, 500);
-          }
+    void setTicketsCheckedIn(ticketIdList, isCheckedIn).then((response: ModifyTicketResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = isCheckedIn
+          ? 'Tickets checked in successfully'
+          : 'Tickets unchecked successfully';
+        toast.success(successMessage);
+        setTicketIdList([]);
+        setSelectedAction(null);
+        if (id) {
+          loadOrderById();
         } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = isCheckedIn
-              ? 'Unexpected error occurred while checking in tickets'
-              : 'Unexpected error occurred while unchecking tickets';
-          }
-          toast.error(errorMessage);
+          dispatch(setAdminOrder(undefined));
+          dispatch(setReloadEvents(true));
+          setTimeout(() => {
+            goBack(false);
+          }, 500);
         }
-      },
-    );
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = isCheckedIn
+            ? 'Unexpected error occurred while checking in tickets'
+            : 'Unexpected error occurred while unchecking tickets';
+        }
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const handleBulkEdit = () => {
@@ -712,13 +692,11 @@ export default function AdminOrderEdit(props: EditProps) {
   const refundsDisabled =
     currentAdminSelection.selectedOrder?.numTickets === 0 ||
     (currentAdminSelection.selectedOrder?.hasRefunds &&
-      currentAdminSelection.selectedOrder?.tickets?.find((x) => !x.isRefunded) ===
-        undefined);
+      currentAdminSelection.selectedOrder?.tickets?.find((x) => !x.isRefunded) === undefined);
   const chargebackDisabled =
     currentAdminSelection.selectedOrder?.numTickets === 0 ||
     (currentAdminSelection.selectedOrder?.hasChargebacks &&
-      currentAdminSelection.selectedOrder?.tickets?.find((x) => !x.isChargedBack) ===
-        undefined);
+      currentAdminSelection.selectedOrder?.tickets?.find((x) => !x.isChargedBack) === undefined);
   const chargebackTitle = chargebackDisabled ? 'Order has already been charged back' : '';
   const currencyAbbrev = currentAdminSelection.selectedOrder?.currencyAbbrev;
   const isActive = currentAdminSelection.selectedOrder?.isActive ?? false;
@@ -812,9 +790,7 @@ export default function AdminOrderEdit(props: EditProps) {
                 defaultValue={ticket.shirtSize}
                 searchable={false}
                 cleanable={false}
-                onChange={(value) =>
-                  setShirtSize(parseInt(`${ticketId}`), value ?? undefined)
-                }
+                onChange={(value) => setShirtSize(parseInt(`${ticketId}`), value ?? undefined)}
               />
             ) : ticket.shirtSize ? (
               ticket.shirtSize
@@ -841,9 +817,7 @@ export default function AdminOrderEdit(props: EditProps) {
               value={ticket.serviceFee?.toFixed(2)}
               type="number"
               step={0.25}
-              onChange={(value) =>
-                setServiceFee(parseInt(`${ticketId}`), parseFloat(value))
-              }
+              onChange={(value) => setServiceFee(parseInt(`${ticketId}`), parseFloat(value))}
             />
           </td>
           <td hidden={isComped || (!hasChargebacks && !hasRefunds)}>
@@ -865,9 +839,7 @@ export default function AdminOrderEdit(props: EditProps) {
               key={`checkin_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               defaultChecked={ticket.isActive && ticket.isCheckedIn}
-              onChange={(_, checked) =>
-                setTicketCheckInStatus(parseInt(`${ticketId}`), checked)
-              }
+              onChange={(_, checked) => setTicketCheckInStatus(parseInt(`${ticketId}`), checked)}
             />
           </td>
           <td style={{ textAlign: 'center' }} hidden={isComped}>
@@ -930,10 +902,7 @@ export default function AdminOrderEdit(props: EditProps) {
   }));
 
   return (
-    <Col
-      className="admin-container"
-      hidden={currentAdminSelection.selectedOrder === undefined}
-    >
+    <Col className="admin-container" hidden={currentAdminSelection.selectedOrder === undefined}>
       <Row>
         <Col>
           <h3>{pageHeader}</h3>
@@ -941,8 +910,7 @@ export default function AdminOrderEdit(props: EditProps) {
       </Row>
       <Row className="form-group">
         <Col className="form-header">
-          <span className="title">Event:</span>{' '}
-          {currentAdminSelection.selectedOrder?.eventTitle}
+          <span className="title">Event:</span> {currentAdminSelection.selectedOrder?.eventTitle}
           <br />
           <span className="title">Event Date:</span> {eventDate}
           <br />
@@ -997,21 +965,16 @@ export default function AdminOrderEdit(props: EditProps) {
             }
           >
             <span className="title">Ticket Revenue Refunded:</span>{' '}
-            {(currentAdminSelection.selectedOrder?.revenueRefunded ?? 0).toFixed(2)}{' '}
-            <br />
+            {(currentAdminSelection.selectedOrder?.revenueRefunded ?? 0).toFixed(2)} <br />
             <span className="title">Service Fee Revenue Refunded:</span>{' '}
-            {(
-              currentAdminSelection.selectedOrder?.serviceFeeRevenueRefunded ?? 0
-            ).toFixed(2)}{' '}
+            {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefunded ?? 0).toFixed(2)}{' '}
             <br />
           </div>
           <span className="title">Ticket Revenue Refunded (USD):</span>{' '}
           {(currentAdminSelection.selectedOrder?.revenueRefundedUsd ?? 0).toFixed(2)}
           <br />
           <span className="title">Service Fee Revenue Refunded (USD):</span>{' '}
-          {(
-            currentAdminSelection.selectedOrder?.serviceFeeRevenueRefundedUsd ?? 0
-          ).toFixed(2)}
+          {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefundedUsd ?? 0).toFixed(2)}
           <br />
         </Col>
       </Row>
@@ -1073,10 +1036,7 @@ export default function AdminOrderEdit(props: EditProps) {
                 <th>
                   <Checkbox
                     id={`tId_selectAll`}
-                    checked={
-                      allTicketIds.length > 0 &&
-                      ticketIdList.length === allTicketIds.length
-                    }
+                    checked={allTicketIds.length > 0 && ticketIdList.length === allTicketIds.length}
                     onChange={(_, checked) => selectAllTickets(checked)}
                   />
                 </th>

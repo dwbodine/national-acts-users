@@ -40,9 +40,7 @@ export default function OrderRow(props: OrderRowProps) {
     : 'n/a';
   const revenue = Number((order?.revenue ?? 0) - (order?.revenueRefunded ?? 0));
   const revenueUsd = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0));
-  const serviceFees = Number(
-    (order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0),
-  );
+  const serviceFees = Number((order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0));
   const serviceFeesUsd = Number(
     (order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0),
   );
@@ -112,9 +110,7 @@ export default function OrderRow(props: OrderRowProps) {
     });
   }
 
-  const phone = order?.phone?.startsWith('+1 ')
-    ? order.phone.replace('+1 ', '')
-    : order?.phone;
+  const phone = order?.phone?.startsWith('+1 ') ? order.phone.replace('+1 ', '') : order?.phone;
 
   const revClass = hideRev ? 'no-print' : '';
 
@@ -127,39 +123,24 @@ export default function OrderRow(props: OrderRowProps) {
       </td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{orderId}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{orderStatus}</td>
-      <td hidden={showOnlyEmails || showOnlyPhones}>
-        {moment(eventDate).format('MM/DD/YYYY')}
-      </td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{moment(eventDate).format('MM/DD/YYYY')}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{eventName}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{ticketTypeRows}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{order?.numTickets}</td>
-      <td
-        className={`pull-right ${revClass}`}
-        hidden={hideRev || showOnlyEmails || showOnlyPhones}
-      >
+      <td className={`pull-right ${revClass}`} hidden={hideRev || showOnlyEmails || showOnlyPhones}>
         {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td
         className="pull-right no-print"
         hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}
       >
-        {formatCurrencyAmount(
-          serviceFees,
-          serviceFeesUsd,
-          currencySymbol,
-          exchangeRate,
-          isAdmin,
-        )}
+        {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td hidden={showOnlyPhones} className="email">
         {order?.email}
       </td>
       {hasPhoneData && !showOnlyEmails ? <td>{phone}</td> : ''}
-      {hasShirtData && !(showOnlyEmails || showOnlyPhones) ? (
-        <td>{shirtSizeRows}</td>
-      ) : (
-        ''
-      )}
+      {hasShirtData && !(showOnlyEmails || showOnlyPhones) ? <td>{shirtSizeRows}</td> : ''}
     </tr>
   );
 }

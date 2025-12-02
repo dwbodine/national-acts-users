@@ -8,14 +8,7 @@ import {
   UpdateUserResponse,
   UserSellerResponse,
 } from '@/types/responses';
-import {
-  Permission,
-  Role,
-  User,
-  UserActivity,
-  UserActivityType,
-  UserSeller,
-} from '@/types/user';
+import { Permission, Role, User, UserActivity, UserActivityType, UserSeller } from '@/types/user';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
 
@@ -45,8 +38,7 @@ export class UserService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching users - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching users - please contact your administrator';
     }
 
     return response;
@@ -67,8 +59,7 @@ export class UserService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching roles - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching roles - please contact your administrator';
     }
 
     return response;
@@ -138,8 +129,7 @@ export class UserService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while updating role - please contact your administrator';
+        err?.message ?? 'Unknown error while updating role - please contact your administrator';
     }
 
     return response;
@@ -162,8 +152,7 @@ export class UserService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while deleting roles - please contact your administrator';
+        err?.message ?? 'Unknown error while deleting roles - please contact your administrator';
     }
 
     return response;
@@ -186,8 +175,7 @@ export class UserService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while updating user - please contact your administrator';
+        err?.message ?? 'Unknown error while updating user - please contact your administrator';
     }
 
     return response;
@@ -210,8 +198,7 @@ export class UserService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while deleting user - please contact your administrator';
+        err?.message ?? 'Unknown error while deleting user - please contact your administrator';
     }
 
     return response;

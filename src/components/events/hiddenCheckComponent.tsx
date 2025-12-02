@@ -8,9 +8,7 @@ import { setShowHidden } from '@/lib/adminEventsSelectionSlice';
 
 export default function AdminHiddenCheck() {
   const dispatch = useDispatch();
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
 
   const handleChange = (checked: boolean) => {
     dispatch(setShowHidden(checked));

@@ -234,9 +234,7 @@ export default function AdminEventsIndex() {
     ) {
       return;
     }
-    const vipEvent = currentAdminSelection.events.find(
-      (x) => x.externalEventId === eventId,
-    );
+    const vipEvent = currentAdminSelection.events.find((x) => x.externalEventId === eventId);
     if (!vipEvent) {
       return;
     }
@@ -252,9 +250,7 @@ export default function AdminEventsIndex() {
     ) {
       return;
     }
-    const vipEvent = currentAdminSelection.events.find(
-      (x) => x.externalEventId === eventId,
-    );
+    const vipEvent = currentAdminSelection.events.find((x) => x.externalEventId === eventId);
     if (!vipEvent || !vipEvent.orders || vipEvent.orders.length === 0) {
       return;
     }
@@ -288,54 +284,50 @@ export default function AdminEventsIndex() {
     if (eventIdList.length === 0) {
       return;
     }
-    void setEventsInactive(eventIdList, isActive).then(
-      (response: ModifyEventResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = isActive
-            ? 'Events activated successfully'
-            : 'Events deactivated successfully';
-          toast.success(successMessage);
-          setEventIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = isActive
-              ? 'Unexpected error occurred while activating events'
-              : 'Unexpected error occurred while deactivating events';
-          }
-          toast.error(errorMessage);
+    void setEventsInactive(eventIdList, isActive).then((response: ModifyEventResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = isActive
+          ? 'Events activated successfully'
+          : 'Events deactivated successfully';
+        toast.success(successMessage);
+        setEventIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = isActive
+            ? 'Unexpected error occurred while activating events'
+            : 'Unexpected error occurred while deactivating events';
         }
-      },
-    );
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const deleteEvents = (setDeleted: boolean) => {
     if (eventIdList.length === 0) {
       return;
     }
-    void setEventsDeleted(eventIdList, setDeleted).then(
-      (response: ModifyEventResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = setDeleted
-            ? 'Events deleted successfully'
-            : 'Events undeleted successfully';
-          toast.success(successMessage);
-          setEventIdList([]);
-          setSelectedAction(null);
-          dispatch(setReloadEvents(true));
-        } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = setDeleted
-              ? 'Unexpected error occurred while deleting events'
-              : 'Unexpected error occurred while undeleting events';
-          }
-          toast.error(errorMessage);
+    void setEventsDeleted(eventIdList, setDeleted).then((response: ModifyEventResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = setDeleted
+          ? 'Events deleted successfully'
+          : 'Events undeleted successfully';
+        toast.success(successMessage);
+        setEventIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = setDeleted
+            ? 'Unexpected error occurred while deleting events'
+            : 'Unexpected error occurred while undeleting events';
         }
-      },
-    );
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const setLiveInBandsInTown = () => {
@@ -620,9 +612,7 @@ export default function AdminEventsIndex() {
               <HeaderCell>
                 <Checkbox
                   id={`evtId_selectAll`}
-                  checked={
-                    allEventIds.length > 0 && eventIdList.length === allEventIds.length
-                  }
+                  checked={allEventIds.length > 0 && eventIdList.length === allEventIds.length}
                   onChange={(_, checked) => selectAllEvents(checked)}
                 />
               </HeaderCell>
@@ -631,18 +621,14 @@ export default function AdminEventsIndex() {
                   <Checkbox
                     id={`evtId_${rowData.externalEventId}`}
                     checked={eventIdList.includes(rowData.externalEventId)}
-                    onChange={(_, checked) =>
-                      updateEventIdList(rowData.externalEventId, checked)
-                    }
+                    onChange={(_, checked) => updateEventIdList(rowData.externalEventId, checked)}
                   />
                 )}
               </Cell>
             </Column>
             <Column flexGrow={1} minWidth={100}>
               <HeaderCell>Date</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}
-              </Cell>
+              <Cell>{(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}</Cell>
             </Column>
             <Column flexGrow={3}>
               <HeaderCell>Title</HeaderCell>
@@ -650,9 +636,7 @@ export default function AdminEventsIndex() {
             </Column>
             <Column flexGrow={2}>
               <HeaderCell>Venue</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => (rowData.venue ? rowData.venue.name : '')}
-              </Cell>
+              <Cell>{(rowData: VipEvent) => (rowData.venue ? rowData.venue.name : '')}</Cell>
             </Column>
             <Column flexGrow={3}>
               <HeaderCell>Location</HeaderCell>

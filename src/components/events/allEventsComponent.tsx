@@ -31,9 +31,7 @@ import { useWindowSize } from '@/hooks/common/useWindowSize';
 export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const { isLoading } = globalSelection;
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const { getAllEvents } = useGetAllEvents();
   const { getCalendarNotes } = useGetCalendarNotes();
   const dispatch = useDispatch();
@@ -55,15 +53,9 @@ export default function AllEvents() {
         dispatch(setActiveEventTab(defaultTabView));
         const dateRange = getSelectedAdminEventDateRange(moment().unix(), defaultTabView);
         dispatch(setAdminDateRange(dateRange));
-      } else if (
-        agendaOnly &&
-        currentReportSelection.eventTabView !== EventTabView.Agenda
-      ) {
+      } else if (agendaOnly && currentReportSelection.eventTabView !== EventTabView.Agenda) {
         dispatch(setActiveEventTab(EventTabView.Agenda));
-        const dateRange = getSelectedAdminEventDateRange(
-          moment().unix(),
-          EventTabView.Agenda,
-        );
+        const dateRange = getSelectedAdminEventDateRange(moment().unix(), EventTabView.Agenda);
         dispatch(setAdminDateRange(dateRange));
       } else if (
         currentReportSelection &&
@@ -84,8 +76,7 @@ export default function AllEvents() {
               if (currentReportSelection.expandedEvent !== undefined) {
                 const updatedEvent = filteredEvents.find(
                   (x) =>
-                    x.externalEventId ===
-                    currentReportSelection.expandedEvent?.externalEventId,
+                    x.externalEventId === currentReportSelection.expandedEvent?.externalEventId,
                 );
                 if (updatedEvent) {
                   dispatch(setExpandedEvent(updatedEvent));

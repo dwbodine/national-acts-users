@@ -21,8 +21,7 @@ export default function getTicketDataFromOrders(
     evt.ticketTypes?.forEach((ticketType) => {
       if (
         !ticketTypes.find(
-          (x) =>
-            x.ticketTypeName.toLowerCase() === ticketType.ticketTypeName.toLowerCase(),
+          (x) => x.ticketTypeName.toLowerCase() === ticketType.ticketTypeName.toLowerCase(),
         )
       ) {
         ticketTypes.push(ticketType);

@@ -125,9 +125,7 @@ export default function AdminFaqsIndex() {
         <Column flexGrow={1}>
           <HeaderCell>Category</HeaderCell>
           <Cell>
-            {(rowData: Faq) => (
-              <span>{rowData.category ? rowData.category.categoryName : ''}</span>
-            )}
+            {(rowData: Faq) => <span>{rowData.category ? rowData.category.categoryName : ''}</span>}
           </Cell>
         </Column>
         <Column flexGrow={1}>

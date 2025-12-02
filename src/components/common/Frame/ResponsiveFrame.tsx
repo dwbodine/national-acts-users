@@ -75,11 +75,7 @@ export default function ResponsiveFrame({
       {/* ---------------- MOBILE NAVBAR ---------------- */}
       <Navbar className="mobile-nav">
         <Navbar.Brand>
-          <IconButton
-            icon={<MenuIcon />}
-            appearance="subtle"
-            onClick={() => setMobileOpen(true)}
-          />
+          <IconButton icon={<MenuIcon />} appearance="subtle" onClick={() => setMobileOpen(true)} />
         </Navbar.Brand>
       </Navbar>
 
@@ -115,11 +111,7 @@ export default function ResponsiveFrame({
           <Brand expanded={Boolean(expand)} />
         </Sidenav.Header>
 
-        <Sidenav
-          expanded={Boolean(expand)}
-          appearance="subtle"
-          defaultOpenKeys={['2', '3']}
-        >
+        <Sidenav expanded={Boolean(expand)} appearance="subtle" defaultOpenKeys={['2', '3']}>
           <Sidenav.Body>
             <RenderNav isMobile={false} navs={navs} onItemClick={handleNavClick} />
           </Sidenav.Body>

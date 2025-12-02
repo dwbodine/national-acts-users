@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  Button,
-  Checkbox,
-  Col,
-  Container,
-  Input,
-  Modal,
-  Row,
-  SelectPicker,
-} from 'rsuite';
+import { Button, Checkbox, Col, Container, Input, Modal, Row, SelectPicker } from 'rsuite';
 import { Country, PageSeller } from '@/types/public';
 import { Seller, SellerType } from '@/types/event';
 import { AdminSellerSelectProps } from '@/types/props';
@@ -22,9 +13,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   let sellers: Seller[] | undefined = props.Sellers || undefined;
   const roles: Role[] | undefined = props.Roles || undefined;
   const sellerId: number = props.SellerId ? props.SellerId : 0;
-  const sellerType: SellerType | undefined = props.SellerType
-    ? props.SellerType
-    : undefined;
+  const sellerType: SellerType | undefined = props.SellerType ? props.SellerType : undefined;
   const roleId: number = props.RoleId ? props.RoleId : 0;
   const number: number | undefined = props.Number || undefined;
   const id: string = props.Id;
@@ -32,9 +21,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   const onRoleChange = props.OnRoleChange;
   const onPageSellerChange = props.OnPageSellerChange;
   const onDelete = props.OnDelete;
-  const pageSeller: PageSeller | undefined = props.PageSeller
-    ? props.PageSeller
-    : undefined;
+  const pageSeller: PageSeller | undefined = props.PageSeller ? props.PageSeller : undefined;
   const countries: Country[] | undefined = props.Countries ? props.Countries : undefined;
 
   const [pageSellerSettingsOpen, setPageSellerSettingsOpen] = useState(false);
@@ -42,9 +29,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   const handlePageSellerSettingsClose = () => setPageSellerSettingsOpen(false);
 
   const [displayName, setDisplayName] = useState(pageSeller?.displayName ?? '');
-  const [showDisplayName, setShowDisplayName] = useState(
-    pageSeller?.showDisplayName ?? false,
-  );
+  const [showDisplayName, setShowDisplayName] = useState(pageSeller?.showDisplayName ?? false);
   const [address, setAddress] = useState(pageSeller?.address ?? '');
   const [city, setCity] = useState(pageSeller?.city ?? '');
   const [state, setState] = useState(pageSeller?.state ?? '');
@@ -67,9 +52,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   }
 
   const isArtist = sellerType && sellerType === SellerType.Artist;
-  const selectedSeller: Seller | undefined = sellers?.find(
-    (x) => x.sellerId === sellerId,
-  );
+  const selectedSeller: Seller | undefined = sellers?.find((x) => x.sellerId === sellerId);
 
   const updatePageSellerSettings = () => {
     if (!pageSeller || !onPageSellerChange) {

@@ -6,11 +6,7 @@ export default function getFileNameFromReportAdminSelection(
   currentReportSelection: AdminReportsSelection | undefined,
 ) {
   let fileName = '';
-  if (
-    currentReportSelection &&
-    currentReportSelection.start &&
-    currentReportSelection.end
-  ) {
+  if (currentReportSelection && currentReportSelection.start && currentReportSelection.end) {
     const { start, end } = currentReportSelection;
     const hash = moment().unix();
     fileName = `${reportName}_${start}_${end}_${hash}.csv`;

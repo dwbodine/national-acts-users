@@ -12,8 +12,7 @@ export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
     ticketsPerTransaction =
       (dashBoardData?.monthToDateTickets ?? 0) / dashBoardData.monthToDatePurchases;
     averagePurchaseAmount =
-      (dashBoardData?.monthToDateTotalRevenueUsd ?? 0) /
-      dashBoardData.monthToDatePurchases;
+      (dashBoardData?.monthToDateTotalRevenueUsd ?? 0) / dashBoardData.monthToDatePurchases;
   }
 
   return (
@@ -24,15 +23,11 @@ export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Transactions:</Col>
-          <Col className="sales-stat-block-value">
-            {dashBoardData?.monthToDatePurchases ?? '0'}
-          </Col>
+          <Col className="sales-stat-block-value">{dashBoardData?.monthToDatePurchases ?? '0'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Tickets:</Col>
-          <Col className="sales-stat-block-value">
-            {dashBoardData?.monthToDateTickets ?? '0'}
-          </Col>
+          <Col className="sales-stat-block-value">{dashBoardData?.monthToDateTickets ?? '0'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Refunds:</Col>
@@ -72,9 +67,7 @@ export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Tickets per transaction:</Col>
-          <Col className="sales-stat-block-value">
-            {ticketsPerTransaction.toFixed(2) ?? '0'}
-          </Col>
+          <Col className="sales-stat-block-value">{ticketsPerTransaction.toFixed(2) ?? '0'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Purchase:</Col>

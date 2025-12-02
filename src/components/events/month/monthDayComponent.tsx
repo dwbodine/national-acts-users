@@ -30,9 +30,7 @@ export default function MonthDay(props: MonthDayProps) {
   const events = props.Events;
   const notes = props.Notes;
   const key = props.MonthDayNumber;
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const [notesOpen, setNotesOpen] = useState(false);
   const [displayNoteOpen, setDisplayNoteOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
@@ -98,13 +96,7 @@ export default function MonthDay(props: MonthDayProps) {
   };
 
   const editNewNoteAndMarkComplete = () => {
-    if (
-      !monthDate ||
-      !displayNoteText ||
-      !displayNoteTitle ||
-      noteId === 0 ||
-      !displayNoteDate
-    ) {
+    if (!monthDate || !displayNoteText || !displayNoteTitle || noteId === 0 || !displayNoteDate) {
       return;
     }
     void editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, true).then(
@@ -121,30 +113,20 @@ export default function MonthDay(props: MonthDayProps) {
   };
 
   const editNewNote = () => {
-    if (
-      !monthDate ||
-      !displayNoteText ||
-      !displayNoteTitle ||
-      noteId === 0 ||
-      !displayNoteDate
-    ) {
+    if (!monthDate || !displayNoteText || !displayNoteTitle || noteId === 0 || !displayNoteDate) {
       return;
     }
-    void editNote(
-      noteId,
-      displayNoteText,
-      displayNoteTitle,
-      displayNoteDate,
-      noteIsCompleted,
-    ).then((response: ModifyNoteResponse) => {
-      handleDisplayNoteClose();
-      if (response.success && !response.error) {
-        toast.success('Calendar note edited successfully');
-        dispatch(setReloadAdminEvents(true));
-      } else {
-        toast.error(response.error ?? 'Unexpected error occurred while adding note');
-      }
-    });
+    void editNote(noteId, displayNoteText, displayNoteTitle, displayNoteDate, noteIsCompleted).then(
+      (response: ModifyNoteResponse) => {
+        handleDisplayNoteClose();
+        if (response.success && !response.error) {
+          toast.success('Calendar note edited successfully');
+          dispatch(setReloadAdminEvents(true));
+        } else {
+          toast.error(response.error ?? 'Unexpected error occurred while adding note');
+        }
+      },
+    );
   };
 
   const deleteSelectedNote = (nId: number) => {
@@ -209,9 +191,7 @@ export default function MonthDay(props: MonthDayProps) {
           : note.note.length > 35
             ? `${note.note.substring(0, 35)}...`
             : note.note;
-        const noteClass = note.isCompleted
-          ? 'month-day-note-completed'
-          : 'month-day-note';
+        const noteClass = note.isCompleted ? 'month-day-note-completed' : 'month-day-note';
         noteRows.push(
           <div key={`wdNote_${key}_${i}`} className={noteClass}>
             <span

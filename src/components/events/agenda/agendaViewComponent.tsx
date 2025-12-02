@@ -15,28 +15,20 @@ import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 
 export default function AgendaView(props: AgendaViewProps) {
-  const startOfMonth = props.StartOfMonth
-    ? moment(props.StartOfMonth).startOf('day')
-    : undefined;
+  const startOfMonth = props.StartOfMonth ? moment(props.StartOfMonth).startOf('day') : undefined;
   const endOfMonth = props.EndOfMonth ? moment(props.EndOfMonth).endOf('day') : undefined;
   const events = props.Events;
   const notes = props.Notes;
 
   const dispatch = useDispatch();
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
 
   const previousMonth = () => {
     const reportSelection = { ...currentReportSelection };
     if (!reportSelection || !reportSelection.start) {
       return;
     }
-    const prevMonth = moment
-      .unix(reportSelection.start)
-      .subtract(1, 'month')
-      .startOf('day')
-      .unix();
+    const prevMonth = moment.unix(reportSelection.start).subtract(1, 'month').startOf('day').unix();
     const dateRange = getSelectedAdminEventDateRange(prevMonth, EventTabView.Agenda);
     dispatch(setIsLoading(true));
     dispatch(setAdminDateRange(dateRange));
@@ -47,11 +39,7 @@ export default function AgendaView(props: AgendaViewProps) {
     if (!reportSelection || !reportSelection.start) {
       return;
     }
-    const nxtMonth = moment
-      .unix(reportSelection.start)
-      .add(1, 'month')
-      .startOf('day')
-      .unix();
+    const nxtMonth = moment.unix(reportSelection.start).add(1, 'month').startOf('day').unix();
     const dateRange = getSelectedAdminEventDateRange(nxtMonth, EventTabView.Agenda);
     dispatch(setIsLoading(true));
     dispatch(setAdminDateRange(dateRange));

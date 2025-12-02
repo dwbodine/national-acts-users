@@ -108,9 +108,7 @@ export default function AdminVenueEdit() {
       if (response.success) {
         dispatch(setReloadVenues(true));
         dispatch(setAdminVenue(undefined));
-        const message = isUpdate
-          ? 'Venue updated successfully'
-          : 'Venue added successfully';
+        const message = isUpdate ? 'Venue updated successfully' : 'Venue added successfully';
         toast.success(message);
         router.push('/admin/venues');
       } else {
@@ -127,9 +125,7 @@ export default function AdminVenueEdit() {
       }))
     : [];
 
-  const selectedCountry = currentAdminSelection.countries?.find(
-    (x) => x.countryId === countryId,
-  );
+  const selectedCountry = currentAdminSelection.countries?.find((x) => x.countryId === countryId);
 
   const timeZoneList: ItemDataType<string>[] = selectedCountry?.timezones
     ? selectedCountry.timezones.map((tz) => ({
@@ -161,12 +157,7 @@ export default function AdminVenueEdit() {
       </div>
       <div className="form-group">
         <label className="mt-4">City</label>
-        <Input
-          value={city ?? ''}
-          onChange={setCity}
-          className="form-control"
-          placeholder="city"
-        />
+        <Input value={city ?? ''} onChange={setCity} className="form-control" placeholder="city" />
       </div>
       <div className="form-group">
         <label className="mt-4">State</label>

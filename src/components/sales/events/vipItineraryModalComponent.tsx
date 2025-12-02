@@ -1,10 +1,7 @@
 'use client';
 
 import { Button, Col, Container, Modal, Radio, RadioGroup, Row } from 'rsuite';
-import {
-  exportVipItineraryToCSV,
-  exportVipItineraryToHtml,
-} from '@/utils/exportVipItinerary';
+import { exportVipItineraryToCSV, exportVipItineraryToHtml } from '@/utils/exportVipItinerary';
 import { useEffect, useState } from 'react';
 import { GetEventsResponse } from '@/types/responses';
 import ReportDatePicker from '../../common/reportDatePickerControl';
@@ -40,8 +37,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
   const lastEvent = currentEvents[currentEvents.length - 1];
   const startEventDateStr =
     currentEvents.length > 0 && currentEvents[0] ? currentEvents[0].eventDate : '';
-  const endEventDateStr =
-    currentEvents.length > 0 && lastEvent ? lastEvent.eventDate : '';
+  const endEventDateStr = currentEvents.length > 0 && lastEvent ? lastEvent.eventDate : '';
   const nowUnix = moment().unix();
   const firstEvent = currentEvents.find((x) => moment(x.eventDate).unix() >= nowUnix);
 
@@ -131,18 +127,15 @@ export default function VIPItineraryModal(props: VIPModalProps) {
         } else {
           const title = `${currentSeller.sellerName} Event Itinerary`;
           localStorage.setItem('pdfTitle', title);
-          void exportVipItineraryToHtml(
-            eventsToExport,
-            title,
-            sellerHomePage,
-            isAdmin,
-          ).then((htmlString: string) => {
-            setIsReportLoading(false);
-            submitPdfToNewWindow(htmlString);
-            if (onClose) {
-              onClose();
-            }
-          });
+          void exportVipItineraryToHtml(eventsToExport, title, sellerHomePage, isAdmin).then(
+            (htmlString: string) => {
+              setIsReportLoading(false);
+              submitPdfToNewWindow(htmlString);
+              if (onClose) {
+                onClose();
+              }
+            },
+          );
         }
       } else {
         const err = response.error

@@ -22,9 +22,7 @@ import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 
 export default function ReportsCustomerExport() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
-  const currentAdminReportSelection = useSelector(
-    (state: RootState) => state.adminReportSelection,
-  );
+  const currentAdminReportSelection = useSelector((state: RootState) => state.adminReportSelection);
   const dispatch = useDispatch();
   const { getAllEvents } = useGetAllEvents();
   const { logActivityData } = useLogActivityData();
@@ -44,8 +42,7 @@ export default function ReportsCustomerExport() {
     if (vipEvents && vipEvents.length > 0) {
       const hasPhoneData = vipEvents.find((x) => x.hasPhoneData === true) !== undefined;
       const hasShirtData = vipEvents.find((x) => x.hasShirtData === true) !== undefined;
-      const hasNonUsaOrders =
-        vipEvents.find((x) => x.hasNonUSAOrders === true) !== undefined;
+      const hasNonUsaOrders = vipEvents.find((x) => x.hasNonUSAOrders === true) !== undefined;
       let currencySymbol: string | undefined = undefined;
       if (hasNonUsaOrders) {
         const symbolOrder = vipEvents.find((x) => x.hasNonUSAOrders === true);

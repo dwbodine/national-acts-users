@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  formatCurrencyAmount,
-  getEventStatusSlug,
-  getEventStatusText,
-} from '@/utils/eventUtils';
+import { formatCurrencyAmount, getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 import { EventRowProps } from '@/types/props';
 import moment from 'moment';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
@@ -29,9 +25,7 @@ export default function EventRow(props: EventRowProps) {
   const exchangeRate = currencySymbol === '$' ? 1 : 0;
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
   const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0));
-  const revenueUsd = Number(
-    (vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0),
-  );
+  const revenueUsd = Number((vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0));
   const serviceFees = Number(
     (vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0),
   );
@@ -71,20 +65,10 @@ export default function EventRow(props: EventRowProps) {
         {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees}>
-        {formatCurrencyAmount(
-          serviceFees,
-          serviceFeesUsd,
-          currencySymbol,
-          exchangeRate,
-          isAdmin,
-        )}
+        {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td hidden={!showNotes}>
-        <a
-          onClick={() =>
-            showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null
-          }
-        >
+        <a onClick={() => (showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null)}>
           Notes
         </a>
       </td>

@@ -27,9 +27,7 @@ export default function TopSellersWidget(props: TopSellersWidgetProps) {
     <Row className="sales-stat-block">
       <Col>
         <Row>
-          <Col className="sales-stat-block-title-no-margin">
-            Top {topSellers?.length} Sellers
-          </Col>
+          <Col className="sales-stat-block-title-no-margin">Top {topSellers?.length} Sellers</Col>
         </Row>
         <Row hidden={!dateRange}>
           <Col className="sales-stat-block-subtitle-no-margin">({dateRange})</Col>

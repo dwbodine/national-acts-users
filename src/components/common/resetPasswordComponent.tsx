@@ -106,11 +106,7 @@ export default function ResetPasswordComponent() {
                 <Button onClick={handleCancel}>Cancel</Button>
                 <div className="h-fit flex flex-row gap-2 items-center justify-center">
                   {passwordError ? <div className="danger">{passwordError}</div> : ''}
-                  {passwordSuccess ? (
-                    <div className="success">{passwordSuccess}</div>
-                  ) : (
-                    ''
-                  )}
+                  {passwordSuccess ? <div className="success">{passwordSuccess}</div> : ''}
                 </div>
               </Col>
             </Row>

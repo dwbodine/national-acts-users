@@ -9,8 +9,8 @@
     "sass-watch": "sass src/Sass:src/Css --watch --no-source-map",
     "sass": "sass src/Sass:src/Css",
     "start": "next start",
-    "format": "prettier '**/*.{json,yaml,js,ts}' --write",
-    "lint": "eslint",
+    "format": "prettier . --write",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -1,10 +1,7 @@
 'use client';
 
 import { Col, Row } from 'rsuite';
-import {
-  setReloadActivities,
-  setUserActivityDateRange,
-} from '@/lib/userActivitySelectionSlice';
+import { setReloadActivities, setUserActivityDateRange } from '@/lib/userActivitySelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import DateRangeSelector from '../common/dateRangeSelectorComponent';
 import { RootState } from '@/lib/store';

@@ -73,15 +73,9 @@ export default function SalesBar() {
       void getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
         (response: GetEventsResponse) => {
           if (response && !response.error && response.events !== undefined) {
-            const showServiceFees =
-              viewServiceFees && !currentReportSelection.hideServiceFees;
-            const showRevenueData =
-              viewRevenueData && !currentReportSelection.hideRevenue;
-            const csvData = exportEventsToCsv(
-              response.events,
-              showServiceFees,
-              showRevenueData,
-            );
+            const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
+            const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
+            const csvData = exportEventsToCsv(response.events, showServiceFees, showRevenueData);
             const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
             downloadCsvFile(fileName, csvData);
           }
@@ -104,12 +98,9 @@ export default function SalesBar() {
         (response: GetEventsResponse) => {
           if (response && !response.error && response.events !== undefined) {
             const vipEvents = response.events;
-            const hasPhoneData =
-              vipEvents.find((x) => x.hasPhoneData === true) !== undefined;
-            const hasShirtData =
-              vipEvents.find((x) => x.hasShirtData === true) !== undefined;
-            const hasNonUsaOrders =
-              vipEvents.find((x) => x.hasNonUSAOrders === true) !== undefined;
+            const hasPhoneData = vipEvents.find((x) => x.hasPhoneData === true) !== undefined;
+            const hasShirtData = vipEvents.find((x) => x.hasShirtData === true) !== undefined;
+            const hasNonUsaOrders = vipEvents.find((x) => x.hasNonUSAOrders === true) !== undefined;
             let currencySymbol: string | undefined = undefined;
             if (hasNonUsaOrders) {
               const symbolOrder = vipEvents.find((x) => x.hasNonUSAOrders === true);
@@ -117,10 +108,8 @@ export default function SalesBar() {
                 currencySymbol = symbolOrder.nonUsaCurrencySymbol;
               }
             }
-            const showServiceFees =
-              viewServiceFees && !currentReportSelection.hideServiceFees;
-            const showRevenueData =
-              viewRevenueData && !currentReportSelection.hideRevenue;
+            const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
+            const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
             const csvData = exportCustomerDataToCsv(
               response.events,
               showServiceFees,
@@ -130,10 +119,7 @@ export default function SalesBar() {
               hasNonUsaOrders,
               currencySymbol,
             );
-            const fileName = getCsvFileNameFromReportSelection(
-              currentReportSelection,
-              'customer',
-            );
+            const fileName = getCsvFileNameFromReportSelection(currentReportSelection, 'customer');
             downloadCsvFile(fileName, csvData);
           }
           dispatch(setIsLoading(false));
@@ -194,9 +180,7 @@ export default function SalesBar() {
       setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
       setViewRevenueControls(userHasPermission(user, EnumPermission.ViewRevenueControls));
       setCanExportData(userHasPermission(user, EnumPermission.ExportData));
-      setCanExportCustomerData(
-        userHasPermission(user, EnumPermission.ExportCustomerData),
-      );
+      setCanExportCustomerData(userHasPermission(user, EnumPermission.ExportCustomerData));
       setViewPrintButton(userHasPermission(user, EnumPermission.ViewPrintButton));
       setViewRevenueData(userHasPermission(user, EnumPermission.ViewRevenueData));
       setViewHiddenEvents(userHasPermission(user, EnumPermission.ViewHiddenEvents));
@@ -214,13 +198,7 @@ export default function SalesBar() {
         }
       }
     }
-  }, [
-    windowSizeJson,
-    getUser,
-    userHasPermission,
-    currentReportSelection.seller,
-    webBaseUrl,
-  ]);
+  }, [windowSizeJson, getUser, userHasPermission, currentReportSelection.seller, webBaseUrl]);
   return (
     <>
       <Row className="page-header">
@@ -238,10 +216,7 @@ export default function SalesBar() {
         </Col>
       </Row>
       <SelectSeller />
-      <Row
-        className="no-print admin-tour-row"
-        hidden={!viewTourSelect || tourList.length === 0}
-      >
+      <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourList.length === 0}>
         <Col xs={1}>Tour:</Col>
         <Col sm={11} md={5}>
           <SelectPicker
@@ -280,9 +255,7 @@ export default function SalesBar() {
           ) : (
             ''
           )}
-          {viewRevenueControls &&
-          currentReportSelection.seller.sellerId > 0 &&
-          hasEvents ? (
+          {viewRevenueControls && currentReportSelection.seller.sellerId > 0 && hasEvents ? (
             <RevenueCheck />
           ) : (
             ''

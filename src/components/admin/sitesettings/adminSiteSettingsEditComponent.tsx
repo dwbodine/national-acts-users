@@ -42,10 +42,7 @@ export default function AdminSiteSettingsEdit() {
     };
   }, [currentAdminSelection, dispatch, getAllSettings]);
 
-  const onFileUpload = (
-    fileUploadName: string | undefined,
-    filename: string | undefined,
-  ) => {
+  const onFileUpload = (fileUploadName: string | undefined, filename: string | undefined) => {
     if (
       !currentAdminSelection.allSettings ||
       currentAdminSelection.allSettings.length === 0 ||
@@ -58,16 +55,14 @@ export default function AdminSiteSettingsEdit() {
     switch (fileUploadName) {
       case 'HomeBanner':
         if (adminSelection.allSettings !== undefined) {
-          const currentSettings = adminSelection.allSettings.map(
-            (originalSetting: SiteSetting) => {
-              const setting = { ...originalSetting };
-              if (setting.name === 'HomeBanner' && filename) {
-                setting.value = filename;
-                setting.dirty = true;
-              }
-              return setting;
-            },
-          );
+          const currentSettings = adminSelection.allSettings.map((originalSetting: SiteSetting) => {
+            const setting = { ...originalSetting };
+            if (setting.name === 'HomeBanner' && filename) {
+              setting.value = filename;
+              setting.dirty = true;
+            }
+            return setting;
+          });
           dispatch(setAllSettings(currentSettings));
         }
         break;
@@ -99,16 +94,14 @@ export default function AdminSiteSettingsEdit() {
     }
     const adminSelection = { ...currentAdminSelection };
     if (adminSelection.allSettings !== undefined) {
-      const currentSettings = adminSelection.allSettings.map(
-        (originalSetting: SiteSetting) => {
-          const setting = { ...originalSetting };
-          if (setting.name === settingName) {
-            setting.value = settingValue?.toString() ?? '';
-            setting.dirty = true;
-          }
-          return setting;
-        },
-      );
+      const currentSettings = adminSelection.allSettings.map((originalSetting: SiteSetting) => {
+        const setting = { ...originalSetting };
+        if (setting.name === settingName) {
+          setting.value = settingValue?.toString() ?? '';
+          setting.dirty = true;
+        }
+        return setting;
+      });
       dispatch(setAllSettings(currentSettings));
     }
   };
@@ -123,25 +116,20 @@ export default function AdminSiteSettingsEdit() {
     }
     const adminSelection = { ...currentAdminSelection };
     if (adminSelection.allSettings !== undefined) {
-      const currentSettings = adminSelection.allSettings.map(
-        (originalSetting: SiteSetting) => {
-          const setting = { ...originalSetting };
-          if (setting.name === settingName) {
-            setting.value = settingValue ?? '';
-            setting.dirty = true;
-          }
-          return setting;
-        },
-      );
+      const currentSettings = adminSelection.allSettings.map((originalSetting: SiteSetting) => {
+        const setting = { ...originalSetting };
+        if (setting.name === settingName) {
+          setting.value = settingValue ?? '';
+          setting.dirty = true;
+        }
+        return setting;
+      });
       dispatch(setAllSettings(currentSettings));
     }
   };
 
   const clearDirty = () => {
-    if (
-      !currentAdminSelection.allSettings ||
-      currentAdminSelection.allSettings.length === 0
-    ) {
+    if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length === 0) {
       return;
     }
     const currentSettings = currentAdminSelection.allSettings.map(
@@ -155,10 +143,7 @@ export default function AdminSiteSettingsEdit() {
   };
 
   const onSubmit = () => {
-    if (
-      !currentAdminSelection.allSettings ||
-      currentAdminSelection.allSettings.length === 0
-    ) {
+    if (!currentAdminSelection.allSettings || currentAdminSelection.allSettings.length === 0) {
       return;
     }
 
@@ -188,9 +173,7 @@ export default function AdminSiteSettingsEdit() {
         hasDirtySettings = setting.dirty ?? false;
       }
       const currentFileTitle =
-        setting.type.toLowerCase() === 'image'
-          ? 'View Current Image: '
-          : 'View Current File: ';
+        setting.type.toLowerCase() === 'image' ? 'View Current Image: ' : 'View Current File: ';
       switch (setting.type.toLowerCase()) {
         case 'image':
         case 'file':

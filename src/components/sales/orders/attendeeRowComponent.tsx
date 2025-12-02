@@ -36,16 +36,14 @@ export default function AttendeeRow(props: AttendeeRowProps) {
   let titleText: string = '';
 
   const checkIn = (checkedIn: boolean) => {
-    void setTicketsCheckedIn([ticketId], checkedIn).then(
-      (response: ModifyTicketResponse) => {
-        if (response.success) {
-          dispatch(setFocusControl(id));
-          dispatch(setReloadEvents(true));
-        } else if (response.statusCode === 401 || response.statusCode === 422) {
-          router.push('/logout');
-        }
-      },
-    );
+    void setTicketsCheckedIn([ticketId], checkedIn).then((response: ModifyTicketResponse) => {
+      if (response.success) {
+        dispatch(setFocusControl(id));
+        dispatch(setReloadEvents(true));
+      } else if (response.statusCode === 401 || response.statusCode === 422) {
+        router.push('/logout');
+      }
+    });
   };
 
   const handleClick = () => {
@@ -73,13 +71,7 @@ export default function AttendeeRow(props: AttendeeRowProps) {
 
   return (
     <>
-      <div
-        onClick={handleClick}
-        className={className}
-        title={titleText}
-        id={id}
-        tabIndex={0}
-      >
+      <div onClick={handleClick} className={className} title={titleText} id={id} tabIndex={0}>
         <FaCheck className={checkOutClass} />
         <FaX className={checkInClass} />
         <span>{attendeeName}</span>

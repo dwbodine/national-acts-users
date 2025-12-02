@@ -3,14 +3,8 @@
 import { Col, Container, Row, Table } from 'rsuite';
 import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from 'react-icons/fa';
 import { ReactElement, useEffect, useState } from 'react';
-import {
-  formatCurrencyAmount,
-  getAccountNameFromTicketSocketId,
-} from '@/utils/eventUtils';
-import {
-  setCurrentDashboardData,
-  setReloadDashboardOrders,
-} from '@/lib/dashboardSelectionSlice';
+import { formatCurrencyAmount, getAccountNameFromTicketSocketId } from '@/utils/eventUtils';
+import { setCurrentDashboardData, setReloadDashboardOrders } from '@/lib/dashboardSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AverageSalesWidget from './widgets/averageSalesWidgetComponent';
 import DashboardBar from './dashboardBarComponent';
@@ -36,9 +30,7 @@ import { useWindowSize } from '@/hooks/common/useWindowSize';
 export default function DashboardIndex() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const { isLoading } = globalSelection;
-  const currentDashboardSelection = useSelector(
-    (state: RootState) => state.dashboardSelecton,
-  );
+  const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
   const [chartsHidden, setChartsHidden] = useState(true);
   const { Column, HeaderCell, Cell } = Table;
 
@@ -93,23 +85,16 @@ export default function DashboardIndex() {
   const selectedYear = moment.unix(currentDashboardSelection.start).year();
 
   const totalTickets = currentDashboardSelection.currentDashboardData?.tickets ?? 0;
-  const totalTicketsRefunded =
-    currentDashboardSelection.currentDashboardData?.ticketsRefunded ?? 0;
-  const totalTicketRevenueUsd =
-    currentDashboardSelection.currentDashboardData?.revenueUsd ?? 0;
-  const totalRevenueUsd =
-    currentDashboardSelection.currentDashboardData?.totalRevenueUsd ?? 0;
-  const totalServiceFeesUsd =
-    currentDashboardSelection.currentDashboardData?.serviceFeesUsd ?? 0;
+  const totalTicketsRefunded = currentDashboardSelection.currentDashboardData?.ticketsRefunded ?? 0;
+  const totalTicketRevenueUsd = currentDashboardSelection.currentDashboardData?.revenueUsd ?? 0;
+  const totalRevenueUsd = currentDashboardSelection.currentDashboardData?.totalRevenueUsd ?? 0;
+  const totalServiceFeesUsd = currentDashboardSelection.currentDashboardData?.serviceFeesUsd ?? 0;
   const totalPurchases = currentDashboardSelection.currentDashboardData?.purchases ?? 0;
   const ticketSalesData =
     currentDashboardSelection.currentDashboardData?.ticketSalesData ?? undefined;
-  const topSellers =
-    currentDashboardSelection.currentDashboardData?.topSellers ?? undefined;
-  const topLocations =
-    currentDashboardSelection.currentDashboardData?.topLocations ?? undefined;
-  const topVenues =
-    currentDashboardSelection.currentDashboardData?.topVenues ?? undefined;
+  const topSellers = currentDashboardSelection.currentDashboardData?.topSellers ?? undefined;
+  const topLocations = currentDashboardSelection.currentDashboardData?.topLocations ?? undefined;
+  const topVenues = currentDashboardSelection.currentDashboardData?.topVenues ?? undefined;
   const dateRange = `${moment.unix(currentDashboardSelection.start).format('MM/DD/YYYY')} - ${moment.unix(currentDashboardSelection.end).format('MM/DD/YYYY')}`;
 
   const chartSalesData: ITicketSalesData[] = [];
@@ -217,9 +202,7 @@ export default function DashboardIndex() {
             className="stat-block-container"
             hidden={selectedYear !== currentYear}
           >
-            <MonthToDateWidget
-              DashBoardData={currentDashboardSelection.currentDashboardData}
-            />
+            <MonthToDateWidget DashBoardData={currentDashboardSelection.currentDashboardData} />
           </Col>
           <Col
             xl={3}
@@ -230,15 +213,9 @@ export default function DashboardIndex() {
           >
             <RevenueGoalsWidget
               PercentTitle="Monthly Goal"
-              Amount={
-                currentDashboardSelection.currentDashboardData?.monthToDateTotalRevenueUsd
-              }
-              TotalGoal={
-                currentDashboardSelection.currentDashboardData?.totals?.monthlyRevenueGoal
-              }
-              PercentGoal={
-                currentDashboardSelection.currentDashboardData?.percentMonthlyGoal
-              }
+              Amount={currentDashboardSelection.currentDashboardData?.monthToDateTotalRevenueUsd}
+              TotalGoal={currentDashboardSelection.currentDashboardData?.totals?.monthlyRevenueGoal}
+              PercentGoal={currentDashboardSelection.currentDashboardData?.percentMonthlyGoal}
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
@@ -246,53 +223,36 @@ export default function DashboardIndex() {
               SelectedYear={selectedYear}
               Totals={currentDashboardSelection.currentDashboardData?.totals}
               ProjectedYearTotalRevenue={
-                currentDashboardSelection.currentDashboardData
-                  ?.projectedYearTotalRevenueUsd
+                currentDashboardSelection.currentDashboardData?.projectedYearTotalRevenueUsd
               }
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <RevenueGoalsWidget
               PercentTitle={`Yearly Goal ${selectedYear}`}
-              Amount={
-                currentDashboardSelection.currentDashboardData?.totals?.totalRevenueUsd
-              }
-              TotalGoal={
-                currentDashboardSelection.currentDashboardData?.totals?.yearlyRevenueGoal
-              }
-              PercentGoal={
-                currentDashboardSelection.currentDashboardData?.percentYearlyGoal
-              }
+              Amount={currentDashboardSelection.currentDashboardData?.totals?.totalRevenueUsd}
+              TotalGoal={currentDashboardSelection.currentDashboardData?.totals?.yearlyRevenueGoal}
+              PercentGoal={currentDashboardSelection.currentDashboardData?.percentYearlyGoal}
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <SalesPerMonthWidget
               SelectedYear={selectedYear}
-              SalesPerMonth={
-                currentDashboardSelection.currentDashboardData?.salesPerMonth
-              }
+              SalesPerMonth={currentDashboardSelection.currentDashboardData?.salesPerMonth}
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <SalesPerDayOfWeekWidget
               SelectedYear={selectedYear}
-              SalesPerDayMonth={
-                currentDashboardSelection.currentDashboardData?.salesPerDayMonth
-              }
-              SalesPerDayYear={
-                currentDashboardSelection.currentDashboardData?.salesPerDayYear
-              }
+              SalesPerDayMonth={currentDashboardSelection.currentDashboardData?.salesPerDayMonth}
+              SalesPerDayYear={currentDashboardSelection.currentDashboardData?.salesPerDayYear}
             />
           </Col>
           <Col xl={3} lg={4} md={6} className="stat-block-container">
             <AverageSalesWidget
               SelectedYear={selectedYear}
-              MonthlyAverages={
-                currentDashboardSelection.currentDashboardData?.monthlyAverages
-              }
-              YearlyAverages={
-                currentDashboardSelection.currentDashboardData?.yearlyAverages
-              }
+              MonthlyAverages={currentDashboardSelection.currentDashboardData?.monthlyAverages}
+              YearlyAverages={currentDashboardSelection.currentDashboardData?.yearlyAverages}
             />
           </Col>
           {accountTotalWidgets}
@@ -335,13 +295,7 @@ export default function DashboardIndex() {
                 <HeaderCell>Ticket Revenue</HeaderCell>
                 <Cell>
                   {(rowData: ITicketSalesData) =>
-                    formatCurrencyAmount(
-                      undefined,
-                      rowData.RevenueUsd,
-                      undefined,
-                      undefined,
-                      true,
-                    )
+                    formatCurrencyAmount(undefined, rowData.RevenueUsd, undefined, undefined, true)
                   }
                 </Cell>
               </Column>

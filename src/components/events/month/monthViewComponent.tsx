@@ -17,17 +17,13 @@ import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 
 export default function MonthView(props: MonthViewProps) {
-  const startOfMonth = props.StartOfMonth
-    ? moment(props.StartOfMonth).startOf('day')
-    : undefined;
+  const startOfMonth = props.StartOfMonth ? moment(props.StartOfMonth).startOf('day') : undefined;
   const endOfMonth = props.EndOfMonth ? moment(props.EndOfMonth).endOf('day') : undefined;
   const events = props.Events;
   const notes = props.Notes;
 
   const dispatch = useDispatch();
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
 
   const previousMonth = () => {
     const reportSelection = { ...currentReportSelection };
@@ -49,11 +45,7 @@ export default function MonthView(props: MonthViewProps) {
     if (!reportSelection || !reportSelection.periodStart) {
       return;
     }
-    const nxtMonth = moment
-      .unix(reportSelection.periodStart)
-      .add(1, 'month')
-      .startOf('day')
-      .unix();
+    const nxtMonth = moment.unix(reportSelection.periodStart).add(1, 'month').startOf('day').unix();
     const dateRange = getSelectedAdminEventDateRange(nxtMonth, EventTabView.Month);
     dispatch(setIsLoading(true));
     dispatch(setAdminDateRange(dateRange));

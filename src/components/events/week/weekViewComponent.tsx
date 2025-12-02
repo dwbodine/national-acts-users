@@ -20,9 +20,7 @@ export default function WeekView(props: WeekViewProps) {
   const notes = props.Notes;
 
   const dispatch = useDispatch();
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
 
   const previousWeek = () => {
     const reportSelection = { ...currentReportSelection };
@@ -44,11 +42,7 @@ export default function WeekView(props: WeekViewProps) {
     if (!reportSelection || !reportSelection.start) {
       return;
     }
-    const nextMonday = moment
-      .unix(reportSelection.start)
-      .add(7, 'days')
-      .startOf('day')
-      .unix();
+    const nextMonday = moment.unix(reportSelection.start).add(7, 'days').startOf('day').unix();
     const dateRange = getSelectedAdminEventDateRange(nextMonday, EventTabView.Week);
     dispatch(setIsLoading(true));
     dispatch(setAdminDateRange(dateRange));

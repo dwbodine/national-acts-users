@@ -36,9 +36,7 @@ export default function YearToDateWidget(props: YearToDateWidgetProps) {
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Refunds:</Col>
-          <Col className="sales-stat-block-value">
-            {totals?.numTicketsRefunded ?? 'n/a'}
-          </Col>
+          <Col className="sales-stat-block-value">{totals?.numTicketsRefunded ?? 'n/a'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Revenue:</Col>
@@ -72,15 +70,11 @@ export default function YearToDateWidget(props: YearToDateWidgetProps) {
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Tickets per transaction:</Col>
-          <Col className="sales-stat-block-value">
-            {ticketsPerTransaction.toFixed(2) ?? 'n/a'}
-          </Col>
+          <Col className="sales-stat-block-value">{ticketsPerTransaction.toFixed(2) ?? 'n/a'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Purchase:</Col>
-          <Col className="sales-stat-block-value">
-            ${averagePurchaseAmount.toFixed(2) ?? 'n/a'}
-          </Col>
+          <Col className="sales-stat-block-value">${averagePurchaseAmount.toFixed(2) ?? 'n/a'}</Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-name">Avg. Price Per Ticket:</Col>

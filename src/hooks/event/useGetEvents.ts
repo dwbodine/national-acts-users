@@ -3,9 +3,7 @@ import { UserReportSelection } from '@/types/user';
 import { eventService } from '../../services';
 
 export const useGetEvents = () => {
-  const getEvents = async (
-    reportSelection: UserReportSelection,
-  ): Promise<GetEventsResponse> => {
+  const getEvents = async (reportSelection: UserReportSelection): Promise<GetEventsResponse> => {
     let response: GetEventsResponse = {
       error: undefined,
       events: [],

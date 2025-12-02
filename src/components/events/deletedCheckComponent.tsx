@@ -8,9 +8,7 @@ import { setShowDeleted } from '@/lib/adminEventsSelectionSlice';
 
 export default function AdminDeletedCheck() {
   const dispatch = useDispatch();
-  const currentReportSelection = useSelector(
-    (state: RootState) => state.eventAdminSelection,
-  );
+  const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
 
   const handleChange = (checked: boolean) => {
     dispatch(setShowDeleted(checked));

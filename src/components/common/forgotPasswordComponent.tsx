@@ -74,9 +74,7 @@ export default function ForgotPasswordComponent() {
         }
       })
       .catch(() => {
-        setResetError(
-          'Unknown error while validating code - please contact your administrator',
-        );
+        setResetError('Unknown error while validating code - please contact your administrator');
       });
   };
 
@@ -107,9 +105,7 @@ export default function ForgotPasswordComponent() {
         }
       })
       .catch(() => {
-        setResetError(
-          'Unknown error while resetting password - please contact your administrator',
-        );
+        setResetError('Unknown error while resetting password - please contact your administrator');
       });
   };
 
@@ -147,8 +143,8 @@ export default function ForgotPasswordComponent() {
                 Please leave this window open while you wait for an email to be sent
               </p>
               <p>
-                If you have a valid email in our system, a six-digit security code has
-                been sent to you, please enter it here:
+                If you have a valid email in our system, a six-digit security code has been sent to
+                you, please enter it here:
               </p>
             </Col>
           </Row>

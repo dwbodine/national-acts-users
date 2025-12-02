@@ -4,12 +4,7 @@ import { Col, Input, Row } from 'rsuite';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import { GetEventsResponse, GetToursResponse } from '@/types/responses';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
-import {
-  setDateRange,
-  setEvents,
-  setReloadEvents,
-  setTours,
-} from '@/lib/reportSelectionSlice';
+import { setDateRange, setEvents, setReloadEvents, setTours } from '@/lib/reportSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import EventMobileRow from '../../common/eventMobileRowComponent';
@@ -95,10 +90,7 @@ export default function CurrentEvents() {
         setUser(currentUser);
       }
     } else {
-      const vRevenueControls = userHasPermission(
-        user,
-        EnumPermission.ViewRevenueControls,
-      );
+      const vRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);
       const vRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
       setViewRevenueControls(vRevenueControls);
       setViewRevenueData(vRevenueData);
@@ -197,10 +189,7 @@ export default function CurrentEvents() {
   const filterEvents = (events: VipEvent[]) => {
     visibleEvents = [];
     if (events && events.length > 0) {
-      if (
-        currentReportSelection.selectedTourId &&
-        currentReportSelection.selectedTourId > 0
-      ) {
+      if (currentReportSelection.selectedTourId && currentReportSelection.selectedTourId > 0) {
         visibleEvents = events.filter((evt) => !evt.isDeleted);
       } else {
         visibleEvents = events.filter(

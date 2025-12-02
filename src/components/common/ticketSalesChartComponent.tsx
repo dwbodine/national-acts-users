@@ -89,12 +89,7 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
               <Area type="monotone" dataKey="Tickets" stroke="#000000" fill="#d88884" />
             )}
             {!chartsHidden && !hideRev ? (
-              <Area
-                type="monotone"
-                dataKey="RevenueUsd"
-                stroke="#FF0000"
-                fill="#8884d8"
-              />
+              <Area type="monotone" dataKey="RevenueUsd" stroke="#FF0000" fill="#8884d8" />
             ) : (
               ''
             )}

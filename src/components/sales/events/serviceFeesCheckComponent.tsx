@@ -18,10 +18,7 @@ export default function ServiceFeesCheck() {
       <Checkbox
         checked={currentReportSelection.hideServiceFees}
         onChange={(_, checked) => handleChange(checked)}
-        disabled={
-          currentReportSelection.seller.sellerId <= 0 ||
-          currentReportSelection.hideRevenue
-        }
+        disabled={currentReportSelection.seller.sellerId <= 0 || currentReportSelection.hideRevenue}
       >
         Hide service fees?
       </Checkbox>

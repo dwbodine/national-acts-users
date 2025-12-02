@@ -12,24 +12,32 @@ import {
   Whisper,
   WhisperInstance,
 } from 'rsuite';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import GearIcon from '@rsuite/icons/Gear';
 import HelpOutlineIcon from '@rsuite/icons/HelpOutline';
 import NoticeIcon from '@rsuite/icons/Notice';
 import { SpeakerRenderFn } from '@/types/public';
+import { User } from '@/types/user';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const router = useRouter();
+  const { getUser } = useCurrentUser();
+  const [user, setUser] = useState<User | undefined>(undefined);
+
+  useEffect(() => {
+    if (!user) {
+      const currentUser = getUser();
+      setUser(currentUser);
+    }
+  }, [user]);
 
   const logout = () => {
     void router.push('/logout');
   };
 
-  const renderAdminSpeaker: SpeakerRenderFn = (
-    { onClose, left, top, className },
-    ref,
-  ) => {
+  const renderAdminSpeaker: SpeakerRenderFn = ({ onClose, left, top, className }, ref) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleSelect = (eventKey: string | number | undefined) => {
       onClose();
@@ -43,7 +51,7 @@ export default function Header() {
             <strong>Administrator</strong>
           </Dropdown.Item>
           <Dropdown.Item divider />
-          <Dropdown.Item>Set status</Dropdown.Item>
+          <Dropdown.Item>Reset Password</Dropdown.Item>
           <Dropdown.Item>Profile & account</Dropdown.Item>
           <Dropdown.Item>Feedback</Dropdown.Item>
           <Dropdown.Item divider />
@@ -64,10 +72,7 @@ export default function Header() {
 
   /** --- Settings Speaker --------------------------------------------------- */
 
-  const renderSettingSpeaker: SpeakerRenderFn = (
-    { onClose, left, top, className },
-    ref,
-  ) => {
+  const renderSettingSpeaker: SpeakerRenderFn = ({ onClose, left, top, className }, ref) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleSelect = (eventKey: string | number | undefined) => {
       onClose();
@@ -95,10 +100,7 @@ export default function Header() {
 
   /** --- Notice Speaker ----------------------------------------------------- */
 
-  const renderNoticeSpeaker: SpeakerRenderFn = (
-    { onClose, left, top, className },
-    ref,
-  ) => {
+  const renderNoticeSpeaker: SpeakerRenderFn = ({ onClose, left, top, className }, ref) => {
     const notifications: { time: string; content: string }[] = [
       {
         content:
@@ -155,12 +157,7 @@ export default function Header() {
 
   return (
     <Stack className="header" alignItems="flex-end" justifyContent="flex-end" spacing={8}>
-      <Whisper
-        placement="bottomEnd"
-        trigger="click"
-        ref={noticeRef}
-        speaker={noticeSpeaker}
-      >
+      <Whisper placement="bottomEnd" trigger="click" ref={noticeRef} speaker={noticeSpeaker}>
         <IconButton
           icon={
             <Badge content={5}>
@@ -170,21 +167,11 @@ export default function Header() {
         />
       </Whisper>
 
-      <Whisper
-        placement="bottomEnd"
-        trigger="click"
-        ref={settingsRef}
-        speaker={settingsSpeaker}
-      >
+      <Whisper placement="bottomEnd" trigger="click" ref={settingsRef} speaker={settingsSpeaker}>
         <IconButton icon={<GearIcon style={{ fontSize: 20 }} />} />
       </Whisper>
 
-      <Whisper
-        placement="bottomEnd"
-        trigger="click"
-        ref={adminRef}
-        speaker={adminSpeaker}
-      >
+      <Whisper placement="bottomEnd" trigger="click" ref={adminRef} speaker={adminSpeaker}>
         <Avatar
           size="sm"
           circle

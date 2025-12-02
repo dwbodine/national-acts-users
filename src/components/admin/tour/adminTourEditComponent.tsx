@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  Button,
-  CheckPicker,
-  Checkbox,
-  DatePicker,
-  Input,
-  PickerHandle,
-  TimePicker,
-} from 'rsuite';
+import { Button, CheckPicker, Checkbox, DatePicker, Input, PickerHandle, TimePicker } from 'rsuite';
 import { GetEventsResponse, ModifyTourResponse } from '@/types/responses';
 import React, { ReactNode, useEffect } from 'react';
 import { Tour, VipEvent } from '@/types/event';
@@ -86,9 +78,7 @@ export default function AdminTourEdit() {
     selectedTour.sellers = [];
     selectedTour.events = [];
     sellerIds.forEach((sellerId) => {
-      const seller = currentAdminSelection.allSellers?.find(
-        (x) => x.sellerId === sellerId,
-      );
+      const seller = currentAdminSelection.allSellers?.find((x) => x.sellerId === sellerId);
       if (seller && selectedTour.sellers) {
         selectedTour.sellers.push(seller);
       }
@@ -152,9 +142,7 @@ export default function AdminTourEdit() {
     const selectedTour = { ...currentAdminSelection.selectedTour };
     const selectedEvents: VipEvent[] = [];
     eventIds.forEach((eventId) => {
-      const evt = currentAdminSelection.events?.find(
-        (x) => x.externalEventId === eventId,
-      );
+      const evt = currentAdminSelection.events?.find((x) => x.externalEventId === eventId);
       if (evt) {
         selectedEvents.push(evt);
       }
@@ -174,9 +162,7 @@ export default function AdminTourEdit() {
         (!selectedTour.announceDate ||
           moment(selectedTour.announceDate).valueOf() >= firstEvent.valueOf())
       ) {
-        selectedTour.announceDate = firstEvent
-          .subtract('days', 1)
-          .format('YYYY-MM-DD HH:mm');
+        selectedTour.announceDate = firstEvent.subtract('days', 1).format('YYYY-MM-DD HH:mm');
       }
     }
     selectedTour.events = selectedEvents;
@@ -344,8 +330,7 @@ export default function AdminTourEdit() {
     dispatch(setAdminTour(currentTour));
   };
 
-  let pageHeader =
-    (currentAdminSelection.selectedTour?.tourId ?? 0) > 0 ? 'Edit tour' : 'Add tour';
+  let pageHeader = (currentAdminSelection.selectedTour?.tourId ?? 0) > 0 ? 'Edit tour' : 'Add tour';
 
   const sNames = sellerNames();
   if (sNames) {
@@ -366,9 +351,7 @@ export default function AdminTourEdit() {
       ? currentAdminSelection.selectedTour.sellers.map((seller) => seller.sellerId)
       : [];
 
-  const disabledSellers = currentAdminSelection.sellerId
-    ? [currentAdminSelection.sellerId]
-    : [];
+  const disabledSellers = currentAdminSelection.sellerId ? [currentAdminSelection.sellerId] : [];
 
   const eventList: ItemDataType<number>[] =
     currentAdminSelection.events && currentAdminSelection.events.length > 0
@@ -383,9 +366,7 @@ export default function AdminTourEdit() {
     currentAdminSelection.selectedTour?.events &&
     currentAdminSelection.selectedTour?.events.length > 0
   ) {
-    selectedEvents = currentAdminSelection.selectedTour.events.map(
-      (evt) => evt.externalEventId,
-    );
+    selectedEvents = currentAdminSelection.selectedTour.events.map((evt) => evt.externalEventId);
   }
 
   const announceDate =
