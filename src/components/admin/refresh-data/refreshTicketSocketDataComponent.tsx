@@ -2,11 +2,18 @@
 
 import { Button, Col, Row } from 'rsuite';
 import {
+  GetCountriesResponse,
   GetRefreshHistoryResponse,
   GetSellersResponse,
   RefreshHistoryResponse,
 } from '@/types/responses';
-import { setAdminDates, setAdminSellerId, setAllSellers } from '@/lib/adminSelectionSlice';
+import {
+  setAdminDates,
+  setAdminSellerId,
+  setAllSellers,
+  setCountries,
+  setReloadCountries,
+} from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AdminListHomeButton from '../adminListHomeButton';
@@ -21,12 +28,14 @@ import { toast } from 'react-toastify';
 import { useGetRefreshHistory } from '@/hooks/admin/useGetRefreshHistory';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRefreshEventsFromTicketSocket } from '@/hooks/admin/useRefreshEventsFromTicketSocket';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 
 export default function RefreshTicketSocketData() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const { getSellers } = useGetSellers();
   const { getRefreshHistory } = useGetRefreshHistory();
   const { refreshEventsFromTicketSocket } = useRefreshEventsFromTicketSocket();
+  const { getAllCountries } = useGetAllCountries();
   const dispatch = useDispatch();
   const [updateResults, setUpdateResults] = useState<TicketSocketRefreshHistory | undefined>(
     undefined,
@@ -34,7 +43,18 @@ export default function RefreshTicketSocketData() {
   const [history, setHistory] = useState<TicketSocketRefreshHistory[] | undefined>(undefined);
 
   useEffect(() => {
-    if (currentAdminSelection.allSellers === undefined) {
+    if (currentAdminSelection.reloadCountries) {
+      dispatch(setReloadCountries(false));
+      dispatch(setIsLoading(true));
+      void getAllCountries().then((response: GetCountriesResponse) => {
+        if (response.countries && !response.error) {
+          dispatch(setCountries(response.countries));
+        } else {
+          toast.error(response.error);
+          dispatch(setIsLoading(false));
+        }
+      });
+    } else if (currentAdminSelection.allSellers === undefined) {
       dispatch(setIsLoading(true));
       dispatch(setAdminSellerId(undefined));
       void getSellers().then((response: GetSellersResponse) => {

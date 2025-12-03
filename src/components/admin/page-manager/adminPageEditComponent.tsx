@@ -1,13 +1,20 @@
 'use client';
 
 import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
-import { GetPageTypesResponse, GetSellersResponse, ModifyPageResponse } from '@/types/responses';
+import {
+  GetCountriesResponse,
+  GetPageTypesResponse,
+  GetSellersResponse,
+  ModifyPageResponse,
+} from '@/types/responses';
 import { Page, PageSeller } from '@/types/public';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
 import {
   setAllSellers,
+  setCountries,
   setMustSavePage,
   setPageTypes,
+  setReloadCountries,
   setReloadPages,
   setSelectedPage,
 } from '@/lib/adminSelectionSlice';
@@ -28,6 +35,7 @@ import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRouter } from 'next/navigation';
 import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -38,7 +46,7 @@ export default function AdminPageEdit() {
   const { getPageTypes } = useGetPageTypes();
   const { getSellers } = useGetSellers();
   const pageSellerTypeIds: number[] = [7, 14, 15, 16, 17, 18, 19];
-
+  const { getAllCountries } = useGetAllCountries();
   const [isUploading, setIsUploading] = useState(false);
   const [isHeaderDirty, setIsHeaderDirty] = useState(false);
   const [isIconDirty, setIsIconDirty] = useState(false);
@@ -52,7 +60,18 @@ export default function AdminPageEdit() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.allSellers === undefined) {
+      if (currentAdminSelection.reloadCountries) {
+        dispatch(setReloadCountries(false));
+        dispatch(setIsLoading(true));
+        void getAllCountries().then((response: GetCountriesResponse) => {
+          if (response.countries && !response.error) {
+            dispatch(setCountries(response.countries));
+          } else {
+            toast.error(response.error);
+            dispatch(setIsLoading(false));
+          }
+        });
+      } else if (currentAdminSelection.allSellers === undefined) {
         dispatch(setIsLoading(true));
         void getSellers().then((response: GetSellersResponse) => {
           dispatch(setAllSellers(response.sellers));

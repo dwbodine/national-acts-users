@@ -1,11 +1,21 @@
 'use client';
 
 import { Button, Checkbox, Input } from 'rsuite';
-import { GetRolesResponse, GetSellersResponse, UpdateUserResponse } from '@/types/responses';
+import {
+  GetCountriesResponse,
+  GetRolesResponse,
+  GetSellersResponse,
+  UpdateUserResponse,
+} from '@/types/responses';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Role, User, UserSeller } from '@/types/user';
 import { Seller, SellerType } from '@/types/event';
-import { setReloadUsers, setSelectedUser } from '@/lib/adminSelectionSlice';
+import {
+  setCountries,
+  setReloadCountries,
+  setReloadUsers,
+  setSelectedUser,
+} from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
@@ -18,6 +28,7 @@ import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRouter } from 'next/navigation';
 import { useUpdateUser } from '@/hooks/admin/useUpdateUser';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 
 export default function AdminUserEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -26,6 +37,7 @@ export default function AdminUserEdit() {
   const { getAllRoles } = useGetAllRoles();
   const { updateUser } = useUpdateUser();
   const { deleteUser } = useDeleteUser();
+  const { getAllCountries } = useGetAllCountries();
   const [allSellers, setAllSellers] = useState<Seller[] | undefined>(undefined);
   const [allRoles, setAllRoles] = useState<Role[] | undefined>(undefined);
   const [username, setUsername] = useState<string | undefined>('');
@@ -47,6 +59,17 @@ export default function AdminUserEdit() {
   useEffect(() => {
     if (currentAdminSelection.selectedUser === undefined) {
       goBack();
+    } else if (currentAdminSelection.reloadCountries) {
+      dispatch(setReloadCountries(false));
+      dispatch(setIsLoading(true));
+      void getAllCountries().then((response: GetCountriesResponse) => {
+        if (response.countries && !response.error) {
+          dispatch(setCountries(response.countries));
+        } else {
+          toast.error(response.error);
+          dispatch(setIsLoading(false));
+        }
+      });
     } else if (username === undefined || allSellers === undefined || allRoles === undefined) {
       dispatch(setIsLoading(true));
       setUsername(currentAdminSelection.selectedUser.username ?? '');

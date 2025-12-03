@@ -3,20 +3,27 @@
 import { Button, Checkbox, Col, Input, Row, SelectPicker } from 'rsuite';
 import { ReactElement, useCallback, useEffect } from 'react';
 import { Seller, SellerEventCategory, SellerType } from '@/types/event';
-import { setAdminSeller, setReloadSellers } from '@/lib/adminSelectionSlice';
+import {
+  setAdminSeller,
+  setCountries,
+  setReloadCountries,
+  setReloadSellers,
+} from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { ItemDataType } from 'rsuite/esm/internals/types';
-import { ModifySellerResponse } from '@/types/responses';
+import { GetCountriesResponse, ModifySellerResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 
 export default function AdminSellerGlobalEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
   const { updateSeller } = useUpdateSeller();
+  const { getAllCountries } = useGetAllCountries();
   const router = useRouter();
   const currentSeller = currentAdminSelection.selectedSeller;
   const selectedSellerType = Number(currentSeller?.sellerType ?? 1);
@@ -28,7 +35,18 @@ export default function AdminSellerGlobalEdit() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (
+      if (currentAdminSelection.reloadCountries) {
+        dispatch(setReloadCountries(false));
+        dispatch(setIsLoading(true));
+        void getAllCountries().then((response: GetCountriesResponse) => {
+          if (response.countries && !response.error) {
+            dispatch(setCountries(response.countries));
+          } else {
+            toast.error(response.error);
+            dispatch(setIsLoading(false));
+          }
+        });
+      } else if (
         currentAdminSelection.ticketSocketAccounts === undefined ||
         currentAdminSelection.selectedSeller === undefined
       ) {

@@ -2,16 +2,21 @@
 
 import { Button, Col, Input, Row } from 'rsuite';
 import { KeyboardEvent, useEffect, useState } from 'react';
+import { setCountries } from '@/lib/adminSelectionSlice';
+import { useDispatch } from 'react-redux';
 import Container from 'rsuite/Container';
+import { GetCountriesResponse } from '@/types/responses';
 import Image from 'next/image';
 import { UserLoginResponse } from '@/types/responses';
 import { setForAdmin } from '@/lib/reportSelectionSlice';
 import { useDispatch } from 'react-redux';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useLogin } from '@/hooks/user/useLogin';
 import { useResetStores } from '@/hooks/common/useResetStores';
 import { useRouter } from 'next/navigation';
 
 export default function LoginComponent() {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [loginError, setLoginError] = useState('');
   const [password, setPassword] = useState('');
@@ -20,6 +25,7 @@ export default function LoginComponent() {
   const { resetStores } = useResetStores();
   const dispatch = useDispatch();
   const router = useRouter();
+  const { getAllCountries } = useGetAllCountries();
 
   useEffect(() => {
     const curDate = new Date().getTime();
@@ -51,13 +57,19 @@ export default function LoginComponent() {
             dispatch(setForAdmin(response.user.isAdmin));
             const searchParams = new URLSearchParams(window.location.search);
             const returnPath = searchParams.get('returnPath');
-            if (returnPath) {
-              router.push(returnPath);
-            } else if (response.user.isAdmin) {
-              router.push('/dashboard');
-            } else {
-              router.push('/');
-            }
+            const isAdmin = response.user.isAdmin;
+            void getAllCountries().then((countryResponse: GetCountriesResponse) => {
+              if (countryResponse.countries && !countryResponse.error) {
+                dispatch(setCountries(countryResponse.countries));
+              }
+              if (returnPath) {
+                router.push(returnPath);
+              } else if (isAdmin) {
+                router.push('/dashboard');
+              } else {
+                router.push('/');
+              }
+            });
           } else if (response.error) {
             setLoginError(response.error);
           } else {

@@ -1,12 +1,19 @@
 'use client';
 
 import { Button, Col, Row, Table } from 'rsuite';
-import { GetEventsResponse, GetSellersResponse, GetToursResponse } from '@/types/responses';
+import {
+  GetCountriesResponse,
+  GetEventsResponse,
+  GetSellersResponse,
+  GetToursResponse,
+} from '@/types/responses';
 import {
   setAdminEvents,
   setAdminSellerId,
   setAdminTour,
   setAllSellers,
+  setCountries,
+  setReloadCountries,
   setReloadTours,
   setTours,
 } from '@/lib/adminSelectionSlice';
@@ -23,6 +30,7 @@ import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useGetTours } from '@/hooks/admin/useGetTours';
 import { useRouter } from 'next/navigation';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 
 export default function AdminToursIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -30,13 +38,25 @@ export default function AdminToursIndex() {
   const { getSellers } = useGetSellers();
   const { getTours } = useGetTours();
   const { getAdminSellerEvents } = useGetAdminSellerEvents();
+  const { getAllCountries } = useGetAllCountries();
   const dispatch = useDispatch();
   const [tableLoading, setTableLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.allSellers === undefined) {
+      if (currentAdminSelection.reloadCountries) {
+        dispatch(setReloadCountries(false));
+        dispatch(setIsLoading(true));
+        void getAllCountries().then((response: GetCountriesResponse) => {
+          if (response.countries && !response.error) {
+            dispatch(setCountries(response.countries));
+          } else {
+            toast.error(response.error);
+            dispatch(setIsLoading(false));
+          }
+        });
+      } else if (currentAdminSelection.allSellers === undefined) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         dispatch(setAdminSellerId(undefined));

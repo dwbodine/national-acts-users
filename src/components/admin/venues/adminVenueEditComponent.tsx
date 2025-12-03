@@ -1,22 +1,29 @@
 'use client';
 
 import { Button, Input, SelectPicker } from 'rsuite';
-import { setAdminVenue, setReloadVenues } from '@/lib/adminSelectionSlice';
+import {
+  setAdminVenue,
+  setCountries,
+  setReloadCountries,
+  setReloadVenues,
+} from '@/lib/adminSelectionSlice';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ExternalVenue } from '@/types/admin';
 import { ItemDataType } from 'rsuite/esm/internals/types';
-import { ModifyExternalVenueResponse } from '@/types/responses';
+import { GetCountriesResponse, ModifyExternalVenueResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 
 export default function AdminVenueEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
   const { updateVenue } = useUpdateVenue();
+  const { getAllCountries } = useGetAllCountries();
   const [venueName, setVenueName] = useState<string | undefined>(undefined);
   const [address, setAddress] = useState<string | undefined>(undefined);
   const [city, setCity] = useState<string | undefined>(undefined);
@@ -33,6 +40,17 @@ export default function AdminVenueEdit() {
   useEffect(() => {
     if (currentAdminSelection.selectedVenue === undefined) {
       goBack();
+    } else if (currentAdminSelection.reloadCountries) {
+      dispatch(setReloadCountries(false));
+      dispatch(setIsLoading(true));
+      void getAllCountries().then((response: GetCountriesResponse) => {
+        if (response.countries && !response.error) {
+          dispatch(setCountries(response.countries));
+        } else {
+          toast.error(response.error);
+          dispatch(setIsLoading(false));
+        }
+      });
     } else if (venueName === undefined) {
       dispatch(setIsLoading(true));
       setVenueName(currentAdminSelection.selectedVenue.venue);

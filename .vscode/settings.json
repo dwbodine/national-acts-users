@@ -22,8 +22,7 @@
   },
 
   // ---------------------------------------------
-  // ESLINT — only for code analysis + fixAll
-  // (NOT formatting)
+  // ESLINT — analysis + fixAll (not the formatter)
   // ---------------------------------------------
   "eslint.useFlatConfig": true,
   "eslint.experimental.useFlatConfig": true,
@@ -41,9 +40,13 @@
   // ---------------------------------------------
   "typescript.tsdk": "node_modules/typescript/lib",
 
-  // Turn off VSCode's built-in TS diagnostics (ESLint handles them)
-  "typescript.validate.enable": false,
-  "javascript.validate.enable": false,
+  // ✅ IMPORTANT: let TS/JS diagnostics run (needed for Quick Fix / auto-imports)
+  "typescript.validate.enable": true,
+  "javascript.validate.enable": true,
+
+  // Optional but helpful: make sure auto-imports are on
+  "typescript.suggest.autoImports": true,
+  "javascript.suggest.autoImports": true,
 
   // ---------------------------------------------
   // PATH INTELLISENSE — support @/* aliases
@@ -73,7 +76,6 @@
 
   // ---------------------------------------------
   // PRETTIER SETTINGS
-  // (matches your .prettierrc exactly)
   // ---------------------------------------------
   "prettier.printWidth": 100,
   "prettier.singleQuote": true,
