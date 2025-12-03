@@ -15,6 +15,7 @@ import '../Css/PageHeader.css';
 // common controls
 import '../Css/SelectControls.css';
 import '../Css/CheckboxControls.css';
+import '../Css/Widgets.css';
 // section styles
 import '../Css/Dashboard.css';
 

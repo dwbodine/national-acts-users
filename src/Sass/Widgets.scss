@@ -1,0 +1,97 @@
+@use 'variables' as v;
+
+.widget-row {
+  display: flex;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100%;
+}
+
+.widget-stat-block-container {
+  display: flex;
+  padding: 15px;
+  min-height: 265px;
+  min-width: 265px;
+}
+
+.widget-stat-block {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  background-color: #efefef;
+  border: 1px solid #dedede;
+  border-radius: 4px;
+  line-height: 14px;
+  font-size: 14px;
+  width: 100%;
+  height: 100% !important;
+}
+
+.widget-stat-block svg {
+  display: flex;
+  margin: 0 5px 10px 0;
+}
+
+.widget-stat-block div {
+  margin-bottom: 5px;
+}
+
+.widget-stat-block div.second {
+  margin-top: 25px;
+  margin-bottom: 0;
+}
+
+.widget-stat-block span {
+  margin-top: 10px;
+  display: table;
+  font-weight: bold;
+}
+
+.widget-stat-block .totalSpan {
+  margin-top: 15px;
+}
+
+.widget-text-title {
+  font-weight: bold;
+  font-family: v.$control-title-font-family;
+  text-transform: uppercase;
+  margin-bottom: 10px !important;
+}
+
+@media (max-width: 1200px) {
+  .widget-stat-block-container {
+    min-height: 300px;
+    min-width: 200px;
+  }
+
+  .widget-stat-block {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .widget-row {
+    max-width: 100%;
+  }
+  .widget-stat-block-container {
+    min-height: unset;
+    height: fit-content;
+  }
+  .widget-stat-block {
+    min-height: 200px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .widget-stat-block-container {
+    padding: 10px 10px 10px 5px;
+    min-width: 150px;
+    max-width: 50%;
+  }
+
+  .widget-stat-block {
+    padding: 10px;
+    font-size: 10px;
+  }
+}

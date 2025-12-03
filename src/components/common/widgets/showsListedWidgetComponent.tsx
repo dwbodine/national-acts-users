@@ -10,7 +10,7 @@ export default function ShowsListedWidget(props: ShowsListedWidgetProps) {
   return (
     <>
       <FaCalendar size="2em" />
-      <div>Shows listed:</div>
+      <div className="widget-text-title">Shows listed:</div>
       <span>{totalShows}</span>
     </>
   );

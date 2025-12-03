@@ -54,10 +54,10 @@ export default function TicketTypesWidget(props: TicketTypesWidgetProps) {
     return (
       <>
         <FaTicketAlt size="2em" />
-        <div>Ticket type breakdown:</div>
+        <div className="widget-text-title">Ticket type breakdown:</div>
         {ttypes}
         <span>Total: {totalTickets}</span>
-        <div className="second">Tickets refunded:</div>
+        <div className="second widget-text-title">Tickets refunded:</div>
         <span>{ticketsRefunded}</span>
       </>
     );

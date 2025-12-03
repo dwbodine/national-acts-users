@@ -135,21 +135,13 @@ a.edit-event-link {
   padding-top: 50px;
 }
 
-.widget-row {
-  margin: 0 !important;
-  padding: 0 !important;
-  height: 100%;
-}
-
-.stat-block-container,
-.widget-stat-block-container {
+.stat-block-container {
   padding: 15px;
   min-height: 265px;
   min-width: 265px;
 }
 
-.stat-block,
-.widget-stat-block {
+.stat-block {
   padding: 15px;
   background-color: #efefef;
   border: 1px solid #dedede;
@@ -160,32 +152,27 @@ a.edit-event-link {
   height: 100%;
 }
 
-.stat-block svg,
-.widget-stat-block svg {
+.stat-block svg {
   display: block;
   margin: 0 5px 10px 0;
 }
 
-.stat-block div,
-.widget-stat-block div {
+.stat-block div {
   margin-bottom: 5px;
 }
 
-.stat-block div.second,
-.widget-stat-block div.second {
+.stat-block div.second {
   margin-top: 25px;
   margin-bottom: 0;
 }
 
-.stat-block span,
-.widget-stat-block span {
+.stat-block span {
   margin-top: 10px;
   display: table;
   font-weight: bold;
 }
 
-.stat-block .totalSpan,
-.widget-stat-block .totalSpan {
+.stat-block .totalSpan {
   margin-top: 15px;
 }
 
@@ -1312,14 +1299,12 @@ a.edit-event-link {
 
 /* Bootstrap xl */
 @media (max-width: 1200px) {
-  .stat-block-container,
-  .widget-stat-block-container {
+  .stat-block-container {
     min-height: 300px;
     min-width: 200px;
   }
 
-  .stat-block,
-  .widget-stat-block {
+  .stat-block {
     font-size: 13px;
   }
 
@@ -1404,8 +1389,7 @@ a.edit-event-link {
     max-width: unset;
   }
 
-  .resultsTable,
-  .widget-row {
+  .resultsTable {
     max-width: 100%;
   }
 
@@ -1414,14 +1398,12 @@ a.edit-event-link {
     padding: 2px;
   }
 
-  .stat-block,
-  .widget-stat-block {
+  .stat-block {
     min-height: 200px;
     font-size: 12px;
   }
 
-  .stat-block-container,
-  .widget-stat-block-container {
+  .stat-block-container {
     min-height: unset;
     height: fit-content;
   }
@@ -1470,18 +1452,12 @@ a.edit-event-link {
     display: none;
   }
 
-  .stat-block-container,
-  .widget-stat-block-container {
+  .stat-block-container {
     padding: 10px 10px 10px 5px;
     min-width: 150px;
   }
 
-  .widget-stat-block-container {
-    max-width: 50%;
-  }
-
-  .stat-block,
-  .widget-stat-block {
+  .stat-block {
     padding: 10px;
     font-size: 10px;
   }

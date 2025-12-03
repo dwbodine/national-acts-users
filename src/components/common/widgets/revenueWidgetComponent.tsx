@@ -12,7 +12,7 @@ export default function RevenueWidget(props: RevenueWidgetProps) {
   return (
     <>
       <FaMoneyBillAlt size="2em" />
-      <div>Revenue:</div>
+      <div className="widget-text-title">Revenue:</div>
       <span>${totalRevenue.toFixed(2)}</span>
       <div className="second" hidden={hideServiceFees}>
         <div>Service Fees:</div>

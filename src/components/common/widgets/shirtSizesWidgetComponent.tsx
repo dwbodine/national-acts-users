@@ -50,7 +50,7 @@ export default function ShirtSizesWidget(props: ShirtSizesWidgetProps) {
     return (
       <>
         <FaShirtsinbulk size="2em" />
-        <div>Shirt sizes sold:</div>
+        <div className="widget-text-title">Shirt sizes sold:</div>
         <div className="shirt-size-container">
           <div className="shirt-sizes">{sSizes}</div>
           <div className="shirt-sizes">{sSizesTwo}</div>
