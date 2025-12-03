@@ -1,36 +1,38 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Col, Row, SelectPicker } from 'rsuite';
-import { exportCustomerDataToCsv, exportEventsToCsv } from '@/utils/eventUtils';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useHasPermission } from '@/hooks/user/useHasPermission';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import {
   resetSelection,
   setDateRange,
   setReloadEvents,
   setSelectedTourId,
 } from '@/lib/reportSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import DateRangeSelector from '../../common/dateRangeSelectorComponent';
-import DeletedCheck from './deletedCheckComponent';
-import { EnumPermission } from '@/types/user';
 import { GetEventsResponse } from '@/types/responses';
-import HiddenCheck from './hiddenCheckComponent';
-import InactiveCheck from './inactiveCheckComponent';
-import { ItemDataType } from 'rsuite/esm/internals/types';
+import { EnumPermission } from '@/types/user';
+import { downloadCsvFile } from '@/utils/downloadFile';
+import { exportCustomerDataToCsv, exportEventsToCsv } from '@/utils/eventUtils';
+import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReportSelection';
+
+import type { RootState } from '../../../lib/store';
+import DateRangeSelector from '../../common/dateRangeSelectorComponent';
 import PrintButton from '../../common/printButtonComponent';
 import ResetButton from '../../common/resetButtonComponent';
+import DeletedCheck from './deletedCheckComponent';
+import HiddenCheck from './hiddenCheckComponent';
+import InactiveCheck from './inactiveCheckComponent';
 import RevenueCheck from './revenueCheckComponent';
-import type { RootState } from '../../../lib/store';
 import SelectSeller from './selectSellerComponent';
 import ServiceFeesCheck from './serviceFeesCheckComponent';
 import VIPItineraryModal from './vipItineraryModalComponent';
-import { downloadCsvFile } from '@/utils/downloadFile';
-import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReportSelection';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
-import { useHasPermission } from '@/hooks/user/useHasPermission';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function SalesBar() {
   const webBaseUrl = `${process.env['NEXT_PUBLIC_WWW_URL']}/`;

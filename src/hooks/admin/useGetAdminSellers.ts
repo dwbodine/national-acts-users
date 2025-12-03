@@ -1,4 +1,5 @@
 import { GetSellersResponse } from '@/types/responses';
+
 import { adminService } from '../../services';
 
 export const useGetAdminSellers = () => {

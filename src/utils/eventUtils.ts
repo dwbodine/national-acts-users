@@ -1,4 +1,8 @@
-import { AdminDashboardSelection, IDailyOrderData } from '@/types/user';
+import parse from 'html-react-parser';
+import moment from 'moment';
+
+import { DEFAULT_COUNTRY_ID } from '@/constants';
+import { ExternalVenue } from '@/types/admin';
 import {
   IShirtSizeData,
   ITicketData,
@@ -9,12 +13,10 @@ import {
   Venue,
   VipEvent,
 } from '@/types/event';
-import { DEFAULT_COUNTRY_ID } from '@/constants';
-import { ExternalVenue } from '@/types/admin';
+import { AdminDashboardSelection, IDailyOrderData } from '@/types/user';
+
 import getShirtDataFromEvents from './getShirtData';
 import getTicketDataFromEvents from './getTicketDataFromEvents';
-import moment from 'moment';
-import parse from 'html-react-parser';
 
 const getLocationInfoFromVenue = (venue: Venue): string => {
   let location = `${venue.city}`;
@@ -682,6 +684,8 @@ export {
   formatCurrencyAmount,
   getAccountNameFromTicketSocketId,
   getAddressFromExternalVenue,
+  getEventStatusSlug,
+  getEventStatusText,
   getLocationInfoFromDailyOrderData,
   getLocationInfoFromVenue,
   getOrderExportRow,
@@ -689,8 +693,6 @@ export {
   getOrderExportTableHeader,
   getOrderStatusSlug,
   getOrderStatusText,
-  getTicketDataFromEvents,
-  getEventStatusSlug,
-  getEventStatusText,
   getSellerStatusSlug,
+  getTicketDataFromEvents,
 };

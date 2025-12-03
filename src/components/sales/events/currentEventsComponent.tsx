@@ -1,30 +1,32 @@
 'use client';
 
-import { Col, Input, Row } from 'rsuite';
-import { EnumPermission, User, UserReportSelection } from '@/types/user';
-import { GetEventsResponse, GetToursResponse } from '@/types/responses';
-import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
-import { setDateRange, setEvents, setReloadEvents, setTours } from '@/lib/reportSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import EventMobileRow from '../../common/eventMobileRowComponent';
-import EventRow from '../../common/eventRowComponent';
-import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
-import type { RootState } from '../../../lib/store';
-import TicketSalesChart from '../../common/ticketSalesChartComponent';
-import WidgetBar from '../../common/widgets/widgetBarComponent';
 import debouce from 'lodash.debounce';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Col, Input, Row } from 'rsuite';
+
+import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
+import { useGetTours } from '@/hooks/admin/useGetTours';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useGetEvents } from '@/hooks/event/useGetEvents';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useHasPermission } from '@/hooks/user/useHasPermission';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { setDateRange, setEvents, setReloadEvents, setTours } from '@/lib/reportSelectionSlice';
+import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
+import { GetEventsResponse, GetToursResponse } from '@/types/responses';
+import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import getPurchaseDataFromEvents from '@/utils/getPurchaseData';
 import getShirtDataFromEvents from '@/utils/getShirtData';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
-import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useGetEvents } from '@/hooks/event/useGetEvents';
-import { useGetTours } from '@/hooks/admin/useGetTours';
-import { useHasPermission } from '@/hooks/user/useHasPermission';
-import { useRouter } from 'next/navigation';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
+
+import type { RootState } from '../../../lib/store';
+import EventMobileRow from '../../common/eventMobileRowComponent';
+import EventRow from '../../common/eventRowComponent';
+import TicketSalesChart from '../../common/ticketSalesChartComponent';
+import WidgetBar from '../../common/widgets/widgetBarComponent';
 
 export default function CurrentEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);

@@ -1,13 +1,14 @@
 'use client';
 
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
 import { FaCheck, FaX } from 'react-icons/fa6';
+import { useDispatch } from 'react-redux';
+
+import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 import { setFocusControl, setReloadEvents } from '@/lib/reportSelectionSlice';
 import { AttendeeRowProps } from '@/types/props';
 import { ModifyTicketResponse } from '@/types/responses';
-import moment from 'moment';
-import { useDispatch } from 'react-redux';
-import { useRouter } from 'next/navigation';
-import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 
 export default function AttendeeRow(props: AttendeeRowProps) {
   const canCheckInTickets = props.CanCheckInTickets;

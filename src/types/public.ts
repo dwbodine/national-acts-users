@@ -1,5 +1,6 @@
-import { JSX, JSXElementConstructor, ReactElement } from 'react';
 import type { IconProps } from '@rsuite/icons/Icon';
+import { JSX, JSXElementConstructor, ReactElement } from 'react';
+
 import { SpeakerProps } from './props';
 
 export enum SiteSettingType {

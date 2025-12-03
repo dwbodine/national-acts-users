@@ -1,15 +1,16 @@
 'use client';
 
-import { Button, Col, Input, Row } from 'rsuite';
-import { useEffect, useState } from 'react';
-import Container from 'rsuite/Container';
-import { ForgotPasswordMode } from '@/types/user';
 import Image from 'next/image';
-import { UserResponse } from '@/types/responses';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Button, Col, Input, Row } from 'rsuite';
+import Container from 'rsuite/Container';
+
 import { useForgotPassword } from '@/hooks/user/useForgotPassword';
 import { useResetPassword } from '@/hooks/user/useResetPassword';
-import { useRouter } from 'next/navigation';
 import { useValidateResetCode } from '@/hooks/user/useValidateResetCode';
+import { UserResponse } from '@/types/responses';
+import { ForgotPasswordMode } from '@/types/user';
 
 export default function ForgotPasswordComponent() {
   const [mode, setMode] = useState(ForgotPasswordMode.SendPasswordReset);

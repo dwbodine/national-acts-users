@@ -1,18 +1,20 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import { Note, VipEvent } from '@/types/event';
-import { useDispatch, useSelector } from 'react-redux';
-import { EventTabView } from '@/types/user';
-import { ReactElement } from 'react';
-import { RootState } from '@/lib/store';
-import WeekDay from './weekDayComponent';
-import { WeekViewProps } from '@/types/props';
-import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 import moment from 'moment';
+import { ReactElement } from 'react';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { Col, Row } from 'rsuite';
+
 import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { Note, VipEvent } from '@/types/event';
+import { WeekViewProps } from '@/types/props';
+import { EventTabView } from '@/types/user';
+import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
+
+import WeekDay from './weekDayComponent';
 
 export default function WeekView(props: WeekViewProps) {
   const startOfWeek = props.StartOfWeek;

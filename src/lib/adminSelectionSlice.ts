@@ -1,8 +1,10 @@
-import { AdminSelection, Role, User } from '../types/user';
-import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from '@/types/public';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from '@/types/public';
+
+import { AdminSelection, Role, User } from '../types/user';
 
 const initialState: AdminSelection = {
   allFaqs: undefined,

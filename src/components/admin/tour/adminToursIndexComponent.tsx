@@ -1,12 +1,16 @@
 'use client';
 
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { Button, Col, Row, Table } from 'rsuite';
-import {
-  GetCountriesResponse,
-  GetEventsResponse,
-  GetSellersResponse,
-  GetToursResponse,
-} from '@/types/responses';
+
+import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useGetTours } from '@/hooks/admin/useGetTours';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
 import {
   setAdminEvents,
   setAdminSellerId,
@@ -17,20 +21,18 @@ import {
   setReloadTours,
   setTours,
 } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Tour } from '@/types/event';
-import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useGetTours } from '@/hooks/admin/useGetTours';
-import { useRouter } from 'next/navigation';
-import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import {
+  GetCountriesResponse,
+  GetEventsResponse,
+  GetSellersResponse,
+  GetToursResponse,
+} from '@/types/responses';
+
+import AdminListHomeButton from '../adminListHomeButton';
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminToursIndex() {
   const { Column, HeaderCell, Cell } = Table;

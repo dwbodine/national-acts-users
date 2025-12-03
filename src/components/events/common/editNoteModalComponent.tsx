@@ -1,8 +1,9 @@
 'use client';
 
 import { Button, DatePicker, Input, Modal } from 'rsuite';
-import { EditNoteModalProps } from '@/types/props';
+
 import Textarea from '@/components/common/Textarea';
+import { EditNoteModalProps } from '@/types/props';
 
 export default function EditNoteModal(props: EditNoteModalProps) {
   const id = props.Id;

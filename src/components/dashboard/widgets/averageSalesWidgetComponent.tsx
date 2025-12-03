@@ -1,7 +1,8 @@
 'use client';
 
-import { AverageSalesWidgetProps } from '@/types/props';
 import moment from 'moment';
+
+import { AverageSalesWidgetProps } from '@/types/props';
 
 export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
   const monthlyAverages = props.MonthlyAverages;

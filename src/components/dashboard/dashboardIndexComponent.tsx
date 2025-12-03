@@ -1,31 +1,33 @@
 'use client';
 
-import { Col, Container, Row, Table } from 'rsuite';
-import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from 'react-icons/fa';
+import moment from 'moment';
 import { ReactElement, useEffect, useState } from 'react';
-import { formatCurrencyAmount, getAccountNameFromTicketSocketId } from '@/utils/eventUtils';
-import { setCurrentDashboardData, setReloadDashboardOrders } from '@/lib/dashboardSelectionSlice';
+import { FaDollarSign, FaMoneyBillAlt, FaTicketAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import AverageSalesWidget from './widgets/averageSalesWidgetComponent';
-import DashboardBar from './dashboardBarComponent';
+import { Col, Container, Row, Table } from 'rsuite';
+
 import { FULL_PAGE_CHART_BREAKPOINT } from '@/constants';
-import { GetDashboardOrdersResponse } from '@/types/responses';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useGetDashboardData } from '@/hooks/dashboard/useGetDashboardData';
+import { setCurrentDashboardData, setReloadDashboardOrders } from '@/lib/dashboardSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
 import { ITicketSalesData } from '@/types/event';
+import { GetDashboardOrdersResponse } from '@/types/responses';
+import { formatCurrencyAmount, getAccountNameFromTicketSocketId } from '@/utils/eventUtils';
+import getDashboardDataFromOrders from '@/utils/getDashboardDataFromOrders';
+
+import TicketSalesChart from '../common/ticketSalesChartComponent';
+import DashboardBar from './dashboardBarComponent';
+import AverageSalesWidget from './widgets/averageSalesWidgetComponent';
 import MonthToDateWidget from './widgets/monthToDateWidgetComponent';
 import RevenueGoalsWidget from './widgets/revenueGoalsWidgetComponent';
-import { RootState } from '@/lib/store';
 import SalesByAccountWidget from './widgets/salesByAccountWidgetComponent';
 import SalesPerDayOfWeekWidget from './widgets/salesPerDayOfWeekWidgetComponent';
 import SalesPerMonthWidget from './widgets/salesPerMonthWidgetComponent';
-import TicketSalesChart from '../common/ticketSalesChartComponent';
 import TopSellersWidget from './widgets/topSellersWidgetComponent';
 import TopSellingLocationsWidget from './widgets/topSellingLocationsWidgetComponent';
 import YearToDateWidget from './widgets/yearToDateWidgetComponent';
-import getDashboardDataFromOrders from '@/utils/getDashboardDataFromOrders';
-import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useGetDashboardData } from '@/hooks/dashboard/useGetDashboardData';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function DashboardIndex() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);

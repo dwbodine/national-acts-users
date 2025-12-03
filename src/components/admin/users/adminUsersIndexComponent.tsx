@@ -1,18 +1,20 @@
 'use client';
 
-import { GetRolesResponse, GetUsersResponse } from '@/types/responses';
-import { Input, Table } from 'rsuite';
-import { Role, User } from '@/types/user';
-import { setSelectedUser, setUsers } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import { RootState } from '@/lib/store';
 import debouce from 'lodash.debounce';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Input, Table } from 'rsuite';
+
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
 import { useGetAllUsers } from '@/hooks/admin/useGetAllUsers';
-import { useRouter } from 'next/navigation';
+import { setSelectedUser, setUsers } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { GetRolesResponse, GetUsersResponse } from '@/types/responses';
+import { Role, User } from '@/types/user';
+
+import AdminListHomeButton from '../adminListHomeButton';
 
 export default function AdminUsersIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

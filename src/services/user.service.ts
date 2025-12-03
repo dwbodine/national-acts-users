@@ -1,3 +1,5 @@
+import axios, { AxiosError, AxiosInstance } from 'axios';
+
 import {
   GetActivityResponse,
   GetPermissionsResponse,
@@ -9,7 +11,6 @@ import {
   UserSellerResponse,
 } from '@/types/responses';
 import { Permission, Role, User, UserActivity, UserActivityType, UserSeller } from '@/types/user';
-import axios, { AxiosError, AxiosInstance } from 'axios';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
 
 export class UserService {

@@ -1,9 +1,16 @@
 'use client';
 
-import { Button, ButtonGroup, Col, Row } from 'rsuite';
-import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
-import { GetEventsResponse, GetNotesResponse } from '@/types/responses';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
 import { ReactElement, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, ButtonGroup, Col, Row } from 'rsuite';
+
+import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
+import { useGetCalendarNotes } from '@/hooks/event/useGetCalendarNotes';
 import {
   setActiveEventTab,
   setAdminDateRange,
@@ -12,21 +19,16 @@ import {
   setExpandedEvent,
   setReloadAdminEvents,
 } from '@/lib/adminEventsSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { Note } from '@/types/event';
+import { GetEventsResponse, GetNotesResponse } from '@/types/responses';
+import { EventTabView } from '@/types/user';
+import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
+
+import type { RootState } from '../../lib/store';
 import AllEventsAgenda from './agenda/allEventsAgendaComponent';
 import AllEventsMonth from './month/allEventsMonthComponent';
 import AllEventsWeek from './week/allEventsWeekComponent';
-import { EventTabView } from '@/types/user';
-import { Note } from '@/types/event';
-import type { RootState } from '../../lib/store';
-import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
-import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
-import { useGetCalendarNotes } from '@/hooks/event/useGetCalendarNotes';
-import { useRouter } from 'next/navigation';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function AllEvents() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);

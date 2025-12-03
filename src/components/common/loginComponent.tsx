@@ -1,19 +1,18 @@
 'use client';
 
-import { Button, Col, Input, Row } from 'rsuite';
-import { KeyboardEvent, useEffect, useState } from 'react';
-import { setCountries } from '@/lib/adminSelectionSlice';
-import { useDispatch } from 'react-redux';
-import Container from 'rsuite/Container';
-import { GetCountriesResponse } from '@/types/responses';
 import Image from 'next/image';
-import { UserLoginResponse } from '@/types/responses';
-import { setForAdmin } from '@/lib/reportSelectionSlice';
-import { useDispatch } from 'react-redux';
-import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
-import { useLogin } from '@/hooks/user/useLogin';
-import { useResetStores } from '@/hooks/common/useResetStores';
 import { useRouter } from 'next/navigation';
+import { KeyboardEvent, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Button, Col, Input, Row } from 'rsuite';
+import Container from 'rsuite/Container';
+
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useResetStores } from '@/hooks/common/useResetStores';
+import { useLogin } from '@/hooks/user/useLogin';
+import { setCountries } from '@/lib/adminSelectionSlice';
+import { setForAdmin } from '@/lib/reportSelectionSlice';
+import { GetCountriesResponse, UserLoginResponse } from '@/types/responses';
 
 export default function LoginComponent() {
   const dispatch = useDispatch();
@@ -23,7 +22,6 @@ export default function LoginComponent() {
   const [showWelcome, setShowWelcome] = useState(false);
   const { login } = useLogin();
   const { resetStores } = useResetStores();
-  const dispatch = useDispatch();
   const router = useRouter();
   const { getAllCountries } = useGetAllCountries();
 

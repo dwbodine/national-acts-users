@@ -1,5 +1,6 @@
-import { ModifyTourResponse } from '@/types/responses';
 import { Tour } from '@/types/event';
+import { ModifyTourResponse } from '@/types/responses';
+
 import { eventService } from '../../services';
 
 export const useUpdateTour = () => {

@@ -1,7 +1,7 @@
 'use client';
 
-import { FaSignOutAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
+import { FaSignOutAlt } from 'react-icons/fa';
 
 export default function LogoutButton() {
   const router = useRouter();

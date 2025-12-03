@@ -1,11 +1,12 @@
 'use client';
 
-import { UserActivityType } from '@/types/user';
-import { useEffect } from 'react';
-import { useLogActivityData } from '@/hooks/common/useLogActivityData';
-import { useLogout } from '@/hooks/user/useLogout';
-import { useResetStores } from '@/hooks/common/useResetStores';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
+import { useLogActivityData } from '@/hooks/common/useLogActivityData';
+import { useResetStores } from '@/hooks/common/useResetStores';
+import { useLogout } from '@/hooks/user/useLogout';
+import { UserActivityType } from '@/types/user';
 
 export default function LogoutComponent() {
   const router = useRouter();

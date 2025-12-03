@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from 'rsuite';
+
 import { ResetButtonProps } from '@/types/props';
 
 export default function ResetButton(props: ResetButtonProps) {

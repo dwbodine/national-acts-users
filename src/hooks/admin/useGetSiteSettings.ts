@@ -1,4 +1,5 @@
 import { GetSettingsResponse } from '@/types/responses';
+
 import { publicService } from '../../services';
 
 export const useGetSiteSettings = () => {

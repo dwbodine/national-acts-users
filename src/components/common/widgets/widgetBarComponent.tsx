@@ -1,11 +1,13 @@
 'use client';
 
 import { Col, Row } from 'rsuite';
+
+import { WidgetBarProps } from '@/types/props';
+
 import RevenueWidget from './revenueWidgetComponent';
 import ShirtSizesWidget from './shirtSizesWidgetComponent';
 import ShowsListedWidget from './showsListedWidgetComponent';
 import TicketTypesWidget from './ticketTypesWidgetComponent';
-import { WidgetBarProps } from '@/types/props';
 
 export default function WidgetBar(props: WidgetBarProps) {
   const totalShows = props.TotalShows;

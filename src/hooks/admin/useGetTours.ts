@@ -1,4 +1,5 @@
 import { GetToursResponse } from '@/types/responses';
+
 import { eventService } from '../../services';
 
 export const useGetTours = () => {

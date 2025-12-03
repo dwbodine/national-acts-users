@@ -1,12 +1,14 @@
+import axios, { AxiosError, AxiosInstance } from 'axios';
+
 import {
   LogResponse,
   UserLoginResponse,
   UserLoginResponseData,
   UserResponse,
 } from '@/types/responses';
-import axios, { AxiosError, AxiosInstance } from 'axios';
-import { User } from '../types/user';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
+
+import { User } from '../types/user';
 
 export class AuthService {
   protected readonly instance: AxiosInstance;

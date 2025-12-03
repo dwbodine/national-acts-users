@@ -1,15 +1,17 @@
 'use client';
 
-import { Button, Col, Input, Row, SelectPicker } from 'rsuite';
-import { GetSellersResponse, UserResponse } from '@/types/responses';
-import { useEffect, useState } from 'react';
-import Container from 'rsuite/Container';
 import Image from 'next/image';
-import { Seller } from '@/types/event';
-import Textarea from './Textarea';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Button, Col, Input, Row, SelectPicker } from 'rsuite';
+import Container from 'rsuite/Container';
+
 import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRegister } from '@/hooks/user/useRegister';
-import { useRouter } from 'next/navigation';
+import { Seller } from '@/types/event';
+import { GetSellersResponse, UserResponse } from '@/types/responses';
+
+import Textarea from './Textarea';
 
 export default function RegisterComponent() {
   const [username, setUsername] = useState('');

@@ -1,6 +1,7 @@
 'use client';
 
 import { Col, Row } from 'rsuite';
+
 import { MonthToDateWidgetProps } from '@/types/props';
 
 export default function MonthToDateWidget(props: MonthToDateWidgetProps) {

@@ -1,14 +1,16 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
-import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 import { useEffect, useState } from 'react';
-import AgendaView from './agendaViewComponent';
+import { useDispatch, useSelector } from 'react-redux';
+import { Col, Row } from 'rsuite';
+
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
-import moment from 'moment';
 import setFocusToControl from '@/utils/setFocusToControl';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+
+import AgendaView from './agendaViewComponent';
 
 export default function AllEventsAgenda() {
   const dispatch = useDispatch();

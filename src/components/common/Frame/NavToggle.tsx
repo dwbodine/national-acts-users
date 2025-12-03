@@ -1,8 +1,8 @@
 'use client';
 
-import { Nav, Navbar } from 'rsuite';
 import ArrowLeftLineIcon from '@rsuite/icons/ArrowLeftLine';
 import ArrowRightLineIcon from '@rsuite/icons/ArrowRightLine';
+import { Nav, Navbar } from 'rsuite';
 
 interface NavToggleProps {
   expand?: boolean;

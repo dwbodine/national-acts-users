@@ -1,24 +1,26 @@
 'use client';
 
-import { Button, Col, Input, Pagination, Row, Table } from 'rsuite';
-import { GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/responses';
+import { useRouter } from 'next/navigation';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
-import {
-  setAdminVenue,
-  setReloadVenues,
-  setVenueSearchTerm,
-  setVenues,
-} from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import AdminListHomeButton from '../adminListHomeButton';
-import { ExternalVenue } from '@/types/admin';
-import { RootState } from '@/lib/store';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { Button, Col, Input, Pagination, Row, Table } from 'rsuite';
+
 import { useDeleteVenue } from '@/hooks/admin/useDeleteVenue';
 import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
-import { useRouter } from 'next/navigation';
+import {
+  setAdminVenue,
+  setReloadVenues,
+  setVenues,
+  setVenueSearchTerm,
+} from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { ExternalVenue } from '@/types/admin';
+import { GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/responses';
+
+import AdminListHomeButton from '../adminListHomeButton';
 
 export default function AdminVenuesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

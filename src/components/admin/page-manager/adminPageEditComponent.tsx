@@ -1,14 +1,20 @@
 'use client';
 
-import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
-import {
-  GetCountriesResponse,
-  GetPageTypesResponse,
-  GetSellersResponse,
-  ModifyPageResponse,
-} from '@/types/responses';
-import { Page, PageSeller } from '@/types/public';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { FaPlus } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import Textarea from '@/components/common/Textarea';
+import { ImageType } from '@/constants';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
+import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
 import {
   setAllSellers,
   setCountries,
@@ -18,24 +24,20 @@ import {
   setReloadPages,
   setSelectedPage,
 } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import AdminFileUpload from '../common/adminFileUploadComponent';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { FaPlus } from 'react-icons/fa';
-import { ImageType } from '@/constants';
-import { ItemDataType } from 'rsuite/esm/internals/types';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { SellerType } from '@/types/event';
-import Textarea from '@/components/common/Textarea';
-import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useRouter } from 'next/navigation';
-import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
-import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { Page, PageSeller } from '@/types/public';
+import {
+  GetCountriesResponse,
+  GetPageTypesResponse,
+  GetSellersResponse,
+  ModifyPageResponse,
+} from '@/types/responses';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import AdminFileUpload from '../common/adminFileUploadComponent';
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

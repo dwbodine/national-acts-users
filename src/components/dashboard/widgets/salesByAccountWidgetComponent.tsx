@@ -1,6 +1,7 @@
 'use client';
 
 import { Col, Row } from 'rsuite';
+
 import { SalesByAccountWidgetProps } from '@/types/props';
 
 export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {

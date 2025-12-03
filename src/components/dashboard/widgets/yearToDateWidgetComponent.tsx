@@ -1,8 +1,9 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
-import { YearToDateWidgetProps } from '@/types/props';
 import moment from 'moment';
+import { Col, Row } from 'rsuite';
+
+import { YearToDateWidgetProps } from '@/types/props';
 
 export default function YearToDateWidget(props: YearToDateWidgetProps) {
   const totals = props.Totals;

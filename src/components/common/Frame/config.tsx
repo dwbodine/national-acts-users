@@ -1,5 +1,6 @@
 'use client';
 
+import { Icon } from '@rsuite/icons';
 import {
   MdCalendarMonth,
   MdDashboard,
@@ -11,8 +12,6 @@ import {
   MdSupervisedUserCircle,
   MdWebAsset,
 } from 'react-icons/md';
-
-import { Icon } from '@rsuite/icons';
 
 export const userAppNavs = [
   {

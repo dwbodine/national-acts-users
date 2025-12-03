@@ -2,8 +2,10 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Checkbox } from 'rsuite';
-import type { RootState } from '../../../lib/store';
+
 import { setHideRevenue } from '@/lib/reportSelectionSlice';
+
+import type { RootState } from '../../../lib/store';
 
 export default function RevenueCheck() {
   const dispatch = useDispatch();

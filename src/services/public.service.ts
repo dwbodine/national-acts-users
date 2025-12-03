@@ -1,14 +1,16 @@
+import axios, { AxiosError, AxiosInstance } from 'axios';
+
+import { ImageType, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
+import { Page, PageType, SiteSetting } from '@/types/public';
 import {
   GetEventsResponse,
-  GetPageTypesResponse,
   GetPagesResponse,
+  GetPageTypesResponse,
   GetSellersResponse,
   GetSettingsResponse,
 } from '@/types/responses';
-import { ImageType, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
-import { Page, PageType, SiteSetting } from '@/types/public';
+
 import { Seller, VipEvent } from '../types/event';
-import axios, { AxiosError, AxiosInstance } from 'axios';
 
 export class PublicService {
   protected readonly instance: AxiosInstance;

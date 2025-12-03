@@ -1,14 +1,15 @@
 'use client';
 
-import { Dropdown, Popover, Stack, Whisper, WhisperInstance } from 'rsuite';
-import { useCallback, useEffect, useRef, useState } from 'react';
 import HelpOutlineIcon from '@rsuite/icons/HelpOutline';
-import { SpeakerRenderFn } from '@/types/public';
-import { RootState } from '@/lib/store';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Dropdown, Popover, Stack, Whisper, WhisperInstance } from 'rsuite';
+
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { setCurrentUser } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { SpeakerRenderFn } from '@/types/public';
 
 export default function Header() {
   const dispatch = useDispatch();

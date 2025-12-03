@@ -1,6 +1,7 @@
 'use client';
 
 import { Col, Row } from 'rsuite';
+
 import { MonthWeekProps } from '@/types/props';
 
 export default function MonthWeek(props: MonthWeekProps) {

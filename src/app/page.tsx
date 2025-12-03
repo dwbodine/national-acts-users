@@ -1,9 +1,10 @@
 'use client';
 
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { setCurrentUser } from '@/lib/globalSelectionSlice';
 
 export default function HomePage() {

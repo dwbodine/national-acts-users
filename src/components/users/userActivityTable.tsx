@@ -1,20 +1,21 @@
 'use client';
 
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Checkbox, Col, Container, Row, Table } from 'rsuite';
+
+import { useGetActivityData } from '@/hooks/user/useGetActivityData';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
 import {
   setCurrentActivities,
   setFilterAdmins,
   setReloadActivities,
   setUserActivityDateRange,
 } from '@/lib/userActivitySelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
 import { GetActivityResponse } from '@/types/responses';
-import { RootState } from '@/lib/store';
 import { UserActivity } from '@/types/user';
-import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useGetActivityData } from '@/hooks/user/useGetActivityData';
 
 export default function UserActivityTable() {
   const { getActivityData } = useGetActivityData();

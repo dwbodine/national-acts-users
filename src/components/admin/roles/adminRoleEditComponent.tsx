@@ -1,17 +1,18 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { Button, Checkbox, Input } from 'rsuite';
+
+import { useUpdateRole } from '@/hooks/admin/useUpdateRole';
+import { useGetAllPermissions } from '@/hooks/user/useGetAllPermissions';
+import { setReloadRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
 import { GetPermissionsResponse, UpdateRoleResponse } from '@/types/responses';
 import { Permission, Role } from '@/types/user';
-import { ReactElement, useCallback, useEffect, useState } from 'react';
-import { setReloadRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetAllPermissions } from '@/hooks/user/useGetAllPermissions';
-import { useRouter } from 'next/navigation';
-import { useUpdateRole } from '@/hooks/admin/useUpdateRole';
 
 export default function AdminRoleEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

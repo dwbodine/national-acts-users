@@ -1,11 +1,12 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
-import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Col, Row } from 'rsuite';
+
+import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 
 export default function ReportsList() {
   const dispatch = useDispatch();

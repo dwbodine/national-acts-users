@@ -1,12 +1,13 @@
 'use client';
 
-import { Button, Col, Input, Row } from 'rsuite';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Button, Col, Input, Row } from 'rsuite';
 import Container from 'rsuite/Container';
-import { UserResponse } from '@/types/responses';
+
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useResetPasswordSecure } from '@/hooks/user/useResetPasswordSecure';
-import { useRouter } from 'next/navigation';
+import { UserResponse } from '@/types/responses';
 
 export default function ResetPasswordComponent() {
   const { resetPasswordSecure } = useResetPasswordSecure();

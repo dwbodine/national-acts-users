@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { useEffect, useRef } from 'react';
+
 import { LogoProps } from '@/types/props';
 
 export default function Logo({ width, height, expanded }: LogoProps) {

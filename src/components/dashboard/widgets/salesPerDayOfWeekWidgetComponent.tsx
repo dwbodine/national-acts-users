@@ -1,9 +1,10 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
-import { ReactElement } from 'react';
-import { SalesPerDayOfWeekWidgetProps } from '@/types/props';
 import moment from 'moment';
+import { ReactElement } from 'react';
+import { Col, Row } from 'rsuite';
+
+import { SalesPerDayOfWeekWidgetProps } from '@/types/props';
 
 export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetProps) {
   const salesPerDayMonth = props.SalesPerDayMonth;

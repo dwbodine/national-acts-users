@@ -1,25 +1,27 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { Button, Col, Input, Row, SelectPicker } from 'rsuite';
-import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import Textarea from '@/components/common/Textarea';
+import { useGetAllFaqCategories } from '@/hooks/admin/useGetAllFaqCategories';
+import { useUpdateFaq } from '@/hooks/admin/useUpdateFaq';
 import {
   setAllFaqCategories,
   setMustSavePage,
   setReloadFaqs,
   setSelectedFaq,
 } from '@/lib/adminSelectionSlice';
-import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { Faq } from '@/types/public';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { RootState } from '@/lib/store';
-import Textarea from '@/components/common/Textarea';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetAllFaqCategories } from '@/hooks/admin/useGetAllFaqCategories';
-import { useRouter } from 'next/navigation';
-import { useUpdateFaq } from '@/hooks/admin/useUpdateFaq';
+import { RootState } from '@/lib/store';
+import { Faq } from '@/types/public';
+import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
 
 export default function AdminFaqEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

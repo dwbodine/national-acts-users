@@ -1,29 +1,31 @@
 'use client';
 
+import moment from 'moment';
 import { ReactElement, useState } from 'react';
-import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+import { FaExclamationTriangle } from 'react-icons/fa';
+import { FaX } from 'react-icons/fa6';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Col } from 'rsuite';
+
+import { useAddNote } from '@/hooks/admin/useAddNote';
+import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
+import { useEditNote } from '@/hooks/admin/useEditNote';
 import {
   setExpandedEvent,
   setExpandedRow,
   setFocusControl,
   setReloadAdminEvents,
 } from '@/lib/adminEventsSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import AddNoteModal from '../common/addNoteModalComponent';
-import { Col } from 'rsuite';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import EditNoteModal from '../common/editNoteModalComponent';
-import { FaExclamationTriangle } from 'react-icons/fa';
-import { FaX } from 'react-icons/fa6';
-import { ModifyNoteResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
 import { WeekDayProps } from '@/types/props';
-import moment from 'moment';
-import { toast } from 'react-toastify';
-import { useAddNote } from '@/hooks/admin/useAddNote';
-import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
-import { useEditNote } from '@/hooks/admin/useEditNote';
+import { ModifyNoteResponse } from '@/types/responses';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import AddNoteModal from '../common/addNoteModalComponent';
+import EditNoteModal from '../common/editNoteModalComponent';
 
 export default function WeekDay(props: WeekDayProps) {
   const weekDate = props.WeekDate ? moment(props.WeekDate) : undefined;

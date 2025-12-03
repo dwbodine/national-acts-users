@@ -1,23 +1,25 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Table } from 'rsuite';
-import { GetSellersResponse, GetTicketSocketAccountsResponse } from '@/types/responses';
-import { Seller, SellerType } from '@/types/event';
+
+import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
+import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
 import {
   setAdminSeller,
   setAllSellers,
   setReloadSellers,
   setTicketSocketAccounts,
 } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import { RootState } from '@/lib/store';
-import { getSellerStatusSlug } from '@/utils/eventUtils';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
-import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
-import { useRouter } from 'next/navigation';
+import { RootState } from '@/lib/store';
+import { Seller, SellerType } from '@/types/event';
+import { GetSellersResponse, GetTicketSocketAccountsResponse } from '@/types/responses';
+import { getSellerStatusSlug } from '@/utils/eventUtils';
+
+import AdminListHomeButton from '../adminListHomeButton';
 
 export default function AdminSellerGlobalIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

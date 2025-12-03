@@ -1,5 +1,6 @@
-import { VipEvent } from '@/types/event';
 import moment from 'moment';
+
+import { VipEvent } from '@/types/event';
 
 export default function getFileNameFromEvent(vipEvent: VipEvent, fileNameStub?: string) {
   const title = vipEvent.title.replace(/[\W_]+/gi, '_');

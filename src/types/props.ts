@@ -1,17 +1,9 @@
-import { Country, NavItemData, PageSeller } from './public';
-import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 import { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
-import {
-  IAverageDailyData,
-  IDashboardData,
-  IDashboardTotals,
-  ISalesData,
-  ITopSeller,
-  ITopSellingLocation,
-  Role,
-  UserActivityType,
-  UserSeller,
-} from './user';
+import { CellProps } from 'rsuite';
+import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
+
+import { ImageType } from '@/constants';
+
 import {
   IShirtData,
   ITicketData,
@@ -25,8 +17,18 @@ import {
   TicketType,
   VipEvent,
 } from './event';
-import { CellProps } from 'rsuite';
-import { ImageType } from '@/constants';
+import { Country, NavItemData, PageSeller } from './public';
+import {
+  IAverageDailyData,
+  IDashboardData,
+  IDashboardTotals,
+  ISalesData,
+  ITopSeller,
+  ITopSellingLocation,
+  Role,
+  UserActivityType,
+  UserSeller,
+} from './user';
 
 export interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

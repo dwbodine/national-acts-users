@@ -1,6 +1,7 @@
-import { EnumPermission, User } from '@/types/user';
-import { RootState } from '@/lib/store';
 import { useSelector } from 'react-redux';
+
+import { RootState } from '@/lib/store';
+import { EnumPermission, User } from '@/types/user';
 
 export const useHasPermission = () => {
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);

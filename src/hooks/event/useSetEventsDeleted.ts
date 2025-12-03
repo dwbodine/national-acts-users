@@ -1,4 +1,5 @@
 import { ModifyEventResponse } from '@/types/responses';
+
 import { eventService } from '../../services';
 
 export const useSetEventsDeleted = () => {

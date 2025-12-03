@@ -1,5 +1,6 @@
-import { IShirtData, IShirtSizeData, Order } from '@/types/event';
 import moment from 'moment';
+
+import { IShirtData, IShirtSizeData, Order } from '@/types/event';
 
 export default function getShirtDataFromOrders(orders: Order[]): IShirtData | undefined {
   const map = new Map<string, IShirtSizeData[]>();

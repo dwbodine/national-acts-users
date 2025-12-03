@@ -1,21 +1,21 @@
 'use client';
 
-import { Button, Checkbox, Col, Container, Input, Row } from 'rsuite';
-import { EnumPermission, User, UserReportSelection } from '@/types/user';
-import {
-  IShirtData,
-  IShirtSizeData,
-  ITicketData,
-  ITicketTypeData,
-  Order,
-  TicketType,
-  VipEvent,
-} from '@/types/event';
+import debouce from 'lodash.debounce';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
 import { ReactElement, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Checkbox, Col, Container, Input, Row } from 'rsuite';
+
+import { useGetEventById } from '@/hooks/common/useGetEventById';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useGetUserSeller } from '@/hooks/order/useGetUserSeller';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useHasPermission } from '@/hooks/user/useHasPermission';
 import {
   setCurrentDetailEvent,
-  setEventSeller,
   setEvents,
+  setEventSeller,
   setFocusControl,
   setHideRevenue,
   setHideServiceFees,
@@ -25,27 +25,28 @@ import {
   setShowOnlyEmails,
   setShowOnlyPhones,
 } from '@/lib/reportSelectionSlice';
-
-import { useDispatch, useSelector } from 'react-redux';
-import { EditProps } from '@/types/props';
-import OrderMobileRow from './orderMobileRowComponent';
-import OrderRow from './orderRowComponent';
-import PrintButton from '../../common/printButtonComponent';
 import { RootState } from '@/lib/store';
-import debouce from 'lodash.debounce';
+import {
+  IShirtData,
+  IShirtSizeData,
+  ITicketData,
+  ITicketTypeData,
+  Order,
+  TicketType,
+  VipEvent,
+} from '@/types/event';
+import { EditProps } from '@/types/props';
+import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import { downloadCsvFile } from '@/utils/downloadFile';
 import { exportEventCustomerDataToCsv } from '@/utils/eventUtils';
 import getFileNameFromEvent from '@/utils/getFileNameFromEvent';
 import getShirtDataFromOrders from '@/utils/getShirtDataFromOrders';
 import getTicketDataFromOrders from '@/utils/getTicketDataFromOrders';
-import moment from 'moment';
 import setFocusToControl from '@/utils/setFocusToControl';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useGetEventById } from '@/hooks/common/useGetEventById';
-import { useGetUserSeller } from '@/hooks/order/useGetUserSeller';
-import { useHasPermission } from '@/hooks/user/useHasPermission';
-import { useRouter } from 'next/navigation';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
+
+import PrintButton from '../../common/printButtonComponent';
+import OrderMobileRow from './orderMobileRowComponent';
+import OrderRow from './orderRowComponent';
 
 export default function EventDetail(props: EditProps) {
   const id = props.Id;

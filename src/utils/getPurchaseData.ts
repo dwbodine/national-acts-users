@@ -1,5 +1,6 @@
-import { ITicketSalesData, VipEvent } from '@/types/event';
 import moment from 'moment';
+
+import { ITicketSalesData, VipEvent } from '@/types/event';
 
 export default function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[] {
   const map = new Map<string, ITicketSalesData>();

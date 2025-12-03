@@ -1,5 +1,10 @@
 'use client';
 
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import {
   Button,
   Checkbox,
@@ -11,19 +16,22 @@ import {
   SelectPicker,
   TimePicker,
 } from 'rsuite';
-import {
-  GetCountriesResponse,
-  GetEventResponse,
-  GetEventsResponse,
-  GetExternalVenuesResponse,
-  GetSellersResponse,
-  ModifyEventResponse,
-  ModifyExternalVenueResponse,
-  ModifyNoteResponse,
-  ModifyOrderResponse,
-} from '@/types/responses';
-import { Note, Seller, VipEvent } from '@/types/event';
-import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import Textarea from '@/components/common/Textarea';
+import { ImageType } from '@/constants';
+import { useAddCompedOrder } from '@/hooks/admin/useAddCompOrder';
+import { useAddNote } from '@/hooks/admin/useAddNote';
+import { useCancelEvent } from '@/hooks/admin/useCancelEvent';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
+import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
+import { useRefundEvent } from '@/hooks/admin/useRefundEvent';
+import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
+import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
+import { useGetEventById } from '@/hooks/common/useGetEventById';
+import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
 import {
   setAdminDates,
   setAdminEvent,
@@ -40,31 +48,25 @@ import {
   setVenues,
 } from '@/lib/adminSelectionSlice';
 import { setIsLoading, setSaveInProgress } from '@/lib/globalSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import AdminFileUpload from '../common/adminFileUploadComponent';
-import { AdminSelection } from '@/types/user';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { EditProps } from '@/types/props';
-import { ExternalVenue } from '@/types/admin';
-import { ImageType } from '@/constants';
-import { ItemDataType } from 'rsuite/esm/internals/types';
 import { RootState } from '@/lib/store';
-import Textarea from '@/components/common/Textarea';
-import moment from 'moment';
-import { toast } from 'react-toastify';
-import { useAddCompedOrder } from '@/hooks/admin/useAddCompOrder';
-import { useAddNote } from '@/hooks/admin/useAddNote';
-import { useCancelEvent } from '@/hooks/admin/useCancelEvent';
-import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
-import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
-import { useGetEventById } from '@/hooks/common/useGetEventById';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
-import { useRefundEvent } from '@/hooks/admin/useRefundEvent';
-import { useRouter } from 'next/navigation';
-import { useUpdateEvent } from '@/hooks/admin/useUpdateEvent';
-import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
+import { ExternalVenue } from '@/types/admin';
+import { Note, Seller, VipEvent } from '@/types/event';
+import { EditProps } from '@/types/props';
+import {
+  GetCountriesResponse,
+  GetEventResponse,
+  GetEventsResponse,
+  GetExternalVenuesResponse,
+  GetSellersResponse,
+  ModifyEventResponse,
+  ModifyExternalVenueResponse,
+  ModifyNoteResponse,
+  ModifyOrderResponse,
+} from '@/types/responses';
+import { AdminSelection } from '@/types/user';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import AdminFileUpload from '../common/adminFileUploadComponent';
 
 export default function AdminEventEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;

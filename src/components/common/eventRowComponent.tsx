@@ -1,9 +1,10 @@
 'use client';
 
-import { formatCurrencyAmount, getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
-import { EventRowProps } from '@/types/props';
 import moment from 'moment';
+
 import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { EventRowProps } from '@/types/props';
+import { formatCurrencyAmount, getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 
 export default function EventRow(props: EventRowProps) {
   const vipEvent = props.VipEvent;

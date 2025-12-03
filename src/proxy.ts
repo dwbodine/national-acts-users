@@ -1,7 +1,8 @@
+import { jwtDecode } from 'jwt-decode';
 import { NextRequest, NextResponse } from 'next/server';
+
 import { adminRoutes, authRoutes, protectedRoutes, publicRoutes } from './router/routes';
 import { JwtPayload } from './types/user';
-import { jwtDecode } from 'jwt-decode';
 
 export default function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;

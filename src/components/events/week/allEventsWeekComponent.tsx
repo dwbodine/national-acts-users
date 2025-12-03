@@ -1,22 +1,24 @@
 'use client';
 
-import { Col, IconButton, Row, Table } from 'rsuite';
-import { Note, VipEvent } from '@/types/event';
-import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
-import { setExpandedEvent, setExpandedRow, setFocusControl } from '@/lib/adminEventsSelectionSlice';
+import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
+import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
+import moment from 'moment';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
+import { Col, IconButton, Row, Table } from 'rsuite';
+
 import EventDataExpanded from '@/components/common/eventDataExpandedComponent';
-import { ExpandCellProps } from '@/types/props';
-import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
-import type { RootState } from '@/lib/store';
-import WeekView from './weekViewComponent';
-import moment from 'moment';
-import setFocusToControl from '@/utils/setFocusToControl';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { setExpandedEvent, setExpandedRow, setFocusControl } from '@/lib/adminEventsSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import type { RootState } from '@/lib/store';
+import { Note, VipEvent } from '@/types/event';
+import { ExpandCellProps } from '@/types/props';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+import setFocusToControl from '@/utils/setFocusToControl';
+
+import WeekView from './weekViewComponent';
 
 export default function AllEventsWeek() {
   const { Column, HeaderCell, Cell } = Table;

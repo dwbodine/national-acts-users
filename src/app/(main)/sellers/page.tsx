@@ -1,5 +1,5 @@
-import AdminPage from '@/components/common/adminPageComponent';
 import AdminSellersComponent from '@/components/admin/sellers/adminSellersComponent';
+import AdminPage from '@/components/common/adminPageComponent';
 import { UserActivityType } from '@/types/user';
 
 export default function AdminHome() {

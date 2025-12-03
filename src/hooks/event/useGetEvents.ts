@@ -1,5 +1,6 @@
 import { GetEventsResponse } from '@/types/responses';
 import { UserReportSelection } from '@/types/user';
+
 import { eventService } from '../../services';
 
 export const useGetEvents = () => {

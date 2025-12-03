@@ -1,4 +1,5 @@
 import { LogResponse } from '@/types/responses';
+
 import { authService } from '../../services';
 
 export const useGetLogs = () => {

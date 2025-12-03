@@ -1,10 +1,12 @@
 'use client';
 
-import { formatCurrencyAmount, getOrderStatusText } from '@/utils/eventUtils';
-import AttendeeRow from './attendeeRowComponent';
-import { OrderRowProps } from '@/types/props';
-import { ReactElement } from 'react';
 import moment from 'moment';
+import { ReactElement } from 'react';
+
+import { OrderRowProps } from '@/types/props';
+import { formatCurrencyAmount, getOrderStatusText } from '@/utils/eventUtils';
+
+import AttendeeRow from './attendeeRowComponent';
 
 export default function OrderRow(props: OrderRowProps) {
   const ticketTypes = props.TicketTypes;

@@ -1,6 +1,7 @@
 'use client';
 
 import { Col, Container, Row } from 'rsuite';
+
 import ReportsIndexBar from './reportsIndexBarComponent';
 import ReportsList from './reportsListComponent';
 

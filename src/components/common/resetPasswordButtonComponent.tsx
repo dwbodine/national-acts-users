@@ -1,7 +1,7 @@
 'use client';
 
-import { FaUnlockAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
+import { FaUnlockAlt } from 'react-icons/fa';
 
 export default function ResetPasswordButton() {
   const router = useRouter();

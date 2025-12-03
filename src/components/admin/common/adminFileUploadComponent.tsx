@@ -1,12 +1,13 @@
 'use client';
 
-import { Button, Uploader } from 'rsuite';
-import { AdminFileUploadProps } from '@/types/props';
-import { FaTimesCircle } from 'react-icons/fa';
-import { FileType } from 'rsuite/esm/Uploader';
-import { ImageType } from '@/constants';
 import { useState } from 'react';
+import { FaTimesCircle } from 'react-icons/fa';
+import { Button, Uploader } from 'rsuite';
+import { FileType } from 'rsuite/esm/Uploader';
+
+import { ImageType } from '@/constants';
 import { useUploadImage } from '@/hooks/common/useUploadImage';
+import { AdminFileUploadProps } from '@/types/props';
 
 export default function AdminFileUpload(props: AdminFileUploadProps) {
   const {

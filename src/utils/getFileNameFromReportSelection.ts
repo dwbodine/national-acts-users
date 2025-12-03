@@ -1,5 +1,6 @@
-import { UserReportSelection } from '@/types/user';
 import moment from 'moment';
+
+import { UserReportSelection } from '@/types/user';
 
 const getCsvFileNameFromReportSelection = (
   currentReportSelection: UserReportSelection | undefined,

@@ -1,21 +1,23 @@
 'use client';
 
-import { Button, Col, Container, Modal, Radio, RadioGroup, Row } from 'rsuite';
-import { exportVipItineraryToCSV, exportVipItineraryToHtml } from '@/utils/exportVipItinerary';
-import { useEffect, useState } from 'react';
-import { GetEventsResponse } from '@/types/responses';
-import ReportDatePicker from '../../common/reportDatePickerControl';
-import { RootState } from '@/lib/store';
-import { UserSeller } from '@/types/user';
-import { VIPModalProps } from '@/types/props';
-import { ValueType } from 'rsuite/esm/Radio';
-import { VipEvent } from '@/types/event';
-import { downloadCsvFile } from '@/utils/downloadFile';
-import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReportSelection';
 import moment from 'moment';
-import { toast } from 'react-toastify';
-import { useGetPublicEvents } from '@/hooks/event/useGetPublicEvents';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Col, Container, Modal, Radio, RadioGroup, Row } from 'rsuite';
+import { ValueType } from 'rsuite/esm/Radio';
+
+import { useGetPublicEvents } from '@/hooks/event/useGetPublicEvents';
+import { RootState } from '@/lib/store';
+import { VipEvent } from '@/types/event';
+import { VIPModalProps } from '@/types/props';
+import { GetEventsResponse } from '@/types/responses';
+import { UserSeller } from '@/types/user';
+import { downloadCsvFile } from '@/utils/downloadFile';
+import { exportVipItineraryToCSV, exportVipItineraryToHtml } from '@/utils/exportVipItinerary';
+import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReportSelection';
+
+import ReportDatePicker from '../../common/reportDatePickerControl';
 
 export default function VIPItineraryModal(props: VIPModalProps) {
   const isOpen = props.IsOpen ?? false;

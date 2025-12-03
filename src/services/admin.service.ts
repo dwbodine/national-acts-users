@@ -1,5 +1,8 @@
-import { Country, Faq, FaqCategory, Page, SiteSetting } from '@/types/public';
+import axios, { AxiosError, AxiosInstance } from 'axios';
+
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
+import { Seller } from '@/types/event';
+import { Country, Faq, FaqCategory, Page, SiteSetting } from '@/types/public';
 import {
   GetCountriesResponse,
   GetExternalVenuesResponse,
@@ -15,8 +18,6 @@ import {
   ModifySellerResponse,
   UpdateSettingResponse,
 } from '@/types/responses';
-import axios, { AxiosError, AxiosInstance } from 'axios';
-import { Seller } from '@/types/event';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
 
 export class AdminService {

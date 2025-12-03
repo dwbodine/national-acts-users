@@ -5,6 +5,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import nextPlugin from '@next/eslint-plugin-next';
 import prettierPlugin from 'eslint-plugin-prettier';
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 export default defineConfig([
   // -----------------------------------------------------
@@ -43,6 +44,7 @@ export default defineConfig([
       import: importPlugin,
       '@next/next': nextPlugin,
       prettier: prettierPlugin,
+      "simple-import-sort": simpleImportSort,
     },
 
     settings: {
@@ -59,6 +61,11 @@ export default defineConfig([
       'import/named': 'error',
       'import/default': 'error',
       'import/namespace': 'error',
+
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
+      "import/no-duplicates": "error",
+      "no-duplicate-imports": "error",
 
       // Next rules
       ...nextPlugin.configs.recommended.rules,

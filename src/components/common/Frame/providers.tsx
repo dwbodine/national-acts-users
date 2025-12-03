@@ -1,13 +1,14 @@
 'use client';
 
-import { CustomProvider } from 'rsuite';
-import { IntlProvider } from 'react-intl';
 import { ReactNode } from 'react';
+import { IntlProvider } from 'react-intl';
 import { Provider as ReduxProvider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
+import { CustomProvider } from 'rsuite';
 import enUS from 'rsuite/locales/en_US';
-import locales from '@/locales';
+
 import { store } from '@/lib/store';
+import locales from '@/locales';
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (

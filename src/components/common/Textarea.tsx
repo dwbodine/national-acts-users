@@ -1,7 +1,7 @@
 'use client';
 
-import { Input, type InputProps } from 'rsuite';
 import React from 'react';
+import { Input, type InputProps } from 'rsuite';
 
 type TextareaProps = Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,

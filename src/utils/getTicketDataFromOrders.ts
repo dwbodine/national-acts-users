@@ -1,5 +1,6 @@
-import { ITicketData, ITicketTypeData, Order, TicketType, VipEvent } from '@/types/event';
 import moment from 'moment';
+
+import { ITicketData, ITicketTypeData, Order, TicketType, VipEvent } from '@/types/event';
 
 export default function getTicketDataFromOrders(
   orders: Order[],

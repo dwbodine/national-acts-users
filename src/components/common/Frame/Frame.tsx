@@ -1,18 +1,20 @@
 'use client';
 
-import { adminAppNavs, userAppNavs } from './config';
 import { useEffect, useState } from 'react';
-import Brand from './Brand';
+import { useSelector } from 'react-redux';
 import { Content } from 'rsuite';
+
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { RootState } from '@/lib/store';
 import { FrameProps } from '@/types/props';
-import Header from './Header';
 import { NavItemData } from '@/types/public';
+import { User } from '@/types/user';
+
+import Brand from './Brand';
+import { adminAppNavs, userAppNavs } from './config';
+import Header from './Header';
 import NavToggle from './NavToggle';
 import ResponsiveFrame from './ResponsiveFrame';
-import { RootState } from '@/lib/store';
-import { User } from '@/types/user';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useSelector } from 'react-redux';
 
 const Frame = (props: FrameProps) => {
   const { getUser } = useCurrentUser();

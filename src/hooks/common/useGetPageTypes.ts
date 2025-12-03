@@ -1,4 +1,5 @@
 import { GetPageTypesResponse } from '@/types/responses';
+
 import { publicService } from '../../services';
 
 export const useGetPageTypes = () => {

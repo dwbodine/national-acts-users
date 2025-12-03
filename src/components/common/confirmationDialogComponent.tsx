@@ -1,8 +1,9 @@
 'use client';
 
-import { Button } from 'rsuite';
-import { ConfirmationDialogProps } from '@/types/props';
 import parse from 'html-react-parser';
+import { Button } from 'rsuite';
+
+import { ConfirmationDialogProps } from '@/types/props';
 
 export default function ConfirmationDialog(props: ConfirmationDialogProps) {
   const message = props.Message ? parse(props.Message) : '';

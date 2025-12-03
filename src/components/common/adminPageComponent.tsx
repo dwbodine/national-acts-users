@@ -1,15 +1,16 @@
 'use client';
 
-import { AdminPageProps } from '@/types/props';
-import { Container } from 'rsuite';
-import { RootState } from '@/lib/store';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useEffect } from 'react';
-import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Container } from 'rsuite';
+
+import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { setCurrentUser } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { AdminPageProps } from '@/types/props';
 
 export default function AdminPage({ Title, UserActivity, children }: AdminPageProps) {
   const dispatch = useDispatch();

@@ -1,6 +1,7 @@
-import { AdminDashboardSelection, IDashboardData } from '../types/user';
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import moment from 'moment';
+
+import { AdminDashboardSelection, IDashboardData } from '../types/user';
 
 const initialState: AdminDashboardSelection = {
   currentDashboardData: undefined,

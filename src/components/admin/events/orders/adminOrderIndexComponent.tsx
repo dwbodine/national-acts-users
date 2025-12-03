@@ -1,8 +1,19 @@
 'use client';
 
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { FaArrowTurnDown } from 'react-icons/fa6';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { Button, Checkbox, Col, Row, SelectPicker, Table } from 'rsuite';
-import { GetEventResponse, GetEventsResponse, ModifyOrderResponse } from '@/types/responses';
-import { getEventStatusText, getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
+import { useGetEventById } from '@/hooks/common/useGetEventById';
+import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useSetOrdersDeleted } from '@/hooks/order/useSetOrdersDeleted';
+import { useSetOrdersInactive } from '@/hooks/order/useSetOrdersInactive';
 import {
   setAdminEvent,
   setAdminEvents,
@@ -10,23 +21,14 @@ import {
   setAdminTour,
   setReloadEvents,
 } from '@/lib/adminSelectionSlice';
-import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import ConfirmationDialog from '../../../common/confirmationDialogComponent';
-import { EditProps } from '@/types/props';
-import { FaArrowTurnDown } from 'react-icons/fa6';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { Order } from '@/types/event';
-import { RootState } from '@/lib/store';
-import moment from 'moment';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
-import { useGetEventById } from '@/hooks/common/useGetEventById';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
-import { useRouter } from 'next/navigation';
-import { useSetOrdersDeleted } from '@/hooks/order/useSetOrdersDeleted';
-import { useSetOrdersInactive } from '@/hooks/order/useSetOrdersInactive';
+import { RootState } from '@/lib/store';
+import { Order } from '@/types/event';
+import { EditProps } from '@/types/props';
+import { GetEventResponse, GetEventsResponse, ModifyOrderResponse } from '@/types/responses';
+import { getEventStatusText, getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
+
+import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 
 export default function AdminOrdersIndex(props: EditProps) {
   const id: number | undefined = props.Id as number;

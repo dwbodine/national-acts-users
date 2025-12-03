@@ -1,28 +1,30 @@
 'use client';
 
+import moment from 'moment';
 import { ReactElement, useState } from 'react';
-import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+import { FaExclamationTriangle } from 'react-icons/fa';
+import { FaX } from 'react-icons/fa6';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+
+import { useAddNote } from '@/hooks/admin/useAddNote';
+import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
+import { useEditNote } from '@/hooks/admin/useEditNote';
 import {
   setExpandedEvent,
   setExpandedRow,
   setFocusControl,
   setReloadAdminEvents,
 } from '@/lib/adminEventsSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import AddNoteModal from '../common/addNoteModalComponent';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import EditNoteModal from '../common/editNoteModalComponent';
-import { FaExclamationTriangle } from 'react-icons/fa';
-import { FaX } from 'react-icons/fa6';
-import { ModifyNoteResponse } from '@/types/responses';
-import { MonthDayProps } from '@/types/props';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
-import moment from 'moment';
-import { toast } from 'react-toastify';
-import { useAddNote } from '@/hooks/admin/useAddNote';
-import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
-import { useEditNote } from '@/hooks/admin/useEditNote';
+import { MonthDayProps } from '@/types/props';
+import { ModifyNoteResponse } from '@/types/responses';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import AddNoteModal from '../common/addNoteModalComponent';
+import EditNoteModal from '../common/editNoteModalComponent';
 
 export default function MonthDay(props: MonthDayProps) {
   const dispatch = useDispatch();

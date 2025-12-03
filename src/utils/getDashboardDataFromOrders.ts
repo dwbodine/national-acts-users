@@ -1,3 +1,6 @@
+import moment from 'moment';
+
+import { ITicketEventSalesData, ITicketSalesData } from '@/types/event';
 import {
   AdminDashboardSelection,
   IAverageDailyData,
@@ -9,9 +12,8 @@ import {
   ITopSellingLocation,
   ITotalsByAccount,
 } from '@/types/user';
-import { ITicketEventSalesData, ITicketSalesData } from '@/types/event';
+
 import { getLocationInfoFromDailyOrderData } from './eventUtils';
-import moment from 'moment';
 
 export default function getDashboardDataFromOrders(
   currentDashboardSelection: AdminDashboardSelection,

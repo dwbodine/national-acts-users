@@ -1,13 +1,14 @@
 'use client';
 
+import { useState } from 'react';
+import { FaMinus } from 'react-icons/fa';
 import { Button, Checkbox, Col, Container, Input, Modal, Row, SelectPicker } from 'rsuite';
-import { Country, PageSeller } from '@/types/public';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
 import { Seller, SellerType } from '@/types/event';
 import { AdminSellerSelectProps } from '@/types/props';
-import { FaMinus } from 'react-icons/fa';
-import { ItemDataType } from 'rsuite/esm/internals/types';
+import { Country, PageSeller } from '@/types/public';
 import { Role } from '@/types/user';
-import { useState } from 'react';
 
 export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   let sellers: Seller[] | undefined = props.Sellers || undefined;

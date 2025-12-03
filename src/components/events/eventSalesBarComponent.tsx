@@ -1,17 +1,19 @@
 'use client';
 
-import { Col, DatePicker, Row } from 'rsuite';
-import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
-import { useDispatch, useSelector } from 'react-redux';
-import { EventTabView } from '@/types/user';
-import type { RootState } from '../../lib/store';
-import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 import moment from 'moment';
-import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Col, DatePicker, Row } from 'rsuite';
+
+import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { setAdminDateRange } from '@/lib/adminEventsSelectionSlice';
+import { EventTabView } from '@/types/user';
+import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
+
+import type { RootState } from '../../lib/store';
 
 export default function EventSalesBar() {
   const dispatch = useDispatch();

@@ -1,5 +1,6 @@
-import { AdminSelection } from '@/types/user';
 import { GetEventsResponse } from '@/types/responses';
+import { AdminSelection } from '@/types/user';
+
 import { eventService } from '../../services';
 
 export const useGetAdminEvents = () => {

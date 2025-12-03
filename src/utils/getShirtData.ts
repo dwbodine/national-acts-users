@@ -1,5 +1,6 @@
-import { IShirtData, IShirtSizeData, VipEvent } from '@/types/event';
 import moment from 'moment';
+
+import { IShirtData, IShirtSizeData, VipEvent } from '@/types/event';
 
 export default function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefined {
   const map = new Map<string, IShirtSizeData[]>();

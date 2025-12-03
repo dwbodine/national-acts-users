@@ -1,4 +1,5 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { UserActivity, UserActivitySelection } from '../types/user';
 
 const initialState: UserActivitySelection = {

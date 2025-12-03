@@ -1,5 +1,6 @@
-import { AdminDashboardSelection } from '@/types/user';
 import { GetDashboardOrdersResponse } from '@/types/responses';
+import { AdminDashboardSelection } from '@/types/user';
+
 import { eventService } from '../../services';
 
 export const useGetDashboardData = () => {

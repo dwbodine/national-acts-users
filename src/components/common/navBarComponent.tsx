@@ -1,14 +1,16 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
 import Image from 'next/image';
-import LogoutButton from './logoutButtonComponent';
-import { NavBarProps } from '@/types/props';
-import ResetPasswordButton from './resetPasswordButtonComponent';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { Col, Row } from 'rsuite';
+
 import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { NavBarProps } from '@/types/props';
+
+import LogoutButton from './logoutButtonComponent';
+import ResetPasswordButton from './resetPasswordButtonComponent';
 
 export default function NavBar(props: NavBarProps) {
   const windowSize = useWindowSize();

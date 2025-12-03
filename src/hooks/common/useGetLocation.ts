@@ -1,6 +1,6 @@
-import { getAddressFromExternalVenue, getLocationInfoFromVenue } from '@/utils/eventUtils';
 import { ExternalVenue } from '@/types/admin';
 import { Venue } from '@/types/event';
+import { getAddressFromExternalVenue, getLocationInfoFromVenue } from '@/utils/eventUtils';
 
 export const useGetLocation = () => {
   const getExternalVenueLocation = (venue: ExternalVenue): string =>

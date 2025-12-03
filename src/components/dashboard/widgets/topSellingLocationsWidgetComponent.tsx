@@ -1,7 +1,8 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
 import { ReactElement } from 'react';
+import { Col, Row } from 'rsuite';
+
 import { TopSellingLocationsWidgetProps } from '@/types/props';
 
 export default function TopSellingLocationsWidget(props: TopSellingLocationsWidgetProps) {

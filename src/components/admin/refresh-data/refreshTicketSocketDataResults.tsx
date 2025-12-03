@@ -1,8 +1,9 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
-import { RefreshTicketSocketDataResultProps } from '@/types/props';
 import moment from 'moment';
+import { Col, Row } from 'rsuite';
+
+import { RefreshTicketSocketDataResultProps } from '@/types/props';
 
 export default function RefreshTicketSocketDataResults(props: RefreshTicketSocketDataResultProps) {
   const results = props.UpdateResults;

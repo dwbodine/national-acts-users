@@ -1,15 +1,16 @@
 'use client';
 
-import { Button, Col, Container, Row } from 'rsuite';
-import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
-import { formatCurrencyAmount, getEventStatusSlug } from '@/utils/eventUtils';
-import { EventRowProps } from '@/types/props';
-import { ReactElement } from 'react';
-import { RootState } from '@/lib/store';
-import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 import moment from 'moment';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { ReactElement } from 'react';
 import { useSelector } from 'react-redux';
+import { Button, Col, Container, Row } from 'rsuite';
+
+import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { RootState } from '@/lib/store';
+import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
+import { EventRowProps } from '@/types/props';
+import { formatCurrencyAmount, getEventStatusSlug } from '@/utils/eventUtils';
+import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 
 export default function EventMobileRow(props: EventRowProps) {
   const vipEvent = props.VipEvent;

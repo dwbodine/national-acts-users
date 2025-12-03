@@ -1,12 +1,14 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { Button, Col, Row } from 'rsuite';
-import {
-  GetCountriesResponse,
-  GetRefreshHistoryResponse,
-  GetSellersResponse,
-  RefreshHistoryResponse,
-} from '@/types/responses';
+
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useGetRefreshHistory } from '@/hooks/admin/useGetRefreshHistory';
+import { useRefreshEventsFromTicketSocket } from '@/hooks/admin/useRefreshEventsFromTicketSocket';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
 import {
   setAdminDates,
   setAdminSellerId,
@@ -14,21 +16,21 @@ import {
   setCountries,
   setReloadCountries,
 } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { TicketSocketRefreshHistory } from '@/types/event';
+import {
+  GetCountriesResponse,
+  GetRefreshHistoryResponse,
+  GetSellersResponse,
+  RefreshHistoryResponse,
+} from '@/types/responses';
+
+import ReportDatePicker from '../../common/reportDatePickerControl';
 import AdminListHomeButton from '../adminListHomeButton';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import RefreshTicketSocketDataResults from './refreshTicketSocketDataResults';
 import RefreshTicketSocketHistoryTable from './refreshTicketSocketHistoryTable';
-import ReportDatePicker from '../../common/reportDatePickerControl';
-import { RootState } from '@/lib/store';
-import { TicketSocketRefreshHistory } from '@/types/event';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetRefreshHistory } from '@/hooks/admin/useGetRefreshHistory';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useRefreshEventsFromTicketSocket } from '@/hooks/admin/useRefreshEventsFromTicketSocket';
-import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 
 export default function RefreshTicketSocketData() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

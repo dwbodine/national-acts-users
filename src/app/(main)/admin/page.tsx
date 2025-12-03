@@ -1,13 +1,26 @@
-import AdminIndex from '@/components/admin/adminIndexComponent';
-import AdminPage from '@/components/common/adminPageComponent';
-import { UserActivityType } from '@/types/user';
+'use client';
+
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 
 export default function Admin() {
-  const title = 'Client Portal - Admin';
+  const router = useRouter();
+  const { getUser } = useCurrentUser();
+  useEffect(() => {
+    const user = getUser();
 
-  return (
-    <AdminPage Title={title} UserActivity={UserActivityType.AccessAdmin}>
-      <AdminIndex />
-    </AdminPage>
-  );
+    if (user && user.isAuthenticated) {
+      if (user.isAdmin) {
+        void router.push('/dashboard');
+      } else {
+        void router.push('/sellers');
+      }
+    } else {
+      void router.push('/logout');
+    }
+  }, [router, getUser]);
+
+  return <></>;
 }

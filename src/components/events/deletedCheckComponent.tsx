@@ -2,9 +2,11 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Checkbox } from 'rsuite';
-import type { RootState } from '../../lib/store';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+
 import { setShowDeleted } from '@/lib/adminEventsSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+
+import type { RootState } from '../../lib/store';
 
 export default function AdminDeletedCheck() {
   const dispatch = useDispatch();

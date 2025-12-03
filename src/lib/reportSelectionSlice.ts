@@ -1,5 +1,7 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { SellerType, Tour, VipEvent } from '@/types/event';
+
 import { User, UserReportSelection, UserSeller } from '../types/user';
 
 const initialState: UserReportSelection = {

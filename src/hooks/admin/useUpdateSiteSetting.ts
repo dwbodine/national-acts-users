@@ -1,5 +1,6 @@
 import { SiteSetting } from '@/types/public';
 import { UpdateSettingResponse } from '@/types/responses';
+
 import { adminService } from '../../services';
 
 export const useUpdateSiteSetting = () => {

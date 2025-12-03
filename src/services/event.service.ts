@@ -1,9 +1,7 @@
-import {
-  AdminDashboardSelection,
-  AdminSelection,
-  IDashboardTotals,
-  UserReportSelection,
-} from '@/types/user';
+import axios, { AxiosError, AxiosInstance } from 'axios';
+import moment from 'moment';
+
+import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import {
   GetDashboardOrdersResponse,
   GetEventResponse,
@@ -20,11 +18,15 @@ import {
   ModifyTourResponse,
   RefreshHistoryResponse,
 } from '@/types/responses';
+import {
+  AdminDashboardSelection,
+  AdminSelection,
+  IDashboardTotals,
+  UserReportSelection,
+} from '@/types/user';
+
 import { Note, Order, TicketSocketRefreshHistory, Tour, VipEvent } from '../types/event';
-import axios, { AxiosError, AxiosInstance } from 'axios';
-import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import getAuthorizationHeader from '../utils/getAuthorizationHeader';
-import moment from 'moment';
 
 export class EventService {
   protected readonly instance: AxiosInstance;

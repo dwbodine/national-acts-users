@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from 'rsuite';
 import { useRouter } from 'next/navigation';
+import { Button } from 'rsuite';
 
 export default function ReportsListHomeButton() {
   const router = useRouter();

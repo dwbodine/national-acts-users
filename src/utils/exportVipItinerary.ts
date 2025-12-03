@@ -1,7 +1,9 @@
-import { UserSeller } from '@/types/user';
-import { VipEvent } from '@/types/event';
-import { getEventStatusText } from './eventUtils';
 import moment from 'moment';
+
+import { VipEvent } from '@/types/event';
+import { UserSeller } from '@/types/user';
+
+import { getEventStatusText } from './eventUtils';
 
 const exportVipItineraryToHtml = (
   events: VipEvent[],
@@ -105,4 +107,4 @@ const exportVipItineraryToCSV = (
   return Promise.resolve(csvString);
 };
 
-export { exportVipItineraryToHtml, exportVipItineraryToCSV };
+export { exportVipItineraryToCSV, exportVipItineraryToHtml };

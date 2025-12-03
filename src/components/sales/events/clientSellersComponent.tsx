@@ -1,13 +1,15 @@
 'use client';
 
-import { User, UserActivityType } from '@/types/user';
 import { useEffect, useState } from 'react';
-import AdminBar from './salesBarComponent';
 import Container from 'rsuite/Container';
-import CurrentEvents from './currentEventsComponent';
-import NavBar from '../../common/navBarComponent';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { User, UserActivityType } from '@/types/user';
+
+import NavBar from '../../common/navBarComponent';
+import CurrentEvents from './currentEventsComponent';
+import AdminBar from './salesBarComponent';
 
 export default function ClientSellersComponent() {
   const { getUser } = useCurrentUser();

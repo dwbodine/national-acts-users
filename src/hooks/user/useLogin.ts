@@ -1,5 +1,7 @@
-import { User, UserActivityType } from '@/types/user';
 import Cookies from 'js-cookie';
+
+import { User, UserActivityType } from '@/types/user';
+
 import { authService } from '../../services';
 import { useLogActivityData } from '../common/useLogActivityData';
 

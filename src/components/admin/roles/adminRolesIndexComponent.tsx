@@ -1,18 +1,20 @@
 'use client';
 
-import { Button, Checkbox, Table } from 'rsuite';
-import { GetRolesResponse, UpdateRoleResponse } from '@/types/responses';
-import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import { Role } from '@/types/user';
-import { RootState } from '@/lib/store';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { Button, Checkbox, Table } from 'rsuite';
+
 import { useDeleteRoles } from '@/hooks/admin/useDeleteRoles';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
-import { useRouter } from 'next/navigation';
+import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { GetRolesResponse, UpdateRoleResponse } from '@/types/responses';
+import { Role } from '@/types/user';
+
+import AdminListHomeButton from '../adminListHomeButton';
 
 export default function AdminRolesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

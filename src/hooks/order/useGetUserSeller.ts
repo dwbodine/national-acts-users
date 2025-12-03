@@ -1,4 +1,5 @@
 import { UserSellerResponse } from '@/types/responses';
+
 import { userService } from '../../services';
 
 export const useGetUserSeller = () => {

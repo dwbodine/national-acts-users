@@ -1,27 +1,29 @@
 'use client';
 
-import { Button, Col, Input, Row, SelectPicker, Table } from 'rsuite';
+import moment from 'moment';
+import { useCallback, useEffect, useState } from 'react';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
-import { GetPageTypesResponse, GetPagesResponse, ModifyPageResponse } from '@/types/responses';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Col, Input, Row, SelectPicker, Table } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import { ARTIST_SELLER_TYPE } from '@/constants';
+import { useUpdatePageOrder } from '@/hooks/admin/useUpdatePageOrder';
+import { useGetPagesByType } from '@/hooks/common/useGetPagesByType';
+import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import {
   setPageOrders,
   setPageTypes,
   setReloadPages,
   setSelectedPageType,
 } from '@/lib/adminSelectionSlice';
-import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { ARTIST_SELLER_TYPE } from '@/constants';
-import AdminListHomeButton from '../../adminListHomeButton';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { Page } from '@/types/public';
-import { RootState } from '@/lib/store';
-import moment from 'moment';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
-import { useGetPagesByType } from '@/hooks/common/useGetPagesByType';
-import { useUpdatePageOrder } from '@/hooks/admin/useUpdatePageOrder';
+import { RootState } from '@/lib/store';
+import { Page } from '@/types/public';
+import { GetPagesResponse, GetPageTypesResponse, ModifyPageResponse } from '@/types/responses';
+
+import AdminListHomeButton from '../../adminListHomeButton';
 
 export default function AdminPageOrderIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

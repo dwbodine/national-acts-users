@@ -1,5 +1,5 @@
-import { UserActivityType } from '@/types/user';
 import { userService } from '@/services';
+import { UserActivityType } from '@/types/user';
 
 export const useLogActivityData = () => {
   const logActivityData = async (

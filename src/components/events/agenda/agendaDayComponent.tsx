@@ -1,30 +1,32 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
+import moment from 'moment';
 import { ReactElement, useState } from 'react';
-import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+import { FaExclamationTriangle } from 'react-icons/fa';
+import { FaX } from 'react-icons/fa6';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Col, Row } from 'rsuite';
+
+import { useAddNote } from '@/hooks/admin/useAddNote';
+import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
+import { useEditNote } from '@/hooks/admin/useEditNote';
 import {
   setExpandedEvent,
   setExpandedRow,
   setFocusControl,
   setReloadAdminEvents,
 } from '@/lib/adminEventsSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import AddNoteModal from '../common/addNoteModalComponent';
-import { AgendaDayProps } from '@/types/props';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import EditNoteModal from '../common/editNoteModalComponent';
-import EventDataExpanded from '../../common/eventDataExpandedComponent';
-import { FaExclamationTriangle } from 'react-icons/fa';
-import { FaX } from 'react-icons/fa6';
-import { ModifyNoteResponse } from '@/types/responses';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
-import moment from 'moment';
-import { toast } from 'react-toastify';
-import { useAddNote } from '@/hooks/admin/useAddNote';
-import { useDeleteNote } from '@/hooks/admin/useDeleteNote';
-import { useEditNote } from '@/hooks/admin/useEditNote';
+import { AgendaDayProps } from '@/types/props';
+import { ModifyNoteResponse } from '@/types/responses';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import EventDataExpanded from '../../common/eventDataExpandedComponent';
+import AddNoteModal from '../common/addNoteModalComponent';
+import EditNoteModal from '../common/editNoteModalComponent';
 
 export default function AgendaDay(props: AgendaDayProps) {
   const agendaDate = props.AgendaDate ? moment(props.AgendaDate) : undefined;

@@ -1,7 +1,13 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Table } from 'rsuite';
-import { GetPageTypesResponse, GetPagesResponse, GetSellersResponse } from '@/types/responses';
+
+import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
+import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
+import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import {
   setAllPages,
   setAllSellers,
@@ -10,16 +16,12 @@ import {
   setReloadSellers,
   setSelectedPage,
 } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import { Page } from '@/types/public';
-import { RootState } from '@/lib/store';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
-import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
-import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
-import { useRouter } from 'next/navigation';
+import { RootState } from '@/lib/store';
+import { Page } from '@/types/public';
+import { GetPagesResponse, GetPageTypesResponse, GetSellersResponse } from '@/types/responses';
+
+import AdminListHomeButton from '../adminListHomeButton';
 
 export default function AdminPagesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

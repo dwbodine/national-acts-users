@@ -1,23 +1,24 @@
 'use client';
 
-import { Button, Checkbox, Col, Input, Row, SelectPicker } from 'rsuite';
+import { useRouter } from 'next/navigation';
 import { ReactElement, useCallback, useEffect } from 'react';
-import { Seller, SellerEventCategory, SellerType } from '@/types/event';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Checkbox, Col, Input, Row, SelectPicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
 import {
   setAdminSeller,
   setCountries,
   setReloadCountries,
   setReloadSellers,
 } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { GetCountriesResponse, ModifySellerResponse } from '@/types/responses';
-import { RootState } from '@/lib/store';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
-import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
-import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { RootState } from '@/lib/store';
+import { Seller, SellerEventCategory, SellerType } from '@/types/event';
+import { GetCountriesResponse, ModifySellerResponse } from '@/types/responses';
 
 export default function AdminSellerGlobalEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

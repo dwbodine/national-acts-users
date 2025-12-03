@@ -1,11 +1,12 @@
 'use client';
 
-import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import { useEffect, useState } from 'react';
-import { DateRangePicker } from 'rsuite';
-import { DateRangeSelectorProps } from '@/types/props';
-import { FaCalendar } from 'react-icons/fa';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { FaCalendar } from 'react-icons/fa';
+import { DateRangePicker } from 'rsuite';
+import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
+
+import { DateRangeSelectorProps } from '@/types/props';
 
 export default function DateRangeSelector(props: DateRangeSelectorProps) {
   const title = props.DateRangeTitle;

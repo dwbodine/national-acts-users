@@ -1,19 +1,20 @@
 'use client';
 
-import { Button, CheckPicker, Checkbox, DatePicker, Input, PickerHandle, TimePicker } from 'rsuite';
-import { GetEventsResponse, ModifyTourResponse } from '@/types/responses';
-import React, { ReactNode, useEffect } from 'react';
-import { Tour, VipEvent } from '@/types/event';
-import { setAdminEvents, setAdminTour, setReloadTours } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { RootState } from '@/lib/store';
 import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 import { useRouter } from 'next/navigation';
+import React, { ReactNode, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Checkbox, CheckPicker, DatePicker, Input, PickerHandle, TimePicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 import { useUpdateTour } from '@/hooks/admin/useUpdateTour';
+import { setAdminEvents, setAdminTour, setReloadTours } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { Tour, VipEvent } from '@/types/event';
+import { GetEventsResponse, ModifyTourResponse } from '@/types/responses';
 
 export default function AdminTourEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

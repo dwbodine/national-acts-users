@@ -1,10 +1,11 @@
 'use client';
 
-import { Col, Container, Row } from 'rsuite';
-import { ReactElement, useEffect, useState } from 'react';
-import { LogResponse } from '@/types/responses';
 import moment from 'moment';
+import { ReactElement, useEffect, useState } from 'react';
+import { Col, Container, Row } from 'rsuite';
+
 import { useGetLogs } from '@/hooks/admin/useGetLogs';
+import { LogResponse } from '@/types/responses';
 
 export default function AdminLogIndex() {
   const [logs, setLogs] = useState<string[] | undefined>(undefined);

@@ -2,9 +2,11 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Checkbox } from 'rsuite';
-import type { RootState } from '../../../lib/store';
+
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setShowHidden } from '@/lib/reportSelectionSlice';
+
+import type { RootState } from '../../../lib/store';
 
 export default function HiddenCheck() {
   const dispatch = useDispatch();

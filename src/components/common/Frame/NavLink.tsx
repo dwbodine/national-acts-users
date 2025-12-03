@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
-import React from 'react';
 import clsx from 'clsx';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import React from 'react';
 
 interface NavLinkProps {
   href?: string;

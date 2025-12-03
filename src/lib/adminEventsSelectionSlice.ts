@@ -1,6 +1,8 @@
-import { DateRange, EventReportSelection, EventTabView } from '../types/user';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { Note, VipEvent } from '@/types/event';
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+
+import { DateRange, EventReportSelection, EventTabView } from '../types/user';
 
 const initialState: EventReportSelection = {
   currentEvents: undefined,

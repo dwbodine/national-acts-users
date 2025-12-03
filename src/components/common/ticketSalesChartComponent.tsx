@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -11,15 +12,15 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import { LabelPosition } from 'recharts/types/component/Label';
 import { Col, Row } from 'rsuite';
+
 import {
   CustomToolTipParams,
   CustomToolTipParamsPayload,
   TicketSalesChartProps,
 } from '@/types/props';
-import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import { useEffect, useState } from 'react';
-import { LabelPosition } from 'recharts/types/component/Label';
 
 export default function TicketSalesChart(props: TicketSalesChartProps) {
   const ticketSalesData = props.TicketSalesData;

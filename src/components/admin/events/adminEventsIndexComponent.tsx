@@ -1,14 +1,25 @@
 'use client';
 
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { FaArrowTurnDown } from 'react-icons/fa6';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { Button, Checkbox, Col, Row, SelectPicker, Table } from 'rsuite';
-import {
-  GetCountriesResponse,
-  GetEventsResponse,
-  GetSellersResponse,
-  GetToursResponse,
-  ModifyEventResponse,
-} from '@/types/responses';
-import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
+import { useGetTours } from '@/hooks/admin/useGetTours';
+import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { useSetEventsDeleted } from '@/hooks/event/useSetEventsDeleted';
+import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
+import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
+import { useSetEventsLiveInBandsInTown } from '@/hooks/event/useSetEventsLiveInBandsInTown';
+import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import {
   setAdminDates,
   setAdminEvent,
@@ -25,32 +36,23 @@ import {
   setTicketSocketEventsOnly,
   setTours,
 } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import { AdminSelection } from '@/types/user';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { FaArrowTurnDown } from 'react-icons/fa6';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import ReportDatePicker from '../../common/reportDatePickerControl';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
-import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
-import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
-import { useGetTours } from '@/hooks/admin/useGetTours';
-import { useRouter } from 'next/navigation';
-import { useSetEventsDeleted } from '@/hooks/event/useSetEventsDeleted';
-import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
-import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
-import { useSetEventsLiveInBandsInTown } from '@/hooks/event/useSetEventsLiveInBandsInTown';
+import {
+  GetCountriesResponse,
+  GetEventsResponse,
+  GetSellersResponse,
+  GetToursResponse,
+  ModifyEventResponse,
+} from '@/types/responses';
+import { AdminSelection } from '@/types/user';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import ReportDatePicker from '../../common/reportDatePickerControl';
+import AdminListHomeButton from '../adminListHomeButton';
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;

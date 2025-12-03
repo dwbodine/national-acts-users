@@ -1,20 +1,22 @@
 'use client';
 
-import { Button, Col, Input, Row } from 'rsuite';
-import { GetSettingsResponse, UpdateSettingResponse } from '@/types/responses';
+import { useRouter } from 'next/navigation';
 import { ReactElement, useEffect, useState } from 'react';
-import { setAllSettings, setReloadSettings } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import AdminFileUpload from '../common/adminFileUploadComponent';
-import AdminListHomeButton from '../adminListHomeButton';
+import { toast } from 'react-toastify';
+import { Button, Col, Input, Row } from 'rsuite';
+
 import { ImageType } from '@/constants';
+import { useGetSiteSettings } from '@/hooks/admin/useGetSiteSettings';
+import { useUpdateSiteSetting } from '@/hooks/admin/useUpdateSiteSetting';
+import { setAllSettings, setReloadSettings } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { SiteSetting } from '@/types/public';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetSiteSettings } from '@/hooks/admin/useGetSiteSettings';
-import { useRouter } from 'next/navigation';
-import { useUpdateSiteSetting } from '@/hooks/admin/useUpdateSiteSetting';
+import { GetSettingsResponse, UpdateSettingResponse } from '@/types/responses';
+
+import AdminListHomeButton from '../adminListHomeButton';
+import AdminFileUpload from '../common/adminFileUploadComponent';
 
 export default function AdminSiteSettingsEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

@@ -1,10 +1,12 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
-import { setReloadActivities, setUserActivityDateRange } from '@/lib/userActivitySelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import DateRangeSelector from '../common/dateRangeSelectorComponent';
+import { Col, Row } from 'rsuite';
+
 import { RootState } from '@/lib/store';
+import { setReloadActivities, setUserActivityDateRange } from '@/lib/userActivitySelectionSlice';
+
+import DateRangeSelector from '../common/dateRangeSelectorComponent';
 
 export default function UserActivityBar() {
   const dispatch = useDispatch();

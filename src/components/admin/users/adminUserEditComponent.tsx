@@ -1,34 +1,36 @@
 'use client';
 
-import { Button, Checkbox, Input } from 'rsuite';
-import {
-  GetCountriesResponse,
-  GetRolesResponse,
-  GetSellersResponse,
-  UpdateUserResponse,
-} from '@/types/responses';
+import { useRouter } from 'next/navigation';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
-import { Role, User, UserSeller } from '@/types/user';
-import { Seller, SellerType } from '@/types/event';
+import { FaPlus } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Checkbox, Input } from 'rsuite';
+
+import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
+import { useUpdateUser } from '@/hooks/admin/useUpdateUser';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
 import {
   setCountries,
   setReloadCountries,
   setReloadUsers,
   setSelectedUser,
 } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { FaPlus } from 'react-icons/fa';
-import { RootState } from '@/lib/store';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
-import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useRouter } from 'next/navigation';
-import { useUpdateUser } from '@/hooks/admin/useUpdateUser';
-import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { RootState } from '@/lib/store';
+import { Seller, SellerType } from '@/types/event';
+import {
+  GetCountriesResponse,
+  GetRolesResponse,
+  GetSellersResponse,
+  UpdateUserResponse,
+} from '@/types/responses';
+import { Role, User, UserSeller } from '@/types/user';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminUserEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);

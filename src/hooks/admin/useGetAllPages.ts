@@ -1,4 +1,5 @@
 import { GetPagesResponse } from '@/types/responses';
+
 import { adminService } from '../../services';
 
 export const useGetAllPages = () => {

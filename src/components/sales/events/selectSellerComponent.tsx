@@ -1,14 +1,16 @@
 'use client';
 
-import { Col, Row, SelectPicker } from 'rsuite';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Col, Row, SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
-import type { RootState } from '../../../lib/store';
-import { User } from '@/types/user';
+
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setSeller } from '@/lib/reportSelectionSlice';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { User } from '@/types/user';
+
+import type { RootState } from '../../../lib/store';
 
 export default function SelectSeller() {
   const dispatch = useDispatch();
