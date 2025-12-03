@@ -4,7 +4,6 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import NavBar from '../../common/navBarComponent';
 import EventDetail from '../orders/eventDetailComponent';
 
 export default function ClientEventComponent() {
@@ -43,9 +42,8 @@ export default function ClientEventComponent() {
   }, [detailHidden, setDetailHidden, id, setId, router]);
 
   return (
-    <>
-      <NavBar Hidden={notLoggedIn} />
+    <div hidden={notLoggedIn}>
       <EventDetail Id={id} />
-    </>
+    </div>
   );
 }

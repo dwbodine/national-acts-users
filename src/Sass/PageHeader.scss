@@ -1,0 +1,68 @@
+@use 'variables' as v;
+
+.page-header {
+  display: flex !important;
+  padding: 5px 10px !important;
+  margin: 0 0 15px 0 !important;
+  background-color: v.$pageheader-background-color;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-header .title-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1 1 auto;
+  text-align: left;
+}
+
+.page-header .title-container .title {
+  display: flex;
+  text-align: left;
+  text-transform: uppercase;
+  color: v.$pageheader-title-color;
+  font-family: v.$pageheader-title-font-family;
+  font-size: v.$pageheader-title-font-size;
+}
+
+.page-header-control-container {
+  display: flex;
+  flex: 0 0 auto;
+  text-align: right;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0;
+  float: unset;
+  position: unset;
+}
+
+.page-header-control-container .date-range-title {
+  font-family: v.$pageheader-control-font-family;
+  font-size: v.$pageheader-control-font-size;
+}
+
+.page-header-export-button {
+  margin-left: 10px;
+}
+
+@media (max-width: 867px) {
+  .page-header-control-container .date-range-title {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-header-control-container {
+    text-align: unset;
+    padding: 0;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 435px) {
+  .page-header-control-container {
+    text-align: unset;
+  }
+}

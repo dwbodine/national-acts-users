@@ -1,7 +1,9 @@
 'use client';
 
+// vendor styles
 import 'react-toastify/ReactToastify.css';
 import 'rsuite/dist/rsuite-no-reset.min.css';
+// base styles
 import '../Css/App.css';
 import '../Css/Admin.css';
 import '../Css/Auth.css';
@@ -9,6 +11,9 @@ import '../Css/Brand.css';
 import '../Css/Frame.css';
 import '../Css/Header.css';
 import '../Css/Logo.css';
+import '../Css/PageHeader.css';
+// section styles
+import '../Css/Dashboard.css';
 
 import Providers from '@/components/common/Frame/providers';
 

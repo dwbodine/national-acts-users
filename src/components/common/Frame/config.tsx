@@ -129,7 +129,7 @@ export const adminAppNavs = [
     children: [
       {
         eventKey: 'report-customer-export',
-        title: 'Export Cutomer Data',
+        title: 'Export Customer Data',
         to: '/reports/customer-export',
       },
       {

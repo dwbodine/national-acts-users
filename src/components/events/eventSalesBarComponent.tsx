@@ -4,7 +4,6 @@ import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Col, DatePicker, Row } from 'rsuite';
 
 import { DEFAULT_EVENT_TAB_VIEW, EVENTS_AGENDA_VIEW_BREAKPOINT } from '@/constants';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
@@ -14,6 +13,7 @@ import { EventTabView } from '@/types/user';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 
 import type { RootState } from '../../lib/store';
+import PageHeader from '../common/PageHeaderComponent';
 
 export default function EventSalesBar() {
   const dispatch = useDispatch();
@@ -69,22 +69,12 @@ export default function EventSalesBar() {
   }
 
   return (
-    <>
-      <Row className="page-header">
-        <Col sm={6} xs={12} className="title-container">
-          <div className="title">{pageTitle}</div>
-        </Col>
-        <Col sm={6} xs={12} className="control-container no-print">
-          <label className="events-datepicker-label">{datePickerlabel}:</label>
-          <DatePicker
-            format="M/d/yyyy"
-            onSelect={onDateChange}
-            value={startDate}
-            oneTap
-            cleanable={false}
-          />
-        </Col>
-      </Row>
-    </>
+    <PageHeader
+      pageTitle={pageTitle}
+      showDatePicker={true}
+      datePickerTitle={datePickerlabel}
+      datePickerStart={startDate}
+      onDatePickerChange={onDateChange}
+    />
   );
 }

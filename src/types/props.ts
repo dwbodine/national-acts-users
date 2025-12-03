@@ -96,6 +96,7 @@ export interface DateRangeProp {
 }
 
 export interface DateRangeSelectorProps {
+  Hidden?: boolean;
   DateRangeTitle?: string;
   SelectedStart?: number;
   SelectedEnd?: number;
@@ -376,6 +377,25 @@ export interface LogoProps {
   className?: string;
   style?: React.CSSProperties;
   expanded: boolean;
+}
+
+export interface PageHeaderProps {
+  pageTitle: string;
+  showDateRange?: boolean;
+  showExport?: boolean;
+  showDatePicker?: boolean;
+  dateRangeTitle?: string;
+  dateRangeStart?: number;
+  dateRangeEnd?: number;
+  dateRanges?: RangeType<DateRange>[];
+  dateRangeDisabled?: boolean;
+  exportButtonText?: string;
+  exportButtonDisabled?: boolean;
+  datePickerTitle?: string;
+  datePickerStart?: Date | null | undefined;
+  onExport?: () => void;
+  onDateRangeChange?: (selectedStart: number, selectedEnd: number) => void;
+  onDatePickerChange?: (date: Date) => void;
 }
 
 export interface ResponsiveFrameProps {

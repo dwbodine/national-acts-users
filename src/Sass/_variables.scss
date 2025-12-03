@@ -7,7 +7,7 @@ $main-background-color: white;
 $danger-color: red;
 $success-color: green;
 
-$header-color: black;
+$header-color: #d90617;
 $header-font-family: 'Montserrat', sans-serif;
 $required-field: #ff0000;
 
@@ -24,6 +24,14 @@ $button-font-family: 'Montserrat', sans-serif;
 // Header
 $avatar-background-color: maroon;
 $avatar-foreground-color: white;
+
+// PageHeader
+$pageheader-background-color: #efefef;
+$pageheader-title-color: black;
+$pageheader-title-font-family: 'Montserrat', sans-serif;
+$pageheader-title-font-size: 14px;
+$pageheader-control-font-family: 'Montserrat', sans-serif;
+$pageheader-control-font-size: 14px;
 
 // Footer
 $footer-top-border-color: darkgray;

@@ -14,6 +14,7 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
   const selectedStart = props.SelectedStart;
   const selectedEnd = props.SelectedEnd;
   const disabled = props.Disabled;
+  const hidden = props.Hidden;
 
   const defaultRanges: RangeType<DateRange>[] = [
     {
@@ -68,7 +69,9 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
     }
   };
 
-  return (
+  return hidden ? (
+    <></>
+  ) : (
     <>
       <span className="date-range-title">{title}:</span>
       <DateRangePicker

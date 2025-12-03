@@ -1,14 +1,8 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
+import PageHeader from '../common/PageHeaderComponent';
 
 export default function ReportsIndexBar() {
   const pageTitle: string = 'Reports';
-  return (
-    <Row className="page-header">
-      <Col sm={6} xs={12} className="title-container">
-        <div className="title">{pageTitle}</div>
-      </Col>
-    </Row>
-  );
+  return <PageHeader pageTitle={pageTitle} />;
 }

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Col, Row, SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
@@ -23,7 +24,6 @@ import { exportCustomerDataToCsv, exportEventsToCsv } from '@/utils/eventUtils';
 import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReportSelection';
 
 import type { RootState } from '../../../lib/store';
-import DateRangeSelector from '../../common/dateRangeSelectorComponent';
 import PrintButton from '../../common/printButtonComponent';
 import ResetButton from '../../common/resetButtonComponent';
 import DeletedCheck from './deletedCheckComponent';
@@ -203,20 +203,15 @@ export default function SalesBar() {
   }, [windowSizeJson, getUser, userHasPermission, currentReportSelection.seller, webBaseUrl]);
   return (
     <>
-      <Row className="page-header">
-        <Col sm={6} xs={12} className="title-container">
-          <div className="title">{pageTitle}</div>
-        </Col>
-        <Col sm={6} xs={12} className="control-container no-print">
-          <DateRangeSelector
-            DateRangeTitle={dateRangeTitle}
-            SelectedStart={currentReportSelection?.start}
-            SelectedEnd={currentReportSelection?.end}
-            Disabled={currentReportSelection.seller.sellerId <= 0 || !hasEvents}
-            OnDateChange={onDateChange}
-          />
-        </Col>
-      </Row>
+      <PageHeader
+        pageTitle={pageTitle}
+        dateRangeTitle={dateRangeTitle}
+        dateRangeStart={currentReportSelection?.start}
+        dateRangeEnd={currentReportSelection?.end}
+        dateRangeDisabled={currentReportSelection.seller.sellerId <= 0 || !hasEvents}
+        showDateRange={true}
+        onDateRangeChange={onDateChange}
+      />
       <SelectSeller />
       <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourList.length === 0}>
         <Col xs={1}>Tour:</Col>

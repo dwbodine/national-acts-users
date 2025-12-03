@@ -17,18 +17,25 @@ h3,
 h4,
 h5,
 h6 {
+  color: v.$header-color;
   font-family: v.$header-font-family;
 }
 
-div hidden {
-  display: none;
+[hidden] {
+  display: none !important;
 }
 
+/* Begin - RSuite overrides */
 .rs-input {
   display: flex;
   padding: 12px;
   border: 1px solid v.$input-border-color;
   cursor: pointer;
+}
+
+.rs-picker-toggle-placeholder,
+.rs-picker-toggle-value {
+  font-family: v.$main-font-family;
 }
 
 .rs-picker-toggle:hover,
@@ -47,6 +54,7 @@ div hidden {
   text-transform: uppercase;
   margin: 0 10px 0 0;
 }
+/* End - RSuite overrides */
 
 .danger {
   color: v.$danger-color;
@@ -63,75 +71,6 @@ div hidden {
   font-weight: bold;
   text-align: center;
   margin: 0 0 15px 0;
-}
-
-.nav-bar {
-  margin: 0;
-  padding: 0 10px;
-}
-
-.nav-bar .logo-col {
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
-.tab-container {
-  padding: 0;
-}
-
-.page-header {
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
-  box-shadow: none;
-  padding: 5px 15px 5px 2px !important;
-  margin: 0 0 15px 0 !important;
-  border: 0px !important;
-  -webkit-box-shadow: none !important;
-  -moz-box-shadow: none !important;
-  box-shadow: none !important;
-  background-color: #efefef;
-  width: 100%;
-}
-
-.nav-header {
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
-  box-shadow: none;
-  padding: 0 20px !important;
-  margin: 15px 10px 0 0 !important;
-  border: 0px !important;
-  -webkit-box-shadow: none !important;
-  -moz-box-shadow: none !important;
-  box-shadow: none !important;
-}
-
-.nav-bar-icon-image {
-  margin: 10px 0 10px 15px;
-}
-
-.page-header .title-container {
-  vertical-align: middle;
-  line-height: 36px;
-}
-
-.page-header .title {
-  margin: auto;
-  text-transform: uppercase;
-}
-
-.control-container {
-  text-align: right;
-  padding: 0;
-}
-
-.control-container .action-button {
-  float: right;
-  margin: auto 10px;
-  cursor: pointer;
-  color: black;
 }
 
 .admin-tabs {
@@ -1050,10 +989,6 @@ a.edit-event-link {
   margin: 0 15px;
 }
 
-.dashboard-export-button {
-  margin-left: 15px;
-}
-
 .align-right {
   text-align: right !important;
 }
@@ -1499,13 +1434,6 @@ a.edit-event-link {
   }
 }
 
-/* custom desktop/tablet width */
-@media (max-width: 867px) {
-  .control-container .date-range-title {
-    display: none;
-  }
-}
-
 /* Bootstrap md */
 @media (max-width: 768px) {
   .form-control-half {
@@ -1564,10 +1492,6 @@ a.edit-event-link {
 
 /* Bootstrap sm */
 @media (max-width: 576px) {
-  .nav-bar {
-    padding: 0;
-  }
-
   .vipDetailsTable {
     max-width: 100%;
     margin: 10px 0;
@@ -1596,16 +1520,6 @@ a.edit-event-link {
   .widget-stat-block {
     padding: 10px;
     font-size: 10px;
-  }
-
-  .control-container {
-    text-align: unset;
-    padding: 0;
-    margin-right: 0;
-  }
-
-  .control-container .action-button {
-    margin-right: 5px;
   }
 
   .admin-seller-row .col,
@@ -1742,10 +1656,6 @@ a.edit-event-link {
 @media (max-width: 435px) {
   .no-mobile {
     display: none;
-  }
-
-  .control-container {
-    text-align: unset;
   }
 
   .resultsCol {

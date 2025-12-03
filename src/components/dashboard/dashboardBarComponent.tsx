@@ -3,7 +3,6 @@
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Button, Col, Row } from 'rsuite';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 
 import { useGetAllOrders } from '@/hooks/order/useGetAllOrders';
@@ -16,7 +15,7 @@ import { downloadCsvFile } from '@/utils/downloadFile';
 import { exportDashboardOrdersToCsv } from '@/utils/eventUtils';
 import getFileNameFromDashboardReportSelection from '@/utils/getFileNameFromDashboardReportSelection';
 
-import DateRangeSelector from '../common/dateRangeSelectorComponent';
+import PageHeader from '../common/PageHeaderComponent';
 
 export default function DashboardBar() {
   const dispatch = useDispatch();
@@ -119,25 +118,18 @@ export default function DashboardBar() {
   };
 
   return (
-    <>
-      <Row className="page-header">
-        <Col sm={6} xs={12} className="title-container">
-          <span className="title">{pageTitle}</span>
-        </Col>
-        <Col sm={6} xs={12} className="control-container no-print">
-          <DateRangeSelector
-            DateRangeTitle={dateRangeTitle}
-            SelectedStart={currentDashboardSelection?.start}
-            SelectedEnd={currentDashboardSelection?.end}
-            Disabled={false}
-            OnDateChange={onDateChange}
-            Ranges={ranges}
-          />
-          <Button className="dashboard-export-button" onClick={exportDashboardData}>
-            Export
-          </Button>
-        </Col>
-      </Row>
-    </>
+    <PageHeader
+      pageTitle={pageTitle}
+      showDateRange={true}
+      dateRangeTitle={dateRangeTitle}
+      dateRangeStart={currentDashboardSelection?.start}
+      dateRangeEnd={currentDashboardSelection?.end}
+      dateRangeDisabled={false}
+      onDateRangeChange={onDateChange}
+      dateRanges={ranges}
+      showExport={true}
+      exportButtonText="Export"
+      onExport={exportDashboardData}
+    />
   );
 }
