@@ -14,8 +14,6 @@ import { RootState } from '@/lib/store';
 import { GetRolesResponse, UpdateRoleResponse } from '@/types/responses';
 import { Role } from '@/types/user';
 
-import AdminListHomeButton from '../adminListHomeButton';
-
 export default function AdminRolesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
@@ -150,7 +148,6 @@ export default function AdminRolesIndex() {
       <Button hidden={selectedRoles.length === 0} onClick={deleteSelectedRoles}>
         Delete
       </Button>{' '}
-      <AdminListHomeButton />
     </div>
   );
 }

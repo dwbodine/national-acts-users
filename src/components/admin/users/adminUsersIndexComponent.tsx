@@ -14,8 +14,6 @@ import { RootState } from '@/lib/store';
 import { GetRolesResponse, GetUsersResponse } from '@/types/responses';
 import { Role, User } from '@/types/user';
 
-import AdminListHomeButton from '../adminListHomeButton';
-
 export default function AdminUsersIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
@@ -213,7 +211,6 @@ export default function AdminUsersIndex() {
           </Cell>
         </Column>
       </Table>
-      <AdminListHomeButton />
     </div>
   );
 }

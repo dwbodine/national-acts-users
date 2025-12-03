@@ -21,8 +21,6 @@ import { RootState } from '@/lib/store';
 import { Page } from '@/types/public';
 import { GetPagesResponse, GetPageTypesResponse, GetSellersResponse } from '@/types/responses';
 
-import AdminListHomeButton from '../adminListHomeButton';
-
 export default function AdminPagesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
@@ -145,7 +143,6 @@ export default function AdminPagesIndex() {
           </Cell>
         </Column>
       </Table>
-      <AdminListHomeButton />
     </div>
   );
 }

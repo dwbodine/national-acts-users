@@ -51,7 +51,6 @@ import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import ReportDatePicker from '../../common/reportDatePickerControl';
-import AdminListHomeButton from '../adminListHomeButton';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminEventsIndex() {
@@ -529,7 +528,6 @@ export default function AdminEventsIndex() {
     <div className="admin-container">
       <Row className="refresh-results-header">
         <Col>
-          <AdminListHomeButton />
           <Button hidden={sellectedSellerId === undefined} onClick={addEvent}>
             Add New Event
           </Button>

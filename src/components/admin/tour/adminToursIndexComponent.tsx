@@ -31,7 +31,6 @@ import {
   GetToursResponse,
 } from '@/types/responses';
 
-import AdminListHomeButton from '../adminListHomeButton';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminToursIndex() {
@@ -171,11 +170,6 @@ export default function AdminToursIndex() {
 
   return (
     <div className="admin-container">
-      <Row className="refresh-results-header">
-        <Col>
-          <AdminListHomeButton />
-        </Col>
-      </Row>
       <Row className="refresh-results-header">
         <Col>
           <h3>Tour Admin</h3>

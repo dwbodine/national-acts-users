@@ -19,8 +19,6 @@ import { Seller, SellerType } from '@/types/event';
 import { GetSellersResponse, GetTicketSocketAccountsResponse } from '@/types/responses';
 import { getSellerStatusSlug } from '@/utils/eventUtils';
 
-import AdminListHomeButton from '../adminListHomeButton';
-
 export default function AdminSellerGlobalIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
@@ -133,7 +131,6 @@ export default function AdminSellerGlobalIndex() {
           </Cell>
         </Column>
       </Table>
-      <AdminListHomeButton />
     </div>
   );
 }

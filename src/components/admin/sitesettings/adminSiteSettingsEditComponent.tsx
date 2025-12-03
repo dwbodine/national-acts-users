@@ -15,7 +15,6 @@ import { RootState } from '@/lib/store';
 import { SiteSetting } from '@/types/public';
 import { GetSettingsResponse, UpdateSettingResponse } from '@/types/responses';
 
-import AdminListHomeButton from '../adminListHomeButton';
 import AdminFileUpload from '../common/adminFileUploadComponent';
 
 export default function AdminSiteSettingsEdit() {
@@ -247,7 +246,6 @@ export default function AdminSiteSettingsEdit() {
           <Button disabled={!hasDirtySettings && isUploading} onClick={onSubmit}>
             Submit
           </Button>
-          <AdminListHomeButton />
         </Col>
       </Row>
     </div>

@@ -20,8 +20,6 @@ import { RootState } from '@/lib/store';
 import { ExternalVenue } from '@/types/admin';
 import { GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/responses';
 
-import AdminListHomeButton from '../adminListHomeButton';
-
 export default function AdminVenuesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
@@ -154,7 +152,6 @@ export default function AdminVenuesIndex() {
       <Row>
         <Col>
           <Button onClick={addVenue}>Add</Button>
-          <AdminListHomeButton />
         </Col>
       </Row>
       <Row>

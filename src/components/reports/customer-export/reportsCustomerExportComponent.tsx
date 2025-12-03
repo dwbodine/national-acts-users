@@ -20,7 +20,6 @@ import { exportCustomerDataToCsv } from '@/utils/eventUtils';
 import getFileNameFromReportAdminSelection from '@/utils/getFileNameFromAdminReportSelection';
 
 import ReportDatePicker from '../../common/reportDatePickerControl';
-import ReportsListHomeButton from '../reportsListHomeButton';
 
 export default function ReportsCustomerExport() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -117,7 +116,6 @@ export default function ReportsCustomerExport() {
         End={currentAdminReportSelection.end}
       />
       <Button onClick={onSubmit}>Submit</Button>
-      <ReportsListHomeButton />
     </div>
   );
 }

@@ -23,8 +23,6 @@ import { RootState } from '@/lib/store';
 import { Page } from '@/types/public';
 import { GetPagesResponse, GetPageTypesResponse, ModifyPageResponse } from '@/types/responses';
 
-import AdminListHomeButton from '../../adminListHomeButton';
-
 export default function AdminPageOrderIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
@@ -244,11 +242,6 @@ export default function AdminPageOrderIndex() {
     <Col className="admin-container">
       <Row>
         <Col>
-          <AdminListHomeButton />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
           <h3>Manage {pageTypeName} Order</h3>
         </Col>
       </Row>
@@ -318,7 +311,7 @@ export default function AdminPageOrderIndex() {
       </Row>
       <Row>
         <Col>
-          <Button onClick={onSubmit}>Save</Button> <AdminListHomeButton />
+          <Button onClick={onSubmit}>Save</Button>
         </Col>
       </Row>
     </Col>

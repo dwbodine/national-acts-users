@@ -27,7 +27,6 @@ import {
 } from '@/types/responses';
 
 import ReportDatePicker from '../../common/reportDatePickerControl';
-import AdminListHomeButton from '../adminListHomeButton';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
 import RefreshTicketSocketDataResults from './refreshTicketSocketDataResults';
 import RefreshTicketSocketHistoryTable from './refreshTicketSocketHistoryTable';
@@ -125,7 +124,7 @@ export default function RefreshTicketSocketData() {
       />
       <Row>
         <Col>
-          <Button onClick={submitReset}>Reset</Button> <AdminListHomeButton />
+          <Button onClick={submitReset}>Reset</Button>
         </Col>
         <Col xl={8} lg={12}>
           <RefreshTicketSocketDataResults UpdateResults={updateResults} />

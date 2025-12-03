@@ -16,8 +16,6 @@ import { RootState } from '@/lib/store';
 import { Faq } from '@/types/public';
 import { GetFaqsResponse } from '@/types/responses';
 
-import AdminListHomeButton from '../adminListHomeButton';
-
 export default function AdminFaqsIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
@@ -116,7 +114,6 @@ export default function AdminFaqsIndex() {
     <div className="admin-container">
       <h3>Manage FAQs</h3>
       <Button onClick={addFaq}>Add FAQ</Button>
-      <AdminListHomeButton />
       <Table
         autoHeight
         data={currentAdminSelection.allFaqs}
@@ -160,7 +157,6 @@ export default function AdminFaqsIndex() {
           </Cell>
         </Column>
       </Table>
-      <AdminListHomeButton />
     </div>
   );
 }

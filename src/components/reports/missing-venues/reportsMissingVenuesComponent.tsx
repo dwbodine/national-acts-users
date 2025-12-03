@@ -14,8 +14,6 @@ import { RootState } from '@/lib/store';
 import { Venue, VipEvent } from '@/types/event';
 import { GetEventsResponse } from '@/types/responses';
 
-import ReportsListHomeButton from '../reportsListHomeButton';
-
 export default function ReportsMissingVenues() {
   const { Column, HeaderCell, Cell } = Table;
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -74,7 +72,6 @@ export default function ReportsMissingVenues() {
   return (
     <div className="admin-container">
       <h3>Missing Venue Report</h3>
-      <ReportsListHomeButton />
       <Button onClick={refresh}>Refresh</Button>
       <div className="mt-4">Total events missing venues: {events?.length ?? 0}</div>
       <Table autoHeight={true} data={events} bordered cellBordered>
