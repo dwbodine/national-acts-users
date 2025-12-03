@@ -12,6 +12,9 @@ import '../Css/Frame.css';
 import '../Css/Header.css';
 import '../Css/Logo.css';
 import '../Css/PageHeader.css';
+// common controls
+import '../Css/SelectControls.css';
+import '../Css/CheckboxControls.css';
 // section styles
 import '../Css/Dashboard.css';
 

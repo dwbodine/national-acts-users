@@ -214,7 +214,9 @@ export default function SalesBar() {
       />
       <SelectSeller />
       <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourList.length === 0}>
-        <Col xs={1}>Tour:</Col>
+        <Col xs={1} className="admin-tour-select-title">
+          Tour:
+        </Col>
         <Col sm={11} md={5}>
           <SelectPicker
             value={selectedTourId}
@@ -230,7 +232,7 @@ export default function SalesBar() {
         </Col>
       </Row>
       <Row className="admin-check-row no-print">
-        <Col md={10} sm={12}>
+        <Col>
           {viewInactiveEvents &&
           currentReportSelection.seller.sellerId > 0 &&
           (currentReportSelection.selectedTourId ?? 0) === 0 ? (

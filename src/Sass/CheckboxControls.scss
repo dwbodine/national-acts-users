@@ -1,0 +1,29 @@
+.inactive-check,
+.deleted-check,
+.hidden-check,
+.revenue-check,
+.service-fees-check,
+.admin-filter-check {
+  margin: 0 25px 0 0;
+  float: left;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.inactive-check div,
+.deleted-check div,
+.hidden-check div,
+.revenue-check div,
+.service-fees-check div,
+.admin-filter-check div {
+  float: left;
+}
+
+.inactive-check .form-check-input,
+.deleted-check .form-check-input,
+.hidden-check .form-check-input,
+.revenue-check .form-check-input,
+.service-fees-check .form-check-input,
+.admin-filter-check .form-check-input {
+  margin-right: 10px;
+}

@@ -71,7 +71,9 @@ export default function SelectSeller() {
     if (userSellerList.length > 1) {
       return (
         <Row className="no-print admin-seller-row">
-          <Col xs={1}>Seller:</Col>
+          <Col xs={1} className="admin-seller-title">
+            Seller:
+          </Col>
           <Col sm={11} md={5}>
             <SelectPicker
               value={selectedSellerId}

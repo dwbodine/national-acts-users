@@ -21,6 +21,10 @@ h6 {
   font-family: v.$header-font-family;
 }
 
+button {
+  width: fit-content !important;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -46,13 +50,16 @@ h6 {
 
 .rs-btn {
   white-space: nowrap;
-  width: fit-content;
   color: v.$button-color;
   border: v.$button-border;
   background-color: v.$button-background-color;
   font-family: v.$button-font-family;
   text-transform: uppercase;
-  margin: 0 10px 0 0;
+}
+
+.rs-picker-select-menu-item,
+.rs-checkbox-label {
+  font-family: v.$control-title-font-family;
 }
 /* End - RSuite overrides */
 
@@ -76,14 +83,6 @@ h6 {
 .admin-tabs {
   width: 100%;
   gap: 0 !important;
-}
-
-.admin-seller-row {
-  margin: 0 0 10px 0 !important;
-}
-
-.admin-tour-row {
-  margin: 0 0 10px 6px !important;
 }
 
 .admin-check-row {
@@ -117,36 +116,6 @@ a.edit-event-link {
   margin-bottom: 5px;
   margin-top: 1.5rem;
   margin-left: 15px;
-}
-
-.inactive-check,
-.deleted-check,
-.hidden-check,
-.revenue-check,
-.service-fees-check,
-.admin-filter-check {
-  margin: 0 0 0 20px;
-  float: left;
-  width: 160px;
-  white-space: nowrap;
-}
-
-.inactive-check div,
-.deleted-check div,
-.hidden-check div,
-.revenue-check div,
-.service-fees-check div,
-.admin-filter-check div {
-  float: left;
-}
-
-.inactive-check .form-check-input,
-.deleted-check .form-check-input,
-.hidden-check .form-check-input,
-.revenue-check .form-check-input,
-.service-fees-check .form-check-input,
-.admin-filter-check .form-check-input {
-  margin-right: 10px;
 }
 
 .admin-button-row button {
@@ -939,11 +908,6 @@ a.edit-event-link {
   display: flex;
 }
 
-.admin-seller-select-value {
-  display: flex;
-  flex-direction: row;
-}
-
 .admin-seller-select-button {
   float: right !important;
 }
@@ -1520,15 +1484,6 @@ a.edit-event-link {
   .widget-stat-block {
     padding: 10px;
     font-size: 10px;
-  }
-
-  .admin-seller-row .col,
-  .admin-tour-row .col {
-    padding: 0;
-  }
-
-  .admin-seller-row .seller-title {
-    margin: 0 5px;
   }
 
   .tour-title {
