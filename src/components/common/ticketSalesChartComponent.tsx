@@ -65,7 +65,7 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
 
   return (
     <Row className="no-print ticket-sales-chart" hidden={hideMobile || !ticketSalesData}>
-      <Col>
+      <Col style={{ flex: 1 }}>
         <ResponsiveContainer width="100%" height={200}>
           <AreaChart
             data={ticketSalesData ? [...ticketSalesData] : []}

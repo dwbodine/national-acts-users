@@ -73,6 +73,15 @@
 }
 
 @media (max-width: 768px) {
+  .frame {
+    width: 100% !important;
+
+    .rs-container,
+    .rs-content {
+      width: 100%;
+    }
+  }
+
   .rs-navbar-brand {
     padding: 0 10px;
     height: 45px;

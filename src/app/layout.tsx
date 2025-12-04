@@ -11,10 +11,11 @@ import '../Css/Brand.css';
 import '../Css/Frame.css';
 import '../Css/Header.css';
 import '../Css/Logo.css';
-import '../Css/PageHeader.css';
 // common controls
+import '../Css/PageHeader.css';
 import '../Css/SelectControls.css';
 import '../Css/CheckboxControls.css';
+import '../Css/Tables.css';
 import '../Css/Widgets.css';
 // section styles
 import '../Css/Dashboard.css';

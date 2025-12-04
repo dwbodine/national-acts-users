@@ -11,6 +11,10 @@ body {
   min-height: 100vh;
 }
 
+body {
+  width: 100%;
+}
+
 h1,
 h2,
 h3,
@@ -174,104 +178,6 @@ a.edit-event-link {
 
 .stat-block .totalSpan {
   margin-top: 15px;
-}
-
-.results-container {
-  padding: 15px 15px 15px 5px;
-}
-
-.resultsTable {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid black;
-  margin: 15px 0 0 5px;
-}
-
-.resultsTable th {
-  background-color: lightgray;
-  font-weight: bold;
-}
-
-.resultsTable th,
-.resultsTable td {
-  border: 1px solid black;
-  padding: 5px;
-}
-
-.resultsTable th.center {
-  text-align: center;
-}
-
-.resultsTable td.pull-right {
-  float: unset;
-  text-align: right;
-}
-
-.resultsTable div.pull-right {
-  text-align: right;
-}
-
-.resultsTable tr:nth-child(even),
-.vipTable tr:nth-child(even) {
-  background-color: #efefef;
-}
-
-.resultsTable tr:hover,
-.vipTable tr:hover {
-  background-color: lightgray;
-}
-
-.resultsTable tr.event-inactive {
-  color: red !important;
-  font-weight: bold;
-}
-
-.resultsTable tr.event-sold-out {
-  color: red !important;
-  font-weight: bold;
-}
-
-.resultsTable tr.event-hidden,
-.resultsTable tr.event-hidden a {
-  color: orange !important;
-  font-weight: bold;
-}
-
-.resultsTable tr.event-active-pending,
-.resultsTable tr.event-active-pending a {
-  color: orange !important;
-  font-weight: bold;
-}
-
-.resultsTable tr.event-deleted {
-  color: rgb(100, 100, 100) !important;
-  font-weight: bold;
-}
-
-.resultsTable tr.event-cancelled {
-  color: rgb(0, 128, 255) !important;
-  font-weight: bold;
-}
-
-.resultsTable thead,
-.resultsTable tfoot {
-  font-weight: bold;
-}
-
-.resultsTable tfoot div {
-  padding: 5px;
-}
-
-.resultsTable a,
-.vipTable a {
-  cursor: pointer;
-  text-decoration: underline !important;
-}
-
-.resultsTable a:hover,
-.vipTable a:hover {
-  color: blue !important;
-  text-decoration: none !important;
 }
 
 .chartColumn {
@@ -1352,14 +1258,6 @@ a.edit-event-link {
     display: none;
   }
 
-  .inactive-check,
-  .deleted-check,
-  .hidden-check,
-  .revenue-check,
-  .service-fees-check {
-    margin-bottom: 15px;
-  }
-
   .admin-button {
     width: 150px;
     margin-top: 0;
@@ -1385,17 +1283,12 @@ a.edit-event-link {
 
 /* Bootstrap md */
 @media (max-width: 768px) {
+  .content-container {
+    width: 100%;
+  }
+
   .form-control-half {
     max-width: unset;
-  }
-
-  .resultsTable {
-    max-width: 100%;
-  }
-
-  .resultsTable th,
-  .resultsTable td {
-    padding: 2px;
   }
 
   .stat-block {
@@ -1443,11 +1336,6 @@ a.edit-event-link {
     margin: 10px 0;
   }
 
-  .results-container {
-    margin: 0;
-    padding: 10px;
-  }
-
   .no-mobile {
     display: none;
   }
@@ -1483,71 +1371,16 @@ a.edit-event-link {
     margin-left: 0;
   }
 
-  .results-container {
-    padding-left: 5px;
-  }
-
-  .results-col {
-    padding: 0;
-  }
-
   .vipTable-container {
     padding: 0 15px 0 5px;
-  }
-
-  .resultsTable {
-    margin: 0;
   }
 
   .vipTable {
     margin: 0 5px;
   }
 
-  .inactive-check,
-  .deleted-check,
-  .hidden-check,
-  .revenue-check,
-  .service-fees-check {
-    margin: 0 20px 15px 0;
-  }
-
-  .resultsTable,
-  .resultsTable tbody,
-  .resultsTable th,
-  .resultsTable td,
-  .vipTable,
-  .vipTable tbody,
-  .vipTable th,
-  .vipTable td {
-    border: unset;
-  }
-
-  .resultsTable th,
-  .resultsTable td,
-  .vipTable th,
-  .vipTable td {
-    padding: 5px 0;
-  }
-
-  .resultsTable tr:nth-child(even),
-  .vipTable tr:nth-child(even) {
-    background-color: unset;
-  }
-
   .mobile-event-card {
     padding: 5px;
-  }
-
-  .resultsTable tr:hover,
-  .vipTable tr:hover {
-    background-color: unset;
-  }
-
-  .resultsTable .mobile-event-card-container:nth-child(even),
-  .vipTable .mobile-event-card-container:nth-child(even) {
-    .mobile-event-card {
-      background-color: #efefef !important;
-    }
   }
 
   .vipDetailsTable td {
