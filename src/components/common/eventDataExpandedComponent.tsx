@@ -357,8 +357,8 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                   </Modal.Header>
                   <Modal.Body>
                     <Row className="form-group">
-                      <Col xs={2}>Doors Open:</Col>
-                      <Col xs={10}>
+                      <Col xs={4}>Doors Open:</Col>
+                      <Col xs={20}>
                         <TimePicker
                           id="doorsOpen"
                           format="hh:mm aa"
@@ -370,8 +370,8 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                       </Col>
                     </Row>
                     <Row className="form-group">
-                      <Col xs={2}>Meet and Greet Time:</Col>
-                      <Col xs={10}>
+                      <Col xs={4}>Meet and Greet Time:</Col>
+                      <Col xs={20}>
                         <TimePicker
                           id="meetAndGreet"
                           format="hh:mm aa"
@@ -383,8 +383,8 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                       </Col>
                     </Row>
                     <Row className="form-group">
-                      <Col xs={2}>Check-in location:</Col>
-                      <Col xs={10}>
+                      <Col xs={4}>Check-in location:</Col>
+                      <Col xs={20}>
                         <Textarea
                           rows={3}
                           id="checkInLocation"
@@ -394,8 +394,8 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                       </Col>
                     </Row>
                     <Row className="form-group">
-                      <Col xs={2}>Check-in notes:</Col>
-                      <Col xs={10}>
+                      <Col xs={4}>Check-in notes:</Col>
+                      <Col xs={20}>
                         <Textarea
                           id="checkInNotes"
                           rows={5}

@@ -1,0 +1,63 @@
+@use 'variables' as v;
+
+.admin-button-row button {
+  margin: 10px;
+}
+
+.mobile-event-card-container {
+  width: 100%;
+  margin: 0;
+  border: 0;
+}
+
+.mobile-event-card-container td {
+  border: unset;
+  width: 100%;
+  text-align: center;
+}
+
+.mobile-event-card {
+  text-align: left;
+  margin: 0;
+  border: 2px solid gray;
+  padding: 15px;
+}
+
+.mobile-event-card .row {
+  padding: 5px;
+}
+
+.mobile-event-card .ticket-type {
+  margin-bottom: 10px;
+}
+
+.mobile-event-card button {
+  margin: 5px 25px 5px 0;
+}
+
+.mobile-bold {
+  font-weight: bold;
+}
+
+.mobile-event-card .mobile-bold {
+  width: 125px;
+}
+
+@media (max-width: 576px) {
+  .admin-button-row {
+    margin: 0;
+  }
+
+  .admin-button-row .col-sm-12 {
+    padding: 0 5px;
+  }
+
+  .admin-button-row button {
+    font-size: 0.8rem;
+    margin-left: 0;
+  }
+
+  .mobile-event-card {
+    padding: 5px;
+  }
+}

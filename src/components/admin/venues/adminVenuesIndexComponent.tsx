@@ -155,7 +155,7 @@ export default function AdminVenuesIndex() {
         </Col>
       </Row>
       <Row>
-        <Col xs={2}>
+        <Col xs={4}>
           <Input
             value={searchTerm ?? ''}
             onChange={setSearchTerm}

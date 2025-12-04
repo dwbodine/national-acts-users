@@ -108,10 +108,10 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
 
   return (
     <Row className="admin-select">
-      <Col xs={1}>
+      <Col xs={2}>
         Seller<span hidden={!number}> # {number}</span>:
       </Col>
-      <Col xs={5} sm={4} md={3} hidden={sellerList.length === 0 || !onSellerChange}>
+      <Col xs={20} sm={16} md={12} hidden={sellerList.length === 0 || !onSellerChange}>
         <SelectPicker
           className="admin-seller-select-value"
           menuAutoWidth={true}
@@ -122,7 +122,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
           cleanable={false}
         />
       </Col>
-      <Col xs={5} sm={4} md={3} hidden={roleList.length === 0 || !onRoleChange}>
+      <Col xs={20} sm={16} md={12} hidden={roleList.length === 0 || !onRoleChange}>
         <SelectPicker
           className="admin-seller-select-value"
           menuAutoWidth={true}
@@ -134,7 +134,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
           searchable={false}
         />
       </Col>
-      <Col xs={1} hidden={!pageSeller || !onPageSellerChange}>
+      <Col xs={2} hidden={!pageSeller || !onPageSellerChange}>
         <Button onClick={handlePageSellerSettingsOpen}>Page Seller Settings</Button>
         <Modal open={pageSellerSettingsOpen} onClose={handlePageSellerSettingsClose}>
           <Modal.Header>
@@ -369,7 +369,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
           </Modal.Footer>
         </Modal>
       </Col>
-      <Col xs={1} hidden={!onDelete}>
+      <Col xs={2} hidden={!onDelete}>
         <FaMinus
           title="Remove seller"
           className="admin-click-cell"

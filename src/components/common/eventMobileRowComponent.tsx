@@ -93,51 +93,51 @@ export default function EventMobileRow(props: EventRowProps) {
       <td>
         <Container className="mobile-event-card" id={id}>
           <Row>
-            <Col>Date:</Col>
+            <Col className="mobile-bold">Date:</Col>
             <Col>{eventDate}</Col>
           </Row>
           <Row>
-            <Col>Title:</Col>
+            <Col className="mobile-bold">Title:</Col>
             <Col>{vipEvent.title}</Col>
           </Row>
           <Row>
-            <Col>Venue:</Col>
+            <Col className="mobile-bold">Venue:</Col>
             <Col>{venueName}</Col>
           </Row>
           <Row>
-            <Col>Location:</Col>
+            <Col className="mobile-bold">Location:</Col>
             <Col>{location}</Col>
           </Row>
           <Row>
-            <Col>Tickets sold:</Col>
+            <Col className="mobile-bold">Tickets sold:</Col>
             <Col>{vipEvent.totalTickets}</Col>
           </Row>
           <Row>
-            <Col>Tickets refunded:</Col>
+            <Col className="mobile-bold">Tickets refunded:</Col>
             <Col>{vipEvent.numTicketsRefunded ?? 0}</Col>
           </Row>
           <Row>
-            <Col>Tickets comped:</Col>
+            <Col className="mobile-bold">Tickets comped:</Col>
             <Col>{vipEvent.numTicketsComped}</Col>
           </Row>
           <Row hidden={!canCheckInTickets} className="no-print">
-            <Col>Checked in:</Col>
+            <Col className="mobile-bold">Checked in:</Col>
             <Col>
               {vipEvent.totalCheckedIn} / {vipEvent.totalTickets}
             </Col>
           </Row>
           <Row hidden={ticketBreakdownRows.length === 0}>
-            <Col>Ticket type breakdown:</Col>
+            <Col className="mobile-bold">Ticket type breakdown:</Col>
             <Col>{ticketBreakdownRows}</Col>
           </Row>
           <Row hidden={hideRevItem} className={revClass}>
-            <Col>Revenue:</Col>
+            <Col className="mobile-bold">Revenue:</Col>
             <Col>
               {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
             </Col>
           </Row>
           <Row hidden={hideServiceFees} className="no-print">
-            <Col>Service Fees:</Col>
+            <Col className="mobile-bold">Service Fees:</Col>
             <Col>
               {formatCurrencyAmount(
                 serviceFees,

@@ -214,10 +214,10 @@ export default function SalesBar() {
       />
       <SelectSeller />
       <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourList.length === 0}>
-        <Col xs={1} className="admin-tour-select-title">
+        <Col xs={2} className="admin-tour-select-title">
           Tour:
         </Col>
-        <Col sm={11} md={5}>
+        <Col sm={22} md={10}>
           <SelectPicker
             value={selectedTourId}
             data={tourList}
@@ -270,7 +270,7 @@ export default function SalesBar() {
         className="no-print admin-button-row"
         hidden={currentReportSelection.seller.sellerId <= 0}
       >
-        <Col md={10} sm={12}>
+        <Col md={20} sm={24}>
           {currentReportSelection.seller.sellerId > 0 ? (
             <ResetButton
               IsDisabled={currentReportSelection.seller.sellerId <= 0}

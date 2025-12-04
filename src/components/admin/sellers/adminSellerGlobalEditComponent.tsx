@@ -519,10 +519,10 @@ export default function AdminSellerGlobalEdit() {
       const key = `account${index}`;
       categoryRows.push(
         <Row key={rowKey} className="form-group">
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Category for {account.name}</label>
           </Col>
-          <Col xs={2}>
+          <Col xs={4}>
             <SelectPicker
               data={options}
               disabled={disabled}
@@ -534,7 +534,7 @@ export default function AdminSellerGlobalEdit() {
               defaultValue={selectedCategory?.eventCategoryId}
             />
           </Col>
-          <Col xs={1}>
+          <Col xs={2}>
             <Checkbox
               disabled={!selectedCategory}
               checked={selectedCategory?.isVisibleOnSite ?? false}
@@ -549,7 +549,7 @@ export default function AdminSellerGlobalEdit() {
               Visible on site?
             </Checkbox>
           </Col>
-          <Col xs={1}>
+          <Col xs={2}>
             <Checkbox
               disabled={!selectedCategory}
               checked={selectedCategory?.isVisibleOnPortal ?? false}
@@ -606,7 +606,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Seller Name</label>
           </Col>
           <Col>
@@ -619,7 +619,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Seller Type</label>
           </Col>
           <Col>
@@ -632,7 +632,7 @@ export default function AdminSellerGlobalEdit() {
         </Row>
         {categoryRows}
         <Row className="form-group">
-          <Col xs={2}></Col>
+          <Col xs={4}></Col>
           <Col>
             <Checkbox
               checked={currentSeller?.hideInList ?? false}
@@ -643,7 +643,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}></Col>
+          <Col xs={4}></Col>
           <Col>
             <Checkbox
               checked={!(currentSeller?.isActive ?? false)}
@@ -659,7 +659,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Address</label>
           </Col>
           <Col>
@@ -672,7 +672,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">City</label>
           </Col>
           <Col>
@@ -685,7 +685,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">State</label>
           </Col>
           <Col>
@@ -698,7 +698,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Postal Code</label>
           </Col>
           <Col>
@@ -711,7 +711,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Country</label>
           </Col>
           <Col>
@@ -727,7 +727,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Phone</label>
           </Col>
           <Col>
@@ -740,7 +740,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group" hidden={isArtist}>
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Email</label>
           </Col>
           <Col>
@@ -754,7 +754,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Twitter</label>
           </Col>
           <Col>
@@ -767,7 +767,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Facebook</label>
           </Col>
           <Col>
@@ -780,7 +780,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Instagram</label>
           </Col>
           <Col>
@@ -793,7 +793,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">YouTube</label>
           </Col>
           <Col>
@@ -806,7 +806,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Spotify</label>
           </Col>
           <Col>
@@ -819,7 +819,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Website</label>
           </Col>
           <Col>
@@ -832,7 +832,7 @@ export default function AdminSellerGlobalEdit() {
           </Col>
         </Row>
         <Row className="form-group">
-          <Col xs={2}>
+          <Col xs={4}>
             <label className="mt-4">Website Display Text</label>
           </Col>
           <Col>

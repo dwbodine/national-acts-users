@@ -8,7 +8,7 @@ import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { ReportDatePickerProps } from '@/types/props';
 
 export default function ReportDatePicker(props: ReportDatePickerProps) {
-  const labelColWidth = props.LabelColumnWidth ?? 1;
+  const labelColWidth = props.LabelColumnWidth ?? 2;
   const onChange = props.OnChange;
   const onStartClear = props.OnStartClear;
   const onEndClear = props.OnEndClear;

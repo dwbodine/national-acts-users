@@ -546,7 +546,7 @@ export default function AdminEventsIndex() {
         Countries={currentAdminSelection.countries}
       />
       <Row className="admin-select" hidden={tourList.length === 0}>
-        <Col xs={1}>Tour:</Col>
+        <Col xs={2}>Tour:</Col>
         <Col>
           <SelectPicker
             value={selectedTourId}

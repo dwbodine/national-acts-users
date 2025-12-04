@@ -7,6 +7,7 @@ import 'rsuite/dist/rsuite-no-reset.min.css';
 import '../Css/App.css';
 import '../Css/Admin.css';
 import '../Css/Auth.css';
+// frame styles
 import '../Css/Brand.css';
 import '../Css/Frame.css';
 import '../Css/Header.css';
@@ -19,6 +20,9 @@ import '../Css/Tables.css';
 import '../Css/Widgets.css';
 // section styles
 import '../Css/Dashboard.css';
+import '../Css/Sales.css';
+// print styles
+import '../Css/Print.css';
 
 import Providers from '@/components/common/Frame/providers';
 

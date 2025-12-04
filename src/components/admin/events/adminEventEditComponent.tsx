@@ -1444,8 +1444,8 @@ export default function AdminEventEdit(props: EditProps) {
         </Col>
       </Row>
       <Row className="form-group" hidden={isExternalEvent}>
-        <Col xs={1}>Check-in location:</Col>
-        <Col xs={5}>
+        <Col xs={2}>Check-in location:</Col>
+        <Col xs={10}>
           <Textarea
             rows={3}
             id="checkInLocation"
@@ -1455,8 +1455,8 @@ export default function AdminEventEdit(props: EditProps) {
         </Col>
       </Row>
       <Row className="form-group" hidden={isExternalEvent}>
-        <Col xs={1}>Check-in notes:</Col>
-        <Col xs={5}>
+        <Col xs={2}>Check-in notes:</Col>
+        <Col xs={10}>
           <Textarea
             id="checkInNotes"
             rows={5}

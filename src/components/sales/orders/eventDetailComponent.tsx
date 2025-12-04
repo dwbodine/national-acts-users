@@ -647,7 +647,9 @@ export default function EventDetail(props: EditProps) {
                     <PrintButton ShowPrint={viewPrintButton} />
                   </div>
                 </Col>
-                <Col md={10} sm={12}>
+              </Row>
+              <Row>
+                <Col md={20} sm={24}>
                   <span className="inactive-check" hidden={!viewInactiveOrders}>
                     <Checkbox
                       checked={currentReportSelection?.showInactiveOrders}
@@ -701,7 +703,9 @@ export default function EventDetail(props: EditProps) {
                     </Checkbox>
                   </span>
                 </Col>
-                <Col md={10} sm={12} className="no-print" hidden={searchBarHidden}>
+              </Row>
+              <Row hidden={searchBarHidden}>
+                <Col md={20} sm={24} className="no-print">
                   <Input
                     value={searchTerm ?? ''}
                     onChange={setSearchTerm}

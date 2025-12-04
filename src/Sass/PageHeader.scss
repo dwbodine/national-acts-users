@@ -54,10 +54,27 @@
 }
 
 @media (max-width: 576px) {
-  .page-header-control-container {
-    text-align: unset;
-    padding: 0;
-    margin-right: 0;
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+
+    .title-container {
+      width: 100%;
+      text-align: left !important;
+
+      .title {
+        text-align: left !important;
+      }
+    }
+
+    .page-header-control-container {
+      width: 100%;
+      justify-content: flex-start;
+      text-align: unset;
+      padding: 0;
+      margin-right: 0;
+    }
   }
 }
 

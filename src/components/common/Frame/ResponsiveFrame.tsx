@@ -1,6 +1,7 @@
 import { Icon } from '@rsuite/icons';
 import MenuIcon from '@rsuite/icons/Menu';
 import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { MdLockReset, MdLogout } from 'react-icons/md';
 import { RingLoader } from 'react-spinners';
@@ -94,6 +95,9 @@ export default function ResponsiveFrame({
   const [expand, setExpand] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isNavEmpty = !navs || navs.length === 0;
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const hideSideBar = pathname.includes('/event') && searchParams.has('id');
 
   const handleNavClick = () => setMobileOpen(false);
 
@@ -102,7 +106,7 @@ export default function ResponsiveFrame({
   return (
     <Container className="frame">
       {/* ---------------- MOBILE NAVBAR ---------------- */}
-      <Navbar className="mobile-nav">
+      <Navbar className="mobile-nav" hidden={isNavEmpty || hideSideBar}>
         <Navbar.Brand>
           <IconButton icon={<MenuIcon />} appearance="subtle" onClick={() => setMobileOpen(true)} />
         </Navbar.Brand>
@@ -132,7 +136,7 @@ export default function ResponsiveFrame({
       {/* ---------------- DESKTOP SIDEBAR ---------------- */}
       <Sidebar
         className="desktop-sidebar"
-        hidden={isNavEmpty}
+        hidden={isNavEmpty || hideSideBar}
         width={expand ? 260 : 56}
         collapsible
       >

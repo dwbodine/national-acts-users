@@ -78,10 +78,10 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="PurchaseDate">
-              <Label value="Purchase Date" offset={-4} position="insideBottom" />
+              <Label value="Purchase Date" offset={-5} position="insideBottom" />
             </XAxis>
             <YAxis>
-              <Label value={yLabel} position={yPosition} angle={-90} offset={15} />
+              <Label value={yLabel} position={yPosition} angle={-90} offset={10} />
             </YAxis>
             <Tooltip content={<CustomTooltip />} />
             {chartsHidden ? (

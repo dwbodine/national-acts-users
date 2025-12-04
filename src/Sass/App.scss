@@ -33,7 +33,7 @@ button {
   display: none !important;
 }
 
-/* Begin - RSuite overrides */
+/* Begin - Vendor overrides */
 .rs-input {
   display: flex;
   padding: 12px;
@@ -65,7 +65,12 @@ button {
 .rs-checkbox-label {
   font-family: v.$control-title-font-family;
 }
-/* End - RSuite overrides */
+
+.recharts-responsive-container {
+  font-family: v.$control-title-font-family !important;
+}
+
+/* End - Vendor overrides */
 
 .danger {
   color: v.$danger-color;
@@ -93,10 +98,6 @@ button {
   margin: 5px 0 !important;
 }
 
-.admin-button-row {
-  margin: 0 0 10px 10px !important;
-}
-
 .date-range-title {
   margin-right: 10px;
 }
@@ -120,11 +121,6 @@ a.edit-event-link {
   margin-bottom: 5px;
   margin-top: 1.5rem;
   margin-left: 15px;
-}
-
-.admin-button-row button {
-  width: 165px;
-  margin: 10px;
 }
 
 .content-container {
@@ -191,83 +187,14 @@ a.edit-event-link {
   padding-top: 25px;
 }
 
-.vipDetailsTable {
-  max-width: 576px;
-  margin: 10px 0 10px 15px;
-}
-
-.vipDetailsTable tr {
-  vertical-align: top;
-}
-
-.vipDetailsTable td {
-  padding: 5px 10px;
-}
-
-.vipDetailsTable .vipLabel {
-  min-width: 175px;
-  font-weight: bold;
-  text-align: left;
-  white-space: nowrap;
-}
-
 .vipValue {
   max-width: 80%;
-}
-
-.vipTitle {
-  font-weight: bold;
 }
 
 .chart-total {
   margin-top: 5px;
   width: 425px;
   text-align: center;
-}
-
-.vipTable-container {
-  padding: 15px;
-}
-
-.vipTable {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid black;
-}
-
-.vipTable tr {
-  vertical-align: top;
-}
-
-.vipTable th,
-.vipTable td {
-  border: 1px solid black;
-  padding: 5px;
-}
-
-.vipTable th {
-  background-color: lightgray;
-  font-weight: bold;
-}
-
-.vipTable .inactive,
-.vipTitle .sold-out {
-  color: red;
-}
-
-.vipTable .hidden,
-.vipTable .active-pending {
-  color: orange;
-}
-
-.vipTable .deleted {
-  color: rgb(100, 100, 100);
-  font-weight: bold;
-}
-
-.vipTable .refunded {
-  color: blueviolet;
-  font-weight: bold;
 }
 
 .purchase-date {
@@ -619,41 +546,6 @@ a.edit-event-link {
 }
 
 /* MOBILE CSS */
-
-.mobile-event-card-container {
-  width: 100%;
-  margin: 0;
-  border: 0;
-}
-
-.mobile-event-card-container td {
-  border: unset;
-  width: 100%;
-  text-align: center;
-}
-
-.mobile-event-card {
-  text-align: left;
-  margin: 0;
-  border: 2px solid gray;
-  padding: 15px;
-}
-
-.mobile-event-card .row {
-  padding: 5px;
-}
-
-.mobile-event-card .ticket-type {
-  margin-bottom: 10px;
-}
-
-.mobile-event-card button {
-  margin: 5px 25px 5px 0;
-}
-
-.mobile-bold {
-  font-weight: bold;
-}
 
 .search-text-input {
   max-width: 500px;
@@ -1263,10 +1155,6 @@ a.edit-event-link {
     margin-top: 0;
   }
 
-  .vipTable .email {
-    word-break: break-all;
-  }
-
   .purchase-date {
     display: none;
   }
@@ -1310,10 +1198,6 @@ a.edit-event-link {
     font-size: 12px;
   }
 
-  .vipDetailsTable {
-    margin: 0;
-  }
-
   .agenda-day-event,
   .agenda-day-note,
   .agenda-day-note-completed {
@@ -1331,9 +1215,9 @@ a.edit-event-link {
 
 /* Bootstrap sm */
 @media (max-width: 576px) {
-  .vipDetailsTable {
-    max-width: 100%;
-    margin: 10px 0;
+  .rs-content {
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .no-mobile {
@@ -1356,39 +1240,6 @@ a.edit-event-link {
 
   .admin-check-row .col-sm-12 {
     padding: 0 5px;
-  }
-
-  .admin-button-row {
-    margin: 0;
-  }
-
-  .admin-button-row .col-sm-12 {
-    padding: 0 5px;
-  }
-
-  .admin-button-row button {
-    font-size: 0.8rem;
-    margin-left: 0;
-  }
-
-  .vipTable-container {
-    padding: 0 15px 0 5px;
-  }
-
-  .vipTable {
-    margin: 0 5px;
-  }
-
-  .mobile-event-card {
-    padding: 5px;
-  }
-
-  .vipDetailsTable td {
-    white-space: unset;
-  }
-
-  .vipDetailsTable .vipLabel {
-    white-space: nowrap;
   }
 
   .refresh-results-header {
@@ -1423,44 +1274,6 @@ a.edit-event-link {
   }
 
   .resultsCol {
-    padding: 0;
-  }
-}
-
-@media print {
-  .no-print,
-  .rs-nav-item,
-  .rs-nav-bar {
-    display: none !important;
-  }
-
-  .vipDetailsTable {
-    margin: 10px 5px;
-  }
-
-  .attendee,
-  .attendee-check,
-  .attendee-check-highlight,
-  .attendee-highlight {
-    font-weight: normal;
-  }
-
-  .attendee-highlight,
-  .attendee-check-highlight {
-    text-shadow: unset;
-    cursor: unset;
-    margin: 0 0 5px 0;
-  }
-
-  .check-out-show,
-  .check-in-show {
-    display: none;
-  }
-
-  .pdf-container,
-  .pdf-header,
-  .pdf-body {
-    margin: 0;
     padding: 0;
   }
 }
