@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { MdLockReset, MdLogout } from 'react-icons/md';
-import { RingLoader } from 'react-spinners';
 import { Container, Drawer, IconButton, Nav, Navbar, Sidebar, Sidenav } from 'rsuite';
 
 import { RenderNavProps, ResponsiveFrameProps } from '@/types/props';
+
+import WaitSpinner from '../WaitSpinnerComponent';
 
 /**
  * NavItem renderer (you can externalize this if desired)
@@ -101,8 +102,6 @@ export default function ResponsiveFrame({
 
   const handleNavClick = () => setMobileOpen(false);
 
-  const spinnerDisplay = IsLoading ? 'flex' : 'none';
-
   return (
     <Container className="frame">
       {/* ---------------- MOBILE NAVBAR ---------------- */}
@@ -158,14 +157,7 @@ export default function ResponsiveFrame({
         <Header />
         <Content>
           <div hidden={IsLoading || isNavEmpty}>{children}</div>
-
-          <div
-            hidden={!IsLoading || isNavEmpty}
-            className="spinner-container"
-            style={{ display: `${spinnerDisplay}` }}
-          >
-            <RingLoader size={150} color="#d12610" />
-          </div>
+          <WaitSpinner isLoading={IsLoading || isNavEmpty} />
         </Content>
       </Container>
     </Container>

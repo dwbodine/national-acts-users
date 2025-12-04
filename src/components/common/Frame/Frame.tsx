@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Content } from 'rsuite';
 
@@ -10,6 +10,7 @@ import { FrameProps } from '@/types/props';
 import { NavItemData } from '@/types/public';
 import { User } from '@/types/user';
 
+import WaitSpinner from '../WaitSpinnerComponent';
 import Brand from './Brand';
 import { adminAppNavs, userAppNavs } from './config';
 import Header from './Header';
@@ -36,16 +37,18 @@ const Frame = (props: FrameProps) => {
   }, [user, navs, globalSelection.isLoading]);
 
   return (
-    <ResponsiveFrame
-      navs={navs}
-      Brand={Brand}
-      Header={Header}
-      NavToggle={NavToggle}
-      Content={Content}
-      IsLoading={globalSelection.isLoading}
-    >
-      {props.children}
-    </ResponsiveFrame>
+    <Suspense fallback={<WaitSpinner />}>
+      <ResponsiveFrame
+        navs={navs}
+        Brand={Brand}
+        Header={Header}
+        NavToggle={NavToggle}
+        Content={Content}
+        IsLoading={globalSelection.isLoading}
+      >
+        {props.children}
+      </ResponsiveFrame>
+    </Suspense>
   );
 };
 
