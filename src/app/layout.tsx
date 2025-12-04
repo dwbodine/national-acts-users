@@ -1,5 +1,3 @@
-'use client';
-
 // vendor styles
 import 'react-toastify/ReactToastify.css';
 import 'rsuite/dist/rsuite-no-reset.min.css';
@@ -26,6 +24,13 @@ import '../Css/Print.css';
 
 import Providers from '@/components/common/Frame/providers';
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,10 +39,6 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
-        <meta
-          name="viewport"
-          content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width"
-        />
         <meta name="theme-color" content="#FFFFFF" />
         <link rel="icon" href="/images/favicon.png"></link>
       </head>
