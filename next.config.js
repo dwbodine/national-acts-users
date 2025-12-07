@@ -6,6 +6,9 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   trailingSlash: false,
+  turbopack: {
+    root: __dirname,
+  },
 };
 
 module.exports = nextConfig;

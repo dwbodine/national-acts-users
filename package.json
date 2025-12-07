@@ -86,5 +86,6 @@
   },
   "optionalDependencies": {
     "@img/sharp-win32-x64": "^0.34.4"
-  }
+  },
+  "packageManager": "yarn@4.12.0"
 }
