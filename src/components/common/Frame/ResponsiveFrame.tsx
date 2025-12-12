@@ -93,7 +93,7 @@ export default function ResponsiveFrame({
   Content,
   IsLoading,
 }: ResponsiveFrameProps) {
-  const [expand, setExpand] = useState(true);
+  const [expand, setExpand] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isNavEmpty = !navs || navs.length === 0;
   const pathname = usePathname();

@@ -1,6 +1,9 @@
 @use 'variables' as v;
 
 .frame {
+  flex-direction: column !important;
+  width: calc(100% - 10px);
+
   .rs-sidebar {
     background: #fff;
   }
@@ -12,8 +15,6 @@
   }
 
   .rs-content {
-    padding: 0 10px;
-
     .rs-panel-header {
       .title {
         font-size: 18px;
@@ -51,10 +52,6 @@
 .mobile-nav {
   display: flex;
   height: fit-content;
-}
-
-.frame {
-  flex-direction: column !important;
 }
 
 /* Desktop breakpoint */

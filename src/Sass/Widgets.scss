@@ -73,10 +73,9 @@
 
 @media (max-width: 1200px) {
   .widget-stat-block-container {
-    min-height: 300px;
-    min-width: 200px;
+    margin-right: 10px;
+    margin-top: 10px;
   }
-
   .widget-stat-block {
     font-size: 13px;
   }
@@ -89,6 +88,8 @@
   .widget-stat-block-container {
     min-height: unset;
     height: fit-content;
+    margin-right: 5px;
+    margin-top: 5px;
   }
   .widget-stat-block {
     min-height: 200px;
@@ -97,10 +98,15 @@
 }
 
 @media (max-width: 576px) {
+  .widget-row {
+    margin-left: 5px !important;
+  }
+
   .widget-stat-block-container {
     padding: 5px 5px 5px 0;
     min-width: unset;
     max-width: unset;
+    margin: 0;
   }
 
   .widget-stat-block {

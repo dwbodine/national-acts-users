@@ -533,7 +533,7 @@ export default function EventDetail(props: EditProps) {
       ) : (
         <Container className="fluid">
           <Row>
-            <Col>
+            <Col className="vip-col">
               <Row>
                 <Col>
                   <table className="vipDetailsTable">
