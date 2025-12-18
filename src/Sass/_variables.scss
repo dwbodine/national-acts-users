@@ -51,65 +51,10 @@ $footer-powered-by-ms-gradient-end: #0e0e0e;
 $footer-copyright-text-color: white;
 $footer-copyright-text-size: 10px;
 
-// FAQ
-$faq-font-size: 16px;
-$faq-question-font-size: 24px;
-$faq-title-font-size: 36px;
-
-// Terms
-$terms-font-size: 16px;
-$terms-question-font-size: 24px;
-$terms-title-font-size: 36px;
-
 // Contact
 $contact-title-font-size: 36px;
 $contact-font-size: 16px;
 $contact-response-font-size: 18px;
 
-// Artist
-$redirect-box-background-color: white;
-$redirect-box-border-color: #fb515f;
-
-// Artist Box
-$artist-box-header-color: #000000;
-$artist-box-icon-color: #333333;
-$artist-box-icon-hover-color: white;
-$artist-box-website-hover-color: #333333;
-$artist-box-twitter-hover-color: #33ccff;
-$artist-box-facebook-hover-color: #3b5998;
-$artist-box-youtube-hover-color: #e62117;
-$artist-box-spotify-hover-color: #00db4d;
-$artist-box-instagram-hover-background: -webkit-radial-gradient(
-  50px 220px,
-  #ffda75 18%,
-  #ff3a49 43%,
-  #ff3a49 50%,
-  #e518a1 70%,
-  #6634e1 100%
-);
-
-// Event Row
-$event-row-header-color: #d90617;
-$event-row-text-color: black;
-$event-row-text-color-dark: white;
-$event-row-icon-color: black;
-$event-row-icon-color-dark: white;
-$event-row-separator-color: #dddddd;
-$event-row-h3-font-size: 24px;
-$event-row-h3-font-size-mobile: 20px;
-$event-row-h4-font-size: 18px;
-$event-row-h4-font-size-mobile: 16px;
-$event-row-h5-font-size: 16px;
-$event-row-h5-font-size-mobile: 14px;
-$event-row-thumb-max-width: 100px;
-$event-row-tab-font-family: 'Calibri', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-$event-row-tab-font-size: 18px;
-$event-row-tab-font-color: white;
-$event-row-tab-background-color: #d90617;
-$event-row-tab-border-color: white;
-$event-row-tab-no-link-text-color: darkgray;
-$event-row-tab-no-link-border-color: darkgray;
-$event-row-tab-no-link-background-color: lightgray;
-$event-row-tab-text-hover-color: lightgrey;
-$event-row-tab-border-hover-color: lightgrey;
-$event-row-tab-background-hover-color: darkgray;
+// Dashboard
+$dashboard-header-color: black;

@@ -3,6 +3,7 @@
 import moment from 'moment';
 import { Col, Row } from 'rsuite';
 
+import TwoColumnStatRow from '@/components/common/widgets/TwoColumnStatRow';
 import { YearToDateWidgetProps } from '@/types/props';
 
 export default function YearToDateWidget(props: YearToDateWidgetProps) {
@@ -27,74 +28,33 @@ export default function YearToDateWidget(props: YearToDateWidgetProps) {
         <Row>
           <Col className="sales-stat-block-title">{title}</Col>
         </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Transactions:</Col>
-          <Col className="sales-stat-block-value">{totals?.orders ?? 'n/a'}</Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Tickets:</Col>
-          <Col className="sales-stat-block-value">{totals?.tickets ?? 'n/a'}</Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Refunds:</Col>
-          <Col className="sales-stat-block-value">{totals?.numTicketsRefunded ?? 'n/a'}</Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Revenue:</Col>
-          <Col className="sales-stat-block-value">
-            ${totals?.ticketRevenueUsd?.toFixed(2) ?? 'n/a'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Service Fees:</Col>
-          <Col className="sales-stat-block-value">
-            ${totals?.serviceFeesRevenueUsd?.toFixed(2) ?? 'n/a'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Revenue Refunded:</Col>
-          <Col className="sales-stat-block-value">
-            ${totals?.revenueRefunded?.toFixed(2) ?? 'n/a'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">S.Fees Refunded:</Col>
-          <Col className="sales-stat-block-value">
-            ${totals?.serviceFeeRevenueRefunded?.toFixed(2) ?? 'n/a'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Total Revenue:</Col>
-          <Col className="sales-stat-block-value">
-            ${totals?.totalRevenueUsd?.toFixed(2) ?? 'n/a'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Tickets per transaction:</Col>
-          <Col className="sales-stat-block-value">{ticketsPerTransaction.toFixed(2) ?? 'n/a'}</Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Avg. Purchase:</Col>
-          <Col className="sales-stat-block-value">${averagePurchaseAmount.toFixed(2) ?? 'n/a'}</Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Avg. Price Per Ticket:</Col>
-          <Col className="sales-stat-block-value">
-            ${totals?.pricePerTicket?.toFixed(2) ?? 'n/a'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Avg. Service Fee Per Ticket:</Col>
-          <Col className="sales-stat-block-value">
-            ${totals?.serviceFeePerTicket?.toFixed(2) ?? 'n/a'}
-          </Col>
-        </Row>
-        <Row hidden={selectedYear !== currentYear}>
-          <Col className="sales-stat-block-name">Yearly Proj.:</Col>
-          <Col className="sales-stat-block-value">
-            ${projectedYearTotalRevenue?.toFixed(2) ?? 'n/a'}
-          </Col>
-        </Row>
+        <TwoColumnStatRow label="Transactions:" value={totals?.orders} isInteger />
+        <TwoColumnStatRow label="Tickets:" value={totals?.tickets} isInteger />
+        <TwoColumnStatRow label="Refunds:" value={totals?.numTicketsRefunded} isInteger />
+        <TwoColumnStatRow label="Revenue:" value={totals?.ticketRevenueUsd} isCurrency />
+        <TwoColumnStatRow label="Service Fees:" value={totals?.serviceFeesRevenueUsd} isCurrency />
+        <TwoColumnStatRow label="Revenue Refunded:" value={totals?.revenueRefunded} isCurrency />
+        <TwoColumnStatRow
+          label="S.Fees Refunded:"
+          value={totals?.serviceFeeRevenueRefunded}
+          isCurrency
+        />
+        <TwoColumnStatRow label="Total Revenue:" value={totals?.totalRevenueUsd} isCurrency />
+        <TwoColumnStatRow label="Tickets per transaction:" value={ticketsPerTransaction} />
+        <TwoColumnStatRow label="Avg. Purchase:" value={averagePurchaseAmount} isCurrency />
+        <TwoColumnStatRow
+          label="Avg. Price Per Ticket:"
+          value={totals?.pricePerTicket}
+          isCurrency
+        />
+        <TwoColumnStatRow
+          label="Avg. Service Fee Per Ticket:"
+          value={totals?.serviceFeePerTicket}
+          isCurrency
+        />
+        {selectedYear === currentYear && (
+          <TwoColumnStatRow label="Yearly Proj.:" value={projectedYearTotalRevenue} isCurrency />
+        )}
       </Col>
     </Row>
   );

@@ -1,7 +1,9 @@
 'use client';
 
 import moment from 'moment';
+import { Col, Row } from 'rsuite';
 
+import ThreeColumnStatRow from '@/components/common/widgets/ThreeColumnStatRow';
 import { AverageSalesWidgetProps } from '@/types/props';
 
 export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
@@ -9,92 +11,86 @@ export default function AverageSalesWidget(props: AverageSalesWidgetProps) {
   const yearlyAverages = props.YearlyAverages;
   const selectedYear = props.SelectedYear;
   const currentYear = moment().year();
+  const isCurrentYear = selectedYear === currentYear;
 
   return monthlyAverages && yearlyAverages ? (
-    <div className="sales-stat-block-table">
-      <div className="sales-stat-block-title">
-        Average Daily Sales {selectedYear === currentYear ? '' : selectedYear}
-      </div>
-      <table className="average-sales-data-table">
-        <thead>
-          <tr hidden={selectedYear !== currentYear}>
-            <th>&nbsp;</th>
-            <th className="sales-stat-block-subtitle sales-stat-block-value">Month</th>
-            <th className="sales-stat-block-subtitle sales-stat-block-value">Year</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="sales-stat-block-name">Transactions:</td>
-            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              {monthlyAverages?.transactions?.toFixed(2) ?? '0'}
-            </td>
-            <td className="sales-stat-block-value">
-              {yearlyAverages?.transactions?.toFixed(2) ?? '0'}
-            </td>
-          </tr>
-          <tr>
-            <td className="sales-stat-block-name">Tickets:</td>
-            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              {monthlyAverages?.tickets?.toFixed(2) ?? '0'}
-            </td>
-            <td className="sales-stat-block-value">{yearlyAverages?.tickets?.toFixed(2) ?? '0'}</td>
-          </tr>
-          <tr>
-            <td className="sales-stat-block-name">Refunds:</td>
-            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              {monthlyAverages?.refunds?.toFixed(2) ?? '0'}
-            </td>
-            <td className="sales-stat-block-value">{yearlyAverages?.refunds?.toFixed(2) ?? '0'}</td>
-          </tr>
-          <tr>
-            <td className="sales-stat-block-name">Ticket Revenue:</td>
-            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              ${monthlyAverages?.ticketRevenueUsd?.toFixed(2) ?? '0.00'}
-            </td>
-            <td className="sales-stat-block-value">
-              ${yearlyAverages?.ticketRevenueUsd?.toFixed(2) ?? '0.00'}
-            </td>
-          </tr>
-          <tr>
-            <td className="sales-stat-block-name">Service Fees:</td>
-            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              ${monthlyAverages?.serviceFeesUsd?.toFixed(2) ?? '0.00'}
-            </td>
-            <td className="sales-stat-block-value">
-              ${yearlyAverages?.serviceFeesUsd?.toFixed(2) ?? '0.00'}
-            </td>
-          </tr>
-          <tr>
-            <td className="sales-stat-block-name">Revenue Refunded:</td>
-            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              ${monthlyAverages?.revenueRefundedUsd?.toFixed(2) ?? '0.00'}
-            </td>
-            <td className="sales-stat-block-value">
-              ${yearlyAverages?.revenueRefundedUsd?.toFixed(2) ?? '0.00'}
-            </td>
-          </tr>
-          <tr>
-            <td className="sales-stat-block-name">S.Fees Refunded:</td>
-            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              ${monthlyAverages?.serviceFeeRevenueRefundedUsd?.toFixed(2) ?? '0.00'}
-            </td>
-            <td className="sales-stat-block-value">
-              ${yearlyAverages?.serviceFeeRevenueRefundedUsd?.toFixed(2) ?? '0.00'}
-            </td>
-          </tr>
-          <tr>
-            <td className="sales-stat-block-name">Total Revenue:</td>
-            <td hidden={selectedYear !== currentYear} className="sales-stat-block-value">
-              ${monthlyAverages?.totalRevenueUsd?.toFixed(2) ?? '0.00'}
-            </td>
-            <td className="sales-stat-block-value">
-              ${yearlyAverages?.totalRevenueUsd?.toFixed(2) ?? '0.00'}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <Row className="sales-stat-block">
+      <Col>
+        <div className="sales-stat-block-title">
+          Average Daily Sales {selectedYear === currentYear ? '' : selectedYear}
+        </div>
+        <div className="average-sales-data-table">
+          {/* Header Row */}
+          {isCurrentYear && (
+            <Row className="sales-stat-header">
+              <Col xs={10}>&nbsp;</Col>
+              <Col xs={7} className="sales-stat-block-subtitle sales-stat-block-value">
+                Month
+              </Col>
+              <Col xs={7} className="sales-stat-block-subtitle sales-stat-block-value">
+                Year
+              </Col>
+            </Row>
+          )}
+
+          {/* Data Body */}
+          <ThreeColumnStatRow
+            label="Transactions:"
+            monthVal={monthlyAverages?.transactions}
+            yearVal={yearlyAverages?.transactions}
+            isCurrentYear
+          />
+          <ThreeColumnStatRow
+            label="Tickets:"
+            monthVal={monthlyAverages?.tickets}
+            yearVal={yearlyAverages?.tickets}
+            isCurrentYear
+          />
+          <ThreeColumnStatRow
+            label="Refunds:"
+            monthVal={monthlyAverages?.refunds}
+            yearVal={yearlyAverages?.refunds}
+            isCurrentYear
+          />
+
+          <ThreeColumnStatRow
+            label="Ticket Revenue:"
+            monthVal={monthlyAverages?.ticketRevenueUsd}
+            yearVal={yearlyAverages?.ticketRevenueUsd}
+            isCurrentYear
+            isCurrency
+          />
+          <ThreeColumnStatRow
+            label="Service Fees:"
+            monthVal={monthlyAverages?.serviceFeesUsd}
+            yearVal={yearlyAverages?.serviceFeesUsd}
+            isCurrentYear
+            isCurrency
+          />
+          <ThreeColumnStatRow
+            label="Revenue Refunded:"
+            monthVal={monthlyAverages?.revenueRefundedUsd}
+            yearVal={yearlyAverages?.revenueRefundedUsd}
+            isCurrentYear
+            isCurrency
+          />
+          <ThreeColumnStatRow
+            label="S.Fees Refunded:"
+            monthVal={monthlyAverages?.serviceFeeRevenueRefundedUsd}
+            yearVal={yearlyAverages?.serviceFeeRevenueRefundedUsd}
+            isCurrentYear
+            isCurrency
+          />
+          <ThreeColumnStatRow
+            label="Total Revenue:"
+            monthVal={monthlyAverages?.totalRevenueUsd}
+            yearVal={yearlyAverages?.totalRevenueUsd}
+            isCurrentYear
+            isCurrency
+          />
+        </div>
+      </Col>
+    </Row>
   ) : (
     ''
   );

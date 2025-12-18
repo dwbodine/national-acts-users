@@ -3,6 +3,7 @@
 import { ReactElement } from 'react';
 import { Col, Row } from 'rsuite';
 
+import TwoColumnStatRow from '@/components/common/widgets/TwoColumnStatRow';
 import { TopSellersWidgetProps } from '@/types/props';
 
 export default function TopSellersWidget(props: TopSellersWidgetProps) {
@@ -13,13 +14,9 @@ export default function TopSellersWidget(props: TopSellersWidgetProps) {
   if (topSellers && topSellers.length > 0) {
     topSellers.forEach((seller, i) => {
       const key = `topSeller${i}`;
+      const label = `${i + 1}. ${seller.sellerName}`;
       sellerRows.push(
-        <Row key={key}>
-          <Col className="sales-stat-block-name">
-            {i + 1}. {seller.sellerName}
-          </Col>
-          <Col className="sales-stat-block-value">${seller.revenueUsd.toFixed(2)}</Col>
-        </Row>,
+        <TwoColumnStatRow key={key} label={label} value={seller.revenueUsd} isCurrency />,
       );
     });
   }

@@ -3,7 +3,7 @@
 .page-header {
   display: flex !important;
   padding: 5px 10px !important;
-  margin: 0 0 15px 0 !important;
+  margin: 0 0 15px 15px !important;
   background-color: v.$pageheader-background-color;
   width: 100%;
   align-items: center;
@@ -55,6 +55,7 @@
 
 @media (max-width: 576px) {
   .page-header {
+    margin-left: 0 !important;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;

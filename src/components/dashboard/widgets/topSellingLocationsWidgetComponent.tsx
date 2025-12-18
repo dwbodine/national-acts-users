@@ -3,6 +3,7 @@
 import { ReactElement } from 'react';
 import { Col, Row } from 'rsuite';
 
+import TwoColumnStatRow from '@/components/common/widgets/TwoColumnStatRow';
 import { TopSellingLocationsWidgetProps } from '@/types/props';
 
 export default function TopSellingLocationsWidget(props: TopSellingLocationsWidgetProps) {
@@ -14,25 +15,16 @@ export default function TopSellingLocationsWidget(props: TopSellingLocationsWidg
   if (topSellers && topSellers.length > 0) {
     topSellers.forEach((seller, i) => {
       const key = `top10${i}`;
-      if (seller.tooltip) {
-        sellerRows.push(
-          <Row key={key}>
-            <Col className="sales-stat-block-name-tooltip" title={seller.tooltip}>
-              {i + 1}. {seller.location}
-            </Col>
-            <Col className="sales-stat-block-value">${seller.revenueUsd.toFixed(2)}</Col>
-          </Row>,
-        );
-      } else {
-        sellerRows.push(
-          <Row key={key}>
-            <Col className="sales-stat-block-name">
-              {i + 1}. {seller.location}
-            </Col>
-            <Col className="sales-stat-block-value">${seller.revenueUsd.toFixed(2)}</Col>
-          </Row>,
-        );
-      }
+      const label = `${i + 1}. ${seller.location}`;
+      sellerRows.push(
+        <TwoColumnStatRow
+          key={key}
+          label={label}
+          value={seller.revenueUsd}
+          isCurrency
+          tooltip={seller.tooltip ? seller.tooltip : ''}
+        />,
+      );
     });
   }
 

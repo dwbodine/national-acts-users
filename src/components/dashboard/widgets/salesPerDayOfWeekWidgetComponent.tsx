@@ -49,10 +49,10 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
       if (currentYear === selectedYear) {
         salesRows.push(
           <Row key={key}>
-            <Col>
+            <Col xs={12}>
               {dayName} ${monthVal.toFixed(2)}
             </Col>
-            <Col>
+            <Col xs={12}>
               {dayName} ${yearVal.toFixed(2)}
             </Col>
           </Row>,
@@ -60,7 +60,7 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
       } else {
         salesRows.push(
           <Row key={key}>
-            <Col>
+            <Col xs={24}>
               {dayName} ${yearVal.toFixed(2)}
             </Col>
           </Row>,
@@ -78,8 +78,12 @@ export default function SalesPerDayOfWeekWidget(props: SalesPerDayOfWeekWidgetPr
           </Col>
         </Row>
         <Row hidden={currentYear !== selectedYear}>
-          <Col className="sales-stat-block-subtitle">Current Month</Col>
-          <Col className="sales-stat-block-subtitle">Average For Year</Col>
+          <Col xs={12} className="sales-stat-block-subtitle">
+            Current Month
+          </Col>
+          <Col xs={12} className="sales-stat-block-subtitle">
+            Average For Year
+          </Col>
         </Row>
         {salesRows}
       </Col>
