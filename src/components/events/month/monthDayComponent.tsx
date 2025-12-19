@@ -280,7 +280,7 @@ export default function MonthDay(props: MonthDayProps) {
     : '';
 
   return (
-    <div key={`md_${key}`}>
+    <div key={`md_${key}`} className="month-day-container">
       <div
         title={`Add a note for ${displayDate}`}
         onClick={handleNotesOpen}

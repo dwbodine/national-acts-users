@@ -42,11 +42,11 @@ export default function AllEventsMonth() {
 
   return vipEvents === undefined ? (
     <Row>
-      <Col>No data returned</Col>
+      <Col xs={24}>No data returned</Col>
     </Row>
   ) : (
     <Row>
-      <Col>
+      <Col xs={24}>
         <MonthView
           StartOfMonth={startOfMonth?.format('YYYY-MM-DD')}
           EndOfMonth={endOfMonth?.format('YYYY-MM-DD')}

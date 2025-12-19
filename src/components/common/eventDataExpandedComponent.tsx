@@ -288,12 +288,12 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
       key={`expandedRow_${vipEvent.externalEventId}`}
       id={`expandedRow_${vipEvent.externalEventId}`}
     >
-      <Col>
+      <Col xs={24}>
         <Row className="expanded-event-title-row">
-          <Col>
+          <Col xs={4}>
             {eventTitle} - {eventDate}
           </Col>
-          <Col className="expand-edit-event">
+          <Col className="expand-edit-event" xs={20}>
             <Button onClick={viewEvent} hidden={vipEvent.totalTickets === 0}>
               View
             </Button>
@@ -302,7 +302,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
           </Col>
         </Row>
         <Row>
-          <Col xl={4} lg={12} className="expanded-event-panel">
+          <Col xl={8} lg={24} className="expanded-event-panel">
             <Checkbox
               checked={vipEvent?.emailSentToVips ?? false}
               disabled={!vipEvent.isActive || !hasVips}
@@ -326,22 +326,24 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
             </Checkbox>
             <div>Date/Time List sent to band: {listSent}</div>
             <div># of VIPs at time email was sent: {numVips}</div>
-            <Button
-              disabled={!vipEvent.isActive || !hasVips}
-              className="update-tasks-button"
-              onClick={() => updateTasks(false)}
-            >
-              Update
-            </Button>
-            <Button
-              disabled={!vipEvent.isActive || !hasVips}
-              className="update-tasks-button"
-              onClick={() => updateTasks(true)}
-            >
-              Complete
-            </Button>
+            <div className="expanded-event-button-panel">
+              <Button
+                disabled={!vipEvent.isActive || !hasVips}
+                className="update-tasks-button"
+                onClick={() => updateTasks(false)}
+              >
+                Update
+              </Button>
+              <Button
+                disabled={!vipEvent.isActive || !hasVips}
+                className="update-tasks-button"
+                onClick={() => updateTasks(true)}
+              >
+                Complete
+              </Button>
+            </div>
           </Col>
-          <Col xl={4} lg={12} className="expanded-event-panel">
+          <Col xl={8} lg={24} className="expanded-event-panel">
             <Row className="expand-edit-doors-container">
               <Col className="expand-edit-doors" xl={10} lg={12}>
                 <div>Doors Open: {doorsOpenTime}</div>
@@ -349,7 +351,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                 <div>Check-in location: {checkInLocation}</div>
                 <div>Check-in notes: {checkInNotes}</div>
               </Col>
-              <Col className="expand-edit-doors-data" xl={2} lg={12}>
+              <Col className="expand-edit-doors-data" xl={14} lg={12}>
                 <Button onClick={handleDoorsOpen}>Edit</Button>
                 <Modal size="calc(50%)" open={doorsModalOpen} onClose={handleDoorsClose}>
                   <Modal.Header>
@@ -413,7 +415,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
               </Col>
             </Row>
           </Col>
-          <Col xl={4} lg={12} className="expanded-event-panel">
+          <Col xl={8} lg={24} className="expanded-event-panel">
             <Row>
               <Col className="expand-edit-notes">
                 NOTES:<Button onClick={handleNotesOpen}>Add</Button>

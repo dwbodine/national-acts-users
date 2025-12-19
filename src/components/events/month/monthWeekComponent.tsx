@@ -1,6 +1,6 @@
 'use client';
 
-import { Col, Row } from 'rsuite';
+import { Row } from 'rsuite';
 
 import { MonthWeekProps } from '@/types/props';
 
@@ -9,11 +9,13 @@ export default function MonthWeek(props: MonthWeekProps) {
 
   return (
     <Row>
-      {weekDays?.map((weekDay, i) => (
-        <Col className="month-day" key={i}>
-          {weekDay}
-        </Col>
-      ))}
+      <div className="month-week-grid">
+        {weekDays?.map((weekDay, i) => (
+          <div key={i} className="month-day">
+            <div className="month-day-inner">{weekDay}</div>
+          </div>
+        ))}
+      </div>
     </Row>
   );
 }

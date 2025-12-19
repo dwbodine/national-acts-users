@@ -2,7 +2,7 @@
 
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { ReactElement, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Button, ButtonGroup, Col, Row } from 'rsuite';
@@ -152,18 +152,6 @@ export default function AllEvents() {
     }
   };
 
-  let activeComponent: ReactElement = <AllEventsWeek />;
-  switch (currentReportSelection.eventTabView) {
-    case EventTabView.Month:
-      activeComponent = <AllEventsMonth />;
-      break;
-    case EventTabView.Agenda:
-      activeComponent = <AllEventsAgenda />;
-      break;
-    default:
-      break;
-  }
-
   return (
     <>
       <Row>
@@ -182,7 +170,22 @@ export default function AllEvents() {
         </Col>
       </Row>
       <Row>
-        <Col>{agendaOnly ? <AllEventsAgenda /> : activeComponent}</Col>
+        <Col xs={24}>
+          {agendaOnly ? (
+            <AllEventsAgenda />
+          ) : (
+            (() => {
+              switch (currentReportSelection.eventTabView) {
+                case EventTabView.Month:
+                  return <AllEventsMonth />;
+                case EventTabView.Agenda:
+                  return <AllEventsAgenda />;
+                default:
+                  return <AllEventsWeek />;
+              }
+            })()
+          )}
+        </Col>
       </Row>
     </>
   );

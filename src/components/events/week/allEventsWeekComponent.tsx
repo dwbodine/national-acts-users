@@ -113,19 +113,21 @@ export default function AllEventsWeek() {
 
   return vipEvents === undefined ? (
     <Row>
-      <Col>No data returned</Col>
+      <Col xs={24}>No data returned</Col>
     </Row>
   ) : (
     <>
       <Row>
-        <WeekView
-          StartOfWeek={startOfWeek?.format('MM/DD/YYYY')}
-          Events={vipEvents}
-          Notes={notes}
-        />
+        <Col xs={24}>
+          <WeekView
+            StartOfWeek={startOfWeek?.format('MM/DD/YYYY')}
+            Events={vipEvents}
+            Notes={notes}
+          />
+        </Col>
       </Row>
       <Row>
-        <Col>
+        <Col xs={24}>
           <Table
             // Prevent the scrollbar from scrolling to the top after the table content area height changes.
             shouldUpdateScroll={false}

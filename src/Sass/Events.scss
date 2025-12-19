@@ -2,7 +2,7 @@
 
 .all-events-buttons {
   text-align: right;
-  margin: 0 0 15px 0;
+  margin: 0 0 15px 20px;
   padding: 0 12px 0 0;
 }
 
@@ -15,18 +15,23 @@
 .week-view,
 .agenda-view,
 .month-view {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   border: 0;
-  margin: 0;
-  padding: 5px;
+  margin: 0 0 0 15px;
+  padding: 15px;
 }
 
 .week-view-action,
 .agenda-view-action,
 .month-view-action {
+  display: flex;
   width: 100%;
   border: 0;
   padding-bottom: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .week-view-action a,
@@ -83,15 +88,38 @@
   font-weight: bold;
 }
 
+.month-week-grid,
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
 .month-day {
   border: 1px solid #cbdcf7;
   line-height: 25px;
-  vertical-align: top;
   padding-bottom: 10px;
   min-height: 300px;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
 }
 
-.month-week-container {
+.month-day-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.month-day-container {
+  display: flex;
+  flex-direction: column;
+  justify-items: flex-start;
+}
+
+.month-week-container,
+.week-day {
   width: 100%;
   clear: both;
 }
@@ -112,6 +140,11 @@
   cursor: pointer;
   padding: 0;
   height: 15px;
+}
+
+.month-day-name {
+  display: flex;
+  text-align: left;
 }
 
 .agenda-day-name {
@@ -250,6 +283,7 @@
 }
 
 .expanded-event-row {
+  display: flex;
   border: 2px solid black;
   width: 100%;
   min-height: 250px;
@@ -258,6 +292,21 @@
 
 .agenda-view .expanded-event-row {
   margin-left: 0;
+}
+
+.expanded-event-panel {
+  display: flex;
+  flex-direction: column;
+
+  .rs-checkbox-checker {
+    min-height: unset;
+  }
+}
+
+.expanded-event-button-panel {
+  display: flex;
+  flex-direction: row;
+  margin: 10px 0 0 0;
 }
 
 .expanded-event-title-row {
@@ -286,10 +335,18 @@
   padding: 0;
 }
 
-.expand-edit-event button,
-.expand-edit-doors-data button {
+.expand-edit-doors-data {
+  text-align: right;
+}
+
+.expand-edit-event button {
   padding: 0 3px;
   margin: 0 2px;
+}
+
+.expand-edit-doors-data button {
+  padding: 0 3px;
+  margin: 0 25px 0 2px;
 }
 
 .note-created {
@@ -341,6 +398,9 @@
 }
 
 @media (max-width: 576px) {
+  .agenda-view {
+    padding: 0;
+  }
   .agenda-day-event,
   .agenda-day-note,
   .agenda-day-note-completed {

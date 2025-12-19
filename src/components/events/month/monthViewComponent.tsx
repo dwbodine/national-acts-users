@@ -107,7 +107,7 @@ export default function MonthView(props: MonthViewProps) {
     : '';
 
   return (
-    <Col className="month-view">
+    <Col xs={24} className="month-view">
       <Row className="month-view-action">
         <Col className="month-view-action-previous">
           <a href="#" onClick={previousMonth}>
@@ -126,10 +126,10 @@ export default function MonthView(props: MonthViewProps) {
         </Col>
       </Row>
       <Row>
-        <Col>{monthDayRows}</Col>
+        <Col xs={24}>{monthDayRows}</Col>
       </Row>
       <Row>
-        <Col>
+        <Col xs={24}>
           <EventDataExpanded FocusControl="month-view-name" />
         </Col>
       </Row>
