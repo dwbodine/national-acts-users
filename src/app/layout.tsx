@@ -11,14 +11,18 @@ import '../Css/Frame.css';
 import '../Css/Header.css';
 import '../Css/Logo.css';
 // common controls
+import '../Css/WaitSpinner.css';
 import '../Css/PageHeader.css';
 import '../Css/SelectControls.css';
 import '../Css/CheckboxControls.css';
 import '../Css/Tables.css';
 import '../Css/Widgets.css';
+import '../Css/Pdf.css';
 // section styles
 import '../Css/Dashboard.css';
 import '../Css/Sales.css';
+import '../Css/Events.css';
+import '../Css/Users.css';
 // print styles
 import '../Css/Print.css';
 

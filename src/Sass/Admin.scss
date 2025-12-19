@@ -1,0 +1,295 @@
+@use 'variables' as v;
+
+.edit-event-link,
+a.edit-event-link {
+  float: left;
+  display: block;
+  margin-bottom: 5px;
+  margin-top: 1.5rem;
+  margin-left: 15px;
+}
+
+.content-container {
+  display: flex;
+}
+
+.comped-tickets {
+  min-width: unset !important;
+  width: 50px;
+}
+
+.comp-button {
+  margin-left: 15px;
+}
+
+.log-table {
+  margin: 10px;
+}
+
+.search-text-input {
+  max-width: 500px;
+  margin: 5px 0 15px 0;
+}
+
+.form-control-half {
+  max-width: 50%;
+}
+
+.admin-container {
+  padding: 0;
+  width: 100%;
+}
+
+.admin-container h1,
+.admin-container h2,
+.admin-container h3 {
+  font-family: 'Impact', 'Carrois Gothic SC', sans-serif;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+  color: #d90617;
+}
+
+.admin-container ul {
+  list-style-type: none;
+  margin: 0 0 50px 0;
+  padding: 0;
+}
+
+.admin-container li {
+  margin: 15px 0;
+}
+
+.admin-container .admin-link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.admin-container .form-check {
+  margin: 10px 0;
+}
+
+.admin-container button {
+  margin-right: 5px;
+}
+
+.admin-container .admin-inactive {
+  color: red;
+}
+
+.admin-container .admin-select {
+  margin: 10px 0;
+}
+
+.admin-container .admin-button-group {
+  margin: 10px 0;
+}
+
+.admin-home-button {
+  margin: 5px 0;
+}
+
+.admin-up-down-button {
+  margin: 0 35px 0 15px;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.admin-file-upload {
+  margin: 10px 0;
+}
+
+.admin-setting-item {
+  margin: 10px 0;
+}
+
+.admin-setting-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.admin-current-file-title {
+  font-size: 12px;
+}
+
+.admin-current-file-remove {
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.admin-report-datepicker-label {
+  width: 100px;
+  margin: 15px 0;
+  display: inline-block;
+}
+
+.admin-seller-select-label {
+  width: 100px;
+  display: flex;
+}
+
+.admin-seller-select-button {
+  float: right !important;
+}
+
+.pageseller-default {
+  font-size: 0.75em;
+  font-style: italic;
+}
+
+.page-seller-label {
+  margin: 10px 0 0 0;
+  font-weight: bold;
+}
+
+.page-order-cell,
+.page-order-cell div {
+  padding: 0;
+}
+
+.page-order-input {
+  width: 75px;
+  min-width: 0 !important;
+}
+
+.admin-click-cell {
+  cursor: pointer;
+}
+
+.admin-command-link {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.admin-command-link:hover {
+  text-decoration: underline;
+}
+
+.admin-event-info {
+  margin: 10px 0;
+}
+
+.form-header {
+  margin: 10px 0;
+}
+
+.form-header span {
+  display: inline-block;
+  margin: 5px 0;
+}
+
+.form-header .title {
+  font-weight: bold;
+  white-space: nowrap;
+  width: 300px;
+}
+
+.form-control-float {
+  float: left;
+  margin-right: 10px !important;
+}
+
+.refund-section-header {
+  margin: 5px 0 5px -10px;
+}
+
+.refund-section {
+  margin: 5px 0 15px -10px;
+}
+
+.ticket-type-table {
+  margin: 15px 0;
+  border: 1px solid black;
+}
+
+.ticket-type-table td {
+  padding-right: 10px;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.ticket-table {
+  margin: 0;
+  border: 1px solid black;
+}
+
+.ticket-table td,
+.ticket-table th {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.bulk-arrow-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+}
+
+.bulk-arrow-row div {
+  display: flex;
+  height: 40px;
+  padding: 0;
+}
+
+.bulk-arrow-row button {
+  padding: 0 3px;
+  margin: 5px 5px 5px 0;
+}
+
+.bulk-arrow {
+  margin: 10px;
+  font-size: 1em;
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+}
+
+.bulk-select {
+  display: flex;
+  margin: 0 10px;
+  height: 35px;
+}
+
+.refresh-results-header {
+  margin: 25px 0 25px 0;
+}
+
+.refresh-results-header-col {
+  margin: 0;
+}
+
+@media (max-width: 1200px) {
+  .refresh-results-header-col {
+    margin-bottom: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-control-half {
+    max-width: unset;
+  }
+
+  .refresh-results-header {
+    font-size: 12px;
+  }
+
+  .search-text-input {
+    max-width: 360px;
+  }
+}
+
+@media (max-width: 576px) {
+  .refresh-results-header {
+    font-size: 10px;
+  }
+
+  .bulk-arrow-row {
+    font-size: 10px;
+  }
+
+  .bulk-arrow {
+    font-size: 14px;
+  }
+}

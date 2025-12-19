@@ -1,0 +1,350 @@
+@use 'variables' as v;
+
+.all-events-buttons {
+  text-align: right;
+  margin: 0 0 15px 0;
+  padding: 0 12px 0 0;
+}
+
+.events-datepicker-label {
+  white-space: nowrap;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.week-view,
+.agenda-view,
+.month-view {
+  width: 100%;
+  border: 0;
+  margin: 0;
+  padding: 5px;
+}
+
+.week-view-action,
+.agenda-view-action,
+.month-view-action {
+  width: 100%;
+  border: 0;
+  padding-bottom: 10px;
+}
+
+.week-view-action a,
+.agenda-view-action a,
+.month-view-action a {
+  color: black;
+}
+
+.week-view-action-previous,
+.agenda-view-action-previous,
+.month-view-action-previous {
+  text-align: left;
+}
+
+.week-view-action-next,
+.agenda-view-action-next,
+.month-view-action-next {
+  text-align: right;
+}
+
+.week-view-action-previous svg,
+.week-view-action-next svg,
+.agenda-view-action-previous svg,
+.agenda-view-action-next svg,
+.month-view-action-previous svg,
+.month-view-action-next svg {
+  margin: 0 10px;
+}
+
+.week-view-calendar,
+.agenda-day-row,
+.month-day-calendar {
+  border: 0;
+  width: 100%;
+  padding: 0;
+}
+
+.agenda-day-row {
+  margin: 5px 0 15px 0;
+}
+
+.week-day {
+  border: 1px solid #cbdcf7;
+  line-height: 25px;
+  vertical-align: top;
+  aspect-ratio: 1 / 1;
+  padding-bottom: 10px;
+}
+
+.month-view-month-name,
+.week-view-week-name {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.month-day {
+  border: 1px solid #cbdcf7;
+  line-height: 25px;
+  vertical-align: top;
+  padding-bottom: 10px;
+  min-height: 300px;
+}
+
+.month-week-container {
+  width: 100%;
+  clear: both;
+}
+
+.agenda-day {
+  width: 100%;
+  line-height: 25px;
+  vertical-align: top;
+  padding-bottom: 10px;
+}
+
+.week-day-name,
+.month-day-name {
+  font-size: 10px;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 auto;
+  cursor: pointer;
+  padding: 0;
+  height: 15px;
+}
+
+.agenda-day-name {
+  font-size: 20px;
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
+  cursor: pointer;
+  height: 15px;
+  padding: 5px;
+  background-color: lightgray;
+  height: fit-content;
+}
+
+.week-day-number,
+.month-day-number {
+  font-size: 20px;
+  text-align: center;
+  margin: 5px auto;
+  cursor: pointer;
+  padding: 0;
+}
+
+.week-day-event,
+.week-day-note,
+.agenda-day-event,
+.agenda-day-note,
+.month-day-event,
+.month-day-note,
+.week-day-note-completed,
+.agenda-day-note-completed,
+.month-day-note-completed {
+  border-radius: 6px;
+  padding: 0 5px;
+  margin: 3px 0;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.agenda-day-event,
+.agenda-day-note,
+.agenda-day-note-completed {
+  max-width: 50%;
+}
+
+.week-day-event,
+.agenda-day-event,
+.month-day-event {
+  background-color: rgb(200, 225, 238);
+}
+
+.week-day-note,
+.agenda-day-note,
+.month-day-note,
+.week-day-note-completed,
+.agenda-day-note-completed,
+.month-day-note-completed {
+  background-color: rgb(254, 216, 0);
+}
+
+.week-day-note .note-text,
+.agenda-day-note .note-text,
+.month-day-note .note-text,
+.week-day-note-completed .note-text,
+.agenda-day-note-completed .note-text,
+.month-day-note-completed .note-text {
+  width: calc(100% - 20px);
+  display: inline-flex;
+}
+
+.week-day-note-completed .note-text,
+.agenda-day-note-completed .note-text,
+.month-day-note-completed .note-text {
+  text-decoration: line-through;
+}
+
+.week-day-note .note-x,
+.agenda-day-note .note-x,
+.month-day-note .note-x,
+.week-day-note-completed .note-x,
+.agenda-day-note-completed .note-x,
+.month-day-note-completed .note-x {
+  width: 20px;
+  text-align: right;
+  float: right;
+}
+
+.week-day-event-inactive,
+.agenda-day-event-inactive,
+.month-day-event-inactive {
+  background-color: red;
+}
+
+.week-day-event-sold-out,
+.agenda-day-event-sold-out,
+.month-day-event-sold-out {
+  background-color: red;
+}
+
+.week-day-event-deleted,
+.agenda-day-event-deleted,
+.month-day-event-deleted {
+  color: white;
+  background-color: rgb(100, 100, 100);
+}
+
+.week-day-event-hidden,
+.agenda-day-event-hidden,
+.month-day-event-hidden {
+  background-color: orange;
+}
+
+.week-day-event-active-pending,
+.agenda-day-event-active-pending,
+.month-day-event-active-pending {
+  background-color: orange;
+}
+
+.week-day-event-cancelled,
+.agenda-day-event-cancelled,
+.month-day-event-cancelled {
+  background-color: rgb(0, 128, 255);
+}
+
+.week-day-event-taskscomplete,
+.agenda-day-event-taskscomplete,
+.month-day-event-taskscomplete {
+  color: rgb(255, 255, 255);
+  text-decoration: line-through;
+  background-color: green;
+}
+
+.week-day-event-zerovips,
+.agenda-day-event-zerovips,
+.month-day-event-zerovips {
+  text-decoration: line-through;
+}
+
+.expanded-event-row {
+  border: 2px solid black;
+  width: 100%;
+  min-height: 250px;
+  padding: 10px;
+}
+
+.agenda-view .expanded-event-row {
+  margin-left: 0;
+}
+
+.expanded-event-title-row {
+  padding: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.update-tasks-button {
+  padding: 0 3px;
+  margin: 5px 5px 5px 0;
+}
+
+.expand-edit-notes,
+.expand-edit-doors {
+  text-align: left;
+}
+
+.expand-edit-notes button {
+  padding: 0 3px;
+  margin: 0 5px;
+}
+
+.expand-edit-event {
+  text-align: right;
+  padding: 0;
+}
+
+.expand-edit-event button,
+.expand-edit-doors-data button {
+  padding: 0 3px;
+  margin: 0 2px;
+}
+
+.note-created {
+  font-size: 0.75em;
+  font-style: italic;
+  color: orange;
+  margin: 0 5px;
+}
+
+.modal-notes-footer button {
+  margin: 0 0 0 10px;
+}
+
+.week-day-event-alert,
+.agenda-day-event-alert {
+  margin: 1px 5px 4px 3px;
+  color: #cf142b;
+  font-size: 1.2em;
+}
+
+@media (max-width: 1200px) {
+  .expanded-event-panel {
+    padding: 0;
+  }
+
+  .expand-edit-doors-container,
+  .expand-edit-notes,
+  .expand-edit-event {
+    margin: 15px 0;
+  }
+
+  .expand-edit-doors,
+  .expand-edit-doors-data {
+    padding: 0;
+  }
+
+  .expand-edit-event {
+    padding: 0 10px;
+    text-align: left;
+  }
+}
+
+@media (max-width: 768px) {
+  .agenda-day-event,
+  .agenda-day-note,
+  .agenda-day-note-completed {
+    max-width: 360px;
+  }
+}
+
+@media (max-width: 576px) {
+  .agenda-day-event,
+  .agenda-day-note,
+  .agenda-day-note-completed {
+    max-width: unset;
+    width: 100%;
+  }
+}

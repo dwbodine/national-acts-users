@@ -62,6 +62,13 @@
   font-weight: bold;
 }
 
+.message {
+  color: v.$success-color;
+  font-weight: bold;
+  text-align: center;
+  margin: 0 0 15px 0;
+}
+
 @media (max-width: 768px) {
   .wrapper {
     width: 368px;
