@@ -240,6 +240,7 @@ export default function AdminSiteSettingsEdit() {
 
   return (
     <div className="admin-container">
+      <h3>Manage Site Settings</h3>
       {settingRows}
       <Row>
         <Col>

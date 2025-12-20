@@ -42,11 +42,11 @@ export default function AllEventsAgenda() {
 
   return vipEvents === undefined ? (
     <Row>
-      <Col>No data returned</Col>
+      <Col xs={24}>No data returned</Col>
     </Row>
   ) : (
     <Row>
-      <Col>
+      <Col xs={24}>
         <AgendaView
           StartOfMonth={startOfMonth?.format('MM/DD/YYYY')}
           EndOfMonth={endOfMonth?.format('MM/DD/YYYY')}

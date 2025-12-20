@@ -239,7 +239,7 @@ export default function AdminPageOrderIndex() {
     : [];
 
   return (
-    <Col className="admin-container">
+    <Col xs={24} className="admin-container">
       <Row>
         <Col>
           <h3>Manage {pageTypeName} Order</h3>

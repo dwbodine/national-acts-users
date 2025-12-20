@@ -1191,7 +1191,7 @@ export default function AdminEventEdit(props: EditProps) {
     : [];
 
   return (
-    <Col className="admin-container" hidden={selectedEvent === undefined}>
+    <Col xs={24} className="admin-container" hidden={selectedEvent === undefined}>
       <Row>
         <Col>
           <h3>{pageHeader}</h3>
