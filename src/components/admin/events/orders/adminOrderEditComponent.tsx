@@ -904,7 +904,11 @@ export default function AdminOrderEdit(props: EditProps) {
   }));
 
   return (
-    <Col xs={24} className="admin-container" hidden={currentAdminSelection.selectedOrder === undefined}>
+    <Col
+      xs={24}
+      className="admin-container"
+      hidden={currentAdminSelection.selectedOrder === undefined}
+    >
       <Row>
         <Col>
           <h3>{pageHeader}</h3>
