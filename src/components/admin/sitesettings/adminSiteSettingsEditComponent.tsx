@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { ReactElement, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -23,7 +22,6 @@ export default function AdminSiteSettingsEdit() {
   const { getAllSettings } = useGetSiteSettings();
   const { updateSiteSettings } = useUpdateSiteSetting();
   const [isUploading, setIsUploading] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -158,7 +156,6 @@ export default function AdminSiteSettingsEdit() {
       if (response.success) {
         toast.success('Settings saved successfully');
         clearDirty();
-        router.push('/admin');
       } else {
         const err = response.error ?? 'Errors occurred while saving settings';
         toast.error(err);

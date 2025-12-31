@@ -1,7 +1,6 @@
 'use client';
 
 import moment from 'moment';
-import { useRouter } from 'next/navigation';
 import { KeyboardEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -22,7 +21,6 @@ export default function AdminOrdersSearch() {
   const dispatch = useDispatch();
   const { searchOrders } = useSearchOrders();
   const [searchTerm, setSearchTerm] = useState('');
-  const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -79,20 +77,10 @@ export default function AdminOrdersSearch() {
     window.open(`/admin/events/orders/edit/?id=${order.ticketSocketOrderId}`);
   };
 
-  const goBack = () => {
-    dispatch(setAdminOrders(undefined));
-    router.push('/admin');
-  };
-
   const numOrders = currentAdminSelection.orders?.length ?? 0;
 
   return (
     <div className="admin-container">
-      <Row className="admin-event-info">
-        <Col>
-          <Button onClick={goBack}>Back</Button>{' '}
-        </Col>
-      </Row>
       <Row>
         <Col>
           <h5>Search Orders</h5>
