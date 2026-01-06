@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Button, Col, Input, Row } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { ImageType } from '@/constants';
 import { useGetSiteSettings } from '@/hooks/admin/useGetSiteSettings';
 import { useUpdateSiteSetting } from '@/hooks/admin/useUpdateSiteSetting';
@@ -236,16 +237,18 @@ export default function AdminSiteSettingsEdit() {
   }
 
   return (
-    <div className="admin-container">
-      <h3>Manage Site Settings</h3>
-      {settingRows}
-      <Row>
-        <Col>
-          <Button disabled={!hasDirtySettings && isUploading} onClick={onSubmit}>
-            Submit
-          </Button>
-        </Col>
-      </Row>
-    </div>
+    <>
+      <PageHeader pageTitle="Manage Site Settings" />
+      <div className="admin-container">
+        {settingRows}
+        <Row>
+          <Col>
+            <Button disabled={!hasDirtySettings && isUploading} onClick={onSubmit}>
+              Submit
+            </Button>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Table } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
 import {
@@ -99,38 +100,40 @@ export default function AdminSellerGlobalIndex() {
   const filteredSellers = filterSellers(currentAdminSelection.allSellers);
 
   return (
-    <div className="admin-container">
-      <h3>Manage Sellers</h3>
-      <Input
-        value={searchTerm}
-        onChange={setSearchTerm}
-        className="form-control search-text-input no-print"
-        placeholder="Search for sellers by name..."
-        hidden={currentAdminSelection.allSellers === undefined}
-      />
-      <Button onClick={addSeller}>Add Seller</Button>
-      <Table
-        height={600}
-        data={filteredSellers}
-        bordered
-        cellBordered
-        loading={tableLoading}
-        rowClassName={(rowData: Seller) => getSellerStatusSlug(rowData)}
-      >
-        <Column width={300}>
-          <HeaderCell>Seller Name</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData: Seller) => (
-              <div
-                id={rowData.sellerId.toString()}
-                onClick={() => editSeller(parseInt(`${rowData.sellerId}`))}
-              >
-                {rowData.name}
-              </div>
-            )}
-          </Cell>
-        </Column>
-      </Table>
-    </div>
+    <>
+      <PageHeader pageTitle="Manage Sellers" />
+      <div className="admin-container">
+        <Input
+          value={searchTerm}
+          onChange={setSearchTerm}
+          className="form-control search-text-input no-print"
+          placeholder="Search for sellers by name..."
+          hidden={currentAdminSelection.allSellers === undefined}
+        />
+        <Button onClick={addSeller}>Add Seller</Button>
+        <Table
+          height={600}
+          data={filteredSellers}
+          bordered
+          cellBordered
+          loading={tableLoading}
+          rowClassName={(rowData: Seller) => getSellerStatusSlug(rowData)}
+        >
+          <Column width={300}>
+            <HeaderCell>Seller Name</HeaderCell>
+            <Cell className="admin-click-cell">
+              {(rowData: Seller) => (
+                <div
+                  id={rowData.sellerId.toString()}
+                  onClick={() => editSeller(parseInt(`${rowData.sellerId}`))}
+                >
+                  {rowData.name}
+                </div>
+              )}
+            </Cell>
+          </Column>
+        </Table>
+      </div>
+    </>
   );
 }

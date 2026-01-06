@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { Button, Checkbox, Col, Input, Row, SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useUpdateSeller } from '@/hooks/admin/useUpdateSeller';
 import {
@@ -585,7 +586,7 @@ export default function AdminSellerGlobalEdit() {
     );
   });
 
-  const pageHeader = (currentSeller?.sellerId ?? 0) > 0 ? 'Edit seller' : 'Add seller';
+  const pageHeaderTitle = (currentSeller?.sellerId ?? 0) > 0 ? 'Edit seller' : 'Add seller';
 
   const countryList: ItemDataType<number>[] = currentAdminSelection.countries
     ? currentAdminSelection.countries.map((country) => ({
@@ -595,261 +596,259 @@ export default function AdminSellerGlobalEdit() {
     : [];
 
   return (
-    <Row
-      className="admin-container"
-      hidden={!((allAccounts?.length ?? 0) > 0 && currentSeller !== undefined)}
-    >
-      <Col>
-        <Row>
-          <Col>
-            <h1>{pageHeader}</h1>
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={4}>
-            <label className="mt-4">Seller Name</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.name ?? ''}
-              onChange={setSellerName}
-              className="form-control form-control-half"
-              placeholder="seller name"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={4}>
-            <label className="mt-4">Seller Type</label>
-          </Col>
-          <Col>
-            <SelectPicker
-              onChange={(value) => updateSellerType(value ?? undefined)}
-              defaultValue={selectedSellerType}
-              data={sellerTypeOptions}
-            />
-          </Col>
-        </Row>
-        {categoryRows}
-        <Row className="form-group">
-          <Col xs={4}></Col>
-          <Col>
-            <Checkbox
-              checked={currentSeller?.hideInList ?? false}
-              onChange={(_, checked) => setHideInList(checked)}
-            >
-              Hide in order tickets screen
-            </Checkbox>
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={4}></Col>
-          <Col>
-            <Checkbox
-              checked={!(currentSeller?.isActive ?? false)}
-              onChange={(_, checked) => setIsActive(!checked)}
-            >
-              Set to inactive
-            </Checkbox>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <h2>Set Default Values</h2>
-          </Col>
-        </Row>
-        <Row className="form-group" hidden={isArtist}>
-          <Col xs={4}>
-            <label className="mt-4">Address</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.address ?? ''}
-              onChange={setAddress}
-              className="form-control form-control-half"
-              placeholder="address"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group" hidden={isArtist}>
-          <Col xs={4}>
-            <label className="mt-4">City</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.city ?? ''}
-              onChange={setCity}
-              className="form-control form-control-half"
-              placeholder="city"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group" hidden={isArtist}>
-          <Col xs={4}>
-            <label className="mt-4">State</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.state ?? ''}
-              onChange={setState}
-              className="form-control form-control-half"
-              placeholder="state"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group" hidden={isArtist}>
-          <Col xs={4}>
-            <label className="mt-4">Postal Code</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.zip ?? ''}
-              onChange={setZip}
-              className="form-control form-control-half"
-              placeholder="postal code"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group" hidden={isArtist}>
-          <Col xs={4}>
-            <label className="mt-4">Country</label>
-          </Col>
-          <Col>
-            <SelectPicker
-              className="admin-seller-select-value"
-              menuAutoWidth={true}
-              value={currentSeller?.country?.countryId}
-              data={countryList}
-              size="lg"
-              onChange={(cId) => onCountryChange(cId)}
-              cleanable={false}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group" hidden={isArtist}>
-          <Col xs={4}>
-            <label className="mt-4">Phone</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.phone ?? ''}
-              onChange={setPhone}
-              className="form-control form-control-half"
-              placeholder="phone"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group" hidden={isArtist}>
-          <Col xs={4}>
-            <label className="mt-4">Email</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.email ?? ''}
-              onChange={setEmail}
-              className="form-control form-control-half"
-              placeholder="email"
-              type="email"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={4}>
-            <label className="mt-4">Twitter</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.twitter ?? ''}
-              onChange={setTwitter}
-              className="form-control form-control-half"
-              placeholder="Twitter (X) url"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={4}>
-            <label className="mt-4">Facebook</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.facebook ?? ''}
-              onChange={setFacebook}
-              className="form-control form-control-half"
-              placeholder="Facebook url"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={4}>
-            <label className="mt-4">Instagram</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.instagram ?? ''}
-              onChange={setInstagram}
-              className="form-control form-control-half"
-              placeholder="Instagram url"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={4}>
-            <label className="mt-4">YouTube</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.youtube ?? ''}
-              onChange={setYouTube}
-              className="form-control form-control-half"
-              placeholder="YouTube url"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={4}>
-            <label className="mt-4">Spotify</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.spotify ?? ''}
-              onChange={setSpotify}
-              className="form-control form-control-half"
-              placeholder="Spotify url"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={4}>
-            <label className="mt-4">Website</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.website ?? ''}
-              onChange={setWebsite}
-              className="form-control form-control-half"
-              placeholder="Website url"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col xs={4}>
-            <label className="mt-4">Website Display Text</label>
-          </Col>
-          <Col>
-            <Input
-              value={currentSeller?.websiteDisplayText ?? ''}
-              onChange={setWebsiteDisplayText}
-              className="form-control form-control-half"
-              placeholder="Website display text (shown instead of url)"
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
-          </Col>
-        </Row>
-      </Col>
-    </Row>
+    <>
+      <PageHeader pageTitle={pageHeaderTitle} />
+      <Row
+        className="admin-container"
+        hidden={!((allAccounts?.length ?? 0) > 0 && currentSeller !== undefined)}
+      >
+        <Col>
+          <Row className="form-group">
+            <Col xs={4}>
+              <label className="mt-4">Seller Name</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.name ?? ''}
+                onChange={setSellerName}
+                className="form-control form-control-half"
+                placeholder="seller name"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col xs={4}>
+              <label className="mt-4">Seller Type</label>
+            </Col>
+            <Col>
+              <SelectPicker
+                onChange={(value) => updateSellerType(value ?? undefined)}
+                defaultValue={selectedSellerType}
+                data={sellerTypeOptions}
+              />
+            </Col>
+          </Row>
+          {categoryRows}
+          <Row className="form-group">
+            <Col xs={4}></Col>
+            <Col>
+              <Checkbox
+                checked={currentSeller?.hideInList ?? false}
+                onChange={(_, checked) => setHideInList(checked)}
+              >
+                Hide in order tickets screen
+              </Checkbox>
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col xs={4}></Col>
+            <Col>
+              <Checkbox
+                checked={!(currentSeller?.isActive ?? false)}
+                onChange={(_, checked) => setIsActive(!checked)}
+              >
+                Set to inactive
+              </Checkbox>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <h2>Set Default Values</h2>
+            </Col>
+          </Row>
+          <Row className="form-group" hidden={isArtist}>
+            <Col xs={4}>
+              <label className="mt-4">Address</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.address ?? ''}
+                onChange={setAddress}
+                className="form-control form-control-half"
+                placeholder="address"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group" hidden={isArtist}>
+            <Col xs={4}>
+              <label className="mt-4">City</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.city ?? ''}
+                onChange={setCity}
+                className="form-control form-control-half"
+                placeholder="city"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group" hidden={isArtist}>
+            <Col xs={4}>
+              <label className="mt-4">State</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.state ?? ''}
+                onChange={setState}
+                className="form-control form-control-half"
+                placeholder="state"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group" hidden={isArtist}>
+            <Col xs={4}>
+              <label className="mt-4">Postal Code</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.zip ?? ''}
+                onChange={setZip}
+                className="form-control form-control-half"
+                placeholder="postal code"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group" hidden={isArtist}>
+            <Col xs={4}>
+              <label className="mt-4">Country</label>
+            </Col>
+            <Col>
+              <SelectPicker
+                className="admin-seller-select-value"
+                menuAutoWidth={true}
+                value={currentSeller?.country?.countryId}
+                data={countryList}
+                size="lg"
+                onChange={(cId) => onCountryChange(cId)}
+                cleanable={false}
+              />
+            </Col>
+          </Row>
+          <Row className="form-group" hidden={isArtist}>
+            <Col xs={4}>
+              <label className="mt-4">Phone</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.phone ?? ''}
+                onChange={setPhone}
+                className="form-control form-control-half"
+                placeholder="phone"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group" hidden={isArtist}>
+            <Col xs={4}>
+              <label className="mt-4">Email</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.email ?? ''}
+                onChange={setEmail}
+                className="form-control form-control-half"
+                placeholder="email"
+                type="email"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col xs={4}>
+              <label className="mt-4">Twitter</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.twitter ?? ''}
+                onChange={setTwitter}
+                className="form-control form-control-half"
+                placeholder="Twitter (X) url"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col xs={4}>
+              <label className="mt-4">Facebook</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.facebook ?? ''}
+                onChange={setFacebook}
+                className="form-control form-control-half"
+                placeholder="Facebook url"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col xs={4}>
+              <label className="mt-4">Instagram</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.instagram ?? ''}
+                onChange={setInstagram}
+                className="form-control form-control-half"
+                placeholder="Instagram url"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col xs={4}>
+              <label className="mt-4">YouTube</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.youtube ?? ''}
+                onChange={setYouTube}
+                className="form-control form-control-half"
+                placeholder="YouTube url"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col xs={4}>
+              <label className="mt-4">Spotify</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.spotify ?? ''}
+                onChange={setSpotify}
+                className="form-control form-control-half"
+                placeholder="Spotify url"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col xs={4}>
+              <label className="mt-4">Website</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.website ?? ''}
+                onChange={setWebsite}
+                className="form-control form-control-half"
+                placeholder="Website url"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col xs={4}>
+              <label className="mt-4">Website Display Text</label>
+            </Col>
+            <Col>
+              <Input
+                value={currentSeller?.websiteDisplayText ?? ''}
+                onChange={setWebsiteDisplayText}
+                className="form-control form-control-half"
+                placeholder="Website display text (shown instead of url)"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </>
   );
 }
