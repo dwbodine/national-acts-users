@@ -57,7 +57,7 @@ export default function AdminPageEdit() {
 
   const goBack = useCallback(() => {
     toast.dismiss();
-    router.push('/admin/page-manager');
+    router.push('/admin/pages');
   }, [router]);
 
   useEffect(() => {
@@ -559,7 +559,7 @@ export default function AdminPageEdit() {
       if (response.success) {
         dispatch(setReloadPages(true));
         toast.success('Save page succeeded');
-        router.push('/admin/page-manager');
+        router.push('/admin/pages');
       } else {
         toast.error(response.error ?? 'Error occurred while saving page');
       }

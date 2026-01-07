@@ -5,7 +5,7 @@ const nextConfig = {
   images: { unoptimized: true },
   output: 'standalone',
   reactStrictMode: true,
-  trailingSlash: false,
+  trailingSlash: true,
   turbopack: {
     root: __dirname,
   },

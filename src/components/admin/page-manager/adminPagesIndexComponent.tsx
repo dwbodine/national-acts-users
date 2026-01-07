@@ -91,7 +91,7 @@ export default function AdminPagesIndex() {
     };
     dispatch(setSelectedPage(page));
     setTableLoading(true);
-    router.push('/admin/page-manager/edit');
+    router.push('/admin/pages/edit/');
   };
 
   const editPage = (pageId: number) => {
@@ -102,7 +102,7 @@ export default function AdminPagesIndex() {
     if (page) {
       dispatch(setSelectedPage(page));
       setTableLoading(true);
-      router.push('/admin/page-manager/edit');
+      router.push('/admin/pages/edit/');
     }
   };
 
