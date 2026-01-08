@@ -18,6 +18,7 @@ import {
 } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import Textarea from '@/components/common/Textarea';
 import { ImageType } from '@/constants';
 import { useAddCompedOrder } from '@/hooks/admin/useAddCompOrder';
@@ -1191,429 +1192,429 @@ export default function AdminEventEdit(props: EditProps) {
     : [];
 
   return (
-    <Col xs={24} className="admin-container" hidden={selectedEvent === undefined}>
-      <Row>
-        <Col>
-          <h3>{pageHeader}</h3>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Button hidden={id !== undefined} onClick={confirmGoBack}>
-            Back
-          </Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col className="form-group">
-          <label className="mt-4">Event title</label>
-          <Input
-            value={eventTitle ?? ''}
-            onChange={setEventTitle}
-            className="form-control"
-            placeholder="event title"
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col className="form-group">
-          <label className="mt-4">Event date</label>
-          <DatePicker
-            id="eventDate"
-            format="M/d/yyyy"
-            onSelect={onEventDateChange}
-            value={eventDate}
-            oneTap
-            showMeridiem
-          />
-        </Col>
-      </Row>
-      <Row hidden={isExternalEvent}>
-        <Col className="form-group">
-          <label className="mt-4">Associated Ticket Socket Event</label>
-          <SelectPicker
-            value={ticketSocketEventId}
-            data={eventList}
-            size="lg"
-            block
-            onChange={onEventChange}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col className="form-group">
-          <label className="mt-4">Event venue</label>
-          <SelectPicker
-            value={externalEventVenueId}
-            data={venueList}
-            size="lg"
-            block
-            onChange={onEventVenueChange}
-          />
-          <Button disabled={externalEventVenueId > 0} onClick={handleVenueOpen}>
-            Add New Venue
-          </Button>
-          <Modal open={venueOpen} onClose={handleVenueClose} size={'lg'}>
-            <Modal.Header>
-              <Modal.Title>Add New Venue:</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="form-group">
-                <label className="mt-4">Venue name</label>
-                <Input
-                  value={venueName ?? ''}
-                  onChange={setVenueName}
-                  placeholder="venue name"
-                  style={{ width: '80%' }}
-                />
-              </div>
-              <div className="form-group">
-                <label className="mt-4">Address</label>
-                <Input
-                  value={address ?? ''}
-                  onChange={setAddress}
-                  placeholder="address"
-                  style={{ width: '80%' }}
-                />
-              </div>
-              <div className="form-group">
-                <label className="mt-4">City</label>
-                <Input value={city ?? ''} onChange={setCity} placeholder="city" />
-              </div>
-              <div className="form-group">
-                <label className="mt-4">State</label>
-                <Input value={state ?? ''} onChange={setState} placeholder="state" />
-              </div>
-              <div className="form-group">
-                <label className="mt-4">Postal Code</label>
-                <Input value={zipCode ?? ''} onChange={setZipCode} placeholder="postal code" />
-              </div>
-              <div className="form-group">
-                <label className="mt-4">Country</label>
-                <SelectPicker
-                  className="admin-seller-select-value"
-                  menuAutoWidth={true}
-                  value={countryId}
-                  data={countryList}
-                  size="lg"
-                  onChange={onCountryChange}
-                  cleanable={false}
-                />
-              </div>
-              <div className="form-group">
-                <label className="mt-4">Timezone</label>
-                <SelectPicker
-                  className="admin-seller-select-value"
-                  menuAutoWidth={true}
-                  value={timezone}
-                  data={timeZoneList}
-                  size="lg"
-                  onChange={onTimezoneChange}
-                  cleanable={false}
-                />
-              </div>
-            </Modal.Body>
-            <Modal.Footer className="modal-notes-footer">
-              <Button onClick={addVenue}>Ok</Button>
-              <Button onClick={handleVenueClose}>Cancel</Button>
-            </Modal.Footer>
-          </Modal>
-        </Col>
-      </Row>
-      <Row>
-        <Col className="form-group">
-          <AdminFileUpload
-            ImageType={ImageType.EVENT_THUMBNAILS}
-            Title="Event thumbnail (square, will be resized to 100px wide)"
-            FileUploadName="Thumbnail"
-            OnUpload={onFileUpload}
-            CurrentFileName={thumbnail}
-            IsDirty={isThumbnailDirty}
-            CurrentFileTitle={'View Current Thumbnail'}
-            OnUploadStart={onUploadStart}
-            OnUploadComplete={onUploadComplete}
-            ShowRemoveButton={true}
-            OnFileRemove={onFileRemove}
-          />
-        </Col>
-      </Row>
-      <Row className="form-group">
-        <Col>
-          <label className="mt-4">Event time (in venue local time zone)</label>
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <Col xs={24} className="admin-container" hidden={selectedEvent === undefined}>
+        <Row>
+          <Col>
+            <Button hidden={id !== undefined} onClick={confirmGoBack}>
+              Back
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="form-group">
+            <label className="mt-4">Event title</label>
+            <Input
+              value={eventTitle ?? ''}
+              onChange={setEventTitle}
+              className="form-control"
+              placeholder="event title"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col className="form-group">
+            <label className="mt-4">Event date</label>
+            <DatePicker
+              id="eventDate"
+              format="M/d/yyyy"
+              onSelect={onEventDateChange}
+              value={eventDate}
+              oneTap
+              showMeridiem
+            />
+          </Col>
+        </Row>
+        <Row hidden={isExternalEvent}>
+          <Col className="form-group">
+            <label className="mt-4">Associated Ticket Socket Event</label>
+            <SelectPicker
+              value={ticketSocketEventId}
+              data={eventList}
+              size="lg"
+              block
+              onChange={onEventChange}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col className="form-group">
+            <label className="mt-4">Event venue</label>
+            <SelectPicker
+              value={externalEventVenueId}
+              data={venueList}
+              size="lg"
+              block
+              onChange={onEventVenueChange}
+            />
+            <Button disabled={externalEventVenueId > 0} onClick={handleVenueOpen}>
+              Add New Venue
+            </Button>
+            <Modal open={venueOpen} onClose={handleVenueClose} size={'lg'}>
+              <Modal.Header>
+                <Modal.Title>Add New Venue:</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="form-group">
+                  <label className="mt-4">Venue name</label>
+                  <Input
+                    value={venueName ?? ''}
+                    onChange={setVenueName}
+                    placeholder="venue name"
+                    style={{ width: '80%' }}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="mt-4">Address</label>
+                  <Input
+                    value={address ?? ''}
+                    onChange={setAddress}
+                    placeholder="address"
+                    style={{ width: '80%' }}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="mt-4">City</label>
+                  <Input value={city ?? ''} onChange={setCity} placeholder="city" />
+                </div>
+                <div className="form-group">
+                  <label className="mt-4">State</label>
+                  <Input value={state ?? ''} onChange={setState} placeholder="state" />
+                </div>
+                <div className="form-group">
+                  <label className="mt-4">Postal Code</label>
+                  <Input value={zipCode ?? ''} onChange={setZipCode} placeholder="postal code" />
+                </div>
+                <div className="form-group">
+                  <label className="mt-4">Country</label>
+                  <SelectPicker
+                    className="admin-seller-select-value"
+                    menuAutoWidth={true}
+                    value={countryId}
+                    data={countryList}
+                    size="lg"
+                    onChange={onCountryChange}
+                    cleanable={false}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="mt-4">Timezone</label>
+                  <SelectPicker
+                    className="admin-seller-select-value"
+                    menuAutoWidth={true}
+                    value={timezone}
+                    data={timeZoneList}
+                    size="lg"
+                    onChange={onTimezoneChange}
+                    cleanable={false}
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer className="modal-notes-footer">
+                <Button onClick={addVenue}>Ok</Button>
+                <Button onClick={handleVenueClose}>Cancel</Button>
+              </Modal.Footer>
+            </Modal>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="form-group">
+            <AdminFileUpload
+              ImageType={ImageType.EVENT_THUMBNAILS}
+              Title="Event thumbnail (square, will be resized to 100px wide)"
+              FileUploadName="Thumbnail"
+              OnUpload={onFileUpload}
+              CurrentFileName={thumbnail}
+              IsDirty={isThumbnailDirty}
+              CurrentFileTitle={'View Current Thumbnail'}
+              OnUploadStart={onUploadStart}
+              OnUploadComplete={onUploadComplete}
+              ShowRemoveButton={true}
+              OnFileRemove={onFileRemove}
+            />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col>
+            <label className="mt-4">Event time (in venue local time zone)</label>
 
-          <TimePicker
-            id="eventTime"
-            format="hh:mm aa"
-            onSelect={onEventTimeChange}
-            value={eventTime}
-            cleanable
-            showMeridiem
-            onClean={onCleanEventTime}
-          />
+            <TimePicker
+              id="eventTime"
+              format="hh:mm aa"
+              onSelect={onEventTimeChange}
+              value={eventTime}
+              cleanable
+              showMeridiem
+              onClean={onCleanEventTime}
+            />
 
-          <label className="mt-4">Announce Date (in Pacific Time)</label>
+            <label className="mt-4">Announce Date (in Pacific Time)</label>
 
-          <DatePicker
-            id="announceDate"
-            format="M/d/yyyy"
-            onSelect={onAnnounceDateChange}
-            value={announceDate}
-            oneTap
-            cleanable
-            showMeridiem
-            onClean={onCleanAnnounceDate}
-          />
-          <TimePicker
-            id="announceTime"
-            format="hh:mm aa"
-            onSelect={onAnnounceTimeChange}
-            value={announceDate}
-            cleanable
-            showMeridiem
-            onClean={onCleanAnnounceTime}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col className="form-group">
-          <label className="mt-4 edit-event-link">VIP Link</label>
-          <a
-            target="_blank"
-            className="edit-event-link"
-            hidden={!externalVipLink}
-            href={externalVipLink}
-          >
-            Visit
-          </a>
-          <Textarea
-            rows={3}
-            id="externalVipLink"
-            onChange={setExternalVipLink}
-            value={externalVipLink ?? ''}
-            placeholder="VIP/Website Link (VIP tickets)"
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col className="form-group">
-          <label className="mt-4 edit-event-link">Tickets Link</label>
-          <a target="_blank" className="edit-event-link" hidden={!externalUrl} href={externalUrl}>
-            Visit
-          </a>
-          <Textarea
-            rows={3}
-            id="externalUrl"
-            onChange={setExternalUrl}
-            value={externalUrl ?? ''}
-            placeholder="Ticket/Website Link (regular tickets)"
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col className="form-group">
-          <Checkbox
-            checked={disableLinkButton}
-            onChange={(_, checked) => setDisableLinkButton(checked)}
-          >
-            Disable "Tickets" button
-          </Checkbox>
-          <label className="mt-4">Alternate text for Tickets Button (10 chars or less)</label>
-          <Input
-            value={disableLinkReason ?? ''}
-            onChange={setDisableLinkReason}
-            className="form-control"
-            placeholder="Alternate text for Tickets button"
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col className="form-group">
-          <Checkbox
-            checked={disableVipLinkButton}
-            onChange={(_, checked) => setDisableVipLinkButton(checked)}
-          >
-            Disable "VIP" button
-          </Checkbox>
-          <label className="mt-4">Alternate text for VIP Button (10 chars or less)</label>
-          <Input
-            value={disableVipLinkReason ?? ''}
-            onChange={setDisableVipLinkReason}
-            className="form-control"
-            placeholder="Alternate text for VIP button"
-          />
-        </Col>
-      </Row>
-      <Row className="form-group" hidden={isExternalEvent}>
-        <Col xs={2}>Check-in location:</Col>
-        <Col xs={10}>
-          <Textarea
-            rows={3}
-            id="checkInLocation"
-            onChange={onCheckInLocationChange}
-            value={checkInLocation ?? ''}
-          />
-        </Col>
-      </Row>
-      <Row className="form-group" hidden={isExternalEvent}>
-        <Col xs={2}>Check-in notes:</Col>
-        <Col xs={10}>
-          <Textarea
-            id="checkInNotes"
-            rows={5}
-            onChange={onCheckInNotesChange}
-            value={checkInNotes ?? ''}
-          />
-        </Col>
-      </Row>
+            <DatePicker
+              id="announceDate"
+              format="M/d/yyyy"
+              onSelect={onAnnounceDateChange}
+              value={announceDate}
+              oneTap
+              cleanable
+              showMeridiem
+              onClean={onCleanAnnounceDate}
+            />
+            <TimePicker
+              id="announceTime"
+              format="hh:mm aa"
+              onSelect={onAnnounceTimeChange}
+              value={announceDate}
+              cleanable
+              showMeridiem
+              onClean={onCleanAnnounceTime}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col className="form-group">
+            <label className="mt-4 edit-event-link">VIP Link</label>
+            <a
+              target="_blank"
+              className="edit-event-link"
+              hidden={!externalVipLink}
+              href={externalVipLink}
+            >
+              Visit
+            </a>
+            <Textarea
+              rows={3}
+              id="externalVipLink"
+              onChange={setExternalVipLink}
+              value={externalVipLink ?? ''}
+              placeholder="VIP/Website Link (VIP tickets)"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col className="form-group">
+            <label className="mt-4 edit-event-link">Tickets Link</label>
+            <a target="_blank" className="edit-event-link" hidden={!externalUrl} href={externalUrl}>
+              Visit
+            </a>
+            <Textarea
+              rows={3}
+              id="externalUrl"
+              onChange={setExternalUrl}
+              value={externalUrl ?? ''}
+              placeholder="Ticket/Website Link (regular tickets)"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col className="form-group">
+            <Checkbox
+              checked={disableLinkButton}
+              onChange={(_, checked) => setDisableLinkButton(checked)}
+            >
+              Disable "Tickets" button
+            </Checkbox>
+            <label className="mt-4">Alternate text for Tickets Button (10 chars or less)</label>
+            <Input
+              value={disableLinkReason ?? ''}
+              onChange={setDisableLinkReason}
+              className="form-control"
+              placeholder="Alternate text for Tickets button"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col className="form-group">
+            <Checkbox
+              checked={disableVipLinkButton}
+              onChange={(_, checked) => setDisableVipLinkButton(checked)}
+            >
+              Disable "VIP" button
+            </Checkbox>
+            <label className="mt-4">Alternate text for VIP Button (10 chars or less)</label>
+            <Input
+              value={disableVipLinkReason ?? ''}
+              onChange={setDisableVipLinkReason}
+              className="form-control"
+              placeholder="Alternate text for VIP button"
+            />
+          </Col>
+        </Row>
+        <Row className="form-group" hidden={isExternalEvent}>
+          <Col xs={2}>Check-in location:</Col>
+          <Col xs={10}>
+            <Textarea
+              rows={3}
+              id="checkInLocation"
+              onChange={onCheckInLocationChange}
+              value={checkInLocation ?? ''}
+            />
+          </Col>
+        </Row>
+        <Row className="form-group" hidden={isExternalEvent}>
+          <Col xs={2}>Check-in notes:</Col>
+          <Col xs={10}>
+            <Textarea
+              id="checkInNotes"
+              rows={5}
+              onChange={onCheckInNotesChange}
+              value={checkInNotes ?? ''}
+            />
+          </Col>
+        </Row>
 
-      <Row className="form-group">
-        <Col>
-          <Checkbox
-            checked={isActive && !isDeleted}
-            disabled={isDeleted}
-            onChange={(_, checked) => setIsActive(checked)}
-          >
-            Is Active?
-          </Checkbox>
-          <Checkbox
-            checked={isHidden}
-            disabled={isDeleted}
-            onChange={(_, checked) => setIsHidden(checked)}
-          >
-            Is Hidden?
-          </Checkbox>
-          <Checkbox checked={isDeleted} onChange={(_, checked) => setIsDeleted(checked)}>
-            Is Deleted?
-          </Checkbox>
-          <Checkbox
-            checked={isAddedToBandsInTown}
-            disabled={isDeleted}
-            onChange={(_, checked) => setIsAddedToBandsInTown(checked)}
-          >
-            Is Added to BandsInTown?
-          </Checkbox>
-        </Col>
-      </Row>
-      <Row className="form-group" hidden={isExternalEvent}>
-        <Col>Email Sent to Vips: {emailSentToVips}</Col>
-      </Row>
-      <Row className="form-group" hidden={isExternalEvent}>
-        <Col>Text Sent to Vips: {textSentToVips}</Col>
-      </Row>
-      <Row className="form-group" hidden={isExternalEvent}>
-        <Col>List sent to band: {listSentToBand}</Col>
-      </Row>
-      <Row className="form-group" hidden={isExternalEvent}>
-        <Col>Date/Time List sent to band: {listSentTime}</Col>
-      </Row>
-      <Row className="form-group" hidden={isExternalEvent}>
-        <Col># of VIPs at time email was sent: {numVips}</Col>
-      </Row>
-      <Row hidden={isExternalEvent}>
-        <Col>
-          <h5>Ticket Types</h5>
-        </Col>
-      </Row>
-      <Row hidden={isExternalEvent}>
-        <Col>
-          <table className="ticket-type-table">
-            <tbody>{ticketTypeRows}</tbody>
-          </table>
-        </Col>
-      </Row>
-      <Row className="refund-section-header" hidden={refundsDisabled || isExternalEvent}>
-        <Col>
-          <h5>Process Event Refunds</h5>
-        </Col>
-      </Row>
-      <Row className="refund-section" hidden={refundsDisabled || isExternalEvent}>
-        <Col>
-          <Button className="form-control-float" onClick={confirmDoRefund}>
-            Refund All Tickets
-          </Button>
-          <Checkbox
-            disabled={refundCancelDisabled}
-            title={refundCancelTitle}
-            className="form-control-float"
-            checked={markCancelled}
-            onChange={(_, checked) => setMarkCancelled(checked)}
-          >
-            Mark as cancelled?
-          </Checkbox>
-          <Checkbox
-            className="form-control-float"
-            checked={refundServiceFees}
-            onChange={(_, checked) => setRefundServiceFees(checked)}
-          >
-            Refund service fees?
-          </Checkbox>
-        </Col>
-      </Row>
-      <Row hidden={isExternalEvent}>
-        <Col>
-          Add comp order with
-          <Input
-            value={numCompedTickets}
-            onChange={(value) => setNumCompedTickets(parseInt(value))}
-            type="number"
-            className="comped-tickets"
-          />
-          tickets
-          <Button className="comp-button" onClick={compOrder}>
-            Comp
-          </Button>
-        </Col>
-      </Row>
-      <Row className="refund-section">
-        <Col>
-          <Button onClick={cancelTicketSocketEvent}>{cancelButtonText}</Button>
-          <br />
-          <br />
-          <Button onClick={handleNotesOpen}>Add Note</Button>
-          <Modal open={notesOpen} onClose={handleNotesClose}>
-            <Modal.Header>
-              <Modal.Title>Add New Note:</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Textarea
-                id="addNote"
-                rows={5}
-                onChange={setNoteText}
-                value={noteText ?? ''}
-                placeholder="Note text"
-              />
-            </Modal.Body>
-            <Modal.Footer className="modal-notes-footer">
-              <Button onClick={addNewNote}>Ok</Button>
-              <Button onClick={handleNotesClose}>Cancel</Button>
-            </Modal.Footer>
-          </Modal>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <div>NOTES:</div>
-          {notes}
-        </Col>
-      </Row>
-      <Row
-        className="refund-section"
-        hidden={isExternalEvent || (currentAdminSelection?.selectedEvent?.orders?.length ?? 0) <= 0}
-      >
-        <Col>
-          <Button onClick={manageOrders}>Manage Orders</Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Button onClick={onSubmit} disabled={isUploading}>
-            Submit
-          </Button>{' '}
-          <Button hidden={id !== undefined} onClick={confirmGoBack}>
-            Back
-          </Button>
-        </Col>
-      </Row>
-    </Col>
+        <Row className="form-group">
+          <Col>
+            <Checkbox
+              checked={isActive && !isDeleted}
+              disabled={isDeleted}
+              onChange={(_, checked) => setIsActive(checked)}
+            >
+              Is Active?
+            </Checkbox>
+            <Checkbox
+              checked={isHidden}
+              disabled={isDeleted}
+              onChange={(_, checked) => setIsHidden(checked)}
+            >
+              Is Hidden?
+            </Checkbox>
+            <Checkbox checked={isDeleted} onChange={(_, checked) => setIsDeleted(checked)}>
+              Is Deleted?
+            </Checkbox>
+            <Checkbox
+              checked={isAddedToBandsInTown}
+              disabled={isDeleted}
+              onChange={(_, checked) => setIsAddedToBandsInTown(checked)}
+            >
+              Is Added to BandsInTown?
+            </Checkbox>
+          </Col>
+        </Row>
+        <Row className="form-group" hidden={isExternalEvent}>
+          <Col>Email Sent to Vips: {emailSentToVips}</Col>
+        </Row>
+        <Row className="form-group" hidden={isExternalEvent}>
+          <Col>Text Sent to Vips: {textSentToVips}</Col>
+        </Row>
+        <Row className="form-group" hidden={isExternalEvent}>
+          <Col>List sent to band: {listSentToBand}</Col>
+        </Row>
+        <Row className="form-group" hidden={isExternalEvent}>
+          <Col>Date/Time List sent to band: {listSentTime}</Col>
+        </Row>
+        <Row className="form-group" hidden={isExternalEvent}>
+          <Col># of VIPs at time email was sent: {numVips}</Col>
+        </Row>
+        <Row hidden={isExternalEvent}>
+          <Col>
+            <h5>Ticket Types</h5>
+          </Col>
+        </Row>
+        <Row hidden={isExternalEvent}>
+          <Col>
+            <table className="ticket-type-table">
+              <tbody>{ticketTypeRows}</tbody>
+            </table>
+          </Col>
+        </Row>
+        <Row className="refund-section-header" hidden={refundsDisabled || isExternalEvent}>
+          <Col>
+            <h5>Process Event Refunds</h5>
+          </Col>
+        </Row>
+        <Row className="refund-section" hidden={refundsDisabled || isExternalEvent}>
+          <Col>
+            <Button className="form-control-float" onClick={confirmDoRefund}>
+              Refund All Tickets
+            </Button>
+            <Checkbox
+              disabled={refundCancelDisabled}
+              title={refundCancelTitle}
+              className="form-control-float"
+              checked={markCancelled}
+              onChange={(_, checked) => setMarkCancelled(checked)}
+            >
+              Mark as cancelled?
+            </Checkbox>
+            <Checkbox
+              className="form-control-float"
+              checked={refundServiceFees}
+              onChange={(_, checked) => setRefundServiceFees(checked)}
+            >
+              Refund service fees?
+            </Checkbox>
+          </Col>
+        </Row>
+        <Row hidden={isExternalEvent}>
+          <Col>
+            Add comp order with
+            <Input
+              value={numCompedTickets}
+              onChange={(value) => setNumCompedTickets(parseInt(value))}
+              type="number"
+              className="comped-tickets"
+            />
+            tickets
+            <Button className="comp-button" onClick={compOrder}>
+              Comp
+            </Button>
+          </Col>
+        </Row>
+        <Row className="refund-section">
+          <Col>
+            <Button onClick={cancelTicketSocketEvent}>{cancelButtonText}</Button>
+            <br />
+            <br />
+            <Button onClick={handleNotesOpen}>Add Note</Button>
+            <Modal open={notesOpen} onClose={handleNotesClose}>
+              <Modal.Header>
+                <Modal.Title>Add New Note:</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Textarea
+                  id="addNote"
+                  rows={5}
+                  onChange={setNoteText}
+                  value={noteText ?? ''}
+                  placeholder="Note text"
+                />
+              </Modal.Body>
+              <Modal.Footer className="modal-notes-footer">
+                <Button onClick={addNewNote}>Ok</Button>
+                <Button onClick={handleNotesClose}>Cancel</Button>
+              </Modal.Footer>
+            </Modal>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div>NOTES:</div>
+            {notes}
+          </Col>
+        </Row>
+        <Row
+          className="refund-section"
+          hidden={
+            isExternalEvent || (currentAdminSelection?.selectedEvent?.orders?.length ?? 0) <= 0
+          }
+        >
+          <Col>
+            <Button onClick={manageOrders}>Manage Orders</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button onClick={onSubmit} disabled={isUploading}>
+              Submit
+            </Button>{' '}
+            <Button hidden={id !== undefined} onClick={confirmGoBack}>
+              Back
+            </Button>
+          </Col>
+        </Row>
+      </Col>
+    </>
   );
 }

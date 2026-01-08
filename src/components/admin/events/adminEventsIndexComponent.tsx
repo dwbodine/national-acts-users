@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { Button, Checkbox, Col, Row, SelectPicker, Table } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
@@ -525,172 +526,170 @@ export default function AdminEventsIndex() {
   }));
 
   return (
-    <div className="admin-container">
-      <Row className="refresh-results-header">
-        <Col>
-          <Button hidden={sellectedSellerId === undefined} onClick={addEvent}>
-            Add New Event
-          </Button>
-        </Col>
-      </Row>
-      <Row className="refresh-results-header">
-        <Col>
-          <h3>Manage Events</h3>
-        </Col>
-      </Row>
-      <AdminSellerSelect
-        Id="refresh"
-        Sellers={currentAdminSelection.allSellers}
-        SellerId={currentAdminSelection.sellerId}
-        OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
-        Countries={currentAdminSelection.countries}
-      />
-      <Row className="admin-select" hidden={tourList.length === 0}>
-        <Col xs={2}>Tour:</Col>
-        <Col>
-          <SelectPicker
-            value={selectedTourId}
-            data={tourList}
-            size="lg"
-            onChange={(tId) => setSelectedTour(tId)}
-            cleanable={true}
-            placeholder="All Events"
-            menuAutoWidth={true}
-            className="admin-seller-select-value"
-            onClean={() => setSelectedTour(0)}
-          />
-        </Col>
-      </Row>
-      <ReportDatePicker
-        OnChange={onDateChange}
-        OnStartClear={onStartClear}
-        OnEndClear={onEndClear}
-        Start={currentAdminSelection.start}
-        End={currentAdminSelection.end}
-      />
-      <Row>
-        <Col>
-          <Button disabled={sellectedSellerId === undefined} onClick={resetEvents}>
-            Reset
-          </Button>
-        </Col>
-      </Row>
-      <Row hidden={allEventIds.length === 0}>
-        <Col className="bulk-arrow-row">
-          <div>
-            <FaArrowTurnDown className="bulk-arrow" />
-          </div>
-          <div>With selected:</div>
-          <div>
+    <>
+      <PageHeader pageTitle="Manage Events" />
+      <div className="admin-container">
+        <Row>
+          <Col>
+            <Button hidden={sellectedSellerId === undefined} onClick={addEvent}>
+              Add New Event
+            </Button>
+          </Col>
+        </Row>
+        <AdminSellerSelect
+          Id="refresh"
+          Sellers={currentAdminSelection.allSellers}
+          SellerId={currentAdminSelection.sellerId}
+          OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
+          Countries={currentAdminSelection.countries}
+        />
+        <Row className="admin-select" hidden={tourList.length === 0}>
+          <Col xs={2}>Tour:</Col>
+          <Col>
             <SelectPicker
-              className="bulk-select"
-              value={selectedAction}
-              data={actionList}
+              value={selectedTourId}
+              data={tourList}
               size="lg"
-              onChange={(a) => setSelectedAction(a)}
+              onChange={(tId) => setSelectedTour(tId)}
               cleanable={true}
+              placeholder="All Events"
               menuAutoWidth={true}
-              onClean={() => setSelectedAction(null)}
+              className="admin-seller-select-value"
+              onClean={() => setSelectedTour(0)}
             />
-          </div>
-          <div>
-            <Button onClick={bulkEditConfirm}>Update</Button>
-          </div>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Table
-            autoHeight={true}
-            data={currentAdminSelection.events}
-            bordered
-            cellBordered
-            loading={tableLoading}
-            rowClassName={(rowData: VipEvent) => getEventStatusSlug(rowData)}
-          >
-            <Column width={50}>
-              <HeaderCell>
-                <Checkbox
-                  id={`evtId_selectAll`}
-                  checked={allEventIds.length > 0 && eventIdList.length === allEventIds.length}
-                  onChange={(_, checked) => selectAllEvents(checked)}
-                />
-              </HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => (
+          </Col>
+        </Row>
+        <ReportDatePicker
+          OnChange={onDateChange}
+          OnStartClear={onStartClear}
+          OnEndClear={onEndClear}
+          Start={currentAdminSelection.start}
+          End={currentAdminSelection.end}
+        />
+        <Row>
+          <Col>
+            <Button disabled={sellectedSellerId === undefined} onClick={resetEvents}>
+              Reset
+            </Button>
+          </Col>
+        </Row>
+        <Row hidden={allEventIds.length === 0}>
+          <Col className="bulk-arrow-row">
+            <div>
+              <FaArrowTurnDown className="bulk-arrow" />
+            </div>
+            <div>With selected:</div>
+            <div>
+              <SelectPicker
+                className="bulk-select"
+                value={selectedAction}
+                data={actionList}
+                size="lg"
+                onChange={(a) => setSelectedAction(a)}
+                cleanable={true}
+                menuAutoWidth={true}
+                onClean={() => setSelectedAction(null)}
+              />
+            </div>
+            <div>
+              <Button onClick={bulkEditConfirm}>Update</Button>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table
+              autoHeight={true}
+              data={currentAdminSelection.events}
+              bordered
+              cellBordered
+              loading={tableLoading}
+              rowClassName={(rowData: VipEvent) => getEventStatusSlug(rowData)}
+            >
+              <Column width={50}>
+                <HeaderCell>
                   <Checkbox
-                    id={`evtId_${rowData.externalEventId}`}
-                    checked={eventIdList.includes(rowData.externalEventId)}
-                    onChange={(_, checked) => updateEventIdList(rowData.externalEventId, checked)}
+                    id={`evtId_selectAll`}
+                    checked={allEventIds.length > 0 && eventIdList.length === allEventIds.length}
+                    onChange={(_, checked) => selectAllEvents(checked)}
                   />
-                )}
-              </Cell>
-            </Column>
-            <Column flexGrow={1} minWidth={100}>
-              <HeaderCell>Date</HeaderCell>
-              <Cell>{(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}</Cell>
-            </Column>
-            <Column flexGrow={3}>
-              <HeaderCell>Title</HeaderCell>
-              <Cell>{(rowData: VipEvent) => rowData.title}</Cell>
-            </Column>
-            <Column flexGrow={2}>
-              <HeaderCell>Venue</HeaderCell>
-              <Cell>{(rowData: VipEvent) => (rowData.venue ? rowData.venue.name : '')}</Cell>
-            </Column>
-            <Column flexGrow={3}>
-              <HeaderCell>Location</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => (rowData.venue ? getLocation(rowData.venue) : '')}
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>Tickets sold</HeaderCell>
-              <Cell>{(rowData: VipEvent) => rowData.totalTickets}</Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>Tickets comped</HeaderCell>
-              <Cell>{(rowData: VipEvent) => rowData.numTicketsComped}</Cell>
-            </Column>
-            <Column flexGrow={2}>
-              <HeaderCell>Event Status</HeaderCell>
-              <Cell>{(rowData: VipEvent) => getEventStatusText(rowData)}</Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>&nbsp;</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) => (
-                  <a
-                    href="#"
-                    id={`${rowData.externalEventId}_event`}
-                    onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
-                  >
-                    Edit
-                  </a>
-                )}
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>&nbsp;</HeaderCell>
-              <Cell>
-                {(rowData: VipEvent) =>
-                  rowData.orders && rowData.orders.length > 0 ? (
+                </HeaderCell>
+                <Cell>
+                  {(rowData: VipEvent) => (
+                    <Checkbox
+                      id={`evtId_${rowData.externalEventId}`}
+                      checked={eventIdList.includes(rowData.externalEventId)}
+                      onChange={(_, checked) => updateEventIdList(rowData.externalEventId, checked)}
+                    />
+                  )}
+                </Cell>
+              </Column>
+              <Column flexGrow={1} minWidth={100}>
+                <HeaderCell>Date</HeaderCell>
+                <Cell>{(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}</Cell>
+              </Column>
+              <Column flexGrow={3}>
+                <HeaderCell>Title</HeaderCell>
+                <Cell>{(rowData: VipEvent) => rowData.title}</Cell>
+              </Column>
+              <Column flexGrow={2}>
+                <HeaderCell>Venue</HeaderCell>
+                <Cell>{(rowData: VipEvent) => (rowData.venue ? rowData.venue.name : '')}</Cell>
+              </Column>
+              <Column flexGrow={3}>
+                <HeaderCell>Location</HeaderCell>
+                <Cell>
+                  {(rowData: VipEvent) => (rowData.venue ? getLocation(rowData.venue) : '')}
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Tickets sold</HeaderCell>
+                <Cell>{(rowData: VipEvent) => rowData.totalTickets}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Tickets comped</HeaderCell>
+                <Cell>{(rowData: VipEvent) => rowData.numTicketsComped}</Cell>
+              </Column>
+              <Column flexGrow={2}>
+                <HeaderCell>Event Status</HeaderCell>
+                <Cell>{(rowData: VipEvent) => getEventStatusText(rowData)}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>&nbsp;</HeaderCell>
+                <Cell>
+                  {(rowData: VipEvent) => (
                     <a
                       href="#"
-                      id={`${rowData.externalEventId}_orders`}
-                      onClick={() => manageOrders(parseInt(`${rowData.externalEventId}`))}
+                      id={`${rowData.externalEventId}_event`}
+                      onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
                     >
-                      Manage Orders
+                      Edit
                     </a>
-                  ) : (
-                    ''
-                  )
-                }
-              </Cell>
-            </Column>
-          </Table>
-        </Col>
-      </Row>
-    </div>
+                  )}
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>&nbsp;</HeaderCell>
+                <Cell>
+                  {(rowData: VipEvent) =>
+                    rowData.orders && rowData.orders.length > 0 ? (
+                      <a
+                        href="#"
+                        id={`${rowData.externalEventId}_orders`}
+                        onClick={() => manageOrders(parseInt(`${rowData.externalEventId}`))}
+                      >
+                        Manage Orders
+                      </a>
+                    ) : (
+                      ''
+                    )
+                  }
+                </Cell>
+              </Column>
+            </Table>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }

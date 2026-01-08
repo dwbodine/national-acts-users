@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Button, Col, Row, Table } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useGetTours } from '@/hooks/admin/useGetTours';
@@ -169,94 +170,92 @@ export default function AdminToursIndex() {
   };
 
   return (
-    <div className="admin-container">
-      <Row className="refresh-results-header">
-        <Col>
-          <h3>Tour Admin</h3>
-        </Col>
-      </Row>
-      <AdminSellerSelect
-        Id="refresh"
-        Sellers={currentAdminSelection.allSellers}
-        SellerId={currentAdminSelection.sellerId}
-        OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
-        Countries={currentAdminSelection.countries}
-      />
-      <Row>
-        <Col>
-          <Table
-            autoHeight={true}
-            data={currentAdminSelection.tours}
-            bordered
-            cellBordered
-            loading={tableLoading}
-          >
-            <Column flexGrow={3}>
-              <HeaderCell>Tour Name</HeaderCell>
-              <Cell>{(rowData: Tour) => rowData.tourName}</Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell># of shows</HeaderCell>
-              <Cell>{(rowData: Tour) => (rowData.events ? rowData.events.length : 0)}</Cell>
-            </Column>
-            <Column flexGrow={1} minWidth={100}>
-              <HeaderCell>Announce Date (in Pacific Time)</HeaderCell>
-              <Cell>
-                {(rowData: Tour) =>
-                  rowData.announceDate
-                    ? moment(rowData.announceDate).format('M/DD/YYYY h:mm A')
-                    : ''
-                }
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>First show</HeaderCell>
-              <Cell>
-                {(rowData: Tour) =>
-                  rowData.events && rowData.events.length > 0 && rowData.events[0]
-                    ? `${moment(rowData.events[0].eventDate).format('M/DD/YYYY')} (${rowData.events[0].venue?.city}, ${rowData.events[0].venue?.state})`
-                    : ''
-                }
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>Last show</HeaderCell>
-              <Cell>
-                {(rowData: Tour) =>
-                  rowData.events &&
-                  rowData.events.length > 0 &&
-                  rowData.events[rowData.events.length - 1]
-                    ? `${moment(rowData.events[rowData.events.length - 1]?.eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length - 1]?.venue?.city}, ${rowData.events[rowData.events.length - 1]?.venue?.state})`
-                    : ''
-                }
-              </Cell>
-            </Column>
-            <Column flexGrow={2}>
-              <HeaderCell>Status</HeaderCell>
-              <Cell>{(rowData: Tour) => (rowData.isActive ? 'Active' : 'Inactive')}</Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>&nbsp;</HeaderCell>
-              <Cell>
-                {(rowData: Tour) =>
-                  rowData.tourId ? (
-                    <a
-                      href="#"
-                      id={`${rowData.tourId}_tour`}
-                      onClick={() => editTour(parseInt(`${rowData.tourId}`))}
-                    >
-                      Edit
-                    </a>
-                  ) : (
-                    ''
-                  )
-                }
-              </Cell>
-            </Column>
-          </Table>
-          <Button onClick={addTour}>Add</Button>
-        </Col>
-      </Row>
-    </div>
+    <>
+      <PageHeader pageTitle="Tour Admin" />
+      <div className="admin-container">
+        <AdminSellerSelect
+          Id="refresh"
+          Sellers={currentAdminSelection.allSellers}
+          SellerId={currentAdminSelection.sellerId}
+          OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
+          Countries={currentAdminSelection.countries}
+        />
+        <Row>
+          <Col>
+            <Table
+              autoHeight={true}
+              data={currentAdminSelection.tours}
+              bordered
+              cellBordered
+              loading={tableLoading}
+            >
+              <Column flexGrow={3}>
+                <HeaderCell>Tour Name</HeaderCell>
+                <Cell>{(rowData: Tour) => rowData.tourName}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell># of shows</HeaderCell>
+                <Cell>{(rowData: Tour) => (rowData.events ? rowData.events.length : 0)}</Cell>
+              </Column>
+              <Column flexGrow={1} minWidth={100}>
+                <HeaderCell>Announce Date (in Pacific Time)</HeaderCell>
+                <Cell>
+                  {(rowData: Tour) =>
+                    rowData.announceDate
+                      ? moment(rowData.announceDate).format('M/DD/YYYY h:mm A')
+                      : ''
+                  }
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>First show</HeaderCell>
+                <Cell>
+                  {(rowData: Tour) =>
+                    rowData.events && rowData.events.length > 0 && rowData.events[0]
+                      ? `${moment(rowData.events[0].eventDate).format('M/DD/YYYY')} (${rowData.events[0].venue?.city}, ${rowData.events[0].venue?.state})`
+                      : ''
+                  }
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Last show</HeaderCell>
+                <Cell>
+                  {(rowData: Tour) =>
+                    rowData.events &&
+                    rowData.events.length > 0 &&
+                    rowData.events[rowData.events.length - 1]
+                      ? `${moment(rowData.events[rowData.events.length - 1]?.eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length - 1]?.venue?.city}, ${rowData.events[rowData.events.length - 1]?.venue?.state})`
+                      : ''
+                  }
+                </Cell>
+              </Column>
+              <Column flexGrow={2}>
+                <HeaderCell>Status</HeaderCell>
+                <Cell>{(rowData: Tour) => (rowData.isActive ? 'Active' : 'Inactive')}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>&nbsp;</HeaderCell>
+                <Cell>
+                  {(rowData: Tour) =>
+                    rowData.tourId ? (
+                      <a
+                        href="#"
+                        id={`${rowData.tourId}_tour`}
+                        onClick={() => editTour(parseInt(`${rowData.tourId}`))}
+                      >
+                        Edit
+                      </a>
+                    ) : (
+                      ''
+                    )
+                  }
+                </Cell>
+              </Column>
+            </Table>
+            <Button onClick={addTour}>Add</Button>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }

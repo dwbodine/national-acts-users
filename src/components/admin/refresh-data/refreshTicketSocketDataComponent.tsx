@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Button, Col, Row } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useGetRefreshHistory } from '@/hooks/admin/useGetRefreshHistory';
 import { useRefreshEventsFromTicketSocket } from '@/hooks/admin/useRefreshEventsFromTicketSocket';
@@ -104,37 +105,35 @@ export default function RefreshTicketSocketData() {
   };
 
   return (
-    <div className="admin-container">
-      <Row className="refresh-results-header">
-        <Col xl={4} lg={12} className="refresh-results-header-col">
-          <h3>Refresh TicketSocket Data</h3>
-        </Col>
-      </Row>
-      <AdminSellerSelect
-        Id="refresh"
-        Sellers={currentAdminSelection.allSellers}
-        SellerId={currentAdminSelection.sellerId}
-        OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
-        Countries={currentAdminSelection.countries}
-      />
-      <ReportDatePicker
-        OnChange={onDateChange}
-        Start={currentAdminSelection.start}
-        End={currentAdminSelection.end}
-      />
-      <Row>
-        <Col>
-          <Button onClick={submitReset}>Reset</Button>
-        </Col>
-        <Col xl={8} lg={12}>
-          <RefreshTicketSocketDataResults UpdateResults={updateResults} />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <RefreshTicketSocketHistoryTable History={history} />
-        </Col>
-      </Row>
-    </div>
+    <>
+      <PageHeader pageTitle="Refresh TicketSocket Data" />
+      <div className="admin-container">
+        <AdminSellerSelect
+          Id="refresh"
+          Sellers={currentAdminSelection.allSellers}
+          SellerId={currentAdminSelection.sellerId}
+          OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
+          Countries={currentAdminSelection.countries}
+        />
+        <ReportDatePicker
+          OnChange={onDateChange}
+          Start={currentAdminSelection.start}
+          End={currentAdminSelection.end}
+        />
+        <Row>
+          <Col>
+            <Button onClick={submitReset}>Reset</Button>
+          </Col>
+          <Col xl={8} lg={12}>
+            <RefreshTicketSocketDataResults UpdateResults={updateResults} />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <RefreshTicketSocketHistoryTable History={history} />
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }
