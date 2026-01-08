@@ -372,6 +372,7 @@ export type AdminSelection = {
   pageOrders?: Page[] | undefined;
   allFaqs?: Faq[] | undefined;
   faqCategories?: FaqCategory[] | undefined;
+  selectedFaqCategory?: number | undefined;
   countries: Country[] | undefined;
   pageTypes?: PageType[] | undefined;
   roles?: Role[] | undefined;

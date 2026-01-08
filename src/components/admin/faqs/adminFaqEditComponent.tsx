@@ -177,24 +177,25 @@ export default function AdminFaqEdit() {
     <>
       <PageHeader pageTitle={pageHeader} />
       <Row className="admin-container">
-        <Col>
+        <Col xs={24}>
           <Row>
-            <Col>
+            <Col xs={24} md={12}>
               <label>Category</label>
+              <br />
               <SelectPicker
+                block
                 value={categoryId}
                 data={faqCategories}
                 size="lg"
                 onChange={(cId) => setFaqCategory(cId)}
                 cleanable={false}
                 menuAutoWidth={true}
-                className="admin-seller-select-value"
                 searchable={false}
               />
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col xs={24}>
               <label>Question</label>
               <Input
                 value={question ?? ''}
@@ -205,9 +206,10 @@ export default function AdminFaqEdit() {
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col xs={24}>
               <label>HTML Text</label>
               <Textarea
+                className="form-control-half"
                 rows={3}
                 id="answer"
                 onChange={setAnswer}
@@ -217,7 +219,7 @@ export default function AdminFaqEdit() {
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col xs={24}>
               <Button onClick={onSubmit}>Submit</Button>{' '}
               <Button onClick={confirmGoBack}>Back</Button>
             </Col>

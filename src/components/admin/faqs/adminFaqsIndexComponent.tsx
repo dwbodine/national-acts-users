@@ -4,14 +4,19 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Table } from 'rsuite';
+import { Button, SelectPicker, Table } from 'rsuite';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
 import { useDeleteFaq } from '@/hooks/admin/useDeleteFaq';
 import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';
 import { useMoveFaqDown } from '@/hooks/admin/useMoveFaqDown';
 import { useMoveFaqUp } from '@/hooks/admin/useMoveFaqUp';
-import { setAllFaqs, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
+import {
+  setAllFaqs,
+  setReloadFaqs,
+  setSelectedFaq,
+  setSelectedFaqCategory,
+} from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Faq } from '@/types/public';
@@ -27,6 +32,9 @@ export default function AdminFaqsIndex() {
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
   const router = useRouter();
+  const [currentCategory, setCurrentCategory] = useState(
+    currentAdminSelection.selectedFaqCategory ?? 0,
+  );
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -111,18 +119,32 @@ export default function AdminFaqsIndex() {
     });
   };
 
+  const updateSelectedCategory = (categoryId: number) => {
+    setCurrentCategory(categoryId);
+    dispatch(setSelectedFaqCategory(categoryId));
+  };
+
+  const filteredFaqs = currentAdminSelection.allFaqs?.filter(
+    (x) => x.category.categoryId == currentCategory,
+  );
+
   return (
     <>
       <PageHeader pageTitle="Manage FAQs" />
       <div className="admin-container">
         <Button onClick={addFaq}>Add FAQ</Button>
-        <Table
-          autoHeight
-          data={currentAdminSelection.allFaqs}
-          bordered
-          cellBordered
-          loading={tableLoading}
-        >
+        <SelectPicker
+          data={[
+            { label: '-- Select One --', value: 0 },
+            { label: 'General', value: 1 },
+            { label: 'VIP', value: 2 },
+          ]}
+          searchable={false}
+          cleanable={false}
+          onChange={(value) => updateSelectedCategory(value ?? 0)}
+          style={{ width: '250px' }}
+        />
+        <Table autoHeight data={filteredFaqs} bordered cellBordered loading={tableLoading}>
           <Column flexGrow={1}>
             <HeaderCell>Category</HeaderCell>
             <Cell>

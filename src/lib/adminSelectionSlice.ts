@@ -150,6 +150,10 @@ export const adminSelectionSlice = createSlice({
       state.allFaqs = action.payload;
       return state;
     },
+    setSelectedFaqCategory: (state, action: PayloadAction<number | undefined>) => {
+      state.selectedFaqCategory = action.payload;
+      return state;
+    },
     setAllPages: (state, action: PayloadAction<Page[] | undefined>) => {
       state.allPages = action.payload;
       return state;
@@ -352,6 +356,7 @@ export const {
   setTicketSocketEventsOnly,
   setAdminOrders,
   setCountries,
+  setSelectedFaqCategory,
   setVenueSearchTerm,
   setReloadCountries,
   setAllFaqs,
