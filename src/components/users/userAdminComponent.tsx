@@ -1,7 +1,7 @@
 'use client';
 
-import UserActivityBar from '../../users/userActivityBarComponent';
-import UserActivityTable from '../../users/userActivityTable';
+import UserActivityBar from './userActivityBarComponent';
+import UserActivityTable from './userActivityTable';
 
 export default function UserAdminComponent() {
   return (

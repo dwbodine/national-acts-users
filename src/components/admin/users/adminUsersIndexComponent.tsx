@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Table } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
 import { useGetAllUsers } from '@/hooks/admin/useGetAllUsers';
 import { setSelectedUser, setUsers } from '@/lib/adminSelectionSlice';
@@ -104,113 +105,115 @@ export default function AdminUsersIndex() {
   const filteredUsers = filterUsers(currentAdminSelection.users);
 
   return (
-    <div className="admin-container">
-      <h3>Users Admin</h3>
-      <Input
-        value={searchTerm ?? ''}
-        onChange={setSearchTerm}
-        className="form-control search-text-input no-print"
-        placeholder="Search for users by name, username or client name..."
-        hidden={currentAdminSelection.users === undefined}
-      />
-      <Table
-        height={500}
-        data={filteredUsers}
-        bordered
-        cellBordered
-        loading={tableLoading}
-        wordWrap={true}
-      >
-        <Column flexGrow={1}>
-          <HeaderCell>First Name</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData: User) => {
-              const name = `${rowData.firstName}`;
-              const className = rowData.isActive ? '' : 'admin-inactive';
-              return (
-                <div
-                  className={className}
-                  id={rowData.userId.toString()}
-                  onClick={() => editUser(parseInt(`${rowData.userId}`))}
-                >
-                  {name}
-                </div>
-              );
-            }}
-          </Cell>
-        </Column>
-        <Column flexGrow={1}>
-          <HeaderCell>Last Name</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData: User) => {
-              const name = `${rowData.lastName}`;
-              const className = rowData.isActive ? '' : 'admin-inactive';
-              return (
-                <div
-                  className={className}
-                  id={rowData.userId.toString()}
-                  onClick={() => editUser(parseInt(`${rowData.userId}`))}
-                >
-                  {name}
-                </div>
-              );
-            }}
-          </Cell>
-        </Column>
-        <Column flexGrow={2}>
-          <HeaderCell>Email</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData: User) => {
-              const name = `${rowData.username}`;
-              const className = rowData.isActive ? '' : 'admin-inactive';
-              return (
-                <div
-                  className={className}
-                  id={rowData.userId.toString()}
-                  onClick={() => editUser(parseInt(`${rowData.userId}`))}
-                >
-                  {name}
-                </div>
-              );
-            }}
-          </Cell>
-        </Column>
-        <Column flexGrow={4}>
-          <HeaderCell>Seller(s)</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData: User) => {
-              let seller = '';
-              if (rowData.isAdmin) {
-                seller = 'System Admin';
-              } else if (rowData.sellers && rowData.sellers.length > 1) {
-                const { length } = rowData.sellers;
-                seller = rowData.sellers.reduce((accumulator, currentValue, index) => {
-                  let name = currentValue.sellerName;
-                  if (currentValue.roleId && currentValue.roleId > 0) {
-                    name += ` (${getRoleName(currentValue.roleId)})`;
-                  }
-                  if (index === length - 1) {
-                    return accumulator + name;
-                  }
-                  return `${accumulator}${name},  `;
-                }, '');
-              } else if (rowData.sellers && rowData.sellers.length > 0 && rowData.sellers[0]) {
-                seller = `${rowData.sellers[0].sellerName} (${getRoleName(rowData.sellers[0].roleId ?? 0)})`;
-              }
-              const className = rowData.isActive ? '' : 'admin-inactive';
-              return (
-                <div
-                  className={className}
-                  id={rowData.userId.toString()}
-                  onClick={() => editUser(parseInt(`${rowData.userId}`))}
-                >
-                  {seller}
-                </div>
-              );
-            }}
-          </Cell>
-        </Column>
-      </Table>
-    </div>
+    <>
+      <PageHeader pageTitle="Users Admin" />
+      <div className="admin-container">
+        <Input
+          value={searchTerm ?? ''}
+          onChange={setSearchTerm}
+          className="form-control search-text-input no-print"
+          placeholder="Search for users by name, username or client name..."
+          hidden={currentAdminSelection.users === undefined}
+        />
+        <Table
+          height={500}
+          data={filteredUsers}
+          bordered
+          cellBordered
+          loading={tableLoading}
+          wordWrap={true}
+        >
+          <Column flexGrow={1}>
+            <HeaderCell>First Name</HeaderCell>
+            <Cell className="admin-click-cell">
+              {(rowData: User) => {
+                const name = `${rowData.firstName}`;
+                const className = rowData.isActive ? '' : 'admin-inactive';
+                return (
+                  <div
+                    className={className}
+                    id={rowData.userId.toString()}
+                    onClick={() => editUser(parseInt(`${rowData.userId}`))}
+                  >
+                    {name}
+                  </div>
+                );
+              }}
+            </Cell>
+          </Column>
+          <Column flexGrow={1}>
+            <HeaderCell>Last Name</HeaderCell>
+            <Cell className="admin-click-cell">
+              {(rowData: User) => {
+                const name = `${rowData.lastName}`;
+                const className = rowData.isActive ? '' : 'admin-inactive';
+                return (
+                  <div
+                    className={className}
+                    id={rowData.userId.toString()}
+                    onClick={() => editUser(parseInt(`${rowData.userId}`))}
+                  >
+                    {name}
+                  </div>
+                );
+              }}
+            </Cell>
+          </Column>
+          <Column flexGrow={2}>
+            <HeaderCell>Email</HeaderCell>
+            <Cell className="admin-click-cell">
+              {(rowData: User) => {
+                const name = `${rowData.username}`;
+                const className = rowData.isActive ? '' : 'admin-inactive';
+                return (
+                  <div
+                    className={className}
+                    id={rowData.userId.toString()}
+                    onClick={() => editUser(parseInt(`${rowData.userId}`))}
+                  >
+                    {name}
+                  </div>
+                );
+              }}
+            </Cell>
+          </Column>
+          <Column flexGrow={4}>
+            <HeaderCell>Seller(s)</HeaderCell>
+            <Cell className="admin-click-cell">
+              {(rowData: User) => {
+                let seller = '';
+                if (rowData.isAdmin) {
+                  seller = 'System Admin';
+                } else if (rowData.sellers && rowData.sellers.length > 1) {
+                  const { length } = rowData.sellers;
+                  seller = rowData.sellers.reduce((accumulator, currentValue, index) => {
+                    let name = currentValue.sellerName;
+                    if (currentValue.roleId && currentValue.roleId > 0) {
+                      name += ` (${getRoleName(currentValue.roleId)})`;
+                    }
+                    if (index === length - 1) {
+                      return accumulator + name;
+                    }
+                    return `${accumulator}${name},  `;
+                  }, '');
+                } else if (rowData.sellers && rowData.sellers.length > 0 && rowData.sellers[0]) {
+                  seller = `${rowData.sellers[0].sellerName} (${getRoleName(rowData.sellers[0].roleId ?? 0)})`;
+                }
+                const className = rowData.isActive ? '' : 'admin-inactive';
+                return (
+                  <div
+                    className={className}
+                    id={rowData.userId.toString()}
+                    onClick={() => editUser(parseInt(`${rowData.userId}`))}
+                  >
+                    {seller}
+                  </div>
+                );
+              }}
+            </Cell>
+          </Column>
+        </Table>
+      </div>
+    </>
   );
 }

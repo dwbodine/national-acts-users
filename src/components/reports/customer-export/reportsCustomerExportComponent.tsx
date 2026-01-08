@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Button } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
@@ -108,14 +109,16 @@ export default function ReportsCustomerExport() {
   };
 
   return (
-    <div className="admin-container">
-      <h3>Export Customer Data</h3>
-      <ReportDatePicker
-        OnChange={onDateChange}
-        Start={currentAdminReportSelection.start}
-        End={currentAdminReportSelection.end}
-      />
-      <Button onClick={onSubmit}>Submit</Button>
-    </div>
+    <>
+      <PageHeader pageTitle="Export Customer Data" />
+      <div className="admin-container">
+        <ReportDatePicker
+          OnChange={onDateChange}
+          Start={currentAdminReportSelection.start}
+          End={currentAdminReportSelection.end}
+        />
+        <Button onClick={onSubmit}>Submit</Button>
+      </div>
+    </>
   );
 }

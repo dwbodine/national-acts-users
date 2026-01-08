@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Button, Checkbox, Input } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useUpdateRole } from '@/hooks/admin/useUpdateRole';
 import { useGetAllPermissions } from '@/hooks/user/useGetAllPermissions';
 import { setReloadRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
@@ -141,22 +142,24 @@ export default function AdminRoleEdit() {
     (currentAdminSelection.selectedRole?.roleId ?? 0) > 0 ? 'Edit role' : 'Add role';
 
   return (
-    <div
-      className="admin-container"
-      hidden={!(permissionRows.length > 0 && currentAdminSelection.selectedRole !== undefined)}
-    >
-      <h1>{pageHeader}</h1>
-      <div className="form-group">
-        <label className="mt-4">Role Name</label>
-        <Input
-          value={roleName ?? ''}
-          onChange={setRoleName}
-          className="form-control"
-          placeholder="role name"
-        />
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <div
+        className="admin-container"
+        hidden={!(permissionRows.length > 0 && currentAdminSelection.selectedRole !== undefined)}
+      >
+        <div className="form-group">
+          <label className="mt-4">Role Name</label>
+          <Input
+            value={roleName ?? ''}
+            onChange={setRoleName}
+            className="form-control"
+            placeholder="role name"
+          />
+        </div>
+        {permissionRows}
+        <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
       </div>
-      {permissionRows}
-      <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
-    </div>
+    </>
   );
 }

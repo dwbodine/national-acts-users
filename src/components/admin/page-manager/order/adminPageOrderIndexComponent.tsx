@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { Button, Col, Input, Row, SelectPicker, Table } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { ARTIST_SELLER_TYPE } from '@/constants';
 import { useUpdatePageOrder } from '@/hooks/admin/useUpdatePageOrder';
 import { useGetPagesByType } from '@/hooks/common/useGetPagesByType';
@@ -238,82 +239,82 @@ export default function AdminPageOrderIndex() {
     ? [...currentAdminSelection.pageOrders.values()]
     : [];
 
+  const pageHeader = `Manage ${pageTypeName} Order`;
+
   return (
-    <Col xs={24} className="admin-container">
-      <Row>
-        <Col>
-          <h3>Manage {pageTypeName} Order</h3>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <label className="mt-4">Select page type:</label>
-          <SelectPicker
-            className="admin-seller-select-value"
-            menuAutoWidth={true}
-            value={pageTypeId}
-            data={pageTypeList}
-            size="lg"
-            onChange={(ptId) => onPageTypeChange(ptId)}
-            cleanable={false}
-            searchable={false}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Table autoHeight data={pages} bordered cellBordered loading={tableLoading}>
-            <Column flexGrow={1}>
-              <HeaderCell>Order</HeaderCell>
-              <Cell className="page-order-cell">
-                {(rowData) => (
-                  <Input
-                    className="page-order-input"
-                    id={`${rowData['pageId']}`}
-                    value={`${rowData['pageOrder']}`}
-                    onChange={(value) =>
-                      setPageOrder(parseInt(`${rowData['pageId']}`), parseInt(value))
-                    }
-                    onBlur={() => reorderPages(currentAdminSelection.pageOrders)}
-                  />
-                )}
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell> </HeaderCell>
-              <Cell>
-                {(rowData: Page) => (
-                  <>
-                    <span>
-                      <FaArrowUp
-                        className="admin-up-down-button"
-                        onClick={() => moveUp(parseInt(`${rowData['pageId']}`))}
-                        title="Move Up"
-                      />
-                    </span>
-                    <span>
-                      <FaArrowDown
-                        className="admin-up-down-button"
-                        onClick={() => moveDown(parseInt(`${rowData['pageId']}`))}
-                        title="Move Down"
-                      />
-                    </span>
-                  </>
-                )}
-              </Cell>
-            </Column>
-            <Column flexGrow={11}>
-              <HeaderCell>Page</HeaderCell>
-              <Cell dataKey="title"></Cell>
-            </Column>
-          </Table>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Button onClick={onSubmit}>Save</Button>
-        </Col>
-      </Row>
-    </Col>
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <Col xs={24} className="admin-container">
+        <Row>
+          <Col>
+            <label className="mt-4">Select page type:</label>
+            <SelectPicker
+              className="admin-seller-select-value"
+              menuAutoWidth={true}
+              value={pageTypeId}
+              data={pageTypeList}
+              size="lg"
+              onChange={(ptId) => onPageTypeChange(ptId)}
+              cleanable={false}
+              searchable={false}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table autoHeight data={pages} bordered cellBordered loading={tableLoading}>
+              <Column flexGrow={1}>
+                <HeaderCell>Order</HeaderCell>
+                <Cell className="page-order-cell">
+                  {(rowData) => (
+                    <Input
+                      className="page-order-input"
+                      id={`${rowData['pageId']}`}
+                      value={`${rowData['pageOrder']}`}
+                      onChange={(value) =>
+                        setPageOrder(parseInt(`${rowData['pageId']}`), parseInt(value))
+                      }
+                      onBlur={() => reorderPages(currentAdminSelection.pageOrders)}
+                    />
+                  )}
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell> </HeaderCell>
+                <Cell>
+                  {(rowData: Page) => (
+                    <>
+                      <span>
+                        <FaArrowUp
+                          className="admin-up-down-button"
+                          onClick={() => moveUp(parseInt(`${rowData['pageId']}`))}
+                          title="Move Up"
+                        />
+                      </span>
+                      <span>
+                        <FaArrowDown
+                          className="admin-up-down-button"
+                          onClick={() => moveDown(parseInt(`${rowData['pageId']}`))}
+                          title="Move Down"
+                        />
+                      </span>
+                    </>
+                  )}
+                </Cell>
+              </Column>
+              <Column flexGrow={11}>
+                <HeaderCell>Page</HeaderCell>
+                <Cell dataKey="title"></Cell>
+              </Column>
+            </Table>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button onClick={onSubmit}>Save</Button>
+          </Col>
+        </Row>
+      </Col>
+    </>
   );
 }

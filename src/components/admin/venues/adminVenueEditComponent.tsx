@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { Button, Input, SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 import {
@@ -154,76 +155,83 @@ export default function AdminVenueEdit() {
     : [];
 
   return currentAdminSelection.selectedVenue ? (
-    <div className="admin-container">
-      <h1>Edit Venue</h1>
-      <div className="form-group">
-        <label className="mt-4">Venue name</label>
-        <Input
-          value={venueName ?? ''}
-          onChange={setVenueName}
-          className="form-control"
-          placeholder="venue name"
-        />
+    <>
+      <PageHeader pageTitle="Edit Venue" />
+      <div className="admin-container">
+        <div className="form-group">
+          <label className="mt-4">Venue name</label>
+          <Input
+            value={venueName ?? ''}
+            onChange={setVenueName}
+            className="form-control"
+            placeholder="venue name"
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">Address</label>
+          <Input
+            value={address ?? ''}
+            onChange={setAddress}
+            className="form-control"
+            placeholder="address"
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">City</label>
+          <Input
+            value={city ?? ''}
+            onChange={setCity}
+            className="form-control"
+            placeholder="city"
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">State</label>
+          <Input
+            value={state ?? ''}
+            onChange={setState}
+            className="form-control"
+            placeholder="state"
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">Postal Code</label>
+          <Input
+            value={zipCode ?? ''}
+            onChange={setZipCode}
+            className="form-control"
+            placeholder="postal code"
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">Country</label>
+          <SelectPicker
+            className="admin-seller-select-value"
+            menuAutoWidth={true}
+            value={countryId}
+            data={countryList}
+            size="lg"
+            onChange={(cId) => onCountryChange(cId)}
+            cleanable={false}
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">Timezone</label>
+          <SelectPicker
+            className="admin-seller-select-value"
+            menuAutoWidth={true}
+            value={timezone}
+            data={timeZoneList}
+            size="lg"
+            onChange={(tz) => onTimezoneChange(tz)}
+            cleanable={false}
+          />
+        </div>
+        <div className="admin-button-group">
+          <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+        </div>
       </div>
-      <div className="form-group">
-        <label className="mt-4">Address</label>
-        <Input
-          value={address ?? ''}
-          onChange={setAddress}
-          className="form-control"
-          placeholder="address"
-        />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">City</label>
-        <Input value={city ?? ''} onChange={setCity} className="form-control" placeholder="city" />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">State</label>
-        <Input
-          value={state ?? ''}
-          onChange={setState}
-          className="form-control"
-          placeholder="state"
-        />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Postal Code</label>
-        <Input
-          value={zipCode ?? ''}
-          onChange={setZipCode}
-          className="form-control"
-          placeholder="postal code"
-        />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Country</label>
-        <SelectPicker
-          className="admin-seller-select-value"
-          menuAutoWidth={true}
-          value={countryId}
-          data={countryList}
-          size="lg"
-          onChange={(cId) => onCountryChange(cId)}
-          cleanable={false}
-        />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Timezone</label>
-        <SelectPicker
-          className="admin-seller-select-value"
-          menuAutoWidth={true}
-          value={timezone}
-          data={timeZoneList}
-          size="lg"
-          onChange={(tz) => onTimezoneChange(tz)}
-          cleanable={false}
-        />
-      </div>
-      <div className="admin-button-group">
-        <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
-      </div>
-    </div>
+    </>
   ) : (
     ''
   );

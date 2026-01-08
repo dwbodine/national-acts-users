@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { Button, Checkbox, CheckPicker, DatePicker, Input, PickerHandle, TimePicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 import { useUpdateTour } from '@/hooks/admin/useUpdateTour';
 import { setAdminEvents, setAdminTour, setReloadTours } from '@/lib/adminSelectionSlice';
@@ -382,72 +383,74 @@ export default function AdminTourEdit() {
   const isActive = currentAdminSelection?.selectedTour?.isActive ?? false;
 
   return (
-    <div className="admin-container">
-      <h1>{pageHeader}</h1>
-      <div className="form-group">
-        <label className="mt-4">Tour Name</label>
-        <Input
-          value={tourName ?? ''}
-          onChange={setTourName}
-          className="form-control"
-          placeholder="tour name"
-        />
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <div className="admin-container">
+        <div className="form-group">
+          <label className="mt-4">Tour Name</label>
+          <Input
+            value={tourName ?? ''}
+            onChange={setTourName}
+            className="form-control"
+            placeholder="tour name"
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">Sellers</label>
+          <CheckPicker
+            sticky={true}
+            countable={false}
+            data={sellerList}
+            renderMenuItem={renderSellerItem}
+            value={selectedSellers}
+            disabledItemValues={disabledSellers}
+            style={{ width: 500 }}
+            onChange={onSellerChange}
+            onClean={onSellerClean}
+            ref={sellerRef}
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">Events</label>
+          <CheckPicker
+            data={eventList}
+            renderMenuItem={renderEventItem}
+            value={selectedEvents}
+            style={{ width: 500 }}
+            onChange={onEventChange}
+            onClean={onEventClean}
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">Announce Date (in Pacific Time):</label>
+          <DatePicker
+            id="announceDate"
+            format="M/d/yyyy"
+            onSelect={onAnnounceDateChange}
+            value={announceDate}
+            oneTap
+            cleanable
+            showMeridiem
+            onClean={onCleanAnnounceDate}
+          />
+          <TimePicker
+            id="announceTime"
+            format="hh:mm aa"
+            onSelect={onAnnounceTimeChange}
+            value={announceDate}
+            cleanable
+            showMeridiem
+            onClean={onCleanAnnounceTime}
+            disabled={announceTimeDisabled}
+          />
+        </div>
+        <div>
+          <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
+            Is Active?
+          </Checkbox>
+        </div>
+        <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
       </div>
-      <div className="form-group">
-        <label className="mt-4">Sellers</label>
-        <CheckPicker
-          sticky={true}
-          countable={false}
-          data={sellerList}
-          renderMenuItem={renderSellerItem}
-          value={selectedSellers}
-          disabledItemValues={disabledSellers}
-          style={{ width: 500 }}
-          onChange={onSellerChange}
-          onClean={onSellerClean}
-          ref={sellerRef}
-        />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Events</label>
-        <CheckPicker
-          data={eventList}
-          renderMenuItem={renderEventItem}
-          value={selectedEvents}
-          style={{ width: 500 }}
-          onChange={onEventChange}
-          onClean={onEventClean}
-        />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Announce Date (in Pacific Time):</label>
-        <DatePicker
-          id="announceDate"
-          format="M/d/yyyy"
-          onSelect={onAnnounceDateChange}
-          value={announceDate}
-          oneTap
-          cleanable
-          showMeridiem
-          onClean={onCleanAnnounceDate}
-        />
-        <TimePicker
-          id="announceTime"
-          format="hh:mm aa"
-          onSelect={onAnnounceTimeChange}
-          value={announceDate}
-          cleanable
-          showMeridiem
-          onClean={onCleanAnnounceTime}
-          disabled={announceTimeDisabled}
-        />
-      </div>
-      <div>
-        <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
-          Is Active?
-        </Checkbox>
-      </div>
-      <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
-    </div>
+    </>
   );
 }

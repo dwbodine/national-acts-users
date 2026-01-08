@@ -1,5 +1,5 @@
-import UserAdminComponent from '@/components/admin/users/userAdminComponent';
 import AdminPage from '@/components/common/adminPageComponent';
+import UserAdminComponent from '@/components/users/userAdminComponent';
 
 export default function Users() {
   const title = 'Client Portal - User Activity';

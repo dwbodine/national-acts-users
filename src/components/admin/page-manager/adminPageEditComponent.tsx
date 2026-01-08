@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import Textarea from '@/components/common/Textarea';
 import { ImageType } from '@/constants';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
@@ -662,256 +663,254 @@ export default function AdminPageEdit() {
   }
 
   return (
-    <Row className="admin-container">
-      <Col>
-        <Row>
-          <Col>
-            <h1>{pageHeader}</h1>
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <Checkbox checked={!isActive} onChange={(_, checked) => setIsActive(!checked)}>
-              Page inactive on website?
-            </Checkbox>
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Main Page Title (most viewed on the site)</label>
-            <Input
-              value={title ?? ''}
-              onChange={setPageTitle}
-              className="form-control form-control-half"
-              placeholder="page title"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Route (how it shows up in the url)</label>
-            <Input
-              value={route ?? ''}
-              onChange={setPageRoute}
-              className="form-control form-control-half"
-              placeholder="page route"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Page Type</label>
-            <SelectPicker
-              value={selectedPageTypeId}
-              data={pageTypeList}
-              size="lg"
-              onChange={(ptId) => setPageType(ptId)}
-              cleanable={false}
-              menuAutoWidth={true}
-              className="admin-seller-select-value"
-              searchable={false}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <AdminFileUpload
-              ImageType={ImageType.HEADERS}
-              Title="Top Image (ideally 1200-1600px wide, max is 1600px)"
-              FileUploadName="Header"
-              OnUpload={onFileUpload}
-              CurrentFileName={topImage}
-              IsDirty={isHeaderDirty}
-              CurrentFileTitle={'View Current Top Image'}
-              OnUploadStart={onUploadStart}
-              OnUploadComplete={onUploadComplete}
-              ShowRemoveButton={true}
-              OnFileRemove={() => onFileRemove('Header')}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <AdminFileUpload
-              ImageType={ImageType.THUMBNAILS}
-              Title="Icon (rectangle, no wider than 400px)"
-              FileUploadName="Icon"
-              OnUpload={onFileUpload}
-              CurrentFileName={iconImage}
-              IsDirty={isIconDirty}
-              CurrentFileTitle={'View Current Icon Image'}
-              OnUploadStart={onUploadStart}
-              OnUploadComplete={onUploadComplete}
-              ShowRemoveButton={true}
-              OnFileRemove={() => onFileRemove('Icon')}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <AdminFileUpload
-              ImageType={ImageType.PREVIEWS}
-              Title="Link Preview Image (rectangle, no wider than 400px)"
-              FileUploadName="Preview"
-              OnUpload={onFileUpload}
-              CurrentFileName={linkPreviewImage}
-              IsDirty={isLinkPreviewDirty}
-              CurrentFileTitle={'View Current Link Preview Image'}
-              OnUploadStart={onUploadStart}
-              OnUploadComplete={onUploadComplete}
-              ShowRemoveButton={true}
-              OnFileRemove={() => onFileRemove('Preview')}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <AdminFileUpload
-              ImageType={ImageType.LOGOS}
-              Title="Logo Only (rectangle, must be a PNG and between 250-400 px wide)"
-              FileUploadName="Logo"
-              OnUpload={onFileUpload}
-              CurrentFileName={logoOnlyImage}
-              IsDirty={isLogoDirty}
-              CurrentFileTitle={'View Current Logo Image'}
-              OnUploadStart={onUploadStart}
-              OnUploadComplete={onUploadComplete}
-              ShowRemoveButton={true}
-              OnFileRemove={() => onFileRemove('Logo')}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Subtitle 1</label>
-            <Input
-              value={subtitle1 ?? ''}
-              onChange={setSubTitle1}
-              className="form-control form-control-half"
-              placeholder="Shows up underneath page title"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Subtitle 2</label>
-            <Input
-              value={subtitle2 ?? ''}
-              onChange={setSubTitle2}
-              className="form-control form-control-half"
-              placeholder="Shows up underneath subtitle 1"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">HTML Text</label>
-            <Textarea
-              rows={10}
-              id="htmlText"
-              onChange={setHtmlText}
-              value={htmlText ?? ''}
-              placeholder="Free-form html text to be placed in header"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <Checkbox
-              checked={useIncludeDates}
-              onChange={(_, checked) => setUseIncludeDates(checked)}
-            >
-              Use include date range
-            </Checkbox>
-            <label className="mt-4">Include start date</label>
-            <DatePicker
-              id="includeStart"
-              format="M/d/yyyy"
-              onSelect={setIncludeStart}
-              value={includeStart}
-              oneTap
-              cleanable
-              disabled={!useIncludeDates}
-              onClean={() => setIncludeStart(null)}
-            />
-            <label className="mt-4">Include end date</label>
-            <DatePicker
-              id="includeEnd"
-              format="M/d/yyyy"
-              onSelect={setIncludeEnd}
-              value={includeEnd}
-              oneTap
-              cleanable
-              disabled={!useIncludeDates}
-              onClean={() => setIncludeEnd(null)}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <Checkbox
-              checked={useExcludeDates}
-              onChange={(_, checked) => setUseExcludeDates(checked)}
-            >
-              Use exclude date range
-            </Checkbox>
-            <label className="mt-4">Exclude start date</label>
-            <DatePicker
-              id="excludeStart"
-              format="M/d/yyyy"
-              onSelect={setExcludeStart}
-              value={excludeStart}
-              oneTap
-              cleanable
-              disabled={!useExcludeDates}
-              onClean={() => setExcludeStart(null)}
-            />
-            <label className="mt-4">Exclude end date</label>
-            <DatePicker
-              id="excludeEnd"
-              format="M/d/yyyy"
-              onSelect={setExcludeEnd}
-              value={excludeEnd}
-              oneTap
-              cleanable
-              disabled={!useExcludeDates}
-              onClean={() => setExcludeEnd(null)}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Google Analytics ID</label>
-            <Input
-              value={googleAnalyticsId ?? ''}
-              onChange={setGoogleAnalyticsId}
-              className="form-control form-control-half"
-              placeholder="e.g.: UA-xxxxxxxxx-x"
-            />
-          </Col>
-        </Row>
-        <Row
-          className="form-group"
-          hidden={
-            !pageSellerTypeIds.includes(
-              currentAdminSelection?.selectedPage?.pageType?.pageTypeId ?? 0,
-            )
-          }
-        >
-          <Col>
-            <h4>Page Sellers</h4>
-            {sellerRows}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Button onClick={onSubmit} disabled={isUploading}>
-              Submit
-            </Button>{' '}
-            <Button onClick={confirmGoBack}>Back</Button>
-          </Col>
-        </Row>
-      </Col>
-    </Row>
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <Row className="admin-container">
+        <Col>
+          <Row className="form-group">
+            <Col>
+              <Checkbox checked={!isActive} onChange={(_, checked) => setIsActive(!checked)}>
+                Page inactive on website?
+              </Checkbox>
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <label className="mt-4">Main Page Title (most viewed on the site)</label>
+              <Input
+                value={title ?? ''}
+                onChange={setPageTitle}
+                className="form-control form-control-half"
+                placeholder="page title"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <label className="mt-4">Route (how it shows up in the url)</label>
+              <Input
+                value={route ?? ''}
+                onChange={setPageRoute}
+                className="form-control form-control-half"
+                placeholder="page route"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <label className="mt-4">Page Type</label>
+              <SelectPicker
+                value={selectedPageTypeId}
+                data={pageTypeList}
+                size="lg"
+                onChange={(ptId) => setPageType(ptId)}
+                cleanable={false}
+                menuAutoWidth={true}
+                className="admin-seller-select-value"
+                searchable={false}
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <AdminFileUpload
+                ImageType={ImageType.HEADERS}
+                Title="Top Image (ideally 1200-1600px wide, max is 1600px)"
+                FileUploadName="Header"
+                OnUpload={onFileUpload}
+                CurrentFileName={topImage}
+                IsDirty={isHeaderDirty}
+                CurrentFileTitle={'View Current Top Image'}
+                OnUploadStart={onUploadStart}
+                OnUploadComplete={onUploadComplete}
+                ShowRemoveButton={true}
+                OnFileRemove={() => onFileRemove('Header')}
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <AdminFileUpload
+                ImageType={ImageType.THUMBNAILS}
+                Title="Icon (rectangle, no wider than 400px)"
+                FileUploadName="Icon"
+                OnUpload={onFileUpload}
+                CurrentFileName={iconImage}
+                IsDirty={isIconDirty}
+                CurrentFileTitle={'View Current Icon Image'}
+                OnUploadStart={onUploadStart}
+                OnUploadComplete={onUploadComplete}
+                ShowRemoveButton={true}
+                OnFileRemove={() => onFileRemove('Icon')}
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <AdminFileUpload
+                ImageType={ImageType.PREVIEWS}
+                Title="Link Preview Image (rectangle, no wider than 400px)"
+                FileUploadName="Preview"
+                OnUpload={onFileUpload}
+                CurrentFileName={linkPreviewImage}
+                IsDirty={isLinkPreviewDirty}
+                CurrentFileTitle={'View Current Link Preview Image'}
+                OnUploadStart={onUploadStart}
+                OnUploadComplete={onUploadComplete}
+                ShowRemoveButton={true}
+                OnFileRemove={() => onFileRemove('Preview')}
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <AdminFileUpload
+                ImageType={ImageType.LOGOS}
+                Title="Logo Only (rectangle, must be a PNG and between 250-400 px wide)"
+                FileUploadName="Logo"
+                OnUpload={onFileUpload}
+                CurrentFileName={logoOnlyImage}
+                IsDirty={isLogoDirty}
+                CurrentFileTitle={'View Current Logo Image'}
+                OnUploadStart={onUploadStart}
+                OnUploadComplete={onUploadComplete}
+                ShowRemoveButton={true}
+                OnFileRemove={() => onFileRemove('Logo')}
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <label className="mt-4">Subtitle 1</label>
+              <Input
+                value={subtitle1 ?? ''}
+                onChange={setSubTitle1}
+                className="form-control form-control-half"
+                placeholder="Shows up underneath page title"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <label className="mt-4">Subtitle 2</label>
+              <Input
+                value={subtitle2 ?? ''}
+                onChange={setSubTitle2}
+                className="form-control form-control-half"
+                placeholder="Shows up underneath subtitle 1"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <label className="mt-4">HTML Text</label>
+              <Textarea
+                rows={10}
+                id="htmlText"
+                onChange={setHtmlText}
+                value={htmlText ?? ''}
+                placeholder="Free-form html text to be placed in header"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <Checkbox
+                checked={useIncludeDates}
+                onChange={(_, checked) => setUseIncludeDates(checked)}
+              >
+                Use include date range
+              </Checkbox>
+              <label className="mt-4">Include start date</label>
+              <DatePicker
+                id="includeStart"
+                format="M/d/yyyy"
+                onSelect={setIncludeStart}
+                value={includeStart}
+                oneTap
+                cleanable
+                disabled={!useIncludeDates}
+                onClean={() => setIncludeStart(null)}
+              />
+              <label className="mt-4">Include end date</label>
+              <DatePicker
+                id="includeEnd"
+                format="M/d/yyyy"
+                onSelect={setIncludeEnd}
+                value={includeEnd}
+                oneTap
+                cleanable
+                disabled={!useIncludeDates}
+                onClean={() => setIncludeEnd(null)}
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <Checkbox
+                checked={useExcludeDates}
+                onChange={(_, checked) => setUseExcludeDates(checked)}
+              >
+                Use exclude date range
+              </Checkbox>
+              <label className="mt-4">Exclude start date</label>
+              <DatePicker
+                id="excludeStart"
+                format="M/d/yyyy"
+                onSelect={setExcludeStart}
+                value={excludeStart}
+                oneTap
+                cleanable
+                disabled={!useExcludeDates}
+                onClean={() => setExcludeStart(null)}
+              />
+              <label className="mt-4">Exclude end date</label>
+              <DatePicker
+                id="excludeEnd"
+                format="M/d/yyyy"
+                onSelect={setExcludeEnd}
+                value={excludeEnd}
+                oneTap
+                cleanable
+                disabled={!useExcludeDates}
+                onClean={() => setExcludeEnd(null)}
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <label className="mt-4">Google Analytics ID</label>
+              <Input
+                value={googleAnalyticsId ?? ''}
+                onChange={setGoogleAnalyticsId}
+                className="form-control form-control-half"
+                placeholder="e.g.: UA-xxxxxxxxx-x"
+              />
+            </Col>
+          </Row>
+          <Row
+            className="form-group"
+            hidden={
+              !pageSellerTypeIds.includes(
+                currentAdminSelection?.selectedPage?.pageType?.pageTypeId ?? 0,
+              )
+            }
+          >
+            <Col>
+              <h4>Page Sellers</h4>
+              {sellerRows}
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button onClick={onSubmit} disabled={isUploading}>
+                Submit
+              </Button>{' '}
+              <Button onClick={confirmGoBack}>Back</Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </>
   );
 }

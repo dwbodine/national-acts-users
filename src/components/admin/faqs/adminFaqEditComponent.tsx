@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { Button, Col, Input, Row, SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import Textarea from '@/components/common/Textarea';
 import { useGetAllFaqCategories } from '@/hooks/admin/useGetAllFaqCategories';
 import { useUpdateFaq } from '@/hooks/admin/useUpdateFaq';
@@ -173,57 +174,56 @@ export default function AdminFaqEdit() {
   const answer = currentAdminSelection.selectedFaq?.answer;
 
   return (
-    <Row className="admin-container">
-      <Col>
-        <Row>
-          <Col>
-            <h1>{pageHeader}</h1>
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Category</label>
-            <SelectPicker
-              value={categoryId}
-              data={faqCategories}
-              size="lg"
-              onChange={(cId) => setFaqCategory(cId)}
-              cleanable={false}
-              menuAutoWidth={true}
-              className="admin-seller-select-value"
-              searchable={false}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Question</label>
-            <Input
-              value={question ?? ''}
-              onChange={setQuestion}
-              className="form-control form-control-half"
-              placeholder="FAQ question"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">HTML Text</label>
-            <Textarea
-              rows={3}
-              id="answer"
-              onChange={setAnswer}
-              value={answer ?? ''}
-              placeholder="Free-form html text to be used as answer"
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Button onClick={onSubmit}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
-          </Col>
-        </Row>
-      </Col>
-    </Row>
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <Row className="admin-container">
+        <Col>
+          <Row className="form-group">
+            <Col>
+              <label className="mt-4">Category</label>
+              <SelectPicker
+                value={categoryId}
+                data={faqCategories}
+                size="lg"
+                onChange={(cId) => setFaqCategory(cId)}
+                cleanable={false}
+                menuAutoWidth={true}
+                className="admin-seller-select-value"
+                searchable={false}
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <label className="mt-4">Question</label>
+              <Input
+                value={question ?? ''}
+                onChange={setQuestion}
+                className="form-control form-control-half"
+                placeholder="FAQ question"
+              />
+            </Col>
+          </Row>
+          <Row className="form-group">
+            <Col>
+              <label className="mt-4">HTML Text</label>
+              <Textarea
+                rows={3}
+                id="answer"
+                onChange={setAnswer}
+                value={answer ?? ''}
+                placeholder="Free-form html text to be used as answer"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button onClick={onSubmit}>Submit</Button>{' '}
+              <Button onClick={confirmGoBack}>Back</Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </>
   );
 }

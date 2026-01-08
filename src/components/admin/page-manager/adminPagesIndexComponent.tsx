@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Table } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
@@ -118,31 +119,33 @@ export default function AdminPagesIndex() {
   const filteredPages = filterPages(currentAdminSelection.allPages);
 
   return (
-    <div className="admin-container">
-      <h3>Manage Pages</h3>
-      <Input
-        value={searchTerm}
-        onChange={setSearchTerm}
-        className="form-control search-text-input no-print"
-        placeholder="Search for pages by title..."
-        hidden={currentAdminSelection.allPages === undefined}
-      />
-      <Button onClick={addPage}>Add Page</Button>
-      <Table height={600} data={filteredPages} bordered cellBordered loading={tableLoading}>
-        <Column width={300}>
-          <HeaderCell>Page Title</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData) => (
-              <div
-                id={`${rowData['pageId']}`}
-                onClick={() => editPage(parseInt(`${rowData['pageId']}`))}
-              >
-                {rowData['title']}
-              </div>
-            )}
-          </Cell>
-        </Column>
-      </Table>
-    </div>
+    <>
+      <PageHeader pageTitle="Manage Pages" />
+      <div className="admin-container">
+        <Input
+          value={searchTerm}
+          onChange={setSearchTerm}
+          className="form-control search-text-input no-print"
+          placeholder="Search for pages by title..."
+          hidden={currentAdminSelection.allPages === undefined}
+        />
+        <Button onClick={addPage}>Add Page</Button>
+        <Table height={600} data={filteredPages} bordered cellBordered loading={tableLoading}>
+          <Column width={300}>
+            <HeaderCell>Page Title</HeaderCell>
+            <Cell className="admin-click-cell">
+              {(rowData) => (
+                <div
+                  id={`${rowData['pageId']}`}
+                  onClick={() => editPage(parseInt(`${rowData['pageId']}`))}
+                >
+                  {rowData['title']}
+                </div>
+              )}
+            </Cell>
+          </Column>
+        </Table>
+      </div>
+    </>
   );
 }

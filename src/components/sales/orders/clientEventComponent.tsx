@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import EventDetail from '../orders/eventDetailComponent';
+import EventDetail from './eventDetailComponent';
 
 export default function ClientEventComponent() {
   const [detailHidden, setDetailHidden] = useState(true);

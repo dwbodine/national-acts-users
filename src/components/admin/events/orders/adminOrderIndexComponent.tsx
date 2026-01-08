@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { Button, Checkbox, Col, Row, SelectPicker, Table } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
@@ -309,125 +310,134 @@ export default function AdminOrdersIndex(props: EditProps) {
     value: action.value,
   }));
 
+  const pageHeader = currentAdminSelection.selectedEvent
+    ? `Edit Orders for ${currentAdminSelection.selectedEvent.title}`
+    : `Edit Orders`;
+
   return (
-    <div className="admin-container">
-      <Row className="admin-event-info">
-        <Col>
-          <Button onClick={goBack}>Back</Button>{' '}
-        </Col>
-      </Row>
-      <Row className="form-group">
-        <Col className="form-header">
-          <h3> {currentAdminSelection.selectedEvent?.title}</h3>
-          <span className="title">Date:</span>{' '}
-          {moment(currentAdminSelection.selectedEvent?.eventDate).format('MM/DD/YYYY')}
-          <br />
-          <span className="title">Venue:</span> {currentAdminSelection.selectedEvent?.venue?.name}
-          <br />
-          <span className="title">Location:</span> {location}
-          <br />
-          <span className="title">Status:</span>{' '}
-          {getEventStatusText(currentAdminSelection.selectedEvent)}
-          <br />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <h5>Orders</h5>
-        </Col>
-      </Row>
-      <Row hidden={allOrderIds.length === 0}>
-        <Col className="bulk-arrow-row">
-          <div>
-            <FaArrowTurnDown className="bulk-arrow" />
-          </div>
-          <div>With selected:</div>
-          <div>
-            <SelectPicker
-              className="bulk-select"
-              value={selectedAction}
-              data={actionList}
-              size="lg"
-              onChange={(a) => setSelectedAction(a)}
-              cleanable={true}
-              menuAutoWidth={true}
-              onClean={() => setSelectedAction(null)}
-            />
-          </div>
-          <div>
-            <Button onClick={bulkEditConfirm}>Update</Button>
-          </div>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Table
-            autoHeight={true}
-            data={currentAdminSelection.selectedEvent?.orders}
-            bordered
-            cellBordered
-            loading={tableLoading}
-            rowClassName={(rowData: Order) => getOrderStatusSlug(rowData)}
-          >
-            <Column width={50}>
-              <HeaderCell>
-                <Checkbox
-                  id={`oId_selectAll`}
-                  checked={allOrderIds.length > 0 && orderIdList.length === allOrderIds.length}
-                  onChange={(_, checked) => selectAllOrders(checked)}
-                />
-              </HeaderCell>
-              <Cell>
-                {(rowData: Order) => (
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <div className="admin-container">
+        <Row className="admin-event-info">
+          <Col>
+            <Button onClick={goBack}>Back</Button>{' '}
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col className="form-header">
+            <h3> {currentAdminSelection.selectedEvent?.title}</h3>
+            <span className="title">Date:</span>{' '}
+            {moment(currentAdminSelection.selectedEvent?.eventDate).format('MM/DD/YYYY')}
+            <br />
+            <span className="title">Venue:</span> {currentAdminSelection.selectedEvent?.venue?.name}
+            <br />
+            <span className="title">Location:</span> {location}
+            <br />
+            <span className="title">Status:</span>{' '}
+            {getEventStatusText(currentAdminSelection.selectedEvent)}
+            <br />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h5>Orders</h5>
+          </Col>
+        </Row>
+        <Row hidden={allOrderIds.length === 0}>
+          <Col className="bulk-arrow-row">
+            <div>
+              <FaArrowTurnDown className="bulk-arrow" />
+            </div>
+            <div>With selected:</div>
+            <div>
+              <SelectPicker
+                className="bulk-select"
+                value={selectedAction}
+                data={actionList}
+                size="lg"
+                onChange={(a) => setSelectedAction(a)}
+                cleanable={true}
+                menuAutoWidth={true}
+                onClean={() => setSelectedAction(null)}
+              />
+            </div>
+            <div>
+              <Button onClick={bulkEditConfirm}>Update</Button>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table
+              autoHeight={true}
+              data={currentAdminSelection.selectedEvent?.orders}
+              bordered
+              cellBordered
+              loading={tableLoading}
+              rowClassName={(rowData: Order) => getOrderStatusSlug(rowData)}
+            >
+              <Column width={50}>
+                <HeaderCell>
                   <Checkbox
-                    id={`oId_${rowData.ticketSocketOrderId}`}
-                    checked={orderIdList.includes(rowData.ticketSocketOrderId)}
-                    onChange={(_, checked) =>
-                      updateOrderIdList(rowData.ticketSocketOrderId, checked)
-                    }
+                    id={`oId_selectAll`}
+                    checked={allOrderIds.length > 0 && orderIdList.length === allOrderIds.length}
+                    onChange={(_, checked) => selectAllOrders(checked)}
                   />
-                )}
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>Purchase Date</HeaderCell>
-              <Cell>{(rowData: Order) => moment(rowData.purchaseDate).format('MM/DD/YYYY')}</Cell>
-            </Column>
-            <Column flexGrow={3}>
-              <HeaderCell>Purchaser Name</HeaderCell>
-              <Cell>
-                {(rowData: Order) => `${rowData.purchaserLastName}, ${rowData.purchaserFirstName}`}
-              </Cell>
-            </Column>
-            <Column flexGrow={3}>
-              <HeaderCell># of Tickets</HeaderCell>
-              <Cell>{(rowData: Order) => (rowData.numTickets ? rowData.numTickets : '')}</Cell>
-            </Column>
-            <Column flexGrow={3}>
-              <HeaderCell>Order Status</HeaderCell>
-              <Cell>{(rowData: Order) => getOrderStatusText(rowData)}</Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>&nbsp;</HeaderCell>
-              <Cell>
-                {(rowData: Order) =>
-                  rowData.ticketSocketOrderId ? (
-                    <a
-                      href="#"
-                      id={rowData.ticketSocketOrderId.toString()}
-                      onClick={() => viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))}
-                    >
-                      Edit
-                    </a>
-                  ) : (
-                    'Edit'
-                  )
-                }
-              </Cell>
-            </Column>
-          </Table>
-        </Col>
-      </Row>
-    </div>
+                </HeaderCell>
+                <Cell>
+                  {(rowData: Order) => (
+                    <Checkbox
+                      id={`oId_${rowData.ticketSocketOrderId}`}
+                      checked={orderIdList.includes(rowData.ticketSocketOrderId)}
+                      onChange={(_, checked) =>
+                        updateOrderIdList(rowData.ticketSocketOrderId, checked)
+                      }
+                    />
+                  )}
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Purchase Date</HeaderCell>
+                <Cell>{(rowData: Order) => moment(rowData.purchaseDate).format('MM/DD/YYYY')}</Cell>
+              </Column>
+              <Column flexGrow={3}>
+                <HeaderCell>Purchaser Name</HeaderCell>
+                <Cell>
+                  {(rowData: Order) =>
+                    `${rowData.purchaserLastName}, ${rowData.purchaserFirstName}`
+                  }
+                </Cell>
+              </Column>
+              <Column flexGrow={3}>
+                <HeaderCell># of Tickets</HeaderCell>
+                <Cell>{(rowData: Order) => (rowData.numTickets ? rowData.numTickets : '')}</Cell>
+              </Column>
+              <Column flexGrow={3}>
+                <HeaderCell>Order Status</HeaderCell>
+                <Cell>{(rowData: Order) => getOrderStatusText(rowData)}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>&nbsp;</HeaderCell>
+                <Cell>
+                  {(rowData: Order) =>
+                    rowData.ticketSocketOrderId ? (
+                      <a
+                        href="#"
+                        id={rowData.ticketSocketOrderId.toString()}
+                        onClick={() => viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))}
+                      >
+                        Edit
+                      </a>
+                    ) : (
+                      'Edit'
+                    )
+                  }
+                </Cell>
+              </Column>
+            </Table>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }

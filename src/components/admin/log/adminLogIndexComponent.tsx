@@ -4,6 +4,7 @@ import moment from 'moment';
 import { ReactElement, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetLogs } from '@/hooks/admin/useGetLogs';
 import { LogResponse } from '@/types/responses';
 
@@ -51,6 +52,7 @@ export default function AdminLogIndex() {
   return (
     <>
       <Container className="fluid">
+        <PageHeader pageTitle="Admin Logs" />
         <Row>
           <h5>Cron Log - {moment().format('YYYY-MM-DD HH:mm:ss')}</h5>
         </Row>

@@ -76,11 +76,6 @@ export default function UserActivityTable() {
   return (
     <div className="admin-container">
       <Container className="fluid">
-        <Row>
-          <Col>
-            <h3>Current user activity</h3>
-          </Col>
-        </Row>
         <Row className="admin-filter-row">
           <Col>
             <Checkbox

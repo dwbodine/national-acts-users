@@ -6,6 +6,7 @@ import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Table } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useDeleteFaq } from '@/hooks/admin/useDeleteFaq';
 import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';
 import { useMoveFaqDown } from '@/hooks/admin/useMoveFaqDown';
@@ -111,52 +112,56 @@ export default function AdminFaqsIndex() {
   };
 
   return (
-    <div className="admin-container">
-      <h3>Manage FAQs</h3>
-      <Button onClick={addFaq}>Add FAQ</Button>
-      <Table
-        autoHeight
-        data={currentAdminSelection.allFaqs}
-        bordered
-        cellBordered
-        loading={tableLoading}
-      >
-        <Column flexGrow={1}>
-          <HeaderCell>Category</HeaderCell>
-          <Cell>
-            {(rowData: Faq) => <span>{rowData.category ? rowData.category.categoryName : ''}</span>}
-          </Cell>
-        </Column>
-        <Column flexGrow={1}>
-          <HeaderCell>Order</HeaderCell>
-          <Cell dataKey="order" />
-        </Column>
-        <Column flexGrow={3}>
-          <HeaderCell>Question</HeaderCell>
-          <Cell dataKey="question" />
-        </Column>
-        <Column flexGrow={7}>
-          <HeaderCell> </HeaderCell>
-          <Cell>
-            {(rowData: Faq) => (
-              <span>
-                <FaArrowUp
-                  className="admin-up-down-button"
-                  onClick={() => moveUp(rowData.faqId)}
-                  title="Move Up"
-                />
-                <FaArrowDown
-                  className="admin-up-down-button"
-                  onClick={() => moveDown(rowData.faqId)}
-                  title="Move Down"
-                />
-                <Button onClick={() => editFaq(rowData.faqId)}>Edit</Button>
-                <Button onClick={() => deleteOneFaq(rowData.faqId)}>Delete</Button>
-              </span>
-            )}
-          </Cell>
-        </Column>
-      </Table>
-    </div>
+    <>
+      <PageHeader pageTitle="Manage FAQs" />
+      <div className="admin-container">
+        <Button onClick={addFaq}>Add FAQ</Button>
+        <Table
+          autoHeight
+          data={currentAdminSelection.allFaqs}
+          bordered
+          cellBordered
+          loading={tableLoading}
+        >
+          <Column flexGrow={1}>
+            <HeaderCell>Category</HeaderCell>
+            <Cell>
+              {(rowData: Faq) => (
+                <span>{rowData.category ? rowData.category.categoryName : ''}</span>
+              )}
+            </Cell>
+          </Column>
+          <Column flexGrow={1}>
+            <HeaderCell>Order</HeaderCell>
+            <Cell dataKey="order" />
+          </Column>
+          <Column flexGrow={3}>
+            <HeaderCell>Question</HeaderCell>
+            <Cell dataKey="question" />
+          </Column>
+          <Column flexGrow={7}>
+            <HeaderCell> </HeaderCell>
+            <Cell>
+              {(rowData: Faq) => (
+                <span>
+                  <FaArrowUp
+                    className="admin-up-down-button"
+                    onClick={() => moveUp(rowData.faqId)}
+                    title="Move Up"
+                  />
+                  <FaArrowDown
+                    className="admin-up-down-button"
+                    onClick={() => moveDown(rowData.faqId)}
+                    title="Move Down"
+                  />
+                  <Button onClick={() => editFaq(rowData.faqId)}>Edit</Button>
+                  <Button onClick={() => deleteOneFaq(rowData.faqId)}>Delete</Button>
+                </span>
+              )}
+            </Cell>
+          </Column>
+        </Table>
+      </div>
+    </>
   );
 }

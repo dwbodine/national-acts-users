@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Button, Checkbox, Input } from 'rsuite';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
@@ -319,74 +320,76 @@ export default function AdminUserEdit() {
 
   return currentAdminSelection.selectedUser &&
     (sellerRows !== null || currentAdminSelection.selectedUser.isAdmin) ? (
-    <div className="admin-container">
-      <h1>Edit User</h1>
-      <div className="form-group">
-        <label className="mt-4">Username: {username}</label>
+    <>
+      <PageHeader pageTitle="Edit User" />
+      <div className="admin-container">
+        <div className="form-group">
+          <label className="mt-4">Username: {username}</label>
+        </div>
+        <div className="form-group">
+          <label className="mt-4">First Name</label>
+          <Input
+            value={firstName ?? ''}
+            onChange={setFirstName}
+            className="form-control"
+            placeholder="first name"
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">Last Name</label>
+          <Input
+            value={lastName ?? ''}
+            onChange={setLastName}
+            className="form-control"
+            placeholder="last name"
+          />
+        </div>
+        <div className="form-group">
+          <label className="mt-4">Mobile number</label>
+          <Input
+            value={mobile ?? ''}
+            onChange={setMobile}
+            className="form-control"
+            placeholder="mobile number"
+          />
+        </div>
+        <div className="form-group">
+          <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
+            Is Active?
+          </Checkbox>
+          <Checkbox
+            checked={requireResetPassword}
+            onChange={(_, checked) => setRequireResetPassword(checked)}
+          >
+            Require Reset Password?
+          </Checkbox>
+          <Checkbox checked={sendEmailReset} onChange={(_, checked) => setSendEmailReset(checked)}>
+            Send Password Reset by Email?
+          </Checkbox>
+          <Checkbox checked={sendTextReset} onChange={(_, checked) => setSendTextReset(checked)}>
+            Send Password Reset by Text?
+          </Checkbox>
+          <Checkbox checked={disableCheckIn} onChange={(_, checked) => setDisableCheckIn(checked)}>
+            Disable check-in permission?
+          </Checkbox>
+        </div>
+        <div className="form-group" hidden={currentAdminSelection.selectedUser.isAdmin}>
+          <label className="mt-4">Sellers:</label>
+          {sellerRows}
+        </div>
+        <div className="form-group">
+          <label className="mt-4">Notes:</label>
+          <textarea onChange={(e) => setNotes(e.target.value)} value={notes ?? ''} />
+        </div>
+        <div className="admin-button-group">
+          <Button onClick={onSubmit}>Submit</Button>{' '}
+          <Button onClick={confirmDeleteUser}>Delete User</Button>
+        </div>
+        <div className="admin-button-group">
+          <Button onClick={goBack}>Back</Button>
+        </div>
       </div>
-      <div className="form-group">
-        <label className="mt-4">First Name</label>
-        <Input
-          value={firstName ?? ''}
-          onChange={setFirstName}
-          className="form-control"
-          placeholder="first name"
-        />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Last Name</label>
-        <Input
-          value={lastName ?? ''}
-          onChange={setLastName}
-          className="form-control"
-          placeholder="last name"
-        />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Mobile number</label>
-        <Input
-          value={mobile ?? ''}
-          onChange={setMobile}
-          className="form-control"
-          placeholder="mobile number"
-        />
-      </div>
-      <div className="form-group">
-        <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
-          Is Active?
-        </Checkbox>
-        <Checkbox
-          checked={requireResetPassword}
-          onChange={(_, checked) => setRequireResetPassword(checked)}
-        >
-          Require Reset Password?
-        </Checkbox>
-        <Checkbox checked={sendEmailReset} onChange={(_, checked) => setSendEmailReset(checked)}>
-          Send Password Reset by Email?
-        </Checkbox>
-        <Checkbox checked={sendTextReset} onChange={(_, checked) => setSendTextReset(checked)}>
-          Send Password Reset by Text?
-        </Checkbox>
-        <Checkbox checked={disableCheckIn} onChange={(_, checked) => setDisableCheckIn(checked)}>
-          Disable check-in permission?
-        </Checkbox>
-      </div>
-      <div className="form-group" hidden={currentAdminSelection.selectedUser.isAdmin}>
-        <label className="mt-4">Sellers:</label>
-        {sellerRows}
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Notes:</label>
-        <textarea onChange={(e) => setNotes(e.target.value)} value={notes ?? ''} />
-      </div>
-      <div className="admin-button-group">
-        <Button onClick={onSubmit}>Submit</Button>{' '}
-        <Button onClick={confirmDeleteUser}>Delete User</Button>
-      </div>
-      <div className="admin-button-group">
-        <Button onClick={goBack}>Back</Button>
-      </div>
-    </div>
+    </>
   ) : (
     ''
   );

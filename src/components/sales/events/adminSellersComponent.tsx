@@ -1,7 +1,7 @@
 'use client';
 
-import CurrentEvents from './events/currentEventsComponent';
-import SalesBar from './events/salesBarComponent';
+import CurrentEvents from './currentEventsComponent';
+import SalesBar from './salesBarComponent';
 
 export default function AdminSellersComponent() {
   return (

@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useRefundOrder } from '@/hooks/admin/useRefundOrder';
 import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
 import { useUpdateOrder } from '@/hooks/admin/useUpdateOrder';
@@ -904,204 +905,204 @@ export default function AdminOrderEdit(props: EditProps) {
   }));
 
   return (
-    <Col
-      xs={24}
-      className="admin-container"
-      hidden={currentAdminSelection.selectedOrder === undefined}
-    >
-      <Row>
-        <Col>
-          <h3>{pageHeader}</h3>
-        </Col>
-      </Row>
-      <Row className="form-group">
-        <Col className="form-header">
-          <span className="title">Event:</span> {currentAdminSelection.selectedOrder?.eventTitle}
-          <br />
-          <span className="title">Event Date:</span> {eventDate}
-          <br />
-        </Col>
-      </Row>
-      <Row className="form-group">
-        <Col className="form-header">
-          <span className="title">Purchase Date:</span> {purchaseDate}
-          <br />
-          <span className="title">Order Status:</span>{' '}
-          {getOrderStatusText(currentAdminSelection.selectedOrder)}
-          <br />
-          <span className="title">Purchaser Name:</span> {purchaserName}
-          <br />
-          <span className="title">Number Tickets Sold:</span>{' '}
-          {currentAdminSelection.selectedOrder?.numTickets}
-          <br />
-          <div hidden={!currentAdminSelection.selectedOrder || currencyAbbrev === 'USD'}>
-            <span className="title">Exchange Rate:</span>{' '}
-            {currentAdminSelection.selectedOrder?.exchangeRate} <br />
-            <span className="title">Ticket Revenue {currencyAbbrev}:</span>{' '}
-            {(currentAdminSelection.selectedOrder?.revenue ?? 0).toFixed(2)} <br />
-            <span className="title">Service Fee Revenue {currencyAbbrev}:</span>{' '}
-            {(currentAdminSelection.selectedOrder?.serviceFees ?? 0).toFixed(2)} <br />
-          </div>
-          <span className="title">Ticket Revenue (USD):</span>{' '}
-          {(currentAdminSelection.selectedOrder?.revenueUsd ?? 0).toFixed(2)}
-          <br />
-          <span className="title">Service Fee Revenue (USD):</span>{' '}
-          {(currentAdminSelection.selectedOrder?.serviceFeesUsd ?? 0).toFixed(2)}
-          <br />
-        </Col>
-      </Row>
-      <Row
-        className="form-group"
-        hidden={
-          !currentAdminSelection.selectedOrder ||
-          !(
-            currentAdminSelection.selectedOrder.hasRefunds ||
-            currentAdminSelection.selectedOrder.hasChargebacks
-          )
-        }
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <Col
+        xs={24}
+        className="admin-container"
+        hidden={currentAdminSelection.selectedOrder === undefined}
       >
-        <Col className="form-header">
-          <span className="title">Number Tickets Refunded:</span>{' '}
-          {currentAdminSelection.selectedOrder?.numTicketsRefunded}
-          <br />
-          <div
-            hidden={
-              !currentAdminSelection.selectedOrder ||
-              currentAdminSelection.selectedOrder.currencyAbbrev === 'USD'
-            }
-          >
-            <span className="title">Ticket Revenue Refunded:</span>{' '}
-            {(currentAdminSelection.selectedOrder?.revenueRefunded ?? 0).toFixed(2)} <br />
-            <span className="title">Service Fee Revenue Refunded:</span>{' '}
-            {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefunded ?? 0).toFixed(2)}{' '}
+        <Row className="form-group">
+          <Col className="form-header">
+            <span className="title">Event:</span> {currentAdminSelection.selectedOrder?.eventTitle}
             <br />
-          </div>
-          <span className="title">Ticket Revenue Refunded (USD):</span>{' '}
-          {(currentAdminSelection.selectedOrder?.revenueRefundedUsd ?? 0).toFixed(2)}
-          <br />
-          <span className="title">Service Fee Revenue Refunded (USD):</span>{' '}
-          {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefundedUsd ?? 0).toFixed(2)}
-          <br />
-        </Col>
-      </Row>
+            <span className="title">Event Date:</span> {eventDate}
+            <br />
+          </Col>
+        </Row>
+        <Row className="form-group">
+          <Col className="form-header">
+            <span className="title">Purchase Date:</span> {purchaseDate}
+            <br />
+            <span className="title">Order Status:</span>{' '}
+            {getOrderStatusText(currentAdminSelection.selectedOrder)}
+            <br />
+            <span className="title">Purchaser Name:</span> {purchaserName}
+            <br />
+            <span className="title">Number Tickets Sold:</span>{' '}
+            {currentAdminSelection.selectedOrder?.numTickets}
+            <br />
+            <div hidden={!currentAdminSelection.selectedOrder || currencyAbbrev === 'USD'}>
+              <span className="title">Exchange Rate:</span>{' '}
+              {currentAdminSelection.selectedOrder?.exchangeRate} <br />
+              <span className="title">Ticket Revenue {currencyAbbrev}:</span>{' '}
+              {(currentAdminSelection.selectedOrder?.revenue ?? 0).toFixed(2)} <br />
+              <span className="title">Service Fee Revenue {currencyAbbrev}:</span>{' '}
+              {(currentAdminSelection.selectedOrder?.serviceFees ?? 0).toFixed(2)} <br />
+            </div>
+            <span className="title">Ticket Revenue (USD):</span>{' '}
+            {(currentAdminSelection.selectedOrder?.revenueUsd ?? 0).toFixed(2)}
+            <br />
+            <span className="title">Service Fee Revenue (USD):</span>{' '}
+            {(currentAdminSelection.selectedOrder?.serviceFeesUsd ?? 0).toFixed(2)}
+            <br />
+          </Col>
+        </Row>
+        <Row
+          className="form-group"
+          hidden={
+            !currentAdminSelection.selectedOrder ||
+            !(
+              currentAdminSelection.selectedOrder.hasRefunds ||
+              currentAdminSelection.selectedOrder.hasChargebacks
+            )
+          }
+        >
+          <Col className="form-header">
+            <span className="title">Number Tickets Refunded:</span>{' '}
+            {currentAdminSelection.selectedOrder?.numTicketsRefunded}
+            <br />
+            <div
+              hidden={
+                !currentAdminSelection.selectedOrder ||
+                currentAdminSelection.selectedOrder.currencyAbbrev === 'USD'
+              }
+            >
+              <span className="title">Ticket Revenue Refunded:</span>{' '}
+              {(currentAdminSelection.selectedOrder?.revenueRefunded ?? 0).toFixed(2)} <br />
+              <span className="title">Service Fee Revenue Refunded:</span>{' '}
+              {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefunded ?? 0).toFixed(2)}{' '}
+              <br />
+            </div>
+            <span className="title">Ticket Revenue Refunded (USD):</span>{' '}
+            {(currentAdminSelection.selectedOrder?.revenueRefundedUsd ?? 0).toFixed(2)}
+            <br />
+            <span className="title">Service Fee Revenue Refunded (USD):</span>{' '}
+            {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefundedUsd ?? 0).toFixed(2)}
+            <br />
+          </Col>
+        </Row>
 
-      <Row className="form-group">
-        <Col>
-          <Checkbox
-            checked={isActive && !isDeleted}
-            disabled={isDeleted || isComped}
-            onChange={(_, checked) => setIsActive(checked)}
-          >
-            Is Active?
-          </Checkbox>
-          <Checkbox
-            checked={isDeleted}
-            disabled={isComped}
-            onChange={(_, checked) => setIsDeleted(checked)}
-          >
-            Is Deleted?
-          </Checkbox>
-          <Checkbox checked={isComped} onChange={(_, checked) => setIsComped(checked)}>
-            Is Comped?
-          </Checkbox>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <h5>Tickets</h5>
-        </Col>
-      </Row>
-      <Row hidden={allTicketIds.length === 0}>
-        <Col className="bulk-arrow-row">
-          <div>
-            <FaArrowTurnDown className="bulk-arrow" />
-          </div>
-          <div>With selected:</div>
-          <div>
-            <SelectPicker
-              className="bulk-select"
-              value={selectedAction}
-              data={actionList}
-              size="lg"
-              onChange={(a) => setSelectedAction(a)}
-              cleanable={true}
-              menuAutoWidth={true}
-              onClean={() => setSelectedAction(null)}
-            />
-          </div>
-          <div>
-            <Button onClick={bulkEditConfirm}>Update</Button>
-          </div>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <table className="ticket-table">
-            <thead>
-              <tr>
-                <th>
-                  <Checkbox
-                    id={`tId_selectAll`}
-                    checked={allTicketIds.length > 0 && ticketIdList.length === allTicketIds.length}
-                    onChange={(_, checked) => selectAllTickets(checked)}
-                  />
-                </th>
-                <th>Ticket Id</th>
-                <th>Attendee First Name</th>
-                <th>Attendee Last Name</th>
-                <th hidden={!isComped}>Attendee Phone</th>
-                <th hidden={!isComped}>Attendee Email</th>
-                <th>Shirt Size</th>
-                <th hidden={isComped}>Price</th>
-                <th hidden={isComped}>Service Fees</th>
-                <th hidden={isComped || (!hasChargebacks && !hasRefunds)}>
-                  {hasChargebacks ? 'Chargeback Date' : 'Refund Date'}
-                </th>
-                <th hidden={isComped}>Checked-in</th>
-                <th hidden={isComped}>Active</th>
-                <th hidden={isComped}>&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody>{ticketRows}</tbody>
-          </table>
-        </Col>
-      </Row>
-      <Row className="refund-section-header" hidden={refundsDisabled || isComped}>
-        <Col>
-          <h5>Process Refunds</h5>
-        </Col>
-      </Row>
-      <Row className="refund-section" hidden={refundsDisabled || isComped}>
-        <Col>
-          <Button className="form-control-float" onClick={confirmDoRefund}>
-            Refund All Tickets
-          </Button>
-          <Checkbox
-            disabled={chargebackDisabled}
-            title={chargebackTitle}
-            className="form-control-float"
-            checked={markChargeback}
-            onChange={(_, checked) => setMarkChargeback(checked)}
-          >
-            Mark as chargeback?
-          </Checkbox>
-          <Checkbox
-            className="form-control-float"
-            checked={refundServiceFees}
-            onChange={(_, checked) => setRefundServiceFees(checked)}
-          >
-            Refund service fees?
-          </Checkbox>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Button onClick={onSubmit}>Submit</Button>{' '}
-          <Button hidden={id !== undefined} onClick={confirmGoBack}>
-            Back
-          </Button>
-        </Col>
-      </Row>
-    </Col>
+        <Row className="form-group">
+          <Col>
+            <Checkbox
+              checked={isActive && !isDeleted}
+              disabled={isDeleted || isComped}
+              onChange={(_, checked) => setIsActive(checked)}
+            >
+              Is Active?
+            </Checkbox>
+            <Checkbox
+              checked={isDeleted}
+              disabled={isComped}
+              onChange={(_, checked) => setIsDeleted(checked)}
+            >
+              Is Deleted?
+            </Checkbox>
+            <Checkbox checked={isComped} onChange={(_, checked) => setIsComped(checked)}>
+              Is Comped?
+            </Checkbox>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h5>Tickets</h5>
+          </Col>
+        </Row>
+        <Row hidden={allTicketIds.length === 0}>
+          <Col className="bulk-arrow-row">
+            <div>
+              <FaArrowTurnDown className="bulk-arrow" />
+            </div>
+            <div>With selected:</div>
+            <div>
+              <SelectPicker
+                className="bulk-select"
+                value={selectedAction}
+                data={actionList}
+                size="lg"
+                onChange={(a) => setSelectedAction(a)}
+                cleanable={true}
+                menuAutoWidth={true}
+                onClean={() => setSelectedAction(null)}
+              />
+            </div>
+            <div>
+              <Button onClick={bulkEditConfirm}>Update</Button>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <table className="ticket-table">
+              <thead>
+                <tr>
+                  <th>
+                    <Checkbox
+                      id={`tId_selectAll`}
+                      checked={
+                        allTicketIds.length > 0 && ticketIdList.length === allTicketIds.length
+                      }
+                      onChange={(_, checked) => selectAllTickets(checked)}
+                    />
+                  </th>
+                  <th>Ticket Id</th>
+                  <th>Attendee First Name</th>
+                  <th>Attendee Last Name</th>
+                  <th hidden={!isComped}>Attendee Phone</th>
+                  <th hidden={!isComped}>Attendee Email</th>
+                  <th>Shirt Size</th>
+                  <th hidden={isComped}>Price</th>
+                  <th hidden={isComped}>Service Fees</th>
+                  <th hidden={isComped || (!hasChargebacks && !hasRefunds)}>
+                    {hasChargebacks ? 'Chargeback Date' : 'Refund Date'}
+                  </th>
+                  <th hidden={isComped}>Checked-in</th>
+                  <th hidden={isComped}>Active</th>
+                  <th hidden={isComped}>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>{ticketRows}</tbody>
+            </table>
+          </Col>
+        </Row>
+        <Row className="refund-section-header" hidden={refundsDisabled || isComped}>
+          <Col>
+            <h5>Process Refunds</h5>
+          </Col>
+        </Row>
+        <Row className="refund-section" hidden={refundsDisabled || isComped}>
+          <Col>
+            <Button className="form-control-float" onClick={confirmDoRefund}>
+              Refund All Tickets
+            </Button>
+            <Checkbox
+              disabled={chargebackDisabled}
+              title={chargebackTitle}
+              className="form-control-float"
+              checked={markChargeback}
+              onChange={(_, checked) => setMarkChargeback(checked)}
+            >
+              Mark as chargeback?
+            </Checkbox>
+            <Checkbox
+              className="form-control-float"
+              checked={refundServiceFees}
+              onChange={(_, checked) => setRefundServiceFees(checked)}
+            >
+              Refund service fees?
+            </Checkbox>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button onClick={onSubmit}>Submit</Button>{' '}
+            <Button hidden={id !== undefined} onClick={confirmGoBack}>
+              Back
+            </Button>
+          </Col>
+        </Row>
+      </Col>
+    </>
   );
 }
