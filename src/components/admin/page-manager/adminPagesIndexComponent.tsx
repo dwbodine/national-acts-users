@@ -85,7 +85,6 @@ export default function AdminPagesIndex() {
       pageType: {
         pageTypeId: 1,
         pageTypeName: '',
-        pageTypeTemplate: '',
       },
       route: '',
       title: '',
