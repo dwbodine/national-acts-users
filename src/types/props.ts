@@ -27,7 +27,6 @@ import {
   ITopSellingLocation,
   Role,
   UserActivityType,
-  UserSeller,
 } from './user';
 
 export interface PageProps {
@@ -356,7 +355,6 @@ export interface CustomToolTipParams {
 
 export interface VIPModalProps {
   IsOpen?: boolean;
-  Seller?: UserSeller;
   SellerHomePage?: string;
   Events?: VipEvent[];
   IsAdmin?: boolean;

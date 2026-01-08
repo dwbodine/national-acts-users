@@ -152,7 +152,9 @@ export default function AllEvents() {
     }
   };
 
-  return (
+  return currentReportSelection.currentEvents === undefined ? (
+    ''
+  ) : (
     <>
       <Row>
         <Col className="all-events-buttons">

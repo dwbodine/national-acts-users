@@ -1,7 +1,6 @@
 import moment from 'moment';
 
 import { VipEvent } from '@/types/event';
-import { UserSeller } from '@/types/user';
 
 import { getEventStatusText } from './eventUtils';
 
@@ -63,13 +62,9 @@ const exportVipItineraryToHtml = (
   return Promise.resolve(htmlString);
 };
 
-const exportVipItineraryToCSV = (
-  events: VipEvent[],
-  seller: UserSeller,
-  isAdmin: boolean,
-): Promise<string> => {
+const exportVipItineraryToCSV = (events: VipEvent[], isAdmin: boolean): Promise<string> => {
   let csvString = '';
-  if (seller && events.length > 0) {
+  if (events.length > 0) {
     csvString +=
       '"Date","Venue","City / State","Full Address","Ticket Link","VIP Link","VIP Link Status","VIP Link in BandsInTown"\n';
     events.forEach((evt) => {

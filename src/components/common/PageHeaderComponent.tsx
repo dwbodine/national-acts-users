@@ -47,6 +47,7 @@ export default function PageHeader(props: PageHeaderProps) {
             value={datePickerStart}
             oneTap
             cleanable={false}
+            placement="bottomEnd"
           />
         </div>
         <Button

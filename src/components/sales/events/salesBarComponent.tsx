@@ -319,7 +319,6 @@ export default function SalesBar() {
               <VIPItineraryModal
                 IsAdmin={isAdmin}
                 IsOpen={vipItineraryOpen}
-                Seller={currentReportSelection.seller}
                 Events={currentReportSelection.currentEvents}
                 OnClose={handleItineraryClose}
                 SellerHomePage={sellerHomePage}

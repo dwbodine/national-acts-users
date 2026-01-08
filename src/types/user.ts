@@ -17,8 +17,8 @@ export interface JwtPayload {
 
 export type UserSeller = {
   sellerId: number;
-  sellerName: string;
-  sellerType: SellerType;
+  sellerName?: string;
+  sellerType?: SellerType;
   roleId?: number;
   permissions?: number[];
   routes?: string[];

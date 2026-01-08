@@ -7,12 +7,12 @@ import { toast } from 'react-toastify';
 import { Button, Col, Container, Modal, Radio, RadioGroup, Row } from 'rsuite';
 import { ValueType } from 'rsuite/esm/Radio';
 
-import { useGetPublicEvents } from '@/hooks/event/useGetPublicEvents';
+import { useGetEvents } from '@/hooks/event/useGetEvents';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
 import { VIPModalProps } from '@/types/props';
 import { GetEventsResponse } from '@/types/responses';
-import { UserSeller } from '@/types/user';
+import { UserReportSelection } from '@/types/user';
 import { downloadCsvFile } from '@/utils/downloadFile';
 import { exportVipItineraryToCSV, exportVipItineraryToHtml } from '@/utils/exportVipItinerary';
 import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReportSelection';
@@ -22,7 +22,6 @@ import ReportDatePicker from '../../common/reportDatePickerControl';
 export default function VIPItineraryModal(props: VIPModalProps) {
   const isOpen = props.IsOpen ?? false;
   const isAdmin = props.IsAdmin ?? false;
-  const currentSeller: UserSeller | undefined = props.Seller;
   const sellerHomePage: string = props.SellerHomePage ?? '';
   const currentEvents: VipEvent[] = props.Events ?? [];
   const onClose = props.OnClose;
@@ -33,9 +32,9 @@ export default function VIPItineraryModal(props: VIPModalProps) {
   const [startEventUnix, setStartEventUnix] = useState(0);
   const [endUnix, setEndUnix] = useState(0);
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
-  const { getPublicEvents } = useGetPublicEvents();
+  const { getEvents } = useGetEvents();
 
-  const currentSellerName = currentSeller?.sellerName;
+  const currentSellerName = currentReportSelection?.seller?.sellerName;
   const lastEvent = currentEvents[currentEvents.length - 1];
   const startEventDateStr =
     currentEvents.length > 0 && currentEvents[0] ? currentEvents[0].eventDate : '';
@@ -47,7 +46,10 @@ export default function VIPItineraryModal(props: VIPModalProps) {
     if (startEventDateStr && endEventDateStr) {
       const seUnix = moment(startEventDateStr).unix();
       const enUnix = moment(endEventDateStr).unix();
-      if (startEventUnix === 0) {
+      if (nowUnix > enUnix) {
+        setDateRangeValue('1');
+      }
+      if (startEventUnix === 0 || startEventUnix !== seUnix) {
         setStartEventUnix(seUnix);
       }
       if (startCurrentUnix === 0) {
@@ -59,7 +61,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
           setStartCurrentUnix(nowUnix);
         }
       }
-      if (endUnix === 0) {
+      if (endUnix === 0 || endUnix !== enUnix) {
         setEndUnix(enUnix);
       }
     } else {
@@ -83,10 +85,6 @@ export default function VIPItineraryModal(props: VIPModalProps) {
   };
 
   const getVipItinerary = () => {
-    if (!currentSeller || !currentSeller.sellerId) {
-      toast.warn('Seller is undefined');
-      return;
-    }
     if (currentEvents.length === 0) {
       toast.warn('No events to export');
       return;
@@ -110,24 +108,27 @@ export default function VIPItineraryModal(props: VIPModalProps) {
 
     const start = dateRangeValue === '1' ? startEventUnix : startCurrentUnix;
     const end = endUnix;
-    const { sellerId } = currentSeller;
 
-    void getPublicEvents(start, end, sellerId).then((response: GetEventsResponse) => {
+    const reportSelection: UserReportSelection = {
+      ...currentReportSelection,
+      start: start,
+      end: end,
+    };
+
+    void getEvents(reportSelection).then((response: GetEventsResponse) => {
       if (response.events && !response.error) {
         const eventsToExport = response.events;
         if (formatValue === '1') {
-          void exportVipItineraryToCSV(eventsToExport, currentSeller, isAdmin).then(
-            (csvData: string) => {
-              const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
-              downloadCsvFile(fileName, csvData);
-              setIsReportLoading(false);
-              if (onClose) {
-                onClose();
-              }
-            },
-          );
+          void exportVipItineraryToCSV(eventsToExport, isAdmin).then((csvData: string) => {
+            const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
+            downloadCsvFile(fileName, csvData);
+            setIsReportLoading(false);
+            if (onClose) {
+              onClose();
+            }
+          });
         } else {
-          const title = `${currentSeller.sellerName} Event Itinerary`;
+          const title = `${currentSellerName} Event Itinerary`;
           localStorage.setItem('pdfTitle', title);
           void exportVipItineraryToHtml(eventsToExport, title, sellerHomePage, isAdmin).then(
             (htmlString: string) => {
@@ -201,7 +202,9 @@ export default function VIPItineraryModal(props: VIPModalProps) {
                 onChange={onDateRangeSelect}
                 disabled={isReportLoading}
               >
-                <Radio value="0">Upcoming dates only {currentRangeLabel}</Radio>
+                <Radio value="0" hidden={nowUnix > endUnix}>
+                  Upcoming dates only {currentRangeLabel}
+                </Radio>
                 <Radio value="1">
                   Selected date range
                   <div className="itinerary-dates">

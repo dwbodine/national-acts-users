@@ -41,9 +41,7 @@ export default function AllEventsAgenda() {
     : undefined;
 
   return vipEvents === undefined ? (
-    <Row>
-      <Col xs={24}>No data returned</Col>
-    </Row>
+    ''
   ) : (
     <Row>
       <Col xs={24}>
