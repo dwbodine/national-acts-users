@@ -148,8 +148,8 @@ export default function AdminRoleEdit() {
         className="admin-container"
         hidden={!(permissionRows.length > 0 && currentAdminSelection.selectedRole !== undefined)}
       >
-        <div className="form-group">
-          <label className="mt-4">Role Name</label>
+        <div>
+          <label>Role Name</label>
           <Input
             value={roleName ?? ''}
             onChange={setRoleName}

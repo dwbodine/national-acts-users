@@ -323,11 +323,11 @@ export default function AdminUserEdit() {
     <>
       <PageHeader pageTitle="Edit User" />
       <div className="admin-container">
-        <div className="form-group">
-          <label className="mt-4">Username: {username}</label>
+        <div>
+          <label>Username: {username}</label>
         </div>
-        <div className="form-group">
-          <label className="mt-4">First Name</label>
+        <div>
+          <label>First Name</label>
           <Input
             value={firstName ?? ''}
             onChange={setFirstName}
@@ -335,8 +335,8 @@ export default function AdminUserEdit() {
             placeholder="first name"
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">Last Name</label>
+        <div>
+          <label>Last Name</label>
           <Input
             value={lastName ?? ''}
             onChange={setLastName}
@@ -344,8 +344,8 @@ export default function AdminUserEdit() {
             placeholder="last name"
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">Mobile number</label>
+        <div>
+          <label>Mobile number</label>
           <Input
             value={mobile ?? ''}
             onChange={setMobile}
@@ -353,7 +353,7 @@ export default function AdminUserEdit() {
             placeholder="mobile number"
           />
         </div>
-        <div className="form-group">
+        <div>
           <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
             Is Active?
           </Checkbox>
@@ -373,12 +373,12 @@ export default function AdminUserEdit() {
             Disable check-in permission?
           </Checkbox>
         </div>
-        <div className="form-group" hidden={currentAdminSelection.selectedUser.isAdmin}>
-          <label className="mt-4">Sellers:</label>
+        <div hidden={currentAdminSelection.selectedUser.isAdmin}>
+          <label>Sellers:</label>
           {sellerRows}
         </div>
-        <div className="form-group">
-          <label className="mt-4">Notes:</label>
+        <div>
+          <label>Notes:</label>
           <textarea onChange={(e) => setNotes(e.target.value)} value={notes ?? ''} />
         </div>
         <div className="admin-button-group">

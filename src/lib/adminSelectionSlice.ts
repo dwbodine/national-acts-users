@@ -178,7 +178,7 @@ export const adminSelectionSlice = createSlice({
       state.mustSavePage = action.payload;
       return state;
     },
-    setPageOrders: (state, action: PayloadAction<Map<number, Page>>) => {
+    setPageOrders: (state, action: PayloadAction<Page[]>) => {
       state.pageOrders = action.payload;
       return state;
     },

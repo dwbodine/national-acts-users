@@ -709,7 +709,7 @@ export default function EventDetail(props: EditProps) {
                   <Input
                     value={searchTerm ?? ''}
                     onChange={setSearchTerm}
-                    className="form-control search-text-input"
+                    className="search-text-input"
                     placeholder="Search for orders..."
                     hidden={isLoading || !orderRows || orderRows.length === 0}
                   />

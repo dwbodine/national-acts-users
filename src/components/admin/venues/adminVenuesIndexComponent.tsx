@@ -158,7 +158,7 @@ export default function AdminVenuesIndex() {
               value={searchTerm ?? ''}
               onChange={setSearchTerm}
               onKeyDown={submitOnEnter}
-              className="form-control search-text-input no-print"
+              className="search-text-input no-print"
               placeholder="Search for venues by name or address..."
             />
           </Col>

@@ -71,7 +71,7 @@ export default function ResetPasswordComponent() {
           <Col>
             <Row>
               <Col>
-                <div className="form-group">
+                <div>
                   <label>New Password:</label>
                   <Input
                     type="password"
@@ -86,7 +86,7 @@ export default function ResetPasswordComponent() {
             </Row>
             <Row>
               <Col>
-                <div className="form-group">
+                <div>
                   <label>Confirm Password:</label>
                   <Input
                     type="password"

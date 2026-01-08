@@ -125,7 +125,7 @@ export default function AdminPagesIndex() {
         <Input
           value={searchTerm}
           onChange={setSearchTerm}
-          className="form-control search-text-input no-print"
+          className="search-text-input no-print"
           placeholder="Search for pages by title..."
           hidden={currentAdminSelection.allPages === undefined}
         />

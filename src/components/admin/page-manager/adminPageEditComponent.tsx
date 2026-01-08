@@ -666,39 +666,39 @@ export default function AdminPageEdit() {
     <>
       <PageHeader pageTitle={pageHeader} />
       <Row className="admin-container">
-        <Col>
-          <Row className="form-group">
-            <Col>
+        <Col xs={24}>
+          <Row>
+            <Col xs={24}>
               <Checkbox checked={!isActive} onChange={(_, checked) => setIsActive(!checked)}>
                 Page inactive on website?
               </Checkbox>
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
-              <label className="mt-4">Main Page Title (most viewed on the site)</label>
+          <Row>
+            <Col xs={24}>
+              <label>Main Page Title (most viewed on the site)</label>
               <Input
                 value={title ?? ''}
                 onChange={setPageTitle}
-                className="form-control form-control-half"
+                className="form-control-half"
                 placeholder="page title"
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
-              <label className="mt-4">Route (how it shows up in the url)</label>
+          <Row>
+            <Col xs={24}>
+              <label>Route (how it shows up in the url)</label>
               <Input
                 value={route ?? ''}
                 onChange={setPageRoute}
-                className="form-control form-control-half"
+                className="form-control-half"
                 placeholder="page route"
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
-              <label className="mt-4">Page Type</label>
+          <Row>
+            <Col xs={24} md={12}>
+              <label>Page Type</label>
               <SelectPicker
                 value={selectedPageTypeId}
                 data={pageTypeList}
@@ -711,8 +711,8 @@ export default function AdminPageEdit() {
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
+          <Row>
+            <Col xs={24}>
               <AdminFileUpload
                 ImageType={ImageType.HEADERS}
                 Title="Top Image (ideally 1200-1600px wide, max is 1600px)"
@@ -728,8 +728,8 @@ export default function AdminPageEdit() {
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
+          <Row>
+            <Col xs={24}>
               <AdminFileUpload
                 ImageType={ImageType.THUMBNAILS}
                 Title="Icon (rectangle, no wider than 400px)"
@@ -745,8 +745,8 @@ export default function AdminPageEdit() {
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
+          <Row>
+            <Col xs={24}>
               <AdminFileUpload
                 ImageType={ImageType.PREVIEWS}
                 Title="Link Preview Image (rectangle, no wider than 400px)"
@@ -762,8 +762,8 @@ export default function AdminPageEdit() {
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
+          <Row>
+            <Col xs={24}>
               <AdminFileUpload
                 ImageType={ImageType.LOGOS}
                 Title="Logo Only (rectangle, must be a PNG and between 250-400 px wide)"
@@ -779,32 +779,33 @@ export default function AdminPageEdit() {
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
-              <label className="mt-4">Subtitle 1</label>
+          <Row>
+            <Col xs={24}>
+              <label>Subtitle 1</label>
               <Input
                 value={subtitle1 ?? ''}
                 onChange={setSubTitle1}
-                className="form-control form-control-half"
+                className="form-control-half"
                 placeholder="Shows up underneath page title"
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
-              <label className="mt-4">Subtitle 2</label>
+          <Row>
+            <Col xs={24}>
+              <label>Subtitle 2</label>
               <Input
                 value={subtitle2 ?? ''}
                 onChange={setSubTitle2}
-                className="form-control form-control-half"
+                className="form-control-half"
                 placeholder="Shows up underneath subtitle 1"
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
-              <label className="mt-4">HTML Text</label>
+          <Row>
+            <Col xs={24}>
+              <label>HTML Text</label>
               <Textarea
+                className="form-control-half"
                 rows={10}
                 id="htmlText"
                 onChange={setHtmlText}
@@ -813,15 +814,16 @@ export default function AdminPageEdit() {
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
+          <Row>
+            <Col xs={24}>
               <Checkbox
                 checked={useIncludeDates}
                 onChange={(_, checked) => setUseIncludeDates(checked)}
               >
                 Use include date range
               </Checkbox>
-              <label className="mt-4">Include start date</label>
+              <br />
+              <label>Include start date</label>
               <DatePicker
                 id="includeStart"
                 format="M/d/yyyy"
@@ -832,7 +834,7 @@ export default function AdminPageEdit() {
                 disabled={!useIncludeDates}
                 onClean={() => setIncludeStart(null)}
               />
-              <label className="mt-4">Include end date</label>
+              <label>Include end date</label>
               <DatePicker
                 id="includeEnd"
                 format="M/d/yyyy"
@@ -845,15 +847,16 @@ export default function AdminPageEdit() {
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
+          <Row>
+            <Col xs={24}>
               <Checkbox
                 checked={useExcludeDates}
                 onChange={(_, checked) => setUseExcludeDates(checked)}
               >
                 Use exclude date range
               </Checkbox>
-              <label className="mt-4">Exclude start date</label>
+              <br />
+              <label>Exclude start date</label>
               <DatePicker
                 id="excludeStart"
                 format="M/d/yyyy"
@@ -864,7 +867,7 @@ export default function AdminPageEdit() {
                 disabled={!useExcludeDates}
                 onClean={() => setExcludeStart(null)}
               />
-              <label className="mt-4">Exclude end date</label>
+              <label>Exclude end date</label>
               <DatePicker
                 id="excludeEnd"
                 format="M/d/yyyy"
@@ -877,32 +880,31 @@ export default function AdminPageEdit() {
               />
             </Col>
           </Row>
-          <Row className="form-group">
-            <Col>
-              <label className="mt-4">Google Analytics ID</label>
+          <Row>
+            <Col xs={24}>
+              <label>Google Analytics ID</label>
               <Input
                 value={googleAnalyticsId ?? ''}
                 onChange={setGoogleAnalyticsId}
-                className="form-control form-control-half"
+                className="form-control-half"
                 placeholder="e.g.: UA-xxxxxxxxx-x"
               />
             </Col>
           </Row>
           <Row
-            className="form-group"
             hidden={
               !pageSellerTypeIds.includes(
                 currentAdminSelection?.selectedPage?.pageType?.pageTypeId ?? 0,
               )
             }
           >
-            <Col>
+            <Col xs={24}>
               <h4>Page Sellers</h4>
               {sellerRows}
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col xs={24}>
               <Button onClick={onSubmit} disabled={isUploading}>
                 Submit
               </Button>{' '}

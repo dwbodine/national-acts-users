@@ -45,8 +45,8 @@ export default function AdminSellerGlobalEdit() {
             dispatch(setCountries(response.countries));
           } else {
             toast.error(response.error);
-            dispatch(setIsLoading(false));
           }
+          dispatch(setIsLoading(false));
         });
       } else if (
         currentAdminSelection.ticketSocketAccounts === undefined ||
@@ -270,7 +270,7 @@ export default function AdminSellerGlobalEdit() {
         currentCategories = currentCategories.map((x) => {
           if (x.ticketSocketId === ticketSocketId) {
             const cat = { ...x };
-            cat.eventCategoryId = eventCategoryId;
+            cat.eventCategoryId = eventCategoryId ?? 0;
             cat.isVisibleOnSite = eventCategoryId !== undefined && eventCategoryId > 0;
             cat.isVisibleOnPortal = eventCategoryId !== undefined && eventCategoryId > 0;
             return cat;
@@ -502,40 +502,36 @@ export default function AdminSellerGlobalEdit() {
         (x) => x.ticketSocketId === account.ticketSocketId,
       );
       const disabled = selectedCategory && selectedCategory.hasEvents;
-      const options: ReactElement[] = [];
-      options.push(
-        <option key={`a${index}_00`} value={0}>
-          {' '}
-          -- Select one --
-        </option>,
-      );
-      account.categories?.forEach((x, i) => {
-        options.push(
-          <option key={`a${index}_${i}`} value={x.eventCategoryId}>
-            {x.name}
-          </option>,
-        );
+      const categoryId: number | null = selectedCategory?.eventCategoryId
+        ? Number(selectedCategory.eventCategoryId)
+        : null;
+      const options: ItemDataType<number>[] = [];
+      account.categories?.forEach((x) => {
+        options.push({
+          label: x.name,
+          value: Number(x.eventCategoryId),
+        });
       });
       const rowKey = `accoutnRow${index}`;
-      const key = `account${index}`;
       categoryRows.push(
-        <Row key={rowKey} className="form-group">
+        <Row key={rowKey}>
           <Col xs={4}>
-            <label className="mt-4">Category for {account.name}</label>
+            <label>Category for {account.name}</label>
           </Col>
-          <Col xs={4}>
+          <Col xs={12} md={8}>
             <SelectPicker
+              block
               data={options}
               disabled={disabled}
-              key={key}
               id={account.ticketSocketId.toString()}
+              value={categoryId}
+              size="lg"
               onChange={(value) =>
-                updateSellerEventCategory(parseInt(`${account.ticketSocketId}`), value ?? undefined)
+                updateSellerEventCategory(account.ticketSocketId, value ?? undefined)
               }
-              defaultValue={selectedCategory?.eventCategoryId}
             />
           </Col>
-          <Col xs={2}>
+          <Col xs={4}>
             <Checkbox
               disabled={!selectedCategory}
               checked={selectedCategory?.isVisibleOnSite ?? false}
@@ -550,7 +546,7 @@ export default function AdminSellerGlobalEdit() {
               Visible on site?
             </Checkbox>
           </Col>
-          <Col xs={2}>
+          <Col xs={4}>
             <Checkbox
               disabled={!selectedCategory}
               checked={selectedCategory?.isVisibleOnPortal ?? false}
@@ -570,20 +566,17 @@ export default function AdminSellerGlobalEdit() {
     });
   }
 
-  const sellerTypeOptions: ReactElement[] = [];
+  const sellerTypeOptions: ItemDataType<number>[] = [];
   const sellerTypeValues = Object.values(SellerType).filter((v) => !isNaN(Number(v)));
-  sellerTypeOptions.push(
-    <option key={`st_00`} value={0}>
-      {' '}
-      -- Select one --
-    </option>,
-  );
-  sellerTypeValues.forEach((x, i) => {
-    sellerTypeOptions.push(
-      <option key={`st_${i}`} value={x}>
-        {SellerType[Number(x)]}
-      </option>,
-    );
+  sellerTypeOptions.push({
+    label: '-- Select One --',
+    value: 0,
+  });
+  sellerTypeValues.forEach((x) => {
+    sellerTypeOptions.push({
+      label: SellerType[Number(x)],
+      value: Number(x),
+    });
   });
 
   const pageHeaderTitle = (currentSeller?.sellerId ?? 0) > 0 ? 'Edit seller' : 'Add seller';
@@ -602,36 +595,37 @@ export default function AdminSellerGlobalEdit() {
         className="admin-container"
         hidden={!((allAccounts?.length ?? 0) > 0 && currentSeller !== undefined)}
       >
-        <Col>
-          <Row className="form-group">
+        <Col xs={24}>
+          <Row>
             <Col xs={4}>
-              <label className="mt-4">Seller Name</label>
+              <label>Seller Name</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Input
                 value={currentSeller?.name ?? ''}
                 onChange={setSellerName}
-                className="form-control form-control-half"
                 placeholder="seller name"
               />
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col xs={4}>
-              <label className="mt-4">Seller Type</label>
+              <label>Seller Type</label>
             </Col>
-            <Col>
+            <Col xs={20} md={8}>
               <SelectPicker
+                block
+                size="lg"
                 onChange={(value) => updateSellerType(value ?? undefined)}
-                defaultValue={selectedSellerType}
+                value={selectedSellerType || 0}
                 data={sellerTypeOptions}
               />
             </Col>
           </Row>
           {categoryRows}
-          <Row className="form-group">
+          <Row>
             <Col xs={4}></Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Checkbox
                 checked={currentSeller?.hideInList ?? false}
                 onChange={(_, checked) => setHideInList(checked)}
@@ -640,9 +634,9 @@ export default function AdminSellerGlobalEdit() {
               </Checkbox>
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col xs={4}></Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Checkbox
                 checked={!(currentSeller?.isActive ?? false)}
                 onChange={(_, checked) => setIsActive(!checked)}
@@ -656,63 +650,47 @@ export default function AdminSellerGlobalEdit() {
               <h2>Set Default Values</h2>
             </Col>
           </Row>
-          <Row className="form-group" hidden={isArtist}>
+          <Row hidden={isArtist}>
             <Col xs={4}>
-              <label className="mt-4">Address</label>
+              <label>Address</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Input
                 value={currentSeller?.address ?? ''}
                 onChange={setAddress}
-                className="form-control form-control-half"
                 placeholder="address"
               />
             </Col>
           </Row>
-          <Row className="form-group" hidden={isArtist}>
+          <Row hidden={isArtist}>
             <Col xs={4}>
-              <label className="mt-4">City</label>
+              <label>City</label>
             </Col>
-            <Col>
-              <Input
-                value={currentSeller?.city ?? ''}
-                onChange={setCity}
-                className="form-control form-control-half"
-                placeholder="city"
-              />
+            <Col xs={20} md={12}>
+              <Input value={currentSeller?.city ?? ''} onChange={setCity} placeholder="city" />
             </Col>
           </Row>
-          <Row className="form-group" hidden={isArtist}>
+          <Row hidden={isArtist}>
             <Col xs={4}>
-              <label className="mt-4">State</label>
+              <label>State</label>
             </Col>
-            <Col>
-              <Input
-                value={currentSeller?.state ?? ''}
-                onChange={setState}
-                className="form-control form-control-half"
-                placeholder="state"
-              />
+            <Col xs={20} md={12}>
+              <Input value={currentSeller?.state ?? ''} onChange={setState} placeholder="state" />
             </Col>
           </Row>
-          <Row className="form-group" hidden={isArtist}>
+          <Row hidden={isArtist}>
             <Col xs={4}>
-              <label className="mt-4">Postal Code</label>
+              <label>Postal Code</label>
             </Col>
-            <Col>
-              <Input
-                value={currentSeller?.zip ?? ''}
-                onChange={setZip}
-                className="form-control form-control-half"
-                placeholder="postal code"
-              />
+            <Col xs={20} md={12}>
+              <Input value={currentSeller?.zip ?? ''} onChange={setZip} placeholder="postal code" />
             </Col>
           </Row>
-          <Row className="form-group" hidden={isArtist}>
+          <Row hidden={isArtist}>
             <Col xs={4}>
-              <label className="mt-4">Country</label>
+              <label>Country</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <SelectPicker
                 className="admin-seller-select-value"
                 menuAutoWidth={true}
@@ -724,126 +702,113 @@ export default function AdminSellerGlobalEdit() {
               />
             </Col>
           </Row>
-          <Row className="form-group" hidden={isArtist}>
+          <Row hidden={isArtist}>
             <Col xs={4}>
-              <label className="mt-4">Phone</label>
+              <label>Phone</label>
             </Col>
-            <Col>
-              <Input
-                value={currentSeller?.phone ?? ''}
-                onChange={setPhone}
-                className="form-control form-control-half"
-                placeholder="phone"
-              />
+            <Col xs={20} md={12}>
+              <Input value={currentSeller?.phone ?? ''} onChange={setPhone} placeholder="phone" />
             </Col>
           </Row>
-          <Row className="form-group" hidden={isArtist}>
+          <Row hidden={isArtist}>
             <Col xs={4}>
-              <label className="mt-4">Email</label>
+              <label>Email</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Input
                 value={currentSeller?.email ?? ''}
                 onChange={setEmail}
-                className="form-control form-control-half"
                 placeholder="email"
                 type="email"
               />
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col xs={4}>
-              <label className="mt-4">Twitter</label>
+              <label>Twitter</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Input
                 value={currentSeller?.twitter ?? ''}
                 onChange={setTwitter}
-                className="form-control form-control-half"
                 placeholder="Twitter (X) url"
               />
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col xs={4}>
-              <label className="mt-4">Facebook</label>
+              <label>Facebook</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Input
                 value={currentSeller?.facebook ?? ''}
                 onChange={setFacebook}
-                className="form-control form-control-half"
                 placeholder="Facebook url"
               />
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col xs={4}>
-              <label className="mt-4">Instagram</label>
+              <label>Instagram</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Input
                 value={currentSeller?.instagram ?? ''}
                 onChange={setInstagram}
-                className="form-control form-control-half"
                 placeholder="Instagram url"
               />
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col xs={4}>
-              <label className="mt-4">YouTube</label>
+              <label>YouTube</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Input
                 value={currentSeller?.youtube ?? ''}
                 onChange={setYouTube}
-                className="form-control form-control-half"
                 placeholder="YouTube url"
               />
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col xs={4}>
-              <label className="mt-4">Spotify</label>
+              <label>Spotify</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Input
                 value={currentSeller?.spotify ?? ''}
                 onChange={setSpotify}
-                className="form-control form-control-half"
                 placeholder="Spotify url"
               />
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col xs={4}>
-              <label className="mt-4">Website</label>
+              <label>Website</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Input
                 value={currentSeller?.website ?? ''}
                 onChange={setWebsite}
-                className="form-control form-control-half"
                 placeholder="Website url"
               />
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col xs={4}>
-              <label className="mt-4">Website Display Text</label>
+              <label>Website Display Text</label>
             </Col>
-            <Col>
+            <Col xs={20} md={12}>
               <Input
                 value={currentSeller?.websiteDisplayText ?? ''}
                 onChange={setWebsiteDisplayText}
-                className="form-control form-control-half"
                 placeholder="Website display text (shown instead of url)"
               />
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col xs={24}>
               <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
             </Col>
           </Row>

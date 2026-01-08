@@ -95,7 +95,7 @@ export default function AdminOrdersSearch() {
               value={searchTerm}
               onChange={setSearchTerm}
               onKeyDown={submitOnEnter}
-              className="form-control search-text-input no-print"
+              className="search-text-input no-print"
               placeholder="Search for orders by purchaser name, email, order ID, event title or seller name..."
             />
             <Button disabled={!searchTerm || searchTerm.length < 3} onClick={searchAllOrders}>

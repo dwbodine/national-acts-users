@@ -386,8 +386,8 @@ export default function AdminTourEdit() {
     <>
       <PageHeader pageTitle={pageHeader} />
       <div className="admin-container">
-        <div className="form-group">
-          <label className="mt-4">Tour Name</label>
+        <div>
+          <label>Tour Name</label>
           <Input
             value={tourName ?? ''}
             onChange={setTourName}
@@ -395,8 +395,8 @@ export default function AdminTourEdit() {
             placeholder="tour name"
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">Sellers</label>
+        <div>
+          <label>Sellers</label>
           <CheckPicker
             sticky={true}
             countable={false}
@@ -410,8 +410,8 @@ export default function AdminTourEdit() {
             ref={sellerRef}
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">Events</label>
+        <div>
+          <label>Events</label>
           <CheckPicker
             data={eventList}
             renderMenuItem={renderEventItem}
@@ -421,8 +421,8 @@ export default function AdminTourEdit() {
             onClean={onEventClean}
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">Announce Date (in Pacific Time):</label>
+        <div>
+          <label>Announce Date (in Pacific Time):</label>
           <DatePicker
             id="announceDate"
             format="M/d/yyyy"

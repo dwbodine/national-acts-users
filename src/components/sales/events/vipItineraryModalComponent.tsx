@@ -192,10 +192,8 @@ export default function VIPItineraryModal(props: VIPModalProps) {
       <Modal.Body>
         <Container className="fluid">
           <Row>
-            <Col xs={16} className="form-group">
-              <label className="mt-4" htmlFor="date-radio-group">
-                Date Range
-              </label>
+            <Col xs={16}>
+              <label htmlFor="date-radio-group">Date Range</label>
               <RadioGroup
                 name="date-radio-group"
                 value={dateRangeValue}
@@ -221,10 +219,8 @@ export default function VIPItineraryModal(props: VIPModalProps) {
                 </Radio>
               </RadioGroup>
             </Col>
-            <Col xs={8} className="form-group">
-              <label className="mt-4" htmlFor="format-radio-group">
-                Export To:
-              </label>
+            <Col xs={8}>
+              <label htmlFor="format-radio-group">Export To:</label>
               <RadioGroup
                 name="format-radio-group"
                 value={formatValue}

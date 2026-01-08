@@ -158,8 +158,8 @@ export default function AdminVenueEdit() {
     <>
       <PageHeader pageTitle="Edit Venue" />
       <div className="admin-container">
-        <div className="form-group">
-          <label className="mt-4">Venue name</label>
+        <div>
+          <label>Venue name</label>
           <Input
             value={venueName ?? ''}
             onChange={setVenueName}
@@ -167,8 +167,8 @@ export default function AdminVenueEdit() {
             placeholder="venue name"
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">Address</label>
+        <div>
+          <label>Address</label>
           <Input
             value={address ?? ''}
             onChange={setAddress}
@@ -176,8 +176,8 @@ export default function AdminVenueEdit() {
             placeholder="address"
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">City</label>
+        <div>
+          <label>City</label>
           <Input
             value={city ?? ''}
             onChange={setCity}
@@ -185,8 +185,8 @@ export default function AdminVenueEdit() {
             placeholder="city"
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">State</label>
+        <div>
+          <label>State</label>
           <Input
             value={state ?? ''}
             onChange={setState}
@@ -194,8 +194,8 @@ export default function AdminVenueEdit() {
             placeholder="state"
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">Postal Code</label>
+        <div>
+          <label>Postal Code</label>
           <Input
             value={zipCode ?? ''}
             onChange={setZipCode}
@@ -203,8 +203,8 @@ export default function AdminVenueEdit() {
             placeholder="postal code"
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">Country</label>
+        <div>
+          <label>Country</label>
           <SelectPicker
             className="admin-seller-select-value"
             menuAutoWidth={true}
@@ -215,8 +215,8 @@ export default function AdminVenueEdit() {
             cleanable={false}
           />
         </div>
-        <div className="form-group">
-          <label className="mt-4">Timezone</label>
+        <div>
+          <label>Timezone</label>
           <SelectPicker
             className="admin-seller-select-value"
             menuAutoWidth={true}

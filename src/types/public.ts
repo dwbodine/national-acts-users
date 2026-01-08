@@ -49,8 +49,6 @@ export interface Faq {
 export interface PageType {
   pageTypeId: number;
   pageTypeName: string;
-  pageTypeTemplate: string;
-  pageTypeComponent?: string;
 }
 
 export interface PageSeller {

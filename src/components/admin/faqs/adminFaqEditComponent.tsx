@@ -178,9 +178,9 @@ export default function AdminFaqEdit() {
       <PageHeader pageTitle={pageHeader} />
       <Row className="admin-container">
         <Col>
-          <Row className="form-group">
+          <Row>
             <Col>
-              <label className="mt-4">Category</label>
+              <label>Category</label>
               <SelectPicker
                 value={categoryId}
                 data={faqCategories}
@@ -193,20 +193,20 @@ export default function AdminFaqEdit() {
               />
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col>
-              <label className="mt-4">Question</label>
+              <label>Question</label>
               <Input
                 value={question ?? ''}
                 onChange={setQuestion}
-                className="form-control form-control-half"
+                className="form-control-half"
                 placeholder="FAQ question"
               />
             </Col>
           </Row>
-          <Row className="form-group">
+          <Row>
             <Col>
-              <label className="mt-4">HTML Text</label>
+              <label>HTML Text</label>
               <Textarea
                 rows={3}
                 id="answer"

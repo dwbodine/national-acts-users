@@ -106,7 +106,7 @@ export default function AdminSellerGlobalIndex() {
         <Input
           value={searchTerm}
           onChange={setSearchTerm}
-          className="form-control search-text-input no-print"
+          className="search-text-input no-print"
           placeholder="Search for sellers by name..."
           hidden={currentAdminSelection.allSellers === undefined}
         />

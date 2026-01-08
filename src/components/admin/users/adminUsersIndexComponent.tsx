@@ -88,7 +88,7 @@ export default function AdminUsersIndex() {
           user.lastName?.toLowerCase().includes(srch) ||
           user.username.toLowerCase().includes(srch) ||
           (!user.isAdmin &&
-            user.sellers?.find((x) => x.sellerName.toLowerCase().includes(srch)) !== undefined),
+            user.sellers?.find((x) => x.sellerName?.toLowerCase().includes(srch)) !== undefined),
       );
     }
     return filteredUsers;
@@ -111,7 +111,7 @@ export default function AdminUsersIndex() {
         <Input
           value={searchTerm ?? ''}
           onChange={setSearchTerm}
-          className="form-control search-text-input no-print"
+          className="search-text-input no-print"
           placeholder="Search for users by name, username or client name..."
           hidden={currentAdminSelection.users === undefined}
         />

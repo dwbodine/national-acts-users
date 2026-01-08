@@ -46,10 +46,10 @@ a.edit-event-link {
 .admin-container h2,
 .admin-container h3 {
   font-family: 'Impact', 'Carrois Gothic SC', sans-serif;
-  margin: 0;
+  margin: 25px 0;
   padding: 0;
   text-transform: uppercase;
-  color: #d90617;
+  color: v.$header-color;
 }
 
 .admin-container ul {
@@ -132,6 +132,12 @@ a.edit-event-link {
 
 .admin-seller-select-button {
   float: right !important;
+}
+
+.admin-seller-click-container {
+  height: 40px;
+  display: flex;
+  align-items: center;
 }
 
 .pageseller-default {

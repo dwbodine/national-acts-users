@@ -75,7 +75,7 @@ export default function ReportsMissingVenues() {
       <PageHeader pageTitle="Missing Venue Report" />
       <div className="admin-container">
         <Button onClick={refresh}>Refresh</Button>
-        <div className="mt-4">Total events missing venues: {events?.length ?? 0}</div>
+        <div>Total events missing venues: {events?.length ?? 0}</div>
         <Table autoHeight={true} data={events} bordered cellBordered>
           <Column flexGrow={1} minWidth={100}>
             <HeaderCell>Date</HeaderCell>

@@ -1203,8 +1203,8 @@ export default function AdminEventEdit(props: EditProps) {
           </Col>
         </Row>
         <Row>
-          <Col className="form-group">
-            <label className="mt-4">Event title</label>
+          <Col>
+            <label>Event title</label>
             <Input
               value={eventTitle ?? ''}
               onChange={setEventTitle}
@@ -1214,8 +1214,8 @@ export default function AdminEventEdit(props: EditProps) {
           </Col>
         </Row>
         <Row>
-          <Col className="form-group">
-            <label className="mt-4">Event date</label>
+          <Col>
+            <label>Event date</label>
             <DatePicker
               id="eventDate"
               format="M/d/yyyy"
@@ -1227,8 +1227,8 @@ export default function AdminEventEdit(props: EditProps) {
           </Col>
         </Row>
         <Row hidden={isExternalEvent}>
-          <Col className="form-group">
-            <label className="mt-4">Associated Ticket Socket Event</label>
+          <Col>
+            <label>Associated Ticket Socket Event</label>
             <SelectPicker
               value={ticketSocketEventId}
               data={eventList}
@@ -1239,8 +1239,8 @@ export default function AdminEventEdit(props: EditProps) {
           </Col>
         </Row>
         <Row>
-          <Col className="form-group">
-            <label className="mt-4">Event venue</label>
+          <Col>
+            <label>Event venue</label>
             <SelectPicker
               value={externalEventVenueId}
               data={venueList}
@@ -1256,8 +1256,8 @@ export default function AdminEventEdit(props: EditProps) {
                 <Modal.Title>Add New Venue:</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <div className="form-group">
-                  <label className="mt-4">Venue name</label>
+                <div>
+                  <label>Venue name</label>
                   <Input
                     value={venueName ?? ''}
                     onChange={setVenueName}
@@ -1265,8 +1265,8 @@ export default function AdminEventEdit(props: EditProps) {
                     style={{ width: '80%' }}
                   />
                 </div>
-                <div className="form-group">
-                  <label className="mt-4">Address</label>
+                <div>
+                  <label>Address</label>
                   <Input
                     value={address ?? ''}
                     onChange={setAddress}
@@ -1274,20 +1274,20 @@ export default function AdminEventEdit(props: EditProps) {
                     style={{ width: '80%' }}
                   />
                 </div>
-                <div className="form-group">
-                  <label className="mt-4">City</label>
+                <div>
+                  <label>City</label>
                   <Input value={city ?? ''} onChange={setCity} placeholder="city" />
                 </div>
-                <div className="form-group">
-                  <label className="mt-4">State</label>
+                <div>
+                  <label>State</label>
                   <Input value={state ?? ''} onChange={setState} placeholder="state" />
                 </div>
-                <div className="form-group">
-                  <label className="mt-4">Postal Code</label>
+                <div>
+                  <label>Postal Code</label>
                   <Input value={zipCode ?? ''} onChange={setZipCode} placeholder="postal code" />
                 </div>
-                <div className="form-group">
-                  <label className="mt-4">Country</label>
+                <div>
+                  <label>Country</label>
                   <SelectPicker
                     className="admin-seller-select-value"
                     menuAutoWidth={true}
@@ -1298,8 +1298,8 @@ export default function AdminEventEdit(props: EditProps) {
                     cleanable={false}
                   />
                 </div>
-                <div className="form-group">
-                  <label className="mt-4">Timezone</label>
+                <div>
+                  <label>Timezone</label>
                   <SelectPicker
                     className="admin-seller-select-value"
                     menuAutoWidth={true}
@@ -1319,7 +1319,7 @@ export default function AdminEventEdit(props: EditProps) {
           </Col>
         </Row>
         <Row>
-          <Col className="form-group">
+          <Col>
             <AdminFileUpload
               ImageType={ImageType.EVENT_THUMBNAILS}
               Title="Event thumbnail (square, will be resized to 100px wide)"
@@ -1335,9 +1335,9 @@ export default function AdminEventEdit(props: EditProps) {
             />
           </Col>
         </Row>
-        <Row className="form-group">
+        <Row>
           <Col>
-            <label className="mt-4">Event time (in venue local time zone)</label>
+            <label>Event time (in venue local time zone)</label>
 
             <TimePicker
               id="eventTime"
@@ -1349,7 +1349,7 @@ export default function AdminEventEdit(props: EditProps) {
               onClean={onCleanEventTime}
             />
 
-            <label className="mt-4">Announce Date (in Pacific Time)</label>
+            <label>Announce Date (in Pacific Time)</label>
 
             <DatePicker
               id="announceDate"
@@ -1373,7 +1373,7 @@ export default function AdminEventEdit(props: EditProps) {
           </Col>
         </Row>
         <Row>
-          <Col className="form-group">
+          <Col>
             <label className="mt-4 edit-event-link">VIP Link</label>
             <a
               target="_blank"
@@ -1393,7 +1393,7 @@ export default function AdminEventEdit(props: EditProps) {
           </Col>
         </Row>
         <Row>
-          <Col className="form-group">
+          <Col>
             <label className="mt-4 edit-event-link">Tickets Link</label>
             <a target="_blank" className="edit-event-link" hidden={!externalUrl} href={externalUrl}>
               Visit
@@ -1408,14 +1408,14 @@ export default function AdminEventEdit(props: EditProps) {
           </Col>
         </Row>
         <Row>
-          <Col className="form-group">
+          <Col>
             <Checkbox
               checked={disableLinkButton}
               onChange={(_, checked) => setDisableLinkButton(checked)}
             >
               Disable "Tickets" button
             </Checkbox>
-            <label className="mt-4">Alternate text for Tickets Button (10 chars or less)</label>
+            <label>Alternate text for Tickets Button (10 chars or less)</label>
             <Input
               value={disableLinkReason ?? ''}
               onChange={setDisableLinkReason}
@@ -1425,14 +1425,14 @@ export default function AdminEventEdit(props: EditProps) {
           </Col>
         </Row>
         <Row>
-          <Col className="form-group">
+          <Col>
             <Checkbox
               checked={disableVipLinkButton}
               onChange={(_, checked) => setDisableVipLinkButton(checked)}
             >
               Disable "VIP" button
             </Checkbox>
-            <label className="mt-4">Alternate text for VIP Button (10 chars or less)</label>
+            <label>Alternate text for VIP Button (10 chars or less)</label>
             <Input
               value={disableVipLinkReason ?? ''}
               onChange={setDisableVipLinkReason}
@@ -1441,7 +1441,7 @@ export default function AdminEventEdit(props: EditProps) {
             />
           </Col>
         </Row>
-        <Row className="form-group" hidden={isExternalEvent}>
+        <Row hidden={isExternalEvent}>
           <Col xs={2}>Check-in location:</Col>
           <Col xs={10}>
             <Textarea
@@ -1452,7 +1452,7 @@ export default function AdminEventEdit(props: EditProps) {
             />
           </Col>
         </Row>
-        <Row className="form-group" hidden={isExternalEvent}>
+        <Row hidden={isExternalEvent}>
           <Col xs={2}>Check-in notes:</Col>
           <Col xs={10}>
             <Textarea
@@ -1464,7 +1464,7 @@ export default function AdminEventEdit(props: EditProps) {
           </Col>
         </Row>
 
-        <Row className="form-group">
+        <Row>
           <Col>
             <Checkbox
               checked={isActive && !isDeleted}
@@ -1492,19 +1492,19 @@ export default function AdminEventEdit(props: EditProps) {
             </Checkbox>
           </Col>
         </Row>
-        <Row className="form-group" hidden={isExternalEvent}>
+        <Row hidden={isExternalEvent}>
           <Col>Email Sent to Vips: {emailSentToVips}</Col>
         </Row>
-        <Row className="form-group" hidden={isExternalEvent}>
+        <Row hidden={isExternalEvent}>
           <Col>Text Sent to Vips: {textSentToVips}</Col>
         </Row>
-        <Row className="form-group" hidden={isExternalEvent}>
+        <Row hidden={isExternalEvent}>
           <Col>List sent to band: {listSentToBand}</Col>
         </Row>
-        <Row className="form-group" hidden={isExternalEvent}>
+        <Row hidden={isExternalEvent}>
           <Col>Date/Time List sent to band: {listSentTime}</Col>
         </Row>
-        <Row className="form-group" hidden={isExternalEvent}>
+        <Row hidden={isExternalEvent}>
           <Col># of VIPs at time email was sent: {numVips}</Col>
         </Row>
         <Row hidden={isExternalEvent}>

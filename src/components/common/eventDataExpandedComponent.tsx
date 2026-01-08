@@ -358,7 +358,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                     <Modal.Title>Edit Event Data</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <Row className="form-group">
+                    <Row>
                       <Col xs={4}>Doors Open:</Col>
                       <Col xs={20}>
                         <TimePicker
@@ -371,7 +371,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                         />
                       </Col>
                     </Row>
-                    <Row className="form-group">
+                    <Row>
                       <Col xs={4}>Meet and Greet Time:</Col>
                       <Col xs={20}>
                         <TimePicker
@@ -384,7 +384,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                         />
                       </Col>
                     </Row>
-                    <Row className="form-group">
+                    <Row>
                       <Col xs={4}>Check-in location:</Col>
                       <Col xs={20}>
                         <Textarea
@@ -395,7 +395,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
                         />
                       </Col>
                     </Row>
-                    <Row className="form-group">
+                    <Row>
                       <Col xs={4}>Check-in notes:</Col>
                       <Col xs={20}>
                         <Textarea

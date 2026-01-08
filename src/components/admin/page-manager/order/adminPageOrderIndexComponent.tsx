@@ -32,23 +32,36 @@ export default function AdminPageOrderIndex() {
   const { updatePageOrder } = useUpdatePageOrder();
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
+  const [currentPageMap, setCurrentPageMap] = useState<Map<number, Page> | undefined>(undefined);
 
   const setPageOrder = (pageId: number, pageOrder: number | undefined) => {
     if (
       !currentAdminSelection.pageOrders ||
-      currentAdminSelection.pageOrders.size === 0 ||
+      currentAdminSelection.pageOrders.length === 0 ||
       !pageId ||
       isNaN(pageId)
     ) {
       return;
     }
     const newPageOrder: number | undefined = pageOrder && !isNaN(pageOrder) ? pageOrder : undefined;
-    const pageMap = new Map<number, Page>(currentAdminSelection.pageOrders);
-    const page = pageMap.get(pageId);
-    if (page && page.pageOrder !== newPageOrder) {
-      page.pageOrder = newPageOrder;
-      pageMap.set(pageId, page);
-      dispatch(setPageOrders(pageMap));
+    if (!currentPageMap || !newPageOrder) {
+      return;
+    }
+    const updatedPageMap = new Map<number, Page>(currentPageMap);
+    const page = updatedPageMap.get(pageId);
+    const oldPageOrder = page?.pageOrder;
+    if (page && oldPageOrder && oldPageOrder !== newPageOrder) {
+      const lastUpdate =
+        oldPageOrder < newPageOrder
+          ? moment().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss')
+          : moment().format('YYYY-MM-DD HH:mm:ss');
+      const newPage = {
+        ...page,
+        pageOrder: newPageOrder,
+        lastUpdate: lastUpdate,
+      };
+      updatedPageMap.set(pageId, newPage);
+      reorderPages(updatedPageMap);
     }
   };
 
@@ -98,13 +111,18 @@ export default function AdminPageOrderIndex() {
       pageMapKeys.forEach((key, i) => {
         const page = pageMap.get(key);
         if (page) {
-          page.pageOrder = i + 1;
-          page.lastUpdate = lastUpdate;
-          pageMap.set(key, page);
+          const newPage = {
+            ...page,
+            pageOrder: i + 1,
+            lastUpdate,
+          };
+          pageMap.set(key, newPage);
         }
       });
+      setCurrentPageMap(pageMap);
+      const updatedPageOrders = Array.from(pageMap.values());
 
-      dispatch(setPageOrders(pageMap));
+      dispatch(setPageOrders(updatedPageOrders));
     },
     [dispatch],
   );
@@ -139,6 +157,7 @@ export default function AdminPageOrderIndex() {
               response.pages.forEach((page) => {
                 pageMap.set(page.pageId, page);
               });
+              setCurrentPageMap(pageMap);
               reorderPages(pageMap);
             }
             dispatch(setIsLoading(false));
@@ -174,33 +193,41 @@ export default function AdminPageOrderIndex() {
   };
 
   const moveUp = (pageId: number) => {
-    if (!pageId || isNaN(pageId) || !currentAdminSelection.pageOrders) {
+    if (!pageId || isNaN(pageId) || !currentAdminSelection.pageOrders || !currentPageMap) {
       return;
     }
-    const pageMap = new Map<number, Page>(currentAdminSelection.pageOrders);
-    const page = pageMap.get(pageId);
+    const page = currentPageMap.get(pageId);
     if (page && page.pageOrder) {
+      const updatedPageMap = new Map<number, Page>(currentPageMap);
       const order = page.pageOrder;
       if (order > 1) {
-        page.pageOrder = order - 1;
-        pageMap.set(pageId, page);
-        reorderPages(pageMap);
+        const newPage = {
+          ...page,
+          pageOrder: order - 1,
+          lastUpdate: moment().format('YYYY-MM-DD HH:mm:ss'),
+        };
+        updatedPageMap.set(pageId, newPage);
+        reorderPages(updatedPageMap);
       }
     }
   };
 
   const moveDown = (pageId: number) => {
-    if (!pageId || isNaN(pageId) || !currentAdminSelection.pageOrders) {
+    if (!pageId || isNaN(pageId) || !currentAdminSelection.pageOrders || !currentPageMap) {
       return;
     }
-    const pageMap = new Map<number, Page>(currentAdminSelection.pageOrders);
-    const page = pageMap.get(pageId);
+    const page = currentPageMap.get(pageId);
     if (page && page.pageOrder) {
+      const updatedPageMap = new Map<number, Page>(currentPageMap);
       const order = page.pageOrder;
-      if (order < pageMap.size) {
-        page.pageOrder = order + 1;
-        pageMap.set(pageId, page);
-        reorderPages(pageMap);
+      if (order < updatedPageMap.size) {
+        const newPage = {
+          ...page,
+          pageOrder: order + 1,
+          lastUpdate: moment().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+        };
+        updatedPageMap.set(pageId, newPage);
+        reorderPages(updatedPageMap);
       }
     }
   };
@@ -247,7 +274,7 @@ export default function AdminPageOrderIndex() {
       <Col xs={24} className="admin-container">
         <Row>
           <Col>
-            <label className="mt-4">Select page type:</label>
+            <label>Select page type:</label>
             <SelectPicker
               className="admin-seller-select-value"
               menuAutoWidth={true}
@@ -261,7 +288,7 @@ export default function AdminPageOrderIndex() {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col xs={24}>
             <Table autoHeight data={pages} bordered cellBordered loading={tableLoading}>
               <Column flexGrow={1}>
                 <HeaderCell>Order</HeaderCell>
@@ -274,7 +301,7 @@ export default function AdminPageOrderIndex() {
                       onChange={(value) =>
                         setPageOrder(parseInt(`${rowData['pageId']}`), parseInt(value))
                       }
-                      onBlur={() => reorderPages(currentAdminSelection.pageOrders)}
+                      onBlur={() => reorderPages(currentPageMap)}
                     />
                   )}
                 </Cell>

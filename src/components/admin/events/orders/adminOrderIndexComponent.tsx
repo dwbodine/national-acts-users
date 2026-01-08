@@ -323,7 +323,7 @@ export default function AdminOrdersIndex(props: EditProps) {
             <Button onClick={goBack}>Back</Button>{' '}
           </Col>
         </Row>
-        <Row className="form-group">
+        <Row>
           <Col className="form-header">
             <h3> {currentAdminSelection.selectedEvent?.title}</h3>
             <span className="title">Date:</span>{' '}

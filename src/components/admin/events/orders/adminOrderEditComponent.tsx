@@ -912,7 +912,7 @@ export default function AdminOrderEdit(props: EditProps) {
         className="admin-container"
         hidden={currentAdminSelection.selectedOrder === undefined}
       >
-        <Row className="form-group">
+        <Row>
           <Col className="form-header">
             <span className="title">Event:</span> {currentAdminSelection.selectedOrder?.eventTitle}
             <br />
@@ -920,7 +920,7 @@ export default function AdminOrderEdit(props: EditProps) {
             <br />
           </Col>
         </Row>
-        <Row className="form-group">
+        <Row>
           <Col className="form-header">
             <span className="title">Purchase Date:</span> {purchaseDate}
             <br />
@@ -949,7 +949,6 @@ export default function AdminOrderEdit(props: EditProps) {
           </Col>
         </Row>
         <Row
-          className="form-group"
           hidden={
             !currentAdminSelection.selectedOrder ||
             !(
@@ -983,7 +982,7 @@ export default function AdminOrderEdit(props: EditProps) {
           </Col>
         </Row>
 
-        <Row className="form-group">
+        <Row>
           <Col>
             <Checkbox
               checked={isActive && !isDeleted}

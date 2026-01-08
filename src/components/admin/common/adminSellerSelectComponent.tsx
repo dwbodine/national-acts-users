@@ -111,7 +111,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
       <Col xs={2}>
         Seller<span hidden={!number}> # {number}</span>:
       </Col>
-      <Col xs={20} sm={16} md={12} hidden={sellerList.length === 0 || !onSellerChange}>
+      <Col xs={20} sm={16} md={8} hidden={sellerList.length === 0 || !onSellerChange}>
         <SelectPicker
           className="admin-seller-select-value"
           menuAutoWidth={true}
@@ -122,7 +122,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
           cleanable={false}
         />
       </Col>
-      <Col xs={20} sm={16} md={12} hidden={roleList.length === 0 || !onRoleChange}>
+      <Col xs={20} sm={16} md={8} hidden={roleList.length === 0 || !onRoleChange}>
         <SelectPicker
           className="admin-seller-select-value"
           menuAutoWidth={true}
@@ -151,7 +151,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={displayName ?? ''}
                     onChange={setDisplayName}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Display Name override"
                   />
                   <Checkbox
@@ -171,7 +171,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={address ?? ''}
                     onChange={setAddress}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Street address override"
                   />
                 </Col>
@@ -185,7 +185,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={city ?? ''}
                     onChange={setCity}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="City override"
                   />
                 </Col>
@@ -199,7 +199,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={state ?? ''}
                     onChange={setState}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="State override"
                   />
                 </Col>
@@ -213,7 +213,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={zip ?? ''}
                     onChange={setZip}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Postal code override"
                   />
                 </Col>
@@ -244,7 +244,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={phone ?? ''}
                     onChange={setPhone}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Phone override"
                   />
                 </Col>
@@ -258,7 +258,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={email ?? ''}
                     onChange={setEmail}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Email override"
                   />
                 </Col>
@@ -272,7 +272,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={twitter ?? ''}
                     onChange={setTwitter}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Twitter override"
                   />
                 </Col>
@@ -286,7 +286,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={facebook ?? ''}
                     onChange={setFacebook}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Facebook override"
                   />
                 </Col>
@@ -300,7 +300,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={instagram ?? ''}
                     onChange={setInstagram}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Instagram override"
                   />
                 </Col>
@@ -314,7 +314,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={youtube ?? ''}
                     onChange={setYoutube}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="YouTube override"
                   />
                 </Col>
@@ -328,7 +328,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={spotify ?? ''}
                     onChange={setSpotify}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Spotify override"
                   />
                 </Col>
@@ -342,7 +342,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={website ?? ''}
                     onChange={setWebsite}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Website override"
                   />
                 </Col>
@@ -356,7 +356,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
                   <Input
                     value={websiteDisplayText ?? ''}
                     onChange={setWebsiteDisplayText}
-                    className="form-control form-control-half"
+                    className="form-control-half"
                     placeholder="Website display text override"
                   />
                 </Col>
@@ -369,7 +369,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
           </Modal.Footer>
         </Modal>
       </Col>
-      <Col xs={2} hidden={!onDelete}>
+      <Col xs={2} hidden={!onDelete} className="admin-seller-click-container">
         <FaMinus
           title="Remove seller"
           className="admin-click-cell"
