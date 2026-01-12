@@ -329,12 +329,13 @@ export enum UserActivityType {
 }
 
 export type UserActivity = {
+  userActivityId?: number;
   activityType: UserActivityType;
   activityName?: string;
   userId?: number;
   username?: string;
   activityData?: string;
-  timestamp: string;
+  activityTime?: string;
   fullName?: string;
   sellerName?: string;
 };

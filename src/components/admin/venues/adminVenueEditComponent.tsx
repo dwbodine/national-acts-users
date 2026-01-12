@@ -159,7 +159,7 @@ export default function AdminVenueEdit() {
       <PageHeader pageTitle="Edit Venue" />
       <div className="admin-container">
         <div>
-          <label>Venue name</label>
+          <span>Venue name</span>
           <Input
             value={venueName ?? ''}
             onChange={setVenueName}
@@ -168,7 +168,7 @@ export default function AdminVenueEdit() {
           />
         </div>
         <div>
-          <label>Address</label>
+          <span>Address</span>
           <Input
             value={address ?? ''}
             onChange={setAddress}
@@ -177,7 +177,7 @@ export default function AdminVenueEdit() {
           />
         </div>
         <div>
-          <label>City</label>
+          <span>City</span>
           <Input
             value={city ?? ''}
             onChange={setCity}
@@ -186,7 +186,7 @@ export default function AdminVenueEdit() {
           />
         </div>
         <div>
-          <label>State</label>
+          <span>State</span>
           <Input
             value={state ?? ''}
             onChange={setState}
@@ -195,7 +195,7 @@ export default function AdminVenueEdit() {
           />
         </div>
         <div>
-          <label>Postal Code</label>
+          <span>Postal Code</span>
           <Input
             value={zipCode ?? ''}
             onChange={setZipCode}
@@ -204,7 +204,7 @@ export default function AdminVenueEdit() {
           />
         </div>
         <div>
-          <label>Country</label>
+          <span>Country</span>
           <SelectPicker
             className="admin-seller-select-value"
             menuAutoWidth={true}
@@ -216,7 +216,7 @@ export default function AdminVenueEdit() {
           />
         </div>
         <div>
-          <label>Timezone</label>
+          <span>Timezone</span>
           <SelectPicker
             className="admin-seller-select-value"
             menuAutoWidth={true}

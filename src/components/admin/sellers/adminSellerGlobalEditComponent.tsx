@@ -516,7 +516,7 @@ export default function AdminSellerGlobalEdit() {
       categoryRows.push(
         <Row key={rowKey}>
           <Col xs={4}>
-            <label>Category for {account.name}</label>
+            <span>Category for {account.name}</span>
           </Col>
           <Col xs={12} md={8}>
             <SelectPicker
@@ -598,7 +598,7 @@ export default function AdminSellerGlobalEdit() {
         <Col xs={24}>
           <Row>
             <Col xs={4}>
-              <label>Seller Name</label>
+              <span>Seller Name</span>
             </Col>
             <Col xs={20} md={12}>
               <Input
@@ -610,7 +610,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row>
             <Col xs={4}>
-              <label>Seller Type</label>
+              <span>Seller Type</span>
             </Col>
             <Col xs={20} md={8}>
               <SelectPicker
@@ -652,7 +652,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row hidden={isArtist}>
             <Col xs={4}>
-              <label>Address</label>
+              <span>Address</span>
             </Col>
             <Col xs={20} md={12}>
               <Input
@@ -664,7 +664,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row hidden={isArtist}>
             <Col xs={4}>
-              <label>City</label>
+              <span>City</span>
             </Col>
             <Col xs={20} md={12}>
               <Input value={currentSeller?.city ?? ''} onChange={setCity} placeholder="city" />
@@ -672,7 +672,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row hidden={isArtist}>
             <Col xs={4}>
-              <label>State</label>
+              <span>State</span>
             </Col>
             <Col xs={20} md={12}>
               <Input value={currentSeller?.state ?? ''} onChange={setState} placeholder="state" />
@@ -680,7 +680,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row hidden={isArtist}>
             <Col xs={4}>
-              <label>Postal Code</label>
+              <span>Postal Code</span>
             </Col>
             <Col xs={20} md={12}>
               <Input value={currentSeller?.zip ?? ''} onChange={setZip} placeholder="postal code" />
@@ -688,7 +688,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row hidden={isArtist}>
             <Col xs={4}>
-              <label>Country</label>
+              <span>Country</span>
             </Col>
             <Col xs={20} md={12}>
               <SelectPicker
@@ -704,7 +704,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row hidden={isArtist}>
             <Col xs={4}>
-              <label>Phone</label>
+              <span>Phone</span>
             </Col>
             <Col xs={20} md={12}>
               <Input value={currentSeller?.phone ?? ''} onChange={setPhone} placeholder="phone" />
@@ -712,7 +712,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row hidden={isArtist}>
             <Col xs={4}>
-              <label>Email</label>
+              <span>Email</span>
             </Col>
             <Col xs={20} md={12}>
               <Input
@@ -725,7 +725,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row>
             <Col xs={4}>
-              <label>Twitter</label>
+              <span>Twitter</span>
             </Col>
             <Col xs={20} md={12}>
               <Input
@@ -737,7 +737,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row>
             <Col xs={4}>
-              <label>Facebook</label>
+              <span>Facebook</span>
             </Col>
             <Col xs={20} md={12}>
               <Input
@@ -749,7 +749,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row>
             <Col xs={4}>
-              <label>Instagram</label>
+              <span>Instagram</span>
             </Col>
             <Col xs={20} md={12}>
               <Input
@@ -761,7 +761,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row>
             <Col xs={4}>
-              <label>YouTube</label>
+              <span>YouTube</span>
             </Col>
             <Col xs={20} md={12}>
               <Input
@@ -773,7 +773,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row>
             <Col xs={4}>
-              <label>Spotify</label>
+              <span>Spotify</span>
             </Col>
             <Col xs={20} md={12}>
               <Input
@@ -785,7 +785,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row>
             <Col xs={4}>
-              <label>Website</label>
+              <span>Website</span>
             </Col>
             <Col xs={20} md={12}>
               <Input
@@ -797,7 +797,7 @@ export default function AdminSellerGlobalEdit() {
           </Row>
           <Row>
             <Col xs={4}>
-              <label>Website Display Text</label>
+              <span>Website Display Text</span>
             </Col>
             <Col xs={20} md={12}>
               <Input

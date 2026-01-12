@@ -5,7 +5,17 @@ import { useRouter } from 'next/navigation';
 import React, { ReactNode, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Button, Checkbox, CheckPicker, DatePicker, Input, PickerHandle, TimePicker } from 'rsuite';
+import {
+  Button,
+  Checkbox,
+  CheckPicker,
+  Col,
+  DatePicker,
+  Input,
+  PickerHandle,
+  Row,
+  TimePicker,
+} from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
@@ -23,7 +33,8 @@ export default function AdminTourEdit() {
   const dispatch = useDispatch();
   const { getAdminSellerEvents } = useGetAdminSellerEvents();
   const { updateTour } = useUpdateTour();
-  const sellerRef = React.createRef<PickerHandle>();
+  const sellerRef = React.useRef<PickerHandle | null>(null);
+  const pickerContainer = React.useCallback(() => document.body, []);
   const router = useRouter();
 
   useEffect(() => {
@@ -56,10 +67,7 @@ export default function AdminTourEdit() {
   };
 
   const closeSellers = () => {
-    const handle = sellerRef?.current;
-    if (handle && handle.close) {
-      handle.close();
-    }
+    requestAnimationFrame(() => sellerRef.current?.close?.());
   };
 
   const onSellerChange = (sellerIds: number[]) => {
@@ -386,70 +394,86 @@ export default function AdminTourEdit() {
     <>
       <PageHeader pageTitle={pageHeader} />
       <div className="admin-container">
-        <div>
-          <label>Tour Name</label>
-          <Input
-            value={tourName ?? ''}
-            onChange={setTourName}
-            className="form-control"
-            placeholder="tour name"
-          />
-        </div>
-        <div>
-          <label>Sellers</label>
-          <CheckPicker
-            sticky={true}
-            countable={false}
-            data={sellerList}
-            renderMenuItem={renderSellerItem}
-            value={selectedSellers}
-            disabledItemValues={disabledSellers}
-            style={{ width: 500 }}
-            onChange={onSellerChange}
-            onClean={onSellerClean}
-            ref={sellerRef}
-          />
-        </div>
-        <div>
-          <label>Events</label>
-          <CheckPicker
-            data={eventList}
-            renderMenuItem={renderEventItem}
-            value={selectedEvents}
-            style={{ width: 500 }}
-            onChange={onEventChange}
-            onClean={onEventClean}
-          />
-        </div>
-        <div>
-          <label>Announce Date (in Pacific Time):</label>
-          <DatePicker
-            id="announceDate"
-            format="M/d/yyyy"
-            onSelect={onAnnounceDateChange}
-            value={announceDate}
-            oneTap
-            cleanable
-            showMeridiem
-            onClean={onCleanAnnounceDate}
-          />
-          <TimePicker
-            id="announceTime"
-            format="hh:mm aa"
-            onSelect={onAnnounceTimeChange}
-            value={announceDate}
-            cleanable
-            showMeridiem
-            onClean={onCleanAnnounceTime}
-            disabled={announceTimeDisabled}
-          />
-        </div>
-        <div>
-          <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
-            Is Active?
-          </Checkbox>
-        </div>
-        <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+        <Row>
+          <Col>
+            <div className="admin-titladmin-setting-title">Tour Name</div>
+            <Input
+              value={tourName ?? ''}
+              onChange={setTourName}
+              className="form-control"
+              placeholder="tour name"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div className="admin-titladmin-setting-title">Sellers</div>
+            <CheckPicker
+              sticky={true}
+              countable={false}
+              data={sellerList}
+              renderMenuItem={renderSellerItem}
+              value={selectedSellers}
+              disabledItemValues={disabledSellers}
+              style={{ width: 500 }}
+              onChange={onSellerChange}
+              onClean={onSellerClean}
+              ref={sellerRef}
+              container={pickerContainer}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div className="admin-titladmin-setting-title">Events</div>
+            <CheckPicker
+              data={eventList}
+              renderMenuItem={renderEventItem}
+              value={selectedEvents}
+              style={{ width: 500 }}
+              onChange={onEventChange}
+              onClean={onEventClean}
+              container={pickerContainer}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div className="admin-titladmin-setting-title">Announce Date (in Pacific Time):</div>
+            <DatePicker
+              id="announceDate"
+              format="M/d/yyyy"
+              onSelect={onAnnounceDateChange}
+              value={announceDate}
+              oneTap
+              cleanable
+              showMeridiem
+              onClean={onCleanAnnounceDate}
+            />
+            <TimePicker
+              id="announceTime"
+              format="hh:mm aa"
+              onSelect={onAnnounceTimeChange}
+              value={announceDate}
+              cleanable
+              showMeridiem
+              onClean={onCleanAnnounceTime}
+              disabled={announceTimeDisabled}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
+              Is Active?
+            </Checkbox>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+          </Col>
+        </Row>
       </div>
     </>
   );

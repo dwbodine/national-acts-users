@@ -105,13 +105,13 @@ export default function RefreshTicketSocketDataResults(props: RefreshTicketSocke
 
   return results ? (
     <>
-      <Row>
+      <Row className="admin-refresh-row">
         <Col>
           <h3>Refresh Events Results</h3>
         </Col>
       </Row>
-      <Row>
-        <Col>
+      <Row className="admin-refresh-row">
+        <Col xs={8}>
           <Row>
             <Col>Update succeeded: {succeeded}</Col>
           </Row>
@@ -149,7 +149,7 @@ export default function RefreshTicketSocketDataResults(props: RefreshTicketSocke
             <Col>Total duration: {totalDuration} seconds</Col>
           </Row>
         </Col>
-        <Col>
+        <Col xs={8}>
           <Row>
             <Col>Total events from service: {totalEventsFromService}</Col>
           </Row>
@@ -184,7 +184,7 @@ export default function RefreshTicketSocketDataResults(props: RefreshTicketSocke
             <Col>Orders deleted: {ordersDeleted}</Col>
           </Row>
         </Col>
-        <Col>
+        <Col xs={8}>
           <Row>
             <Col>Tickets updated: {ticketsUpdated}</Col>
           </Row>

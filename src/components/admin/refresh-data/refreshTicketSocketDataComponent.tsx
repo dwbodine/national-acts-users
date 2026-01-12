@@ -108,28 +108,32 @@ export default function RefreshTicketSocketData() {
     <>
       <PageHeader pageTitle="Refresh TicketSocket Data" />
       <div className="admin-container">
-        <AdminSellerSelect
-          Id="refresh"
-          Sellers={currentAdminSelection.allSellers}
-          SellerId={currentAdminSelection.sellerId}
-          OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
-          Countries={currentAdminSelection.countries}
-        />
-        <ReportDatePicker
-          OnChange={onDateChange}
-          Start={currentAdminSelection.start}
-          End={currentAdminSelection.end}
-        />
-        <Row>
-          <Col>
-            <Button onClick={submitReset}>Reset</Button>
+        <Row className="admin-refresh-header-row">
+          <Col md={12} sm={24}>
+            <AdminSellerSelect
+              Id="refresh"
+              Sellers={currentAdminSelection.allSellers}
+              SellerId={currentAdminSelection.sellerId}
+              OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
+              Countries={currentAdminSelection.countries}
+            />
+            <ReportDatePicker
+              OnChange={onDateChange}
+              Start={currentAdminSelection.start}
+              End={currentAdminSelection.end}
+            />
+            <Row>
+              <Col>
+                <Button onClick={submitReset}>Reset</Button>
+              </Col>
+            </Row>
           </Col>
-          <Col xl={8} lg={12}>
+          <Col md={12} sm={24}>
             <RefreshTicketSocketDataResults UpdateResults={updateResults} />
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col xs={24}>
             <RefreshTicketSocketHistoryTable History={history} />
           </Col>
         </Row>

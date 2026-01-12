@@ -73,7 +73,7 @@ export default function ReportDatePicker(props: ReportDatePickerProps) {
     <>
       <Row className="admin-select">
         <Col xs={labelColWidth}>
-          <label className="admin-report-datepicker-label">Start date:</label>
+          <span className="admin-report-datepicker-label">Start date:</span>
         </Col>
         <Col>
           <DatePicker
@@ -90,7 +90,7 @@ export default function ReportDatePicker(props: ReportDatePickerProps) {
       </Row>
       <Row className="admin-select">
         <Col xs={labelColWidth}>
-          <label className="admin-report-datepicker-label">End date:</label>
+          <span className="admin-report-datepicker-label">End date:</span>
         </Col>
         <Col>
           <DatePicker

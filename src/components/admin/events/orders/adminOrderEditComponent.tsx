@@ -26,6 +26,7 @@ import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 
 export default function AdminOrderEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;
+  const hasId = id !== undefined && id > 0;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
   const { refundOrder } = useRefundOrder();
@@ -42,7 +43,7 @@ export default function AdminOrderEdit(props: EditProps) {
     currentAdminSelection.selectedOrder?.tickets?.map((t) => t.ticketSocketOrderTicketId) ?? [];
 
   const loadOrderById = useCallback(() => {
-    if (!id) {
+    if (!hasId) {
       return;
     }
 
@@ -61,7 +62,7 @@ export default function AdminOrderEdit(props: EditProps) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.selectedOrder === undefined && id !== undefined) {
+      if (currentAdminSelection.selectedOrder === undefined && hasId) {
         loadOrderById();
       }
     }, 300);
@@ -104,12 +105,12 @@ export default function AdminOrderEdit(props: EditProps) {
   };
 
   const goBack = (dismissToast: boolean = true) => {
-    if (!id && dismissToast) {
+    if (!hasId && dismissToast) {
       toast.dismiss();
     }
     dispatch(setMustSaveOrder(false));
     let path = '/admin/events/orders/';
-    if (id && currentAdminSelection.selectedOrder) {
+    if (hasId && currentAdminSelection.selectedOrder) {
       path += `?id=${currentAdminSelection.selectedOrder.ticketSocketEventId}`;
     }
     router.push(path);
@@ -385,7 +386,7 @@ export default function AdminOrderEdit(props: EditProps) {
       dispatch(setIsLoading(false));
       if (success) {
         toast.success('Refund succeeded');
-        if (id) {
+        if (hasId) {
           loadOrderById();
         } else {
           dispatch(setAdminOrder(undefined));
@@ -492,7 +493,7 @@ export default function AdminOrderEdit(props: EditProps) {
         dispatch(setIsLoading(false));
         if (success) {
           toast.success('Refund succeeded');
-          if (id) {
+          if (hasId) {
             loadOrderById();
           } else {
             dispatch(setAdminOrder(undefined));
@@ -558,7 +559,7 @@ export default function AdminOrderEdit(props: EditProps) {
       dispatch(setIsLoading(false));
       if (results.success && !results.error) {
         toast.success('Order updated successfully');
-        if (id) {
+        if (hasId) {
           loadOrderById();
         } else {
           dispatch(setAdminOrder(undefined));
@@ -606,7 +607,7 @@ export default function AdminOrderEdit(props: EditProps) {
         toast.success(successMessage);
         setTicketIdList([]);
         setSelectedAction(null);
-        if (id) {
+        if (hasId) {
           loadOrderById();
         } else {
           dispatch(setAdminOrder(undefined));
@@ -1032,7 +1033,7 @@ export default function AdminOrderEdit(props: EditProps) {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col xs={24}>
             <table className="ticket-table">
               <thead>
                 <tr>
@@ -1096,7 +1097,7 @@ export default function AdminOrderEdit(props: EditProps) {
         <Row>
           <Col>
             <Button onClick={onSubmit}>Submit</Button>{' '}
-            <Button hidden={id !== undefined} onClick={confirmGoBack}>
+            <Button hidden={hasId} onClick={confirmGoBack}>
               Back
             </Button>
           </Col>

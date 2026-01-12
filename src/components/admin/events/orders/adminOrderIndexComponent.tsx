@@ -367,7 +367,7 @@ export default function AdminOrdersIndex(props: EditProps) {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col xs={24}>
             <Table
               autoHeight={true}
               data={currentAdminSelection.selectedEvent?.orders}

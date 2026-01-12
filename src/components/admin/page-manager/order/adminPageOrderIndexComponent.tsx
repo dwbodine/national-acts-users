@@ -274,7 +274,7 @@ export default function AdminPageOrderIndex() {
       <Col xs={24} className="admin-container">
         <Row>
           <Col>
-            <label>Select page type:</label>
+            <span>Select page type:</span>
             <SelectPicker
               className="admin-seller-select-value"
               menuAutoWidth={true}

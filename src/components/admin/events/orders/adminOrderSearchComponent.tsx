@@ -85,12 +85,7 @@ export default function AdminOrdersSearch() {
       <PageHeader pageTitle="Search Orders" />
       <div className="admin-container">
         <Row>
-          <Col>
-            <h5></h5>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
+          <Col xs={24}>
             <Input
               value={searchTerm}
               onChange={setSearchTerm}
@@ -107,7 +102,7 @@ export default function AdminOrdersSearch() {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col xs={24}>
             <Table
               autoHeight={true}
               data={currentAdminSelection.orders}

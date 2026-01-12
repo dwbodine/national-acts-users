@@ -2,6 +2,7 @@
 
 .edit-event-link,
 a.edit-event-link {
+  font-weight: bold;
   float: left;
   display: block;
   margin-bottom: 5px;
@@ -38,7 +39,7 @@ a.edit-event-link {
 .admin-container {
   display: flex;
   flex-direction: column;
-  padding: 5px 0 0 30px;
+  padding: 15px 0 0 45px;
   width: 100%;
 }
 
@@ -89,6 +90,31 @@ a.edit-event-link {
 
 .admin-home-button {
   margin: 5px 0;
+}
+
+.admin-button-span button {
+  margin: 15px 10px 15px 0;
+  float: left;
+}
+
+.admin-user-row {
+  margin: 15px 0;
+}
+
+.admin-refresh-row {
+  margin: 0 0 5px 0;
+}
+
+.admin-refresh-header-row {
+  margin: 0 0 50px 0;
+}
+
+.admin-refresh-row h3 {
+  margin: 0 0 5px 0;
+}
+
+.admin-container .rs-row {
+  margin: 10px 0;
 }
 
 .admin-up-down-button {

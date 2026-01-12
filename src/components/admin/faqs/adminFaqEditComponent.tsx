@@ -180,7 +180,7 @@ export default function AdminFaqEdit() {
         <Col xs={24}>
           <Row>
             <Col xs={24} md={12}>
-              <label>Category</label>
+              <span>Category</span>
               <br />
               <SelectPicker
                 block
@@ -196,7 +196,7 @@ export default function AdminFaqEdit() {
           </Row>
           <Row>
             <Col xs={24}>
-              <label>Question</label>
+              <span>Question</span>
               <Input
                 value={question ?? ''}
                 onChange={setQuestion}
@@ -207,7 +207,7 @@ export default function AdminFaqEdit() {
           </Row>
           <Row>
             <Col xs={24}>
-              <label>HTML Text</label>
+              <span>HTML Text</span>
               <Textarea
                 className="form-control-half"
                 rows={3}

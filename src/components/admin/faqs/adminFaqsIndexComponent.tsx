@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, SelectPicker, Table } from 'rsuite';
+import { Button, Col, Row, SelectPicker, Table } from 'rsuite';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
 import { useDeleteFaq } from '@/hooks/admin/useDeleteFaq';
@@ -132,18 +132,26 @@ export default function AdminFaqsIndex() {
     <>
       <PageHeader pageTitle="Manage FAQs" />
       <div className="admin-container">
-        <Button onClick={addFaq}>Add FAQ</Button>
-        <SelectPicker
-          data={[
-            { label: '-- Select One --', value: 0 },
-            { label: 'General', value: 1 },
-            { label: 'VIP', value: 2 },
-          ]}
-          searchable={false}
-          cleanable={false}
-          onChange={(value) => updateSelectedCategory(value ?? 0)}
-          style={{ width: '250px' }}
-        />
+        <Row>
+          <Col xs={24}>
+            <Button onClick={addFaq}>Add FAQ</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <SelectPicker
+              data={[
+                { label: '-- Select One --', value: 0 },
+                { label: 'General', value: 1 },
+                { label: 'VIP', value: 2 },
+              ]}
+              searchable={false}
+              cleanable={false}
+              onChange={(value) => updateSelectedCategory(value ?? 0)}
+              style={{ width: '250px', margin: '15px 0' }}
+            />
+          </Col>
+        </Row>
         <Table autoHeight data={filteredFaqs} bordered cellBordered loading={tableLoading}>
           <Column flexGrow={1}>
             <HeaderCell>Category</HeaderCell>

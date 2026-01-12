@@ -168,7 +168,7 @@ export default function AdminVenuesIndex() {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col xs={24}>
             <Table
               height={500}
               data={data}

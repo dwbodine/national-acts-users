@@ -178,6 +178,10 @@ button {
   font-weight: bold;
 }
 
+.rs-picker-toggle-value {
+  color: v.$main-text-color !important;
+}
+
 /* Bootstrap lg */
 @media (max-width: 992px) {
   .admin-button {

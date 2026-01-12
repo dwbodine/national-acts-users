@@ -72,7 +72,7 @@ export default function ResetPasswordComponent() {
             <Row>
               <Col>
                 <div>
-                  <label>New Password:</label>
+                  <span>New Password:</span>
                   <Input
                     type="password"
                     placeholder="Password"
@@ -87,7 +87,7 @@ export default function ResetPasswordComponent() {
             <Row>
               <Col>
                 <div>
-                  <label>Confirm Password:</label>
+                  <span>Confirm Password:</span>
                   <Input
                     type="password"
                     placeholder="Confirm Password"

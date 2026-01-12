@@ -149,7 +149,7 @@ export default function AdminRoleEdit() {
         hidden={!(permissionRows.length > 0 && currentAdminSelection.selectedRole !== undefined)}
       >
         <div>
-          <label>Role Name</label>
+          <span>Role Name</span>
           <Input
             value={roleName ?? ''}
             onChange={setRoleName}
@@ -158,7 +158,9 @@ export default function AdminRoleEdit() {
           />
         </div>
         {permissionRows}
-        <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+        <div className="admin-button-span">
+          <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+        </div>
       </div>
     </>
   );

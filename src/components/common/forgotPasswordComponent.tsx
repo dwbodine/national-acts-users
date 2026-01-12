@@ -152,7 +152,7 @@ export default function ForgotPasswordComponent() {
           <Row>
             <Col>
               <div className="auth-control-container">
-                <label>Code:</label>
+                <span>Code:</span>
                 <Input
                   type="number"
                   value={code}
@@ -201,7 +201,7 @@ export default function ForgotPasswordComponent() {
           <Row>
             <Col>
               <div className="auth-control-container">
-                <label>New Password:</label>
+                <span>New Password:</span>
                 <Input
                   type="password"
                   value={password ?? ''}
@@ -214,7 +214,7 @@ export default function ForgotPasswordComponent() {
           <Row>
             <Col>
               <div className="auth-control-container">
-                <label>Confirm Password:</label>
+                <span>Confirm Password:</span>
                 <Input
                   type="password"
                   value={confirmPassword ?? ''}
@@ -264,7 +264,7 @@ export default function ForgotPasswordComponent() {
           <Row>
             <Col>
               <div className="auth-control-container">
-                <label>Username:</label>
+                <span>Username:</span>
                 <Input
                   value={username ?? ''}
                   onChange={setUsername}

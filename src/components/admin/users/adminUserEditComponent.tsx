@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { Button, Checkbox, Input } from 'rsuite';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
+import Textarea from '@/components/common/Textarea';
 import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
@@ -323,37 +324,37 @@ export default function AdminUserEdit() {
     <>
       <PageHeader pageTitle="Edit User" />
       <div className="admin-container">
-        <div>
-          <label>Username: {username}</label>
+        <div className="admin-user-row">
+          <span>Username: {username}</span>
         </div>
-        <div>
-          <label>First Name</label>
+        <div className="admin-user-row">
+          <span>First Name</span>
           <Input
             value={firstName ?? ''}
             onChange={setFirstName}
-            className="form-control"
+            className="form-control-half"
             placeholder="first name"
           />
         </div>
-        <div>
-          <label>Last Name</label>
+        <div className="admin-user-row">
+          <span>Last Name</span>
           <Input
             value={lastName ?? ''}
             onChange={setLastName}
-            className="form-control"
+            className="form-control-half"
             placeholder="last name"
           />
         </div>
-        <div>
-          <label>Mobile number</label>
+        <div className="admin-user-row">
+          <span>Mobile number</span>
           <Input
             value={mobile ?? ''}
             onChange={setMobile}
-            className="form-control"
+            className="form-control-half"
             placeholder="mobile number"
           />
         </div>
-        <div>
+        <div className="admin-user-row">
           <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
             Is Active?
           </Checkbox>
@@ -373,13 +374,19 @@ export default function AdminUserEdit() {
             Disable check-in permission?
           </Checkbox>
         </div>
-        <div hidden={currentAdminSelection.selectedUser.isAdmin}>
-          <label>Sellers:</label>
+        <div hidden={currentAdminSelection.selectedUser.isAdmin} className="admin-user-row">
+          <span>Sellers:</span>
           {sellerRows}
         </div>
-        <div>
-          <label>Notes:</label>
-          <textarea onChange={(e) => setNotes(e.target.value)} value={notes ?? ''} />
+        <div className="admin-user-row">
+          <span>Notes:</span>
+          <Textarea
+            className="form-control-half"
+            rows={3}
+            id="userNotes"
+            onChange={(e) => setNotes(e)}
+            value={notes ?? ''}
+          />
         </div>
         <div className="admin-button-group">
           <Button onClick={onSubmit}>Submit</Button>{' '}

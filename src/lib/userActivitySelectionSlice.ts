@@ -21,10 +21,11 @@ export const userActivitySelectionSlice = createSlice({
       state.reloadActivities = true;
       state.filterAdmins = true;
       state.currentLogins = 0;
+      state.currentActivities = [];
       return state;
     },
     setCurrentActivities: (state, action: PayloadAction<UserActivity[]>) => {
-      state.currentActivities = action.payload;
+      state.currentActivities = action.payload ? [...action.payload] : [];
       return state;
     },
     setCurrentLogins: (state, action: PayloadAction<number>) => {
@@ -45,6 +46,7 @@ export const userActivitySelectionSlice = createSlice({
       state.end = action.payload.end;
       state.reloadActivities = true;
       state.currentLogins = 0;
+      state.currentActivities = [];
       return state;
     },
   },

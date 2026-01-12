@@ -181,7 +181,7 @@ export default function AdminToursIndex() {
           Countries={currentAdminSelection.countries}
         />
         <Row>
-          <Col>
+          <Col xs={24}>
             <Table
               autoHeight={true}
               data={currentAdminSelection.tours}

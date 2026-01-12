@@ -71,6 +71,7 @@ import AdminFileUpload from '../common/adminFileUploadComponent';
 
 export default function AdminEventEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;
+  const hasId: boolean = id !== undefined && id > 0;
   const currentAdminSelection: AdminSelection = useSelector(
     (state: RootState) => state.adminSelection,
   );
@@ -116,7 +117,7 @@ export default function AdminEventEdit(props: EditProps) {
   };
 
   const loadEventById = useCallback(() => {
-    if (!id) {
+    if (!hasId) {
       return;
     }
 
@@ -194,7 +195,7 @@ export default function AdminEventEdit(props: EditProps) {
       // Branch 4: load event
       const canLoadEvent =
         currentAdminSelection.selectedEvent === undefined &&
-        id !== undefined &&
+        hasId &&
         currentAdminSelection.countries !== undefined &&
         currentAdminSelection.allSellers !== undefined &&
         currentAdminSelection.venues !== undefined;
@@ -249,12 +250,12 @@ export default function AdminEventEdit(props: EditProps) {
   };
 
   const goBack = (dismissToast: boolean = true) => {
-    if (!id && dismissToast) {
+    if (!hasId && dismissToast) {
       toast.dismiss();
     }
     dispatch(setAdminEvent(undefined));
     dispatch(setMustSaveEvent(false));
-    if (!id) {
+    if (!hasId) {
       router.push('/admin/events');
     }
   };
@@ -301,7 +302,7 @@ export default function AdminEventEdit(props: EditProps) {
         if (response.success && !response.error) {
           toast.success('Note added successfully');
           setNoteText('');
-          if (id) {
+          if (hasId) {
             loadEventById();
           } else {
             dispatch(setReloadEvents(true));
@@ -613,7 +614,7 @@ export default function AdminEventEdit(props: EditProps) {
       return;
     }
     let path = '/admin/events/orders/';
-    if (id) {
+    if (hasId) {
       path += `?id=${id}`;
     }
     router.push(path);
@@ -656,7 +657,7 @@ export default function AdminEventEdit(props: EditProps) {
         dispatch(setIsLoading(false));
         if (success) {
           toast.success('Refund succeeded');
-          if (id) {
+          if (hasId) {
             loadEventById();
           } else {
             dispatch(setReloadEvents(true));
@@ -742,7 +743,7 @@ export default function AdminEventEdit(props: EditProps) {
       dispatch(setIsLoading(false));
       if (success) {
         toast.success('Comp order created');
-        if (id) {
+        if (hasId) {
           loadEventById();
         } else {
           dispatch(setReloadEvents(true));
@@ -771,7 +772,7 @@ export default function AdminEventEdit(props: EditProps) {
       if (success) {
         const message = isCancelled ? 'Cancellation succeeded' : 'Uncancellation succeeded';
         toast.success(message);
-        if (id) {
+        if (hasId) {
           loadEventById();
         } else {
           dispatch(setReloadEvents(true));
@@ -1004,7 +1005,7 @@ export default function AdminEventEdit(props: EditProps) {
         adminSelection.start = undefined;
         adminSelection.end = undefined;
         toast.success('Event updated successfully');
-        if (id) {
+        if (hasId) {
           loadEventById();
           window.removeEventListener('beforeunload', beforeOnUnload);
           if (window.opener) {
@@ -1194,17 +1195,17 @@ export default function AdminEventEdit(props: EditProps) {
   return (
     <>
       <PageHeader pageTitle={pageHeader} />
-      <Col xs={24} className="admin-container" hidden={selectedEvent === undefined}>
+      <div className="admin-container" hidden={selectedEvent === undefined}>
         <Row>
           <Col>
-            <Button hidden={id !== undefined} onClick={confirmGoBack}>
+            <Button hidden={hasId} onClick={confirmGoBack}>
               Back
             </Button>
           </Col>
         </Row>
         <Row>
           <Col>
-            <label>Event title</label>
+            <div className="admin-setting-title">Event title</div>
             <Input
               value={eventTitle ?? ''}
               onChange={setEventTitle}
@@ -1215,7 +1216,7 @@ export default function AdminEventEdit(props: EditProps) {
         </Row>
         <Row>
           <Col>
-            <label>Event date</label>
+            <div className="admin-setting-title">Event date</div>
             <DatePicker
               id="eventDate"
               format="M/d/yyyy"
@@ -1228,7 +1229,7 @@ export default function AdminEventEdit(props: EditProps) {
         </Row>
         <Row hidden={isExternalEvent}>
           <Col>
-            <label>Associated Ticket Socket Event</label>
+            <div className="admin-setting-title">Associated Ticket Socket Event</div>
             <SelectPicker
               value={ticketSocketEventId}
               data={eventList}
@@ -1238,9 +1239,9 @@ export default function AdminEventEdit(props: EditProps) {
             />
           </Col>
         </Row>
-        <Row>
+        <Row className="admin-event-row">
           <Col>
-            <label>Event venue</label>
+            <div className="admin-setting-title">Event venue</div>
             <SelectPicker
               value={externalEventVenueId}
               data={venueList}
@@ -1257,7 +1258,7 @@ export default function AdminEventEdit(props: EditProps) {
               </Modal.Header>
               <Modal.Body>
                 <div>
-                  <label>Venue name</label>
+                  <div className="admin-setting-title">Venue name</div>
                   <Input
                     value={venueName ?? ''}
                     onChange={setVenueName}
@@ -1266,7 +1267,7 @@ export default function AdminEventEdit(props: EditProps) {
                   />
                 </div>
                 <div>
-                  <label>Address</label>
+                  <div className="admin-setting-title">Address</div>
                   <Input
                     value={address ?? ''}
                     onChange={setAddress}
@@ -1275,19 +1276,19 @@ export default function AdminEventEdit(props: EditProps) {
                   />
                 </div>
                 <div>
-                  <label>City</label>
+                  <div className="admin-setting-title">City</div>
                   <Input value={city ?? ''} onChange={setCity} placeholder="city" />
                 </div>
                 <div>
-                  <label>State</label>
+                  <div className="admin-setting-title">State</div>
                   <Input value={state ?? ''} onChange={setState} placeholder="state" />
                 </div>
                 <div>
-                  <label>Postal Code</label>
+                  <div className="admin-setting-title">Postal Code</div>
                   <Input value={zipCode ?? ''} onChange={setZipCode} placeholder="postal code" />
                 </div>
                 <div>
-                  <label>Country</label>
+                  <div className="admin-setting-title">Country</div>
                   <SelectPicker
                     className="admin-seller-select-value"
                     menuAutoWidth={true}
@@ -1299,7 +1300,7 @@ export default function AdminEventEdit(props: EditProps) {
                   />
                 </div>
                 <div>
-                  <label>Timezone</label>
+                  <div className="admin-setting-title">Timezone</div>
                   <SelectPicker
                     className="admin-seller-select-value"
                     menuAutoWidth={true}
@@ -1337,8 +1338,7 @@ export default function AdminEventEdit(props: EditProps) {
         </Row>
         <Row>
           <Col>
-            <label>Event time (in venue local time zone)</label>
-
+            <div className="admin-setting-title">Event time (in venue local time zone)</div>
             <TimePicker
               id="eventTime"
               format="hh:mm aa"
@@ -1349,8 +1349,7 @@ export default function AdminEventEdit(props: EditProps) {
               onClean={onCleanEventTime}
             />
 
-            <label>Announce Date (in Pacific Time)</label>
-
+            <div className="admin-setting-title">Announce Date (in Pacific Time)</div>
             <DatePicker
               id="announceDate"
               format="M/d/yyyy"
@@ -1374,7 +1373,7 @@ export default function AdminEventEdit(props: EditProps) {
         </Row>
         <Row>
           <Col>
-            <label className="mt-4 edit-event-link">VIP Link</label>
+            <span className="edit-event-link">VIP Link</span>
             <a
               target="_blank"
               className="edit-event-link"
@@ -1394,7 +1393,7 @@ export default function AdminEventEdit(props: EditProps) {
         </Row>
         <Row>
           <Col>
-            <label className="mt-4 edit-event-link">Tickets Link</label>
+            <span className="edit-event-link">Tickets Link</span>
             <a target="_blank" className="edit-event-link" hidden={!externalUrl} href={externalUrl}>
               Visit
             </a>
@@ -1415,7 +1414,9 @@ export default function AdminEventEdit(props: EditProps) {
             >
               Disable "Tickets" button
             </Checkbox>
-            <label>Alternate text for Tickets Button (10 chars or less)</label>
+            <div className="admin-setting-title">
+              Alternate text for Tickets Button (10 chars or less)
+            </div>
             <Input
               value={disableLinkReason ?? ''}
               onChange={setDisableLinkReason}
@@ -1432,7 +1433,9 @@ export default function AdminEventEdit(props: EditProps) {
             >
               Disable "VIP" button
             </Checkbox>
-            <label>Alternate text for VIP Button (10 chars or less)</label>
+            <div className="admin-setting-title">
+              Alternate text for VIP Button (10 chars or less)
+            </div>
             <Input
               value={disableVipLinkReason ?? ''}
               onChange={setDisableVipLinkReason}
@@ -1473,6 +1476,7 @@ export default function AdminEventEdit(props: EditProps) {
             >
               Is Active?
             </Checkbox>
+            <br />
             <Checkbox
               checked={isHidden}
               disabled={isDeleted}
@@ -1480,9 +1484,11 @@ export default function AdminEventEdit(props: EditProps) {
             >
               Is Hidden?
             </Checkbox>
+            <br />
             <Checkbox checked={isDeleted} onChange={(_, checked) => setIsDeleted(checked)}>
               Is Deleted?
             </Checkbox>
+            <br />
             <Checkbox
               checked={isAddedToBandsInTown}
               disabled={isDeleted}
@@ -1609,12 +1615,12 @@ export default function AdminEventEdit(props: EditProps) {
             <Button onClick={onSubmit} disabled={isUploading}>
               Submit
             </Button>{' '}
-            <Button hidden={id !== undefined} onClick={confirmGoBack}>
+            <Button hidden={hasId} onClick={confirmGoBack}>
               Back
             </Button>
           </Col>
         </Row>
-      </Col>
+      </div>
     </>
   );
 }

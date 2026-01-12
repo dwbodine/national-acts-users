@@ -144,7 +144,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
             <Container className="fluid">
               <Row>
                 <Col>
-                  <label className="page-seller-label">Display Name</label>
+                  <span className="page-seller-label">Display Name</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is &quot;{selectedSeller?.name}&quot;
                   </div>
@@ -164,7 +164,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">Address</label>
+                  <span className="page-seller-label">Address</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.address ?? 'n/a'}`}
                   </div>
@@ -178,7 +178,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">City</label>
+                  <span className="page-seller-label">City</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.city ?? 'n/a'}`}
                   </div>
@@ -192,7 +192,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">State</label>
+                  <span className="page-seller-label">State</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.state ?? 'n/a'}`}
                   </div>
@@ -206,7 +206,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">Postal Code</label>
+                  <span className="page-seller-label">Postal Code</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.zip ?? 'n/a'}`}
                   </div>
@@ -220,7 +220,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">Country</label>
+                  <span className="page-seller-label">Country</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.country?.countryName ?? 'n/a'}`}
                   </div>
@@ -237,7 +237,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">Phone</label>
+                  <span className="page-seller-label">Phone</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.phone ?? 'n/a'}`}
                   </div>
@@ -251,7 +251,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">Email</label>
+                  <span className="page-seller-label">Email</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.email ?? 'n/a'}`}
                   </div>
@@ -265,7 +265,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Twitter</label>
+                  <span className="page-seller-label">Twitter</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.twitter ?? 'n/a'}`}
                   </div>
@@ -279,7 +279,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Facebook</label>
+                  <span className="page-seller-label">Facebook</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.facebook ?? 'n/a'}`}
                   </div>
@@ -293,7 +293,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Instagram</label>
+                  <span className="page-seller-label">Instagram</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.instagram ?? 'n/a'}`}
                   </div>
@@ -307,7 +307,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">YouTube</label>
+                  <span className="page-seller-label">YouTube</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.youtube ?? 'n/a'}`}
                   </div>
@@ -321,7 +321,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Spotify</label>
+                  <span className="page-seller-label">Spotify</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.spotify ?? 'n/a'}`}
                   </div>
@@ -335,7 +335,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Website</label>
+                  <span className="page-seller-label">Website</span>
                   <div className="pageseller-default">
                     Default is {`${selectedSeller?.website ?? 'n/a'}`}
                   </div>
@@ -349,7 +349,7 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Website Display Text</label>
+                  <span className="page-seller-label">Website Display Text</span>
                   <div hidden={!selectedSeller} className="pageseller-default">
                     Default is {`${selectedSeller?.websiteDisplayText ?? '(none)'}`}
                   </div>

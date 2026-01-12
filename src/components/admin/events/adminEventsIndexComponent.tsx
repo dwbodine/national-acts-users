@@ -57,11 +57,12 @@ import AdminSellerSelect from '../common/adminSellerSelectComponent';
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const { getSellers } = useGetSellers();
   const { getAdminEvents } = useGetAdminEvents();
   const { getLocation } = useGetLocation();
   const dispatch = useDispatch();
-  const [tableLoading, setTableLoading] = useState(true);
+  const [tableLoading, setTableLoading] = useState(false);
   const { setEventsInactive } = useSetEventsInactive();
   const { setEventsDeleted } = useSetEventsDeleted();
   const { setEventsHidden } = useSetEventsHidden();
@@ -92,15 +93,19 @@ export default function AdminEventsIndex() {
         dispatch(setReloadSellers(false));
         setEventIdList([]);
         setSelectedAction(null);
-        setTableLoading(true);
-        dispatch(setIsLoading(true));
+        if (!globalSelection.isLoading) {
+          dispatch(setIsLoading(true));
+        }
         dispatch(setAdminSellerId(undefined));
         dispatch(setAdminTour(undefined));
         dispatch(setReloadEvents(true));
         void getSellers().then((response: GetSellersResponse) => {
-          dispatch(setAllSellers(response.sellers));
-          dispatch(setIsLoading(false));
-          setTableLoading(false);
+          if (response.sellers && !response.error) {
+            dispatch(setAllSellers(response.sellers));
+          } else {
+            toast.error(response.error);
+            dispatch(setIsLoading(false));
+          }
         });
       } else if (currentAdminSelection.reloadEvents) {
         setEventIdList([]);
@@ -110,11 +115,16 @@ export default function AdminEventsIndex() {
         const sellerId: number = adminSelection.sellerId ?? 0;
         if (sellerId === 0) {
           setTableLoading(false);
+          dispatch(setIsLoading(false));
           return;
         }
 
-        setTableLoading(true);
-        dispatch(setIsLoading(true));
+        if (!tableLoading) {
+          setTableLoading(true);
+        }
+        if (!globalSelection.isLoading) {
+          dispatch(setIsLoading(true));
+        }
         void getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
           if (response.events && !response.error) {
             dispatch(setAdminEvents(response.events));
@@ -137,6 +147,8 @@ export default function AdminEventsIndex() {
                       (resp: GetEventsResponse) => {
                         if (resp.events && !resp.error) {
                           dispatch(setTicketSocketEventsOnly(response.events));
+                        } else {
+                          toast.error(resp.error);
                         }
                         dispatch(setIsLoading(false));
                         setTableLoading(false);
@@ -148,16 +160,16 @@ export default function AdminEventsIndex() {
                   }
                 });
               }
+            } else {
+              dispatch(setIsLoading(false));
+              setTableLoading(false);
             }
           } else {
+            toast.error(response.error);
             dispatch(setIsLoading(false));
             setTableLoading(false);
           }
         });
-      } else if (currentAdminSelection.events !== undefined && tableLoading) {
-        setTimeout(() => {
-          setTableLoading(false);
-        }, 300);
       }
     }, 500);
     return () => {
@@ -536,16 +548,20 @@ export default function AdminEventsIndex() {
             </Button>
           </Col>
         </Row>
-        <AdminSellerSelect
-          Id="refresh"
-          Sellers={currentAdminSelection.allSellers}
-          SellerId={currentAdminSelection.sellerId}
-          OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
-          Countries={currentAdminSelection.countries}
-        />
+        <Row>
+          <Col xs={24}>
+            <AdminSellerSelect
+              Id="refresh"
+              Sellers={currentAdminSelection.allSellers}
+              SellerId={currentAdminSelection.sellerId}
+              OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
+              Countries={currentAdminSelection.countries}
+            />
+          </Col>
+        </Row>
         <Row className="admin-select" hidden={tourList.length === 0}>
           <Col xs={2}>Tour:</Col>
-          <Col>
+          <Col xs={8}>
             <SelectPicker
               value={selectedTourId}
               data={tourList}
@@ -559,13 +575,17 @@ export default function AdminEventsIndex() {
             />
           </Col>
         </Row>
-        <ReportDatePicker
-          OnChange={onDateChange}
-          OnStartClear={onStartClear}
-          OnEndClear={onEndClear}
-          Start={currentAdminSelection.start}
-          End={currentAdminSelection.end}
-        />
+        <Row>
+          <Col xs={24}>
+            <ReportDatePicker
+              OnChange={onDateChange}
+              OnStartClear={onStartClear}
+              OnEndClear={onEndClear}
+              Start={currentAdminSelection.start}
+              End={currentAdminSelection.end}
+            />
+          </Col>
+        </Row>
         <Row>
           <Col>
             <Button disabled={sellectedSellerId === undefined} onClick={resetEvents}>
@@ -597,7 +617,7 @@ export default function AdminEventsIndex() {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col xs={24}>
             <Table
               autoHeight={true}
               data={currentAdminSelection.events}

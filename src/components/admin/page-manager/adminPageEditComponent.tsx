@@ -676,7 +676,7 @@ export default function AdminPageEdit() {
           </Row>
           <Row>
             <Col xs={24}>
-              <label>Main Page Title (most viewed on the site)</label>
+              <span>Main Page Title (most viewed on the site)</span>
               <Input
                 value={title ?? ''}
                 onChange={setPageTitle}
@@ -687,7 +687,7 @@ export default function AdminPageEdit() {
           </Row>
           <Row>
             <Col xs={24}>
-              <label>Route (how it shows up in the url)</label>
+              <span>Route (how it shows up in the url)</span>
               <Input
                 value={route ?? ''}
                 onChange={setPageRoute}
@@ -698,7 +698,7 @@ export default function AdminPageEdit() {
           </Row>
           <Row>
             <Col xs={24} md={12}>
-              <label>Page Type</label>
+              <span>Page Type</span>
               <SelectPicker
                 value={selectedPageTypeId}
                 data={pageTypeList}
@@ -781,7 +781,7 @@ export default function AdminPageEdit() {
           </Row>
           <Row>
             <Col xs={24}>
-              <label>Subtitle 1</label>
+              <span>Subtitle 1</span>
               <Input
                 value={subtitle1 ?? ''}
                 onChange={setSubTitle1}
@@ -792,7 +792,7 @@ export default function AdminPageEdit() {
           </Row>
           <Row>
             <Col xs={24}>
-              <label>Subtitle 2</label>
+              <span>Subtitle 2</span>
               <Input
                 value={subtitle2 ?? ''}
                 onChange={setSubTitle2}
@@ -803,7 +803,7 @@ export default function AdminPageEdit() {
           </Row>
           <Row>
             <Col xs={24}>
-              <label>HTML Text</label>
+              <span>HTML Text</span>
               <Textarea
                 className="form-control-half"
                 rows={10}
@@ -823,7 +823,7 @@ export default function AdminPageEdit() {
                 Use include date range
               </Checkbox>
               <br />
-              <label>Include start date</label>
+              <span>Include start date</span>
               <DatePicker
                 id="includeStart"
                 format="M/d/yyyy"
@@ -834,7 +834,7 @@ export default function AdminPageEdit() {
                 disabled={!useIncludeDates}
                 onClean={() => setIncludeStart(null)}
               />
-              <label>Include end date</label>
+              <span>Include end date</span>
               <DatePicker
                 id="includeEnd"
                 format="M/d/yyyy"
@@ -856,7 +856,7 @@ export default function AdminPageEdit() {
                 Use exclude date range
               </Checkbox>
               <br />
-              <label>Exclude start date</label>
+              <span>Exclude start date</span>
               <DatePicker
                 id="excludeStart"
                 format="M/d/yyyy"
@@ -867,7 +867,7 @@ export default function AdminPageEdit() {
                 disabled={!useExcludeDates}
                 onClean={() => setExcludeStart(null)}
               />
-              <label>Exclude end date</label>
+              <span>Exclude end date</span>
               <DatePicker
                 id="excludeEnd"
                 format="M/d/yyyy"
@@ -882,7 +882,7 @@ export default function AdminPageEdit() {
           </Row>
           <Row>
             <Col xs={24}>
-              <label>Google Analytics ID</label>
+              <span>Google Analytics ID</span>
               <Input
                 value={googleAnalyticsId ?? ''}
                 onChange={setGoogleAnalyticsId}

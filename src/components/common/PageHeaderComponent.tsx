@@ -40,7 +40,7 @@ export default function PageHeader(props: PageHeaderProps) {
           Hidden={!showDateRange}
         />
         <div className="page-header-date-picker" hidden={!showDatePicker}>
-          <label className="events-datepicker-label">{datePickerTitle}:</label>
+          <span className="events-datepicker-label">{datePickerTitle}:</span>
           <DatePicker
             format="M/d/yyyy"
             onSelect={onDatePickerChange}

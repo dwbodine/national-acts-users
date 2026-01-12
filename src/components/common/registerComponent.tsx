@@ -126,7 +126,7 @@ export default function RegisterComponent() {
       <Row>
         <Col>
           <div className="auth-control-container">
-            <label>Email:</label>
+            <span>Email:</span>
             <Input
               autoComplete="off"
               value={username ?? ''}
@@ -139,7 +139,7 @@ export default function RegisterComponent() {
       <Row>
         <Col>
           <div className="auth-control-container">
-            <label>First Name:</label>
+            <span>First Name:</span>
             <Input
               autoComplete="off"
               value={firstName ?? ''}
@@ -152,7 +152,7 @@ export default function RegisterComponent() {
       <Row>
         <Col>
           <div className="auth-control-container">
-            <label>Last Name:</label>
+            <span>Last Name:</span>
             <Input
               autoComplete="off"
               value={lastName ?? ''}
@@ -165,7 +165,7 @@ export default function RegisterComponent() {
       <Row>
         <Col>
           <div className="auth-control-container">
-            <label>Associated Artist:</label>
+            <span>Associated Artist:</span>
             <SelectPicker
               data={[
                 { label: '-- Select One --', value: undefined },
@@ -186,7 +186,7 @@ export default function RegisterComponent() {
       <Row>
         <Col>
           <div className="auth-control-container">
-            <label>Password:</label>
+            <span>Password:</span>
             <Input
               type="password"
               placeholder="Password"
@@ -200,7 +200,7 @@ export default function RegisterComponent() {
       <Row>
         <Col>
           <div className="auth-control-container">
-            <label>Confirm Password:</label>
+            <span>Confirm Password:</span>
             <Input
               type="password"
               placeholder="Confirm Password"
@@ -214,7 +214,7 @@ export default function RegisterComponent() {
       <Row>
         <Col>
           <div className="auth-control-container">
-            <label>Notes for the admin (optional):</label>
+            <span>Notes for the admin (optional):</span>
             <Textarea value={notes ?? ''} autoComplete="off" onChange={setNotes} />
           </div>
         </Col>
