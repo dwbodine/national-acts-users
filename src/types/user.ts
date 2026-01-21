@@ -1,14 +1,6 @@
-import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from './public';
 import { ExternalVenue, TicketSocketAccount } from './admin';
-import {
-  ITicketSalesData,
-  Note,
-  Order,
-  Seller,
-  SellerType,
-  Tour,
-  VipEvent,
-} from './event';
+import { ITicketSalesData, Note, Order, Seller, SellerType, Tour, VipEvent } from './event';
+import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from './public';
 
 export interface JwtPayload {
   fresh?: boolean;
@@ -25,8 +17,8 @@ export interface JwtPayload {
 
 export type UserSeller = {
   sellerId: number;
-  sellerName: string;
-  sellerType: SellerType;
+  sellerName?: string;
+  sellerType?: SellerType;
   roleId?: number;
   permissions?: number[];
   routes?: string[];
@@ -304,6 +296,7 @@ export type UserActivitySelection = {
 export type GlobalSelection = {
   isLoading: boolean;
   saveInProgress: boolean;
+  currentUser?: User;
 };
 
 export enum UserActivityType {
@@ -336,12 +329,13 @@ export enum UserActivityType {
 }
 
 export type UserActivity = {
+  userActivityId?: number;
   activityType: UserActivityType;
   activityName?: string;
   userId?: number;
   username?: string;
   activityData?: string;
-  timestamp: string;
+  activityTime?: string;
   fullName?: string;
   sellerName?: string;
 };
@@ -376,9 +370,10 @@ export type AdminSelection = {
   allSellers?: Seller[] | undefined;
   allSettings?: SiteSetting[] | undefined;
   allPages?: Page[] | undefined;
-  pageOrders?: Map<number, Page>;
+  pageOrders?: Page[] | undefined;
   allFaqs?: Faq[] | undefined;
   faqCategories?: FaqCategory[] | undefined;
+  selectedFaqCategory?: number | undefined;
   countries: Country[] | undefined;
   pageTypes?: PageType[] | undefined;
   roles?: Role[] | undefined;

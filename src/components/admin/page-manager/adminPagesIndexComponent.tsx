@@ -1,19 +1,26 @@
-"use client";
+'use client';
 
-import { GetPageTypesResponse, GetPagesResponse, GetSellersResponse } from '@/types/responses';
-import { setAllPages, setAllSellers, setPageTypes, setReloadPages, setReloadSellers, setSelectedPage } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import { Button } from 'react-bootstrap';
-import { Page } from '@/types/public';
-import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Input, Table } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
-import { useRouter } from 'next/navigation';
+import {
+  setAllPages,
+  setAllSellers,
+  setPageTypes,
+  setReloadPages,
+  setReloadSellers,
+  setSelectedPage,
+} from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { Page } from '@/types/public';
+import { GetPagesResponse, GetPageTypesResponse, GetSellersResponse } from '@/types/responses';
 
 export default function AdminPagesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -31,7 +38,7 @@ export default function AdminPagesIndex() {
       if (currentAdminSelection.pageTypes === undefined) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getPageTypes().then((response: GetPageTypesResponse) => {
+        void getPageTypes().then((response: GetPageTypesResponse) => {
           if (!response.error && response.pageTypes) {
             dispatch(setPageTypes(response.pageTypes));
           }
@@ -42,7 +49,7 @@ export default function AdminPagesIndex() {
         dispatch(setReloadSellers(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAdminSellers().then((response: GetSellersResponse) => {
+        void getAdminSellers().then((response: GetSellersResponse) => {
           if (!response.error && response.sellers) {
             dispatch(setAllSellers(response.sellers));
           }
@@ -53,7 +60,7 @@ export default function AdminPagesIndex() {
         dispatch(setReloadPages(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAllPages().then((response: GetPagesResponse) => {
+        void getAllPages().then((response: GetPagesResponse) => {
           if (!response.error && response.pages) {
             dispatch(setAllPages(response.pages));
           }
@@ -78,14 +85,13 @@ export default function AdminPagesIndex() {
       pageType: {
         pageTypeId: 1,
         pageTypeName: '',
-        pageTypeTemplate: ''
       },
       route: '',
       title: '',
     };
     dispatch(setSelectedPage(page));
     setTableLoading(true);
-    router.push('/admin/page-manager/edit');
+    router.push('/admin/pages/edit/');
   };
 
   const editPage = (pageId: number) => {
@@ -96,7 +102,7 @@ export default function AdminPagesIndex() {
     if (page) {
       dispatch(setSelectedPage(page));
       setTableLoading(true);
-      router.push('/admin/page-manager/edit');
+      router.push('/admin/pages/edit/');
     }
   };
 
@@ -112,35 +118,33 @@ export default function AdminPagesIndex() {
   const filteredPages = filterPages(currentAdminSelection.allPages);
 
   return (
-    <div className="admin-container">
-      <h3>Manage Pages</h3>
-      <input
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="form-control search-text-input no-print"
-        placeholder="Search for pages by title..."
-        hidden={currentAdminSelection.allPages === undefined}
-      />
-      <Button onClick={addPage}>Add Page</Button>
-      <Table
-        height={600}
-        data={filteredPages}
-        bordered
-        cellBordered
-        loading={tableLoading}
-      >
-        <Column width={300}>
-          <HeaderCell>Page Title</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData) => (
-              <div id={rowData.pageId} onClick={() => editPage(parseInt(`${rowData.pageId}`))}>
-                {rowData.title}
-              </div>
-            )}
-          </Cell>
-        </Column>
-      </Table>
-      <AdminListHomeButton />
-    </div>
+    <>
+      <PageHeader pageTitle="Manage Pages" />
+      <div className="admin-container">
+        <Input
+          value={searchTerm}
+          onChange={setSearchTerm}
+          className="search-text-input no-print"
+          placeholder="Search for pages by title..."
+          hidden={currentAdminSelection.allPages === undefined}
+        />
+        <Button onClick={addPage}>Add Page</Button>
+        <Table height={600} data={filteredPages} bordered cellBordered loading={tableLoading}>
+          <Column width={300}>
+            <HeaderCell>Page Title</HeaderCell>
+            <Cell className="admin-click-cell">
+              {(rowData) => (
+                <div
+                  id={`${rowData['pageId']}`}
+                  onClick={() => editPage(parseInt(`${rowData['pageId']}`))}
+                >
+                  {rowData['title']}
+                </div>
+              )}
+            </Cell>
+          </Column>
+        </Table>
+      </div>
+    </>
   );
 }

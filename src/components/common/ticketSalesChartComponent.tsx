@@ -1,5 +1,6 @@
-"use client";
+'use client';
 
+import { useEffect, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -11,11 +12,15 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Col, Row } from 'react-bootstrap';
-import { CustomToolTipParams, CustomToolTipParamsPayload, TicketSalesChartProps } from '@/types/props';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import React, { useEffect, useState } from 'react';
 import { LabelPosition } from 'recharts/types/component/Label';
+import { Col, Row } from 'rsuite';
+
+import {
+  CustomToolTipParams,
+  CustomToolTipParamsPayload,
+  TicketSalesChartProps,
+} from '@/types/props';
 
 export default function TicketSalesChart(props: TicketSalesChartProps) {
   const ticketSalesData = props.TicketSalesData;
@@ -42,8 +47,10 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
       return (
         <div className="custom-tooltip">
           <p className="label">{`Purchase Date: ${label}`}</p>
-          <p className="label">{`Ticket Sales: ${payload[0].value}`}</p>
-          {hideRev ? '' : (
+          <p className="label">{`Ticket Sales: ${payload[0]?.value}`}</p>
+          {hideRev ? (
+            ''
+          ) : (
             <p className="label">{`Ticket Revenue: $${parseFloat(payload[1]?.value?.toString() ?? '0').toFixed(2)}`}</p>
           )}
         </div>
@@ -58,7 +65,7 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
 
   return (
     <Row className="no-print ticket-sales-chart" hidden={hideMobile || !ticketSalesData}>
-      <Col>
+      <Col xs={24}>
         <ResponsiveContainer width="100%" height={200}>
           <AreaChart
             data={ticketSalesData ? [...ticketSalesData] : []}
@@ -71,16 +78,18 @@ export default function TicketSalesChart(props: TicketSalesChartProps) {
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="PurchaseDate">
-              <Label value="Purchase Date" offset={-4} position="insideBottom" />
+              <Label value="Purchase Date" offset={-5} position="insideBottom" />
             </XAxis>
             <YAxis>
-              <Label value={yLabel} position={yPosition} angle={-90} offset={15} />
+              <Label value={yLabel} position={yPosition} angle={-90} offset={10} />
             </YAxis>
             <Tooltip content={<CustomTooltip />} />
-            {chartsHidden ? '' : (
+            {chartsHidden ? (
+              ''
+            ) : (
               <Area type="monotone" dataKey="Tickets" stroke="#000000" fill="#d88884" />
             )}
-            {(!chartsHidden && !hideRev) ? (
+            {!chartsHidden && !hideRev ? (
               <Area type="monotone" dataKey="RevenueUsd" stroke="#FF0000" fill="#8884d8" />
             ) : (
               ''

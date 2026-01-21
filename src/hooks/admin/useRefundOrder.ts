@@ -1,4 +1,5 @@
 import { ModifyOrderResponse } from '@/types/responses';
+
 import { eventService } from '../../services';
 
 export const useRefundOrder = () => {
@@ -7,11 +8,7 @@ export const useRefundOrder = () => {
     refundServiceFees: boolean,
     markChargeback: boolean = false,
   ): Promise<ModifyOrderResponse> =>
-    await eventService.refundOrder(
-      ticketSocketOrderId,
-      refundServiceFees,
-      markChargeback,
-    );
+    await eventService.refundOrder(ticketSocketOrderId, refundServiceFees, markChargeback);
 
   return { refundOrder };
 };

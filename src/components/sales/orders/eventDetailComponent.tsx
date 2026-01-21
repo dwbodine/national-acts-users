@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
-import { EnumPermission, User, UserReportSelection } from '@/types/user';
-import {
-  IShirtData,
-  IShirtSizeData,
-  ITicketData,
-  ITicketTypeData,
-  Order,
-  TicketType,
-  VipEvent,
-} from '@/types/event';
-import React, { ChangeEvent, ReactElement, useEffect, useMemo, useState } from 'react';
+import debouce from 'lodash.debounce';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+import { ReactElement, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Checkbox, Col, Container, Input, Row } from 'rsuite';
+
+import { useGetEventById } from '@/hooks/common/useGetEventById';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useGetUserSeller } from '@/hooks/order/useGetUserSeller';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useHasPermission } from '@/hooks/user/useHasPermission';
 import {
   setCurrentDetailEvent,
-  setEventSeller,
   setEvents,
+  setEventSeller,
   setFocusControl,
   setHideRevenue,
   setHideServiceFees,
@@ -25,28 +25,28 @@ import {
   setShowOnlyEmails,
   setShowOnlyPhones,
 } from '@/lib/reportSelectionSlice';
-
-import { useDispatch, useSelector } from 'react-redux';
-import { EditProps } from '@/types/props';
-import OrderMobileRow from './orderMobileRowComponent';
-import OrderRow from './orderRowComponent';
-import PrintButton from '../../common/printButtonComponent';
-import { RingLoader } from 'react-spinners';
 import { RootState } from '@/lib/store';
-import debouce from 'lodash.debounce';
+import {
+  IShirtData,
+  IShirtSizeData,
+  ITicketData,
+  ITicketTypeData,
+  Order,
+  TicketType,
+  VipEvent,
+} from '@/types/event';
+import { EditProps } from '@/types/props';
+import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import { downloadCsvFile } from '@/utils/downloadFile';
 import { exportEventCustomerDataToCsv } from '@/utils/eventUtils';
 import getFileNameFromEvent from '@/utils/getFileNameFromEvent';
 import getShirtDataFromOrders from '@/utils/getShirtDataFromOrders';
 import getTicketDataFromOrders from '@/utils/getTicketDataFromOrders';
-import moment from 'moment';
 import setFocusToControl from '@/utils/setFocusToControl';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useGetEventById } from '@/hooks/common/useGetEventById';
-import { useGetUserSeller } from '@/hooks/order/useGetUserSeller';
-import { useHasPermission } from '@/hooks/user/useHasPermission';
-import { useRouter } from 'next/navigation';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
+
+import PrintButton from '../../common/printButtonComponent';
+import OrderMobileRow from './orderMobileRowComponent';
+import OrderRow from './orderRowComponent';
 
 export default function EventDetail(props: EditProps) {
   const id = props.Id;
@@ -65,7 +65,6 @@ export default function EventDetail(props: EditProps) {
   const [showOnlyEmailsDisplay, setShowOnlyEmailsDisplay] = useState(false);
   const [showOnlyPhonesDisplay, setShowOnlyPhonesDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
 
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
@@ -111,16 +110,11 @@ export default function EventDetail(props: EditProps) {
       setViewInactiveOrders(userHasPermission(user, EnumPermission.ViewInactiveEvents));
       setViewDeletedOrders(userHasPermission(user, EnumPermission.ViewDeletedEvents));
       setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
-      const vRevenueControls = userHasPermission(
-        user,
-        EnumPermission.ViewRevenueControls,
-      );
+      const vRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);
       const vRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
       setViewRevenueControls(vRevenueControls);
       setViewRevenueData(vRevenueData);
-      setCanExportCustomerData(
-        userHasPermission(user, EnumPermission.ExportCustomerData),
-      );
+      setCanExportCustomerData(userHasPermission(user, EnumPermission.ExportCustomerData));
       setViewPrintButton(userHasPermission(user, EnumPermission.ViewPrintButton));
       setCanCheckInTickets(
         !user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers),
@@ -226,28 +220,28 @@ export default function EventDetail(props: EditProps) {
                     orders.push(order);
                   }
                 }
-                newEvent.orders = orders.sort((a, b) =>
-                  a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
-                  a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
-                  (a.purchaseTimestamp && b.purchaseTimestamp ? moment(b.purchaseTimestamp).unix() - moment(a.purchaseTimestamp).unix() : 0)
+                newEvent.orders = orders.sort(
+                  (a, b) =>
+                    a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
+                    a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
+                    (a.purchaseTimestamp && b.purchaseTimestamp
+                      ? moment(b.purchaseTimestamp).unix() - moment(a.purchaseTimestamp).unix()
+                      : 0),
                 );
               }
 
               dispatch(setCurrentDetailEvent(newEvent));
               if (currentReportSelection.currentEvents !== undefined) {
                 document.title = newEvent.title;
-                currentReportSelection.currentEvents.map(evt => (evt.externalEventId === newEvent.externalEventId
-                  ? newEvent
-                  : evt));
+                currentReportSelection.currentEvents.map((evt) =>
+                  evt.externalEventId === newEvent.externalEventId ? newEvent : evt,
+                );
                 dispatch(setEvents(currentReportSelection.currentEvents));
               }
             }
           }
           setIsLoading(false);
-          if (
-            currentReportSelection.focusControl &&
-            currentReportSelection.focusControl !== ''
-          ) {
+          if (currentReportSelection.focusControl && currentReportSelection.focusControl !== '') {
             const { focusControl } = currentReportSelection;
             setTimeout(() => {
               setFocusToControl(focusControl);
@@ -257,7 +251,7 @@ export default function EventDetail(props: EditProps) {
         }
       }
     };
-    fetchEvent();
+    void fetchEvent();
     return () => {
       debouncedResults.cancel();
     };
@@ -295,12 +289,9 @@ export default function EventDetail(props: EditProps) {
         hasNonUsaOrders,
         currencySymbol,
         showOnlyEmails,
-        showOnlyPhones
+        showOnlyPhones,
       );
-      const fileName = getFileNameFromEvent(
-        currentReportSelection.currentDetailEvent,
-        `orders`,
-      );
+      const fileName = getFileNameFromEvent(currentReportSelection.currentDetailEvent, `orders`);
       downloadCsvFile(fileName, csvData);
     }
   };
@@ -309,22 +300,22 @@ export default function EventDetail(props: EditProps) {
     visibleOrders = [];
 
     if (orders && orders.length > 0) {
-      visibleOrders = orders.filter(order => ((
-        (currentReportSelection.showDeletedOrders && order.isDeleted) ||
-        (currentReportSelection.showInactiveOrders &&
-          !order.isActive &&
-          !order.isDeleted) ||
-        (!order.isDeleted && order.isActive))
-      ));
+      visibleOrders = orders.filter(
+        (order) =>
+          (currentReportSelection.showDeletedOrders && order.isDeleted) ||
+          (currentReportSelection.showInactiveOrders && !order.isActive && !order.isDeleted) ||
+          (!order.isDeleted && order.isActive),
+      );
     }
 
     let fOrders: Order[] = visibleOrders ?? [];
     if (visibleOrders.length > 0 && searchTerm && searchTerm.length >= 2) {
       const srch = searchTerm.toLowerCase();
-      fOrders = visibleOrders.filter((order) => (
-        order.purchaserFirstName.toLowerCase().includes(srch) ||
-        order.purchaserLastName.toLowerCase().includes(srch)
-      ));
+      fOrders = visibleOrders.filter(
+        (order) =>
+          order.purchaserFirstName.toLowerCase().includes(srch) ||
+          order.purchaserLastName.toLowerCase().includes(srch),
+      );
     }
     return fOrders;
   };
@@ -339,7 +330,9 @@ export default function EventDetail(props: EditProps) {
       searchBarHidden = false;
     }
 
-    const filteredOrders: Order[] | undefined = filterOrders(currentReportSelection.currentDetailEvent.orders);
+    const filteredOrders: Order[] | undefined = filterOrders(
+      currentReportSelection.currentDetailEvent.orders,
+    );
     filteredOrders?.forEach((order, i) => {
       if (order.isActive && !order.isDeleted && !order.isComped) {
         totalTickets += order.numTickets;
@@ -394,9 +387,7 @@ export default function EventDetail(props: EditProps) {
       ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
         ticketTypes.forEach((ticketType: TicketType) => {
           const key = `ttd${i}`;
-          const data = ticketTypeData.find(
-            (x) => x.TicketType === ticketType.ticketTypeName,
-          );
+          const data = ticketTypeData.find((x) => x.TicketType === ticketType.ticketTypeName);
           let number = 0;
           let total = '';
           if (data) {
@@ -425,7 +416,7 @@ export default function EventDetail(props: EditProps) {
       shirtSizes.forEach((shirtSize: string) => {
         shirtData?.ShirtData?.forEach((shirSizeData: IShirtSizeData[]) => {
           const data = shirSizeData.find((x) => x.ShirtSize === shirtSize);
-          let number = (arr.get(shirtSize) ?? 0);
+          let number = arr.get(shirtSize) ?? 0;
           if (data) {
             number += data.Number;
           }
@@ -445,46 +436,46 @@ export default function EventDetail(props: EditProps) {
     }
   }
 
-  const handleShowInactive = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowInactive = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setShowInactiveOrders(event.target.checked));
+      dispatch(setShowInactiveOrders(checked));
     }
   };
 
-  const handleShowDeleted = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowDeleted = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setShowDeletedOrders(event.target.checked));
+      dispatch(setShowDeletedOrders(checked));
     }
   };
 
-  const handleHideRevenue = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleHideRevenue = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setHideRevenue(event.target.checked));
+      dispatch(setHideRevenue(checked));
       setCheckChanged(!checkChanged);
     }
   };
 
-  const handleHideServiceFees = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleHideServiceFees = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setHideServiceFees(event.target.checked));
+      dispatch(setHideServiceFees(checked));
       setCheckChanged(!checkChanged);
     }
   };
 
-  const handleShowOnlyEmails = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowOnlyEmails = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setShowOnlyEmails(event.target.checked));
-      if (event.target.checked) {
+      dispatch(setShowOnlyEmails(checked));
+      if (checked) {
         dispatch(setShowOnlyPhones(false));
       }
       setCheckChanged(!checkChanged);
     }
   };
 
-  const handleShowOnlyPhones = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleShowOnlyPhones = (checked: boolean) => {
     if (currentReportSelection) {
-      dispatch(setShowOnlyPhones(event.target.checked))
-      if (event.target.checked) {
+      dispatch(setShowOnlyPhones(checked));
+      if (checked) {
         dispatch(setShowOnlyEmails(false));
       }
       setCheckChanged(!checkChanged);
@@ -494,12 +485,14 @@ export default function EventDetail(props: EditProps) {
   let eventDate = '';
   if (currentReportSelection.currentDetailEvent?.eventDate !== undefined) {
     if (currentReportSelection.currentDetailEvent?.eventTime) {
-      eventDate = moment(currentReportSelection.currentDetailEvent.eventTime).format('MM/DD/YYYY h:mm A');
+      eventDate = moment(currentReportSelection.currentDetailEvent.eventTime).format(
+        'MM/DD/YYYY h:mm A',
+      );
       if (currentReportSelection.currentDetailEvent.venue?.timezone) {
         eventDate += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
       }
     } else {
-      eventDate = moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY');      
+      eventDate = moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY');
     }
   }
 
@@ -513,7 +506,9 @@ export default function EventDetail(props: EditProps) {
 
   let meetAndGreet = '';
   if (currentReportSelection.currentDetailEvent?.meetAndGreetTime) {
-    meetAndGreet = moment(currentReportSelection.currentDetailEvent.meetAndGreetTime).format('h:mm A');
+    meetAndGreet = moment(currentReportSelection.currentDetailEvent.meetAndGreetTime).format(
+      'h:mm A',
+    );
     if (currentReportSelection.currentDetailEvent.venue?.timezone) {
       meetAndGreet += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
     }
@@ -522,7 +517,7 @@ export default function EventDetail(props: EditProps) {
   const venue = currentReportSelection.currentDetailEvent?.venue;
   const venueName = venue?.name;
   const address = venue?.address1;
-  let location = `${venue?.city}`
+  let location = `${venue?.city}`;
   if (venue?.state) {
     location += `, ${venue?.state}`;
   }
@@ -533,10 +528,12 @@ export default function EventDetail(props: EditProps) {
 
   return (
     <>
-      {currentReportSelection.currentDetailEvent === undefined ? '' : (
-        <Container fluid className="vipContainer">
+      {currentReportSelection.currentDetailEvent === undefined ? (
+        ''
+      ) : (
+        <Container className="fluid">
           <Row>
-            <Col>
+            <Col className="vip-col">
               <Row>
                 <Col>
                   <table className="vipDetailsTable">
@@ -552,15 +549,17 @@ export default function EventDetail(props: EditProps) {
                         <td>
                           {venueName && <div>{venueName}</div>}
                           {address && <div>{address}</div>}
-                          {location && <div>{location} {zip && <span>{zip}</span>}</div>}
+                          {location && (
+                            <div>
+                              {location} {zip && <span>{zip}</span>}
+                            </div>
+                          )}
                           {country && <div>{country}</div>}
                         </td>
                       </tr>
                       <tr>
                         <td className="vipLabel">Date:</td>
-                        <td>
-                          {eventDate}
-                        </td>
+                        <td>{eventDate}</td>
                       </tr>
                       <tr>
                         <td className="vipLabel">Total Tickets:</td>
@@ -577,18 +576,21 @@ export default function EventDetail(props: EditProps) {
                         <td className="vipLabel">Total Revenue:</td>
                         <td>
                           $
-                          {((currentReportSelection.currentDetailEvent.totalRevenue ?? 0) - (currentReportSelection.currentDetailEvent.revenueRefunded ?? 0)).toFixed(
-                            2,
-                          )}
+                          {(
+                            (currentReportSelection.currentDetailEvent.totalRevenue ?? 0) -
+                            (currentReportSelection.currentDetailEvent.revenueRefunded ?? 0)
+                          ).toFixed(2)}
                         </td>
                       </tr>
                       <tr hidden={hideServiceFeeDisplay || !viewServiceFees}>
                         <td className="vipLabel">Total Service Fees:</td>
                         <td>
                           $
-                          {((currentReportSelection.currentDetailEvent.totalServiceFees ?? 0) - (currentReportSelection.currentDetailEvent.serviceFeeRevenueRefunded ?? 0)).toFixed(
-                            2,
-                          )}
+                          {(
+                            (currentReportSelection.currentDetailEvent.totalServiceFees ?? 0) -
+                            (currentReportSelection.currentDetailEvent.serviceFeeRevenueRefunded ??
+                              0)
+                          ).toFixed(2)}
                         </td>
                       </tr>
                       <tr hidden={!hasTicketData}>
@@ -602,25 +604,23 @@ export default function EventDetail(props: EditProps) {
                     </tbody>
                   </table>
                 </Col>
-                <Col hidden={
-                  !currentReportSelection.currentDetailEvent.doorsOpen &&
-                  !currentReportSelection.currentDetailEvent.meetAndGreetTime &&
-                  !currentReportSelection.currentDetailEvent.checkInLocation &&
-                  !currentReportSelection.currentDetailEvent.checkInNotes
-                }>
+                <Col
+                  hidden={
+                    !currentReportSelection.currentDetailEvent.doorsOpen &&
+                    !currentReportSelection.currentDetailEvent.meetAndGreetTime &&
+                    !currentReportSelection.currentDetailEvent.checkInLocation &&
+                    !currentReportSelection.currentDetailEvent.checkInNotes
+                  }
+                >
                   <table className="vipDetailsTable">
                     <tbody>
                       <tr hidden={!currentReportSelection.currentDetailEvent.doorsOpen}>
                         <td className="vipLabel">Doors Open:</td>
-                        <td>
-                          {doorsOpen}
-                        </td>
+                        <td>{doorsOpen}</td>
                       </tr>
                       <tr hidden={!currentReportSelection.currentDetailEvent.meetAndGreetTime}>
                         <td className="vipLabel">Meet & Greet Time:</td>
-                        <td>
-                          {meetAndGreet}
-                        </td>
+                        <td>{meetAndGreet}</td>
                       </tr>
                       <tr hidden={!currentReportSelection.currentDetailEvent.checkInLocation}>
                         <td className="vipLabel">Check-in Location:</td>
@@ -630,18 +630,15 @@ export default function EventDetail(props: EditProps) {
                       </tr>
                       <tr hidden={!currentReportSelection.currentDetailEvent.checkInNotes}>
                         <td className="vipLabel">Check-in Notes:</td>
-                        <td className="vipValue">{currentReportSelection.currentDetailEvent.checkInNotes ?? 'n/a'}</td>
+                        <td className="vipValue">
+                          {currentReportSelection.currentDetailEvent.checkInNotes ?? 'n/a'}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </Col>
               </Row>
-              <Row hidden={!isLoading}>
-                <Col className="spinner-container" hidden={!isLoading}>
-                  <RingLoader size={150} color="#d12610" />
-                </Col>
-              </Row>
-              <Row hidden={isLoading} className="no-print">
+              <Row className="no-print">
                 <Col md={10} sm={12} hidden={windowSize.isMobile}>
                   <div className="admin-button-row">
                     <span className="admin-button" hidden={!canExportCustomerData}>
@@ -650,69 +647,69 @@ export default function EventDetail(props: EditProps) {
                     <PrintButton ShowPrint={viewPrintButton} />
                   </div>
                 </Col>
-                <Col md={10} sm={12}>
+              </Row>
+              <Row>
+                <Col md={20} sm={24}>
                   <span className="inactive-check" hidden={!viewInactiveOrders}>
-                    <FormCheck
+                    <Checkbox
                       checked={currentReportSelection?.showInactiveOrders}
-                      onChange={handleShowInactive}
+                      onChange={(_, checked) => handleShowInactive(checked)}
                       disabled={currentReportSelection?.showDeletedOrders}
-                      label="Show Inactive Orders?"
-                    />
+                    >
+                      Show Inactive Orders?
+                    </Checkbox>
                   </span>
                   <span className="deleted-check" hidden={!viewDeletedOrders}>
-                    <FormCheck
+                    <Checkbox
                       checked={currentReportSelection?.showDeletedOrders}
-                      onChange={handleShowDeleted}
-                      label="Show Deleted Orders?"
-                    />
+                      onChange={(_, checked) => handleShowDeleted(checked)}
+                    >
+                      Show Deleted Orders?
+                    </Checkbox>
                   </span>
-                  <span
-                    className="revenue-check"
-                    hidden={!hasOrders || !viewRevenueControls}
-                  >
-                    <FormCheck
+                  <span className="revenue-check" hidden={!hasOrders || !viewRevenueControls}>
+                    <Checkbox
                       checked={currentReportSelection?.hideRevenue}
-                      onChange={handleHideRevenue}
-                      label="Hide Revenue Items?"
-                    />
+                      onChange={(_, checked) => handleHideRevenue(checked)}
+                    >
+                      Hide Revenue Items?
+                    </Checkbox>
                   </span>
-                  <span
-                    className="service-fees-check"
-                    hidden={!hasOrders || !viewServiceFees}
-                  >
-                    <FormCheck
+                  <span className="service-fees-check" hidden={!hasOrders || !viewServiceFees}>
+                    <Checkbox
                       checked={currentReportSelection?.hideServiceFees}
-                      onChange={handleHideServiceFees}
-                      label="Hide Service Fees?"
-                    />
+                      onChange={(_, checked) => handleHideServiceFees(checked)}
+                    >
+                      Hide Service Fees?
+                    </Checkbox>
                   </span>
-                  <span
-                    className="service-fees-check"
-                    hidden={!hasOrders || !user?.isAdmin}
-                  >
-                    <FormCheck
+                  <span className="service-fees-check" hidden={!hasOrders || !user?.isAdmin}>
+                    <Checkbox
                       checked={currentReportSelection?.showOnlyEmails}
-                      onChange={handleShowOnlyEmails}
-                      label="Show Only Emails?"
-                    />
+                      onChange={(_, checked) => handleShowOnlyEmails(checked)}
+                    >
+                      Show Only Emails?
+                    </Checkbox>
                   </span>
                   <span
                     className="service-fees-check"
                     hidden={!hasOrders || !user?.isAdmin || !hasPhoneData}
                   >
-                    <FormCheck
+                    <Checkbox
                       checked={currentReportSelection?.showOnlyPhones}
-                      onChange={handleShowOnlyPhones}
-                      label="ShowOnlyPhones?"
-                    />
+                      onChange={(_, checked) => handleShowOnlyPhones(checked)}
+                    >
+                      Show Only Phones?
+                    </Checkbox>
                   </span>
                 </Col>
-                <Col md={10} sm={12} className="no-print" hidden={searchBarHidden}>
-                  <input
-                    type="text" 
+              </Row>
+              <Row hidden={searchBarHidden}>
+                <Col md={20} sm={24} className="no-print">
+                  <Input
                     value={searchTerm ?? ''}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="form-control search-text-input"
+                    onChange={setSearchTerm}
+                    className="search-text-input"
                     placeholder="Search for orders..."
                     hidden={isLoading || !orderRows || orderRows.length === 0}
                   />
@@ -722,25 +719,46 @@ export default function EventDetail(props: EditProps) {
                 <table className="vipTable">
                   <thead hidden={windowSize.isMobile}>
                     <tr>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Purchaser Name</th>
+                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>
+                        Purchaser Name
+                      </th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Attendee Name</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay} className="purchase-date no-print">Purchase Date</th>
+                      <th
+                        hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}
+                        className="purchase-date no-print"
+                      >
+                        Purchase Date
+                      </th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Order Id</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Order Status</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Date</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Name</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Ticket Type</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}># of tickets</th>
-                      <th hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay} className={revClass}>Revenue</th>
+                      <th
+                        hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay}
+                        className={revClass}
+                      >
+                        Revenue
+                      </th>
                       <th
                         className="no-print"
-                        hidden={hideServiceFeeDisplay || !viewServiceFees || showOnlyEmailsDisplay || showOnlyPhonesDisplay}
+                        hidden={
+                          hideServiceFeeDisplay ||
+                          !viewServiceFees ||
+                          showOnlyEmailsDisplay ||
+                          showOnlyPhonesDisplay
+                        }
                       >
                         Service Fees
                       </th>
                       <th hidden={showOnlyPhonesDisplay}>Email</th>
                       {hasPhoneData && !showOnlyEmailsDisplay ? <th>Phone #</th> : ''}
-                      {hasShirtData && !(showOnlyEmailsDisplay || showOnlyPhonesDisplay) ? <th>Shirt Sizes</th> : ''}
+                      {hasShirtData && !(showOnlyEmailsDisplay || showOnlyPhonesDisplay) ? (
+                        <th>Shirt Sizes</th>
+                      ) : (
+                        ''
+                      )}
                     </tr>
                   </thead>
                   <tbody>{orderRows}</tbody>

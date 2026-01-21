@@ -1,12 +1,14 @@
+import axios, { AxiosError, AxiosInstance } from 'axios';
+
 import {
   LogResponse,
   UserLoginResponse,
   UserLoginResponseData,
   UserResponse,
 } from '@/types/responses';
-import axios, { AxiosError, AxiosInstance } from 'axios';
-import { User } from '../types/user';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
+
+import { User } from '../types/user';
 
 export class AuthService {
   protected readonly instance: AxiosInstance;
@@ -34,8 +36,7 @@ export class AuthService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching logs - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching logs - please contact your administrator';
     }
 
     return response;
@@ -67,7 +68,7 @@ export class AuthService {
     const url = '/user/login';
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_USER_API_KEY']}`,
     };
 
     const data = {
@@ -126,7 +127,7 @@ export class AuthService {
     const url = '/user/sendPasswordReset';
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_USER_API_KEY']}`,
     };
 
     const data = { username };
@@ -149,7 +150,7 @@ export class AuthService {
     const url = '/user/validateResetCode';
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_USER_API_KEY']}`,
     };
 
     const data = { code, username };
@@ -177,7 +178,7 @@ export class AuthService {
     const url = '/user/resetPassword';
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_USER_API_KEY']}`,
     };
 
     const data = {
@@ -213,7 +214,7 @@ export class AuthService {
     const url = '/user/register';
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_USER_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_USER_API_KEY']}`,
     };
 
     const data = {
@@ -234,8 +235,7 @@ export class AuthService {
       const response: UserResponse = {};
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while registering user - please contact your administrator';
+        err?.message ?? 'Unknown error while registering user - please contact your administrator';
       return response;
     }
   };

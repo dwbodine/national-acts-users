@@ -1,0 +1,145 @@
+@use 'variables' as v;
+
+.admin-button-row button {
+  margin: 10px;
+}
+
+.admin-check-row {
+  margin: 5px 0 !important;
+}
+
+.no-events {
+  width: 100%;
+  text-align: center;
+  font-size: 24px;
+  padding-left: 15px;
+  padding-top: 25px;
+}
+
+.vipValue {
+  max-width: 80%;
+}
+
+.purchase-date {
+  display: table-cell;
+}
+
+.attendee,
+.attendee-check,
+.attendee-check-highlight,
+.attendee-highlight {
+  font-weight: bold;
+}
+
+.attendee,
+.attendee-highlight {
+  margin: 0 0 5px 0;
+}
+
+.attendee-check,
+.attendee-check-highlight {
+  margin: 0 0 10px 0;
+}
+
+.attendee-check-highlight,
+.attendee-highlight {
+  text-shadow: 1px 0 1px yellowgreen;
+}
+
+.attendee-check,
+.attendee-check-highlight {
+  cursor: pointer;
+}
+
+.check-out-show {
+  display: inline-block;
+  color: rgb(20, 166, 20);
+  margin: 0 5px 0 0;
+}
+
+.check-in-show {
+  display: inline-block;
+  color: red;
+  margin: 0 5px 0 0;
+}
+
+.check-out-hide,
+.check-in-hide {
+  display: none;
+}
+
+.itinerary-dates {
+  margin-top: 25px;
+}
+
+.mobile-event-card-container {
+  width: 100%;
+  margin: 0;
+  border: 0;
+}
+
+.mobile-event-card-container td {
+  border: unset;
+  width: 100%;
+  text-align: center;
+}
+
+.mobile-event-card {
+  text-align: left;
+  margin: 0;
+  border: 2px solid gray;
+  padding: 15px;
+}
+
+.mobile-event-card .row {
+  padding: 5px;
+}
+
+.mobile-event-card .ticket-type {
+  margin-bottom: 10px;
+}
+
+.mobile-event-card button {
+  margin: 5px 25px 5px 0;
+}
+
+.mobile-bold {
+  font-weight: bold;
+}
+
+.mobile-event-card .mobile-bold {
+  width: 125px;
+}
+
+.vip-col {
+  width: 100%;
+}
+
+@media (max-width: 992px) {
+  .purchase-date {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .admin-button-row {
+    margin: 0;
+  }
+
+  .admin-button-row .col-sm-12 {
+    padding: 0 5px;
+  }
+
+  .admin-check-row .col-sm-12 {
+    padding: 0 5px;
+  }
+
+  .admin-button-row button {
+    font-size: 0.8rem;
+    margin-left: 0;
+  }
+
+  .mobile-event-card {
+    padding: 5px;
+  }
+}

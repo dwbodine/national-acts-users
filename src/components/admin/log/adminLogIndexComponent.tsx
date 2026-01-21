@@ -1,13 +1,14 @@
-"use client";
+'use client';
 
-import { Col, Container, Row } from 'react-bootstrap';
-import { ReactElement, useEffect, useState } from 'react';
-import { LogResponse } from '@/types/responses';
 import moment from 'moment';
+import { ReactElement, useEffect, useState } from 'react';
+import { Col, Container, Row } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetLogs } from '@/hooks/admin/useGetLogs';
+import { LogResponse } from '@/types/responses';
 
 export default function AdminLogIndex() {
-
   const [logs, setLogs] = useState<string[] | undefined>(undefined);
   const [cronLogs, setCronLogs] = useState<string[] | undefined>(undefined);
   const { getAllLogs, getAllCronLogs } = useGetLogs();
@@ -15,14 +16,14 @@ export default function AdminLogIndex() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (logs === undefined) {
-        getAllLogs().then((response: LogResponse) => {
+        void getAllLogs().then((response: LogResponse) => {
           if (response.logs && !response.error) {
             setLogs(response.logs.split('\n'));
           }
         });
       }
       if (cronLogs === undefined) {
-        getAllCronLogs().then((response: LogResponse) => {
+        void getAllCronLogs().then((response: LogResponse) => {
           if (response.logs && !response.error) {
             setCronLogs(response.logs.split('\\r\\n'));
           }
@@ -44,28 +45,25 @@ export default function AdminLogIndex() {
   const cronLogRows: ReactElement[] = [];
   if (cronLogs && cronLogs.length > 0) {
     for (const log of cronLogs) {
-      cronLogRows.push(<p>{log.replaceAll('"', '')}</p>);
+      cronLogRows.push(<p>{log.replace('"', '')}</p>);
     }
   }
 
   return (
     <>
-      <Container fluid>
+      <Container className="fluid">
+        <PageHeader pageTitle="Admin Logs" />
         <Row>
           <h5>Cron Log - {moment().format('YYYY-MM-DD HH:mm:ss')}</h5>
         </Row>
         <Row>
-          <Col className="log-table">
-            {cronLogRows}
-          </Col>
+          <Col className="log-table">{cronLogRows}</Col>
         </Row>
         <Row>
           <h5>API Error Log - {moment().format('YYYY-MM-DD HH:mm:ss')}</h5>
         </Row>
         <Row>
-          <Col className="log-table">
-            {logRows}
-          </Col>
+          <Col className="log-table">{logRows}</Col>
         </Row>
       </Container>
     </>

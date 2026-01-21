@@ -1,5 +1,6 @@
-import { Role } from '@/types/user';
 import { UpdateRoleResponse } from '@/types/responses';
+import { Role } from '@/types/user';
+
 import { userService } from '../../services';
 
 export const useUpdateRole = () => {

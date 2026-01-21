@@ -1,9 +1,11 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
-import { ReactElement } from 'react';
-import { SalesPerMonthWidgetProps } from '@/types/props';
 import moment from 'moment';
+import { ReactElement } from 'react';
+import { Col, Row } from 'rsuite';
+
+import TwoColumnStatRow from '@/components/common/widgets/TwoColumnStatRow';
+import { SalesPerMonthWidgetProps } from '@/types/props';
 
 export default function SalesPerMonthWidget(props: SalesPerMonthWidgetProps) {
   const salesPerMonth = props.SalesPerMonth;
@@ -15,14 +17,9 @@ export default function SalesPerMonthWidget(props: SalesPerMonthWidgetProps) {
   if (salesPerMonth !== undefined) {
     for (let i = 0; i < 12; i += 1) {
       const monthName = moment([currentYear, i, 1]).format('MMMM');
-      const monthVal = (salesPerMonth.find((x) => x.key === i + 1)?.value ?? 0);
+      const monthVal = salesPerMonth.find((x) => x.key === i + 1)?.value ?? 0;
       const key = `salePerMonth${i}`;
-      salesRows.push(
-        <Row key={key}>
-          <Col className="sales-stat-block-name">{monthName}</Col>
-          <Col className="sales-stat-block-value">${monthVal.toFixed(2)}</Col>
-        </Row>,
-      );
+      salesRows.push(<TwoColumnStatRow key={key} label={monthName} value={monthVal} isCurrency />);
     }
   }
 

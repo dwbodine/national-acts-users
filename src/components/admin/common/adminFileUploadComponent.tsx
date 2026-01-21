@@ -1,109 +1,146 @@
-"use client";
+'use client';
 
-import { ChangeEvent, ReactElement, useState } from "react";
-import { AdminFileUploadProps } from "@/types/props";
-import { FaTimesCircle } from "react-icons/fa";
-import { ImageType } from "@/constants";
-import { useUploadImage } from "@/hooks/common/useUploadImage";
+import { useState } from 'react';
+import { FaTimesCircle } from 'react-icons/fa';
+import { Button, Uploader } from 'rsuite';
+import { FileType } from 'rsuite/esm/Uploader';
+
+import { ImageType } from '@/constants';
+import { useUploadImage } from '@/hooks/common/useUploadImage';
+import { AdminFileUploadProps } from '@/types/props';
 
 export default function AdminFileUpload(props: AdminFileUploadProps) {
-    const title: string = props?.Title ?? '';
-    const currentFileTitle: string = props?.CurrentFileTitle ?? 'Current file: ';
-    const fileUploadName: string = props?.FileUploadName ?? '';
-    const onUpload = props?.OnUpload;
-    const onUploadStart = props?.OnUploadStart;
-    const onUploadComplete = props?.OnUploadComplete;
-    const showRemoveButton = props?.ShowRemoveButton ?? false;
-    const onFileRemove = props?.OnFileRemove;
-    let currentFileName: string | undefined = props?.CurrentFileName ?? undefined;
-    const isDirty = props?.IsDirty ?? false;
+  const {
+    Title: title = '',
+    CurrentFileTitle: currentFileTitle = 'Current file: ',
+    FileUploadName: fileUploadName = '',
+    CurrentFileName,
+    OnUpload: onUpload,
+    OnUploadStart: onUploadStart,
+    OnUploadComplete: onUploadComplete,
+    ShowRemoveButton: showRemoveButton = false,
+    OnFileRemove: onFileRemove,
+    IsDirty: isDirty = false,
+    ImageType: imageType,
+  } = props;
 
-    const getBaseUrl = (uploadImageType: ImageType) => {
-        switch (uploadImageType) {
-            case ImageType.HEADERS:
-                return `${process.env.NEXT_PUBLIC_HEADERS_URL}`;
-                break;
-            case ImageType.HOMEBANNERS:
-                return `${process.env.NEXT_PUBLIC_HOMEBANNERS_URL}`;
-                break;
-            case ImageType.LOGOS:
-                return `${process.env.NEXT_PUBLIC_LOGOS_URL}`;
-                break;
-            case ImageType.PREVIEWS:
-                return `${process.env.NEXT_PUBLIC_PREVIEW_URL}`;
-                break;
-            case ImageType.THUMBNAILS:
-                return `${process.env.NEXT_PUBLIC_THUMBNAILS_URL}`;
-                break;
-            default:
-                return '';
-                break;
-        }
+  const { uploadImage } = useUploadImage();
+
+  const getBaseUrl = (uploadType: ImageType) => {
+    switch (uploadType) {
+      case ImageType.HEADERS:
+        return process.env['NEXT_PUBLIC_HEADERS_URL'];
+      case ImageType.HOMEBANNERS:
+        return process.env['NEXT_PUBLIC_HOMEBANNERS_URL'];
+      case ImageType.LOGOS:
+        return process.env['NEXT_PUBLIC_LOGOS_URL'];
+      case ImageType.PREVIEWS:
+        return process.env['NEXT_PUBLIC_PREVIEW_URL'];
+      case ImageType.THUMBNAILS:
+        return process.env['NEXT_PUBLIC_THUMBNAILS_URL'];
+      default:
+        return '';
+    }
+  };
+
+  const baseUrl = getBaseUrl(imageType);
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [isUploaded, setIsUploaded] = useState(false);
+  const [fileList, setFileList] = useState<FileType[]>([]);
+
+  // Normalize current file link
+  const currentFileName =
+    CurrentFileName && CurrentFileName !== 'None'
+      ? CurrentFileName.startsWith('http')
+        ? CurrentFileName
+        : `${baseUrl}/${CurrentFileName}`
+      : undefined;
+
+  const currentFileLink = currentFileName ? (
+    <a href={currentFileName} target="_blank">
+      {currentFileName}
+    </a>
+  ) : (
+    ''
+  );
+
+  const handleFileChange = async (newFiles: FileType[]) => {
+    // RSuite gives an array of FileItems:
+    // FileList[0].blobFile is the raw File
+    const file = newFiles?.[0]?.blobFile;
+
+    if (!file) {
+      return;
     }
 
-    const imageType = props.ImageType;
-    const baseUrl = getBaseUrl(imageType);
-
-    const [isUploading, setIsUploading] = useState(false);
-    const [isUploaded, setIsUploaded] = useState(false);
-
-    const { uploadImage } = useUploadImage();
-
-    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target && event.target.files && event.target.files.length > 0) {
-            const file = event.target.files[0] as File;
-            if (file) {
-                if (onUploadStart) {
-                    onUploadStart();
-                }
-                setIsUploaded(false);
-                setIsUploading(true);
-                uploadImage(file, imageType)
-                    .then((filename: string | undefined) => {
-                        setIsUploading(false);
-                        event.target.value = '';
-                        if (onUpload && filename) {
-                            onUpload(fileUploadName, filename);
-                            setIsUploaded(true);
-                            if (onUploadComplete) {
-                                onUploadComplete(filename);
-                            }
-                        }
-                    });
-            }
-        }
-    };
-
-    const handleFileRemove = () => {
-        if (onFileRemove) {
-            onFileRemove();
-        }
-    };
-
-    if (currentFileName === 'None') {
-        currentFileName = undefined;
-    } else if (currentFileName && !currentFileName?.startsWith("http")) {
-        currentFileName = `${baseUrl}/${currentFileName}`;
+    if (onUploadStart) {
+      onUploadStart();
     }
 
-    const currentFileLink = currentFileName ?
-        <a target="_blank" href={currentFileName}>{currentFileName}</a> :
-        '';
+    setIsUploaded(false);
+    setIsUploading(true);
 
+    const filename = await uploadImage(file, imageType);
 
+    setIsUploading(false);
 
-    let removeButton: ReactElement = <></>;
-    if (showRemoveButton && currentFileName) {
-        removeButton = <FaTimesCircle className="admin-current-file-remove" onClick={handleFileRemove} title={`Remove ${currentFileName}`} />;
+    if (filename && onUpload) {
+      onUpload(fileUploadName, filename);
+      setIsUploaded(true);
+
+      if (onUploadComplete) {
+        onUploadComplete(filename);
+      }
+
+      // Reset the RSuite uploader’s file list
+      setFileList([]);
     }
+  };
 
-    return (
-        <div className="admin-file-upload">
-            <div className="admin-setting-title">{title}</div>
-            <input type="file" onChange={handleFileChange} />
-            <span className="danger" hidden={!isUploading}>Uploading...</span>
-            <span className="success" hidden={!isUploaded && !isDirty}>Updated!</span>
-            <div className="admin-current-file-title" hidden={!currentFileName}>{currentFileTitle} {currentFileLink} {removeButton}</div>
-        </div>
+  const handleFileRemove = () => {
+    if (onFileRemove) {
+      onFileRemove();
+    }
+  };
+
+  const removeButton =
+    showRemoveButton && currentFileName ? (
+      <FaTimesCircle
+        className="admin-current-file-remove"
+        title={`Remove ${currentFileName}`}
+        onClick={handleFileRemove}
+      />
+    ) : (
+      <></>
     );
+
+  return (
+    <div className="admin-file-upload">
+      <div className="admin-setting-title">{title}</div>
+
+      <Uploader
+        action=""
+        autoUpload={false}
+        fileList={fileList}
+        onChange={(newList) => {
+          setFileList(newList);
+          void handleFileChange(newList);
+        }}
+      >
+        <Button appearance="primary">Select File</Button>
+      </Uploader>
+
+      <span className="danger" hidden={!isUploading}>
+        Uploading...
+      </span>
+      <span className="success" hidden={!isUploaded && !isDirty}>
+        Updated!
+      </span>
+
+      <div className="admin-current-file-title" hidden={!currentFileName}>
+        {currentFileTitle} {currentFileLink} {removeButton}
+      </div>
+    </div>
+  );
 }

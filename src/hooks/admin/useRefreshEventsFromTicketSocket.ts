@@ -1,4 +1,5 @@
 import { RefreshHistoryResponse } from '@/types/responses';
+
 import { eventService } from '../../services';
 
 export const useRefreshEventsFromTicketSocket = () => {

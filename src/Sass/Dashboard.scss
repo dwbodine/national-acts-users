@@ -1,0 +1,234 @@
+@use 'variables' as v;
+
+.dashboard-container {
+  h3 {
+    color: v.$dashboard-header-color;
+    margin: 0 0 0 30px;
+  }
+}
+
+.dashboard-widget-table {
+  max-width: 100%;
+  margin: 0 0 15px 0;
+  .widget-stat-block-container {
+    max-height: 400px;
+    .widget-stat-block {
+      height: unset !important;
+    }
+  }
+}
+
+.stat-block-container {
+  padding: 15px;
+  min-height: 265px;
+  min-width: 265px;
+}
+
+.stat-block {
+  padding: 15px;
+  background-color: #efefef;
+  border: 1px solid #dedede;
+  border-radius: 4px;
+  line-height: 14px;
+  font-size: 14px;
+  width: 100%;
+  height: 100%;
+}
+
+.stat-block svg {
+  display: block;
+  margin: 0 5px 10px 0;
+}
+
+.stat-block div {
+  margin-bottom: 5px;
+}
+
+.stat-block div.second {
+  margin-top: 25px;
+  margin-bottom: 0;
+}
+
+.stat-block span {
+  margin-top: 10px;
+  display: table;
+  font-weight: bold;
+}
+
+.stat-block .totalSpan {
+  margin-top: 15px;
+}
+
+.dashboard-sales-table {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 0 0 10px;
+
+  .stat-block-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px; /* Optional spacing between rows */
+  }
+
+  .stat-block-container > div {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sales-stat-block {
+    height: 100%;
+    border: 2px solid black;
+    border-radius: 6px;
+    padding: 15px;
+    line-height: 2em;
+    font-size: 12px;
+  }
+
+  .sales-stat-block-table {
+    width: 100%;
+    height: 100%;
+    min-height: 345px;
+    border: 2px solid black;
+    border-radius: 6px;
+    padding: 0;
+    line-height: 2em;
+    font-size: 12px;
+    margin-left: -10px;
+  }
+}
+
+.sales-stat-block-title {
+  width: 80%;
+  white-space: nowrap;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.sales-stat-block-title-no-margin {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.sales-stat-block-subtitle {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 10px 0 0 0;
+}
+
+.sales-stat-block-subtitle-no-margin {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+
+.sales-stat-block-name,
+.sales-stat-block-name-tooltip {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sales-stat-block-name-tooltip {
+  cursor: pointer;
+}
+
+.sales-stat-block-value {
+  text-align: right;
+}
+
+.revenue-widget-row {
+  display: flex;
+}
+
+.revenue-widget-progress {
+  width: 200px;
+  margin: 25px auto;
+}
+
+.revenue-widget-caption {
+  margin: 5px auto;
+}
+
+@media (max-width: 1400px) {
+  .sales-stat-block {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 1312px) {
+  .sales-stat-block-title {
+    font-size: 16px;
+  }
+  .sales-stat-block-subtitle {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .stat-block-container {
+    min-height: 300px;
+    min-width: 200px;
+  }
+
+  .stat-block {
+    font-size: 13px;
+  }
+
+  .sales-stat-block {
+    width: 100%;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 992px) {
+  .sales-stat-block {
+    padding: 5px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stat-block {
+    min-height: 200px;
+    font-size: 12px;
+  }
+
+  .stat-block-container {
+    min-height: unset;
+    height: fit-content;
+  }
+
+  .sales-stat-block {
+    height: fit-content;
+    min-height: unset;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-container {
+    h3 {
+      margin: 10px;
+    }
+  }
+  .dashboard-widget-table {
+    margin: 0;
+    padding: 5px !important;
+    .widget-stat-block-container {
+      float: unset !important;
+      margin: 5px !important;
+    }
+  }
+
+  .stat-block-container {
+    padding: 10px 10px 10px 5px;
+    min-width: 150px;
+  }
+
+  .stat-block {
+    padding: 10px;
+    font-size: 10px;
+  }
+}

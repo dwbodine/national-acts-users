@@ -1,6 +1,7 @@
-"use client";
+'use client';
 
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
+
 import { ResetButtonProps } from '@/types/props';
 
 export default function ResetButton(props: ResetButtonProps) {
@@ -10,7 +11,7 @@ export default function ResetButton(props: ResetButtonProps) {
   const handleClick = () => {
     if (onResetClick) {
       onResetClick();
-    }    
+    }
   };
 
   return (

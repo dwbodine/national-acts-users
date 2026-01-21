@@ -1,29 +1,29 @@
-"use client";
+'use client';
 
-import { Button, Col, Container, FormCheck, Row } from 'react-bootstrap';
-import { Country, PageSeller } from '@/types/public';
-import { Modal, SelectPicker } from 'rsuite';
+import { useState } from 'react';
+import { FaMinus } from 'react-icons/fa';
+import { Button, Checkbox, Col, Container, Input, Modal, Row, SelectPicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
 import { Seller, SellerType } from '@/types/event';
 import { AdminSellerSelectProps } from '@/types/props';
-import { FaMinus } from 'react-icons/fa';
-import { ItemDataType } from 'rsuite/esm/internals/types';
+import { Country, PageSeller } from '@/types/public';
 import { Role } from '@/types/user';
-import { useState } from 'react';
 
 export default function AdminSellerSelect(props: AdminSellerSelectProps) {
-  let sellers: Seller[] | undefined = props.Sellers as Seller[] | undefined;
-  const roles: Role[] | undefined = props.Roles as Role[] | undefined;
-  const sellerId: number = props.SellerId ? (props.SellerId as number) : 0;
-  const sellerType: SellerType | undefined = props.SellerType ? (props.SellerType as SellerType) : undefined;
-  const roleId: number = props.RoleId ? (props.RoleId as number) : 0;
-  const number: number | undefined = props.Number as number | undefined;
+  let sellers: Seller[] | undefined = props.Sellers || undefined;
+  const roles: Role[] | undefined = props.Roles || undefined;
+  const sellerId: number = props.SellerId ? props.SellerId : 0;
+  const sellerType: SellerType | undefined = props.SellerType ? props.SellerType : undefined;
+  const roleId: number = props.RoleId ? props.RoleId : 0;
+  const number: number | undefined = props.Number || undefined;
   const id: string = props.Id;
   const onSellerChange = props.OnSellerChange;
   const onRoleChange = props.OnRoleChange;
   const onPageSellerChange = props.OnPageSellerChange;
   const onDelete = props.OnDelete;
-  const pageSeller: PageSeller | undefined = props.PageSeller ? (props.PageSeller as PageSeller) : undefined;
-  const countries: Country[] | undefined = props.Countries ? (props.Countries as Country[]) : undefined;
+  const pageSeller: PageSeller | undefined = props.PageSeller ? props.PageSeller : undefined;
+  const countries: Country[] | undefined = props.Countries ? props.Countries : undefined;
 
   const [pageSellerSettingsOpen, setPageSellerSettingsOpen] = useState(false);
   const handlePageSellerSettingsOpen = () => setPageSellerSettingsOpen(true);
@@ -44,14 +44,16 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
   const [youtube, setYoutube] = useState(pageSeller?.youtube ?? '');
   const [spotify, setSpotify] = useState(pageSeller?.spotify ?? '');
   const [website, setWebsite] = useState(pageSeller?.website ?? '');
-  const [websiteDisplayText, setWebsiteDisplayText] = useState(pageSeller?.websiteDisplayText ?? '');
+  const [websiteDisplayText, setWebsiteDisplayText] = useState(
+    pageSeller?.websiteDisplayText ?? '',
+  );
 
   if (sellers && sellerType) {
-    sellers = sellers.filter(x => x.sellerType === sellerType);
+    sellers = sellers.filter((x) => x.sellerType === sellerType);
   }
 
   const isArtist = sellerType && sellerType === SellerType.Artist;
-  const selectedSeller: Seller | undefined = sellers?.find(x => x.sellerId === sellerId);
+  const selectedSeller: Seller | undefined = sellers?.find((x) => x.sellerId === sellerId);
 
   const updatePageSellerSettings = () => {
     if (!pageSeller || !onPageSellerChange) {
@@ -83,281 +85,291 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
     setCountryId(cId ?? undefined);
   };
 
-  const sellerList: ItemDataType<number>[] = sellers ?
-    sellers?.map(seller => (
-      {
+  const sellerList: ItemDataType<number>[] = sellers
+    ? sellers?.map((seller) => ({
         label: `${seller.name}`,
-        value: seller.sellerId
-      }
-    )) : [];
+        value: seller.sellerId,
+      }))
+    : [];
 
-  const roleList: ItemDataType<number>[] = roles ?
-    roles?.map(role => (
-      {
+  const roleList: ItemDataType<number>[] = roles
+    ? roles?.map((role) => ({
         label: `${role.roleName}`,
-        value: role.roleId
-      }
-    )) : [];
+        value: role.roleId,
+      }))
+    : [];
 
-  const countryList: ItemDataType<number>[] = countries ?
-    countries?.map(country => (
-      {
+  const countryList: ItemDataType<number>[] = countries
+    ? countries?.map((country) => ({
         label: `${country.countryName}`,
-        value: country.countryId
-      }
-    )) : [];
+        value: country.countryId,
+      }))
+    : [];
 
   return (
     <Row className="admin-select">
-      <Col xs={1}>
+      <Col xs={2}>
         Seller<span hidden={!number}> # {number}</span>:
       </Col>
-      <Col xs={5} sm={4} md={3} hidden={sellerList.length === 0 || !onSellerChange}>
+      <Col xs={20} sm={16} md={8} hidden={sellerList.length === 0 || !onSellerChange}>
         <SelectPicker
           className="admin-seller-select-value"
           menuAutoWidth={true}
           value={sellerId}
           data={sellerList}
           size="lg"
-          onChange={(sId) => onSellerChange ? onSellerChange(sId) : null}
+          onChange={(sId) => (onSellerChange ? onSellerChange(sId) : null)}
           cleanable={false}
         />
       </Col>
-      <Col xs={5} sm={4} md={3} hidden={roleList.length === 0 || !onRoleChange}>
+      <Col xs={20} sm={16} md={8} hidden={roleList.length === 0 || !onRoleChange}>
         <SelectPicker
           className="admin-seller-select-value"
           menuAutoWidth={true}
           value={roleId}
           data={roleList}
           size="lg"
-          onChange={(rId) => onRoleChange ? onRoleChange(rId) : null}
+          onChange={(rId) => (onRoleChange ? onRoleChange(rId) : null)}
           cleanable={false}
           searchable={false}
         />
       </Col>
-      <Col xs={1} hidden={!pageSeller || !onPageSellerChange}>
+      <Col xs={2} hidden={!pageSeller || !onPageSellerChange}>
         <Button onClick={handlePageSellerSettingsOpen}>Page Seller Settings</Button>
         <Modal open={pageSellerSettingsOpen} onClose={handlePageSellerSettingsClose}>
           <Modal.Header>
             <Modal.Title>Seller Override Values</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Container fluid>
+            <Container className="fluid">
               <Row>
                 <Col>
-                  <label className="page-seller-label">Display Name</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is &quot;{selectedSeller?.name}&quot;</div>
-                  <input
+                  <span className="page-seller-label">Display Name</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is &quot;{selectedSeller?.name}&quot;
+                  </div>
+                  <Input
                     value={displayName ?? ''}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setDisplayName}
+                    className="form-control-half"
                     placeholder="Display Name override"
-                    type="text"
                   />
-                  <FormCheck
+                  <Checkbox
                     checked={showDisplayName}
-                    onChange={(e) => setShowDisplayName(e.target.checked)}
-                    label={'Show Display Name Override?'}
-                  />
+                    onChange={(_, checked) => setShowDisplayName(checked)}
+                  >
+                    Show Display Name Override?
+                  </Checkbox>
                 </Col>
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">Address</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.address ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">Address</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.address ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={address ?? ''}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setAddress}
+                    className="form-control-half"
                     placeholder="Street address override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">City</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.city ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">City</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.city ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={city ?? ''}
-                    onChange={(e) => setCity(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setCity}
+                    className="form-control-half"
                     placeholder="City override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">State</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.state ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">State</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.state ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={state ?? ''}
-                    onChange={(e) => setState(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setState}
+                    className="form-control-half"
                     placeholder="State override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">Postal Code</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.zip ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">Postal Code</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.zip ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={zip ?? ''}
-                    onChange={(e) => setZip(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setZip}
+                    className="form-control-half"
                     placeholder="Postal code override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">Country</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.country?.countryName ?? 'n/a'}`}</div>
+                  <span className="page-seller-label">Country</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.country?.countryName ?? 'n/a'}`}
+                  </div>
                   <SelectPicker
                     className="admin-seller-select-value"
                     menuAutoWidth={true}
                     value={countryId}
                     data={countryList}
                     size="lg"
-                    onChange={(cId) => onCountryChange(cId)}
+                    onChange={onCountryChange}
                     cleanable={false}
                   />
                 </Col>
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">Phone</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.phone ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">Phone</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.phone ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={phone ?? ''}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setPhone}
+                    className="form-control-half"
                     placeholder="Phone override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row hidden={isArtist}>
                 <Col>
-                  <label className="page-seller-label">Email</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.email ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">Email</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.email ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={email ?? ''}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setEmail}
+                    className="form-control-half"
                     placeholder="Email override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Twitter</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.twitter ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">Twitter</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.twitter ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={twitter ?? ''}
-                    onChange={(e) => setTwitter(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setTwitter}
+                    className="form-control-half"
                     placeholder="Twitter override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Facebook</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.facebook ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">Facebook</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.facebook ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={facebook ?? ''}
-                    onChange={(e) => setFacebook(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setFacebook}
+                    className="form-control-half"
                     placeholder="Facebook override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Instagram</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.instagram ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">Instagram</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.instagram ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={instagram ?? ''}
-                    onChange={(e) => setInstagram(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setInstagram}
+                    className="form-control-half"
                     placeholder="Instagram override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">YouTube</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.youtube ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">YouTube</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.youtube ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={youtube ?? ''}
-                    onChange={(e) => setYoutube(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setYoutube}
+                    className="form-control-half"
                     placeholder="YouTube override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Spotify</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.spotify ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">Spotify</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.spotify ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={spotify ?? ''}
-                    onChange={(e) => setSpotify(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setSpotify}
+                    className="form-control-half"
                     placeholder="Spotify override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Website</label>
-                  <div className="pageseller-default">Default is {`${selectedSeller?.website ?? 'n/a'}`}</div>
-                  <input
+                  <span className="page-seller-label">Website</span>
+                  <div className="pageseller-default">
+                    Default is {`${selectedSeller?.website ?? 'n/a'}`}
+                  </div>
+                  <Input
                     value={website ?? ''}
-                    onChange={(e) => setWebsite(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setWebsite}
+                    className="form-control-half"
                     placeholder="Website override"
-                    type="text"
                   />
                 </Col>
               </Row>
               <Row>
                 <Col>
-                  <label className="page-seller-label">Website Display Text</label>
-                  <div hidden={!selectedSeller} className="pageseller-default">Default is {`${selectedSeller?.websiteDisplayText ?? '(none)'}`}</div>
-                  <input
+                  <span className="page-seller-label">Website Display Text</span>
+                  <div hidden={!selectedSeller} className="pageseller-default">
+                    Default is {`${selectedSeller?.websiteDisplayText ?? '(none)'}`}
+                  </div>
+                  <Input
                     value={websiteDisplayText ?? ''}
-                    onChange={(e) => setWebsiteDisplayText(e.target.value)}
-                    className="form-control form-control-half"
+                    onChange={setWebsiteDisplayText}
+                    className="form-control-half"
                     placeholder="Website display text override"
-                    type="text"
                   />
                 </Col>
               </Row>
             </Container>
           </Modal.Body>
           <Modal.Footer className="modal-notes-footer">
-            <Button onClick={updatePageSellerSettings}>
-              Ok
-            </Button>
-            <Button onClick={handlePageSellerSettingsClose}>
-              Cancel
-            </Button>
+            <Button onClick={updatePageSellerSettings}>Ok</Button>
+            <Button onClick={handlePageSellerSettingsClose}>Cancel</Button>
           </Modal.Footer>
         </Modal>
       </Col>
-      <Col xs={1} hidden={!onDelete}>
+      <Col xs={2} hidden={!onDelete} className="admin-seller-click-container">
         <FaMinus
           title="Remove seller"
           className="admin-click-cell"
@@ -368,4 +380,3 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
     </Row>
   );
 }
-

@@ -1,8 +1,9 @@
-"use client";
+'use client';
+
+import { ReactElement } from 'react';
+import { FaTicketAlt } from 'react-icons/fa';
 
 import { ITicketTypeData, TicketType } from '@/types/event';
-import React, { ReactElement } from 'react';
-import { FaTicketAlt } from 'react-icons/fa';
 import { TicketTypesWidgetProps } from '@/types/props';
 
 export default function TicketTypesWidget(props: TicketTypesWidgetProps) {
@@ -24,20 +25,19 @@ export default function TicketTypesWidget(props: TicketTypesWidgetProps) {
           const data = ticketTypeData.find(
             (x) => x.TicketType.toLowerCase() === ticketType.ticketTypeName.toLowerCase(),
           );
-          let number = (ticketMap.get(ticketType.ticketTypeName) ?? 0);
+          let number = ticketMap.get(ticketType.ticketTypeName) ?? 0;
           if (data !== undefined) {
             number += data.Number;
           }
           ticketMap.set(ticketType.ticketTypeName, number);
-        }
-        );
+        });
       });
 
       if (ticketTypes) {
         let i = 0;
         for (const ticketType of ticketTypes) {
           const key = `ttw${i}`;
-          const numSold = (ticketMap.get(ticketType.ticketTypeName) ?? 0);
+          const numSold = ticketMap.get(ticketType.ticketTypeName) ?? 0;
           if (!isAdmin && numSold === 0) {
             continue;
           }
@@ -54,10 +54,10 @@ export default function TicketTypesWidget(props: TicketTypesWidgetProps) {
     return (
       <>
         <FaTicketAlt size="2em" />
-        <div>Ticket type breakdown:</div>
+        <div className="widget-text-title">Ticket type breakdown:</div>
         {ttypes}
         <span>Total: {totalTickets}</span>
-        <div className="second">Tickets refunded:</div>
+        <div className="second widget-text-title">Tickets refunded:</div>
         <span>{ticketsRefunded}</span>
       </>
     );

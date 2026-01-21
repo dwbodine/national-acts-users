@@ -1,4 +1,5 @@
 import { GetEventResponse } from '@/types/responses';
+
 import { eventService } from '../../services';
 
 export const useGetEventById = () => {

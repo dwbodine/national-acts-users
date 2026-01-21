@@ -1,25 +1,21 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from 'react';
-import { AdminPageProps } from '@/types/props';
-import AdminTabs from './adminTabsComponent';
-import AdminTabsMobile from './adminTabsMobileComponent';
-import { Container } from 'react-bootstrap';
-import NavBar from './navBarComponent';
-import { RootState } from '@/lib/store';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Container } from 'rsuite';
 
-export default function AdminPage(props: AdminPageProps) {
+import { useLogActivityData } from '@/hooks/common/useLogActivityData';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { setCurrentUser } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { AdminPageProps } from '@/types/props';
+
+export default function AdminPage({ Title, UserActivity, children }: AdminPageProps) {
+  const dispatch = useDispatch();
   const { getUser } = useCurrentUser();
-  const [notAdmin, setNotAdmin] = useState(true);
   const { logActivityData } = useLogActivityData();
-  const activeKey = props.ActiveKey;
-  const title = props.Title;
-  const userActivity = props.UserActivity;
   const globalSettings = useSelector((state: RootState) => state.globalSelection);
   const { isLoading } = globalSettings;
   const router = useRouter();
@@ -28,56 +24,34 @@ export default function AdminPage(props: AdminPageProps) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      const currentUser = getUser();
-      if (currentUser && currentUser.isAuthenticated) {
-        setNotAdmin(!currentUser.isAdmin);
-        if (currentUser.isAdmin) {
-          document.title = title;
-          if (userActivity) {
-            logActivityData(userActivity);
+      if (!globalSettings.currentUser) {
+        const currentUser = getUser();
+        if (currentUser) {
+          dispatch(setCurrentUser(currentUser));
+        }
+      } else {
+        const currentUser = globalSettings.currentUser;
+        if (currentUser && currentUser.isAuthenticated) {
+          document.title = Title;
+          if (UserActivity) {
+            void logActivityData(UserActivity);
           }
-        } else {
-          router.push('/logout');
         }
       }
     }, 200);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [title, logActivityData, userActivity, isLoading, getUser, windowSizeJson, router]);
+  }, [
+    Title,
+    logActivityData,
+    UserActivity,
+    isLoading,
+    getUser,
+    windowSizeJson,
+    router,
+    globalSettings.currentUser,
+  ]);
 
-
-
-  return (
-    <>
-      <NavBar Hidden={notAdmin} />
-      <Container fluid hidden={notAdmin} className="vipContainer">
-        {windowSize.isMobile ?
-          <AdminTabsMobile
-            ActiveKey={activeKey}
-            IsLoading={isLoading}
-            NotAdmin={notAdmin}
-            DashboardComponent={props.DashboardComponent}
-            EventsComponent={props.EventsComponent}
-            SalesComponent={props.SalesComponent}
-            AdminComponent={props.AdminComponent}
-            ReportComponent={props.ReportComponent}
-            UsersComponent={props.UsersComponent}
-          />
-          :
-          <AdminTabs
-            ActiveKey={activeKey}
-            IsLoading={isLoading}
-            NotAdmin={notAdmin}
-            DashboardComponent={props.DashboardComponent}
-            EventsComponent={props.EventsComponent}
-            SalesComponent={props.SalesComponent}
-            AdminComponent={props.AdminComponent}
-            ReportComponent={props.ReportComponent}
-            UsersComponent={props.UsersComponent}
-          />
-        }
-      </Container>
-    </>
-  );
+  return <Container>{children}</Container>;
 }

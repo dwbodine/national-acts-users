@@ -1,5 +1,6 @@
-import { ITicketData, ITicketTypeData, Order, TicketType, VipEvent } from '@/types/event';
 import moment from 'moment';
+
+import { ITicketData, ITicketTypeData, Order, TicketType, VipEvent } from '@/types/event';
 
 export default function getTicketDataFromOrders(
   orders: Order[],
@@ -21,8 +22,7 @@ export default function getTicketDataFromOrders(
     evt.ticketTypes?.forEach((ticketType) => {
       if (
         !ticketTypes.find(
-          (x) =>
-            x.ticketTypeName.toLowerCase() === ticketType.ticketTypeName.toLowerCase(),
+          (x) => x.ticketTypeName.toLowerCase() === ticketType.ticketTypeName.toLowerCase(),
         )
       ) {
         ticketTypes.push(ticketType);
@@ -67,8 +67,10 @@ export default function getTicketDataFromOrders(
           );
           if (indexToUpdate >= 0) {
             const item = collection[indexToUpdate];
-            item.Number += 1;
-            collection[indexToUpdate] = item;
+            if (item) {
+              item.Number += 1;
+              collection[indexToUpdate] = item;
+            }
           } else {
             collection.push({
               Number: 1,

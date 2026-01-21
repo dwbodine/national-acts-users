@@ -1,6 +1,8 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
+
+import TwoColumnStatRow from '@/components/common/widgets/TwoColumnStatRow';
 import { SalesByAccountWidgetProps } from '@/types/props';
 
 export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
@@ -12,7 +14,7 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
   let averagePurchaseAmountUsd = 0;
   let pricePerTicketUsd = 0;
   let serviceFeePerTicketUsd = 0;
-  const tickets = (accountTotals?.Tickets ?? 0);
+  const tickets = accountTotals?.Tickets ?? 0;
   if (tickets > 0) {
     pricePerTicketUsd = (accountTotals?.RevenueUsd ?? 0) / tickets;
     serviceFeePerTicketUsd = (accountTotals?.ServiceFeesUsd ?? 0) / tickets;
@@ -26,81 +28,41 @@ export default function SalesByAccountWidget(props: SalesByAccountWidgetProps) {
     <Row className="sales-stat-block">
       <Col>
         <Row>
-          <Col className="sales-stat-block-title">Summary By Account {selectedYear ? selectedYear : ''}</Col>
+          <Col className="sales-stat-block-title">
+            Summary By Account {selectedYear ? selectedYear : ''}
+          </Col>
         </Row>
         <Row>
           <Col className="sales-stat-block-subtitle">{accountName}</Col>
         </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Transactions:</Col>
-          <Col className="sales-stat-block-value">
-            {accountTotals?.Purchases ?? 'n/a'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Tickets:</Col>
-          <Col className="sales-stat-block-value">{accountTotals?.Tickets ?? '0'}</Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Refunds:</Col>
-          <Col className="sales-stat-block-value">
-            {accountTotals?.TicketsRefunded ?? '0'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Revenue:</Col>
-          <Col className="sales-stat-block-value">
-            ${accountTotals?.RevenueUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Service Fees:</Col>
-          <Col className="sales-stat-block-value">
-            ${accountTotals?.ServiceFeesUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Revenue Refunded:</Col>
-          <Col className="sales-stat-block-value">
-            ${accountTotals?.RevenueRefundedUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">S.Fees Refunded:</Col>
-          <Col className="sales-stat-block-value">
-            ${accountTotals?.ServiceFeeRevenueRefundedUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Total Revenue:</Col>
-          <Col className="sales-stat-block-value">
-            ${accountTotals?.TotalRevenueUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Tickets per transaction:</Col>
-          <Col className="sales-stat-block-value">
-            {ticketsPerTransaction.toFixed(2) ?? '0'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Avg. Purchase:</Col>
-          <Col className="sales-stat-block-value">
-            ${averagePurchaseAmountUsd.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Avg. Price Per Ticket:</Col>
-          <Col className="sales-stat-block-value">
-            ${pricePerTicketUsd.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Avg. Service Fee Per Ticket:</Col>
-          <Col className="sales-stat-block-value">
-            ${serviceFeePerTicketUsd.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
+        <TwoColumnStatRow label="Transactions:" value={accountTotals?.Purchases} isInteger />
+        <TwoColumnStatRow label="Tickets:" value={accountTotals?.Tickets} isInteger />
+        <TwoColumnStatRow label="Refunds:" value={accountTotals?.TicketsRefunded} isInteger />
+        <TwoColumnStatRow label="Revenue:" value={accountTotals?.RevenueUsd} isCurrency />
+        <TwoColumnStatRow label="Service Fees:" value={accountTotals?.ServiceFeesUsd} isCurrency />
+        <TwoColumnStatRow
+          label="Revenue Refunded:"
+          value={accountTotals?.RevenueRefundedUsd}
+          isCurrency
+        />
+        <TwoColumnStatRow
+          label="S.Fees Refunded:"
+          value={accountTotals?.ServiceFeeRevenueRefundedUsd}
+          isCurrency
+        />
+        <TwoColumnStatRow
+          label="Total Revenue:"
+          value={accountTotals?.TotalRevenueUsd}
+          isCurrency
+        />
+        <TwoColumnStatRow label="Tickets per transaction:" value={ticketsPerTransaction} />
+        <TwoColumnStatRow label="Avg. Purchase:" value={averagePurchaseAmountUsd} isCurrency />
+        <TwoColumnStatRow label="Avg. Price Per Ticket:" value={pricePerTicketUsd} isCurrency />
+        <TwoColumnStatRow
+          label="Avg. Service Fee Per Ticket:"
+          value={serviceFeePerTicketUsd}
+          isCurrency
+        />
       </Col>
     </Row>
   );

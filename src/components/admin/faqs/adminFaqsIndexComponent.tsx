@@ -1,21 +1,26 @@
-"use client";
+'use client';
 
-import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
-import { setAllFaqs, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import { Button } from 'react-bootstrap';
-import { Faq } from '@/types/public';
-import { GetFaqsResponse } from '@/types/responses';
-import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Col, Row, SelectPicker, Table } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useDeleteFaq } from '@/hooks/admin/useDeleteFaq';
 import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';
 import { useMoveFaqDown } from '@/hooks/admin/useMoveFaqDown';
 import { useMoveFaqUp } from '@/hooks/admin/useMoveFaqUp';
-import { useRouter } from 'next/navigation';
+import {
+  setAllFaqs,
+  setReloadFaqs,
+  setSelectedFaq,
+  setSelectedFaqCategory,
+} from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { Faq } from '@/types/public';
+import { GetFaqsResponse } from '@/types/responses';
 
 export default function AdminFaqsIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -27,6 +32,9 @@ export default function AdminFaqsIndex() {
   const { Column, HeaderCell, Cell } = Table;
   const [tableLoading, setTableLoading] = useState(true);
   const router = useRouter();
+  const [currentCategory, setCurrentCategory] = useState(
+    currentAdminSelection.selectedFaqCategory ?? 0,
+  );
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -34,7 +42,7 @@ export default function AdminFaqsIndex() {
         dispatch(setReloadFaqs(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAllFaqs().then((response: GetFaqsResponse) => {
+        void getAllFaqs().then((response: GetFaqsResponse) => {
           if (!response.error && response.faqs) {
             dispatch(setAllFaqs(response.faqs));
           }
@@ -58,7 +66,7 @@ export default function AdminFaqsIndex() {
       answer: '',
       category: {
         categoryId: 0,
-        categoryName: ''
+        categoryName: '',
       },
       faqId: 0,
       order: 0,
@@ -85,7 +93,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    moveFaqUp(faqId).then(() => {
+    void moveFaqUp(faqId).then(() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
@@ -95,7 +103,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    moveFaqDown(faqId).then(() => {
+    void moveFaqDown(faqId).then(() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
@@ -105,54 +113,85 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    deleteFaq(faqId).then(() => {
+    void deleteFaq(faqId).then(() => {
       dispatch(setReloadFaqs(true));
       dispatch(setIsLoading(true));
     });
   };
 
+  const updateSelectedCategory = (categoryId: number) => {
+    setCurrentCategory(categoryId);
+    dispatch(setSelectedFaqCategory(categoryId));
+  };
+
+  const filteredFaqs = currentAdminSelection.allFaqs?.filter(
+    (x) => x.category.categoryId == currentCategory,
+  );
+
   return (
-    <div className="admin-container">
-      <h3>Manage FAQs</h3>
-      <Button onClick={addFaq}>Add FAQ</Button><AdminListHomeButton />
-      <Table
-        autoHeight
-        data={currentAdminSelection.allFaqs}
-        bordered
-        cellBordered
-        loading={tableLoading}
-      >
-        <Column flexGrow={1}>
-          <HeaderCell>Category</HeaderCell>
-          <Cell>
-            {(rowData) => (
-              <span>{rowData.category?.categoryName}</span>
-            )}
-          </Cell>
-        </Column>
-        <Column flexGrow={1}>
-          <HeaderCell>Order</HeaderCell>
-          <Cell dataKey="order" />
-        </Column>
-        <Column flexGrow={3}>
-          <HeaderCell>Question</HeaderCell>
-          <Cell dataKey="question" />
-        </Column>
-        <Column flexGrow={7}>
-          <HeaderCell> </HeaderCell>
-          <Cell>
-            {(rowData) => (
-              <span>
-                <FaArrowUp className="admin-up-down-button" onClick={() => moveUp(parseInt(`${rowData.faqId}`))} title="Move Up" />
-                <FaArrowDown className="admin-up-down-button" onClick={() => moveDown(parseInt(`${rowData.faqId}`))} title="Move Down" />
-                <Button onClick={() => editFaq(parseInt(`${rowData.faqId}`))}>Edit</Button>
-                <Button onClick={() => deleteOneFaq(parseInt(`${rowData.faqId}`))}>Delete</Button>
-              </span>
-            )}
-          </Cell>
-        </Column>
-      </Table>
-      <AdminListHomeButton />
-    </div>
+    <>
+      <PageHeader pageTitle="Manage FAQs" />
+      <div className="admin-container">
+        <Row>
+          <Col xs={24}>
+            <Button onClick={addFaq}>Add FAQ</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <SelectPicker
+              data={[
+                { label: '-- Select One --', value: 0 },
+                { label: 'General', value: 1 },
+                { label: 'VIP', value: 2 },
+              ]}
+              searchable={false}
+              cleanable={false}
+              onChange={(value) => updateSelectedCategory(value ?? 0)}
+              style={{ width: '250px', margin: '15px 0' }}
+            />
+          </Col>
+        </Row>
+        <Table autoHeight data={filteredFaqs} bordered cellBordered loading={tableLoading}>
+          <Column flexGrow={1}>
+            <HeaderCell>Category</HeaderCell>
+            <Cell>
+              {(rowData: Faq) => (
+                <span>{rowData.category ? rowData.category.categoryName : ''}</span>
+              )}
+            </Cell>
+          </Column>
+          <Column flexGrow={1}>
+            <HeaderCell>Order</HeaderCell>
+            <Cell dataKey="order" />
+          </Column>
+          <Column flexGrow={3}>
+            <HeaderCell>Question</HeaderCell>
+            <Cell dataKey="question" />
+          </Column>
+          <Column flexGrow={7}>
+            <HeaderCell> </HeaderCell>
+            <Cell>
+              {(rowData: Faq) => (
+                <span>
+                  <FaArrowUp
+                    className="admin-up-down-button"
+                    onClick={() => moveUp(rowData.faqId)}
+                    title="Move Up"
+                  />
+                  <FaArrowDown
+                    className="admin-up-down-button"
+                    onClick={() => moveDown(rowData.faqId)}
+                    title="Move Down"
+                  />
+                  <Button onClick={() => editFaq(rowData.faqId)}>Edit</Button>
+                  <Button onClick={() => deleteOneFaq(rowData.faqId)}>Delete</Button>
+                </span>
+              )}
+            </Cell>
+          </Column>
+        </Table>
+      </div>
+    </>
   );
 }

@@ -1,27 +1,29 @@
-"use client";
+'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { ChangeEvent } from 'react';
-import { FormCheck } from 'react-bootstrap';
-import type { RootState } from '../../../lib/store';
+import { Checkbox } from 'rsuite';
+
 import { setHideRevenue } from '@/lib/reportSelectionSlice';
+
+import type { RootState } from '../../../lib/store';
 
 export default function RevenueCheck() {
   const dispatch = useDispatch();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setHideRevenue(event.target.checked));
+  const handleChange = (checked: boolean) => {
+    dispatch(setHideRevenue(checked));
   };
 
   return (
     <span className="revenue-check">
-      <FormCheck
+      <Checkbox
         checked={currentReportSelection.hideRevenue}
-        onChange={handleChange}
+        onChange={(_, checked) => handleChange(checked)}
         disabled={currentReportSelection.seller.sellerId <= 0}
-        label="Hide revenue items?"
-      />
+      >
+        Hide revenue items?
+      </Checkbox>
     </span>
   );
 }

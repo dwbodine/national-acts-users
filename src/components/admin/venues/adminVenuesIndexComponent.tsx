@@ -1,20 +1,25 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
-import { GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/responses';
-import { Pagination, Table } from 'rsuite';
+import { useRouter } from 'next/navigation';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
-import { setAdminVenue, setReloadVenues, setVenueSearchTerm, setVenues } from '@/lib/adminSelectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import AdminListHomeButton from '../adminListHomeButton';
-import { ExternalVenue } from '@/types/admin';
-import { RootState } from '@/lib/store';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { Button, Col, Input, Pagination, Row, Table } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useDeleteVenue } from '@/hooks/admin/useDeleteVenue';
 import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
-import { useRouter } from 'next/navigation';
+import {
+  setAdminVenue,
+  setReloadVenues,
+  setVenues,
+  setVenueSearchTerm,
+} from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { ExternalVenue } from '@/types/admin';
+import { GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/responses';
 
 export default function AdminVenuesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -26,7 +31,9 @@ export default function AdminVenuesIndex() {
   const [tableLoading, setTableLoading] = useState(true);
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
-  const [searchTerm, setSearchTerm] = useState<string | undefined>(currentAdminSelection.venueSearchTerm);
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(
+    currentAdminSelection.venueSearchTerm,
+  );
   const router = useRouter();
 
   const searchVenues = useCallback(() => {
@@ -37,10 +44,9 @@ export default function AdminVenuesIndex() {
     dispatch(setReloadVenues(false));
     dispatch(setIsLoading(true));
     setTableLoading(true);
-    getAllVenues(searchTerm).then((response: GetExternalVenuesResponse) => {
+    void getAllVenues(searchTerm).then((response: GetExternalVenuesResponse) => {
       if (!response.error && response.venues) {
         dispatch(setVenues(response.venues));
-
       } else {
         toast.error(response.error);
       }
@@ -54,7 +60,11 @@ export default function AdminVenuesIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.reloadVenues && currentAdminSelection.venueSearchTerm && currentAdminSelection.venueSearchTerm.length >= 3) {
+      if (
+        currentAdminSelection.reloadVenues &&
+        currentAdminSelection.venueSearchTerm &&
+        currentAdminSelection.venueSearchTerm.length >= 3
+      ) {
         searchVenues();
       } else {
         dispatch(setReloadVenues(false));
@@ -97,7 +107,7 @@ export default function AdminVenuesIndex() {
     }
     const venue = currentAdminSelection.venues?.find((x) => x.venueId === venueId);
     if (venue) {
-      deleteVenue(venue.venueId).then((response: ModifyExternalVenueResponse) => {
+      void deleteVenue(venue.venueId).then((response: ModifyExternalVenueResponse) => {
         if (response.success) {
           dispatch(setAdminVenue(undefined));
           dispatch(setVenueSearchTerm(''));
@@ -134,101 +144,109 @@ export default function AdminVenuesIndex() {
   };
 
   return (
-    <div className="admin-container">
-      <Row>
-        <Col><h3>External Event Venues Admin</h3></Col>
-      </Row>
-      <Row>
-        <Col><Button onClick={addVenue}>Add</Button><AdminListHomeButton /></Col>
-      </Row>
-      <Row>
-        <Col xs={2}>
-          <input
-            type="text" 
-            value={searchTerm ?? ''}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => submitOnEnter(e)}
-            className="form-control search-text-input no-print"
-            placeholder="Search for venues by name or address..."
-          />
-        </Col>
-        <Col>
-          <Button onClick={searchVenues}>Search</Button>
-          <Button onClick={clearVenues}>Clear</Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Table
-            height={500}
-            data={data}
-            bordered
-            cellBordered
-            loading={tableLoading}
-            wordWrap={true}
-          >
-            <Column flexGrow={2}>
-              <HeaderCell>Venue</HeaderCell>
-              <Cell className="admin-click-cell">
-                {(rowData) => {
-                  const venue = rowData as ExternalVenue;
-                  return (
-                    <div id={venue.venueId.toString()} onClick={() => editVenue(parseInt(`${venue.venueId}`))}>
-                      {venue.venue}
+    <>
+      <PageHeader pageTitle="External Event Venues Admin" />
+      <div className="admin-container">
+        <Row>
+          <Col>
+            <Button onClick={addVenue}>Add</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={4}>
+            <Input
+              value={searchTerm ?? ''}
+              onChange={setSearchTerm}
+              onKeyDown={submitOnEnter}
+              className="search-text-input no-print"
+              placeholder="Search for venues by name or address..."
+            />
+          </Col>
+          <Col>
+            <Button onClick={searchVenues}>Search</Button>
+            <Button onClick={clearVenues}>Clear</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <Table
+              height={500}
+              data={data}
+              bordered
+              cellBordered
+              loading={tableLoading}
+              wordWrap={true}
+            >
+              <Column flexGrow={2}>
+                <HeaderCell>Venue</HeaderCell>
+                <Cell className="admin-click-cell">
+                  {(rowData) => {
+                    const venue = rowData as ExternalVenue;
+                    return (
+                      <div
+                        id={venue.venueId.toString()}
+                        onClick={() => editVenue(parseInt(`${venue.venueId}`))}
+                      >
+                        {venue.venue}
+                      </div>
+                    );
+                  }}
+                </Cell>
+              </Column>
+              <Column flexGrow={4}>
+                <HeaderCell>Address</HeaderCell>
+                <Cell className="admin-click-cell">
+                  {(rowData: ExternalVenue) => (
+                    <div
+                      id={rowData.venueId.toString()}
+                      onClick={() => editVenue(parseInt(`${rowData.venueId}`))}
+                    >
+                      {getExternalVenueLocation(rowData)}
                     </div>
-                  );
-                }}
-              </Cell>
-            </Column>
-            <Column flexGrow={4}>
-              <HeaderCell>Address</HeaderCell>
-              <Cell className="admin-click-cell">
-                {(rowData) => {
-                  const venue = rowData as ExternalVenue;
-                  return (
-                    <div id={venue.venueId.toString()} onClick={() => editVenue(parseInt(`${venue.venueId}`))}>
-                      {getExternalVenueLocation(venue)}
-                    </div>
-                  );
-                }}
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell> </HeaderCell>
-              <Cell>
-                {(rowData) => {
-                  const venue = rowData as ExternalVenue;
-                  return venue.hasEvents ? '' :
-                    (
-                      <a className="admin-command-link" id={rowData.venueId} onClick={() => deleteSelectedVenue(parseInt(`${rowData.venueId}`))}>
+                  )}
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell> </HeaderCell>
+                <Cell>
+                  {(rowData: ExternalVenue) =>
+                    rowData.hasEvents ? (
+                      ''
+                    ) : (
+                      <a
+                        className="admin-command-link"
+                        id={rowData.venueId.toString()}
+                        onClick={() => deleteSelectedVenue(parseInt(`${rowData.venueId}`))}
+                      >
                         Delete
                       </a>
-                    );
-                }}
-              </Cell>
-            </Column>
-          </Table>
-          <div style={{ padding: 20 }}>
-            <Pagination
-              prev
-              next
-              first
-              last
-              ellipsis
-              boundaryLinks
-              maxButtons={5}
-              size="xs"
-              layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-              total={currentAdminSelection.venues?.length ?? 0}
-              limitOptions={[10, 30, 50]}
-              limit={limit}
-              activePage={page}
-              onChangePage={setPage}
-              onChangeLimit={handleChangeLimit}
-            />
-          </div>
-        </Col>
-      </Row>
-    </div>
+                    )
+                  }
+                </Cell>
+              </Column>
+            </Table>
+            <div style={{ padding: 20 }}>
+              <Pagination
+                prev
+                next
+                first
+                last
+                ellipsis
+                boundaryLinks
+                maxButtons={5}
+                size="xs"
+                layout={['total', '-', 'limit', '|', 'pager', 'skip']}
+                total={currentAdminSelection.venues?.length ?? 0}
+                limitOptions={[10, 30, 50]}
+                limit={limit}
+                activePage={page}
+                onChangePage={setPage}
+                onChangeLimit={handleChangeLimit}
+              />
+            </div>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
-import { Progress } from 'rsuite';
+import { Col, Progress, Row } from 'rsuite';
+
 import { RevenueGoalsWidgetProps } from '@/types/props';
 
 export default function RevenueGoalsWidget(props: RevenueGoalsWidgetProps) {
@@ -21,12 +21,12 @@ export default function RevenueGoalsWidget(props: RevenueGoalsWidgetProps) {
         <Row>
           <Col className="sales-stat-block-title">{title}</Col>
         </Row>
-        <Row>
+        <Row className="revenue-widget-row">
           <Col className="revenue-widget-progress">
-            <Progress.Circle percent={wholePercent} strokeColor="#ffc107" />
+            <Progress.Circle percent={Number(wholePercent) || 0} strokeColor="#ffc107" />
           </Col>
         </Row>
-        <Row>
+        <Row className="revenue-widget-row">
           <Col className="revenue-widget-caption">
             ${amount?.toFixed(2)} / ${totalGoal?.toFixed(2)}
           </Col>

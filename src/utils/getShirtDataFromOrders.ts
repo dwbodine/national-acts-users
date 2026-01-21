@@ -1,5 +1,6 @@
-import { IShirtData, IShirtSizeData, Order } from '@/types/event';
 import moment from 'moment';
+
+import { IShirtData, IShirtSizeData, Order } from '@/types/event';
 
 export default function getShirtDataFromOrders(orders: Order[]): IShirtData | undefined {
   const map = new Map<string, IShirtSizeData[]>();
@@ -25,8 +26,10 @@ export default function getShirtDataFromOrders(orders: Order[]): IShirtData | un
             );
             if (indexToUpdate >= 0) {
               const item = collection[indexToUpdate];
-              item.Number += 1;
-              collection[indexToUpdate] = item;
+              if (item) {
+                item.Number += 1;
+                collection[indexToUpdate] = item;
+              }
             } else {
               collection.push({
                 Number: 1,

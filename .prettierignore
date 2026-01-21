@@ -3,3 +3,13 @@ node_modules
 build
 coverage
 out
+dist
+eslint.config.mjs
+prettier.config.cjs
+tsconfig.json
+tsconfig.eslint.json
+.vscode
+next.config.js
+package.json
+global.d.ts
+Css

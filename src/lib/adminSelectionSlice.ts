@@ -1,8 +1,10 @@
-import { AdminSelection, Role, User } from '../types/user';
-import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from '@/types/public';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from '@/types/public';
+
+import { AdminSelection, Role, User } from '../types/user';
 
 const initialState: AdminSelection = {
   allFaqs: undefined,
@@ -148,6 +150,10 @@ export const adminSelectionSlice = createSlice({
       state.allFaqs = action.payload;
       return state;
     },
+    setSelectedFaqCategory: (state, action: PayloadAction<number | undefined>) => {
+      state.selectedFaqCategory = action.payload;
+      return state;
+    },
     setAllPages: (state, action: PayloadAction<Page[] | undefined>) => {
       state.allPages = action.payload;
       return state;
@@ -176,7 +182,7 @@ export const adminSelectionSlice = createSlice({
       state.mustSavePage = action.payload;
       return state;
     },
-    setPageOrders: (state, action: PayloadAction<Map<number, Page>>) => {
+    setPageOrders: (state, action: PayloadAction<Page[]>) => {
       state.pageOrders = action.payload;
       return state;
     },
@@ -350,6 +356,7 @@ export const {
   setTicketSocketEventsOnly,
   setAdminOrders,
   setCountries,
+  setSelectedFaqCategory,
   setVenueSearchTerm,
   setReloadCountries,
   setAllFaqs,

@@ -1,30 +1,30 @@
-"use client";
+'use client';
 
+import moment from 'moment';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from 'react-bootstrap';
-import { GetEventsResponse } from '@/types/responses';
+import { toast } from 'react-toastify';
+import { Button } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
-import ReportDatePicker from '../../common/reportDatePickerControl';
-import ReportsListHomeButton from '../reportsListHomeButton';
+import { useLogActivityData } from '@/hooks/common/useLogActivityData';
+import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
+import { setReportDates } from '@/lib/adminReportsSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
-import { UserActivityType } from '@/types/user';
 import { VipEvent } from '@/types/event';
+import { GetEventsResponse } from '@/types/responses';
+import { UserActivityType } from '@/types/user';
 import { downloadCsvFile } from '@/utils/downloadFile';
 import { exportCustomerDataToCsv } from '@/utils/eventUtils';
 import getFileNameFromReportAdminSelection from '@/utils/getFileNameFromAdminReportSelection';
-import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { setReportDates } from '@/lib/adminReportsSelectionSlice';
-import { toast } from 'react-toastify';
-import { useEffect } from 'react';
-import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
-import { useLogActivityData } from '@/hooks/common/useLogActivityData';
+
+import ReportDatePicker from '../../common/reportDatePickerControl';
 
 export default function ReportsCustomerExport() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
-  const currentAdminReportSelection = useSelector(
-    (state: RootState) => state.adminReportSelection,
-  );
+  const currentAdminReportSelection = useSelector((state: RootState) => state.adminReportSelection);
   const dispatch = useDispatch();
   const { getAllEvents } = useGetAllEvents();
   const { logActivityData } = useLogActivityData();
@@ -44,8 +44,7 @@ export default function ReportsCustomerExport() {
     if (vipEvents && vipEvents.length > 0) {
       const hasPhoneData = vipEvents.find((x) => x.hasPhoneData === true) !== undefined;
       const hasShirtData = vipEvents.find((x) => x.hasShirtData === true) !== undefined;
-      const hasNonUsaOrders =
-        vipEvents.find((x) => x.hasNonUSAOrders === true) !== undefined;
+      const hasNonUsaOrders = vipEvents.find((x) => x.hasNonUSAOrders === true) !== undefined;
       let currencySymbol: string | undefined = undefined;
       if (hasNonUsaOrders) {
         const symbolOrder = vipEvents.find((x) => x.hasNonUSAOrders === true);
@@ -74,7 +73,6 @@ export default function ReportsCustomerExport() {
     }
   };
 
-
   const onSubmit = () => {
     if (
       currentAdminReportSelection &&
@@ -95,8 +93,8 @@ export default function ReportsCustomerExport() {
       }
 
       dispatch(setIsLoading(true));
-      logActivityData(UserActivityType.CustomerExportReport).then(() => {
-        getAllEvents(start, end).then((response: GetEventsResponse) => {
+      void logActivityData(UserActivityType.CustomerExportReport).then(() => {
+        void getAllEvents(start, end).then((response: GetEventsResponse) => {
           if (response && !response.error) {
             exportCustomerData(response.events);
           } else {
@@ -110,17 +108,17 @@ export default function ReportsCustomerExport() {
     }
   };
 
-
   return (
-    <div className="admin-container">
-      <h3>Export Customer Data</h3>
-      <ReportDatePicker
-        OnChange={onDateChange}
-        Start={currentAdminReportSelection.start}
-        End={currentAdminReportSelection.end}
-      />
-      <Button onClick={onSubmit}>Submit</Button>
-      <ReportsListHomeButton />
-    </div>
+    <>
+      <PageHeader pageTitle="Export Customer Data" />
+      <div className="admin-container">
+        <ReportDatePicker
+          OnChange={onDateChange}
+          Start={currentAdminReportSelection.start}
+          End={currentAdminReportSelection.end}
+        />
+        <Button onClick={onSubmit}>Submit</Button>
+      </div>
+    </>
   );
 }

@@ -1,29 +1,26 @@
-"use client";
+'use client';
 
-import { Button, FormCheck } from 'react-bootstrap';
-import { GetPermissionsResponse, UpdateRoleResponse } from '@/types/responses';
-import {
-  Permission,
-  Role,
-} from '@/types/user';
-import { ReactElement, useCallback, useEffect, useState } from 'react';
-import { setReloadRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetAllPermissions } from '@/hooks/user/useGetAllPermissions';
 import { useRouter } from 'next/navigation';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Checkbox, Input } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useUpdateRole } from '@/hooks/admin/useUpdateRole';
+import { useGetAllPermissions } from '@/hooks/user/useGetAllPermissions';
+import { setReloadRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { GetPermissionsResponse, UpdateRoleResponse } from '@/types/responses';
+import { Permission, Role } from '@/types/user';
 
 export default function AdminRoleEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
   const { getAllPermissions } = useGetAllPermissions();
   const { updateRole } = useUpdateRole();
-  const [allPermissions, setAllPermissions] = useState<Permission[] | undefined>(
-    undefined,
-  );
+  const [allPermissions, setAllPermissions] = useState<Permission[] | undefined>(undefined);
   const [roleName, setRoleName] = useState<string | undefined>('');
   const router = useRouter();
 
@@ -38,7 +35,7 @@ export default function AdminRoleEdit() {
       } else if (allPermissions === undefined && (roleName === undefined || roleName === '')) {
         dispatch(setIsLoading(true));
         setRoleName(currentAdminSelection.selectedRole.roleName);
-        getAllPermissions().then((response: GetPermissionsResponse) => {
+        void getAllPermissions().then((response: GetPermissionsResponse) => {
           setAllPermissions(response.permissions);
           dispatch(setIsLoading(false));
         });
@@ -50,10 +47,7 @@ export default function AdminRoleEdit() {
   }, [currentAdminSelection, roleName, allPermissions, getAllPermissions, dispatch, goBack]);
 
   const hasPermission = (permissionId: number) => {
-    if (
-      !currentAdminSelection.selectedRole ||
-      !currentAdminSelection.selectedRole.permissions
-    ) {
+    if (!currentAdminSelection.selectedRole || !currentAdminSelection.selectedRole.permissions) {
       return false;
     }
     return (
@@ -64,7 +58,13 @@ export default function AdminRoleEdit() {
   };
 
   const updateRolePermissions = (permissionId: number, isChecked: boolean) => {
-    if (!allPermissions || !currentAdminSelection.selectedRole || !permissionId || isNaN(permissionId) || permissionId <= 0) {
+    if (
+      !allPermissions ||
+      !currentAdminSelection.selectedRole ||
+      !permissionId ||
+      isNaN(permissionId) ||
+      permissionId <= 0
+    ) {
       return;
     }
     const hasPerm = hasPermission(permissionId);
@@ -80,9 +80,7 @@ export default function AdminRoleEdit() {
         changed = true;
       }
     } else if (!isChecked && hasPerm) {
-      currentPermissions = currentPermissions.filter(
-        (x) => x.permissionId !== permissionId,
-      );
+      currentPermissions = currentPermissions.filter((x) => x.permissionId !== permissionId);
       changed = true;
     }
     if (changed) {
@@ -98,7 +96,7 @@ export default function AdminRoleEdit() {
     const newRoleName: string = roleName ? roleName : '';
 
     if (!newRoleName) {
-      toast.warn("Role name cannot be blank");
+      toast.warn('Role name cannot be blank');
       return;
     }
 
@@ -108,7 +106,7 @@ export default function AdminRoleEdit() {
     };
 
     dispatch(setIsLoading(true));
-    updateRole(roleToUpdate).then((response: UpdateRoleResponse) => {
+    void updateRole(roleToUpdate).then((response: UpdateRoleResponse) => {
       if (response.success) {
         dispatch(setReloadRoles(true));
         toast.success('Save role succeeded');
@@ -126,40 +124,44 @@ export default function AdminRoleEdit() {
       const checked: boolean = hasPermission(item.permissionId);
       const key = `perm${index}`;
       permissionRows.push(
-        <FormCheck
+        <Checkbox
           key={key}
           id={item.permissionId.toString()}
-          onChange={(e) => updateRolePermissions(parseInt(`${item.permissionId}`), e.currentTarget.checked)}
+          onChange={(_, isChecked) =>
+            updateRolePermissions(parseInt(`${item.permissionId}`), isChecked)
+          }
           checked={checked}
-          label={item.permissionName}
-        />,
+        >
+          {item.permissionName}
+        </Checkbox>,
       );
     });
   }
 
   const pageHeader =
-    ((currentAdminSelection.selectedRole?.roleId ?? 0) > 0) ? 'Edit role' : 'Add role';
+    (currentAdminSelection.selectedRole?.roleId ?? 0) > 0 ? 'Edit role' : 'Add role';
 
   return (
-    <div
-      className="admin-container"
-      hidden={
-        !(permissionRows.length > 0 && currentAdminSelection.selectedRole !== undefined)
-      }
-    >
-      <h1>{pageHeader}</h1>
-      <div className="form-group">
-        <label className="mt-4">Role Name</label>
-        <input
-          value={roleName ?? ''}
-          onChange={(e) => setRoleName(e.target.value)}
-          className="form-control"
-          placeholder="role name"
-          type="text"
-        />
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <div
+        className="admin-container"
+        hidden={!(permissionRows.length > 0 && currentAdminSelection.selectedRole !== undefined)}
+      >
+        <div>
+          <span>Role Name</span>
+          <Input
+            value={roleName ?? ''}
+            onChange={setRoleName}
+            className="form-control"
+            placeholder="role name"
+          />
+        </div>
+        {permissionRows}
+        <div className="admin-button-span">
+          <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
+        </div>
       </div>
-      {permissionRows}
-      <Button onClick={onSubmit}>Submit</Button> <Button onClick={goBack}>Back</Button>
-    </div>
+    </>
   );
 }

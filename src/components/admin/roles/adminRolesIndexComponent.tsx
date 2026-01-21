@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { Button, FormCheck } from 'react-bootstrap';
-import { GetRolesResponse, UpdateRoleResponse } from '@/types/responses';
-import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import { Role } from '@/types/user';
-import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { Button, Checkbox, Table } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useDeleteRoles } from '@/hooks/admin/useDeleteRoles';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
-import { useRouter } from 'next/navigation';
+import { setReloadRoles, setRoles, setSelectedRole } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { GetRolesResponse, UpdateRoleResponse } from '@/types/responses';
+import { Role } from '@/types/user';
 
 export default function AdminRolesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -31,7 +31,7 @@ export default function AdminRolesIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         setSelectedRoles([]);
-        getAllRoles().then((response: GetRolesResponse) => {
+        void getAllRoles().then((response: GetRolesResponse) => {
           if (!response.error && response.roles) {
             dispatch(setRoles(response.roles));
           }
@@ -92,7 +92,7 @@ export default function AdminRolesIndex() {
     if (selectedRoles.length === 0) {
       return;
     }
-    deleteRoles(selectedRoles).then((response: UpdateRoleResponse) => {
+    void deleteRoles(selectedRoles).then((response: UpdateRoleResponse) => {
       if (response.success) {
         setSelectedRoles([]);
         toast.success('Roles deleted successfully');
@@ -104,47 +104,53 @@ export default function AdminRolesIndex() {
   };
 
   return (
-    <div className="admin-container">
-      <h3>Roles Admin</h3>
-      <Table
-        height={420}
-        data={currentAdminSelection.roles}
-        bordered
-        cellBordered
-        loading={tableLoading}
-      >
-        <Column width={50} align="center">
-          <HeaderCell> </HeaderCell>
-          <Cell>
-            {(rowData) =>
-              rowData.roleId > 4 ? (
-                <FormCheck
-                  id={rowData.roleId}
-                  checked={selectedRoles.includes(rowData.roleId)}
-                  onChange={(e) => updateSelectedRoles(parseInt(`${rowData.roleId}`), e.currentTarget.checked)}
-                />
-              ) : (
-                ''
-              )
-            }
-          </Cell>
-        </Column>
-        <Column width={300}>
-          <HeaderCell>Role</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData) => (
-              <div id={rowData.roleId} onClick={() => editRole(parseInt(`${rowData.roleId}`))}>
-                {rowData.roleName}
-              </div>
-            )}
-          </Cell>
-        </Column>
-      </Table>
-      <Button onClick={addRole}>Add</Button>{' '}
-      <Button hidden={selectedRoles.length === 0} onClick={deleteSelectedRoles}>
-        Delete
-      </Button>{' '}
-      <AdminListHomeButton />
-    </div>
+    <>
+      <PageHeader pageTitle="Roles Admin" />
+      <div className="admin-container">
+        <Table
+          height={420}
+          data={currentAdminSelection.roles}
+          bordered
+          cellBordered
+          loading={tableLoading}
+        >
+          <Column width={50} align="center">
+            <HeaderCell> </HeaderCell>
+            <Cell>
+              {(rowData: Role) =>
+                rowData.roleId > 4 ? (
+                  <Checkbox
+                    id={rowData.roleId.toString()}
+                    checked={selectedRoles.includes(rowData.roleId)}
+                    onChange={(_, checked) =>
+                      updateSelectedRoles(parseInt(`${rowData.roleId}`), checked)
+                    }
+                  />
+                ) : (
+                  ''
+                )
+              }
+            </Cell>
+          </Column>
+          <Column width={300}>
+            <HeaderCell>Role</HeaderCell>
+            <Cell className="admin-click-cell">
+              {(rowData: Role) => (
+                <div
+                  id={rowData.roleId.toString()}
+                  onClick={() => editRole(parseInt(`${rowData.roleId}`))}
+                >
+                  {rowData.roleName}
+                </div>
+              )}
+            </Cell>
+          </Column>
+        </Table>
+        <Button onClick={addRole}>Add</Button>{' '}
+        <Button hidden={selectedRoles.length === 0} onClick={deleteSelectedRoles}>
+          Delete
+        </Button>{' '}
+      </div>
+    </>
   );
 }

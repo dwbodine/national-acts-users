@@ -1,0 +1,281 @@
+@use 'variables' as v;
+
+.results-container {
+  display: flex;
+  padding: 15px 15px 15px 5px;
+}
+
+.results-col {
+  width: 100%;
+}
+
+.resultsTable {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid black;
+  margin: 15px 0 0 5px;
+}
+
+.resultsTable th {
+  background-color: lightgray;
+  font-weight: bold;
+  font-family: v.$control-title-font-family;
+  text-transform: uppercase;
+}
+
+.resultsTable th,
+.resultsTable td {
+  border: 1px solid black;
+  padding: 5px;
+  font-size: 13px;
+}
+
+.resultsTable th.center {
+  text-align: center;
+}
+
+.resultsTable td.pull-right {
+  float: unset;
+  text-align: right;
+}
+
+.resultsTable div.pull-right {
+  text-align: right;
+}
+
+.vipDetailsTable {
+  max-width: 576px;
+  margin: 10px 0 10px 15px;
+}
+
+.vipDetailsTable tr {
+  vertical-align: top;
+}
+
+.vipDetailsTable td {
+  padding: 5px 10px;
+}
+
+.vipDetailsTable .vipLabel {
+  min-width: 175px;
+  font-weight: bold;
+  text-align: left;
+  white-space: nowrap;
+  font-family: v.$control-title-font-family;
+}
+
+.vipTitle {
+  font-weight: bold;
+}
+
+.vipTitle .sold-out {
+  color: red;
+}
+
+.vipTable-container {
+  padding: 15px;
+}
+
+.vipTable {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+.vipTable tr {
+  vertical-align: top;
+}
+
+.vipTable th,
+.vipTable td {
+  border: 1px solid black;
+  padding: 5px;
+  font-size: 13px;
+}
+
+.vipTable th {
+  background-color: lightgray;
+  font-weight: bold;
+  font-family: v.$control-title-font-family;
+  text-transform: uppercase;
+}
+
+.vipTable .inactive {
+  color: red;
+}
+
+.vipTable .hidden,
+.vipTable .active-pending {
+  color: orange;
+}
+
+.vipTable .deleted {
+  color: rgb(100, 100, 100);
+  font-weight: bold;
+}
+
+.vipTable .refunded {
+  color: blueviolet;
+  font-weight: bold;
+}
+
+.resultsTable tr:nth-child(even),
+.vipTable tr:nth-child(even) {
+  background-color: #efefef;
+}
+
+.resultsTable tr:hover,
+.vipTable tr:hover {
+  background-color: lightgray;
+}
+
+.resultsTable tr.event-inactive {
+  color: red !important;
+  font-weight: bold;
+}
+
+.resultsTable tr.event-sold-out {
+  color: red !important;
+  font-weight: bold;
+}
+
+.resultsTable tr.event-hidden,
+.resultsTable tr.event-hidden a {
+  color: orange !important;
+  font-weight: bold;
+}
+
+.resultsTable tr.event-active-pending,
+.resultsTable tr.event-active-pending a {
+  color: orange !important;
+  font-weight: bold;
+}
+
+.resultsTable tr.event-deleted {
+  color: rgb(100, 100, 100) !important;
+  font-weight: bold;
+}
+
+.resultsTable tr.event-cancelled {
+  color: rgb(0, 128, 255) !important;
+  font-weight: bold;
+}
+
+.resultsTable thead,
+.resultsTable tfoot {
+  font-weight: bold;
+}
+
+.resultsTable tfoot div {
+  padding: 5px;
+}
+
+.resultsTable a,
+.vipTable a {
+  cursor: pointer;
+  text-decoration: underline !important;
+}
+
+.resultsTable a:hover,
+.vipTable a:hover {
+  color: blue !important;
+  text-decoration: none !important;
+}
+
+@media (max-width: 992px) {
+  .vipTable .email {
+    word-break: break-all;
+  }
+}
+
+@media (max-width: 768px) {
+  .resultsTable {
+    max-width: 100%;
+  }
+
+  .resultsTable th,
+  .resultsTable td {
+    padding: 2px;
+  }
+
+  .vipDetailsTable {
+    margin: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .results-container {
+    margin: 0;
+    padding: 10px;
+  }
+
+  .resultsTable {
+    margin: 0;
+  }
+
+  .vipDetailsTable {
+    max-width: 100%;
+    margin: 10px 0;
+  }
+
+  .vipDetailsTable td {
+    white-space: unset;
+  }
+
+  .vipDetailsTable .vipLabel {
+    white-space: nowrap;
+  }
+
+  .vipTable-container {
+    padding: 0 15px 0 5px;
+  }
+
+  .vipTable {
+    margin: 0 5px;
+  }
+
+  .resultsTable,
+  .resultsTable tbody,
+  .resultsTable th,
+  .resultsTable td,
+  .vipTable,
+  .vipTable tbody,
+  .vipTable th,
+  .vipTable td {
+    border: unset;
+  }
+
+  .resultsTable th,
+  .resultsTable td,
+  .vipTable th,
+  .vipTable td {
+    padding: 5px 0;
+  }
+
+  .resultsTable tr:nth-child(even),
+  .vipTable tr:nth-child(even) {
+    background-color: unset;
+  }
+
+  .resultsTable tr:hover,
+  .vipTable tr:hover {
+    background-color: unset;
+  }
+
+  .resultsTable .mobile-event-card-container:nth-child(even),
+  .vipTable .mobile-event-card-container:nth-child(even) {
+    .mobile-event-card {
+      background-color: #efefef !important;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .results-container {
+    padding-left: 5px;
+  }
+
+  .results-col {
+    padding: 0;
+  }
+}

@@ -1,27 +1,44 @@
-"use client";
+'use client';
 
-import { Button, Col, Form, FormCheck, Row } from 'react-bootstrap';
-import { DatePicker, SelectPicker } from 'rsuite';
-import { GetPageTypesResponse, GetSellersResponse, ModifyPageResponse } from '@/types/responses';
-import { Page, PageSeller } from '@/types/public';
-import { ReactElement, useCallback, useEffect, useState } from 'react';
-import { setAllSellers, setMustSavePage, setPageTypes, setReloadPages, setSelectedPage } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import AdminFileUpload from '../common/adminFileUploadComponent';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { FaPlus } from 'react-icons/fa';
-import { ImageType } from "@/constants";
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { RootState } from '@/lib/store';
-import { SellerType } from '@/types/event';
 import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useRouter } from 'next/navigation';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { FaPlus } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
+import Textarea from '@/components/common/Textarea';
+import { ImageType } from '@/constants';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useRouter } from 'next/navigation';
-import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
+import {
+  setAllSellers,
+  setCountries,
+  setMustSavePage,
+  setPageTypes,
+  setReloadCountries,
+  setReloadPages,
+  setSelectedPage,
+} from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { SellerType } from '@/types/event';
+import { Page, PageSeller } from '@/types/public';
+import {
+  GetCountriesResponse,
+  GetPageTypesResponse,
+  GetSellersResponse,
+  ModifyPageResponse,
+} from '@/types/responses';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import AdminFileUpload from '../common/adminFileUploadComponent';
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -32,7 +49,7 @@ export default function AdminPageEdit() {
   const { getPageTypes } = useGetPageTypes();
   const { getSellers } = useGetSellers();
   const pageSellerTypeIds: number[] = [7, 14, 15, 16, 17, 18, 19];
-
+  const { getAllCountries } = useGetAllCountries();
   const [isUploading, setIsUploading] = useState(false);
   const [isHeaderDirty, setIsHeaderDirty] = useState(false);
   const [isIconDirty, setIsIconDirty] = useState(false);
@@ -41,25 +58,39 @@ export default function AdminPageEdit() {
 
   const goBack = useCallback(() => {
     toast.dismiss();
-    router.push('/admin/page-manager');
+    router.push('/admin/pages');
   }, [router]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.allSellers === undefined) {
+      if (currentAdminSelection.reloadCountries) {
+        dispatch(setReloadCountries(false));
         dispatch(setIsLoading(true));
-        getSellers().then((response: GetSellersResponse) => {
+        void getAllCountries().then((response: GetCountriesResponse) => {
+          if (response.countries && !response.error) {
+            dispatch(setCountries(response.countries));
+          } else {
+            toast.error(response.error);
+            dispatch(setIsLoading(false));
+          }
+        });
+      } else if (currentAdminSelection.allSellers === undefined) {
+        dispatch(setIsLoading(true));
+        void getSellers().then((response: GetSellersResponse) => {
           dispatch(setAllSellers(response.sellers));
         });
       } else if (currentAdminSelection.pageTypes === undefined) {
         dispatch(setIsLoading(true));
-        getPageTypes().then((response: GetPageTypesResponse) => {
+        void getPageTypes().then((response: GetPageTypesResponse) => {
           if (!response.error && response.pageTypes) {
             dispatch(setPageTypes(response.pageTypes));
           }
           dispatch(setIsLoading(false));
         });
-      } else if (currentAdminSelection.allPages === undefined || currentAdminSelection.selectedPage === undefined) {
+      } else if (
+        currentAdminSelection.allPages === undefined ||
+        currentAdminSelection.selectedPage === undefined
+      ) {
         goBack();
       }
     }, 500);
@@ -108,7 +139,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setPageTitle = (title: string) => {
     if (!currentAdminSelection.selectedPage || !title) {
@@ -120,23 +151,28 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setPageType = (pageTypeId: number | null) => {
-    if (!currentAdminSelection.selectedPage || !currentAdminSelection.pageTypes
-      || currentAdminSelection.pageTypes.length === 0 || !pageTypeId || isNaN(pageTypeId)) {
+    if (
+      !currentAdminSelection.selectedPage ||
+      !currentAdminSelection.pageTypes ||
+      currentAdminSelection.pageTypes.length === 0 ||
+      !pageTypeId ||
+      isNaN(pageTypeId)
+    ) {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.pageType.pageTypeId !== pageTypeId) {
-      const pageType = currentAdminSelection.pageTypes.find(x => x.pageTypeId === pageTypeId);
+      const pageType = currentAdminSelection.pageTypes.find((x) => x.pageTypeId === pageTypeId);
       if (pageType) {
         pageToUpdate.pageType = pageType;
         dispatch(setSelectedPage(pageToUpdate));
         markDirty();
       }
     }
-  }
+  };
 
   const setSubTitle1 = (title: string) => {
     if (!currentAdminSelection.selectedPage || !title) {
@@ -148,7 +184,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setSubTitle2 = (title: string) => {
     if (!currentAdminSelection.selectedPage || !title) {
@@ -160,7 +196,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const cleanHtmlText = (html: string) => {
     let htmlText: string = html;
@@ -178,7 +214,7 @@ export default function AdminPageEdit() {
     htmlText = htmlText.replace(/\\n\\n/gi, '\\n');
     htmlText = htmlText.trim();
     return htmlText;
-  }
+  };
 
   const setHtmlText = (html: string) => {
     if (!currentAdminSelection.selectedPage || !route) {
@@ -192,7 +228,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setGoogleAnalyticsId = (gaId: string) => {
     if (!currentAdminSelection.selectedPage || !route) {
@@ -204,7 +240,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setIsActive = (isActive: boolean) => {
     if (!currentAdminSelection.selectedPage) {
@@ -216,7 +252,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setUseIncludeDates = (useIncludeDates: boolean) => {
     if (!currentAdminSelection.selectedPage) {
@@ -228,7 +264,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setIncludeStart = (includeStart: Date | null) => {
     if (!currentAdminSelection.selectedPage) {
@@ -241,7 +277,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setIncludeEnd = (includeEnd: Date | null) => {
     if (!currentAdminSelection.selectedPage) {
@@ -254,7 +290,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setUseExcludeDates = (useExcludeDates: boolean) => {
     if (!currentAdminSelection.selectedPage) {
@@ -266,7 +302,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setExcludeStart = (excludeStart: Date | null) => {
     if (!currentAdminSelection.selectedPage) {
@@ -279,7 +315,7 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setExcludeEnd = (excludeEnd: Date | null) => {
     if (!currentAdminSelection.selectedPage) {
@@ -292,41 +328,50 @@ export default function AdminPageEdit() {
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
-  }
+  };
 
   const updatePageSeller = (newPageSeller: PageSeller) => {
     if (currentAdminSelection.selectedPage && newPageSeller) {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const pageSellers: PageSeller[] | undefined = pageToUpdate.sellers;
       pageToUpdate.sellers = pageSellers?.map((ps) =>
-        (ps.pageSellerId === newPageSeller.pageSellerId && ps.sellerId === newPageSeller.sellerId)
+        ps.pageSellerId === newPageSeller.pageSellerId && ps.sellerId === newPageSeller.sellerId
           ? newPageSeller
-          : ps
-      )
+          : ps,
+      );
       dispatch(setSelectedPage(pageToUpdate));
     }
   };
 
-  const updateSeller = (pageSellerId: number | null, sellerId: number | null, newSellerId: number | null) => {
-    if (pageSellerId === null || isNaN(pageSellerId) || sellerId === null || isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
+  const updateSeller = (
+    pageSellerId: number | null,
+    sellerId: number | null,
+    newSellerId: number | null,
+  ) => {
+    if (
+      pageSellerId === null ||
+      isNaN(pageSellerId) ||
+      sellerId === null ||
+      isNaN(sellerId) ||
+      !newSellerId ||
+      isNaN(newSellerId)
+    ) {
       return;
     }
     if (currentAdminSelection.selectedPage) {
       const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
       const pageSellers: PageSeller[] | undefined = pageToUpdate.sellers;
-      const existingSeller = pageSellers?.find((x) => x.pageSellerId === pageSellerId && x.sellerId === sellerId);
+      const existingSeller = pageSellers?.find(
+        (x) => x.pageSellerId === pageSellerId && x.sellerId === sellerId,
+      );
       if (existingSeller) {
         pageToUpdate.sellers = pageSellers?.map((ps) =>
-          (ps.pageSellerId === existingSeller.pageSellerId)
-            ? { ...ps, sellerId: newSellerId }
-            : ps
-        )
+          ps.pageSellerId === existingSeller.pageSellerId ? { ...ps, sellerId: newSellerId } : ps,
+        );
       } else {
         pageToUpdate.sellers = pageSellers?.map((ps) =>
-          (ps.pageSellerId === 0 && ps.sellerId === 0)
-            ? { ...ps, sellerId: newSellerId }
-            : ps
-        )
+          ps.pageSellerId === 0 && ps.sellerId === 0 ? { ...ps, sellerId: newSellerId } : ps,
+        );
       }
       dispatch(setSelectedPage(pageToUpdate));
     } else {
@@ -459,7 +504,7 @@ export default function AdminPageEdit() {
     }
 
     const pageToUpdate: Page = {
-      ...currentAdminSelection.selectedPage
+      ...currentAdminSelection.selectedPage,
     };
 
     if (!pageToUpdate.route) {
@@ -478,7 +523,7 @@ export default function AdminPageEdit() {
     }
 
     if (pageSellerTypeIds.includes(pageToUpdate.pageType.pageTypeId)) {
-      const pageSellers = pageToUpdate.sellers?.filter(x => (x.sellerId ?? 0) > 0);
+      const pageSellers = pageToUpdate.sellers?.filter((x) => (x.sellerId ?? 0) > 0);
 
       if (!pageSellers || pageSellers.length === 0) {
         toast.error('Must select at least one seller for this page');
@@ -496,7 +541,11 @@ export default function AdminPageEdit() {
       return;
     }
 
-    if (pageToUpdate.logoOnlyImage && pageToUpdate.logoOnlyImage.length > 4 && pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length - 4) !== ".png") {
+    if (
+      pageToUpdate.logoOnlyImage &&
+      pageToUpdate.logoOnlyImage.length > 4 &&
+      pageToUpdate.logoOnlyImage.substring(pageToUpdate.logoOnlyImage.length - 4) !== '.png'
+    ) {
       toast.error('Logo image can only be a PNG');
       return;
     }
@@ -507,11 +556,11 @@ export default function AdminPageEdit() {
 
     dispatch(setIsLoading(true));
 
-    updatePage(pageToUpdate).then((response: ModifyPageResponse) => {
+    void updatePage(pageToUpdate).then((response: ModifyPageResponse) => {
       if (response.success) {
         dispatch(setReloadPages(true));
         toast.success('Save page succeeded');
-        router.push('/admin/page-manager');
+        router.push('/admin/pages');
       } else {
         toast.error(response.error ?? 'Error occurred while saving page');
       }
@@ -537,16 +586,15 @@ export default function AdminPageEdit() {
     return sellerType;
   };
 
-  const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageTypes ?
-    currentAdminSelection.pageTypes.map((pageType) => (
-      {
+  const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageTypes
+    ? currentAdminSelection.pageTypes.map((pageType) => ({
         label: `${pageType.pageTypeName}`,
-        value: pageType.pageTypeId
-      }
-    )) : [];
+        value: pageType.pageTypeId,
+      }))
+    : [];
 
   const pageHeader =
-    ((currentAdminSelection.selectedPage?.pageId ?? 0) > 0) ? 'Edit page' : 'Add page';
+    (currentAdminSelection.selectedPage?.pageId ?? 0) > 0 ? 'Edit page' : 'Add page';
 
   const isActive = currentAdminSelection.selectedPage?.isActive ?? false;
   const title = currentAdminSelection.selectedPage?.title;
@@ -559,11 +607,19 @@ export default function AdminPageEdit() {
   const subtitle2 = currentAdminSelection.selectedPage?.subtitle2;
   const htmlText = currentAdminSelection.selectedPage?.htmlText;
   const useIncludeDates = currentAdminSelection.selectedPage?.useIncludeDates ?? false;
-  const includeStart = currentAdminSelection.selectedPage?.includeStart ? moment(currentAdminSelection.selectedPage.includeStart).toDate() : null;
-  const includeEnd = currentAdminSelection.selectedPage?.includeEnd ? moment(currentAdminSelection.selectedPage.includeEnd).toDate() : null;
+  const includeStart = currentAdminSelection.selectedPage?.includeStart
+    ? moment(currentAdminSelection.selectedPage.includeStart).toDate()
+    : null;
+  const includeEnd = currentAdminSelection.selectedPage?.includeEnd
+    ? moment(currentAdminSelection.selectedPage.includeEnd).toDate()
+    : null;
   const useExcludeDates = currentAdminSelection.selectedPage?.useExcludeDates ?? false;
-  const excludeStart = currentAdminSelection.selectedPage?.excludeStart ? moment(currentAdminSelection.selectedPage.excludeStart).toDate() : null;
-  const excludeEnd = currentAdminSelection.selectedPage?.excludeEnd ? moment(currentAdminSelection.selectedPage.excludeEnd).toDate() : null;
+  const excludeStart = currentAdminSelection.selectedPage?.excludeStart
+    ? moment(currentAdminSelection.selectedPage.excludeStart).toDate()
+    : null;
+  const excludeEnd = currentAdminSelection.selectedPage?.excludeEnd
+    ? moment(currentAdminSelection.selectedPage.excludeEnd).toDate()
+    : null;
   const googleAnalyticsId = currentAdminSelection.selectedPage?.googleAnalyticsId;
 
   const sellerRows: ReactElement[] = [];
@@ -585,7 +641,13 @@ export default function AdminPageEdit() {
             SellerId={item.sellerId}
             SellerType={sellerType}
             PageSeller={item}
-            OnSellerChange={(newSellerId: number | null) => updateSeller(parseInt(`${item.pageSellerId}`), parseInt(`${item.sellerId}`), newSellerId)}
+            OnSellerChange={(newSellerId: number | null) =>
+              updateSeller(
+                parseInt(`${item.pageSellerId}`),
+                parseInt(`${item.sellerId}`),
+                newSellerId,
+              )
+            }
             OnPageSellerChange={(ps: PageSeller) => updatePageSeller(ps)}
             OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
             Countries={currentAdminSelection.countries}
@@ -594,263 +656,263 @@ export default function AdminPageEdit() {
       });
     }
     sellerRows.push(
-      <div
-        title="Add Seller"
-        key="addSeller"
-        className="admin-click-cell"
-        onClick={addSeller}
-      >
+      <div title="Add Seller" key="addSeller" className="admin-click-cell" onClick={addSeller}>
         <FaPlus></FaPlus> Add Seller
       </div>,
     );
   }
 
   return (
-    <Row
-      className="admin-container"
-    >
-      <Col>
-        <Row>
-          <Col><h1>{pageHeader}</h1></Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <FormCheck
-              checked={!isActive}
-              onChange={(e) => setIsActive(!e.target.checked)}
-              label={'Page inactive on website?'}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Main Page Title (most viewed on the site)</label>
-            <input
-              value={title ?? ''}
-              onChange={(e) => setPageTitle(e.target.value)}
-              className="form-control form-control-half"
-              placeholder="page title"
-              type="text"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Route (how it shows up in the url)</label>
-            <input
-              value={route ?? ''}
-              onChange={(e) => setPageRoute(e.target.value)}
-              className="form-control form-control-half"
-              placeholder="page route"
-              type="text"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Page Type</label>
-            <SelectPicker
-              value={selectedPageTypeId}
-              data={pageTypeList}
-              size="lg"
-              onChange={(ptId) => setPageType(ptId)}
-              cleanable={false}
-              menuAutoWidth={true}
-              className="admin-seller-select-value"
-              searchable={false}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <AdminFileUpload
-              ImageType={ImageType.HEADERS}
-              Title="Top Image (ideally 1200-1600px wide, max is 1600px)"
-              FileUploadName="Header"
-              OnUpload={onFileUpload}
-              CurrentFileName={topImage}
-              IsDirty={isHeaderDirty}
-              CurrentFileTitle={"View Current Top Image"}
-              OnUploadStart={onUploadStart}
-              OnUploadComplete={onUploadComplete}
-              ShowRemoveButton={true}
-              OnFileRemove={() => onFileRemove('Header')}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <AdminFileUpload
-              ImageType={ImageType.THUMBNAILS}
-              Title="Icon (rectangle, no wider than 400px)"
-              FileUploadName="Icon"
-              OnUpload={onFileUpload}
-              CurrentFileName={iconImage}
-              IsDirty={isIconDirty}
-              CurrentFileTitle={"View Current Icon Image"}
-              OnUploadStart={onUploadStart}
-              OnUploadComplete={onUploadComplete}
-              ShowRemoveButton={true}
-              OnFileRemove={() => onFileRemove('Icon')}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <AdminFileUpload
-              ImageType={ImageType.PREVIEWS}
-              Title="Link Preview Image (rectangle, no wider than 400px)"
-              FileUploadName="Preview"
-              OnUpload={onFileUpload}
-              CurrentFileName={linkPreviewImage}
-              IsDirty={isLinkPreviewDirty}
-              CurrentFileTitle={"View Current Link Preview Image"}
-              OnUploadStart={onUploadStart}
-              OnUploadComplete={onUploadComplete}
-              ShowRemoveButton={true}
-              OnFileRemove={() => onFileRemove('Preview')}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <AdminFileUpload
-              ImageType={ImageType.LOGOS}
-              Title="Logo Only (rectangle, must be a PNG and between 250-400 px wide)"
-              FileUploadName="Logo"
-              OnUpload={onFileUpload}
-              CurrentFileName={logoOnlyImage}
-              IsDirty={isLogoDirty}
-              CurrentFileTitle={"View Current Logo Image"}
-              OnUploadStart={onUploadStart}
-              OnUploadComplete={onUploadComplete}
-              ShowRemoveButton={true}
-              OnFileRemove={() => onFileRemove('Logo')}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Subtitle 1</label>
-            <input
-              value={subtitle1 ?? ''}
-              onChange={(e) => setSubTitle1(e.target.value)}
-              className="form-control form-control-half"
-              placeholder="Shows up underneath page title"
-              type="text"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Subtitle 2</label>
-            <input
-              value={subtitle2 ?? ''}
-              onChange={(e) => setSubTitle2(e.target.value)}
-              className="form-control form-control-half"
-              placeholder="Shows up underneath subtitle 1"
-              type="text"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">HTML Text</label>
-            <Form.Control as="textarea"
-              rows={10}
-              id="htmlText"
-              onChange={(e) => setHtmlText(e.currentTarget.value)}
-              value={htmlText ?? ''}
-              placeholder='Free-form html text to be placed in header'
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <FormCheck
-              checked={useIncludeDates}
-              onChange={(e) => setUseIncludeDates(e.target.checked)}
-              label={'Use include date range'}
-            />
-            <label className="mt-4">Include start date</label>
-            <DatePicker
-              id="includeStart"
-              format="M/d/yyyy"
-              onSelect={setIncludeStart}
-              value={includeStart}
-              oneTap
-              cleanable
-              disabled={!useIncludeDates}
-              onClean={() => setIncludeStart(null)}
-            />
-            <label className="mt-4">Include end date</label>
-            <DatePicker
-              id="includeEnd"
-              format="M/d/yyyy"
-              onSelect={setIncludeEnd}
-              value={includeEnd}
-              oneTap
-              cleanable
-              disabled={!useIncludeDates}
-              onClean={() => setIncludeEnd(null)}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <FormCheck
-              checked={useExcludeDates}
-              onChange={(e) => setUseExcludeDates(e.target.checked)}
-              label={'Use exclude date range'}
-            />
-            <label className="mt-4">Exclude start date</label>
-            <DatePicker
-              id="excludeStart"
-              format="M/d/yyyy"
-              onSelect={setExcludeStart}
-              value={excludeStart}
-              oneTap
-              cleanable
-              disabled={!useExcludeDates}
-              onClean={() => setExcludeStart(null)}
-            />
-            <label className="mt-4">Exclude end date</label>
-            <DatePicker
-              id="excludeEnd"
-              format="M/d/yyyy"
-              onSelect={setExcludeEnd}
-              value={excludeEnd}
-              oneTap
-              cleanable
-              disabled={!useExcludeDates}
-              onClean={() => setExcludeEnd(null)}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Google Analytics ID</label>
-            <input
-              value={googleAnalyticsId ?? ''}
-              onChange={(e) => setGoogleAnalyticsId(e.target.value)}
-              className="form-control form-control-half"
-              placeholder="e.g.: UA-xxxxxxxxx-x"
-              type="text"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group" hidden={!pageSellerTypeIds.includes(currentAdminSelection?.selectedPage?.pageType?.pageTypeId ?? 0)}>
-          <Col>
-            <h4>Page Sellers</h4>
-            {sellerRows}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Button onClick={onSubmit} disabled={isUploading}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
-          </Col>
-        </Row>
-      </Col>
-    </Row>
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <Row className="admin-container">
+        <Col xs={24}>
+          <Row>
+            <Col xs={24}>
+              <Checkbox checked={!isActive} onChange={(_, checked) => setIsActive(!checked)}>
+                Page inactive on website?
+              </Checkbox>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>Main Page Title (most viewed on the site)</span>
+              <Input
+                value={title ?? ''}
+                onChange={setPageTitle}
+                className="form-control-half"
+                placeholder="page title"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>Route (how it shows up in the url)</span>
+              <Input
+                value={route ?? ''}
+                onChange={setPageRoute}
+                className="form-control-half"
+                placeholder="page route"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24} md={12}>
+              <span>Page Type</span>
+              <SelectPicker
+                value={selectedPageTypeId}
+                data={pageTypeList}
+                size="lg"
+                onChange={(ptId) => setPageType(ptId)}
+                cleanable={false}
+                menuAutoWidth={true}
+                className="admin-seller-select-value"
+                searchable={false}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <AdminFileUpload
+                ImageType={ImageType.HEADERS}
+                Title="Top Image (ideally 1200-1600px wide, max is 1600px)"
+                FileUploadName="Header"
+                OnUpload={onFileUpload}
+                CurrentFileName={topImage}
+                IsDirty={isHeaderDirty}
+                CurrentFileTitle={'View Current Top Image'}
+                OnUploadStart={onUploadStart}
+                OnUploadComplete={onUploadComplete}
+                ShowRemoveButton={true}
+                OnFileRemove={() => onFileRemove('Header')}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <AdminFileUpload
+                ImageType={ImageType.THUMBNAILS}
+                Title="Icon (rectangle, no wider than 400px)"
+                FileUploadName="Icon"
+                OnUpload={onFileUpload}
+                CurrentFileName={iconImage}
+                IsDirty={isIconDirty}
+                CurrentFileTitle={'View Current Icon Image'}
+                OnUploadStart={onUploadStart}
+                OnUploadComplete={onUploadComplete}
+                ShowRemoveButton={true}
+                OnFileRemove={() => onFileRemove('Icon')}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <AdminFileUpload
+                ImageType={ImageType.PREVIEWS}
+                Title="Link Preview Image (rectangle, no wider than 400px)"
+                FileUploadName="Preview"
+                OnUpload={onFileUpload}
+                CurrentFileName={linkPreviewImage}
+                IsDirty={isLinkPreviewDirty}
+                CurrentFileTitle={'View Current Link Preview Image'}
+                OnUploadStart={onUploadStart}
+                OnUploadComplete={onUploadComplete}
+                ShowRemoveButton={true}
+                OnFileRemove={() => onFileRemove('Preview')}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <AdminFileUpload
+                ImageType={ImageType.LOGOS}
+                Title="Logo Only (rectangle, must be a PNG and between 250-400 px wide)"
+                FileUploadName="Logo"
+                OnUpload={onFileUpload}
+                CurrentFileName={logoOnlyImage}
+                IsDirty={isLogoDirty}
+                CurrentFileTitle={'View Current Logo Image'}
+                OnUploadStart={onUploadStart}
+                OnUploadComplete={onUploadComplete}
+                ShowRemoveButton={true}
+                OnFileRemove={() => onFileRemove('Logo')}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>Subtitle 1</span>
+              <Input
+                value={subtitle1 ?? ''}
+                onChange={setSubTitle1}
+                className="form-control-half"
+                placeholder="Shows up underneath page title"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>Subtitle 2</span>
+              <Input
+                value={subtitle2 ?? ''}
+                onChange={setSubTitle2}
+                className="form-control-half"
+                placeholder="Shows up underneath subtitle 1"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>HTML Text</span>
+              <Textarea
+                className="form-control-half"
+                rows={10}
+                id="htmlText"
+                onChange={setHtmlText}
+                value={htmlText ?? ''}
+                placeholder="Free-form html text to be placed in header"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <Checkbox
+                checked={useIncludeDates}
+                onChange={(_, checked) => setUseIncludeDates(checked)}
+              >
+                Use include date range
+              </Checkbox>
+              <br />
+              <span>Include start date</span>
+              <DatePicker
+                id="includeStart"
+                format="M/d/yyyy"
+                onSelect={setIncludeStart}
+                value={includeStart}
+                oneTap
+                cleanable
+                disabled={!useIncludeDates}
+                onClean={() => setIncludeStart(null)}
+              />
+              <span>Include end date</span>
+              <DatePicker
+                id="includeEnd"
+                format="M/d/yyyy"
+                onSelect={setIncludeEnd}
+                value={includeEnd}
+                oneTap
+                cleanable
+                disabled={!useIncludeDates}
+                onClean={() => setIncludeEnd(null)}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <Checkbox
+                checked={useExcludeDates}
+                onChange={(_, checked) => setUseExcludeDates(checked)}
+              >
+                Use exclude date range
+              </Checkbox>
+              <br />
+              <span>Exclude start date</span>
+              <DatePicker
+                id="excludeStart"
+                format="M/d/yyyy"
+                onSelect={setExcludeStart}
+                value={excludeStart}
+                oneTap
+                cleanable
+                disabled={!useExcludeDates}
+                onClean={() => setExcludeStart(null)}
+              />
+              <span>Exclude end date</span>
+              <DatePicker
+                id="excludeEnd"
+                format="M/d/yyyy"
+                onSelect={setExcludeEnd}
+                value={excludeEnd}
+                oneTap
+                cleanable
+                disabled={!useExcludeDates}
+                onClean={() => setExcludeEnd(null)}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>Google Analytics ID</span>
+              <Input
+                value={googleAnalyticsId ?? ''}
+                onChange={setGoogleAnalyticsId}
+                className="form-control-half"
+                placeholder="e.g.: UA-xxxxxxxxx-x"
+              />
+            </Col>
+          </Row>
+          <Row
+            hidden={
+              !pageSellerTypeIds.includes(
+                currentAdminSelection?.selectedPage?.pageType?.pageTypeId ?? 0,
+              )
+            }
+          >
+            <Col xs={24}>
+              <h4>Page Sellers</h4>
+              {sellerRows}
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <Button onClick={onSubmit} disabled={isUploading}>
+                Submit
+              </Button>{' '}
+              <Button onClick={confirmGoBack}>Back</Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </>
   );
 }

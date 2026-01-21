@@ -1,35 +1,29 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from 'react';
-import ClientSellersComponent from '@/components/sales/events/clientSellersComponent';
-import { User } from '@/types/user';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { setCurrentUser } from '@/lib/globalSelectionSlice';
 
 export default function HomePage() {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { getUser } = useCurrentUser();
-  const [user, setUser] = useState<User | undefined>(undefined);
-  const [loggedInNonAdmin, setLoggedInNonAdmin] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!user) {
-      const currentUser = getUser();
-      setUser(currentUser);
-    }
+    const user = getUser();
 
     if (user && user.isAuthenticated) {
+      dispatch(setCurrentUser(user));
       if (user.isAdmin) {
         router.push('/dashboard');
       } else {
-        setLoggedInNonAdmin(true);
+        router.push('/sellers');
       }
     }
-  }, [router, getUser, user]);
+  }, [router, getUser]);
 
-
-
-  return (
-    loggedInNonAdmin ? <ClientSellersComponent /> : <></>
-  );
+  return <></>;
 }

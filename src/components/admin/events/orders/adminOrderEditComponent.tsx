@@ -1,33 +1,32 @@
-"use client";
+'use client';
 
-import { Button, Col, FormCheck, Row } from 'react-bootstrap';
-import { DatePicker, SelectPicker } from 'rsuite';
-import { GetOrderResponse, ModifyOrderResponse, ModifyTicketResponse } from '@/types/responses';
-import { ReactElement, useCallback, useEffect, useState } from 'react';
-import {
-  setAdminOrder,
-  setMustSaveOrder,
-  setReloadEvents,
-} from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import ConfirmationDialog from '../../../common/confirmationDialogComponent';
-import { EditProps } from '@/types/props';
-import { FaArrowTurnDown } from 'react-icons/fa6';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { RootState } from '@/lib/store';
-import { getOrderStatusText } from '@/utils/eventUtils';
 import moment from 'moment';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useRouter } from 'next/navigation';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { FaArrowTurnDown } from 'react-icons/fa6';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { useGetOrderById } from '@/hooks/common/useGetOrderById';
+import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useRefundOrder } from '@/hooks/admin/useRefundOrder';
 import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
-import { useRouter } from 'next/navigation';
-import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
 import { useUpdateOrder } from '@/hooks/admin/useUpdateOrder';
+import { useGetOrderById } from '@/hooks/common/useGetOrderById';
+import { useSetTicketsCheckedIn } from '@/hooks/order/useSetTicketsCheckedIn';
+import { setAdminOrder, setMustSaveOrder, setReloadEvents } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { EditProps } from '@/types/props';
+import { GetOrderResponse, ModifyOrderResponse, ModifyTicketResponse } from '@/types/responses';
+import { getOrderStatusText } from '@/utils/eventUtils';
+
+import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 
 export default function AdminOrderEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;
+  const hasId = id !== undefined && id > 0;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const dispatch = useDispatch();
   const { refundOrder } = useRefundOrder();
@@ -40,32 +39,30 @@ export default function AdminOrderEdit(props: EditProps) {
   const router = useRouter();
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [ticketIdList, setTicketIdList] = useState<number[]>([]);
-  const allTicketIds: number[] = currentAdminSelection.selectedOrder?.tickets?.map(t => t.ticketSocketOrderTicketId) ?? [];
+  const allTicketIds: number[] =
+    currentAdminSelection.selectedOrder?.tickets?.map((t) => t.ticketSocketOrderTicketId) ?? [];
 
   const loadOrderById = useCallback(() => {
-    if (!id) {
+    if (!hasId) {
       return;
     }
 
     dispatch(setMustSaveOrder(false));
     dispatch(setIsLoading(true));
-    getOrderById(id)
-      .then((response: GetOrderResponse) => {
-        setTicketIdList([]);
-        if (response.order && !response.error) {
-          dispatch(
-            setAdminOrder(response.order)
-          );
-        } else {
-          toast.error(response.error);
-        }
-        dispatch(setIsLoading(false));
-      });
+    void getOrderById(id).then((response: GetOrderResponse) => {
+      setTicketIdList([]);
+      if (response.order && !response.error) {
+        dispatch(setAdminOrder(response.order));
+      } else {
+        toast.error(response.error);
+      }
+      dispatch(setIsLoading(false));
+    });
   }, [dispatch, getOrderById, id]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.selectedOrder === undefined && id !== undefined) {
+      if (currentAdminSelection.selectedOrder === undefined && hasId) {
         loadOrderById();
       }
     }, 300);
@@ -79,12 +76,7 @@ export default function AdminOrderEdit(props: EditProps) {
   };
 
   const setPrice = (ticketId: number, newPrice: number) => {
-    if (
-      !currentAdminSelection.selectedOrder ||
-      !ticketId ||
-      isNaN(ticketId) ||
-      isNaN(newPrice)
-    ) {
+    if (!currentAdminSelection.selectedOrder || !ticketId || isNaN(ticketId) || isNaN(newPrice)) {
       return;
     }
     const currentOrder = { ...currentAdminSelection.selectedOrder };
@@ -96,7 +88,7 @@ export default function AdminOrderEdit(props: EditProps) {
           ticket.price = newPrice;
           orderRevenue += newPrice;
         } else {
-          orderRevenue += (ticket.price ?? 0);
+          orderRevenue += ticket.price ?? 0;
         }
         return ticket;
       });
@@ -113,12 +105,12 @@ export default function AdminOrderEdit(props: EditProps) {
   };
 
   const goBack = (dismissToast: boolean = true) => {
-    if (!id && dismissToast) {
+    if (!hasId && dismissToast) {
       toast.dismiss();
     }
     dispatch(setMustSaveOrder(false));
     let path = '/admin/events/orders/';
-    if (id && currentAdminSelection.selectedOrder) {
+    if (hasId && currentAdminSelection.selectedOrder) {
       path += `?id=${currentAdminSelection.selectedOrder.ticketSocketEventId}`;
     }
     router.push(path);
@@ -149,8 +141,6 @@ export default function AdminOrderEdit(props: EditProps) {
       },
     );
   };
-
-
 
   const setIsActive = (isActive: boolean) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedOrder) {
@@ -202,7 +192,7 @@ export default function AdminOrderEdit(props: EditProps) {
           ticket.serviceFee = newServiceFee;
           orderServiceFees += newServiceFee;
         } else {
-          orderServiceFees += (ticket.serviceFee ?? 0);
+          orderServiceFees += ticket.serviceFee ?? 0;
         }
         return ticket;
       });
@@ -391,24 +381,22 @@ export default function AdminOrderEdit(props: EditProps) {
     toast.dismiss();
     dispatch(setIsLoading(true));
 
-    refundTicket(refundTicketId, refundSvcFees).then(
-      (response: ModifyOrderResponse) => {
-        const { success } = response;
-        dispatch(setIsLoading(false));
-        if (success) {
-          toast.success('Refund succeeded');
-          if (id) {
-            loadOrderById();
-          } else {
-            dispatch(setAdminOrder(undefined));
-            dispatch(setReloadEvents(true));
-            goBack(false);
-          }
+    void refundTicket(refundTicketId, refundSvcFees).then((response: ModifyOrderResponse) => {
+      const { success } = response;
+      dispatch(setIsLoading(false));
+      if (success) {
+        toast.success('Refund succeeded');
+        if (hasId) {
+          loadOrderById();
         } else {
-          toast.error('Refund failed');
+          dispatch(setAdminOrder(undefined));
+          dispatch(setReloadEvents(true));
+          goBack(false);
         }
-      },
-    );
+      } else {
+        toast.error('Refund failed');
+      }
+    });
   };
 
   const confirmRefundTicket = (ticketId: number) => {
@@ -499,13 +487,13 @@ export default function AdminOrderEdit(props: EditProps) {
     }
     dispatch(setIsLoading(true));
     const orderId = currentAdminSelection.selectedOrder.ticketSocketOrderId;
-    refundOrder(orderId, refundServiceFees, markChargeback).then(
+    void refundOrder(orderId, refundServiceFees, markChargeback).then(
       (response: ModifyOrderResponse) => {
         const { success } = response;
         dispatch(setIsLoading(false));
         if (success) {
           toast.success('Refund succeeded');
-          if (id) {
+          if (hasId) {
             loadOrderById();
           } else {
             dispatch(setAdminOrder(undefined));
@@ -561,20 +549,17 @@ export default function AdminOrderEdit(props: EditProps) {
     );
   };
 
-
-
-
   const onSubmit = () => {
     if (!currentAdminSelection.selectedOrder) {
       return;
     }
     dispatch(setIsLoading(true));
     const currentOrder = { ...currentAdminSelection.selectedOrder };
-    updateOrder(currentOrder).then((results: ModifyOrderResponse) => {
+    void updateOrder(currentOrder).then((results: ModifyOrderResponse) => {
       dispatch(setIsLoading(false));
       if (results.success && !results.error) {
         toast.success('Order updated successfully');
-        if (id) {
+        if (hasId) {
           loadOrderById();
         } else {
           dispatch(setAdminOrder(undefined));
@@ -592,7 +577,7 @@ export default function AdminOrderEdit(props: EditProps) {
   const updateTicketIdList = (ticketId: number, addToList: boolean) => {
     let idList: number[] = ticketIdList ? [...ticketIdList] : [];
     if (!addToList && idList.includes(ticketId)) {
-      idList = idList.filter(i => i !== ticketId);
+      idList = idList.filter((i) => i !== ticketId);
     } else if (addToList && !idList.includes(ticketId)) {
       idList.push(ticketId);
     }
@@ -614,30 +599,33 @@ export default function AdminOrderEdit(props: EditProps) {
     if (ticketIdList.length === 0) {
       return;
     }
-    setTicketsCheckedIn(ticketIdList, isCheckedIn)
-      .then((response: ModifyTicketResponse) => {
-        if (response.success && !response.error) {
-          const successMessage = isCheckedIn ? "Tickets checked in successfully" : "Tickets unchecked successfully";
-          toast.success(successMessage);
-          setTicketIdList([]);
-          setSelectedAction(null);
-          if (id) {
-            loadOrderById();
-          } else {
-            dispatch(setAdminOrder(undefined));
-            dispatch(setReloadEvents(true));
-            setTimeout(() => {
-              goBack(false);
-            }, 500);
-          }
+    void setTicketsCheckedIn(ticketIdList, isCheckedIn).then((response: ModifyTicketResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = isCheckedIn
+          ? 'Tickets checked in successfully'
+          : 'Tickets unchecked successfully';
+        toast.success(successMessage);
+        setTicketIdList([]);
+        setSelectedAction(null);
+        if (hasId) {
+          loadOrderById();
         } else {
-          let errorMessage = response.error;
-          if (!errorMessage) {
-            errorMessage = isCheckedIn ? 'Unexpected error occurred while checking in tickets' : 'Unexpected error occurred while unchecking tickets';
-          }
-          toast.error(errorMessage);
+          dispatch(setAdminOrder(undefined));
+          dispatch(setReloadEvents(true));
+          setTimeout(() => {
+            goBack(false);
+          }, 500);
         }
-      });
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = isCheckedIn
+            ? 'Unexpected error occurred while checking in tickets'
+            : 'Unexpected error occurred while unchecking tickets';
+        }
+        toast.error(errorMessage);
+      }
+    });
   };
 
   const handleBulkEdit = () => {
@@ -647,10 +635,10 @@ export default function AdminOrderEdit(props: EditProps) {
     }
 
     switch (selectedAction) {
-      case "checkin":
+      case 'checkin':
         checkInTickets(true);
         break;
-      case "checkout":
+      case 'checkout':
         checkInTickets(false);
         break;
       default:
@@ -665,10 +653,10 @@ export default function AdminOrderEdit(props: EditProps) {
 
     let message = '';
     switch (selectedAction) {
-      case "checkin":
+      case 'checkin':
         message = `You are about to check in ${ticketIdList.length} tickets`;
         break;
-      case "checkout":
+      case 'checkout':
         message = `You are about to undo check-in for ${ticketIdList.length} tickets`;
         break;
       default:
@@ -698,10 +686,9 @@ export default function AdminOrderEdit(props: EditProps) {
   };
 
   const pageHeader = 'Edit Order';
-  const purchaseDate =
-    currentAdminSelection.selectedOrder?.purchaseDate
-      ? moment(currentAdminSelection.selectedOrder.purchaseDate).format('MM/DD/YYYY')
-      : '';
+  const purchaseDate = currentAdminSelection.selectedOrder?.purchaseDate
+    ? moment(currentAdminSelection.selectedOrder.purchaseDate).format('MM/DD/YYYY')
+    : '';
   const purchaserName = `${currentAdminSelection.selectedOrder?.purchaserFirstName} ${currentAdminSelection.selectedOrder?.purchaserLastName}`;
   const eventDate = currentAdminSelection.selectedOrder?.eventDate
     ? moment(currentAdminSelection.selectedOrder.eventDate).format('MM/DD/YYYY')
@@ -723,7 +710,11 @@ export default function AdminOrderEdit(props: EditProps) {
   const ticketRows: ReactElement[] = [];
   let hasRefunds = false;
   let hasChargebacks = false;
-  if (currentAdminSelection.selectedOrder && currentAdminSelection.selectedOrder.tickets && currentAdminSelection.selectedOrder.tickets.length > 0) {
+  if (
+    currentAdminSelection.selectedOrder &&
+    currentAdminSelection.selectedOrder.tickets &&
+    currentAdminSelection.selectedOrder.tickets.length > 0
+  ) {
     currentAdminSelection.selectedOrder.tickets.forEach((ticket) => {
       const ticketId = ticket.ticketSocketOrderTicketId;
       let refundDate = undefined;
@@ -737,95 +728,100 @@ export default function AdminOrderEdit(props: EditProps) {
       const ticketRow = (
         <tr key={`row_${ticketId}`}>
           <td>
-            <FormCheck
+            <Checkbox
               id={`tId_${ticketId}`}
               key={`tId_${ticketId}`}
               checked={ticketIdList.includes(ticketId)}
-              onChange={(e) => updateTicketIdList(ticketId, e.currentTarget.checked)}
+              onChange={(_, checked) => updateTicketIdList(ticketId, checked)}
             />
           </td>
           <td>{ticket.ticketSocketOrderTicketId}</td>
           <td>
-            {isComped ?
-              <input
+            {isComped ? (
+              <Input
                 id={`fName_${ticketId}`}
                 key={`fName_${ticketId}`}
                 value={ticket.attendeeFirstName ?? ''}
-                type="text"
-                onChange={(e) => setFirstName(parseInt(`${ticketId}`), e.currentTarget.value)}
+                onChange={(value) => setFirstName(parseInt(`${ticketId}`), value)}
               />
-              : ticket.attendeeFirstName
-            }
+            ) : (
+              ticket.attendeeFirstName
+            )}
           </td>
           <td>
-            {isComped ?
-              <input
+            {isComped ? (
+              <Input
                 id={`lName_${ticketId}`}
                 key={`lName_${ticketId}`}
                 value={ticket.attendeeLastName ?? ''}
-                type="text"
-                onChange={(e) => setLastName(parseInt(`${ticketId}`), e.currentTarget.value)}
+                onChange={(value) => setLastName(parseInt(`${ticketId}`), value)}
               />
-              : ticket.attendeeLastName
-            }
+            ) : (
+              ticket.attendeeLastName
+            )}
           </td>
           <td hidden={!isComped}>
-            <input
+            <Input
               id={`phone_${ticketId}`}
               key={`phone_${ticketId}`}
               value={ticket.attendeePhone ?? ''}
-              type="text"
-              onChange={(e) => setPhone(parseInt(`${ticketId}`), e.currentTarget.value)}
+              onChange={(value) => setPhone(parseInt(`${ticketId}`), value)}
             />
           </td>
           <td hidden={!isComped}>
-            <input
+            <Input
               id={`email_${ticketId}`}
               key={`email_${ticketId}`}
               value={ticket.attendeeEmail ?? ''}
-              type="text"
-              onChange={(e) => setEmail(parseInt(`${ticketId}`), e.currentTarget.value)}
+              onChange={(value) => setEmail(parseInt(`${ticketId}`), value)}
             />
           </td>
           <td>
-            {isComped ?
-              <select
+            {isComped ? (
+              <SelectPicker
                 id={`shirt_${ticketId}`}
                 key={`shirt_${ticketId}`}
+                data={[
+                  { label: '-- Select One --', value: '' },
+                  { label: 'XS', value: 'XS' },
+                  { label: 'S', value: 'S' },
+                  { label: 'M', value: 'M' },
+                  { label: 'L', value: 'L' },
+                  { label: 'XL', value: 'XL' },
+                  { label: 'XXL', value: 'XXL' },
+                  { label: 'XXXL', value: 'XXXL' },
+                ]}
                 defaultValue={ticket.shirtSize}
-                onChange={(e) => setShirtSize(parseInt(`${ticketId}`), e.currentTarget.value)}>
-                <option value=""> -- Select One --</option>
-                <option value="XS">XS</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-                <option value="XXL">XXL</option>
-                <option value="XXXL">XXXL</option>
-              </select>
-              : (ticket.shirtSize ? ticket.shirtSize : 'n/a')
-            }
+                searchable={false}
+                cleanable={false}
+                onChange={(value) => setShirtSize(parseInt(`${ticketId}`), value ?? undefined)}
+              />
+            ) : ticket.shirtSize ? (
+              ticket.shirtSize
+            ) : (
+              'n/a'
+            )}
           </td>
           <td hidden={isComped}>
-            <input
+            <Input
               id={`price_${ticketId}`}
               key={`price_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               value={ticket.price?.toFixed(2)}
               type="number"
               step={0.25}
-              onChange={(e) => setPrice(parseInt(`${ticketId}`), parseFloat(e.currentTarget.value))}
+              onChange={(value) => setPrice(parseInt(`${ticketId}`), parseFloat(value))}
             />
           </td>
           <td hidden={isComped}>
-            <input
+            <Input
               id={`serviceFee_${ticketId}`}
               key={`serviceFee_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               value={ticket.serviceFee?.toFixed(2)}
               type="number"
               step={0.25}
-              onChange={(e) => setServiceFee(parseInt(`${ticketId}`), parseFloat(e.currentTarget.value))}
+              onChange={(value) => setServiceFee(parseInt(`${ticketId}`), parseFloat(value))}
             />
           </td>
           <td hidden={isComped || (!hasChargebacks && !hasRefunds)}>
@@ -833,30 +829,30 @@ export default function AdminOrderEdit(props: EditProps) {
               id={`rcDate_${ticketId}`}
               key={`rcDate_${ticketId}`}
               format="M/d/yyyy"
-              onSelect={(newDate: Date | null) => setRefundOrChargebackDate(parseInt(`${ticketId}`), newDate)}
+              onSelect={(newDate: Date | null) =>
+                setRefundOrChargebackDate(parseInt(`${ticketId}`), newDate)
+              }
               value={refundDate}
               oneTap
               cleanable={false}
             />
           </td>
           <td style={{ textAlign: 'center' }} hidden={isComped}>
-            <input
+            <Checkbox
               id={`checkin_${ticketId}`}
               key={`checkin_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
-              type="checkbox"
               defaultChecked={ticket.isActive && ticket.isCheckedIn}
-              onClick={(e) => setTicketCheckInStatus(parseInt(`${ticketId}`), e.currentTarget.checked)}
+              onChange={(_, checked) => setTicketCheckInStatus(parseInt(`${ticketId}`), checked)}
             />
           </td>
           <td style={{ textAlign: 'center' }} hidden={isComped}>
-            <input
+            <Checkbox
               id={`active_${ticketId}`}
               key={`active_${ticketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
-              type="checkbox"
               defaultChecked={ticket.isActive}
-              onClick={(e) => setTicketActive(parseInt(`${ticketId}`), e.currentTarget.checked)}
+              onChange={(_, checked) => setTicketActive(parseInt(`${ticketId}`), checked)}
             />
           </td>
           <td hidden={isComped}>
@@ -895,201 +891,218 @@ export default function AdminOrderEdit(props: EditProps) {
 
   const actions = [
     {
-      label: "Check In",
-      value: "checkin"
+      label: 'Check In',
+      value: 'checkin',
     },
     {
-      label: "Undo check-in",
-      value: "checkout"
-    }
+      label: 'Undo check-in',
+      value: 'checkout',
+    },
   ];
 
-  const actionList: ItemDataType<string>[] = actions.map((action) => (
-    {
-      label: action.label,
-      value: action.value
-    }
-  ));
+  const actionList: ItemDataType<string>[] = actions.map((action) => ({
+    label: action.label,
+    value: action.value,
+  }));
 
   return (
-    <Col
-      className="admin-container"
-      hidden={currentAdminSelection.selectedOrder === undefined}
-    >
-      <Row>
-        <Col>
-          <h3>{pageHeader}</h3>
-        </Col>
-      </Row>
-      <Row className="form-group">
-        <Col className="form-header">
-          <span className="title">Event:</span> {currentAdminSelection.selectedOrder?.eventTitle}
-          <br />
-          <span className="title">Event Date:</span> {eventDate}
-          <br />
-        </Col>
-      </Row>
-      <Row className="form-group">
-        <Col className="form-header">
-          <span className="title">Purchase Date:</span> {purchaseDate}
-          <br />
-          <span className="title">Order Status:</span>{' '}
-          {getOrderStatusText(currentAdminSelection.selectedOrder)}
-          <br />
-          <span className="title">Purchaser Name:</span> {purchaserName}
-          <br />
-          <span className="title">Number Tickets Sold:</span> {currentAdminSelection.selectedOrder?.numTickets}
-          <br />
-          <div hidden={!currentAdminSelection.selectedOrder || currencyAbbrev === 'USD'}>
-            <span className="title">Exchange Rate:</span> {currentAdminSelection.selectedOrder?.exchangeRate}{' '}
-            <br />
-            <span className="title">Ticket Revenue {currencyAbbrev}:</span>{' '}
-            {(currentAdminSelection.selectedOrder?.revenue ?? 0).toFixed(2)} <br />
-            <span className="title">Service Fee Revenue {currencyAbbrev}:</span>{' '}
-            {(currentAdminSelection.selectedOrder?.serviceFees ?? 0).toFixed(2)} <br />
-          </div>
-          <span className="title">Ticket Revenue (USD):</span>{' '}
-          {(currentAdminSelection.selectedOrder?.revenueUsd ?? 0).toFixed(2)}
-          <br />
-          <span className="title">Service Fee Revenue (USD):</span>{' '}
-          {(currentAdminSelection.selectedOrder?.serviceFeesUsd ?? 0).toFixed(2)}
-          <br />
-        </Col>
-      </Row>
-      <Row
-        className="form-group"
-        hidden={
-          !currentAdminSelection.selectedOrder || !(currentAdminSelection.selectedOrder.hasRefunds || currentAdminSelection.selectedOrder.hasChargebacks)
-        }
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <Col
+        xs={24}
+        className="admin-container"
+        hidden={currentAdminSelection.selectedOrder === undefined}
       >
-        <Col className="form-header">
-          <span className="title">Number Tickets Refunded:</span>{' '}
-          {currentAdminSelection.selectedOrder?.numTicketsRefunded}
-          <br />
-          <div hidden={!currentAdminSelection.selectedOrder || currentAdminSelection.selectedOrder.currencyAbbrev === 'USD'}>
-            <span className="title">Ticket Revenue Refunded:</span>{' '}
-            {(currentAdminSelection.selectedOrder?.revenueRefunded ?? 0).toFixed(2)} <br />
-            <span className="title">Service Fee Revenue Refunded:</span>{' '}
-            {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefunded ?? 0).toFixed(2)} <br />
-          </div>
-          <span className="title">Ticket Revenue Refunded (USD):</span>{' '}
-          {(currentAdminSelection.selectedOrder?.revenueRefundedUsd ?? 0).toFixed(2)}
-          <br />
-          <span className="title">Service Fee Revenue Refunded (USD):</span>{' '}
-          {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefundedUsd ?? 0).toFixed(2)}
-          <br />
-        </Col>
-      </Row>
+        <Row>
+          <Col className="form-header">
+            <span className="title">Event:</span> {currentAdminSelection.selectedOrder?.eventTitle}
+            <br />
+            <span className="title">Event Date:</span> {eventDate}
+            <br />
+          </Col>
+        </Row>
+        <Row>
+          <Col className="form-header">
+            <span className="title">Purchase Date:</span> {purchaseDate}
+            <br />
+            <span className="title">Order Status:</span>{' '}
+            {getOrderStatusText(currentAdminSelection.selectedOrder)}
+            <br />
+            <span className="title">Purchaser Name:</span> {purchaserName}
+            <br />
+            <span className="title">Number Tickets Sold:</span>{' '}
+            {currentAdminSelection.selectedOrder?.numTickets}
+            <br />
+            <div hidden={!currentAdminSelection.selectedOrder || currencyAbbrev === 'USD'}>
+              <span className="title">Exchange Rate:</span>{' '}
+              {currentAdminSelection.selectedOrder?.exchangeRate} <br />
+              <span className="title">Ticket Revenue {currencyAbbrev}:</span>{' '}
+              {(currentAdminSelection.selectedOrder?.revenue ?? 0).toFixed(2)} <br />
+              <span className="title">Service Fee Revenue {currencyAbbrev}:</span>{' '}
+              {(currentAdminSelection.selectedOrder?.serviceFees ?? 0).toFixed(2)} <br />
+            </div>
+            <span className="title">Ticket Revenue (USD):</span>{' '}
+            {(currentAdminSelection.selectedOrder?.revenueUsd ?? 0).toFixed(2)}
+            <br />
+            <span className="title">Service Fee Revenue (USD):</span>{' '}
+            {(currentAdminSelection.selectedOrder?.serviceFeesUsd ?? 0).toFixed(2)}
+            <br />
+          </Col>
+        </Row>
+        <Row
+          hidden={
+            !currentAdminSelection.selectedOrder ||
+            !(
+              currentAdminSelection.selectedOrder.hasRefunds ||
+              currentAdminSelection.selectedOrder.hasChargebacks
+            )
+          }
+        >
+          <Col className="form-header">
+            <span className="title">Number Tickets Refunded:</span>{' '}
+            {currentAdminSelection.selectedOrder?.numTicketsRefunded}
+            <br />
+            <div
+              hidden={
+                !currentAdminSelection.selectedOrder ||
+                currentAdminSelection.selectedOrder.currencyAbbrev === 'USD'
+              }
+            >
+              <span className="title">Ticket Revenue Refunded:</span>{' '}
+              {(currentAdminSelection.selectedOrder?.revenueRefunded ?? 0).toFixed(2)} <br />
+              <span className="title">Service Fee Revenue Refunded:</span>{' '}
+              {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefunded ?? 0).toFixed(2)}{' '}
+              <br />
+            </div>
+            <span className="title">Ticket Revenue Refunded (USD):</span>{' '}
+            {(currentAdminSelection.selectedOrder?.revenueRefundedUsd ?? 0).toFixed(2)}
+            <br />
+            <span className="title">Service Fee Revenue Refunded (USD):</span>{' '}
+            {(currentAdminSelection.selectedOrder?.serviceFeeRevenueRefundedUsd ?? 0).toFixed(2)}
+            <br />
+          </Col>
+        </Row>
 
-      <Row className="form-group">
-        <Col>
-          <FormCheck
-            checked={isActive && !isDeleted}
-            disabled={isDeleted || isComped}
-            onChange={(e) => setIsActive(e.target.checked)}
-            label="Is Active?"
-          />
-          <FormCheck
-            checked={isDeleted}
-            disabled={isComped}
-            onChange={(e) => setIsDeleted(e.target.checked)}
-            label="Is Deleted?"
-          />
-          <FormCheck
-            checked={isComped}
-            onChange={(e) => setIsComped(e.target.checked)}
-            label="Is Comped?"
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <h5>Tickets</h5>
-        </Col>
-      </Row>
-      <Row hidden={allTicketIds.length === 0}>
-        <Col className="bulk-arrow-row">
-          <div><FaArrowTurnDown className="bulk-arrow" /></div>
-          <div>With selected:</div>
-          <div>
-            <SelectPicker
-              className="bulk-select"
-              value={selectedAction}
-              data={actionList}
-              size="lg"
-              onChange={(a) => setSelectedAction(a)}
-              cleanable={true}
-              menuAutoWidth={true}
-              onClean={() => setSelectedAction(null)}
-            />
-          </div>
-          <div>
-            <Button onClick={bulkEditConfirm}>Update</Button>
-          </div>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <table className="ticket-table">
-            <thead>
-              <tr>
-                <th>
-                  <FormCheck
-                    id={`tId_selectAll`}
-                    checked={allTicketIds.length > 0 && (ticketIdList.length === allTicketIds.length)}
-                    onChange={(e) => selectAllTickets(e.currentTarget.checked)}
-                  />
-                </th>
-                <th>Ticket Id</th>
-                <th>Attendee First Name</th>
-                <th>Attendee Last Name</th>
-                <th hidden={!isComped}>Attendee Phone</th>
-                <th hidden={!isComped}>Attendee Email</th>
-                <th>Shirt Size</th>
-                <th hidden={isComped}>Price</th>
-                <th hidden={isComped}>Service Fees</th>
-                <th hidden={isComped || (!hasChargebacks && !hasRefunds)}>{hasChargebacks ? "Chargeback Date" : "Refund Date"}</th>
-                <th hidden={isComped}>Checked-in</th>
-                <th hidden={isComped}>Active</th>
-                <th hidden={isComped}>&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody>{ticketRows}</tbody>
-          </table>
-        </Col>
-      </Row>
-      <Row className="refund-section-header" hidden={refundsDisabled || isComped}>
-        <Col>
-          <h5>Process Refunds</h5>
-        </Col>
-      </Row>
-      <Row className="refund-section" hidden={refundsDisabled || isComped}>
-        <Col>
-          <Button className="form-control-float" onClick={confirmDoRefund}>
-            Refund All Tickets
-          </Button>
-          <FormCheck
-            disabled={chargebackDisabled}
-            title={chargebackTitle}
-            className="form-control-float"
-            checked={markChargeback}
-            onChange={(e) => setMarkChargeback(e.target.checked)}
-            label="Mark as chargeback?"
-          />
-          <FormCheck
-            className="form-control-float"
-            checked={refundServiceFees}
-            onChange={(e) => setRefundServiceFees(e.target.checked)}
-            label="Refund service fees?"
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Button onClick={onSubmit}>Submit</Button>{' '}
-          <Button hidden={id !== undefined} onClick={confirmGoBack}>Back</Button>
-        </Col>
-      </Row>
-    </Col>
+        <Row>
+          <Col>
+            <Checkbox
+              checked={isActive && !isDeleted}
+              disabled={isDeleted || isComped}
+              onChange={(_, checked) => setIsActive(checked)}
+            >
+              Is Active?
+            </Checkbox>
+            <Checkbox
+              checked={isDeleted}
+              disabled={isComped}
+              onChange={(_, checked) => setIsDeleted(checked)}
+            >
+              Is Deleted?
+            </Checkbox>
+            <Checkbox checked={isComped} onChange={(_, checked) => setIsComped(checked)}>
+              Is Comped?
+            </Checkbox>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h5>Tickets</h5>
+          </Col>
+        </Row>
+        <Row hidden={allTicketIds.length === 0}>
+          <Col className="bulk-arrow-row">
+            <div>
+              <FaArrowTurnDown className="bulk-arrow" />
+            </div>
+            <div>With selected:</div>
+            <div>
+              <SelectPicker
+                className="bulk-select"
+                value={selectedAction}
+                data={actionList}
+                size="lg"
+                onChange={(a) => setSelectedAction(a)}
+                cleanable={true}
+                menuAutoWidth={true}
+                onClean={() => setSelectedAction(null)}
+              />
+            </div>
+            <div>
+              <Button onClick={bulkEditConfirm}>Update</Button>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <table className="ticket-table">
+              <thead>
+                <tr>
+                  <th>
+                    <Checkbox
+                      id={`tId_selectAll`}
+                      checked={
+                        allTicketIds.length > 0 && ticketIdList.length === allTicketIds.length
+                      }
+                      onChange={(_, checked) => selectAllTickets(checked)}
+                    />
+                  </th>
+                  <th>Ticket Id</th>
+                  <th>Attendee First Name</th>
+                  <th>Attendee Last Name</th>
+                  <th hidden={!isComped}>Attendee Phone</th>
+                  <th hidden={!isComped}>Attendee Email</th>
+                  <th>Shirt Size</th>
+                  <th hidden={isComped}>Price</th>
+                  <th hidden={isComped}>Service Fees</th>
+                  <th hidden={isComped || (!hasChargebacks && !hasRefunds)}>
+                    {hasChargebacks ? 'Chargeback Date' : 'Refund Date'}
+                  </th>
+                  <th hidden={isComped}>Checked-in</th>
+                  <th hidden={isComped}>Active</th>
+                  <th hidden={isComped}>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>{ticketRows}</tbody>
+            </table>
+          </Col>
+        </Row>
+        <Row className="refund-section-header" hidden={refundsDisabled || isComped}>
+          <Col>
+            <h5>Process Refunds</h5>
+          </Col>
+        </Row>
+        <Row className="refund-section" hidden={refundsDisabled || isComped}>
+          <Col>
+            <Button className="form-control-float" onClick={confirmDoRefund}>
+              Refund All Tickets
+            </Button>
+            <Checkbox
+              disabled={chargebackDisabled}
+              title={chargebackTitle}
+              className="form-control-float"
+              checked={markChargeback}
+              onChange={(_, checked) => setMarkChargeback(checked)}
+            >
+              Mark as chargeback?
+            </Checkbox>
+            <Checkbox
+              className="form-control-float"
+              checked={refundServiceFees}
+              onChange={(_, checked) => setRefundServiceFees(checked)}
+            >
+              Refund service fees?
+            </Checkbox>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button onClick={onSubmit}>Submit</Button>{' '}
+            <Button hidden={hasId} onClick={confirmGoBack}>
+              Back
+            </Button>
+          </Col>
+        </Row>
+      </Col>
+    </>
   );
 }

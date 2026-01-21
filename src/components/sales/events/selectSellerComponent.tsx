@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Col, Row, SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
-import type { RootState } from '../../../lib/store';
-import { SelectPicker } from 'rsuite';
-import { User } from '@/types/user';
+
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setSeller } from '@/lib/reportSelectionSlice';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { User } from '@/types/user';
+
+import type { RootState } from '../../../lib/store';
 
 export default function SelectSeller() {
   const dispatch = useDispatch();
@@ -45,12 +46,7 @@ export default function SelectSeller() {
       setUser(currentUser);
     }
 
-    if (
-      selectedSellerId <= 0 &&
-      user &&
-      user.selectedSellerId &&
-      user.selectedSellerId > 0
-    ) {
+    if (selectedSellerId <= 0 && user && user.selectedSellerId && user.selectedSellerId > 0) {
       const seller = getSelectedSeller(user.selectedSellerId);
       dispatch(setSeller(seller));
     }
@@ -61,45 +57,52 @@ export default function SelectSeller() {
     if (seller) {
       dispatch(setSeller(seller));
       dispatch(setIsLoading(true));
-    }    
+    }
   };
 
-  const userSellerList: ItemDataType<number>[] = user?.sellers ?
-        user.sellers.map((seller) => (
-          {
-            label: `${seller.sellerName}`,
-            value: seller.sellerId
-          }
-        )) : [];
+  const userSellerList: ItemDataType<number>[] = user?.sellers
+    ? user.sellers.map((seller) => ({
+        label: `${seller.sellerName}`,
+        value: seller.sellerId,
+      }))
+    : [];
 
   if (userSellerList.length > 0) {
     if (userSellerList.length > 1) {
       return (
         <Row className="no-print admin-seller-row">
-          <Col xs={1}>
+          <Col xs={2} className="admin-seller-title">
             Seller:
           </Col>
-          <Col sm={11} md={5}>     
+          <Col sm={22} md={10}>
             <SelectPicker
-                value={selectedSellerId}
-                data={userSellerList}
-                size="lg"        
-                onChange={(tId) => handleChange(tId)}
-                cleanable={false}
-                menuAutoWidth={true}
-                className="admin-seller-select-value"
-              />
-            </Col>
+              value={selectedSellerId}
+              data={userSellerList}
+              size="lg"
+              onChange={(tId) => handleChange(tId)}
+              cleanable={false}
+              menuAutoWidth={true}
+              className="admin-seller-select-value"
+            />
+          </Col>
         </Row>
       );
     } else if (user && user.sellers) {
-      const [ seller ] = user.sellers;
-      if (seller.sellerId !== selectedSellerId) {
+      const [seller] = user.sellers;
+      if (seller && seller.sellerId !== selectedSellerId) {
         dispatch(setSeller(seller));
       }
-      return <Row className="no-print admin-seller-row"><Col>{seller.sellerName}</Col></Row>;
+      return (
+        <Row className="no-print admin-seller-row">
+          <Col>{seller?.sellerName}</Col>
+        </Row>
+      );
     }
-  } else {
-    return <Row className="no-print admin-seller-row"><Col>No sellers returned</Col></Row>;
+    return <></>;
   }
+  return (
+    <Row className="no-print admin-seller-row">
+      <Col>No sellers returned</Col>
+    </Row>
+  );
 }

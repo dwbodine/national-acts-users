@@ -1,3 +1,5 @@
 #!/bin/bash
-npm run format
-npm run lint
+rm -rf tsconfig.tsbuildinfo
+yarn format
+yarn typecheck
+yarn lint

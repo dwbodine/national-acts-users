@@ -1,3 +1,8 @@
+import type { IconProps } from '@rsuite/icons/Icon';
+import { JSX, JSXElementConstructor, ReactElement } from 'react';
+
+import { SpeakerProps } from './props';
+
 export enum SiteSettingType {
   Image = 'Image',
   Number = 'Number',
@@ -26,6 +31,8 @@ export interface SiteSetting {
   dirty?: boolean;
 }
 
+export type SpeakerRenderFn = (props: SpeakerProps, ref: React.Ref<HTMLDivElement>) => JSX.Element;
+
 export interface FaqCategory {
   categoryId: number;
   categoryName?: string;
@@ -42,8 +49,6 @@ export interface Faq {
 export interface PageType {
   pageTypeId: number;
   pageTypeName: string;
-  pageTypeTemplate: string;
-  pageTypeComponent?: string;
 }
 
 export interface PageSeller {
@@ -93,4 +98,13 @@ export interface Page {
   pageOrder?: number;
   lastUpdate?: string;
   sellers?: PageSeller[];
+}
+
+export interface NavItemData {
+  eventKey: string;
+  title: string;
+  icon?: ReactElement<IconProps, string | JSXElementConstructor<unknown>>;
+  to?: string;
+  target?: string;
+  children?: NavItemData[];
 }

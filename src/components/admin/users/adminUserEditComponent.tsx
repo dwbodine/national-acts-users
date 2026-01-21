@@ -1,23 +1,38 @@
-"use client";
+'use client';
 
-import { Button, FormCheck } from 'react-bootstrap';
-import { GetRolesResponse, GetSellersResponse, UpdateUserResponse } from '@/types/responses';
-import { ReactElement, useCallback, useEffect, useState } from 'react';
-import { Role, User } from '@/types/user';
-import { Seller, SellerType } from '@/types/event';
-import { setReloadUsers, setSelectedUser } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { FaPlus } from 'react-icons/fa';
-import { RootState } from '@/lib/store';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
-import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { useRouter } from 'next/navigation';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { FaPlus } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Checkbox, Input } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
+import Textarea from '@/components/common/Textarea';
+import { useDeleteUser } from '@/hooks/admin/useDeleteUser';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
 import { useUpdateUser } from '@/hooks/admin/useUpdateUser';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
+import {
+  setCountries,
+  setReloadCountries,
+  setReloadUsers,
+  setSelectedUser,
+} from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { Seller, SellerType } from '@/types/event';
+import {
+  GetCountriesResponse,
+  GetRolesResponse,
+  GetSellersResponse,
+  UpdateUserResponse,
+} from '@/types/responses';
+import { Role, User, UserSeller } from '@/types/user';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminUserEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -26,6 +41,7 @@ export default function AdminUserEdit() {
   const { getAllRoles } = useGetAllRoles();
   const { updateUser } = useUpdateUser();
   const { deleteUser } = useDeleteUser();
+  const { getAllCountries } = useGetAllCountries();
   const [allSellers, setAllSellers] = useState<Seller[] | undefined>(undefined);
   const [allRoles, setAllRoles] = useState<Role[] | undefined>(undefined);
   const [username, setUsername] = useState<string | undefined>('');
@@ -47,11 +63,18 @@ export default function AdminUserEdit() {
   useEffect(() => {
     if (currentAdminSelection.selectedUser === undefined) {
       goBack();
-    } else if (
-      username === undefined ||
-      allSellers === undefined ||
-      allRoles === undefined
-    ) {
+    } else if (currentAdminSelection.reloadCountries) {
+      dispatch(setReloadCountries(false));
+      dispatch(setIsLoading(true));
+      void getAllCountries().then((response: GetCountriesResponse) => {
+        if (response.countries && !response.error) {
+          dispatch(setCountries(response.countries));
+        } else {
+          toast.error(response.error);
+          dispatch(setIsLoading(false));
+        }
+      });
+    } else if (username === undefined || allSellers === undefined || allRoles === undefined) {
       dispatch(setIsLoading(true));
       setUsername(currentAdminSelection.selectedUser.username ?? '');
       setFirstName(currentAdminSelection.selectedUser.firstName ?? '');
@@ -59,15 +82,13 @@ export default function AdminUserEdit() {
       setMobile(currentAdminSelection.selectedUser.mobile ?? '');
       setNotes(currentAdminSelection.selectedUser.notes ?? '');
       setIsActive(currentAdminSelection.selectedUser.isActive ?? false);
-      setRequireResetPassword(
-        currentAdminSelection.selectedUser.requireResetPassword ?? false,
-      );
+      setRequireResetPassword(currentAdminSelection.selectedUser.requireResetPassword ?? false);
       setSendEmailReset(currentAdminSelection.selectedUser.sendEmailReset ?? false);
       setSendTextReset(currentAdminSelection.selectedUser.sendTextReset ?? false);
       setDisableCheckIn(currentAdminSelection.selectedUser.disableCheckIn ?? false);
-      getSellers().then((response: GetSellersResponse) => {
+      void getSellers().then((response: GetSellersResponse) => {
         setAllSellers(response.sellers);
-        getAllRoles().then((resp: GetRolesResponse) => {
+        void getAllRoles().then((resp: GetRolesResponse) => {
           const roles = resp.roles?.filter((x) => x.roleId !== 1);
           setAllRoles(roles);
           dispatch(setIsLoading(false));
@@ -82,7 +103,7 @@ export default function AdminUserEdit() {
     allRoles,
     getAllRoles,
     dispatch,
-    goBack
+    goBack,
   ]);
 
   const updateSeller = (sellerId: number, newSellerId: number | null) => {
@@ -95,8 +116,8 @@ export default function AdminUserEdit() {
       const newSeller = allSellers?.find((x) => x.sellerId === newSellerId);
       if (newSeller) {
         for (let i = 0; i < userSellers.length; i += 1) {
-          if (userSellers[i].sellerId === sellerId) {
-            const userSeller = { ...userSellers[i] };
+          const userSeller = { ...userSellers[i] } as UserSeller;
+          if (userSeller?.sellerId === sellerId) {
             userSeller.sellerId = newSellerId;
             userSeller.sellerName = newSeller.name;
             userSeller.sellerType = newSeller.sellerType;
@@ -176,7 +197,7 @@ export default function AdminUserEdit() {
 
     const { userId } = currentAdminSelection.selectedUser;
 
-    deleteUser(userId).then((response: UpdateUserResponse) => {
+    void deleteUser(userId).then((response: UpdateUserResponse) => {
       if (response.success) {
         dispatch(setReloadUsers(true));
         toast.success('User deleted successfully');
@@ -192,8 +213,7 @@ export default function AdminUserEdit() {
       return;
     }
 
-    const message: string =
-      'Are you sure you want to delete this user?';
+    const message: string = 'Are you sure you want to delete this user?';
     toast.warning(
       <ConfirmationDialog
         Message={message}
@@ -210,7 +230,7 @@ export default function AdminUserEdit() {
         position: 'top-center',
       },
     );
-  }
+  };
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedUser) {
@@ -218,12 +238,12 @@ export default function AdminUserEdit() {
     }
 
     if (!firstName) {
-      toast.warn("First name cannot be blank");
+      toast.warn('First name cannot be blank');
       return;
     }
 
     if (!lastName) {
-      toast.warn("Last name cannot be blank");
+      toast.warn('Last name cannot be blank');
       return;
     }
 
@@ -250,7 +270,7 @@ export default function AdminUserEdit() {
     }
 
     dispatch(setIsLoading(true));
-    updateUser(userToUpdate).then((response: UpdateUserResponse) => {
+    void updateUser(userToUpdate).then((response: UpdateUserResponse) => {
       if (response.success) {
         dispatch(setReloadUsers(true));
         toast.success('User updated successfully');
@@ -281,20 +301,19 @@ export default function AdminUserEdit() {
           Roles={allRoles}
           SellerId={item.sellerId}
           RoleId={item.roleId}
-          OnSellerChange={(newSellerId: number | null) => updateSeller(parseInt(`${item.sellerId}`), newSellerId)}
-          OnRoleChange={(newRoleId: number | null) => updateRole(parseInt(`${item.sellerId}`), newRoleId)}
+          OnSellerChange={(newSellerId: number | null) =>
+            updateSeller(parseInt(`${item.sellerId}`), newSellerId)
+          }
+          OnRoleChange={(newRoleId: number | null) =>
+            updateRole(parseInt(`${item.sellerId}`), newRoleId)
+          }
           OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
           Countries={currentAdminSelection.countries}
         />,
       );
     });
     sellerRows.push(
-      <div
-        title="Add Seller"
-        key="addSeller"
-        className="admin-click-cell"
-        onClick={addSeller}
-      >
+      <div title="Add Seller" key="addSeller" className="admin-click-cell" onClick={addSeller}>
         <FaPlus></FaPlus> Add Seller
       </div>,
     );
@@ -302,84 +321,82 @@ export default function AdminUserEdit() {
 
   return currentAdminSelection.selectedUser &&
     (sellerRows !== null || currentAdminSelection.selectedUser.isAdmin) ? (
-    <div className="admin-container">
-      <h1>Edit User</h1>
-      <div className="form-group">
-        <label className="mt-4">Username: {username}</label>
+    <>
+      <PageHeader pageTitle="Edit User" />
+      <div className="admin-container">
+        <div className="admin-user-row">
+          <span>Username: {username}</span>
+        </div>
+        <div className="admin-user-row">
+          <span>First Name</span>
+          <Input
+            value={firstName ?? ''}
+            onChange={setFirstName}
+            className="form-control-half"
+            placeholder="first name"
+          />
+        </div>
+        <div className="admin-user-row">
+          <span>Last Name</span>
+          <Input
+            value={lastName ?? ''}
+            onChange={setLastName}
+            className="form-control-half"
+            placeholder="last name"
+          />
+        </div>
+        <div className="admin-user-row">
+          <span>Mobile number</span>
+          <Input
+            value={mobile ?? ''}
+            onChange={setMobile}
+            className="form-control-half"
+            placeholder="mobile number"
+          />
+        </div>
+        <div className="admin-user-row">
+          <Checkbox checked={isActive} onChange={(_, checked) => setIsActive(checked)}>
+            Is Active?
+          </Checkbox>
+          <Checkbox
+            checked={requireResetPassword}
+            onChange={(_, checked) => setRequireResetPassword(checked)}
+          >
+            Require Reset Password?
+          </Checkbox>
+          <Checkbox checked={sendEmailReset} onChange={(_, checked) => setSendEmailReset(checked)}>
+            Send Password Reset by Email?
+          </Checkbox>
+          <Checkbox checked={sendTextReset} onChange={(_, checked) => setSendTextReset(checked)}>
+            Send Password Reset by Text?
+          </Checkbox>
+          <Checkbox checked={disableCheckIn} onChange={(_, checked) => setDisableCheckIn(checked)}>
+            Disable check-in permission?
+          </Checkbox>
+        </div>
+        <div hidden={currentAdminSelection.selectedUser.isAdmin} className="admin-user-row">
+          <span>Sellers:</span>
+          {sellerRows}
+        </div>
+        <div className="admin-user-row">
+          <span>Notes:</span>
+          <Textarea
+            className="form-control-half"
+            rows={3}
+            id="userNotes"
+            onChange={(e) => setNotes(e)}
+            value={notes ?? ''}
+          />
+        </div>
+        <div className="admin-button-group">
+          <Button onClick={onSubmit}>Submit</Button>{' '}
+          <Button onClick={confirmDeleteUser}>Delete User</Button>
+        </div>
+        <div className="admin-button-group">
+          <Button onClick={goBack}>Back</Button>
+        </div>
       </div>
-      <div className="form-group">
-        <label className="mt-4">First Name</label>
-        <input
-          value={firstName ?? ''}
-          onChange={(e) => setFirstName(e.target.value)}
-          className="form-control"
-          placeholder="first name"
-          type="text"
-        />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Last Name</label>
-        <input
-          value={lastName ?? ''}
-          onChange={(e) => setLastName(e.target.value)}
-          className="form-control"
-          placeholder="last name"
-          type="text"
-        />
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Mobile number</label>
-        <input
-          value={mobile ?? ''}
-          onChange={(e) => setMobile(e.target.value)}
-          className="form-control"
-          placeholder="mobile number"
-          type="text"
-        />
-      </div>
-      <div className="form-group">
-        <FormCheck
-          checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
-          label="Is Active?"
-        />
-        <FormCheck
-          checked={requireResetPassword}
-          onChange={(e) => setRequireResetPassword(e.target.checked)}
-          label="Require Reset Password?"
-        />
-        <FormCheck
-          checked={sendEmailReset}
-          onChange={(e) => setSendEmailReset(e.target.checked)}
-          label="Send Password Reset by Email?"
-        />
-        <FormCheck
-          checked={sendTextReset}
-          onChange={(e) => setSendTextReset(e.target.checked)}
-          label="Send Password Reset by Text?"
-        />
-        <FormCheck
-          checked={disableCheckIn}
-          onChange={(e) => setDisableCheckIn(e.target.checked)}
-          label="Disable check-in permission?"
-        />
-      </div>
-      <div className="form-group" hidden={currentAdminSelection.selectedUser.isAdmin}>
-        <label className="mt-4">Sellers:</label>
-        {sellerRows}
-      </div>
-      <div className="form-group">
-        <label className="mt-4">Notes:</label>
-        <textarea onChange={(e) => setNotes(e.target.value)} value={notes ?? ''} />
-      </div>
-      <div className="admin-button-group">
-        <Button onClick={onSubmit}>Submit</Button>{' '}
-        <Button onClick={confirmDeleteUser}>Delete User</Button>
-      </div>
-      <div className="admin-button-group">
-        <Button onClick={goBack}>Back</Button>
-      </div>
-    </div>
+    </>
   ) : (
     ''
   );

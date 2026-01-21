@@ -1,14 +1,16 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import { ForgotPasswordMode } from '@/types/user';
-import { UserResponse } from '@/types/responses';
+import { Button, Col, Input, Row } from 'rsuite';
+import Container from 'rsuite/Container';
+
 import { useForgotPassword } from '@/hooks/user/useForgotPassword';
 import { useResetPassword } from '@/hooks/user/useResetPassword';
-import { useRouter } from 'next/navigation';
 import { useValidateResetCode } from '@/hooks/user/useValidateResetCode';
+import { UserResponse } from '@/types/responses';
+import { ForgotPasswordMode } from '@/types/user';
 
 export default function ForgotPasswordComponent() {
   const [mode, setMode] = useState(ForgotPasswordMode.SendPasswordReset);
@@ -73,9 +75,7 @@ export default function ForgotPasswordComponent() {
         }
       })
       .catch(() => {
-        setResetError(
-          'Unknown error while validating code - please contact your administrator',
-        );
+        setResetError('Unknown error while validating code - please contact your administrator');
       });
   };
 
@@ -106,9 +106,7 @@ export default function ForgotPasswordComponent() {
         }
       })
       .catch(() => {
-        setResetError(
-          'Unknown error while resetting password - please contact your administrator',
-        );
+        setResetError('Unknown error while resetting password - please contact your administrator');
       });
   };
 
@@ -127,26 +125,38 @@ export default function ForgotPasswordComponent() {
       return (
         <Container className="wrapper">
           <Row>
-            <Col>
+            <Col className="auth-logo-container">
+              <Image
+                className="auth-logo"
+                src="/images/logo-new.png"
+                alt="National Acts Client Portal"
+                title="National Acts Client Portal"
+                width={300}
+                height={231}
+                priority
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col className="auth-title-container">
               <h2>Enter Security Code</h2>
               <p className="danger">
                 Please leave this window open while you wait for an email to be sent
               </p>
               <p>
-                If you have a valid email in our system, a six-digit security code has
-                been sent to you, please enter it here:
+                If you have a valid email in our system, a six-digit security code has been sent to
+                you, please enter it here:
               </p>
             </Col>
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
-                <label>Code:</label>
-                <input
+              <div className="auth-control-container">
+                <span>Code:</span>
+                <Input
                   type="number"
                   value={code}
-                  onChange={(e) => setCode(parseInt(e.target.value))}
-                  className="form-control"
+                  onChange={(value) => setCode(parseInt(value))}
                   autoComplete="off"
                 />
               </div>
@@ -154,16 +164,12 @@ export default function ForgotPasswordComponent() {
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
+              <div className="auth-button-container">
                 <Button onClick={onValidateCode}>Validate</Button>
                 <Button onClick={onBack}>Back</Button>
-                {resetError ? (
-                  <div className="h-fit flex flex-row gap-2 items-center justify-center danger">
-                    {resetError}
-                  </div>
-                ) : (
-                  ''
-                )}
+              </div>
+              <div className="auth-control-container">
+                {resetError ? <div className="danger">{resetError}</div> : ''}
               </div>
             </Col>
           </Row>
@@ -174,20 +180,32 @@ export default function ForgotPasswordComponent() {
       return (
         <Container className="wrapper">
           <Row>
-            <Col>
+            <Col className="auth-logo-container">
+              <Image
+                className="auth-logo"
+                src="/images/logo-new.png"
+                alt="National Acts Client Portal"
+                title="National Acts Client Portal"
+                width={300}
+                height={231}
+                priority
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col className="auth-title-container">
               <h2>Reset Password</h2>
               <p>Please fill out this form to reset your password.</p>
             </Col>
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
-                <label>New Password:</label>
-                <input
+              <div className="auth-control-container">
+                <span>New Password:</span>
+                <Input
                   type="password"
                   value={password ?? ''}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="form-control"
+                  onChange={setPassword}
                   autoComplete="off"
                 />
               </div>
@@ -195,13 +213,12 @@ export default function ForgotPasswordComponent() {
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
-                <label>Confirm Password:</label>
-                <input
+              <div className="auth-control-container">
+                <span>Confirm Password:</span>
+                <Input
                   type="password"
                   value={confirmPassword ?? ''}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="form-control"
+                  onChange={setConfirmPassword}
                   autoComplete="off"
                 />
               </div>
@@ -209,23 +226,13 @@ export default function ForgotPasswordComponent() {
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
+              <div className="auth-button-container">
                 <Button onClick={onResetPassword}>Reset</Button>
                 <Button onClick={onBack}>Back</Button>
-                {resetError ? (
-                  <div className="h-fit flex flex-row gap-2 items-center justify-center danger">
-                    {resetError}
-                  </div>
-                ) : (
-                  ''
-                )}
-                {resetSuccess ? (
-                  <div className="h-fit flex flex-row gap-2 items-center justify-center success">
-                    {resetSuccess}
-                  </div>
-                ) : (
-                  ''
-                )}
+              </div>
+              <div className="auth-control-container">
+                {resetError ? <div className="danger">{resetError}</div> : ''}
+                {resetSuccess ? <div className="success">{resetSuccess}</div> : ''}
               </div>
             </Col>
           </Row>
@@ -236,20 +243,31 @@ export default function ForgotPasswordComponent() {
       return (
         <Container className="wrapper">
           <Row>
-            <Col>
+            <Col className="auth-logo-container">
+              <Image
+                className="auth-logo"
+                src="/images/logo-new.png"
+                alt="National Acts Client Portal"
+                title="National Acts Client Portal"
+                width={300}
+                height={231}
+                priority
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col className="auth-title-container">
               <h2>Forgot Password</h2>
               <p>Please enter your username/email address.</p>
             </Col>
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
-                <label>Username:</label>
-                <input
-                  type="text"
+              <div className="auth-control-container">
+                <span>Username:</span>
+                <Input
                   value={username ?? ''}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="form-control"
+                  onChange={setUsername}
                   placeholder="Please enter email address"
                 />
               </div>
@@ -257,16 +275,12 @@ export default function ForgotPasswordComponent() {
           </Row>
           <Row>
             <Col>
-              <div className="form-group">
+              <div className="auth-button-container">
                 <Button onClick={onForgotPassword}>Send</Button>
                 <Button onClick={onBack}>Back</Button>
-                {resetError ? (
-                  <div className="h-fit flex flex-row gap-2 items-center justify-center danger">
-                    {resetError}
-                  </div>
-                ) : (
-                  ''
-                )}
+              </div>
+              <div className="auth-control-container">
+                {resetError ? <div className="danger">{resetError}</div> : ''}
               </div>
             </Col>
           </Row>

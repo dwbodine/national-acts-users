@@ -1,5 +1,5 @@
-import { UserActivityType } from '@/types/user';
 import { userService } from '@/services';
+import { UserActivityType } from '@/types/user';
 
 export const useLogActivityData = () => {
   const logActivityData = async (
@@ -7,7 +7,7 @@ export const useLogActivityData = () => {
     activityData: string | undefined = undefined,
     token: string | undefined = undefined,
   ) => {
-    if (activityType <= 0) {
+    if (Number(activityType) <= 0) {
       return false;
     }
     const response = await userService.logUserActivity(activityType, activityData, token);

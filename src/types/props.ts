@@ -1,18 +1,9 @@
-import { ActivePageKey, ImageType } from '@/constants';
-import { Country, PageSeller } from './public';
+import { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
+import { CellProps } from 'rsuite';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import { Dispatch, JSX, ReactElement, SetStateAction } from 'react';
-import {
-  IAverageDailyData,
-  IDashboardData,
-  IDashboardTotals,
-  ISalesData,
-  ITopSeller,
-  ITopSellingLocation,
-  Role,
-  UserActivityType,
-  UserSeller,
-} from './user';
+
+import { ImageType } from '@/constants';
+
 import {
   IShirtData,
   ITicketData,
@@ -26,7 +17,17 @@ import {
   TicketType,
   VipEvent,
 } from './event';
-import { CellProps } from 'rsuite';
+import { Country, NavItemData, PageSeller } from './public';
+import {
+  IAverageDailyData,
+  IDashboardData,
+  IDashboardTotals,
+  ISalesData,
+  ITopSeller,
+  ITopSellingLocation,
+  Role,
+  UserActivityType,
+} from './user';
 
 export interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -75,27 +76,9 @@ export interface AdminSellerSelectProps {
 }
 
 export interface AdminPageProps {
-  ActiveKey: ActivePageKey;
   Title: string;
   UserActivity?: UserActivityType;
-  DashboardComponent?: JSX.Element;
-  EventsComponent?: JSX.Element;
-  SalesComponent?: JSX.Element;
-  AdminComponent?: JSX.Element;
-  ReportComponent?: JSX.Element;
-  UsersComponent?: JSX.Element;
-}
-
-export interface AdminTabsProps {
-  ActiveKey: ActivePageKey;
-  IsLoading: boolean;
-  NotAdmin: boolean;
-  DashboardComponent?: JSX.Element;
-  EventsComponent?: JSX.Element;
-  SalesComponent?: JSX.Element;
-  AdminComponent?: JSX.Element;
-  ReportComponent?: JSX.Element;
-  UsersComponent?: JSX.Element;
+  children: ReactNode;
 }
 
 export interface ConfirmationDialogProps {
@@ -112,6 +95,7 @@ export interface DateRangeProp {
 }
 
 export interface DateRangeSelectorProps {
+  Hidden?: boolean;
   DateRangeTitle?: string;
   SelectedStart?: number;
   SelectedEnd?: number;
@@ -352,6 +336,13 @@ export interface OrderRowProps {
   IsAdmin?: boolean;
 }
 
+export interface SpeakerProps {
+  onClose: () => void;
+  left?: number;
+  top?: number;
+  className?: string;
+}
+
 export interface CustomToolTipParamsPayload {
   value?: string;
 }
@@ -364,7 +355,6 @@ export interface CustomToolTipParams {
 
 export interface VIPModalProps {
   IsOpen?: boolean;
-  Seller?: UserSeller;
   SellerHomePage?: string;
   Events?: VipEvent[];
   IsAdmin?: boolean;
@@ -373,4 +363,56 @@ export interface VIPModalProps {
 
 export interface VipHtmlProps {
   PdfHtml?: string;
+}
+
+export interface FrameProps {
+  children?: React.ReactNode;
+}
+
+export interface LogoProps {
+  width?: number;
+  height?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  expanded: boolean;
+}
+
+export interface PageHeaderProps {
+  pageTitle: string;
+  showDateRange?: boolean;
+  showExport?: boolean;
+  showDatePicker?: boolean;
+  dateRangeTitle?: string;
+  dateRangeStart?: number;
+  dateRangeEnd?: number;
+  dateRanges?: RangeType<DateRange>[];
+  dateRangeDisabled?: boolean;
+  exportButtonText?: string;
+  exportButtonDisabled?: boolean;
+  datePickerTitle?: string;
+  datePickerStart?: Date | null | undefined;
+  onExport?: () => void;
+  onDateRangeChange?: (selectedStart: number, selectedEnd: number) => void;
+  onDatePickerChange?: (date: Date) => void;
+}
+
+export interface ResponsiveFrameProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Brand: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Content: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Header: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  NavToggle: any;
+  navs?: NavItemData[];
+  children?: React.ReactNode;
+  IsLoading: boolean;
+  IsAdmin?: boolean;
+}
+
+export interface RenderNavProps {
+  isMobile?: boolean;
+  navs?: NavItemData[];
+  onItemClick?: () => void;
 }

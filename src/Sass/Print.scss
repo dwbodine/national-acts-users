@@ -1,0 +1,39 @@
+@use 'variables' as v;
+
+@media print {
+  .no-print,
+  .rs-nav-item,
+  .rs-nav-bar {
+    display: none !important;
+  }
+
+  .vipDetailsTable {
+    margin: 10px 5px;
+  }
+
+  .attendee,
+  .attendee-check,
+  .attendee-check-highlight,
+  .attendee-highlight {
+    font-weight: normal;
+  }
+
+  .attendee-highlight,
+  .attendee-check-highlight {
+    text-shadow: unset;
+    cursor: unset;
+    margin: 0 0 5px 0;
+  }
+
+  .check-out-show,
+  .check-in-show {
+    display: none;
+  }
+
+  .pdf-container,
+  .pdf-header,
+  .pdf-body {
+    margin: 0;
+    padding: 0;
+  }
+}

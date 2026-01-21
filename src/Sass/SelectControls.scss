@@ -1,0 +1,28 @@
+@use 'variables' as v;
+
+.admin-seller-row,
+.admin-tour-row {
+  display: flex;
+  align-items: center;
+  margin: 0 0 10px 15px !important;
+}
+
+.admin-seller-title,
+.admin-tour-select-title {
+  display: flex;
+  font-family: v.$control-title-font-family;
+}
+
+.admin-seller-select-value {
+  display: flex;
+  flex-direction: row;
+  font-family: v.$control-title-font-family;
+}
+
+@media (max-width: 576px) {
+  .admin-seller-title,
+  .admin-tour-select-title {
+    width: 100px !important;
+    margin: 0 5px;
+  }
+}

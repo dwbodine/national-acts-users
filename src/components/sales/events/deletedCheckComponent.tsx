@@ -1,29 +1,31 @@
-"use client";
+'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { ChangeEvent } from 'react';
-import { FormCheck } from 'react-bootstrap';
-import type { RootState } from '../../../lib/store';
+import { Checkbox } from 'rsuite';
+
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setShowDeleted } from '@/lib/reportSelectionSlice';
+
+import type { RootState } from '../../../lib/store';
 
 export default function DeletedCheck() {
   const dispatch = useDispatch();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setShowDeleted(event.target.checked));
+  const handleChange = (checked: boolean) => {
+    dispatch(setShowDeleted(checked));
     dispatch(setIsLoading(true));
   };
 
   return (
     <span className="deleted-check">
-      <FormCheck
+      <Checkbox
         checked={currentReportSelection.showDeleted}
-        onChange={handleChange}
+        onChange={(_, checked) => handleChange(checked)}
         disabled={currentReportSelection.seller.sellerId <= 0}
-        label="Show deleted events?"
-      />
+      >
+        Show deleted events?
+      </Checkbox>
     </span>
   );
 }

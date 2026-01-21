@@ -1,10 +1,12 @@
-"use client";
+'use client';
 
-import React, { ReactElement } from 'react';
-import { formatCurrencyAmount, getOrderStatusText } from '@/utils/eventUtils';
-import AttendeeRow from './attendeeRowComponent';
-import { OrderRowProps } from '@/types/props';
 import moment from 'moment';
+import { ReactElement } from 'react';
+
+import { OrderRowProps } from '@/types/props';
+import { formatCurrencyAmount, getOrderStatusText } from '@/utils/eventUtils';
+
+import AttendeeRow from './attendeeRowComponent';
 
 export default function OrderRow(props: OrderRowProps) {
   const ticketTypes = props.TicketTypes;
@@ -12,7 +14,7 @@ export default function OrderRow(props: OrderRowProps) {
   const eventName = props.EventName;
   const order = props.Order;
   const hasPhoneData = props.HasPhoneData;
-  const hasShirtData = ((order?.totalShirts ?? 0) > 0);
+  const hasShirtData = (order?.totalShirts ?? 0) > 0;
   const hideRev = props.HideRevenue;
   const hideServiceFees = props.HideServiceFees;
   const canCheckInTickets = props.CanCheckInTickets;
@@ -32,14 +34,18 @@ export default function OrderRow(props: OrderRowProps) {
   const orderStatus = getOrderStatusText(order);
   const orderId = order?.orderId;
 
-  const currencySymbol = order?.currencySymbol ?? "$";
+  const currencySymbol = order?.currencySymbol ?? '$';
   const exchangeRate = order?.exchangeRate ?? 1;
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
-  const purchaseDate = order?.purchaseTimestamp ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT') : 'n/a';
+  const purchaseDate = order?.purchaseTimestamp
+    ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT')
+    : 'n/a';
   const revenue = Number((order?.revenue ?? 0) - (order?.revenueRefunded ?? 0));
   const revenueUsd = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0));
   const serviceFees = Number((order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0));
-  const serviceFeesUsd = Number((order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0));
+  const serviceFeesUsd = Number(
+    (order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0),
+  );
 
   const ticketTypeRows: ReactElement[] = [];
 
@@ -47,7 +53,7 @@ export default function OrderRow(props: OrderRowProps) {
     const ticketMap = new Map<string, number>();
     order.tickets?.forEach((ticket) => {
       let ticketTypeName = ticket.ticketType;
-      const ticketType = ticketTypes?.find(t => t.ticketTypeId === ticket.ticketTypeId);
+      const ticketType = ticketTypes?.find((t) => t.ticketTypeId === ticket.ticketTypeId);
       if (ticketType) {
         ({ ticketTypeName } = ticketType);
       }
@@ -106,8 +112,7 @@ export default function OrderRow(props: OrderRowProps) {
     });
   }
 
-  const phone = order?.phone?.startsWith("+1 ") ?
-    order.phone.replace("+1 ", "") : order?.phone;
+  const phone = order?.phone?.startsWith('+1 ') ? order.phone.replace('+1 ', '') : order?.phone;
 
   const revClass = hideRev ? 'no-print' : '';
 
@@ -115,7 +120,9 @@ export default function OrderRow(props: OrderRowProps) {
     <tr className={statusClass}>
       <td hidden={showOnlyEmails || showOnlyPhones}>{purchaserName}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{attendeeNameRows}</td>
-      <td hidden={showOnlyEmails || showOnlyPhones} className="purchase-date no-print">{purchaseDate}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones} className="purchase-date no-print">
+        {purchaseDate}
+      </td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{orderId}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{orderStatus}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{moment(eventDate).format('MM/DD/YYYY')}</td>
@@ -125,10 +132,15 @@ export default function OrderRow(props: OrderRowProps) {
       <td className={`pull-right ${revClass}`} hidden={hideRev || showOnlyEmails || showOnlyPhones}>
         {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
-      <td className="pull-right no-print" hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}>
+      <td
+        className="pull-right no-print"
+        hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}
+      >
         {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
-      <td hidden={showOnlyPhones} className="email">{order?.email}</td>
+      <td hidden={showOnlyPhones} className="email">
+        {order?.email}
+      </td>
       {hasPhoneData && !showOnlyEmails ? <td>{phone}</td> : ''}
       {hasShirtData && !(showOnlyEmails || showOnlyPhones) ? <td>{shirtSizeRows}</td> : ''}
     </tr>

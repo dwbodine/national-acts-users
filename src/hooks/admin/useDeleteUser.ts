@@ -1,4 +1,5 @@
 import { UpdateUserResponse } from '@/types/responses';
+
 import { userService } from '../../services';
 
 export const useDeleteUser = () => {

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { formatCurrencyAmount, getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
-import { EventRowProps } from '@/types/props';
-import React from 'react';
 import moment from 'moment';
+
 import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { EventRowProps } from '@/types/props';
+import { formatCurrencyAmount, getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 
 export default function EventRow(props: EventRowProps) {
   const vipEvent = props.VipEvent;
@@ -22,20 +22,24 @@ export default function EventRow(props: EventRowProps) {
     location = getLocation(vipEvent.venue);
   }
 
-  const currencySymbol = vipEvent.nonUsaCurrencySymbol ?? "$";
-  const exchangeRate = currencySymbol === "$" ? 1 : 0;
+  const currencySymbol = vipEvent.nonUsaCurrencySymbol ?? '$';
+  const exchangeRate = currencySymbol === '$' ? 1 : 0;
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
   const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0));
   const revenueUsd = Number((vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0));
-  const serviceFees = Number((vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0));
-  const serviceFeesUsd = Number((vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0));
+  const serviceFees = Number(
+    (vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0),
+  );
+  const serviceFeesUsd = Number(
+    (vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0),
+  );
   const url = `/event/?id=${vipEvent.externalEventId}`;
 
   const statusSlug = getEventStatusSlug(vipEvent);
   const statusText = getEventStatusText(vipEvent);
   let statusClass = '';
   if (statusSlug !== 'active') {
-    statusClass = `event-${statusSlug}`
+    statusClass = `event-${statusSlug}`;
   }
 
   const revClass = hideRevItem ? 'pull-right no-print' : 'pull-right';
@@ -44,21 +48,20 @@ export default function EventRow(props: EventRowProps) {
     <tr className={statusClass} id={id}>
       <td>{eventDate}</td>
       <td>
-        {(vipEvent.orders?.length ?? 0) > 0 ?
+        {(vipEvent.orders?.length ?? 0) > 0 ? (
           <a href={url} target="_blank">
             {vipEvent.title}
           </a>
-        :
-        vipEvent.title
-        }
-        
+        ) : (
+          vipEvent.title
+        )}
       </td>
       <td>{venueName}</td>
       <td>{location}</td>
       <td>{statusText}</td>
       <td className="pull-right">{vipEvent.totalTickets}</td>
-      <td className="pull-right">{(vipEvent.numTicketsRefunded ?? 0)}</td>
-      <td className="pull-right">{(vipEvent.numTicketsComped ?? 0)}</td>
+      <td className="pull-right">{vipEvent.numTicketsRefunded ?? 0}</td>
+      <td className="pull-right">{vipEvent.numTicketsComped ?? 0}</td>
       <td className={revClass} hidden={hideRevItem}>
         {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
@@ -66,7 +69,9 @@ export default function EventRow(props: EventRowProps) {
         {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td hidden={!showNotes}>
-        <a onClick={() => showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null}>Notes</a>
+        <a onClick={() => (showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null)}>
+          Notes
+        </a>
       </td>
     </tr>
   );

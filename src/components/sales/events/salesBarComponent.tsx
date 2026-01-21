@@ -1,40 +1,41 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
-import { exportCustomerDataToCsv, exportEventsToCsv } from '@/utils/eventUtils';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Col, Row, SelectPicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
+import { useWindowSize } from '@/hooks/common/useWindowSize';
+import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
+import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { useHasPermission } from '@/hooks/user/useHasPermission';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
 import {
   resetSelection,
   setDateRange,
   setReloadEvents,
   setSelectedTourId,
 } from '@/lib/reportSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import DateRangeSelector from '../../common/dateRangeSelectorComponent';
-import DeletedCheck from './deletedCheckComponent';
-import { EnumPermission } from '@/types/user';
 import { GetEventsResponse } from '@/types/responses';
-import HiddenCheck from './hiddenCheckComponent';
-import InactiveCheck from './inactiveCheckComponent';
-import { ItemDataType } from 'rsuite/esm/internals/types';
+import { EnumPermission } from '@/types/user';
+import { downloadCsvFile } from '@/utils/downloadFile';
+import { exportCustomerDataToCsv, exportEventsToCsv } from '@/utils/eventUtils';
+import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReportSelection';
+
+import type { RootState } from '../../../lib/store';
 import PrintButton from '../../common/printButtonComponent';
 import ResetButton from '../../common/resetButtonComponent';
+import DeletedCheck from './deletedCheckComponent';
+import HiddenCheck from './hiddenCheckComponent';
+import InactiveCheck from './inactiveCheckComponent';
 import RevenueCheck from './revenueCheckComponent';
-import type { RootState } from '../../../lib/store';
-import { SelectPicker } from 'rsuite';
 import SelectSeller from './selectSellerComponent';
 import ServiceFeesCheck from './serviceFeesCheckComponent';
 import VIPItineraryModal from './vipItineraryModalComponent';
-import { downloadCsvFile } from '@/utils/downloadFile';
-import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReportSelection';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { useGetAllEvents } from '@/hooks/event/useGetAllEvents';
-import { useHasPermission } from '@/hooks/user/useHasPermission';
-import { useWindowSize } from '@/hooks/common/useWindowSize';
 
 export default function SalesBar() {
-  const webBaseUrl = `${process.env.NEXT_PUBLIC_WWW_URL}/`;
+  const webBaseUrl = `${process.env['NEXT_PUBLIC_WWW_URL']}/`;
   const dispatch = useDispatch();
   const { getUser } = useCurrentUser();
   const windowSize = useWindowSize();
@@ -71,18 +72,12 @@ export default function SalesBar() {
       currentReportSelection.seller.sellerId > 0
     ) {
       dispatch(setIsLoading(true));
-      getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
+      void getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
         (response: GetEventsResponse) => {
           if (response && !response.error && response.events !== undefined) {
-            const showServiceFees =
-              viewServiceFees && !currentReportSelection.hideServiceFees;
-            const showRevenueData =
-              viewRevenueData && !currentReportSelection.hideRevenue;
-            const csvData = exportEventsToCsv(
-              response.events,
-              showServiceFees,
-              showRevenueData,
-            );
+            const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
+            const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
+            const csvData = exportEventsToCsv(response.events, showServiceFees, showRevenueData);
             const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
             downloadCsvFile(fileName, csvData);
           }
@@ -101,16 +96,13 @@ export default function SalesBar() {
       currentReportSelection.seller.sellerId > 0
     ) {
       dispatch(setIsLoading(true));
-      getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
+      void getAllEvents(0, 0, currentReportSelection.seller.sellerId).then(
         (response: GetEventsResponse) => {
           if (response && !response.error && response.events !== undefined) {
             const vipEvents = response.events;
-            const hasPhoneData =
-              vipEvents.find((x) => x.hasPhoneData === true) !== undefined;
-            const hasShirtData =
-              vipEvents.find((x) => x.hasShirtData === true) !== undefined;
-            const hasNonUsaOrders =
-              vipEvents.find((x) => x.hasNonUSAOrders === true) !== undefined;
+            const hasPhoneData = vipEvents.find((x) => x.hasPhoneData === true) !== undefined;
+            const hasShirtData = vipEvents.find((x) => x.hasShirtData === true) !== undefined;
+            const hasNonUsaOrders = vipEvents.find((x) => x.hasNonUSAOrders === true) !== undefined;
             let currencySymbol: string | undefined = undefined;
             if (hasNonUsaOrders) {
               const symbolOrder = vipEvents.find((x) => x.hasNonUSAOrders === true);
@@ -118,10 +110,8 @@ export default function SalesBar() {
                 currencySymbol = symbolOrder.nonUsaCurrencySymbol;
               }
             }
-            const showServiceFees =
-              viewServiceFees && !currentReportSelection.hideServiceFees;
-            const showRevenueData =
-              viewRevenueData && !currentReportSelection.hideRevenue;
+            const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
+            const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
             const csvData = exportCustomerDataToCsv(
               response.events,
               showServiceFees,
@@ -131,10 +121,7 @@ export default function SalesBar() {
               hasNonUsaOrders,
               currencySymbol,
             );
-            const fileName = getCsvFileNameFromReportSelection(
-              currentReportSelection,
-              'customer',
-            );
+            const fileName = getCsvFileNameFromReportSelection(currentReportSelection, 'customer');
             downloadCsvFile(fileName, csvData);
           }
           dispatch(setIsLoading(false));
@@ -175,18 +162,16 @@ export default function SalesBar() {
 
   let tourList: ItemDataType<number>[] = [];
   if (currentReportSelection.tours && currentReportSelection.tours.length > 0) {
-    const activeTours = currentReportSelection.tours.filter(x => x.isActive);
+    const activeTours = currentReportSelection.tours.filter((x) => x.isActive);
     if (activeTours && activeTours.length > 0) {
-      tourList = activeTours.map(tour =>
-      ({
+      tourList = activeTours.map((tour) => ({
         label: `${tour.tourName}`,
-        value: tour.tourId
-      })
-      );
+        value: tour.tourId,
+      }));
     }
   }
 
-  const selectedTourId = (currentReportSelection?.selectedTourId ?? 0);
+  const selectedTourId = currentReportSelection?.selectedTourId ?? 0;
 
   useEffect(() => {
     const user = getUser();
@@ -197,16 +182,16 @@ export default function SalesBar() {
       setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
       setViewRevenueControls(userHasPermission(user, EnumPermission.ViewRevenueControls));
       setCanExportData(userHasPermission(user, EnumPermission.ExportData));
-      setCanExportCustomerData(
-        userHasPermission(user, EnumPermission.ExportCustomerData),
-      );
+      setCanExportCustomerData(userHasPermission(user, EnumPermission.ExportCustomerData));
       setViewPrintButton(userHasPermission(user, EnumPermission.ViewPrintButton));
       setViewRevenueData(userHasPermission(user, EnumPermission.ViewRevenueData));
       setViewHiddenEvents(userHasPermission(user, EnumPermission.ViewHiddenEvents));
       setViewTourSelect(userHasPermission(user, EnumPermission.ViewTourSelect));
       setViewVIPItinerary(userHasPermission(user, EnumPermission.ViewVIPItinerary));
       if (currentReportSelection.seller && currentReportSelection.seller.sellerId > 0) {
-        const userSeller = user.sellers?.find(x => x.sellerId === currentReportSelection.seller.sellerId);
+        const userSeller = user.sellers?.find(
+          (x) => x.sellerId === currentReportSelection.seller.sellerId,
+        );
         if (userSeller) {
           const route = userSeller.routes?.[0];
           if (route) {
@@ -218,26 +203,21 @@ export default function SalesBar() {
   }, [windowSizeJson, getUser, userHasPermission, currentReportSelection.seller, webBaseUrl]);
   return (
     <>
-      <Row className="page-header">
-        <Col sm={6} xs={12} className="title-container">
-          <div className="title">{pageTitle}</div>
-        </Col>
-        <Col sm={6} xs={12} className="control-container no-print">
-          <DateRangeSelector
-            DateRangeTitle={dateRangeTitle}
-            SelectedStart={currentReportSelection?.start}
-            SelectedEnd={currentReportSelection?.end}
-            Disabled={currentReportSelection.seller.sellerId <= 0 || !hasEvents}
-            OnDateChange={onDateChange}
-          />
-        </Col>
-      </Row>
+      <PageHeader
+        pageTitle={pageTitle}
+        dateRangeTitle={dateRangeTitle}
+        dateRangeStart={currentReportSelection?.start}
+        dateRangeEnd={currentReportSelection?.end}
+        dateRangeDisabled={currentReportSelection.seller.sellerId <= 0 || !hasEvents}
+        showDateRange={true}
+        onDateRangeChange={onDateChange}
+      />
       <SelectSeller />
       <Row className="no-print admin-tour-row" hidden={!viewTourSelect || tourList.length === 0}>
-        <Col xs={1}>
+        <Col xs={2} className="admin-tour-select-title">
           Tour:
         </Col>
-        <Col sm={11} md={5}>
+        <Col sm={22} md={10}>
           <SelectPicker
             value={selectedTourId}
             data={tourList}
@@ -252,25 +232,29 @@ export default function SalesBar() {
         </Col>
       </Row>
       <Row className="admin-check-row no-print">
-        <Col md={10} sm={12}>
-          {viewInactiveEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0 ? (
+        <Col>
+          {viewInactiveEvents &&
+          currentReportSelection.seller.sellerId > 0 &&
+          (currentReportSelection.selectedTourId ?? 0) === 0 ? (
             <InactiveCheck />
           ) : (
             ''
           )}
-          {viewDeletedEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0 ? (
+          {viewDeletedEvents &&
+          currentReportSelection.seller.sellerId > 0 &&
+          (currentReportSelection.selectedTourId ?? 0) === 0 ? (
             <DeletedCheck />
           ) : (
             ''
           )}
-          {viewHiddenEvents && currentReportSelection.seller.sellerId > 0 && (currentReportSelection.selectedTourId ?? 0) === 0 ? (
+          {viewHiddenEvents &&
+          currentReportSelection.seller.sellerId > 0 &&
+          (currentReportSelection.selectedTourId ?? 0) === 0 ? (
             <HiddenCheck />
           ) : (
             ''
           )}
-          {viewRevenueControls &&
-            currentReportSelection.seller.sellerId > 0 &&
-            hasEvents ? (
+          {viewRevenueControls && currentReportSelection.seller.sellerId > 0 && hasEvents ? (
             <RevenueCheck />
           ) : (
             ''
@@ -286,7 +270,7 @@ export default function SalesBar() {
         className="no-print admin-button-row"
         hidden={currentReportSelection.seller.sellerId <= 0}
       >
-        <Col md={10} sm={12}>
+        <Col md={20} sm={24}>
           {currentReportSelection.seller.sellerId > 0 ? (
             <ResetButton
               IsDisabled={currentReportSelection.seller.sellerId <= 0}
@@ -296,17 +280,17 @@ export default function SalesBar() {
             ''
           )}
           {!windowSize.isMobile &&
-            viewPrintButton &&
-            currentReportSelection.seller.sellerId > 0 &&
-            hasEvents ? (
+          viewPrintButton &&
+          currentReportSelection.seller.sellerId > 0 &&
+          hasEvents ? (
             <PrintButton />
           ) : (
             ''
           )}
           {!windowSize.isMobile &&
-            canExportData &&
-            currentReportSelection.seller.sellerId > 0 &&
-            hasEvents ? (
+          canExportData &&
+          currentReportSelection.seller.sellerId > 0 &&
+          hasEvents ? (
             <span className="admin-button">
               <Button onClick={exportEventData}>Export Summary</Button>
             </span>
@@ -314,9 +298,9 @@ export default function SalesBar() {
             ''
           )}
           {!windowSize.isMobile &&
-            canExportCustomerData &&
-            currentReportSelection.seller.sellerId > 0 &&
-            hasEvents ? (
+          canExportCustomerData &&
+          currentReportSelection.seller.sellerId > 0 &&
+          hasEvents ? (
             <span className="admin-button">
               <Button onClick={exportCustomerData}>Export Customer Data</Button>
             </span>
@@ -324,10 +308,10 @@ export default function SalesBar() {
             ''
           )}
           {!windowSize.isMobile &&
-            viewVIPItinerary &&
-            currentReportSelection.seller.sellerId > 0 &&
-            !currentReportSelection.showInactive && 
-            hasEvents ? (
+          viewVIPItinerary &&
+          currentReportSelection.seller.sellerId > 0 &&
+          !currentReportSelection.showInactive &&
+          hasEvents ? (
             <>
               <span className="admin-button">
                 <Button onClick={() => setVipItineraryOpen(true)}>Event Itinerary</Button>
@@ -335,7 +319,6 @@ export default function SalesBar() {
               <VIPItineraryModal
                 IsAdmin={isAdmin}
                 IsOpen={vipItineraryOpen}
-                Seller={currentReportSelection.seller}
                 Events={currentReportSelection.currentEvents}
                 OnClose={handleItineraryClose}
                 SellerHomePage={sellerHomePage}

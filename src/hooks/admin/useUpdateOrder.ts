@@ -1,5 +1,6 @@
-import { ModifyOrderResponse } from '@/types/responses';
 import { Order } from '@/types/event';
+import { ModifyOrderResponse } from '@/types/responses';
+
 import { eventService } from '../../services';
 
 export const useUpdateOrder = () => {

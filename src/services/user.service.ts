@@ -1,3 +1,5 @@
+import axios, { AxiosError, AxiosInstance } from 'axios';
+
 import {
   GetActivityResponse,
   GetPermissionsResponse,
@@ -8,15 +10,7 @@ import {
   UpdateUserResponse,
   UserSellerResponse,
 } from '@/types/responses';
-import {
-  Permission,
-  Role,
-  User,
-  UserActivity,
-  UserActivityType,
-  UserSeller,
-} from '@/types/user';
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import { Permission, Role, User, UserActivity, UserActivityType, UserSeller } from '@/types/user';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
 
 export class UserService {
@@ -45,8 +39,7 @@ export class UserService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching users - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching users - please contact your administrator';
     }
 
     return response;
@@ -67,8 +60,7 @@ export class UserService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching roles - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching roles - please contact your administrator';
     }
 
     return response;
@@ -133,13 +125,12 @@ export class UserService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while updating role - please contact your administrator';
+        err?.message ?? 'Unknown error while updating role - please contact your administrator';
     }
 
     return response;
@@ -157,13 +148,12 @@ export class UserService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while deleting roles - please contact your administrator';
+        err?.message ?? 'Unknown error while deleting roles - please contact your administrator';
     }
 
     return response;
@@ -181,13 +171,12 @@ export class UserService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while updating user - please contact your administrator';
+        err?.message ?? 'Unknown error while updating user - please contact your administrator';
     }
 
     return response;
@@ -205,13 +194,12 @@ export class UserService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while deleting user - please contact your administrator';
+        err?.message ?? 'Unknown error while deleting user - please contact your administrator';
     }
 
     return response;
@@ -236,7 +224,7 @@ export class UserService {
     try {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
-      response.success = res.data;
+      response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;

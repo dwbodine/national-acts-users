@@ -1,4 +1,5 @@
 import { GetFaqCategoriesResponse } from '@/types/responses';
+
 import { adminService } from '../../services';
 
 export const useGetAllFaqCategories = () => {

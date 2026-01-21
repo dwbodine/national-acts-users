@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { DatePicker } from 'rsuite';
+import { Col, DatePicker, Row } from 'rsuite';
+
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { ReportDatePickerProps } from '@/types/props';
-import moment from 'moment';
 
 export default function ReportDatePicker(props: ReportDatePickerProps) {
-  const labelColWidth = props.LabelColumnWidth ?? 1;
+  const labelColWidth = props.LabelColumnWidth ?? 2;
   const onChange = props.OnChange;
   const onStartClear = props.OnStartClear;
   const onEndClear = props.OnEndClear;
@@ -73,7 +73,7 @@ export default function ReportDatePicker(props: ReportDatePickerProps) {
     <>
       <Row className="admin-select">
         <Col xs={labelColWidth}>
-          <label className="admin-report-datepicker-label">Start date:</label>
+          <span className="admin-report-datepicker-label">Start date:</span>
         </Col>
         <Col>
           <DatePicker
@@ -90,7 +90,7 @@ export default function ReportDatePicker(props: ReportDatePickerProps) {
       </Row>
       <Row className="admin-select">
         <Col xs={labelColWidth}>
-          <label className="admin-report-datepicker-label">End date:</label>
+          <span className="admin-report-datepicker-label">End date:</span>
         </Col>
         <Col>
           <DatePicker

@@ -1,11 +1,12 @@
-"use client";
+'use client';
 
-import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
-import { useEffect, useState } from 'react';
-import { DateRangePicker } from 'rsuite';
-import { DateRangeSelectorProps } from '@/types/props';
-import { FaCalendar } from 'react-icons/fa';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { FaCalendar } from 'react-icons/fa';
+import { DateRangePicker } from 'rsuite';
+import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
+
+import { DateRangeSelectorProps } from '@/types/props';
 
 export default function DateRangeSelector(props: DateRangeSelectorProps) {
   const title = props.DateRangeTitle;
@@ -13,24 +14,34 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
   const selectedStart = props.SelectedStart;
   const selectedEnd = props.SelectedEnd;
   const disabled = props.Disabled;
+  const hidden = props.Hidden;
 
   const defaultRanges: RangeType<DateRange>[] = [
     {
       label: 'Today',
-      value: [moment().startOf('day').toDate(), moment().endOf('day').toDate()]
+      value: [moment().startOf('day').toDate(), moment().endOf('day').toDate()],
     },
     {
       label: 'This Week',
-      value: [moment().startOf('week').add(1, 'day').startOf('day').toDate(), moment().endOf('week').add(1, 'day').endOf('day').toDate()]
+      value: [
+        moment().startOf('week').add(1, 'day').startOf('day').toDate(),
+        moment().endOf('week').add(1, 'day').endOf('day').toDate(),
+      ],
     },
     {
       label: 'This Month',
-      value: [moment().startOf('month').startOf('day').toDate(), moment().endOf('month').endOf('day').toDate()]
+      value: [
+        moment().startOf('month').startOf('day').toDate(),
+        moment().endOf('month').endOf('day').toDate(),
+      ],
     },
     {
       label: 'Last Month',
-      value: [moment().startOf('month').subtract(1, 'month').startOf('day').toDate(), moment().startOf('month').subtract(1, 'month').endOf('month').endOf('day').toDate()]
-    }
+      value: [
+        moment().startOf('month').subtract(1, 'month').startOf('day').toDate(),
+        moment().startOf('month').subtract(1, 'month').endOf('month').endOf('day').toDate(),
+      ],
+    },
   ];
 
   const ranges = props.Ranges ? props.Ranges : defaultRanges;
@@ -50,9 +61,7 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
     setDateValues(dValues);
   }, [selectedEnd, selectedStart]);
 
-  const handleChange = (
-    value: DateRange | null
-  ) => {
+  const handleChange = (value: DateRange | null) => {
     const sStart = value ? moment(value[0]).unix() : 0;
     const sEnd = value ? moment(value[1]).unix() : 0;
     if (onDateChange) {
@@ -60,7 +69,9 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
     }
   };
 
-  return (
+  return hidden ? (
+    <></>
+  ) : (
     <>
       <span className="date-range-title">{title}:</span>
       <DateRangePicker
@@ -68,7 +79,7 @@ export default function DateRangeSelector(props: DateRangeSelectorProps) {
         placement="bottomEnd"
         appearance="default"
         format="MM/dd/yyyy"
-        character=" – "
+        character=" - "
         onChange={handleChange}
         value={dateValues}
         disabled={disabled}

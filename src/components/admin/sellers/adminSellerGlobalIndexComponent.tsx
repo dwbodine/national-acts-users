@@ -1,19 +1,24 @@
-"use client";
+'use client';
 
-import { GetSellersResponse, GetTicketSocketAccountsResponse } from '@/types/responses';
-import { Seller, SellerType } from '@/types/event';
-import { setAdminSeller, setAllSellers, setReloadSellers, setTicketSocketAccounts } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import { Button } from 'react-bootstrap';
-import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
-import { getSellerStatusSlug } from '@/utils/eventUtils';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Input, Table } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetTicketSocketAccounts } from '@/hooks/admin/useGetTicketSocketAccounts';
-import { useRouter } from 'next/navigation';
+import {
+  setAdminSeller,
+  setAllSellers,
+  setReloadSellers,
+  setTicketSocketAccounts,
+} from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { Seller, SellerType } from '@/types/event';
+import { GetSellersResponse, GetTicketSocketAccountsResponse } from '@/types/responses';
+import { getSellerStatusSlug } from '@/utils/eventUtils';
 
 export default function AdminSellerGlobalIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -31,7 +36,7 @@ export default function AdminSellerGlobalIndex() {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         dispatch(setAllSellers(undefined));
-        getTicketSocketAccounts().then((response: GetTicketSocketAccountsResponse) => {
+        void getTicketSocketAccounts().then((response: GetTicketSocketAccountsResponse) => {
           if (!response.error && response.accounts) {
             dispatch(setTicketSocketAccounts(response.accounts));
           }
@@ -40,7 +45,7 @@ export default function AdminSellerGlobalIndex() {
         dispatch(setReloadSellers(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getAdminSellers().then((response: GetSellersResponse) => {
+        void getAdminSellers().then((response: GetSellersResponse) => {
           if (!response.error && response.sellers) {
             dispatch(setAllSellers(response.sellers));
           }
@@ -95,36 +100,40 @@ export default function AdminSellerGlobalIndex() {
   const filteredSellers = filterSellers(currentAdminSelection.allSellers);
 
   return (
-    <div className="admin-container">
-      <h3>Manage Sellers</h3>
-      <input
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="form-control search-text-input no-print"
-        placeholder="Search for sellers by name..."
-        hidden={currentAdminSelection.allSellers === undefined}
-      />
-      <Button onClick={addSeller}>Add Seller</Button>
-      <Table
-        height={600}
-        data={filteredSellers}
-        bordered
-        cellBordered
-        loading={tableLoading}
-        rowClassName={(rowData: Seller) => getSellerStatusSlug(rowData)}
-      >
-        <Column width={300}>
-          <HeaderCell>Seller Name</HeaderCell>
-          <Cell className="admin-click-cell">
-            {(rowData) => (
-              <div id={rowData.sellerId} onClick={() => editSeller(parseInt(`${rowData.sellerId}`))}>
-                {rowData.name}
-              </div>
-            )}
-          </Cell>
-        </Column>
-      </Table>
-      <AdminListHomeButton />
-    </div>
+    <>
+      <PageHeader pageTitle="Manage Sellers" />
+      <div className="admin-container">
+        <Input
+          value={searchTerm}
+          onChange={setSearchTerm}
+          className="search-text-input no-print"
+          placeholder="Search for sellers by name..."
+          hidden={currentAdminSelection.allSellers === undefined}
+        />
+        <Button onClick={addSeller}>Add Seller</Button>
+        <Table
+          height={600}
+          data={filteredSellers}
+          bordered
+          cellBordered
+          loading={tableLoading}
+          rowClassName={(rowData: Seller) => getSellerStatusSlug(rowData)}
+        >
+          <Column width={300}>
+            <HeaderCell>Seller Name</HeaderCell>
+            <Cell className="admin-click-cell">
+              {(rowData: Seller) => (
+                <div
+                  id={rowData.sellerId.toString()}
+                  onClick={() => editSeller(parseInt(`${rowData.sellerId}`))}
+                >
+                  {rowData.name}
+                </div>
+              )}
+            </Cell>
+          </Column>
+        </Table>
+      </div>
+    </>
   );
 }

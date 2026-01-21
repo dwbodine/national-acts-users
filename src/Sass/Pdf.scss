@@ -1,0 +1,104 @@
+@use 'variables' as v;
+
+.pdf-container {
+  width: 100%;
+}
+
+.pdf-toolbar {
+  text-align: right;
+  margin: 15px 25px 0 0;
+}
+
+.pdf-toolbar button {
+  margin: 0 5px;
+}
+
+.pdf-header {
+  width: 100%;
+  text-align: center;
+}
+
+.pdf-header h1 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 auto;
+  text-transform: uppercase;
+}
+
+.pdf-header p {
+  font-size: 18px;
+  margin: 0 auto;
+}
+
+.pdf-body {
+  width: 100%;
+  text-align: left;
+  padding: 15px;
+}
+
+.pdf-table {
+  width: 100%;
+  border: 1px solid black;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+
+.pdf-table tr,
+.pdf-table td,
+.pdf-table th {
+  border: 1px solid black;
+  border-collapse: collapse;
+  color: black;
+  text-wrap: wrap;
+  padding: 5px !important;
+}
+
+.pdf-table th {
+  color: white;
+  background-color: #26a69a;
+}
+
+.pdf-table tr {
+  background-color: white;
+}
+
+.pdf-table tr:nth-child(even) {
+  background-color: #ddf2f0;
+}
+
+.pdf-table td {
+  font-size: 16px;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.pdf-table td a {
+  color: black;
+  text-decoration: underline;
+}
+
+.pdf-link-column {
+  max-width: 200px;
+}
+
+@media (max-width: 1200px) {
+  .pdf-table {
+    width: fit-content;
+  }
+
+  .pdf-link-column {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 992px) {
+  .pdf-link-column {
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pdf-link-column {
+    max-width: 100px;
+  }
+}

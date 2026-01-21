@@ -1,12 +1,13 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import { UserResponse } from '@/types/responses';
+import { Button, Col, Input, Row } from 'rsuite';
+import Container from 'rsuite/Container';
+
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useResetPasswordSecure } from '@/hooks/user/useResetPasswordSecure';
-import { useRouter } from 'next/navigation';
+import { UserResponse } from '@/types/responses';
 
 export default function ResetPasswordComponent() {
   const { resetPasswordSecure } = useResetPasswordSecure();
@@ -70,30 +71,30 @@ export default function ResetPasswordComponent() {
           <Col>
             <Row>
               <Col>
-                <div className="form-group">
-                  <label>New Password:</label>
-                  <input
+                <div>
+                  <span>New Password:</span>
+                  <Input
                     type="password"
                     placeholder="Password"
                     name="new_password"
                     className="w-80 h-8 px-2 border border-solid border-black rounded"
                     value={password ?? ''}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={setPassword}
                   />
                 </div>
               </Col>
             </Row>
             <Row>
               <Col>
-                <div className="form-group">
-                  <label>Confirm Password:</label>
-                  <input
+                <div>
+                  <span>Confirm Password:</span>
+                  <Input
                     type="password"
                     placeholder="Confirm Password"
                     name="confirm_password"
                     className="w-80 h-8 px-2 border border-solid border-black rounded"
                     value={confirmPassword ?? ''}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={setConfirmPassword}
                   />
                 </div>
               </Col>
@@ -106,11 +107,7 @@ export default function ResetPasswordComponent() {
                 <Button onClick={handleCancel}>Cancel</Button>
                 <div className="h-fit flex flex-row gap-2 items-center justify-center">
                   {passwordError ? <div className="danger">{passwordError}</div> : ''}
-                  {passwordSuccess ? (
-                    <div className="success">{passwordSuccess}</div>
-                  ) : (
-                    ''
-                  )}
+                  {passwordSuccess ? <div className="success">{passwordSuccess}</div> : ''}
                 </div>
               </Col>
             </Row>

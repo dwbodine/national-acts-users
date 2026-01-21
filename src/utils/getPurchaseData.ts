@@ -1,9 +1,8 @@
-import { ITicketSalesData, VipEvent } from '@/types/event';
 import moment from 'moment';
 
-export default function getPurchaseDataFromEvents(
-  events: VipEvent[],
-): ITicketSalesData[] {
+import { ITicketSalesData, VipEvent } from '@/types/event';
+
+export default function getPurchaseDataFromEvents(events: VipEvent[]): ITicketSalesData[] {
   const map = new Map<string, ITicketSalesData>();
   events?.forEach((evt) => {
     evt.orders?.forEach((order) => {
@@ -35,12 +34,9 @@ export default function getPurchaseDataFromEvents(
           salesData.RevenueChargedBackUsd += order.revenueChargedBackUsd ?? 0;
           salesData.RevenueRefundedUsd += order.revenueRefundedUsd ?? 0;
           salesData.ServiceFeesUsd += order.serviceFeesUsd ?? 0;
-          salesData.ServiceFeeRevenueRefundedUsd +=
-            order.serviceFeeRevenueRefundedUsd ?? 0;
-          salesData.ServiceFeeRevenueChargedBackUsd +=
-            order.serviceFeeRevenueChargedBackUsd ?? 0;
-          salesData.TotalRevenueUsd +=
-            (order.revenueUsd ?? 0) + (order.serviceFeesUsd ?? 0);
+          salesData.ServiceFeeRevenueRefundedUsd += order.serviceFeeRevenueRefundedUsd ?? 0;
+          salesData.ServiceFeeRevenueChargedBackUsd += order.serviceFeeRevenueChargedBackUsd ?? 0;
+          salesData.TotalRevenueUsd += (order.revenueUsd ?? 0) + (order.serviceFeesUsd ?? 0);
           map.set(key, salesData);
         }
       }

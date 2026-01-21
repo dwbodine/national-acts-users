@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
-import { Button, Col, Container, Row } from 'react-bootstrap';
-import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
-import React, { ReactElement } from 'react';
-import { formatCurrencyAmount, getEventStatusSlug } from '@/utils/eventUtils';
-import { EventRowProps } from '@/types/props';
-import { RootState } from '@/lib/store';
-import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 import moment from 'moment';
-import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { ReactElement } from 'react';
 import { useSelector } from 'react-redux';
+import { Button, Col, Container, Row } from 'rsuite';
+
+import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { RootState } from '@/lib/store';
+import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
+import { EventRowProps } from '@/types/props';
+import { formatCurrencyAmount, getEventStatusSlug } from '@/utils/eventUtils';
+import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 
 export default function EventMobileRow(props: EventRowProps) {
   const vipEvent = props.VipEvent;
@@ -32,7 +33,7 @@ export default function EventMobileRow(props: EventRowProps) {
   const statusSlug = getEventStatusSlug(vipEvent);
   let statusClass = '';
   if (statusSlug !== 'active') {
-    statusClass = `event-${statusSlug}`
+    statusClass = `event-${statusSlug}`;
   }
 
   const venueName = vipEvent.venue?.name;
@@ -65,21 +66,25 @@ export default function EventMobileRow(props: EventRowProps) {
               {total})
             </div>,
           );
-        }        
+        }
         i += 1;
       });
     });
   }
 
-  const currencySymbol = vipEvent.nonUsaCurrencySymbol ?? "$";
-  const exchangeRate = currencySymbol === "$" ? 1 : 0;
+  const currencySymbol = vipEvent.nonUsaCurrencySymbol ?? '$';
+  const exchangeRate = currencySymbol === '$' ? 1 : 0;
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
   const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0));
   const revenueUsd = Number((vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0));
-  const serviceFees = Number((vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0));
-  const serviceFeesUsd = Number((vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0));
+  const serviceFees = Number(
+    (vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0),
+  );
+  const serviceFeesUsd = Number(
+    (vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0),
+  );
   const buttonText = currentSellerType === SellerType.Venue ? 'Customer List' : 'VIP List';
-  const noOrders = (!vipEvent.orders || vipEvent.orders.length === 0);
+  const noOrders = !vipEvent.orders || vipEvent.orders.length === 0;
 
   const revClass = hideRevItem ? 'no-print' : '';
 
@@ -88,50 +93,60 @@ export default function EventMobileRow(props: EventRowProps) {
       <td>
         <Container className="mobile-event-card" id={id}>
           <Row>
-            <Col>Date:</Col>
+            <Col className="mobile-bold">Date:</Col>
             <Col>{eventDate}</Col>
           </Row>
           <Row>
-            <Col>Title:</Col>
+            <Col className="mobile-bold">Title:</Col>
             <Col>{vipEvent.title}</Col>
           </Row>
           <Row>
-            <Col>Venue:</Col>
+            <Col className="mobile-bold">Venue:</Col>
             <Col>{venueName}</Col>
           </Row>
           <Row>
-            <Col>Location:</Col>
+            <Col className="mobile-bold">Location:</Col>
             <Col>{location}</Col>
           </Row>
           <Row>
-            <Col>Tickets sold:</Col>
+            <Col className="mobile-bold">Tickets sold:</Col>
             <Col>{vipEvent.totalTickets}</Col>
           </Row>
           <Row>
-            <Col>Tickets refunded:</Col>
-            <Col>{(vipEvent.numTicketsRefunded ?? 0)}</Col>
+            <Col className="mobile-bold">Tickets refunded:</Col>
+            <Col>{vipEvent.numTicketsRefunded ?? 0}</Col>
           </Row>
           <Row>
-            <Col>Tickets comped:</Col>
+            <Col className="mobile-bold">Tickets comped:</Col>
             <Col>{vipEvent.numTicketsComped}</Col>
           </Row>
           <Row hidden={!canCheckInTickets} className="no-print">
-            <Col>Checked in:</Col>
+            <Col className="mobile-bold">Checked in:</Col>
             <Col>
               {vipEvent.totalCheckedIn} / {vipEvent.totalTickets}
             </Col>
           </Row>
           <Row hidden={ticketBreakdownRows.length === 0}>
-            <Col>Ticket type breakdown:</Col>
+            <Col className="mobile-bold">Ticket type breakdown:</Col>
             <Col>{ticketBreakdownRows}</Col>
           </Row>
           <Row hidden={hideRevItem} className={revClass}>
-            <Col>Revenue:</Col>
-            <Col>{formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
+            <Col className="mobile-bold">Revenue:</Col>
+            <Col>
+              {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
+            </Col>
           </Row>
           <Row hidden={hideServiceFees} className="no-print">
-            <Col>Service Fees:</Col>
-            <Col>{formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}</Col>
+            <Col className="mobile-bold">Service Fees:</Col>
+            <Col>
+              {formatCurrencyAmount(
+                serviceFees,
+                serviceFeesUsd,
+                currencySymbol,
+                exchangeRate,
+                isAdmin,
+              )}
+            </Col>
           </Row>
           <Row hidden={noOrders}>
             <Col>
@@ -140,7 +155,11 @@ export default function EventMobileRow(props: EventRowProps) {
           </Row>
           <Row hidden={!showNotes}>
             <Col>
-              <Button onClick={() => showNoteDialog ? showNoteDialog(vipEvent.externalEventId): null}>Notes</Button>
+              <Button
+                onClick={() => (showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null)}
+              >
+                Notes
+              </Button>
             </Col>
           </Row>
         </Container>

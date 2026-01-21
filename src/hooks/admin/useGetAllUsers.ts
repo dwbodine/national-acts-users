@@ -1,4 +1,5 @@
 import { GetUsersResponse } from '@/types/responses';
+
 import { userService } from '../../services';
 
 export const useGetAllUsers = () => {

@@ -1,5 +1,6 @@
 import { Faq } from '@/types/public';
 import { ModifyFaqResponse } from '@/types/responses';
+
 import { adminService } from '../../services';
 
 export const useUpdateFaq = () => {

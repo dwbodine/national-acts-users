@@ -1,9 +1,11 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { GlobalSelection } from '../types/user';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { GlobalSelection, User } from '../types/user';
 
 const initialState: GlobalSelection = {
   isLoading: false,
   saveInProgress: false,
+  currentUser: undefined,
 };
 
 export const globalSelectionSlice = createSlice({
@@ -22,10 +24,14 @@ export const globalSelectionSlice = createSlice({
       state.saveInProgress = action.payload;
       return state;
     },
+    setCurrentUser: (state, action: PayloadAction<User>) => {
+      state.currentUser = action.payload;
+      return state;
+    },
   },
 });
 
-export const { setIsLoading, setSaveInProgress, resetGlobalSettings } =
+export const { setCurrentUser, setIsLoading, setSaveInProgress, resetGlobalSettings } =
   globalSelectionSlice.actions;
 
 export default globalSelectionSlice.reducer;

@@ -1,11 +1,12 @@
-"use client";
+'use client';
 
-import { UserActivityType } from '@/types/user';
-import { useEffect } from 'react';
-import { useLogActivityData } from '@/hooks/common/useLogActivityData';
-import { useLogout } from '@/hooks/user/useLogout';
-import { useResetStores } from '@/hooks/common/useResetStores';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
+import { useLogActivityData } from '@/hooks/common/useLogActivityData';
+import { useResetStores } from '@/hooks/common/useResetStores';
+import { useLogout } from '@/hooks/user/useLogout';
+import { UserActivityType } from '@/types/user';
 
 export default function LogoutComponent() {
   const router = useRouter();
@@ -17,12 +18,12 @@ export default function LogoutComponent() {
     const timeoutId = setTimeout(() => {
       const searchParams = new URLSearchParams(window.location.search);
       const err = searchParams.get('err');
-      logActivityData(UserActivityType.Logout).then(() => {
+      void logActivityData(UserActivityType.Logout).then(() => {
         resetStores();
-        logout().then(() => {
+        void logout().then(() => {
           let loginUrl = '/login';
           if (err) {
-            loginUrl += `?err=${err}`
+            loginUrl += `?err=${err}`;
           }
           router.push(loginUrl);
         });

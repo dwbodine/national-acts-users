@@ -1,6 +1,8 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'rsuite';
+
+import TwoColumnStatRow from '@/components/common/widgets/TwoColumnStatRow';
 import { MonthToDateWidgetProps } from '@/types/props';
 
 export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
@@ -21,84 +23,59 @@ export default function MonthToDateWidget(props: MonthToDateWidgetProps) {
         <Row>
           <Col className="sales-stat-block-title">Month-to-Date stats</Col>
         </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Transactions:</Col>
-          <Col className="sales-stat-block-value">
-            {dashBoardData?.monthToDatePurchases ?? '0'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Tickets:</Col>
-          <Col className="sales-stat-block-value">
-            {dashBoardData?.monthToDateTickets ?? '0'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Refunds:</Col>
-          <Col className="sales-stat-block-value">
-            {dashBoardData?.monthToDateTicketsRefunded ?? '0'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Revenue:</Col>
-          <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateRevenueUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Service Fees:</Col>
-          <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateServiceFeesUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Revenue Refunded:</Col>
-          <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateRevenueRefundedUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">S.Fees Refunded:</Col>
-          <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateServiceFeesRefundedUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Total Revenue:</Col>
-          <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateTotalRevenueUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Tickets per transaction:</Col>
-          <Col className="sales-stat-block-value">
-            {ticketsPerTransaction.toFixed(2) ?? '0'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Avg. Purchase:</Col>
-          <Col className="sales-stat-block-value">
-            ${averagePurchaseAmount.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Avg. Price Per Ticket:</Col>
-          <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDatePricePerTicketUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Avg. Service Fee Per Ticket:</Col>
-          <Col className="sales-stat-block-value">
-            ${dashBoardData?.monthToDateServiceFeePerTicketUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
-        <Row>
-          <Col className="sales-stat-block-name">Monthly Proj.:</Col>
-          <Col className="sales-stat-block-value">
-            ${dashBoardData?.projectedMonthTotalRevenueUsd?.toFixed(2) ?? '0.00'}
-          </Col>
-        </Row>
+        <TwoColumnStatRow
+          label="Transactions:"
+          value={dashBoardData?.monthToDatePurchases}
+          isInteger
+        />
+        <TwoColumnStatRow label="Tickets:" value={dashBoardData?.monthToDateTickets} isInteger />
+        <TwoColumnStatRow
+          label="Refunds:"
+          value={dashBoardData?.monthToDateTicketsRefunded}
+          isInteger
+        />
+        <TwoColumnStatRow
+          label="Revenue:"
+          value={dashBoardData?.monthToDateRevenueUsd}
+          isCurrency
+        />
+        <TwoColumnStatRow
+          label="Service Fees:"
+          value={dashBoardData?.monthToDateServiceFeesUsd}
+          isCurrency
+        />
+        <TwoColumnStatRow
+          label="Revenue Refunded:"
+          value={dashBoardData?.monthToDateRevenueRefundedUsd}
+          isCurrency
+        />
+        <TwoColumnStatRow
+          label="S.Fees Refunded:"
+          value={dashBoardData?.monthToDateServiceFeesRefundedUsd}
+          isCurrency
+        />
+        <TwoColumnStatRow
+          label="Total Revenue:"
+          value={dashBoardData?.monthToDateTotalRevenueUsd}
+          isCurrency
+        />
+        <TwoColumnStatRow label="Tickets per transaction:" value={ticketsPerTransaction} />
+        <TwoColumnStatRow label="Avg. Purchase:" value={averagePurchaseAmount} isCurrency />
+        <TwoColumnStatRow
+          label="Avg. Price Per Ticket:"
+          value={dashBoardData?.monthToDatePricePerTicketUsd}
+          isCurrency
+        />
+        <TwoColumnStatRow
+          label="Avg. Service Fee Per Ticket:"
+          value={dashBoardData?.monthToDateServiceFeePerTicketUsd}
+          isCurrency
+        />
+        <TwoColumnStatRow
+          label="Monthly Proj.:"
+          value={dashBoardData?.projectedMonthTotalRevenueUsd}
+          isCurrency
+        />
       </Col>
     </Row>
   );

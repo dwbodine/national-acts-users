@@ -1,29 +1,38 @@
-"use client";
+'use client';
 
-import { Button, Col, Row } from 'react-bootstrap';
-import { GetEventsResponse, GetSellersResponse, GetToursResponse } from '@/types/responses';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Col, Row, Table } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
+import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useGetTours } from '@/hooks/admin/useGetTours';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
 import {
   setAdminEvents,
   setAdminSellerId,
   setAdminTour,
   setAllSellers,
+  setCountries,
+  setReloadCountries,
   setReloadTours,
   setTours,
 } from '@/lib/adminSelectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import AdminListHomeButton from '../adminListHomeButton';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
-import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
-import { Tour } from '@/types/event';
-import moment from 'moment';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { toast } from 'react-toastify';
-import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useGetTours } from '@/hooks/admin/useGetTours';
-import { useRouter } from 'next/navigation';
+import { RootState } from '@/lib/store';
+import { Tour } from '@/types/event';
+import {
+  GetCountriesResponse,
+  GetEventsResponse,
+  GetSellersResponse,
+  GetToursResponse,
+} from '@/types/responses';
+
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminToursIndex() {
   const { Column, HeaderCell, Cell } = Table;
@@ -31,18 +40,30 @@ export default function AdminToursIndex() {
   const { getSellers } = useGetSellers();
   const { getTours } = useGetTours();
   const { getAdminSellerEvents } = useGetAdminSellerEvents();
+  const { getAllCountries } = useGetAllCountries();
   const dispatch = useDispatch();
   const [tableLoading, setTableLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.allSellers === undefined) {
+      if (currentAdminSelection.reloadCountries) {
+        dispatch(setReloadCountries(false));
+        dispatch(setIsLoading(true));
+        void getAllCountries().then((response: GetCountriesResponse) => {
+          if (response.countries && !response.error) {
+            dispatch(setCountries(response.countries));
+          } else {
+            toast.error(response.error);
+            dispatch(setIsLoading(false));
+          }
+        });
+      } else if (currentAdminSelection.allSellers === undefined) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         dispatch(setAdminSellerId(undefined));
         dispatch(setReloadTours(true));
-        getSellers().then((response: GetSellersResponse) => {
+        void getSellers().then((response: GetSellersResponse) => {
           dispatch(setAllSellers(response.sellers));
           dispatch(setIsLoading(false));
           setTableLoading(false);
@@ -56,7 +77,7 @@ export default function AdminToursIndex() {
         }
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        getTours(adminSelection.sellerId).then((response: GetToursResponse) => {
+        void getTours(adminSelection.sellerId).then((response: GetToursResponse) => {
           if (response.error) {
             dispatch(setIsLoading(false));
             setTableLoading(false);
@@ -65,22 +86,22 @@ export default function AdminToursIndex() {
               dispatch(setTours(response.tours));
             }
             if (currentAdminSelection.sellerId) {
-              getAdminSellerEvents([currentAdminSelection.sellerId])
-                .then((resp: GetEventsResponse) => {
+              void getAdminSellerEvents([currentAdminSelection.sellerId]).then(
+                (resp: GetEventsResponse) => {
                   if (resp.events && !resp.error) {
-                    const filteredEvents = resp.events.filter(x => !x.isDeleted);
+                    const filteredEvents = resp.events.filter((x) => !x.isDeleted);
                     if (filteredEvents) {
                       dispatch(setAdminEvents(filteredEvents));
                     }
                   }
                   dispatch(setIsLoading(false));
                   setTableLoading(false);
-                });
+                },
+              );
             } else {
               dispatch(setIsLoading(false));
               setTableLoading(false);
             }
-
           }
         });
       } else if (currentAdminSelection.tours !== undefined && tableLoading) {
@@ -109,9 +130,7 @@ export default function AdminToursIndex() {
     ) {
       return;
     }
-    const tour = currentAdminSelection.tours.find(
-      (x) => x.tourId === tourId,
-    );
+    const tour = currentAdminSelection.tours.find((x) => x.tourId === tourId);
     if (!tour) {
       return;
     }
@@ -129,7 +148,9 @@ export default function AdminToursIndex() {
       return;
     }
 
-    const seller = currentAdminSelection.allSellers?.find(x => x.sellerId === currentAdminSelection.sellerId);
+    const seller = currentAdminSelection.allSellers?.find(
+      (x) => x.sellerId === currentAdminSelection.sellerId,
+    );
 
     if (!seller) {
       return;
@@ -149,93 +170,92 @@ export default function AdminToursIndex() {
   };
 
   return (
-    <div className="admin-container">
-      <Row className="refresh-results-header">
-        <Col>
-          <AdminListHomeButton />
-        </Col>
-      </Row>
-      <Row className="refresh-results-header">
-        <Col>
-          <h3>Tour Admin</h3>
-        </Col>
-      </Row>
-      <AdminSellerSelect
-        Id="refresh"
-        Sellers={currentAdminSelection.allSellers}
-        SellerId={currentAdminSelection.sellerId}
-        OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
-        Countries={currentAdminSelection.countries}
-      />
-      <Row>
-        <Col>
-          <Table
-            autoHeight={true}
-            data={currentAdminSelection.tours}
-            bordered
-            cellBordered
-            loading={tableLoading}
-          >
-            <Column flexGrow={3}>
-              <HeaderCell>Tour Name</HeaderCell>
-              <Cell>{(rowData: Tour) => rowData.tourName}</Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell># of shows</HeaderCell>
-              <Cell>
-                {(rowData: Tour) => rowData.events ? rowData.events.length : 0}
-              </Cell>
-            </Column>
-            <Column flexGrow={1} minWidth={100}>
-              <HeaderCell>Announce Date (in Pacific Time)</HeaderCell>
-              <Cell>
-                {(rowData: Tour) => rowData.announceDate ? moment(rowData.announceDate).format('M/DD/YYYY h:mm A') : ''}
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>First show</HeaderCell>
-              <Cell>
-                {(rowData: Tour) => rowData.events && rowData.events.length > 0
-                  ? `${moment(rowData.events[0].eventDate).format('M/DD/YYYY')} (${rowData.events[0].venue?.city}, ${rowData.events[0].venue?.state})`
-                  : ''}
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>Last show</HeaderCell>
-              <Cell>
-                {(rowData: Tour) => rowData.events && rowData.events.length > 0
-                  ? `${moment(rowData.events[rowData.events.length - 1].eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length - 1].venue?.city}, ${rowData.events[rowData.events.length - 1].venue?.state})`
-                  : ''}
-              </Cell>
-            </Column>
-            <Column flexGrow={2}>
-              <HeaderCell>Status</HeaderCell>
-              <Cell>
-                {(rowData: Tour) => rowData.isActive ? "Active" : "Inactive"}
-              </Cell>
-            </Column>
-            <Column flexGrow={1}>
-              <HeaderCell>&nbsp;</HeaderCell>
-              <Cell>
-                {(rowData: Tour) =>
-                  rowData.tourId ? (
-                    <a
-                      href="#"
-                      id={`${rowData.tourId}_tour`}
-                      onClick={() => editTour(parseInt(`${rowData.tourId}`))}
-                    >
-                      Edit
-                    </a>
-                  ) : (
-                    ''
-                  )
-                }
-              </Cell>
-            </Column>
-          </Table>
-          <Button onClick={addTour}>Add</Button>
-        </Col>
-      </Row>
-    </div>
+    <>
+      <PageHeader pageTitle="Tour Admin" />
+      <div className="admin-container">
+        <AdminSellerSelect
+          Id="refresh"
+          Sellers={currentAdminSelection.allSellers}
+          SellerId={currentAdminSelection.sellerId}
+          OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
+          Countries={currentAdminSelection.countries}
+        />
+        <Row>
+          <Col xs={24}>
+            <Table
+              autoHeight={true}
+              data={currentAdminSelection.tours}
+              bordered
+              cellBordered
+              loading={tableLoading}
+            >
+              <Column flexGrow={3}>
+                <HeaderCell>Tour Name</HeaderCell>
+                <Cell>{(rowData: Tour) => rowData.tourName}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell># of shows</HeaderCell>
+                <Cell>{(rowData: Tour) => (rowData.events ? rowData.events.length : 0)}</Cell>
+              </Column>
+              <Column flexGrow={1} minWidth={100}>
+                <HeaderCell>Announce Date (in Pacific Time)</HeaderCell>
+                <Cell>
+                  {(rowData: Tour) =>
+                    rowData.announceDate
+                      ? moment(rowData.announceDate).format('M/DD/YYYY h:mm A')
+                      : ''
+                  }
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>First show</HeaderCell>
+                <Cell>
+                  {(rowData: Tour) =>
+                    rowData.events && rowData.events.length > 0 && rowData.events[0]
+                      ? `${moment(rowData.events[0].eventDate).format('M/DD/YYYY')} (${rowData.events[0].venue?.city}, ${rowData.events[0].venue?.state})`
+                      : ''
+                  }
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Last show</HeaderCell>
+                <Cell>
+                  {(rowData: Tour) =>
+                    rowData.events &&
+                    rowData.events.length > 0 &&
+                    rowData.events[rowData.events.length - 1]
+                      ? `${moment(rowData.events[rowData.events.length - 1]?.eventDate).format('M/DD/YYYY')} (${rowData.events[rowData.events.length - 1]?.venue?.city}, ${rowData.events[rowData.events.length - 1]?.venue?.state})`
+                      : ''
+                  }
+                </Cell>
+              </Column>
+              <Column flexGrow={2}>
+                <HeaderCell>Status</HeaderCell>
+                <Cell>{(rowData: Tour) => (rowData.isActive ? 'Active' : 'Inactive')}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>&nbsp;</HeaderCell>
+                <Cell>
+                  {(rowData: Tour) =>
+                    rowData.tourId ? (
+                      <a
+                        href="#"
+                        id={`${rowData.tourId}_tour`}
+                        onClick={() => editTour(parseInt(`${rowData.tourId}`))}
+                      >
+                        Edit
+                      </a>
+                    ) : (
+                      ''
+                    )
+                  }
+                </Cell>
+              </Column>
+            </Table>
+            <Button onClick={addTour}>Add</Button>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }

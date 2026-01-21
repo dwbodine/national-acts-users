@@ -1,40 +1,37 @@
-"use client";
+'use client';
 
-import { Venue, VipEvent } from '@/types/event';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
-import { DEFAULT_COUNTRY_ID } from '@/constants';
-import { GetEventsResponse } from '@/types/responses';
-import ReportsListHomeButton from '../reportsListHomeButton';
-import { RootState } from '@/lib/store';
-import { Table } from 'rsuite';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Table } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
+import { DEFAULT_COUNTRY_ID } from '@/constants';
+import { useGetMissingVenueEvents } from '@/hooks/report/useGetMissingVenueEvents';
+import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
 import { resetAdmin } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { setReloadReportData } from '@/lib/adminReportsSelectionSlice';
-import { useGetMissingVenueEvents } from '@/hooks/report/useGetMissingVenueEvents';
+import { RootState } from '@/lib/store';
+import { Venue, VipEvent } from '@/types/event';
+import { GetEventsResponse } from '@/types/responses';
 
 export default function ReportsMissingVenues() {
   const { Column, HeaderCell, Cell } = Table;
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
-  const currentAdminReportSelection = useSelector(
-    (state: RootState) => state.adminReportSelection,
-  );
+  const currentAdminReportSelection = useSelector((state: RootState) => state.adminReportSelection);
   const dispatch = useDispatch();
   const { getMissingVenueEvents } = useGetMissingVenueEvents();
   const [events, setEvents] = useState<VipEvent[] | undefined>(undefined);
-
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminReportSelection.reloadData) {
         dispatch(setReloadReportData(false));
         dispatch(setIsLoading(true));
-        getMissingVenueEvents().then((response: GetEventsResponse) => {
+        void getMissingVenueEvents().then((response: GetEventsResponse) => {
           setEvents(response.events);
           dispatch(setIsLoading(false));
-        })
+        });
       }
     }, 500);
     return () => {
@@ -43,8 +40,8 @@ export default function ReportsMissingVenues() {
   }, [currentAdminReportSelection, globalSelection.isLoading, dispatch, getMissingVenueEvents]);
 
   const editEvent = (eventId: number) => {
-      dispatch(resetAdmin());
-      window.open(`/admin/events/edit?id=${eventId}`)
+    dispatch(resetAdmin());
+    window.open(`/admin/events/edit?id=${eventId}`);
   };
 
   const getVenueInformation = (venue: Venue): string => {
@@ -60,7 +57,8 @@ export default function ReportsMissingVenues() {
       location += ` ${venue.postalCode}`;
     }
     if (
-      venue.country && venue.country.countryName && 
+      venue.country &&
+      venue.country.countryName &&
       venue.country.countryId !== DEFAULT_COUNTRY_ID
     ) {
       location += `,  ${venue.country.countryName}`;
@@ -70,39 +68,33 @@ export default function ReportsMissingVenues() {
 
   const refresh = () => {
     dispatch(setReloadReportData(true));
-  }
+  };
 
   return (
-    <div className="admin-container">
-      <h3>Missing Venue Report</h3>
-      <ReportsListHomeButton /><Button onClick={refresh}>Refresh</Button>
-      <div className='mt-4'>Total events missing venues: {events?.length ?? 0}</div>
-      <Table
-            autoHeight={true}
-            data={events}
-            bordered
-            cellBordered
-          >
-        <Column flexGrow={1} minWidth={100}>
-          <HeaderCell>Date</HeaderCell>
-          <Cell>
-            {(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}
-          </Cell>
-        </Column>
-        <Column flexGrow={2}>
-          <HeaderCell>Title</HeaderCell>
-          <Cell>{(rowData: VipEvent) => rowData.title}</Cell>
-        </Column>
-        <Column flexGrow={3}>
-          <HeaderCell>Venue (from TicketSocket data)</HeaderCell>
-          <Cell>
-            {(rowData: VipEvent) => (rowData.venue ? getVenueInformation(rowData.venue) : '')}
-          </Cell>
-        </Column>
-        <Column flexGrow={1}>
-          <HeaderCell> </HeaderCell>
-          <Cell>
-            {(rowData: VipEvent) =>
+    <>
+      <PageHeader pageTitle="Missing Venue Report" />
+      <div className="admin-container">
+        <Button onClick={refresh}>Refresh</Button>
+        <div>Total events missing venues: {events?.length ?? 0}</div>
+        <Table autoHeight={true} data={events} bordered cellBordered>
+          <Column flexGrow={1} minWidth={100}>
+            <HeaderCell>Date</HeaderCell>
+            <Cell>{(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}</Cell>
+          </Column>
+          <Column flexGrow={2}>
+            <HeaderCell>Title</HeaderCell>
+            <Cell>{(rowData: VipEvent) => rowData.title}</Cell>
+          </Column>
+          <Column flexGrow={3}>
+            <HeaderCell>Venue (from TicketSocket data)</HeaderCell>
+            <Cell>
+              {(rowData: VipEvent) => (rowData.venue ? getVenueInformation(rowData.venue) : '')}
+            </Cell>
+          </Column>
+          <Column flexGrow={1}>
+            <HeaderCell> </HeaderCell>
+            <Cell>
+              {(rowData: VipEvent) => (
                 <a
                   href="#"
                   id={`${rowData.externalEventId}_event`}
@@ -110,13 +102,11 @@ export default function ReportsMissingVenues() {
                 >
                   Edit
                 </a>
-                }
-          </Cell>
-        </Column>
-      </Table>
-
-      
-      
-    </div>
+              )}
+            </Cell>
+          </Column>
+        </Table>
+      </div>
+    </>
   );
 }

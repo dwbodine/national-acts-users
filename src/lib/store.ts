@@ -1,11 +1,12 @@
-import adminDashboardSelectionReducer from './dashboardSelectionSlice';
+import { configureStore } from '@reduxjs/toolkit';
+
+import eventAdminSelectionReducer from './adminEventsSelectionSlice';
 import adminReportsSelectionReducer from './adminReportsSelectionSlice';
 import adminSelectionReducer from './adminSelectionSlice';
-import { configureStore } from '@reduxjs/toolkit';
-import eventAdminSelectionReducer from './adminEventsSelectionSlice';
+import adminDashboardSelectionReducer from './dashboardSelectionSlice';
 import globalSelectionReducer from './globalSelectionSlice';
-import userActivitySelectionReducer from './userActivitySelectionSlice';
 import userReportSelectionReducer from './reportSelectionSlice';
+import userActivitySelectionReducer from './userActivitySelectionSlice';
 
 export const store = configureStore({
   reducer: {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { MOBILE_WIDTH_BREAKPOINT } from '@/constants';
 import { WindowSize } from '@/types/windowSize';
 

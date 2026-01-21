@@ -1,5 +1,6 @@
-import { ModifyPageResponse } from '@/types/responses';
 import { Page } from '@/types/public';
+import { ModifyPageResponse } from '@/types/responses';
+
 import { adminService } from '../../services';
 
 export const useUpdatePage = () => {

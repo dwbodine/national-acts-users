@@ -1,14 +1,16 @@
+import axios, { AxiosError, AxiosInstance } from 'axios';
+
+import { ImageType, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
+import { Page, PageType, SiteSetting } from '@/types/public';
 import {
   GetEventsResponse,
-  GetPageTypesResponse,
   GetPagesResponse,
+  GetPageTypesResponse,
   GetSellersResponse,
   GetSettingsResponse,
 } from '@/types/responses';
-import { ImageType, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
-import { Page, PageType, SiteSetting } from '@/types/public';
+
 import { Seller, VipEvent } from '../types/event';
-import axios, { AxiosError, AxiosInstance } from 'axios';
 
 export class PublicService {
   protected readonly instance: AxiosInstance;
@@ -67,7 +69,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -78,8 +80,7 @@ export class PublicService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching events - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
     }
 
     return response;
@@ -92,7 +93,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -103,23 +104,20 @@ export class PublicService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching sellers - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching sellers - please contact your administrator';
     }
 
     return response;
   };
 
-  getPageTypes = async (
-    sellerTypesOnly: boolean = false,
-  ): Promise<GetPageTypesResponse> => {
+  getPageTypes = async (sellerTypesOnly: boolean = false): Promise<GetPageTypesResponse> => {
     const url = sellerTypesOnly ? `/public/page_seller_types` : `/public/page_types`;
 
     const response: GetPageTypesResponse = {};
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -144,7 +142,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -169,7 +167,7 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
@@ -180,17 +178,13 @@ export class PublicService {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
       response.error =
-        err?.message ??
-        'Unknown error while fetching settings - please contact your administrator';
+        err?.message ?? 'Unknown error while fetching settings - please contact your administrator';
     }
 
     return response;
   };
 
-  uploadImageFile = async (
-    file: File,
-    imageType: ImageType,
-  ): Promise<string | undefined> => {
+  uploadImageFile = async (file: File, imageType: ImageType): Promise<string | undefined> => {
     if (!file || !file.name || !imageType) {
       return undefined;
     }
@@ -202,12 +196,12 @@ export class PublicService {
 
     const headers = {
       'Content-Type': 'multipart/form-data',
-      'x-api-key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
     };
 
     try {
       const res = await this.instance.post(url, data, { headers });
-      const filename = res.data;
+      const filename = res.data as string;
       return filename;
     } catch {
       return undefined;

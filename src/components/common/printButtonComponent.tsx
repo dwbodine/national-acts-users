@@ -1,6 +1,7 @@
-"use client";
+'use client';
 
-import { Button } from 'react-bootstrap';
+import { Button } from 'rsuite';
+
 import { PrintButtonProps } from '@/types/props';
 
 export default function PrintButton(props: PrintButtonProps) {

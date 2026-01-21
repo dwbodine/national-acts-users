@@ -1,32 +1,31 @@
-"use client";
+'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { ChangeEvent } from 'react';
-import { FormCheck } from 'react-bootstrap';
-import type { RootState } from '../../../lib/store';
+import { Checkbox } from 'rsuite';
+
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setShowInactive } from '@/lib/reportSelectionSlice';
+
+import type { RootState } from '../../../lib/store';
 
 export default function InactiveCheck() {
   const dispatch = useDispatch();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setShowInactive(event.target.checked));
+  const handleChange = (checked: boolean) => {
+    dispatch(setShowInactive(checked));
     dispatch(setIsLoading(true));
   };
 
   return (
     <span className="inactive-check">
-      <FormCheck
+      <Checkbox
         checked={currentReportSelection.showInactive}
-        onChange={handleChange}
-        disabled={
-          currentReportSelection.showDeleted ||
-          currentReportSelection.seller.sellerId <= 0
-        }
-        label="Show inactive events?"
-      />
+        onChange={(_, checked) => handleChange(checked)}
+        disabled={currentReportSelection.showDeleted || currentReportSelection.seller.sellerId <= 0}
+      >
+        Show inactive events?
+      </Checkbox>
     </span>
   );
 }

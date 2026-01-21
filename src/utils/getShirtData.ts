@@ -1,9 +1,8 @@
-import { IShirtData, IShirtSizeData, VipEvent } from '@/types/event';
 import moment from 'moment';
 
-export default function getShirtDataFromEvents(
-  events: VipEvent[],
-): IShirtData | undefined {
+import { IShirtData, IShirtSizeData, VipEvent } from '@/types/event';
+
+export default function getShirtDataFromEvents(events: VipEvent[]): IShirtData | undefined {
   const map = new Map<string, IShirtSizeData[]>();
   const shirtSizes: string[] = [];
   let eventsHaveShirtData: boolean = false;
@@ -23,13 +22,13 @@ export default function getShirtDataFromEvents(
           };
           map.set(key, [data]);
         } else {
-          const indexToUpdate = collection.findIndex(
-            (item) => item.ShirtSize === shirt.size,
-          );
+          const indexToUpdate = collection.findIndex((item) => item.ShirtSize === shirt.size);
           if (indexToUpdate >= 0) {
             const item = collection[indexToUpdate];
-            item.Number += shirt.total ?? 0;
-            collection[indexToUpdate] = item;
+            if (item) {
+              item.Number += shirt.total ?? 0;
+              collection[indexToUpdate] = item;
+            }
           } else {
             collection.push({
               Number: shirt.total ?? 0,

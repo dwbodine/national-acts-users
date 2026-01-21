@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { Col, Row } from 'react-bootstrap';
-import { RefreshTicketSocketDataResultProps } from '@/types/props';
 import moment from 'moment';
+import { Col, Row } from 'rsuite';
+
+import { RefreshTicketSocketDataResultProps } from '@/types/props';
 
 export default function RefreshTicketSocketDataResults(props: RefreshTicketSocketDataResultProps) {
   const results = props.UpdateResults;
@@ -43,22 +44,14 @@ export default function RefreshTicketSocketDataResults(props: RefreshTicketSocke
     succeeded = results.succeeded ? 'true' : 'false';
     orderDataUpdateSucceeded = results.orderDataUpdateSucceeded ? 'true' : 'false';
     errorMessage = results.succeeded ? '' : (results.errorMessage ?? 'unknown');
-    username = results.username
-      ? results.username
-      : (results.userId?.toString() ?? 'n/a');
-    sellerName = results.sellerName
-      ? results.sellerName
-      : (results.sellerId?.toString() ?? 'n/a');
-    startRefreshStr = results.start
-      ? moment.unix(results.start).format('MM/DD/YYYY')
-      : 'n/a';
+    username = results.username ? results.username : (results.userId?.toString() ?? 'n/a');
+    sellerName = results.sellerName ? results.sellerName : (results.sellerId?.toString() ?? 'n/a');
+    startRefreshStr = results.start ? moment.unix(results.start).format('MM/DD/YYYY') : 'n/a';
     endRefreshStr = results.end ? moment.unix(results.end).format('MM/DD/YYYYY') : 'n/a';
     startTimerStr = results.startTimer
       ? moment.unix(results.startTimer).format('hh:mm:ss A')
       : 'n/a';
-    endTimerStr = results.endTimer
-      ? moment.unix(results.endTimer).format('hh:mm:ss A')
-      : 'n/a';
+    endTimerStr = results.endTimer ? moment.unix(results.endTimer).format('hh:mm:ss A') : 'n/a';
     duration = results.duration ? results.duration.toFixed(1) : '0.0';
     orderDataUpdateDuration = results.orderDataUpdateDuration
       ? results.orderDataUpdateDuration.toFixed(1)
@@ -94,15 +87,11 @@ export default function RefreshTicketSocketDataResults(props: RefreshTicketSocke
     ordersDeleted = results.ordersDeleted ? results.ordersDeleted.toString() : '0';
     ticketsUpdated = results.ticketsUpdated ? results.ticketsUpdated.toString() : '0';
     ticketsInserted = results.ticketsInserted ? results.ticketsInserted.toString() : '0';
-    ticketTypesUpdated = results.ticketTypesUpdated
-      ? results.ticketTypesUpdated.toString()
-      : '0';
+    ticketTypesUpdated = results.ticketTypesUpdated ? results.ticketTypesUpdated.toString() : '0';
     ticketTypesInserted = results.ticketTypesInserted
       ? results.ticketTypesInserted.toString()
       : '0';
-    orderDataRowsTotal = results.orderDataRowsTotal
-      ? results.orderDataRowsTotal.toString()
-      : '0';
+    orderDataRowsTotal = results.orderDataRowsTotal ? results.orderDataRowsTotal.toString() : '0';
     orderDataRowsRemoved = results.orderDataRowsRemoved
       ? results.orderDataRowsRemoved.toString()
       : '0';
@@ -116,13 +105,13 @@ export default function RefreshTicketSocketDataResults(props: RefreshTicketSocke
 
   return results ? (
     <>
-      <Row>
+      <Row className="admin-refresh-row">
         <Col>
           <h3>Refresh Events Results</h3>
         </Col>
       </Row>
-      <Row>
-        <Col>
+      <Row className="admin-refresh-row">
+        <Col xs={8}>
           <Row>
             <Col>Update succeeded: {succeeded}</Col>
           </Row>
@@ -160,7 +149,7 @@ export default function RefreshTicketSocketDataResults(props: RefreshTicketSocke
             <Col>Total duration: {totalDuration} seconds</Col>
           </Row>
         </Col>
-        <Col>
+        <Col xs={8}>
           <Row>
             <Col>Total events from service: {totalEventsFromService}</Col>
           </Row>
@@ -195,7 +184,7 @@ export default function RefreshTicketSocketDataResults(props: RefreshTicketSocke
             <Col>Orders deleted: {ordersDeleted}</Col>
           </Row>
         </Col>
-        <Col>
+        <Col xs={8}>
           <Row>
             <Col>Tickets updated: {ticketsUpdated}</Col>
           </Row>

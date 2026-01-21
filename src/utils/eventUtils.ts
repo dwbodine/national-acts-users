@@ -1,4 +1,8 @@
-import { AdminDashboardSelection, IDailyOrderData } from '@/types/user';
+import parse from 'html-react-parser';
+import moment from 'moment';
+
+import { DEFAULT_COUNTRY_ID } from '@/constants';
+import { ExternalVenue } from '@/types/admin';
 import {
   IShirtSizeData,
   ITicketData,
@@ -9,12 +13,10 @@ import {
   Venue,
   VipEvent,
 } from '@/types/event';
-import { DEFAULT_COUNTRY_ID } from '@/constants';
-import { ExternalVenue } from '@/types/admin';
+import { AdminDashboardSelection, IDailyOrderData } from '@/types/user';
+
 import getShirtDataFromEvents from './getShirtData';
 import getTicketDataFromEvents from './getTicketDataFromEvents';
-import moment from 'moment';
-import parse from 'html-react-parser';
 
 const getLocationInfoFromVenue = (venue: Venue): string => {
   let location = `${venue.city}`;
@@ -99,9 +101,7 @@ const exportEventsToCsv = (
     const arr = new Map<string, number>();
     ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
       ticketTypes.forEach((ticketType: TicketType) => {
-        const data = ticketTypeData.find(
-          (x) => x.TicketType === ticketType.ticketTypeName,
-        );
+        const data = ticketTypeData.find((x) => x.TicketType === ticketType.ticketTypeName);
         let number = arr.get(ticketType.ticketTypeName) ?? 0;
         if (data) {
           number += data.Number;
@@ -109,10 +109,8 @@ const exportEventsToCsv = (
         arr.set(ticketType.ticketTypeName, number);
       });
     });
-    for (const ticketType in arr.keys) {
-      if (Object.hasOwn(arr.keys, ticketType)) {
-        exportStr += `"${ticketType}","${arr.get(ticketType)}"\n`;
-      }
+    for (const [ticketType, value] of arr.entries()) {
+      exportStr += `"${ticketType}","${value}"\n`;
     }
   }
 
@@ -411,9 +409,7 @@ const exportEventCustomerDataToCsv = (
     exportStr += '"Type","Number"\n';
     ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
       ticketTypes.forEach((ticketType: TicketType) => {
-        const data = ticketTypeData.find(
-          (x) => x.TicketType === ticketType.ticketTypeName,
-        );
+        const data = ticketTypeData.find((x) => x.TicketType === ticketType.ticketTypeName);
         let number = 0;
         if (data) {
           number = data.Number;
@@ -463,9 +459,7 @@ const exportEventCustomerDataToCsv = (
   return exportStr;
 };
 
-const exportDashboardOrdersToCsv = (
-  currentDashboardSelection: AdminDashboardSelection,
-): string => {
+const exportDashboardOrdersToCsv = (currentDashboardSelection: AdminDashboardSelection): string => {
   if (
     !currentDashboardSelection.currentDashboardData ||
     !currentDashboardSelection.currentDashboardData.orders ||
@@ -509,14 +503,7 @@ const exportDashboardOrdersToCsv = (
   );
 
   orders.forEach((order: Order) => {
-    exportStr += getOrderExportRow(
-      order,
-      true,
-      true,
-      hasPhoneData,
-      hasShirtData,
-      hasNonUsaOrders,
-    );
+    exportStr += getOrderExportRow(order, true, true, hasPhoneData, hasShirtData, hasNonUsaOrders);
   });
 
   return exportStr;
@@ -577,10 +564,7 @@ const getAccountNameFromTicketSocketId = (ticketSocketId: number): string => {
   }
 };
 
-const getEventStatusSlug = (
-  event: VipEvent | undefined,
-  isAdmin: boolean = false,
-): string => {
+const getEventStatusSlug = (event: VipEvent | undefined, isAdmin: boolean = false): string => {
   if (!event) {
     return '';
   }
@@ -625,10 +609,7 @@ const getSellerStatusSlug = (seller: Seller | undefined): string => {
   return 'active';
 };
 
-const getEventStatusText = (
-  vipEvent: VipEvent | undefined,
-  isAdmin: boolean = false,
-): string => {
+const getEventStatusText = (vipEvent: VipEvent | undefined, isAdmin: boolean = false): string => {
   const slug = getEventStatusSlug(vipEvent, isAdmin);
   let statusText: string = '';
   switch (slug) {
@@ -675,10 +656,10 @@ const getEventStatusText = (
 };
 
 const formatCurrencyAmount = (
-  originalAmount: number,
+  originalAmount: number | undefined,
   amountUsd: number,
-  currencySymbol: string,
-  exchangeRate: number,
+  currencySymbol?: string,
+  exchangeRate?: number,
   isAdmin: boolean = false,
 ) => {
   if (originalAmount && isAdmin) {
@@ -703,6 +684,8 @@ export {
   formatCurrencyAmount,
   getAccountNameFromTicketSocketId,
   getAddressFromExternalVenue,
+  getEventStatusSlug,
+  getEventStatusText,
   getLocationInfoFromDailyOrderData,
   getLocationInfoFromVenue,
   getOrderExportRow,
@@ -710,8 +693,6 @@ export {
   getOrderExportTableHeader,
   getOrderStatusSlug,
   getOrderStatusText,
-  getTicketDataFromEvents,
-  getEventStatusSlug,
-  getEventStatusText,
   getSellerStatusSlug,
+  getTicketDataFromEvents,
 };

@@ -1,20 +1,28 @@
-"use client";
+'use client';
 
-import { Button, Col, Form, Row } from 'react-bootstrap';
-import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
-import { setAllFaqCategories, setMustSavePage, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import { Faq } from '@/types/public';
-import { ItemDataType } from 'rsuite/esm/internals/types';
-import { RootState } from '@/lib/store';
-import { SelectPicker } from 'rsuite';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { toast } from 'react-toastify';
+import { Button, Col, Input, Row, SelectPicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
+import Textarea from '@/components/common/Textarea';
 import { useGetAllFaqCategories } from '@/hooks/admin/useGetAllFaqCategories';
-import { useRouter } from 'next/navigation';
 import { useUpdateFaq } from '@/hooks/admin/useUpdateFaq';
+import {
+  setAllFaqCategories,
+  setMustSavePage,
+  setReloadFaqs,
+  setSelectedFaq,
+} from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { Faq } from '@/types/public';
+import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
 
 export default function AdminFaqEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -26,17 +34,20 @@ export default function AdminFaqEdit() {
   const goBack = useCallback(() => {
     toast.dismiss();
     router.push('/admin/faqs');
-  },[router]);
+  }, [router]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (currentAdminSelection.faqCategories === undefined) {
         dispatch(setIsLoading(true));
-        getAllFaqCategories().then((response: GetFaqCategoriesResponse) => {
+        void getAllFaqCategories().then((response: GetFaqCategoriesResponse) => {
           dispatch(setAllFaqCategories(response.categories));
         });
         dispatch(setIsLoading(false));
-      } else if (currentAdminSelection.allFaqs === undefined || currentAdminSelection.selectedFaq === undefined) {
+      } else if (
+        currentAdminSelection.allFaqs === undefined ||
+        currentAdminSelection.selectedFaq === undefined
+      ) {
         goBack();
       }
     }, 500);
@@ -85,7 +96,7 @@ export default function AdminFaqEdit() {
       dispatch(setSelectedFaq(faqToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setQuestion = (question: string) => {
     if (!currentAdminSelection.selectedFaq || !question) {
@@ -97,7 +108,7 @@ export default function AdminFaqEdit() {
       dispatch(setSelectedFaq(faqToUpdate));
       markDirty();
     }
-  }
+  };
 
   const setAnswer = (answer: string) => {
     if (!currentAdminSelection.selectedFaq || !answer) {
@@ -109,7 +120,7 @@ export default function AdminFaqEdit() {
       dispatch(setSelectedFaq(faqToUpdate));
       markDirty();
     }
-  }
+  };
 
   const onSubmit = () => {
     if (!currentAdminSelection.selectedFaq) {
@@ -117,7 +128,7 @@ export default function AdminFaqEdit() {
     }
 
     const faqToUpdate: Faq = {
-      ...currentAdminSelection.selectedFaq
+      ...currentAdminSelection.selectedFaq,
     };
 
     if (!faqToUpdate.category || !faqToUpdate.category.categoryId) {
@@ -137,7 +148,7 @@ export default function AdminFaqEdit() {
 
     dispatch(setIsLoading(true));
 
-    updateFaq(faqToUpdate).then((response: ModifyFaqResponse) => {
+    void updateFaq(faqToUpdate).then((response: ModifyFaqResponse) => {
       if (response.success) {
         dispatch(setReloadFaqs(true));
         toast.success('Save FAQ succeeded');
@@ -149,74 +160,72 @@ export default function AdminFaqEdit() {
     });
   };
 
-  const faqCategories: ItemDataType<number>[] = currentAdminSelection?.faqCategories ?
-    currentAdminSelection.faqCategories.map((category) => (
-      {
+  const faqCategories: ItemDataType<number>[] = currentAdminSelection?.faqCategories
+    ? currentAdminSelection.faqCategories.map((category) => ({
         label: `${category.categoryName ?? ''}`,
-        value: category.categoryId
-      }
-    )) : [];
+        value: category.categoryId,
+      }))
+    : [];
 
-  const pageHeader =
-    ((currentAdminSelection.selectedFaq?.faqId ?? 0) > 0) ? 'Edit FAQ' : 'Add FAQ';
+  const pageHeader = (currentAdminSelection.selectedFaq?.faqId ?? 0) > 0 ? 'Edit FAQ' : 'Add FAQ';
 
   const categoryId = currentAdminSelection.selectedFaq?.category?.categoryId ?? 0;
   const question = currentAdminSelection.selectedFaq?.question;
   const answer = currentAdminSelection.selectedFaq?.answer;
 
   return (
-    <Row
-      className="admin-container"
-    >
-      <Col>
-        <Row>
-          <Col><h1>{pageHeader}</h1></Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Category</label>
-            <SelectPicker
-              value={categoryId}
-              data={faqCategories}
-              size="lg"
-              onChange={(cId) => setFaqCategory(cId)}
-              cleanable={false}
-              menuAutoWidth={true}
-              className="admin-seller-select-value"
-              searchable={false}
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">Question</label>
-            <input
-              value={question ?? ''}
-              onChange={(e) => setQuestion(e.target.value)}
-              className="form-control form-control-half"
-              placeholder="FAQ question"
-              type="text"
-            />
-          </Col>
-        </Row>
-        <Row className="form-group">
-          <Col>
-            <label className="mt-4">HTML Text</label>
-            <Form.Control as="textarea"
-              rows={3}
-              id="answer"
-              onChange={(e) => setAnswer(e.currentTarget.value)}
-              value={answer ?? ''}
-              placeholder='Free-form html text to be used as answer'
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Button onClick={onSubmit}>Submit</Button> <Button onClick={confirmGoBack}>Back</Button>
-          </Col>
-        </Row>
-      </Col>
-    </Row>
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <Row className="admin-container">
+        <Col xs={24}>
+          <Row>
+            <Col xs={24} md={12}>
+              <span>Category</span>
+              <br />
+              <SelectPicker
+                block
+                value={categoryId}
+                data={faqCategories}
+                size="lg"
+                onChange={(cId) => setFaqCategory(cId)}
+                cleanable={false}
+                menuAutoWidth={true}
+                searchable={false}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>Question</span>
+              <Input
+                value={question ?? ''}
+                onChange={setQuestion}
+                className="form-control-half"
+                placeholder="FAQ question"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>HTML Text</span>
+              <Textarea
+                className="form-control-half"
+                rows={3}
+                id="answer"
+                onChange={setAnswer}
+                value={answer ?? ''}
+                placeholder="Free-form html text to be used as answer"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <Button onClick={onSubmit}>Submit</Button>{' '}
+              <Button onClick={confirmGoBack}>Back</Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </>
   );
 }
