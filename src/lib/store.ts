@@ -1,4 +1,15 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistReducer,
+  persistStore,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // localStorage for web
 
 import eventAdminSelectionReducer from './adminEventsSelectionSlice';
 import adminReportsSelectionReducer from './adminReportsSelectionSlice';
@@ -8,19 +19,36 @@ import globalSelectionReducer from './globalSelectionSlice';
 import userReportSelectionReducer from './reportSelectionSlice';
 import userActivitySelectionReducer from './userActivitySelectionSlice';
 
-export const store = configureStore({
-  reducer: {
-    adminReportSelection: adminReportsSelectionReducer,
-    adminSelection: adminSelectionReducer,
-    dashboardSelecton: adminDashboardSelectionReducer,
-    eventAdminSelection: eventAdminSelectionReducer,
-    globalSelection: globalSelectionReducer,
-    reportSelection: userReportSelectionReducer,
-    userActivitySelection: userActivitySelectionReducer,
-  },
+const rootReducer = combineReducers({
+  adminReportSelection: adminReportsSelectionReducer,
+  adminSelection: adminSelectionReducer,
+  dashboardSelecton: adminDashboardSelectionReducer, // typo? (selecton)
+  eventAdminSelection: eventAdminSelectionReducer,
+  globalSelection: globalSelectionReducer,
+  reportSelection: userReportSelectionReducer,
+  userActivitySelection: userActivitySelectionReducer,
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // redux-persist dispatches these action types with non-serializable values
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
+
+export const persistor = persistStore(store);
+
+// Types
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
