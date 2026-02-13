@@ -19,7 +19,6 @@ import {
   setFocusControl,
   setHideRevenue,
   setHideServiceFees,
-  setReloadEvents,
   setShowDeletedOrders,
   setShowInactiveOrders,
   setShowOnlyEmails,
@@ -171,83 +170,101 @@ export default function EventDetail(props: EditProps) {
           setHideServiceFeeDisplay(true);
         }
 
-        if (currentReportSelection.reloadEvents) {
-          setIsLoading(true);
-          dispatch(setReloadEvents(false));
+        let newEvent: VipEvent | undefined = currentReportSelection?.currentDetailEvent;
+
+        if (!newEvent || newEvent.externalEventId !== id) {
           const reportSelection: UserReportSelection = { ...currentReportSelection };
           if (!viewInactiveOrders) {
             reportSelection.showInactiveOrders = false;
           }
-          const results = await getEventById(id);
-          if (results && results.event) {
-            const newEvent: VipEvent = results.event;
-            if (newEvent) {
-              if (newEvent.orders && newEvent.orders.length > 0) {
-                const orders: Order[] = [];
-                for (const order of newEvent.orders) {
-                  if (order.isComped && order.tickets) {
-                    for (const ticket of order.tickets) {
-                      if (ticket.ticketTypeId !== 0 || !newEvent.ticketSocketEventId) {
-                        continue;
-                      }
-                      const newOrder: Order = {
-                        currencyAbbrev: '',
-                        currencySymbol: '',
-                        email: ticket.attendeeEmail ?? '',
-                        eventId: 0,
-                        exchangeRate: 0,
-                        hasChargebacks: false,
-                        hasRefunds: false,
-                        isActive: true,
-                        isDeleted: false,
-                        numTickets: 1,
-                        orderId: 0,
-                        phone: ticket.attendeePhone,
-                        purchaseDate: order.purchaseDate,
-                        purchaseTimestamp: '',
-                        purchaserFirstName: ticket.attendeeFirstName ?? '',
-                        purchaserLastName: ticket.attendeeLastName ?? '',
-                        revenue: 0,
-                        revenueUsd: 0,
-                        ticketSocketEventId: newEvent.ticketSocketEventId,
-                        ticketSocketOrderId: order.ticketSocketOrderId,
-                        tickets: [ticket],
-                        totalShirts: order.totalShirts,
-                      };
-                      orders.push(newOrder);
-                    }
-                  } else {
-                    orders.push(order);
-                  }
-                }
-                newEvent.orders = orders.sort(
-                  (a, b) =>
-                    a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
-                    a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
-                    (a.purchaseTimestamp && b.purchaseTimestamp
-                      ? moment(b.purchaseTimestamp).unix() - moment(a.purchaseTimestamp).unix()
-                      : 0),
-                );
-              }
+          newEvent = currentReportSelection?.currentEvents?.find((x) => x.externalEventId === id);
 
-              dispatch(setCurrentDetailEvent(newEvent));
-              if (currentReportSelection.currentEvents !== undefined) {
-                document.title = newEvent.title;
-                currentReportSelection.currentEvents.map((evt) =>
-                  evt.externalEventId === newEvent.externalEventId ? newEvent : evt,
-                );
-                dispatch(setEvents(currentReportSelection.currentEvents));
-              }
+          if (!newEvent) {
+            setIsLoading(true);
+            const results = await getEventById(id);
+            if (results && results.event) {
+              newEvent = results.event;
             }
           }
-          setIsLoading(false);
-          if (currentReportSelection.focusControl && currentReportSelection.focusControl !== '') {
-            const { focusControl } = currentReportSelection;
-            setTimeout(() => {
-              setFocusToControl(focusControl);
-            }, 300);
-            dispatch(setFocusControl(''));
+
+          if (newEvent) {
+            // Build a NEW orders array (never mutate existing arrays)
+            let computedOrders: Order[] = [];
+
+            if (newEvent.orders?.length) {
+              for (const order of newEvent.orders) {
+                if (order.isComped && order.tickets) {
+                  for (const ticket of order.tickets) {
+                    if (ticket.ticketTypeId !== 0 || !newEvent.ticketSocketEventId) continue;
+
+                    computedOrders.push({
+                      currencyAbbrev: '',
+                      currencySymbol: '',
+                      email: ticket.attendeeEmail ?? '',
+                      eventId: 0,
+                      exchangeRate: 0,
+                      hasChargebacks: false,
+                      hasRefunds: false,
+                      isActive: true,
+                      isDeleted: false,
+                      numTickets: 1,
+                      orderId: 0,
+                      phone: ticket.attendeePhone,
+                      purchaseDate: order.purchaseDate,
+                      purchaseTimestamp: '',
+                      purchaserFirstName: ticket.attendeeFirstName ?? '',
+                      purchaserLastName: ticket.attendeeLastName ?? '',
+                      revenue: 0,
+                      revenueUsd: 0,
+                      ticketSocketEventId: newEvent.ticketSocketEventId,
+                      ticketSocketOrderId: order.ticketSocketOrderId,
+                      tickets: [ticket],
+                      totalShirts: order.totalShirts,
+                    });
+                  }
+                } else {
+                  computedOrders.push(order);
+                }
+              }
+
+              // IMPORTANT: sort a copy (sort mutates)
+              computedOrders = [...computedOrders].sort(
+                (a, b) =>
+                  a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
+                  a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
+                  (a.purchaseTimestamp && b.purchaseTimestamp
+                    ? moment(b.purchaseTimestamp).unix() - moment(a.purchaseTimestamp).unix()
+                    : 0),
+              );
+            }
+
+            // Build a NEW event object (don’t assign into newEvent)
+            const updatedEvent: VipEvent = {
+              ...newEvent,
+              orders: computedOrders,
+            };
+
+            dispatch(setCurrentDetailEvent(updatedEvent));
+
+            if (currentReportSelection.currentEvents) {
+              document.title = updatedEvent.title;
+
+              // IMPORTANT: actually use map result (and don’t mutate existing array)
+              const updatedEvents = currentReportSelection.currentEvents.map((evt) =>
+                evt.externalEventId === updatedEvent.externalEventId ? updatedEvent : evt,
+              );
+
+              dispatch(setEvents(updatedEvents));
+            }
           }
+        }
+        setIsLoading(false);
+        if (currentReportSelection.focusControl && currentReportSelection.focusControl !== '') {
+          const { focusControl } = currentReportSelection;
+          setTimeout(() => {
+            setFocusToControl(focusControl);
+          }, 300);
+          dispatch(setFocusControl(''));
         }
       }
     };

@@ -111,4 +111,4 @@ src/Css
 # -------------------------------------------------------
 # Remove if needed, but safe defaults:
 .vercel/
-.yarn/
+.yarn/*
