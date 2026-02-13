@@ -11,12 +11,8 @@ import PageHeader from '@/components/common/PageHeaderComponent';
 import Textarea from '@/components/common/Textarea';
 import { useGetAllFaqCategories } from '@/hooks/admin/useGetAllFaqCategories';
 import { useUpdateFaq } from '@/hooks/admin/useUpdateFaq';
-import {
-  setAllFaqCategories,
-  setMustSavePage,
-  setReloadFaqs,
-  setSelectedFaq,
-} from '@/lib/adminSelectionSlice';
+import { setAllFaqCategories, setAllFaqs } from '@/lib/adminDataSelectionSlice';
+import { setMustSavePage, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Faq } from '@/types/public';
@@ -26,6 +22,7 @@ import ConfirmationDialog from '../../common/confirmationDialogComponent';
 
 export default function AdminFaqEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const dispatch = useDispatch();
   const { updateFaq } = useUpdateFaq();
   const { getAllFaqCategories } = useGetAllFaqCategories();
@@ -38,14 +35,14 @@ export default function AdminFaqEdit() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.faqCategories === undefined) {
+      if (currentAdminDataSelection.faqCategories === undefined) {
         dispatch(setIsLoading(true));
         void getAllFaqCategories().then((response: GetFaqCategoriesResponse) => {
           dispatch(setAllFaqCategories(response.categories));
         });
         dispatch(setIsLoading(false));
       } else if (
-        currentAdminSelection.allFaqs === undefined ||
+        currentAdminDataSelection.allFaqs === undefined ||
         currentAdminSelection.selectedFaq === undefined
       ) {
         goBack();
@@ -151,6 +148,7 @@ export default function AdminFaqEdit() {
     void updateFaq(faqToUpdate).then((response: ModifyFaqResponse) => {
       if (response.success) {
         dispatch(setReloadFaqs(true));
+        dispatch(setAllFaqs(undefined));
         toast.success('Save FAQ succeeded');
         router.push('/admin/faqs');
       } else {
@@ -160,8 +158,8 @@ export default function AdminFaqEdit() {
     });
   };
 
-  const faqCategories: ItemDataType<number>[] = currentAdminSelection?.faqCategories
-    ? currentAdminSelection.faqCategories.map((category) => ({
+  const faqCategories: ItemDataType<number>[] = currentAdminDataSelection?.faqCategories
+    ? currentAdminDataSelection.faqCategories.map((category) => ({
         label: `${category.categoryName ?? ''}`,
         value: category.categoryId,
       }))

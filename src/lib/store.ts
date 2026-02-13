@@ -11,6 +11,7 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // localStorage for web
 
+import adminDataSelectionReducer from './adminDataSelectionSlice';
 import eventAdminSelectionReducer from './adminEventsSelectionSlice';
 import adminReportsSelectionReducer from './adminReportsSelectionSlice';
 import adminSelectionReducer from './adminSelectionSlice';
@@ -20,9 +21,10 @@ import userReportSelectionReducer from './reportSelectionSlice';
 import userActivitySelectionReducer from './userActivitySelectionSlice';
 
 const rootReducer = combineReducers({
+  adminDataSelection: adminDataSelectionReducer,
   adminReportSelection: adminReportsSelectionReducer,
   adminSelection: adminSelectionReducer,
-  dashboardSelecton: adminDashboardSelectionReducer, // typo? (selecton)
+  dashboardSelection: adminDashboardSelectionReducer, // typo? (selecton)
   eventAdminSelection: eventAdminSelectionReducer,
   globalSelection: globalSelectionReducer,
   reportSelection: userReportSelectionReducer,
@@ -32,6 +34,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
+  whitelist: ['globalSelection', 'adminSelection', 'reportSelection'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

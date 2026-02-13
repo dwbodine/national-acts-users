@@ -10,12 +10,8 @@ import PageHeader from '@/components/common/PageHeaderComponent';
 import { useDeleteVenue } from '@/hooks/admin/useDeleteVenue';
 import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
-import {
-  setAdminVenue,
-  setReloadVenues,
-  setVenues,
-  setVenueSearchTerm,
-} from '@/lib/adminSelectionSlice';
+import { setVenues } from '@/lib/adminDataSelectionSlice';
+import { setAdminVenue, setReloadVenues, setVenueSearchTerm } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { ExternalVenue } from '@/types/admin';
@@ -23,6 +19,7 @@ import { GetExternalVenuesResponse, ModifyExternalVenueResponse } from '@/types/
 
 export default function AdminVenuesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const dispatch = useDispatch();
   const { getAllVenues } = useGetAllVenues();
   const { deleteVenue } = useDeleteVenue();
@@ -80,7 +77,7 @@ export default function AdminVenuesIndex() {
     if (!venueId || isNaN(venueId)) {
       return;
     }
-    const venue = currentAdminSelection.venues?.find((x) => x.venueId === venueId);
+    const venue = currentAdminDataSelection.venues?.find((x) => x.venueId === venueId);
     if (venue) {
       dispatch(setAdminVenue(venue));
       setIsLoading(true);
@@ -105,7 +102,7 @@ export default function AdminVenuesIndex() {
     if (!venueId || isNaN(venueId)) {
       return;
     }
-    const venue = currentAdminSelection.venues?.find((x) => x.venueId === venueId);
+    const venue = currentAdminDataSelection.venues?.find((x) => x.venueId === venueId);
     if (venue) {
       void deleteVenue(venue.venueId).then((response: ModifyExternalVenueResponse) => {
         if (response.success) {
@@ -113,6 +110,7 @@ export default function AdminVenuesIndex() {
           dispatch(setVenueSearchTerm(''));
           toast.success('Venue deleted successfully');
           dispatch(setReloadVenues(true));
+          dispatch(setVenues(undefined));
         } else {
           toast.error(response.error);
         }
@@ -125,7 +123,7 @@ export default function AdminVenuesIndex() {
     setLimit(dataKey);
   };
 
-  const data = currentAdminSelection.venues?.filter((v, i) => {
+  const data = currentAdminDataSelection.venues?.filter((v, i) => {
     const start = limit * (page - 1);
     const end = start + limit;
     return i >= start && i < end;
@@ -236,7 +234,7 @@ export default function AdminVenuesIndex() {
                 maxButtons={5}
                 size="xs"
                 layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-                total={currentAdminSelection.venues?.length ?? 0}
+                total={currentAdminDataSelection.venues?.length ?? 0}
                 limitOptions={[10, 30, 50]}
                 limit={limit}
                 activePage={page}

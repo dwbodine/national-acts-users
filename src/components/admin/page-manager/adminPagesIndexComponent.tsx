@@ -9,8 +9,8 @@ import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
 import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
+import { setAllPages } from '@/lib/adminDataSelectionSlice';
 import {
-  setAllPages,
   setAllSellers,
   setPageTypes,
   setReloadPages,
@@ -24,6 +24,7 @@ import { GetPagesResponse, GetPageTypesResponse, GetSellersResponse } from '@/ty
 
 export default function AdminPagesIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const dispatch = useDispatch();
   const { getAllPages } = useGetAllPages();
   const { getPageTypes } = useGetPageTypes();
@@ -76,7 +77,16 @@ export default function AdminPagesIndex() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [getAllPages, dispatch, currentAdminSelection, tableLoading, getAdminSellers, getPageTypes]);
+  }, [
+    getAllPages,
+    dispatch,
+    currentAdminSelection.pageTypes,
+    currentAdminSelection.reloadSellers,
+    currentAdminSelection.reloadPages,
+    tableLoading,
+    getAdminSellers,
+    getPageTypes,
+  ]);
 
   const addPage = () => {
     const page: Page = {
@@ -98,7 +108,7 @@ export default function AdminPagesIndex() {
     if (!pageId || isNaN(pageId)) {
       return;
     }
-    const page = currentAdminSelection.allPages?.find((x) => x.pageId === pageId);
+    const page = currentAdminDataSelection.allPages?.find((x) => x.pageId === pageId);
     if (page) {
       dispatch(setSelectedPage(page));
       setTableLoading(true);
@@ -115,7 +125,7 @@ export default function AdminPagesIndex() {
     return filteredPages;
   };
 
-  const filteredPages = filterPages(currentAdminSelection.allPages);
+  const filteredPages = filterPages(currentAdminDataSelection.allPages);
 
   return (
     <>
@@ -126,7 +136,7 @@ export default function AdminPagesIndex() {
           onChange={setSearchTerm}
           className="search-text-input no-print"
           placeholder="Search for pages by title..."
-          hidden={currentAdminSelection.allPages === undefined}
+          hidden={currentAdminDataSelection.allPages === undefined}
         />
         <Button onClick={addPage}>Add Page</Button>
         <Table height={600} data={filteredPages} bordered cellBordered loading={tableLoading}>

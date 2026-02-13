@@ -20,7 +20,7 @@ import PageHeader from '../common/PageHeaderComponent';
 export default function DashboardBar() {
   const dispatch = useDispatch();
   const { getAllOrders } = useGetAllOrders();
-  const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
+  const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelection);
   const dateRangeTitle = 'Selected date range';
 
   const pageTitle: string = `Home Dashboard`;

@@ -13,12 +13,8 @@ import { ARTIST_SELLER_TYPE } from '@/constants';
 import { useUpdatePageOrder } from '@/hooks/admin/useUpdatePageOrder';
 import { useGetPagesByType } from '@/hooks/common/useGetPagesByType';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
-import {
-  setPageOrders,
-  setPageTypes,
-  setReloadPages,
-  setSelectedPageType,
-} from '@/lib/adminSelectionSlice';
+import { setAllPages, setPageOrders } from '@/lib/adminDataSelectionSlice';
+import { setPageTypes, setReloadPages, setSelectedPageType } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Page } from '@/types/public';
@@ -26,6 +22,7 @@ import { GetPagesResponse, GetPageTypesResponse, ModifyPageResponse } from '@/ty
 
 export default function AdminPageOrderIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const dispatch = useDispatch();
   const { getPagesByType } = useGetPagesByType();
   const { getPageTypes } = useGetPageTypes();
@@ -36,8 +33,8 @@ export default function AdminPageOrderIndex() {
 
   const setPageOrder = (pageId: number, pageOrder: number | undefined) => {
     if (
-      !currentAdminSelection.pageOrders ||
-      currentAdminSelection.pageOrders.length === 0 ||
+      !currentAdminDataSelection.pageOrders ||
+      currentAdminDataSelection.pageOrders.length === 0 ||
       !pageId ||
       isNaN(pageId)
     ) {
@@ -189,11 +186,12 @@ export default function AdminPageOrderIndex() {
     if (pageType) {
       dispatch(setSelectedPageType(pageType));
       dispatch(setReloadPages(true));
+      dispatch(setAllPages(undefined));
     }
   };
 
   const moveUp = (pageId: number) => {
-    if (!pageId || isNaN(pageId) || !currentAdminSelection.pageOrders || !currentPageMap) {
+    if (!pageId || isNaN(pageId) || !currentAdminDataSelection.pageOrders || !currentPageMap) {
       return;
     }
     const page = currentPageMap.get(pageId);
@@ -213,7 +211,7 @@ export default function AdminPageOrderIndex() {
   };
 
   const moveDown = (pageId: number) => {
-    if (!pageId || isNaN(pageId) || !currentAdminSelection.pageOrders || !currentPageMap) {
+    if (!pageId || isNaN(pageId) || !currentAdminDataSelection.pageOrders || !currentPageMap) {
       return;
     }
     const page = currentPageMap.get(pageId);
@@ -233,14 +231,15 @@ export default function AdminPageOrderIndex() {
   };
 
   const onSubmit = () => {
-    if (!currentAdminSelection.pageOrders) {
+    if (!currentAdminDataSelection.pageOrders) {
       return;
     }
-    const pages = [...currentAdminSelection.pageOrders.values()];
+    const pages = [...currentAdminDataSelection.pageOrders.values()];
     dispatch(setIsLoading(true));
     void updatePageOrder(pages).then((response: ModifyPageResponse) => {
       if (response.success) {
         dispatch(setReloadPages(true));
+        dispatch(setAllPages(undefined));
         toast.success('Page order save succeeded');
       } else if (response.error) {
         dispatch(setIsLoading(false));
@@ -262,8 +261,8 @@ export default function AdminPageOrderIndex() {
       }))
     : [];
 
-  const pages = currentAdminSelection?.pageOrders
-    ? [...currentAdminSelection.pageOrders.values()]
+  const pages = currentAdminDataSelection?.pageOrders
+    ? [...currentAdminDataSelection.pageOrders.values()]
     : [];
 
   const pageHeader = `Manage ${pageTypeName} Order`;

@@ -21,7 +21,14 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 import { useUpdateTour } from '@/hooks/admin/useUpdateTour';
-import { setAdminEvents, setAdminTour, setReloadTours } from '@/lib/adminSelectionSlice';
+import { setAdminEvents, setTours } from '@/lib/adminDataSelectionSlice';
+import {
+  setAdminEvent,
+  setAdminOrder,
+  setAdminTour,
+  setReloadEvents,
+  setReloadTours,
+} from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Tour, VipEvent } from '@/types/event';
@@ -29,6 +36,7 @@ import { GetEventsResponse, ModifyTourResponse } from '@/types/responses';
 
 export default function AdminTourEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const dispatch = useDispatch();
   const { getAdminSellerEvents } = useGetAdminSellerEvents();
@@ -54,6 +62,7 @@ export default function AdminTourEdit() {
   const goBack = () => {
     dispatch(setAdminTour(undefined));
     dispatch(setReloadTours(true));
+    dispatch(setTours([]));
     router.push('/admin/tour');
   };
 
@@ -109,6 +118,9 @@ export default function AdminTourEdit() {
           );
         }
         dispatch(setAdminEvents(adminEvents));
+        dispatch(setAdminEvent(undefined));
+        dispatch(setAdminOrder(undefined));
+        dispatch(setReloadEvents(false));
         dispatch(setIsLoading(false));
       }
     });
@@ -141,7 +153,7 @@ export default function AdminTourEdit() {
   const onEventChange = (eventIds: number[]) => {
     if (
       !currentAdminSelection ||
-      !currentAdminSelection.events ||
+      !currentAdminDataSelection.events ||
       !currentAdminSelection.selectedTour ||
       !eventIds ||
       eventIds.length === 0
@@ -152,7 +164,7 @@ export default function AdminTourEdit() {
     const selectedTour = { ...currentAdminSelection.selectedTour };
     const selectedEvents: VipEvent[] = [];
     eventIds.forEach((eventId) => {
-      const evt = currentAdminSelection.events?.find((x) => x.externalEventId === eventId);
+      const evt = currentAdminDataSelection.events?.find((x) => x.externalEventId === eventId);
       if (evt) {
         selectedEvents.push(evt);
       }
@@ -247,6 +259,7 @@ export default function AdminTourEdit() {
     void updateTour(tourToUpdate).then((response: ModifyTourResponse) => {
       if (response.success) {
         dispatch(setReloadTours(true));
+        dispatch(setTours([]));
         toast.success('Save tour succeeded');
         router.push('/admin/tour');
       } else {
@@ -268,7 +281,7 @@ export default function AdminTourEdit() {
     } else {
       eventId = parseInt(item.value);
     }
-    const evt = currentAdminSelection.events?.find((x) => x.externalEventId === eventId);
+    const evt = currentAdminDataSelection.events?.find((x) => x.externalEventId === eventId);
     return evt ? (
       <span>
         {moment(evt.eventDate).format('M/D/YYYY')} - {label}
@@ -364,8 +377,8 @@ export default function AdminTourEdit() {
   const disabledSellers = currentAdminSelection.sellerId ? [currentAdminSelection.sellerId] : [];
 
   const eventList: ItemDataType<number>[] =
-    currentAdminSelection.events && currentAdminSelection.events.length > 0
-      ? currentAdminSelection.events?.map((evt) => ({
+    currentAdminDataSelection.events && currentAdminDataSelection.events.length > 0
+      ? currentAdminDataSelection.events?.map((evt) => ({
           label: `${evt.title}`,
           value: evt.externalEventId,
         }))

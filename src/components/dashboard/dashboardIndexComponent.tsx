@@ -32,7 +32,7 @@ import YearToDateWidget from './widgets/yearToDateWidgetComponent';
 export default function DashboardIndex() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const { isLoading } = globalSelection;
-  const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelecton);
+  const currentDashboardSelection = useSelector((state: RootState) => state.dashboardSelection);
   const [chartsHidden, setChartsHidden] = useState(true);
   const { Column, HeaderCell, Cell } = Table;
 

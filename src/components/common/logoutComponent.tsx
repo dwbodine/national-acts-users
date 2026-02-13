@@ -20,6 +20,7 @@ export default function LogoutComponent() {
       const err = searchParams.get('err');
       void logActivityData(UserActivityType.Logout).then(() => {
         resetStores();
+        localStorage.clear();
         void logout().then(() => {
           let loginUrl = '/login';
           if (err) {

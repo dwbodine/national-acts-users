@@ -12,15 +12,14 @@ import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useGetTours } from '@/hooks/admin/useGetTours';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { setAdminEvents, setTours } from '@/lib/adminDataSelectionSlice';
 import {
-  setAdminEvents,
   setAdminSellerId,
   setAdminTour,
   setAllSellers,
   setCountries,
   setReloadCountries,
   setReloadTours,
-  setTours,
 } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
@@ -37,6 +36,7 @@ import AdminSellerSelect from '../common/adminSellerSelectComponent';
 export default function AdminToursIndex() {
   const { Column, HeaderCell, Cell } = Table;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const { getSellers } = useGetSellers();
   const { getTours } = useGetTours();
   const { getAdminSellerEvents } = useGetAdminSellerEvents();
@@ -63,6 +63,7 @@ export default function AdminToursIndex() {
         dispatch(setIsLoading(true));
         dispatch(setAdminSellerId(undefined));
         dispatch(setReloadTours(true));
+        dispatch(setTours([]));
         void getSellers().then((response: GetSellersResponse) => {
           dispatch(setAllSellers(response.sellers));
           dispatch(setIsLoading(false));
@@ -84,6 +85,7 @@ export default function AdminToursIndex() {
           } else {
             if (response.tours) {
               dispatch(setTours(response.tours));
+              dispatch(setReloadTours(false));
             }
             if (currentAdminSelection.sellerId) {
               void getAdminSellerEvents([currentAdminSelection.sellerId]).then(
@@ -104,7 +106,7 @@ export default function AdminToursIndex() {
             }
           }
         });
-      } else if (currentAdminSelection.tours !== undefined && tableLoading) {
+      } else if (currentAdminDataSelection.tours !== undefined && tableLoading) {
         setTimeout(() => {
           setTableLoading(false);
         }, 300);
@@ -119,18 +121,19 @@ export default function AdminToursIndex() {
     const updateSellerId = sellerId && !isNaN(sellerId) ? sellerId : undefined;
     dispatch(setAdminSellerId(updateSellerId));
     dispatch(setReloadTours(true));
+    dispatch(setTours([]));
   };
 
   const editTour = (tourId: number) => {
     if (
       !tourId ||
       isNaN(tourId) ||
-      !currentAdminSelection.tours ||
-      currentAdminSelection.tours.length === 0
+      !currentAdminDataSelection.tours ||
+      currentAdminDataSelection.tours.length === 0
     ) {
       return;
     }
-    const tour = currentAdminSelection.tours.find((x) => x.tourId === tourId);
+    const tour = currentAdminDataSelection.tours.find((x) => x.tourId === tourId);
     if (!tour) {
       return;
     }
@@ -143,7 +146,7 @@ export default function AdminToursIndex() {
     if (!currentAdminSelection.sellerId) {
       toast.error('Must select a seller first');
       return;
-    } else if (!currentAdminSelection.events || currentAdminSelection.events.length === 0) {
+    } else if (!currentAdminDataSelection.events || currentAdminDataSelection.events.length === 0) {
       toast.error('No future events to add to a tour');
       return;
     }
@@ -184,7 +187,7 @@ export default function AdminToursIndex() {
           <Col xs={24}>
             <Table
               autoHeight={true}
-              data={currentAdminSelection.tours}
+              data={currentAdminDataSelection.tours}
               bordered
               cellBordered
               loading={tableLoading}

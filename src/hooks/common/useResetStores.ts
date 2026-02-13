@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 
+import { resetAdminData } from '@/lib/adminDataSelectionSlice';
 import { resetAllAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import { resetAdminReports } from '@/lib/adminReportsSelectionSlice';
 import { resetAdmin } from '@/lib/adminSelectionSlice';
@@ -18,6 +19,7 @@ export const useResetStores = () => {
     dispatch(resetUserActivity());
     dispatch(resetGlobalSettings());
     dispatch(resetAllAdminEvents());
+    dispatch(resetAdminData());
   };
 
   return { resetStores };

@@ -10,6 +10,7 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
+import { setVenues } from '@/lib/adminDataSelectionSlice';
 import {
   setAdminVenue,
   setCountries,
@@ -127,6 +128,7 @@ export default function AdminVenueEdit() {
     void updateVenue(venueToUpdate).then((response: ModifyExternalVenueResponse) => {
       if (response.success) {
         dispatch(setReloadVenues(true));
+        dispatch(setVenues(undefined));
         dispatch(setAdminVenue(undefined));
         const message = isUpdate ? 'Venue updated successfully' : 'Venue added successfully';
         toast.success(message);

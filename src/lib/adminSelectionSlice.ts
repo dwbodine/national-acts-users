@@ -2,24 +2,18 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
-import { Country, Faq, FaqCategory, Page, PageType, SiteSetting } from '@/types/public';
+import { Country, Faq, Page, PageType, SiteSetting } from '@/types/public';
 
 import { AdminSelection, Role, User } from '../types/user';
 
 const initialState: AdminSelection = {
-  allFaqs: undefined,
-  allPages: undefined,
   allSellers: undefined,
   allSettings: undefined,
   countries: undefined,
   end: undefined,
-  events: undefined,
-  faqCategories: undefined,
   mustSaveEvent: false,
   mustSaveOrder: false,
   mustSavePage: false,
-  orders: undefined,
-  pageOrders: undefined,
   pageTypes: undefined,
   reloadCountries: true,
   reloadEvents: true,
@@ -45,11 +39,9 @@ const initialState: AdminSelection = {
   sellerId: undefined,
   start: undefined,
   ticketSocketAccounts: undefined,
-  tours: undefined,
   uploadedFile: undefined,
   users: undefined,
   venueSearchTerm: undefined,
-  venues: undefined,
 };
 
 export const adminSelectionSlice = createSlice({
@@ -78,16 +70,9 @@ export const adminSelectionSlice = createSlice({
       state.selectedSeller = undefined;
       state.selectedTour = undefined;
       state.selectedVenue = undefined;
-      state.pageOrders = undefined;
       state.pageTypes = undefined;
       state.roles = undefined;
       state.users = undefined;
-      state.events = undefined;
-      state.allPages = undefined;
-      state.allFaqs = undefined;
-      state.ticketSocketEvents = undefined;
-      state.tours = undefined;
-      state.venues = undefined;
       state.mustSaveEvent = false;
       state.mustSaveOrder = false;
       state.mustSavePage = false;
@@ -96,7 +81,6 @@ export const adminSelectionSlice = createSlice({
       state.reloadSettings = true;
       state.uploadedFile = undefined;
       state.reloadSellers = true;
-      state.orders = undefined;
       state.venueSearchTerm = undefined;
       return state;
     },
@@ -109,19 +93,8 @@ export const adminSelectionSlice = createSlice({
       state.selectedEvent = action.payload;
       return state;
     },
-    setAdminEvents: (state, action: PayloadAction<VipEvent[]>) => {
-      state.events = action.payload;
-      state.selectedEvent = undefined;
-      state.selectedOrder = undefined;
-      state.reloadEvents = false;
-      return state;
-    },
     setAdminOrder: (state, action: PayloadAction<Order | undefined>) => {
       state.selectedOrder = action.payload;
-      return state;
-    },
-    setAdminOrders: (state, action: PayloadAction<Order[] | undefined>) => {
-      state.orders = action.payload;
       return state;
     },
     setAdminSeller: (state, action: PayloadAction<Seller | undefined>) => {
@@ -142,20 +115,8 @@ export const adminSelectionSlice = createSlice({
       state.selectedVenue = action.payload;
       return state;
     },
-    setAllFaqCategories: (state, action: PayloadAction<FaqCategory[] | undefined>) => {
-      state.faqCategories = action.payload;
-      return state;
-    },
-    setAllFaqs: (state, action: PayloadAction<Faq[] | undefined>) => {
-      state.allFaqs = action.payload;
-      return state;
-    },
     setSelectedFaqCategory: (state, action: PayloadAction<number | undefined>) => {
       state.selectedFaqCategory = action.payload;
-      return state;
-    },
-    setAllPages: (state, action: PayloadAction<Page[] | undefined>) => {
-      state.allPages = action.payload;
       return state;
     },
     setAllSellers: (state, action: PayloadAction<Seller[] | undefined>) => {
@@ -182,10 +143,6 @@ export const adminSelectionSlice = createSlice({
       state.mustSavePage = action.payload;
       return state;
     },
-    setPageOrders: (state, action: PayloadAction<Page[]>) => {
-      state.pageOrders = action.payload;
-      return state;
-    },
     setPageTypes: (state, action: PayloadAction<PageType[]>) => {
       state.pageTypes = action.payload;
       return state;
@@ -202,7 +159,6 @@ export const adminSelectionSlice = createSlice({
       state.reloadFaqs = action.payload;
       if (state.reloadFaqs) {
         state.selectedFaq = undefined;
-        state.allFaqs = undefined;
       }
       return state;
     },
@@ -210,7 +166,6 @@ export const adminSelectionSlice = createSlice({
       state.reloadPages = action.payload;
       if (state.reloadPages) {
         state.selectedPage = undefined;
-        state.allPages = undefined;
       }
       return state;
     },
@@ -240,7 +195,6 @@ export const adminSelectionSlice = createSlice({
       state.reloadTours = action.payload;
       if (state.reloadTours) {
         state.selectedTour = undefined;
-        state.tours = undefined;
       }
       return state;
     },
@@ -256,7 +210,6 @@ export const adminSelectionSlice = createSlice({
       state.reloadVenues = action.payload;
       if (state.reloadVenues) {
         state.selectedVenue = undefined;
-        state.venues = undefined;
       }
       return state;
     },
@@ -289,15 +242,6 @@ export const adminSelectionSlice = createSlice({
       state.ticketSocketAccounts = action.payload;
       return state;
     },
-    setTicketSocketEventsOnly: (state, action: PayloadAction<VipEvent[] | undefined>) => {
-      state.ticketSocketEvents = action.payload;
-      return state;
-    },
-    setTours: (state, action: PayloadAction<Tour[]>) => {
-      state.tours = action.payload;
-      state.reloadTours = false;
-      return state;
-    },
     setUploadedFile: (state, action: PayloadAction<string | undefined>) => {
       state.uploadedFile = action.payload;
       return state;
@@ -309,10 +253,6 @@ export const adminSelectionSlice = createSlice({
     },
     setVenueSearchTerm: (state, action: PayloadAction<string | undefined>) => {
       state.venueSearchTerm = action.payload;
-      return state;
-    },
-    setVenues: (state, action: PayloadAction<ExternalVenue[] | undefined>) => {
-      state.venues = action.payload;
       return state;
     },
   },
@@ -332,35 +272,26 @@ export const {
   setAdminOrder,
   setReloadEvents,
   setAllSellers,
-  setAdminEvents,
   setMustSaveEvent,
   setMustSaveOrder,
   setMustSavePage,
-  setTours,
   setAdminTour,
   setReloadTours,
   setReloadSettings,
   setAllSettings,
   setReloadVenues,
   setAdminVenue,
-  setVenues,
   setAdminSeller,
   setReloadSellers,
   setTicketSocketAccounts,
   setReloadPages,
   setSelectedPage,
   setSelectedPageType,
-  setAllPages,
-  setPageOrders,
   setPageTypes,
-  setTicketSocketEventsOnly,
-  setAdminOrders,
   setCountries,
   setSelectedFaqCategory,
   setVenueSearchTerm,
   setReloadCountries,
-  setAllFaqs,
-  setAllFaqCategories,
   setSelectedFaq,
   setReloadFaqs,
 } = adminSelectionSlice.actions;

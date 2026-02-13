@@ -341,6 +341,8 @@ export type UserActivity = {
 };
 
 export type AdminSelection = {
+  allSellers?: Seller[] | undefined;
+  allSettings?: SiteSetting[] | undefined;
   sellerId?: number;
   start?: number;
   end?: number;
@@ -367,25 +369,26 @@ export type AdminSelection = {
   mustSaveOrder?: boolean;
   mustSaveEvent?: boolean;
   mustSavePage?: boolean;
-  allSellers?: Seller[] | undefined;
-  allSettings?: SiteSetting[] | undefined;
-  allPages?: Page[] | undefined;
-  pageOrders?: Page[] | undefined;
-  allFaqs?: Faq[] | undefined;
-  faqCategories?: FaqCategory[] | undefined;
   selectedFaqCategory?: number | undefined;
   countries: Country[] | undefined;
   pageTypes?: PageType[] | undefined;
   roles?: Role[] | undefined;
   users?: User[] | undefined;
-  events?: VipEvent[] | undefined;
-  orders?: Order[] | undefined;
   ticketSocketAccounts?: TicketSocketAccount[] | undefined;
+  uploadedFile?: string;
+  venueSearchTerm?: string;
+};
+
+export type AdminDataSelection = {
+  allPages?: Page[] | undefined;
+  events?: VipEvent[] | undefined;
+  pageOrders?: Page[] | undefined;
+  allFaqs?: Faq[] | undefined;
+  faqCategories?: FaqCategory[] | undefined;
+  orders?: Order[] | undefined;
   ticketSocketEvents?: VipEvent[] | undefined;
   tours?: Tour[] | undefined;
-  uploadedFile?: string;
   venues?: ExternalVenue[] | undefined;
-  venueSearchTerm?: string;
 };
 
 export type AdminReportsSelection = {

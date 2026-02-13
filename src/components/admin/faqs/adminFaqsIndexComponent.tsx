@@ -11,12 +11,8 @@ import { useDeleteFaq } from '@/hooks/admin/useDeleteFaq';
 import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';
 import { useMoveFaqDown } from '@/hooks/admin/useMoveFaqDown';
 import { useMoveFaqUp } from '@/hooks/admin/useMoveFaqUp';
-import {
-  setAllFaqs,
-  setReloadFaqs,
-  setSelectedFaq,
-  setSelectedFaqCategory,
-} from '@/lib/adminSelectionSlice';
+import { setAllFaqs } from '@/lib/adminDataSelectionSlice';
+import { setReloadFaqs, setSelectedFaq, setSelectedFaqCategory } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Faq } from '@/types/public';
@@ -24,6 +20,7 @@ import { GetFaqsResponse } from '@/types/responses';
 
 export default function AdminFaqsIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const dispatch = useDispatch();
   const { getAllFaqs } = useGetAllFaqs();
   const { moveFaqUp } = useMoveFaqUp();
@@ -81,7 +78,7 @@ export default function AdminFaqsIndex() {
     if (!faqId || isNaN(faqId)) {
       return;
     }
-    const faq = currentAdminSelection.allFaqs?.find((x) => x.faqId === faqId);
+    const faq = currentAdminDataSelection.allFaqs?.find((x) => x.faqId === faqId);
     if (faq) {
       dispatch(setSelectedFaq(faq));
       setTableLoading(true);
@@ -95,6 +92,7 @@ export default function AdminFaqsIndex() {
     }
     void moveFaqUp(faqId).then(() => {
       dispatch(setReloadFaqs(true));
+      dispatch(setAllFaqs(undefined));
       dispatch(setIsLoading(true));
     });
   };
@@ -105,6 +103,7 @@ export default function AdminFaqsIndex() {
     }
     void moveFaqDown(faqId).then(() => {
       dispatch(setReloadFaqs(true));
+      dispatch(setAllFaqs(undefined));
       dispatch(setIsLoading(true));
     });
   };
@@ -115,6 +114,7 @@ export default function AdminFaqsIndex() {
     }
     void deleteFaq(faqId).then(() => {
       dispatch(setReloadFaqs(true));
+      dispatch(setAllFaqs(undefined));
       dispatch(setIsLoading(true));
     });
   };
@@ -124,7 +124,7 @@ export default function AdminFaqsIndex() {
     dispatch(setSelectedFaqCategory(categoryId));
   };
 
-  const filteredFaqs = currentAdminSelection.allFaqs?.filter(
+  const filteredFaqs = currentAdminDataSelection.allFaqs?.filter(
     (x) => x.category.categoryId == currentCategory,
   );
 

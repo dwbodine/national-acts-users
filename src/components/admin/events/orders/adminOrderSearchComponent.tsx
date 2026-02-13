@@ -8,16 +8,19 @@ import { Button, Col, Input, Row, Table } from 'rsuite';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
 import { useSearchOrders } from '@/hooks/admin/useSearchOrders';
-import { setAdminOrders } from '@/lib/adminSelectionSlice';
+import { setAdminOrders } from '@/lib/adminDataSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Order } from '@/types/event';
 import { GetOrdersResponse } from '@/types/responses';
+import { AdminDataSelection } from '@/types/user';
 import { getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
 
 export default function AdminOrdersSearch() {
   const { Column, HeaderCell, Cell } = Table;
-  const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection: AdminDataSelection = useSelector(
+    (state: RootState) => state.adminDataSelection,
+  );
   const [tableLoading, setTableLoading] = useState(true);
   const dispatch = useDispatch();
   const { searchOrders } = useSearchOrders();
@@ -65,10 +68,10 @@ export default function AdminOrdersSearch() {
   };
 
   const viewOrder = (ticketSocketOrderId: number) => {
-    if (!ticketSocketOrderId || isNaN(ticketSocketOrderId) || !currentAdminSelection.orders) {
+    if (!ticketSocketOrderId || isNaN(ticketSocketOrderId) || !currentAdminDataSelection.orders) {
       return;
     }
-    const order = currentAdminSelection.orders.find(
+    const order = currentAdminDataSelection.orders?.find(
       (x) => x.ticketSocketOrderId === ticketSocketOrderId,
     );
     if (!order) {
@@ -78,7 +81,7 @@ export default function AdminOrdersSearch() {
     window.open(`/admin/events/orders/edit/?id=${order.ticketSocketOrderId}`);
   };
 
-  const numOrders = currentAdminSelection.orders?.length ?? 0;
+  const numOrders = currentAdminDataSelection.orders?.length ?? 0;
 
   return (
     <>
@@ -105,7 +108,7 @@ export default function AdminOrdersSearch() {
           <Col xs={24}>
             <Table
               autoHeight={true}
-              data={currentAdminSelection.orders}
+              data={currentAdminDataSelection.orders}
               bordered
               cellBordered
               loading={tableLoading}

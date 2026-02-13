@@ -19,6 +19,7 @@ import {
   setExpandedEvent,
   setReloadAdminEvents,
 } from '@/lib/adminEventsSelectionSlice';
+import { setAdminEvent, setAdminOrder, setReloadEvents } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { Note } from '@/types/event';
 import { GetEventsResponse, GetNotesResponse } from '@/types/responses';
@@ -67,6 +68,9 @@ export default function AllEvents() {
       ) {
         dispatch(setReloadAdminEvents(false));
         dispatch(setAdminEvents(undefined));
+        dispatch(setAdminEvent(undefined));
+        dispatch(setAdminOrder(undefined));
+        dispatch(setReloadEvents(false));
         dispatch(setAdminNotes(undefined));
         dispatch(setIsLoading(true));
         void getAllEvents(currentReportSelection.start, currentReportSelection.end).then(
@@ -97,9 +101,15 @@ export default function AllEvents() {
                     const notes: Note[] = resp.notes ? resp.notes : [];
                     dispatch(setAdminNotes(notes));
                   }
+                  dispatch(setAdminEvent(undefined));
+                  dispatch(setAdminOrder(undefined));
+                  dispatch(setReloadEvents(false));
                 });
               } else {
                 dispatch(setAdminEvents(filteredEvents));
+                dispatch(setAdminEvent(undefined));
+                dispatch(setAdminOrder(undefined));
+                dispatch(setReloadEvents(false));
                 dispatch(setAdminNotes([]));
               }
             } else if (response.statusCode === 401 || response.statusCode === 422) {
@@ -108,6 +118,9 @@ export default function AllEvents() {
             } else {
               dispatch(setIsLoading(false));
               dispatch(setAdminEvents(undefined));
+              dispatch(setAdminEvent(undefined));
+              dispatch(setAdminOrder(undefined));
+              dispatch(setReloadEvents(false));
               dispatch(setAdminNotes(undefined));
               toast.error(response.error);
             }

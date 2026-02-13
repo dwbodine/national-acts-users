@@ -15,9 +15,9 @@ import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useSetOrdersDeleted } from '@/hooks/order/useSetOrdersDeleted';
 import { useSetOrdersInactive } from '@/hooks/order/useSetOrdersInactive';
+import { setAdminEvents } from '@/lib/adminDataSelectionSlice';
 import {
   setAdminEvent,
-  setAdminEvents,
   setAdminOrder,
   setAdminTour,
   setReloadEvents,
@@ -83,6 +83,9 @@ export default function AdminOrdersIndex(props: EditProps) {
         void getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
           if (response.events && !response.error) {
             dispatch(setAdminEvents(response.events));
+            dispatch(setAdminEvent(undefined));
+            dispatch(setAdminOrder(undefined));
+            dispatch(setReloadEvents(false));
             const currentEvent = response.events.find((x) => x.externalEventId === selectedEventId);
             if (currentEvent) {
               dispatch(setAdminEvent(currentEvent));

@@ -13,6 +13,7 @@ import { useWindowSize } from '@/hooks/common/useWindowSize';
 import { useGetEvents } from '@/hooks/event/useGetEvents';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useHasPermission } from '@/hooks/user/useHasPermission';
+import { setReloadTours } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setDateRange, setEvents, setReloadEvents, setTours } from '@/lib/reportSelectionSlice';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
@@ -148,6 +149,7 @@ export default function CurrentEvents() {
                   } else {
                     dispatch(setTours(undefined));
                   }
+                  dispatch(setReloadTours(false));
                   dispatch(setIsLoading(false));
                   setChartsHidden(false);
                 },

@@ -20,11 +20,17 @@ import { useSetEventsDeleted } from '@/hooks/event/useSetEventsDeleted';
 import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
 import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
 import { useSetEventsLiveInBandsInTown } from '@/hooks/event/useSetEventsLiveInBandsInTown';
+import {
+  setAdminEvents,
+  setTicketSocketEventsOnly,
+  setTours,
+  setVenues,
+} from '@/lib/adminDataSelectionSlice';
 import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
 import {
   setAdminDates,
   setAdminEvent,
-  setAdminEvents,
+  setAdminOrder,
   setAdminSellerId,
   setAdminTour,
   setAllSellers,
@@ -34,8 +40,6 @@ import {
   setReloadSellers,
   setReloadTours,
   setReloadVenues,
-  setTicketSocketEventsOnly,
-  setTours,
 } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
@@ -57,6 +61,7 @@ import AdminSellerSelect from '../common/adminSellerSelectComponent';
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const { getSellers } = useGetSellers();
   const { getAdminEvents } = useGetAdminEvents();
@@ -74,7 +79,7 @@ export default function AdminEventsIndex() {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [eventIdList, setEventIdList] = useState<number[]>([]);
   const allEventIds: number[] =
-    currentAdminSelection.events?.map((evt) => evt.externalEventId) ?? [];
+    currentAdminDataSelection.events?.map((evt) => evt.externalEventId) ?? [];
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -128,6 +133,9 @@ export default function AdminEventsIndex() {
         void getAdminEvents(adminSelection).then((response: GetEventsResponse) => {
           if (response.events && !response.error) {
             dispatch(setAdminEvents(response.events));
+            dispatch(setAdminEvent(undefined));
+            dispatch(setAdminOrder(undefined));
+            dispatch(setReloadEvents(false));
             if (response.events?.length > 0) {
               const [firstEvent] = response.events;
               const lastEvent = response.events[response.events.length - 1];
@@ -141,6 +149,7 @@ export default function AdminEventsIndex() {
                 };
                 dispatch(setAdminDates(selection));
                 void getTours(sellerId).then((tourResponse: GetToursResponse) => {
+                  dispatch(setReloadTours(false));
                   if (!tourResponse.error && tourResponse.tours) {
                     dispatch(setTours(tourResponse.tours));
                     void getTicketSocketEventsOnly(adminSelection.sellerId).then(
@@ -194,6 +203,7 @@ export default function AdminEventsIndex() {
     dispatch(setAdminTour(undefined));
     dispatch(setTicketSocketEventsOnly(undefined));
     dispatch(setReloadTours(true));
+    dispatch(setTours([]));
     dispatch(setReloadEvents(true));
   };
 
@@ -235,6 +245,7 @@ export default function AdminEventsIndex() {
     };
     dispatch(setReloadAdminEvents(false));
     dispatch(setReloadVenues(true));
+    dispatch(setVenues(undefined));
     dispatch(setAdminEvent(vipEvent));
     router.push('/admin/events/edit');
   };
@@ -243,12 +254,12 @@ export default function AdminEventsIndex() {
     if (
       !eventId ||
       isNaN(eventId) ||
-      !currentAdminSelection.events ||
-      currentAdminSelection.events.length === 0
+      !currentAdminDataSelection.events ||
+      currentAdminDataSelection.events.length === 0
     ) {
       return;
     }
-    const vipEvent = currentAdminSelection.events.find((x) => x.externalEventId === eventId);
+    const vipEvent = currentAdminDataSelection.events.find((x) => x.externalEventId === eventId);
     if (!vipEvent) {
       return;
     }
@@ -259,12 +270,12 @@ export default function AdminEventsIndex() {
   const manageOrders = (eventId: number) => {
     if (
       isNaN(eventId) ||
-      !currentAdminSelection.events ||
-      currentAdminSelection.events.length === 0
+      !currentAdminDataSelection.events ||
+      currentAdminDataSelection.events.length === 0
     ) {
       return;
     }
-    const vipEvent = currentAdminSelection.events.find((x) => x.externalEventId === eventId);
+    const vipEvent = currentAdminDataSelection.events.find((x) => x.externalEventId === eventId);
     if (!vipEvent || !vipEvent.orders || vipEvent.orders.length === 0) {
       return;
     }
@@ -482,13 +493,13 @@ export default function AdminEventsIndex() {
     if (!tourId || isNaN(tourId) || tourId <= 0) {
       tourId = 0;
     }
-    const tour = currentAdminSelection.tours?.find((x) => x.tourId === tourId);
+    const tour = currentAdminDataSelection.tours?.find((x) => x.tourId === tourId);
     dispatch(setAdminTour(tour));
     dispatch(setReloadEvents(true));
   };
 
-  const tourList: ItemDataType<number>[] = currentAdminSelection?.tours
-    ? currentAdminSelection?.tours?.map((tour) => ({
+  const tourList: ItemDataType<number>[] = currentAdminDataSelection?.tours
+    ? currentAdminDataSelection?.tours?.map((tour) => ({
         label: `${tour.tourName}`,
         value: tour.tourId,
       }))
@@ -620,7 +631,7 @@ export default function AdminEventsIndex() {
           <Col xs={24}>
             <Table
               autoHeight={true}
-              data={currentAdminSelection.events}
+              data={currentAdminDataSelection.events}
               bordered
               cellBordered
               loading={tableLoading}

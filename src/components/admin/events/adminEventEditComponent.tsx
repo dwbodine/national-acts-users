@@ -33,6 +33,7 @@ import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { setTicketSocketEventsOnly, setVenues } from '@/lib/adminDataSelectionSlice';
 import {
   setAdminDates,
   setAdminEvent,
@@ -45,8 +46,6 @@ import {
   setReloadEvents,
   setReloadSellers,
   setReloadVenues,
-  setTicketSocketEventsOnly,
-  setVenues,
 } from '@/lib/adminSelectionSlice';
 import { setIsLoading, setSaveInProgress } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
@@ -64,7 +63,6 @@ import {
   ModifyNoteResponse,
   ModifyOrderResponse,
 } from '@/types/responses';
-import { AdminSelection } from '@/types/user';
 
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import AdminFileUpload from '../common/adminFileUploadComponent';
@@ -72,9 +70,8 @@ import AdminFileUpload from '../common/adminFileUploadComponent';
 export default function AdminEventEdit(props: EditProps) {
   const id: number | undefined = props.Id as number;
   const hasId: boolean = id !== undefined && id > 0;
-  const currentAdminSelection: AdminSelection = useSelector(
-    (state: RootState) => state.adminSelection,
-  );
+  const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const dispatch = useDispatch();
   const { updateVenue } = useUpdateVenue();
@@ -198,7 +195,7 @@ export default function AdminEventEdit(props: EditProps) {
         hasId &&
         currentAdminSelection.countries !== undefined &&
         currentAdminSelection.allSellers !== undefined &&
-        currentAdminSelection.venues !== undefined;
+        currentAdminDataSelection.venues !== undefined;
 
       if (canLoadEvent) {
         void loadEventById();
@@ -210,7 +207,7 @@ export default function AdminEventEdit(props: EditProps) {
         currentAdminSelection &&
         currentAdminSelection.countries &&
         currentAdminSelection.allSellers &&
-        currentAdminSelection.venues &&
+        currentAdminDataSelection.venues &&
         globalSelection.isLoading &&
         !globalSelection.saveInProgress;
 
@@ -220,7 +217,7 @@ export default function AdminEventEdit(props: EditProps) {
     };
 
     const timeoutId = setTimeout(() => {
-      void run;
+      void run();
     }, 300);
 
     return () => clearTimeout(timeoutId);
@@ -231,7 +228,7 @@ export default function AdminEventEdit(props: EditProps) {
     currentAdminSelection.selectedEvent,
     currentAdminSelection.countries,
     currentAdminSelection.allSellers,
-    currentAdminSelection.venues,
+    currentAdminDataSelection.venues,
     id,
     globalSelection.isLoading,
     globalSelection.saveInProgress,
@@ -901,14 +898,15 @@ export default function AdminEventEdit(props: EditProps) {
       if (response.success) {
         const newVenue = response.updatedVenue;
         const adminSelection = { ...currentAdminSelection };
+        const adminDataSelection = { ...currentAdminDataSelection };
         if (
           newVenue !== undefined &&
-          adminSelection.venues !== undefined &&
+          adminDataSelection.venues !== undefined &&
           adminSelection.selectedEvent !== undefined &&
-          !adminSelection.venues.find((x) => x.venueId === newVenue.venueId)
+          !adminDataSelection.venues.find((x) => x.venueId === newVenue.venueId)
         ) {
           dispatch(setAdminVenue(undefined));
-          const venueList = [...adminSelection.venues];
+          const venueList = [...adminDataSelection.venues];
           venueList.push(newVenue);
           venueList.sort((a, b) => (a.venue < b.venue ? -1 : a.venue > b.venue ? 1 : 0));
           dispatch(setVenues(venueList));
@@ -1169,15 +1167,15 @@ export default function AdminEventEdit(props: EditProps) {
     notes.push(<div key="note_00">n/a</div>);
   }
 
-  const venueList: ItemDataType<number>[] = currentAdminSelection?.venues
-    ? currentAdminSelection?.venues?.map((venue) => ({
+  const venueList: ItemDataType<number>[] = currentAdminDataSelection?.venues
+    ? currentAdminDataSelection?.venues?.map((venue) => ({
         label: `${venue.venue} ${getExternalVenueLocation(venue)}`,
         value: venue.venueId,
       }))
     : [];
 
-  const eventList: ItemDataType<number>[] = currentAdminSelection?.ticketSocketEvents
-    ? currentAdminSelection?.ticketSocketEvents?.map((evt) => ({
+  const eventList: ItemDataType<number>[] = currentAdminDataSelection?.ticketSocketEvents
+    ? currentAdminDataSelection?.ticketSocketEvents?.map((evt) => ({
         label: `${moment(evt.eventDate).format('MM/DD/YYYY')} - ${evt.title}`,
         value: evt.ticketSocketEventId,
       }))

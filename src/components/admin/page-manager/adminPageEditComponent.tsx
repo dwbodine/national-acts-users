@@ -16,6 +16,7 @@ import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { setAllPages } from '@/lib/adminDataSelectionSlice';
 import {
   setAllSellers,
   setCountries,
@@ -42,6 +43,7 @@ import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminPageEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const route = currentAdminSelection.selectedPage?.route;
   const router = useRouter();
   const dispatch = useDispatch();
@@ -88,7 +90,7 @@ export default function AdminPageEdit() {
           dispatch(setIsLoading(false));
         });
       } else if (
-        currentAdminSelection.allPages === undefined ||
+        currentAdminDataSelection.allPages === undefined ||
         currentAdminSelection.selectedPage === undefined
       ) {
         goBack();
@@ -559,6 +561,7 @@ export default function AdminPageEdit() {
     void updatePage(pageToUpdate).then((response: ModifyPageResponse) => {
       if (response.success) {
         dispatch(setReloadPages(true));
+        dispatch(setAllPages(undefined));
         toast.success('Save page succeeded');
         router.push('/admin/pages');
       } else {
