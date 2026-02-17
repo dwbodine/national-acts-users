@@ -309,6 +309,9 @@ export default function AdminEventsIndex() {
     if (eventIdList.length === 0) {
       return;
     }
+    if (!globalSelection.isLoading) {
+      dispatch(setIsLoading(true));
+    }
     void setEventsInactive(eventIdList, isActive).then((response: ModifyEventResponse) => {
       if (response.success && !response.error) {
         const successMessage = isActive
@@ -327,12 +330,16 @@ export default function AdminEventsIndex() {
         }
         toast.error(errorMessage);
       }
+      dispatch(setIsLoading(false));
     });
   };
 
   const deleteEvents = (setDeleted: boolean) => {
     if (eventIdList.length === 0) {
       return;
+    }
+    if (!globalSelection.isLoading) {
+      dispatch(setIsLoading(true));
     }
     void setEventsDeleted(eventIdList, setDeleted).then((response: ModifyEventResponse) => {
       if (response.success && !response.error) {
@@ -352,12 +359,16 @@ export default function AdminEventsIndex() {
         }
         toast.error(errorMessage);
       }
+      dispatch(setIsLoading(false));
     });
   };
 
   const setLiveInBandsInTown = () => {
     if (eventIdList.length === 0) {
       return;
+    }
+    if (!globalSelection.isLoading) {
+      dispatch(setIsLoading(true));
     }
     void setEventsLiveInBandsInTown(eventIdList).then((response: ModifyEventResponse) => {
       if (response.success && !response.error) {
@@ -373,12 +384,16 @@ export default function AdminEventsIndex() {
         }
         toast.error(errorMessage);
       }
+      dispatch(setIsLoading(false));
     });
   };
 
   const hideEvents = (setHidden: boolean) => {
     if (eventIdList.length === 0) {
       return;
+    }
+    if (!globalSelection.isLoading) {
+      dispatch(setIsLoading(true));
     }
     void setEventsHidden(eventIdList, setHidden).then((response: ModifyEventResponse) => {
       if (response.success && !response.error) {
@@ -398,6 +413,7 @@ export default function AdminEventsIndex() {
         }
         toast.error(errorMessage);
       }
+      dispatch(setIsLoading(false));
     });
   };
 
@@ -518,8 +534,8 @@ export default function AdminEventsIndex() {
       value: 'inactive',
     },
     {
-      label: 'Deactivate',
-      value: 'inactive',
+      label: 'Activate',
+      value: 'active',
     },
     {
       label: 'Delete',
