@@ -1,7 +1,7 @@
 import parse from 'html-react-parser';
 import moment from 'moment';
 
-import { DEFAULT_COUNTRY_ID } from '@/constants';
+import { DEFAULT_COUNTRY_ID, EVENT_REFRESH_TIMEOUT } from '@/constants';
 import { ExternalVenue } from '@/types/admin';
 import {
   IShirtSizeData,
@@ -17,6 +17,14 @@ import { AdminDashboardSelection, IDailyOrderData } from '@/types/user';
 
 import getShirtDataFromEvents from './getShirtData';
 import getTicketDataFromEvents from './getTicketDataFromEvents';
+
+const shouldRefreshEvent = (evt: VipEvent | undefined) => {
+  if (!evt || !evt.lastFetched || evt.lastFetched === 0) {
+    return false;
+  }
+  const expireTs = moment().unix() - EVENT_REFRESH_TIMEOUT;
+  return evt.lastFetched <= expireTs;
+};
 
 const getLocationInfoFromVenue = (venue: Venue): string => {
   let location = `${venue.city}`;
@@ -695,4 +703,5 @@ export {
   getOrderStatusText,
   getSellerStatusSlug,
   getTicketDataFromEvents,
+  shouldRefreshEvent,
 };

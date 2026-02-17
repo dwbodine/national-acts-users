@@ -75,7 +75,12 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.events = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = res.data ? (res.data as VipEvent[]) : undefined;
+      response.events = events?.map((x) => {
+        const evt = { ...x };
+        evt.lastFetched = moment().unix();
+        return evt;
+      });
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
@@ -129,7 +134,12 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.events = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = res.data ? (res.data as VipEvent[]) : undefined;
+      response.events = events?.map((x) => {
+        const evt = { ...x };
+        evt.lastFetched = moment().unix();
+        return evt;
+      });
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
@@ -150,7 +160,12 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.events = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = res.data ? (res.data as VipEvent[]) : undefined;
+      response.events = events?.map((x) => {
+        const evt = { ...x };
+        evt.lastFetched = moment().unix();
+        return evt;
+      });
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
@@ -175,7 +190,12 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.events = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = res.data ? (res.data as VipEvent[]) : undefined;
+      response.events = events?.map((x) => {
+        const evt = { ...x };
+        evt.lastFetched = moment().unix();
+        return evt;
+      });
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
@@ -277,7 +297,12 @@ export class EventService {
     try {
       const res = await apiInstance.get(url, { headers });
       response.statusCode = res.status;
-      response.events = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = res.data ? (res.data as VipEvent[]) : undefined;
+      response.events = events?.map((x) => {
+        const evt = { ...x };
+        evt.lastFetched = moment().unix();
+        return evt;
+      });
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;
@@ -298,7 +323,12 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      const events = res.data as VipEvent[];
+      const vipEvents = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = vipEvents?.map((x) => {
+        const evt = { ...x };
+        evt.lastFetched = moment().unix();
+        return evt;
+      });
       response.event = events && events.length > 0 ? events[0] : undefined;
     } catch (e) {
       const err = e as AxiosError;
@@ -459,6 +489,7 @@ export class EventService {
       response.statusCode = res.status;
       response.success = res.status === 200;
       response.updatedEvent = res.data as VipEvent;
+      response.updatedEvent.lastFetched = moment().unix();
     } catch (e) {
       const err = e as AxiosError;
       response.statusCode = err?.response?.status ?? 500;

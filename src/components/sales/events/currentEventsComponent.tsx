@@ -19,6 +19,7 @@ import { setDateRange, setEvents, setReloadEvents, setTours } from '@/lib/report
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
 import { GetEventsResponse, GetToursResponse } from '@/types/responses';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
+import { shouldRefreshEvent } from '@/utils/eventUtils';
 import getPurchaseDataFromEvents from '@/utils/getPurchaseData';
 import getShirtDataFromEvents from '@/utils/getShirtData';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
@@ -165,6 +166,8 @@ export default function CurrentEvents() {
             dispatch(setIsLoading(false));
           }
         });
+      } else if (shouldRefreshEvent(currentReportSelection?.currentEvents?.at(0))) {
+        dispatch(setReloadEvents(true));
       }
     } else {
       dispatch(setIsLoading(false));

@@ -5,7 +5,6 @@ import { SellerType, Tour, VipEvent } from '@/types/event';
 import { User, UserReportSelection, UserSeller } from '../types/user';
 
 const initialState: UserReportSelection = {
-  currentDetailEvent: undefined,
   currentEvents: [],
   end: 0,
   focusControl: '',
@@ -49,7 +48,6 @@ export const userReportSelectionSlice = createSlice({
       state.reloadTours = true;
       state.retainDateSelection = false;
       state.currentEvents = [];
-      state.currentDetailEvent = undefined;
       state.showHidden = state.isForAdmin;
       state.showOnlyEmails = false;
       state.showOnlyPhones = false;
@@ -68,22 +66,11 @@ export const userReportSelectionSlice = createSlice({
       state.reloadTours = true;
       state.retainDateSelection = false;
       state.currentEvents = [];
-      state.currentDetailEvent = undefined;
       state.showHidden = state.isForAdmin;
       state.showOnlyEmails = false;
       state.showOnlyPhones = false;
       state.tours = undefined;
       state.selectedTourId = undefined;
-      return state;
-    },
-    setCurrentDetailEvent: (state, action: PayloadAction<VipEvent | undefined>) => {
-      if (action.payload) {
-        state.currentDetailEvent = action.payload;
-        state.reloadEvents = false;
-      } else {
-        state.currentDetailEvent = undefined;
-        state.reloadEvents = true;
-      }
       return state;
     },
     setDateRange: (state, action: PayloadAction<UserReportSelection>) => {
@@ -145,6 +132,9 @@ export const userReportSelectionSlice = createSlice({
     },
     setReloadEvents: (state, action: PayloadAction<boolean>) => {
       state.reloadEvents = action.payload;
+      if (state.reloadEvents) {
+        state.currentEvents = undefined;
+      }
       return state;
     },
     setSelectedTourId: (state, action: PayloadAction<number | undefined>) => {
@@ -184,7 +174,6 @@ export const userReportSelectionSlice = createSlice({
       state.showInactiveOrders = true;
       state.retainDateSelection = false;
       if (state.reloadEvents) {
-        state.currentDetailEvent = undefined;
         state.currentEvents = [];
       }
       if (state.reloadTours) {
@@ -264,7 +253,6 @@ export const {
   setFocusControl,
   setEventSeller,
   setShowHidden,
-  setCurrentDetailEvent,
   setForAdmin,
   setShowOnlyEmails,
   setShowOnlyPhones,

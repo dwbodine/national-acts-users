@@ -3,7 +3,7 @@
 import debouce from 'lodash.debounce';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { ReactElement, useEffect, useMemo, useState } from 'react';
+import { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Checkbox, Col, Container, Input, Row } from 'rsuite';
 
@@ -13,8 +13,6 @@ import { useGetUserSeller } from '@/hooks/order/useGetUserSeller';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useHasPermission } from '@/hooks/user/useHasPermission';
 import {
-  setCurrentDetailEvent,
-  setEvents,
   setEventSeller,
   setFocusControl,
   setHideRevenue,
@@ -47,26 +45,81 @@ import PrintButton from '../../common/printButtonComponent';
 import OrderMobileRow from './orderMobileRowComponent';
 import OrderRow from './orderRowComponent';
 
+// Optional (recommended): normalize event once after fetch (no later recompute in effects)
+function normalizeEvent(evt: VipEvent): VipEvent {
+  let computedOrders: Order[] = [];
+
+  if (evt.orders?.length) {
+    for (const order of evt.orders) {
+      if (order.isComped && order.tickets) {
+        for (const ticket of order.tickets) {
+          if (ticket.ticketTypeId !== 0 || !evt.ticketSocketEventId) continue;
+
+          computedOrders.push({
+            currencyAbbrev: '',
+            currencySymbol: '',
+            email: ticket.attendeeEmail ?? '',
+            eventId: 0,
+            exchangeRate: 0,
+            hasChargebacks: false,
+            hasRefunds: false,
+            isActive: true,
+            isDeleted: false,
+            numTickets: 1,
+            orderId: 0,
+            phone: ticket.attendeePhone,
+            purchaseDate: order.purchaseDate,
+            purchaseTimestamp: '',
+            purchaserFirstName: ticket.attendeeFirstName ?? '',
+            purchaserLastName: ticket.attendeeLastName ?? '',
+            revenue: 0,
+            revenueUsd: 0,
+            ticketSocketEventId: evt.ticketSocketEventId,
+            ticketSocketOrderId: order.ticketSocketOrderId,
+            tickets: [ticket],
+            totalShirts: order.totalShirts,
+          });
+        }
+      } else {
+        computedOrders.push(order);
+      }
+    }
+
+    computedOrders = [...computedOrders].sort(
+      (a, b) =>
+        a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
+        a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
+        (a.purchaseTimestamp && b.purchaseTimestamp
+          ? moment(b.purchaseTimestamp).unix() - moment(a.purchaseTimestamp).unix()
+          : 0),
+    );
+  }
+
+  return { ...evt, orders: computedOrders };
+}
+
 export default function EventDetail(props: EditProps) {
   const id = props.Id;
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const reportSelection = useSelector((state: RootState) => state.reportSelection);
+  const sellerId = reportSelection.seller?.sellerId ?? 0;
+
   const { getUser } = useCurrentUser();
-  const [user, setUser] = useState<User | undefined>(undefined);
   const { userHasPermission } = useHasPermission();
-  const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
-  const [checkChanged, setCheckChanged] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { getEventById } = useGetEventById();
   const { getUserSellerFromEventId } = useGetUserSeller();
-  const dispatch = useDispatch();
+
+  const windowSize = useWindowSize();
+
+  const [user, setUser] = useState<User | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [hideRevItem, setHideRevItem] = useState(true);
   const [hideServiceFeeDisplay, setHideServiceFeeDisplay] = useState(true);
   const [showOnlyEmailsDisplay, setShowOnlyEmailsDisplay] = useState(false);
   const [showOnlyPhonesDisplay, setShowOnlyPhonesDisplay] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const windowSize = useWindowSize();
-  const windowSizeJson = JSON.stringify(windowSize);
 
   const [viewInactiveOrders, setViewInactiveOrders] = useState(false);
   const [viewDeletedOrders, setViewDeletedOrders] = useState(false);
@@ -78,249 +131,186 @@ export default function EventDetail(props: EditProps) {
   const [canCheckInTickets, setCanCheckInTickets] = useState(false);
   const [alwaysShowRevenue, setAlwaysShowRevenue] = useState(false);
 
+  const [currentDetailEvent, setCurrentDetailEvent] = useState<VipEvent | undefined>(undefined);
+
+  const [searchTerm, setSearchTerm] = useState('');
   const debouncedResults = useMemo(() => debouce(setSearchTerm, 300), []);
+  useEffect(() => () => debouncedResults.cancel(), [debouncedResults]);
+
+  // Dedupe event fetches (prevents double-fetch in StrictMode/dev and redux-triggered reruns)
+  const fetchedEventIdRef = useRef<string | number | null>(null);
+
+  // 1) Load user once
+  useEffect(() => {
+    const u = getUser();
+    if (!u) return;
+
+    setUser((prev) => {
+      // prevent re-setting if it’s the same user
+      if (prev?.userId === u.userId) return prev;
+      return u;
+    });
+  }, [getUser]);
+
+  // 2) Compute permission-driven UI flags when user changes
+  useEffect(() => {
+    if (!user) return;
+
+    const vInactive = userHasPermission(user, EnumPermission.ViewInactiveEvents);
+    const vDeleted = userHasPermission(user, EnumPermission.ViewDeletedEvents);
+    const vFees = userHasPermission(user, EnumPermission.ViewServiceFees);
+    const vRevControls = userHasPermission(user, EnumPermission.ViewRevenueControls);
+    const vRevData = userHasPermission(user, EnumPermission.ViewRevenueData);
+
+    setViewInactiveOrders(vInactive);
+    setViewDeletedOrders(vDeleted);
+    setViewServiceFees(vFees);
+    setViewRevenueControls(vRevControls);
+    setViewRevenueData(vRevData);
+
+    setCanExportCustomerData(userHasPermission(user, EnumPermission.ExportCustomerData));
+    setViewPrintButton(userHasPermission(user, EnumPermission.ViewPrintButton));
+    setCanCheckInTickets(
+      !user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers),
+    );
+
+    setAlwaysShowRevenue(vRevData && !vRevControls);
+  }, [user, userHasPermission]);
+
+  // 3) Ensure seller is loaded into redux before fetching event
+  useEffect(() => {
+    if (!user || !id) return;
+    if (user.userId <= 0 || !user.sellers) return;
+
+    if (sellerId > 0) return; // already have seller
+
+    void (async () => {
+      const next: UserReportSelection = { ...reportSelection };
+
+      if ((user.selectedSellerId ?? 0) > 0) {
+        const seller = user.sellers?.find((x) => x.sellerId === user.selectedSellerId);
+        if (!seller) {
+          router.push('/logout');
+          return;
+        }
+        next.seller = seller;
+        next.hideRevenue = user.selectedHideRevenue;
+        next.hideServiceFees = user.selectedHideServiceFees;
+        dispatch(setEventSeller(next));
+        return;
+      }
+
+      const sellerResult = await getUserSellerFromEventId(id, user.userId);
+      if (sellerResult?.userSeller) {
+        next.seller = sellerResult.userSeller;
+        next.hideRevenue = user.selectedHideRevenue;
+        next.hideServiceFees = user.selectedHideServiceFees;
+        dispatch(setEventSeller(next));
+      } else {
+        router.push('/logout');
+      }
+    })();
+    // intentionally NOT depending on the full reportSelection object
+  }, [user, id, sellerId, dispatch, getUserSellerFromEventId, router]);
+
+  // 4) Sync UI toggles driven by redux selection + permissions
+  useEffect(() => {
+    if (!user) return;
+    if (sellerId <= 0) return;
+
+    // Revenue visibility
+    if (alwaysShowRevenue) {
+      setHideRevItem(false);
+    } else if (viewRevenueData === false) {
+      setHideRevItem(true);
+    } else {
+      setHideRevItem(reportSelection.hideRevenue ?? true);
+    }
+
+    // Admin-only filters
+    if (user.isAdmin) {
+      setShowOnlyEmailsDisplay(reportSelection.showOnlyEmails ?? false);
+      setShowOnlyPhonesDisplay(reportSelection.showOnlyPhones ?? false);
+    } else {
+      setShowOnlyEmailsDisplay(false);
+      setShowOnlyPhonesDisplay(false);
+    }
+
+    // Service fees
+    if (viewServiceFees) {
+      setHideServiceFeeDisplay(reportSelection.hideServiceFees ?? true);
+    } else {
+      setHideServiceFeeDisplay(true);
+    }
+  }, [
+    user,
+    sellerId,
+    alwaysShowRevenue,
+    viewRevenueData,
+    viewServiceFees,
+    reportSelection.hideRevenue,
+    reportSelection.hideServiceFees,
+    reportSelection.showOnlyEmails,
+    reportSelection.showOnlyPhones,
+  ]);
+
+  // 5) Fetch event ONCE per id after seller is ready
+  useEffect(() => {
+    if (!user || !id) return;
+    if (sellerId <= 0) return;
+
+    if (fetchedEventIdRef.current === id) return;
+    fetchedEventIdRef.current = id;
+
+    void (async () => {
+      setIsLoading(true);
+      try {
+        const results = await getEventById(id);
+        if (results?.event) {
+          setCurrentDetailEvent(normalizeEvent(results.event));
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [user, id, sellerId, getEventById]);
+
+  // 6) Focus control
+  useEffect(() => {
+    if (!reportSelection.focusControl) return;
+
+    const fc = reportSelection.focusControl;
+    setTimeout(() => setFocusToControl(fc), 300);
+    dispatch(setFocusControl(''));
+  }, [reportSelection.focusControl, dispatch]);
+
+  // ---------------------------------------------------------------------------
+  // Everything below here is your existing render/build logic (unchanged)
+  // ---------------------------------------------------------------------------
 
   let shirtData: IShirtData | undefined = undefined;
-  const hasPhoneData = currentReportSelection.currentDetailEvent?.hasPhoneData ?? false;
-  let hasTicketData: boolean = false;
-  let hasShirtData: boolean = false;
-  const hasNonUsaOrders: boolean =
-    currentReportSelection.currentDetailEvent?.hasNonUSAOrders ?? false;
-  const currencySymbol: string | undefined =
-    currentReportSelection.currentDetailEvent?.nonUsaCurrencySymbol;
+  const hasPhoneData = currentDetailEvent?.hasPhoneData ?? false;
+  let hasTicketData = false;
+  let hasShirtData = false;
+  const hasNonUsaOrders = currentDetailEvent?.hasNonUSAOrders ?? false;
+  const currencySymbol: string | undefined = currentDetailEvent?.nonUsaCurrencySymbol;
+
   const ticketBreakdownRows: ReactElement[] = [];
   const shirtSizeBreakdownRows: ReactElement[] = [];
   const orderRows: ReactElement[] = [];
+
   let hasOrders = false;
   let searchBarHidden = true;
   let visibleOrders: Order[] = [];
 
-  useEffect(() => {
-    const fetchEvent = async () => {
-      if (!user) {
-        const currentUser = getUser();
-        setUser(currentUser);
-      }
-
-      if (!id || !user || user.userId <= 0 || !user.sellers || !currentReportSelection) {
-        return;
-      }
-
-      setViewInactiveOrders(userHasPermission(user, EnumPermission.ViewInactiveEvents));
-      setViewDeletedOrders(userHasPermission(user, EnumPermission.ViewDeletedEvents));
-      setViewServiceFees(userHasPermission(user, EnumPermission.ViewServiceFees));
-      const vRevenueControls = userHasPermission(user, EnumPermission.ViewRevenueControls);
-      const vRevenueData = userHasPermission(user, EnumPermission.ViewRevenueData);
-      setViewRevenueControls(vRevenueControls);
-      setViewRevenueData(vRevenueData);
-      setCanExportCustomerData(userHasPermission(user, EnumPermission.ExportCustomerData));
-      setViewPrintButton(userHasPermission(user, EnumPermission.ViewPrintButton));
-      setCanCheckInTickets(
-        !user.disableCheckIn && userHasPermission(user, EnumPermission.CheckInUsers),
-      );
-      setAlwaysShowRevenue(vRevenueData && !vRevenueControls);
-
-      if (!currentReportSelection.seller || currentReportSelection.seller.sellerId <= 0) {
-        const reportSelection = { ...currentReportSelection };
-        if ((user?.selectedSellerId ?? 0) > 0) {
-          // Use cached user to transfer detail to redux in new window
-          const seller = user.sellers.find((x) => x.sellerId === user.selectedSellerId);
-          if (seller) {
-            reportSelection.seller = seller;
-            reportSelection.hideRevenue = user.selectedHideRevenue;
-            reportSelection.hideServiceFees = user.selectedHideServiceFees;
-            dispatch(setEventSeller(reportSelection));
-          } else {
-            // Not found, log out
-            router.push('/logout');
-          }
-        } else {
-          // User is logged in without selected seller, check for permission to load
-          const sellerResult = await getUserSellerFromEventId(id, user.userId);
-          if (sellerResult && sellerResult.userSeller) {
-            reportSelection.seller = sellerResult.userSeller;
-            reportSelection.hideRevenue = user.selectedHideRevenue;
-            reportSelection.hideServiceFees = user.selectedHideServiceFees;
-            dispatch(setEventSeller(reportSelection));
-          } else {
-            // Not found or no permission, log out
-            router.push('/logout');
-          }
-        }
-      } else if (currentReportSelection?.seller?.sellerId > 0) {
-        if (alwaysShowRevenue) {
-          setHideRevItem(false);
-        } else if (viewRevenueData === false) {
-          setHideRevItem(true);
-        } else {
-          setHideRevItem(currentReportSelection.hideRevenue ?? true);
-        }
-
-        if (user.isAdmin) {
-          setShowOnlyEmailsDisplay(currentReportSelection.showOnlyEmails ?? false);
-          setShowOnlyPhonesDisplay(currentReportSelection.showOnlyPhones ?? false);
-        } else {
-          setShowOnlyEmailsDisplay(false);
-          setShowOnlyPhonesDisplay(false);
-        }
-
-        if (viewServiceFees) {
-          setHideServiceFeeDisplay(currentReportSelection.hideServiceFees ?? true);
-        } else {
-          setHideServiceFeeDisplay(true);
-        }
-
-        let newEvent: VipEvent | undefined = currentReportSelection?.currentDetailEvent;
-
-        if (!newEvent || newEvent.externalEventId !== id) {
-          const reportSelection: UserReportSelection = { ...currentReportSelection };
-          if (!viewInactiveOrders) {
-            reportSelection.showInactiveOrders = false;
-          }
-          newEvent = currentReportSelection?.currentEvents?.find((x) => x.externalEventId === id);
-
-          if (!newEvent) {
-            setIsLoading(true);
-            const results = await getEventById(id);
-            if (results && results.event) {
-              newEvent = results.event;
-            }
-          }
-
-          if (newEvent) {
-            // Build a NEW orders array (never mutate existing arrays)
-            let computedOrders: Order[] = [];
-
-            if (newEvent.orders?.length) {
-              for (const order of newEvent.orders) {
-                if (order.isComped && order.tickets) {
-                  for (const ticket of order.tickets) {
-                    if (ticket.ticketTypeId !== 0 || !newEvent.ticketSocketEventId) continue;
-
-                    computedOrders.push({
-                      currencyAbbrev: '',
-                      currencySymbol: '',
-                      email: ticket.attendeeEmail ?? '',
-                      eventId: 0,
-                      exchangeRate: 0,
-                      hasChargebacks: false,
-                      hasRefunds: false,
-                      isActive: true,
-                      isDeleted: false,
-                      numTickets: 1,
-                      orderId: 0,
-                      phone: ticket.attendeePhone,
-                      purchaseDate: order.purchaseDate,
-                      purchaseTimestamp: '',
-                      purchaserFirstName: ticket.attendeeFirstName ?? '',
-                      purchaserLastName: ticket.attendeeLastName ?? '',
-                      revenue: 0,
-                      revenueUsd: 0,
-                      ticketSocketEventId: newEvent.ticketSocketEventId,
-                      ticketSocketOrderId: order.ticketSocketOrderId,
-                      tickets: [ticket],
-                      totalShirts: order.totalShirts,
-                    });
-                  }
-                } else {
-                  computedOrders.push(order);
-                }
-              }
-
-              // IMPORTANT: sort a copy (sort mutates)
-              computedOrders = [...computedOrders].sort(
-                (a, b) =>
-                  a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
-                  a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
-                  (a.purchaseTimestamp && b.purchaseTimestamp
-                    ? moment(b.purchaseTimestamp).unix() - moment(a.purchaseTimestamp).unix()
-                    : 0),
-              );
-            }
-
-            // Build a NEW event object (don’t assign into newEvent)
-            const updatedEvent: VipEvent = {
-              ...newEvent,
-              orders: computedOrders,
-            };
-
-            dispatch(setCurrentDetailEvent(updatedEvent));
-
-            if (currentReportSelection.currentEvents) {
-              document.title = updatedEvent.title;
-
-              // IMPORTANT: actually use map result (and don’t mutate existing array)
-              const updatedEvents = currentReportSelection.currentEvents.map((evt) =>
-                evt.externalEventId === updatedEvent.externalEventId ? updatedEvent : evt,
-              );
-
-              dispatch(setEvents(updatedEvents));
-            }
-          }
-        }
-        setIsLoading(false);
-        if (currentReportSelection.focusControl && currentReportSelection.focusControl !== '') {
-          const { focusControl } = currentReportSelection;
-          setTimeout(() => {
-            setFocusToControl(focusControl);
-          }, 300);
-          dispatch(setFocusControl(''));
-        }
-      }
-    };
-    void fetchEvent();
-    return () => {
-      debouncedResults.cancel();
-    };
-  }, [
-    checkChanged,
-    id,
-    currentReportSelection,
-    dispatch,
-    getEventById,
-    alwaysShowRevenue,
-    viewInactiveOrders,
-    viewRevenueData,
-    viewServiceFees,
-    debouncedResults,
-    windowSizeJson,
-    user,
-    getUserSellerFromEventId,
-    userHasPermission,
-    viewRevenueControls,
-    getUser,
-    router,
-  ]);
-
-  const exportOrdersToCsv = () => {
-    if (currentReportSelection && currentReportSelection.currentDetailEvent) {
-      const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
-      const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
-      const showOnlyEmails = user?.isAdmin && currentReportSelection.showOnlyEmails;
-      const showOnlyPhones = user?.isAdmin && currentReportSelection.showOnlyPhones;
-      const csvData = exportEventCustomerDataToCsv(
-        currentReportSelection.currentDetailEvent,
-        showServiceFees,
-        showRevenueData,
-        hasPhoneData,
-        hasNonUsaOrders,
-        currencySymbol,
-        showOnlyEmails,
-        showOnlyPhones,
-      );
-      const fileName = getFileNameFromEvent(currentReportSelection.currentDetailEvent, `orders`);
-      downloadCsvFile(fileName, csvData);
-    }
-  };
-
   const filterOrders = (orders: Order[] | undefined) => {
     visibleOrders = [];
 
-    if (orders && orders.length > 0) {
+    if (orders?.length) {
       visibleOrders = orders.filter(
         (order) =>
-          (currentReportSelection.showDeletedOrders && order.isDeleted) ||
-          (currentReportSelection.showInactiveOrders && !order.isActive && !order.isDeleted) ||
+          (reportSelection.showDeletedOrders && order.isDeleted) ||
+          (reportSelection.showInactiveOrders && !order.isActive && !order.isDeleted) ||
           (!order.isDeleted && order.isActive),
       );
     }
@@ -338,36 +328,36 @@ export default function EventDetail(props: EditProps) {
   };
 
   let totalTickets = 0;
-  if (currentReportSelection.currentDetailEvent !== undefined) {
+
+  if (currentDetailEvent) {
     if (
       windowSize.isMobile ||
-      (currentReportSelection.currentDetailEvent.orders &&
-        currentReportSelection.currentDetailEvent.orders.length > 10)
+      (currentDetailEvent.orders && currentDetailEvent.orders.length > 10)
     ) {
       searchBarHidden = false;
     }
 
-    const filteredOrders: Order[] | undefined = filterOrders(
-      currentReportSelection.currentDetailEvent.orders,
-    );
+    const filteredOrders = filterOrders(currentDetailEvent.orders);
+
     filteredOrders?.forEach((order, i) => {
       if (order.isActive && !order.isDeleted && !order.isComped) {
         totalTickets += order.numTickets;
       }
       hasOrders = true;
+
       const key = `or${i}`;
       if (windowSize.isMobile) {
         orderRows.push(
           <OrderMobileRow
             key={key}
-            EventDate={currentReportSelection.currentDetailEvent?.eventDate}
-            EventName={currentReportSelection.currentDetailEvent?.title}
+            EventDate={currentDetailEvent?.eventDate}
+            EventName={currentDetailEvent?.title}
             Order={order}
             HasPhoneData={hasPhoneData}
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFeeDisplay}
             CanCheckInTickets={canCheckInTickets}
-            TicketTypes={currentReportSelection.currentDetailEvent?.ticketTypes}
+            TicketTypes={currentDetailEvent?.ticketTypes}
             ShowOnlyEmails={showOnlyEmailsDisplay}
             ShowOnlyPhones={showOnlyPhonesDisplay}
             IsAdmin={user?.isAdmin ?? false}
@@ -377,14 +367,14 @@ export default function EventDetail(props: EditProps) {
         orderRows.push(
           <OrderRow
             key={key}
-            EventDate={currentReportSelection.currentDetailEvent?.eventDate}
-            EventName={currentReportSelection.currentDetailEvent?.title}
+            EventDate={currentDetailEvent?.eventDate}
+            EventName={currentDetailEvent?.title}
             Order={order}
             HasPhoneData={hasPhoneData}
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFeeDisplay}
             CanCheckInTickets={canCheckInTickets}
-            TicketTypes={currentReportSelection.currentDetailEvent?.ticketTypes}
+            TicketTypes={currentDetailEvent?.ticketTypes}
             ShowOnlyEmails={showOnlyEmailsDisplay}
             ShowOnlyPhones={showOnlyPhonesDisplay}
             IsAdmin={user?.isAdmin ?? false}
@@ -395,24 +385,21 @@ export default function EventDetail(props: EditProps) {
 
     const ticketData: ITicketData | undefined = getTicketDataFromOrders(
       filteredOrders,
-      currentReportSelection.currentDetailEvent,
+      currentDetailEvent,
     );
     const ticketTypes = ticketData?.TicketTypes;
-    if (ticketTypes?.length > 0) {
+
+    if (ticketTypes?.length) {
       hasTicketData = true;
       let i = 0;
+
       ticketData.TicketData?.forEach((ticketTypeData: ITicketTypeData[]) => {
         ticketTypes.forEach((ticketType: TicketType) => {
           const key = `ttd${i}`;
           const data = ticketTypeData.find((x) => x.TicketType === ticketType.ticketTypeName);
-          let number = 0;
-          let total = '';
-          if (data) {
-            number = data.Number;
-          }
-          if (ticketType.totalAvailable > 0) {
-            total = `/${ticketType.totalAvailable}`;
-          }
+          const number = data ? data.Number : 0;
+          const total = ticketType.totalAvailable > 0 ? `/${ticketType.totalAvailable}` : '';
+
           if (number > 0 || user?.isAdmin) {
             ticketBreakdownRows.push(
               <div key={key}>
@@ -425,21 +412,22 @@ export default function EventDetail(props: EditProps) {
         });
       });
     }
+
     shirtData = getShirtDataFromOrders(filteredOrders);
     const shirtSizes = shirtData?.ShirtSizes ?? [];
     const arr = new Map<string, number>();
+
     if (shirtSizes.length > 0) {
       hasShirtData = true;
       shirtSizes.forEach((shirtSize: string) => {
         shirtData?.ShirtData?.forEach((shirSizeData: IShirtSizeData[]) => {
           const data = shirSizeData.find((x) => x.ShirtSize === shirtSize);
           let number = arr.get(shirtSize) ?? 0;
-          if (data) {
-            number += data.Number;
-          }
+          if (data) number += data.Number;
           arr.set(shirtSize, number);
         });
       });
+
       let i = 0;
       for (const shirtSize of shirtSizes) {
         const key = `ssw${i}`;
@@ -453,91 +441,75 @@ export default function EventDetail(props: EditProps) {
     }
   }
 
-  const handleShowInactive = (checked: boolean) => {
-    if (currentReportSelection) {
-      dispatch(setShowInactiveOrders(checked));
+  const exportOrdersToCsv = () => {
+    if (reportSelection && currentDetailEvent) {
+      const showServiceFees = viewServiceFees && !reportSelection.hideServiceFees;
+      const showRevenueData = viewRevenueData && !reportSelection.hideRevenue;
+      const showOnlyEmails = user?.isAdmin && reportSelection.showOnlyEmails;
+      const showOnlyPhones = user?.isAdmin && reportSelection.showOnlyPhones;
+
+      const csvData = exportEventCustomerDataToCsv(
+        currentDetailEvent,
+        showServiceFees,
+        showRevenueData,
+        hasPhoneData,
+        hasNonUsaOrders,
+        currencySymbol,
+        showOnlyEmails,
+        showOnlyPhones,
+      );
+
+      const fileName = getFileNameFromEvent(currentDetailEvent, `orders`);
+      downloadCsvFile(fileName, csvData);
     }
   };
 
-  const handleShowDeleted = (checked: boolean) => {
-    if (currentReportSelection) {
-      dispatch(setShowDeletedOrders(checked));
-    }
-  };
+  const handleShowInactive = (checked: boolean) => dispatch(setShowInactiveOrders(checked));
+  const handleShowDeleted = (checked: boolean) => dispatch(setShowDeletedOrders(checked));
 
-  const handleHideRevenue = (checked: boolean) => {
-    if (currentReportSelection) {
-      dispatch(setHideRevenue(checked));
-      setCheckChanged(!checkChanged);
-    }
-  };
-
-  const handleHideServiceFees = (checked: boolean) => {
-    if (currentReportSelection) {
-      dispatch(setHideServiceFees(checked));
-      setCheckChanged(!checkChanged);
-    }
-  };
+  const handleHideRevenue = (checked: boolean) => dispatch(setHideRevenue(checked));
+  const handleHideServiceFees = (checked: boolean) => dispatch(setHideServiceFees(checked));
 
   const handleShowOnlyEmails = (checked: boolean) => {
-    if (currentReportSelection) {
-      dispatch(setShowOnlyEmails(checked));
-      if (checked) {
-        dispatch(setShowOnlyPhones(false));
-      }
-      setCheckChanged(!checkChanged);
-    }
+    dispatch(setShowOnlyEmails(checked));
+    if (checked) dispatch(setShowOnlyPhones(false));
   };
 
   const handleShowOnlyPhones = (checked: boolean) => {
-    if (currentReportSelection) {
-      dispatch(setShowOnlyPhones(checked));
-      if (checked) {
-        dispatch(setShowOnlyEmails(false));
-      }
-      setCheckChanged(!checkChanged);
-    }
+    dispatch(setShowOnlyPhones(checked));
+    if (checked) dispatch(setShowOnlyEmails(false));
   };
 
   let eventDate = '';
-  if (currentReportSelection.currentDetailEvent?.eventDate !== undefined) {
-    if (currentReportSelection.currentDetailEvent?.eventTime) {
-      eventDate = moment(currentReportSelection.currentDetailEvent.eventTime).format(
-        'MM/DD/YYYY h:mm A',
-      );
-      if (currentReportSelection.currentDetailEvent.venue?.timezone) {
-        eventDate += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
-      }
+  if (currentDetailEvent?.eventDate !== undefined) {
+    if (currentDetailEvent?.eventTime) {
+      eventDate = moment(currentDetailEvent.eventTime).format('MM/DD/YYYY h:mm A');
+      if (currentDetailEvent.venue?.timezone) eventDate += ` ${currentDetailEvent.venue?.timezone}`;
     } else {
-      eventDate = moment(currentReportSelection.currentDetailEvent.eventDate).format('MM/DD/YYYY');
+      eventDate = moment(currentDetailEvent.eventDate).format('MM/DD/YYYY');
     }
   }
 
   let doorsOpen = '';
-  if (currentReportSelection.currentDetailEvent?.doorsOpen) {
-    doorsOpen = moment(currentReportSelection.currentDetailEvent.doorsOpen).format('h:mm A');
-    if (currentReportSelection.currentDetailEvent.venue?.timezone) {
-      doorsOpen += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
-    }
+  if (currentDetailEvent?.doorsOpen) {
+    doorsOpen = moment(currentDetailEvent.doorsOpen).format('h:mm A');
+    if (currentDetailEvent.venue?.timezone) doorsOpen += ` ${currentDetailEvent.venue?.timezone}`;
   }
 
   let meetAndGreet = '';
-  if (currentReportSelection.currentDetailEvent?.meetAndGreetTime) {
-    meetAndGreet = moment(currentReportSelection.currentDetailEvent.meetAndGreetTime).format(
-      'h:mm A',
-    );
-    if (currentReportSelection.currentDetailEvent.venue?.timezone) {
-      meetAndGreet += ` ${currentReportSelection.currentDetailEvent.venue?.timezone}`;
-    }
+  if (currentDetailEvent?.meetAndGreetTime) {
+    meetAndGreet = moment(currentDetailEvent.meetAndGreetTime).format('h:mm A');
+    if (currentDetailEvent.venue?.timezone)
+      meetAndGreet += ` ${currentDetailEvent.venue?.timezone}`;
   }
 
-  const venue = currentReportSelection.currentDetailEvent?.venue;
+  const venue = currentDetailEvent?.venue;
   const venueName = venue?.name;
   const address = venue?.address1;
+
   let location = `${venue?.city}`;
-  if (venue?.state) {
-    location += `, ${venue?.state}`;
-  }
+  if (venue?.state) location += `, ${venue?.state}`;
+
   const zip = venue?.postalCode;
   const country = venue?.country?.countryName;
 
@@ -545,7 +517,7 @@ export default function EventDetail(props: EditProps) {
 
   return (
     <>
-      {currentReportSelection.currentDetailEvent === undefined ? (
+      {!currentDetailEvent ? (
         ''
       ) : (
         <Container className="fluid">
@@ -557,9 +529,7 @@ export default function EventDetail(props: EditProps) {
                     <tbody>
                       <tr>
                         <td className="vipLabel">Event:</td>
-                        <td className="vipTitle">
-                          {currentReportSelection.currentDetailEvent.title}
-                        </td>
+                        <td className="vipTitle">{currentDetailEvent.title}</td>
                       </tr>
                       <tr>
                         <td className="vipLabel">Venue:</td>
@@ -585,8 +555,7 @@ export default function EventDetail(props: EditProps) {
                       <tr hidden={!canCheckInTickets} className="no-print">
                         <td className="vipLabel">Checked In:</td>
                         <td>
-                          {currentReportSelection.currentDetailEvent.totalCheckedIn} /{' '}
-                          {totalTickets}
+                          {currentDetailEvent.totalCheckedIn} / {totalTickets}
                         </td>
                       </tr>
                       <tr hidden={hideRevItem} className={revClass}>
@@ -594,8 +563,8 @@ export default function EventDetail(props: EditProps) {
                         <td>
                           $
                           {(
-                            (currentReportSelection.currentDetailEvent.totalRevenue ?? 0) -
-                            (currentReportSelection.currentDetailEvent.revenueRefunded ?? 0)
+                            (currentDetailEvent.totalRevenue ?? 0) -
+                            (currentDetailEvent.revenueRefunded ?? 0)
                           ).toFixed(2)}
                         </td>
                       </tr>
@@ -604,9 +573,8 @@ export default function EventDetail(props: EditProps) {
                         <td>
                           $
                           {(
-                            (currentReportSelection.currentDetailEvent.totalServiceFees ?? 0) -
-                            (currentReportSelection.currentDetailEvent.serviceFeeRevenueRefunded ??
-                              0)
+                            (currentDetailEvent.totalServiceFees ?? 0) -
+                            (currentDetailEvent.serviceFeeRevenueRefunded ?? 0)
                           ).toFixed(2)}
                         </td>
                       </tr>
@@ -621,40 +589,38 @@ export default function EventDetail(props: EditProps) {
                     </tbody>
                   </table>
                 </Col>
+
                 <Col
                   hidden={
-                    !currentReportSelection.currentDetailEvent.doorsOpen &&
-                    !currentReportSelection.currentDetailEvent.meetAndGreetTime &&
-                    !currentReportSelection.currentDetailEvent.checkInLocation &&
-                    !currentReportSelection.currentDetailEvent.checkInNotes
+                    !currentDetailEvent.doorsOpen &&
+                    !currentDetailEvent.meetAndGreetTime &&
+                    !currentDetailEvent.checkInLocation &&
+                    !currentDetailEvent.checkInNotes
                   }
                 >
                   <table className="vipDetailsTable">
                     <tbody>
-                      <tr hidden={!currentReportSelection.currentDetailEvent.doorsOpen}>
+                      <tr hidden={!currentDetailEvent.doorsOpen}>
                         <td className="vipLabel">Doors Open:</td>
                         <td>{doorsOpen}</td>
                       </tr>
-                      <tr hidden={!currentReportSelection.currentDetailEvent.meetAndGreetTime}>
-                        <td className="vipLabel">Meet & Greet Time:</td>
+                      <tr hidden={!currentDetailEvent.meetAndGreetTime}>
+                        <td className="vipLabel">Meet &amp; Greet Time:</td>
                         <td>{meetAndGreet}</td>
                       </tr>
-                      <tr hidden={!currentReportSelection.currentDetailEvent.checkInLocation}>
+                      <tr hidden={!currentDetailEvent.checkInLocation}>
                         <td className="vipLabel">Check-in Location:</td>
-                        <td className="vipValue">
-                          {currentReportSelection.currentDetailEvent.checkInLocation ?? 'n/a'}
-                        </td>
+                        <td className="vipValue">{currentDetailEvent.checkInLocation ?? 'n/a'}</td>
                       </tr>
-                      <tr hidden={!currentReportSelection.currentDetailEvent.checkInNotes}>
+                      <tr hidden={!currentDetailEvent.checkInNotes}>
                         <td className="vipLabel">Check-in Notes:</td>
-                        <td className="vipValue">
-                          {currentReportSelection.currentDetailEvent.checkInNotes ?? 'n/a'}
-                        </td>
+                        <td className="vipValue">{currentDetailEvent.checkInNotes ?? 'n/a'}</td>
                       </tr>
                     </tbody>
                   </table>
                 </Col>
               </Row>
+
               <Row className="no-print">
                 <Col md={10} sm={12} hidden={windowSize.isMobile}>
                   <div className="admin-button-row">
@@ -665,55 +631,61 @@ export default function EventDetail(props: EditProps) {
                   </div>
                 </Col>
               </Row>
+
               <Row>
                 <Col md={20} sm={24}>
                   <span className="inactive-check" hidden={!viewInactiveOrders}>
                     <Checkbox
-                      checked={currentReportSelection?.showInactiveOrders}
+                      checked={reportSelection.showInactiveOrders}
                       onChange={(_, checked) => handleShowInactive(checked)}
-                      disabled={currentReportSelection?.showDeletedOrders}
+                      disabled={reportSelection.showDeletedOrders}
                     >
                       Show Inactive Orders?
                     </Checkbox>
                   </span>
+
                   <span className="deleted-check" hidden={!viewDeletedOrders}>
                     <Checkbox
-                      checked={currentReportSelection?.showDeletedOrders}
+                      checked={reportSelection.showDeletedOrders}
                       onChange={(_, checked) => handleShowDeleted(checked)}
                     >
                       Show Deleted Orders?
                     </Checkbox>
                   </span>
+
                   <span className="revenue-check" hidden={!hasOrders || !viewRevenueControls}>
                     <Checkbox
-                      checked={currentReportSelection?.hideRevenue}
+                      checked={reportSelection.hideRevenue}
                       onChange={(_, checked) => handleHideRevenue(checked)}
                     >
                       Hide Revenue Items?
                     </Checkbox>
                   </span>
+
                   <span className="service-fees-check" hidden={!hasOrders || !viewServiceFees}>
                     <Checkbox
-                      checked={currentReportSelection?.hideServiceFees}
+                      checked={reportSelection.hideServiceFees}
                       onChange={(_, checked) => handleHideServiceFees(checked)}
                     >
                       Hide Service Fees?
                     </Checkbox>
                   </span>
+
                   <span className="service-fees-check" hidden={!hasOrders || !user?.isAdmin}>
                     <Checkbox
-                      checked={currentReportSelection?.showOnlyEmails}
+                      checked={reportSelection.showOnlyEmails}
                       onChange={(_, checked) => handleShowOnlyEmails(checked)}
                     >
                       Show Only Emails?
                     </Checkbox>
                   </span>
+
                   <span
                     className="service-fees-check"
                     hidden={!hasOrders || !user?.isAdmin || !hasPhoneData}
                   >
                     <Checkbox
-                      checked={currentReportSelection?.showOnlyPhones}
+                      checked={reportSelection.showOnlyPhones}
                       onChange={(_, checked) => handleShowOnlyPhones(checked)}
                     >
                       Show Only Phones?
@@ -721,6 +693,7 @@ export default function EventDetail(props: EditProps) {
                   </span>
                 </Col>
               </Row>
+
               <Row hidden={searchBarHidden}>
                 <Col md={20} sm={24} className="no-print">
                   <Input
@@ -728,10 +701,11 @@ export default function EventDetail(props: EditProps) {
                     onChange={setSearchTerm}
                     className="search-text-input"
                     placeholder="Search for orders..."
-                    hidden={isLoading || !orderRows || orderRows.length === 0}
+                    hidden={isLoading || orderRows.length === 0}
                   />
                 </Col>
               </Row>
+
               <Row hidden={isLoading} className="vipTable-container">
                 <table className="vipTable">
                   <thead hidden={windowSize.isMobile}>

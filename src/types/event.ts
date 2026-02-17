@@ -220,6 +220,7 @@ export interface VipEvent {
   isSoldOut?: boolean;
   isVisibleOnSite?: boolean;
   isVisibleOnPortal?: boolean;
+  lastFetched?: number;
 }
 
 export interface TicketSocketRefreshHistory {

@@ -94,7 +94,6 @@ export type UserReportSelection = {
   reloadTours?: boolean;
   retainDateSelection?: boolean;
   currentEvents?: VipEvent[];
-  currentDetailEvent?: VipEvent;
   focusControl?: string;
   showHidden?: boolean;
   isForAdmin?: boolean;

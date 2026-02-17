@@ -25,7 +25,8 @@ export default function EventMobileRow(props: EventRowProps) {
   const id = `event_${vipEvent.externalEventId}`;
   const isAdmin = props.IsAdmin;
 
-  const setDetailEvent = () => {
+  const setDetailEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     const url = `/event/?id=${vipEvent.externalEventId}`;
     window.open(url, '_blank');
   };

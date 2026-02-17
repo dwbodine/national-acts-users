@@ -24,6 +24,7 @@ import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { Note } from '@/types/event';
 import { GetEventsResponse, GetNotesResponse } from '@/types/responses';
 import { EventTabView } from '@/types/user';
+import { shouldRefreshEvent } from '@/utils/eventUtils';
 import getSelectedAdminEventDateRange from '@/utils/getSelectedAdminEventDateRange';
 
 import type { RootState } from '../../lib/store';
@@ -60,79 +61,77 @@ export default function AllEvents() {
         dispatch(setActiveEventTab(EventTabView.Agenda));
         const dateRange = getSelectedAdminEventDateRange(moment().unix(), EventTabView.Agenda);
         dispatch(setAdminDateRange(dateRange));
-      } else if (
-        currentReportSelection &&
-        currentReportSelection.reloadEvents &&
-        currentReportSelection.start &&
-        currentReportSelection.end
-      ) {
-        dispatch(setReloadAdminEvents(false));
-        dispatch(setAdminEvents(undefined));
-        dispatch(setAdminEvent(undefined));
-        dispatch(setAdminOrder(undefined));
-        dispatch(setReloadEvents(false));
-        dispatch(setAdminNotes(undefined));
-        dispatch(setIsLoading(true));
-        void getAllEvents(currentReportSelection.start, currentReportSelection.end).then(
-          (response: GetEventsResponse) => {
-            if (!response.error && response.events) {
-              const filteredEvents = response.events.filter(
-                (x) => !x.isDeleted && (x.isActive || x.isHidden || x.isCancelled),
-              );
-              if (currentReportSelection.expandedEvent !== undefined) {
-                const updatedEvent = filteredEvents.find(
-                  (x) =>
-                    x.externalEventId === currentReportSelection.expandedEvent?.externalEventId,
+      } else if (currentReportSelection.start && currentReportSelection.end) {
+        if (currentReportSelection.reloadEvents) {
+          dispatch(setReloadAdminEvents(false));
+          dispatch(setAdminEvents(undefined));
+          dispatch(setAdminEvent(undefined));
+          dispatch(setAdminOrder(undefined));
+          dispatch(setReloadEvents(false));
+          dispatch(setAdminNotes(undefined));
+          dispatch(setIsLoading(true));
+          void getAllEvents(currentReportSelection.start, currentReportSelection.end).then(
+            (response: GetEventsResponse) => {
+              if (!response.error && response.events) {
+                const filteredEvents = response.events.filter(
+                  (x) => !x.isDeleted && (x.isActive || x.isHidden || x.isCancelled),
                 );
-                if (updatedEvent) {
-                  dispatch(setExpandedEvent(updatedEvent));
-                }
-              }
-              if (currentReportSelection.start && currentReportSelection.end) {
-                void getCalendarNotes(
-                  currentReportSelection.start,
-                  currentReportSelection.end,
-                ).then((resp: GetNotesResponse) => {
-                  if (resp.error) {
-                    dispatch(setAdminEvents(filteredEvents));
-                    dispatch(setAdminNotes([]));
-                  } else {
-                    dispatch(setAdminEvents(filteredEvents));
-                    const notes: Note[] = resp.notes ? resp.notes : [];
-                    dispatch(setAdminNotes(notes));
+                if (currentReportSelection.expandedEvent !== undefined) {
+                  const updatedEvent = filteredEvents.find(
+                    (x) =>
+                      x.externalEventId === currentReportSelection.expandedEvent?.externalEventId,
+                  );
+                  if (updatedEvent) {
+                    dispatch(setExpandedEvent(updatedEvent));
                   }
+                }
+                if (currentReportSelection.start && currentReportSelection.end) {
+                  void getCalendarNotes(
+                    currentReportSelection.start,
+                    currentReportSelection.end,
+                  ).then((resp: GetNotesResponse) => {
+                    if (resp.error) {
+                      dispatch(setAdminEvents(filteredEvents));
+                      dispatch(setAdminNotes([]));
+                    } else {
+                      dispatch(setAdminEvents(filteredEvents));
+                      const notes: Note[] = resp.notes ? resp.notes : [];
+                      dispatch(setAdminNotes(notes));
+                    }
+                    dispatch(setAdminEvent(undefined));
+                    dispatch(setAdminOrder(undefined));
+                    dispatch(setReloadEvents(false));
+                  });
+                } else {
+                  dispatch(setAdminEvents(filteredEvents));
                   dispatch(setAdminEvent(undefined));
                   dispatch(setAdminOrder(undefined));
                   dispatch(setReloadEvents(false));
-                });
+                  dispatch(setAdminNotes([]));
+                }
+              } else if (response.statusCode === 401 || response.statusCode === 422) {
+                dispatch(setIsLoading(false));
+                router.push('/logout');
               } else {
-                dispatch(setAdminEvents(filteredEvents));
+                dispatch(setIsLoading(false));
+                dispatch(setAdminEvents(undefined));
                 dispatch(setAdminEvent(undefined));
                 dispatch(setAdminOrder(undefined));
                 dispatch(setReloadEvents(false));
-                dispatch(setAdminNotes([]));
+                dispatch(setAdminNotes(undefined));
+                toast.error(response.error);
               }
-            } else if (response.statusCode === 401 || response.statusCode === 422) {
-              dispatch(setIsLoading(false));
-              router.push('/logout');
-            } else {
-              dispatch(setIsLoading(false));
-              dispatch(setAdminEvents(undefined));
-              dispatch(setAdminEvent(undefined));
-              dispatch(setAdminOrder(undefined));
-              dispatch(setReloadEvents(false));
-              dispatch(setAdminNotes(undefined));
-              toast.error(response.error);
-            }
-          },
-        );
+            },
+          );
+        } else if (shouldRefreshEvent(currentReportSelection.currentEvents?.at(0))) {
+          dispatch(setReloadAdminEvents(true));
+        }
       }
     }, 500);
     return () => {
       clearTimeout(timeoutId);
     };
   }, [
-    currentReportSelection,
     dispatch,
     getAllEvents,
     windowSizeJson,
@@ -140,6 +139,11 @@ export default function AllEvents() {
     getCalendarNotes,
     agendaOnly,
     router,
+    currentReportSelection.reloadEvents,
+    currentReportSelection.start,
+    currentReportSelection.end,
+    currentReportSelection.eventTabView,
+    currentReportSelection.currentEvents,
   ]);
 
   const switchView = (key: EventTabView) => {
