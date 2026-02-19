@@ -1320,7 +1320,7 @@ export default function AdminEventEdit(props: EditProps) {
         <Row>
           <Col>
             <AdminFileUpload
-              ImageType={ImageType.EVENT_THUMBNAILS}
+              ImageType={ImageType.THUMBNAILS}
               Title="Event thumbnail (square, will be resized to 100px wide)"
               FileUploadName="Thumbnail"
               OnUpload={onFileUpload}
