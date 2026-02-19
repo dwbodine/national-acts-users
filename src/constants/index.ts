@@ -24,5 +24,4 @@ export enum ImageType {
   LOGOS = 'logos',
   PREVIEWS = 'previews',
   THUMBNAILS = 'thumbnails',
-  EVENT_THUMBNAILS = 'event_thumbnails',
 }
