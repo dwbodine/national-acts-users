@@ -130,6 +130,7 @@ export interface Order {
   purchaserIpAddress?: string;
   revenue: number;
   serviceFees?: number;
+  lastUpdate?: string;
 }
 
 export interface Venue {
@@ -221,6 +222,7 @@ export interface VipEvent {
   isVisibleOnSite?: boolean;
   isVisibleOnPortal?: boolean;
   lastFetched?: number;
+  lastUpdate?: string;
 }
 
 export interface TicketSocketRefreshHistory {

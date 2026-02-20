@@ -39,7 +39,9 @@
   position: unset;
 }
 
-.page-header-control-container .date-range-title {
+.page-header-control-container .date-range-title,
+.page-header-control-container .events-datepicker-label {
+  color: v.$pageheader-title-color;
   font-family: v.$pageheader-control-font-family;
   font-size: v.$pageheader-control-font-size;
 }

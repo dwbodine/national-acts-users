@@ -95,51 +95,51 @@ export default function EventMobileRow(props: EventRowProps) {
         <Container className="mobile-event-card" id={id}>
           <Row>
             <Col className="mobile-bold">Date:</Col>
-            <Col>{eventDate}</Col>
+            <Col className="mobile-data">{eventDate}</Col>
           </Row>
           <Row>
             <Col className="mobile-bold">Title:</Col>
-            <Col>{vipEvent.title}</Col>
+            <Col className="mobile-data">{vipEvent.title}</Col>
           </Row>
           <Row>
             <Col className="mobile-bold">Venue:</Col>
-            <Col>{venueName}</Col>
+            <Col className="mobile-data">{venueName}</Col>
           </Row>
           <Row>
             <Col className="mobile-bold">Location:</Col>
-            <Col>{location}</Col>
+            <Col className="mobile-data">{location}</Col>
           </Row>
           <Row>
             <Col className="mobile-bold">Tickets sold:</Col>
-            <Col>{vipEvent.totalTickets}</Col>
+            <Col className="mobile-data">{vipEvent.totalTickets}</Col>
           </Row>
           <Row>
             <Col className="mobile-bold">Tickets refunded:</Col>
-            <Col>{vipEvent.numTicketsRefunded ?? 0}</Col>
+            <Col className="mobile-data">{vipEvent.numTicketsRefunded ?? 0}</Col>
           </Row>
           <Row>
             <Col className="mobile-bold">Tickets comped:</Col>
-            <Col>{vipEvent.numTicketsComped}</Col>
+            <Col className="mobile-data">{vipEvent.numTicketsComped}</Col>
           </Row>
           <Row hidden={!canCheckInTickets} className="no-print">
             <Col className="mobile-bold">Checked in:</Col>
-            <Col>
+            <Col className="mobile-data">
               {vipEvent.totalCheckedIn} / {vipEvent.totalTickets}
             </Col>
           </Row>
           <Row hidden={ticketBreakdownRows.length === 0}>
             <Col className="mobile-bold">Ticket type breakdown:</Col>
-            <Col>{ticketBreakdownRows}</Col>
+            <Col className="mobile-data">{ticketBreakdownRows}</Col>
           </Row>
           <Row hidden={hideRevItem} className={revClass}>
             <Col className="mobile-bold">Revenue:</Col>
-            <Col>
+            <Col className="mobile-data">
               {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
             </Col>
           </Row>
           <Row hidden={hideServiceFees} className="no-print">
             <Col className="mobile-bold">Service Fees:</Col>
-            <Col>
+            <Col className="mobile-data">
               {formatCurrencyAmount(
                 serviceFees,
                 serviceFeesUsd,

@@ -28,12 +28,21 @@ export default function WidgetBar(props: WidgetBarProps) {
 
   return (
     <Row className="no-print widget-row" hidden={!totalShows}>
-      <Col lg={3} sm={6} xs={12} className="widget-stat-block-container">
+      <Col xxl={6} xl={6} lg={6} md={12} sm={12} xs={24} className="widget-stat-block-container">
         <div className="widget-stat-block">
           <ShowsListedWidget TotalShows={totalShows} />
         </div>
       </Col>
-      <Col lg={3} sm={6} xs={12} hidden={hideTickets} className="widget-stat-block-container">
+      <Col
+        xxl={6}
+        xl={6}
+        lg={6}
+        md={12}
+        sm={12}
+        xs={24}
+        hidden={hideTickets}
+        className="widget-stat-block-container"
+      >
         <div className="widget-stat-block">
           <TicketTypesWidget
             TicketData={ticketData}
@@ -44,12 +53,30 @@ export default function WidgetBar(props: WidgetBarProps) {
           />
         </div>
       </Col>
-      <Col lg={3} sm={6} xs={12} hidden={hideShirts} className="widget-stat-block-container">
+      <Col
+        xxl={6}
+        xl={6}
+        lg={6}
+        md={12}
+        sm={12}
+        xs={24}
+        hidden={hideShirts}
+        className="widget-stat-block-container"
+      >
         <div className="widget-stat-block">
           <ShirtSizesWidget ShirtData={shirtData} TotalShirts={totalShirts} />
         </div>
       </Col>
-      <Col lg={3} sm={6} xs={12} hidden={hideRevItem} className="widget-stat-block-container">
+      <Col
+        xxl={6}
+        xl={6}
+        lg={6}
+        md={12}
+        sm={12}
+        xs={24}
+        hidden={hideRevItem}
+        className="widget-stat-block-container"
+      >
         <div className="widget-stat-block">
           <RevenueWidget
             TotalRevenue={totalRevenue}

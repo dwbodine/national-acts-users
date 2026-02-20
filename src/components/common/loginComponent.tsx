@@ -91,7 +91,7 @@ export default function LoginComponent() {
       <Container className="wrapper">
         <Row hidden={!showWelcome}>
           <Col className="message">
-            Welcome to the new Client Portal for national-acts.com!
+            Welcome to the new Client Portal for nationalactsvip.com!
             <br />
             Among the many other enhancements, we have upgraded our security algorithm.
             <br />
@@ -99,7 +99,7 @@ export default function LoginComponent() {
             please click on the link next to &quot;Forgot Password&quot; below to start the process.
             <br />
             If you have any issues, please contact us as{' '}
-            <a href="mailto:info@national-acts.com">info@national-acts.com</a>
+            <a href="mailto:info@nationalactsvip.com">info@nationalactsvip.com</a>
           </Col>
         </Row>
         <Row>

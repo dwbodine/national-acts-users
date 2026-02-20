@@ -375,6 +375,12 @@
   font-size: 1.2em;
 }
 
+.last-refresh {
+  margin: 5px;
+  font-size: 0.75em;
+  font-style: italic;
+}
+
 @media (max-width: 1200px) {
   .expanded-event-panel {
     padding: 0;

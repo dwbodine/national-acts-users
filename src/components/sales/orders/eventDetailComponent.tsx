@@ -35,7 +35,7 @@ import {
 import { EditProps } from '@/types/props';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import { downloadCsvFile } from '@/utils/downloadFile';
-import { exportEventCustomerDataToCsv } from '@/utils/eventUtils';
+import { exportEventCustomerDataToCsv, getPacificMoment } from '@/utils/eventUtils';
 import getFileNameFromEvent from '@/utils/getFileNameFromEvent';
 import getShirtDataFromOrders from '@/utils/getShirtDataFromOrders';
 import getTicketDataFromOrders from '@/utils/getTicketDataFromOrders';
@@ -302,6 +302,7 @@ export default function EventDetail(props: EditProps) {
   let hasOrders = false;
   let searchBarHidden = true;
   let visibleOrders: Order[] = [];
+  let lastUpdatedUtc: moment.Moment = moment.utc([1970, 1, 1]);
 
   const filterOrders = (orders: Order[] | undefined) => {
     visibleOrders = [];
@@ -344,6 +345,11 @@ export default function EventDetail(props: EditProps) {
         totalTickets += order.numTickets;
       }
       hasOrders = true;
+
+      const orderLastUpdated = moment.utc(order.lastUpdate);
+      if (orderLastUpdated.unix() > lastUpdatedUtc.unix()) {
+        lastUpdatedUtc = orderLastUpdated;
+      }
 
       const key = `or${i}`;
       if (windowSize.isMobile) {
@@ -514,6 +520,8 @@ export default function EventDetail(props: EditProps) {
   const country = venue?.country?.countryName;
 
   const revClass = hideRevItem ? 'no-print' : '';
+
+  const lastUpdated = getPacificMoment(lastUpdatedUtc);
 
   return (
     <>
@@ -754,6 +762,12 @@ export default function EventDetail(props: EditProps) {
                   </thead>
                   <tbody>{orderRows}</tbody>
                 </table>
+                {lastUpdated && (
+                  <div className="last-refresh">
+                    Last refreshed: {lastUpdated.format('M/DD/YYYY h:mm A zz')} (updates every 15
+                    minutes)
+                  </div>
+                )}
               </Row>
             </Col>
           </Row>

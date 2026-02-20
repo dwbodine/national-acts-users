@@ -43,7 +43,7 @@ const RenderNav = (props: RenderNavProps) => {
       {menuItems?.map((item) => {
         const { children, ...rest } = item;
 
-        const placement = props.isMobile ? 'bottomEnd' : 'bottomStart';
+        const placement = props.isMobile ? 'bottomEnd' : 'rightStart';
 
         if (children) {
           return (

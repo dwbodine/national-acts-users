@@ -19,7 +19,7 @@ import { setDateRange, setEvents, setReloadEvents, setTours } from '@/lib/report
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
 import { GetEventsResponse, GetToursResponse } from '@/types/responses';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
-import { shouldRefreshEvent } from '@/utils/eventUtils';
+import { getPacificMoment, shouldRefreshEvent } from '@/utils/eventUtils';
 import getPurchaseDataFromEvents from '@/utils/getPurchaseData';
 import getShirtDataFromEvents from '@/utils/getShirtData';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
@@ -169,6 +169,11 @@ export default function CurrentEvents() {
       } else if (shouldRefreshEvent(currentReportSelection?.currentEvents?.at(0))) {
         dispatch(setReloadEvents(true));
       }
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'instant',
+      });
     } else {
       dispatch(setIsLoading(false));
     }
@@ -238,8 +243,10 @@ export default function CurrentEvents() {
   let revenueRefunded = 0;
   let totalServiceFees = 0;
   let serviceFeesRefunded = 0;
+  let lastUpdated: moment.Moment | undefined = undefined;
 
   if (vipEvents && vipEvents.length > 0) {
+    let lastUpdatedUtc: moment.Moment = moment.utc([1970, 1, 1]);
     if (windowSize.isMobile || vipEvents.length > 10) {
       searchBarHidden = false;
     }
@@ -287,9 +294,17 @@ export default function CurrentEvents() {
         serviceFeesRefunded += evt.serviceFeeRevenueRefundedUsd ?? 0;
         totalServiceFees +=
           (evt.totalServiceFeesUsd ?? 0) - (evt.serviceFeeRevenueRefundedUsd ?? 0);
+
+        const evtLastUpdated = moment.utc(evt.lastUpdate);
+        if (evtLastUpdated.unix() > lastUpdatedUtc.unix()) {
+          lastUpdatedUtc = evtLastUpdated;
+        }
       }
       i += 1;
     }
+    lastUpdated = getPacificMoment(lastUpdatedUtc);
+  } else {
+    lastUpdated = undefined;
   }
 
   const revClass = hideRevItem ? 'no-print' : '';
@@ -329,41 +344,49 @@ export default function CurrentEvents() {
         <Row className="results-container">
           <Col className="results-col">
             {visibleEvents && visibleEvents.length > 0 ? (
-              <table className="resultsTable">
-                <thead hidden={windowSize.isMobile}>
-                  <tr>
-                    <th>Date</th>
-                    <th>Title</th>
-                    <th>Venue</th>
-                    <th>Location</th>
-                    <th>Event Status</th>
-                    <th>Tickets Sold</th>
-                    <th>Tickets Refunded</th>
-                    <th>Tickets Comped</th>
-                    <th className={revClass} hidden={hideRevItem}>
-                      Revenue
-                    </th>
-                    <th className="no-print" hidden={hideServiceFees}>
-                      Service Fees
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>{rows}</tbody>
-                <tfoot hidden={windowSize.isMobile}>
-                  <tr>
-                    <td colSpan={5}>Total</td>
-                    <td className="pull-right">{totalTickets}</td>
-                    <td className="pull-right">{ticketsRefunded}</td>
-                    <td className="pull-right">{totalTicketsComped}</td>
-                    <td className={`pull-right ${revClass}`} hidden={hideRevItem}>
-                      ${totalRevenue.toFixed(2)}
-                    </td>
-                    <td className="pull-right no-print" hidden={hideServiceFees}>
-                      ${totalServiceFees.toFixed(2)}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
+              <>
+                <table className="resultsTable">
+                  <thead hidden={windowSize.isMobile}>
+                    <tr>
+                      <th>Date</th>
+                      <th>Title</th>
+                      <th>Venue</th>
+                      <th>Location</th>
+                      <th>Event Status</th>
+                      <th>Tickets Sold</th>
+                      <th>Tickets Refunded</th>
+                      <th>Tickets Comped</th>
+                      <th className={revClass} hidden={hideRevItem}>
+                        Revenue
+                      </th>
+                      <th className="no-print" hidden={hideServiceFees}>
+                        Service Fees
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>{rows}</tbody>
+                  <tfoot hidden={windowSize.isMobile}>
+                    <tr>
+                      <td colSpan={5}>Total</td>
+                      <td className="pull-right">{totalTickets}</td>
+                      <td className="pull-right">{ticketsRefunded}</td>
+                      <td className="pull-right">{totalTicketsComped}</td>
+                      <td className={`pull-right ${revClass}`} hidden={hideRevItem}>
+                        ${totalRevenue.toFixed(2)}
+                      </td>
+                      <td className="pull-right no-print" hidden={hideServiceFees}>
+                        ${totalServiceFees.toFixed(2)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+                {lastUpdated && (
+                  <div className="last-refresh">
+                    Last refreshed: {lastUpdated.format('M/DD/YYYY h:mm A zz')} (updates every 15
+                    minutes)
+                  </div>
+                )}
+              </>
             ) : (
               ''
             )}

@@ -1,5 +1,5 @@
 import parse from 'html-react-parser';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import { DEFAULT_COUNTRY_ID, EVENT_REFRESH_TIMEOUT } from '@/constants';
 import { ExternalVenue } from '@/types/admin';
@@ -17,6 +17,10 @@ import { AdminDashboardSelection, IDailyOrderData } from '@/types/user';
 
 import getShirtDataFromEvents from './getShirtData';
 import getTicketDataFromEvents from './getTicketDataFromEvents';
+
+const getPacificMoment = (utc: moment.Moment): moment.Moment => {
+  return utc.clone().tz('America/Los_Angeles');
+};
 
 const shouldRefreshEvent = (evt: VipEvent | undefined) => {
   if (!evt || !evt.lastFetched || evt.lastFetched === 0) {
@@ -701,6 +705,7 @@ export {
   getOrderExportTableHeader,
   getOrderStatusSlug,
   getOrderStatusText,
+  getPacificMoment,
   getSellerStatusSlug,
   getTicketDataFromEvents,
   shouldRefreshEvent,

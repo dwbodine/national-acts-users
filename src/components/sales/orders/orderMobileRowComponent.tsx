@@ -128,55 +128,55 @@ export default function OrderMobileRow(props: OrderRowProps) {
             <Col xs={10} className="mobile-bold">
               Purchaser Name:
             </Col>
-            <Col>{purchaserName}</Col>
+            <Col className="mobile-data">{purchaserName}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col xs={10} className="mobile-bold">
               Attendee Names:
             </Col>
-            <Col>{attendeeNameRows}</Col>
+            <Col className="mobile-data">{attendeeNameRows}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones} className="no-print">
             <Col xs={10} className="mobile-bold">
               Purchase Date:
             </Col>
-            <Col>{purchaseDate}</Col>
+            <Col className="mobile-data">{purchaseDate}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col xs={10} className="mobile-bold">
               Order Id:
             </Col>
-            <Col>{orderId}</Col>
+            <Col className="mobile-data">{orderId}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col xs={10} className="mobile-bold">
               Order Status:
             </Col>
-            <Col>{orderStatus}</Col>
+            <Col className="mobile-data">{orderStatus}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col xs={10} className="mobile-bold">
               Event Date:
             </Col>
-            <Col>{moment(eventDate).format('MM/DD/YYYY')}</Col>
+            <Col className="mobile-data">{moment(eventDate).format('MM/DD/YYYY')}</Col>
           </Row>
           <Row hidden={showOnlyEmails || showOnlyPhones}>
             <Col xs={10} className="mobile-bold">
               Event Name:
             </Col>
-            <Col>{eventName}</Col>
+            <Col className="mobile-data">{eventName}</Col>
           </Row>
           <Row hidden={ticketTypeRows.length === 0 || showOnlyEmails || showOnlyPhones}>
             <Col xs={10} className="mobile-bold">
               Ticket breakdown:
             </Col>
-            <Col>{ticketTypeRows}</Col>
+            <Col className="mobile-data">{ticketTypeRows}</Col>
           </Row>
           <Row hidden={hideRev || showOnlyEmails || showOnlyPhones} className={revClass}>
             <Col xs={10} className="mobile-bold">
               Revenue:
             </Col>
-            <Col>
+            <Col className="mobile-data">
               {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
             </Col>
           </Row>
@@ -184,7 +184,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
             <Col xs={10} className="mobile-bold">
               Service Fees:
             </Col>
-            <Col>
+            <Col className="mobile-data">
               {formatCurrencyAmount(
                 serviceFees,
                 serviceFeesUsd,
@@ -198,19 +198,19 @@ export default function OrderMobileRow(props: OrderRowProps) {
             <Col xs={10} className="mobile-bold">
               Email:
             </Col>
-            <Col>{order?.email}</Col>
+            <Col className="mobile-data">{order?.email}</Col>
           </Row>
           <Row hidden={!hasPhoneData || showOnlyEmails}>
             <Col xs={10} className="mobile-bold">
               Phone:
             </Col>
-            <Col>{phone}</Col>
+            <Col className="mobile-data">{phone}</Col>
           </Row>
           <Row hidden={!hasShirtData || showOnlyEmails || showOnlyPhones}>
             <Col xs={10} className="mobile-bold">
               Shirts:
             </Col>
-            <Col>{shirtSizeRows}</Col>
+            <Col className="mobile-data">{shirtSizeRows}</Col>
           </Row>
         </Container>
       </td>

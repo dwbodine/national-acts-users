@@ -71,6 +71,12 @@ button {
   text-transform: uppercase;
 }
 
+.rs-btn-subtle {
+  color: v.$button-color-subtle;
+  border: v.$button-border-subtle;
+  background-color: v.$button-background-color-subtle;
+}
+
 .rs-picker-select-menu-item,
 .rs-checkbox-label {
   font-family: v.$control-title-font-family;

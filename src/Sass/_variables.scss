@@ -19,13 +19,29 @@ $input-border-color: #e5e5ea;
 $input-highlight-color: white;
 
 // buttons
-$button-background-color: #f7f7fa;
-$button-color: gray;
+$button-background-color: blue;
+$button-color: white;
 $button-border: 1px solid #e5e5ea;
 $button-font-family: 'Montserrat', sans-serif;
+$button-background-color-subtle: #f7f7fa;
+$button-color-subtle: gray;
+$button-border-subtle: 1px solid #e5e5ea;
+
+// tables
+$table-main-border-color: black;
+$table-header-background-color: lightgray;
+$table-sold-out-color: red;
+$table-inactive-color: red;
+$table-hidden-color: orange;
+$table-deleted-color: rgb(100, 100, 100);
+$table-refunded-color: blueviolet;
+$table-alt-row-background-color: #e5e5ea;
+$table-row-hover-color: lightgray;
+$table-canceled-color: rgb(0, 128, 255);
+$table-link-hover-color: blue;
 
 // Header
-$avatar-background-color: maroon;
+$avatar-background-color: navy;
 $avatar-foreground-color: white;
 
 // PageHeader
@@ -58,3 +74,7 @@ $contact-response-font-size: 18px;
 
 // Dashboard
 $dashboard-header-color: black;
+
+// Widgets
+$widget-background-color: #efefef;
+$widget-border-color: #dedede;

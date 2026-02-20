@@ -103,12 +103,15 @@
   margin: 5px 25px 5px 0;
 }
 
-.mobile-bold {
+.mobile-event-card .mobile-bold {
   font-weight: bold;
+  width: 125px;
 }
 
-.mobile-event-card .mobile-bold {
-  width: 125px;
+.mobile-event-card .mobile-data {
+  width: calc(100% - 125px);
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .vip-col {
