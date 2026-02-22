@@ -97,11 +97,32 @@ export default function RefreshTicketSocketData() {
       adminSelection.sellerId,
       adminSelection.start,
       adminSelection.end,
-    ).then((response: RefreshHistoryResponse) => {
-      setUpdateResults(response.results);
-      setHistory(undefined);
-      dispatch(setIsLoading(false));
-    });
+    )
+      .then((response: RefreshHistoryResponse) => {
+        if (response.results && !response.error) {
+          setUpdateResults(response.results);
+          void getRefreshHistory()
+            .then((response: GetRefreshHistoryResponse) => {
+              if (response.history && !response.error) {
+                setHistory(response.history);
+              } else {
+                toast.error(response.error);
+              }
+              dispatch(setIsLoading(false));
+            })
+            .catch(() => {
+              toast.error('Error fetching refresh history');
+              dispatch(setIsLoading(false));
+            });
+        } else {
+          toast.error(response.error);
+          dispatch(setIsLoading(false));
+        }
+      })
+      .catch(() => {
+        toast.error('Error fetching refresh results');
+        dispatch(setIsLoading(false));
+      });
   };
 
   return (

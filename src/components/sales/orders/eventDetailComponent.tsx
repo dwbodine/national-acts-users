@@ -764,7 +764,7 @@ export default function EventDetail(props: EditProps) {
                 </table>
                 {lastUpdated && (
                   <div className="last-refresh">
-                    Last refreshed: {lastUpdated.format('M/DD/YYYY h:mm A zz')} (updates every 15
+                    Last refreshed: {lastUpdated.format('M/DD/YYYY h:mm A zz')} (updates every 30
                     minutes)
                   </div>
                 )}
