@@ -19,9 +19,13 @@ export default function PageHeader(props: PageHeaderProps) {
     showDatePicker,
     datePickerTitle,
     datePickerStart,
+    showRefresh,
+    refreshButtonText,
+    refreshButtonDisabled,
     onExport,
     onDateRangeChange,
     onDatePickerChange,
+    onRefresh,
   } = props;
 
   return (
@@ -57,6 +61,14 @@ export default function PageHeader(props: PageHeaderProps) {
           onClick={onExport}
         >
           {exportButtonText}
+        </Button>
+        <Button
+          hidden={!showRefresh}
+          disabled={refreshButtonDisabled}
+          className="page-header-refresh-button"
+          onClick={onRefresh}
+        >
+          {refreshButtonText}
         </Button>
       </Col>
     </Row>

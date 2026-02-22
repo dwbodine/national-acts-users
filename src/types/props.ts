@@ -391,9 +391,13 @@ export interface PageHeaderProps {
   exportButtonDisabled?: boolean;
   datePickerTitle?: string;
   datePickerStart?: Date | null | undefined;
+  showRefresh?: boolean;
+  refreshButtonText?: string;
+  refreshButtonDisabled?: boolean;
   onExport?: () => void;
   onDateRangeChange?: (selectedStart: number, selectedEnd: number) => void;
   onDatePickerChange?: (date: Date) => void;
+  onRefresh?: () => void;
 }
 
 export interface ResponsiveFrameProps {

@@ -6,7 +6,11 @@ import { toast } from 'react-toastify';
 import { DateRange, RangeType } from 'rsuite/esm/DateRangePicker';
 
 import { useGetAllOrders } from '@/hooks/order/useGetAllOrders';
-import { setCurrentDashboardData, setDashboardDateRange } from '@/lib/dashboardSelectionSlice';
+import {
+  setCurrentDashboardData,
+  setDashboardDateRange,
+  setReloadDashboardOrders,
+} from '@/lib/dashboardSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { GetOrdersResponse } from '@/types/responses';
@@ -117,6 +121,10 @@ export default function DashboardBar() {
     );
   };
 
+  const refreshDashboardData = () => {
+    dispatch(setReloadDashboardOrders(true));
+  };
+
   return (
     <PageHeader
       pageTitle={pageTitle}
@@ -130,6 +138,10 @@ export default function DashboardBar() {
       showExport={true}
       exportButtonText="Export"
       onExport={exportDashboardData}
+      showRefresh={true}
+      refreshButtonDisabled={false}
+      refreshButtonText="Refresh"
+      onRefresh={refreshDashboardData}
     />
   );
 }
