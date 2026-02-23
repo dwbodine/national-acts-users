@@ -106,7 +106,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 576px) {
   // Rsuite xs
   .widget-row {
     margin-left: 5px !important;
@@ -116,6 +116,7 @@
     padding: 5px 5px 5px 0;
     min-width: unset;
     max-width: unset;
+    height: unset;
     margin: 0;
   }
 
@@ -123,5 +124,8 @@
     margin: 0;
     padding: 10px;
     font-size: 10px;
+    min-height: unset;
+    height: unset;
+    aspect-ratio: unset;
   }
 }
