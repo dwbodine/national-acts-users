@@ -169,11 +169,6 @@ export default function CurrentEvents() {
       } else if (shouldRefreshEvent(currentReportSelection?.currentEvents?.at(0))) {
         dispatch(setReloadEvents(true));
       }
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'instant',
-      });
     } else {
       dispatch(setIsLoading(false));
     }
