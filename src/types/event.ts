@@ -119,6 +119,7 @@ export interface Order {
   tickets?: Ticket[];
   purchaseDate: string;
   purchaseTimestamp: string;
+  purchaseUnixTimestamp?: number;
   phone?: string;
   email: string;
   purchaserLastName: string;

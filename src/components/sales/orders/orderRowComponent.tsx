@@ -4,7 +4,7 @@ import moment from 'moment';
 import { ReactElement } from 'react';
 
 import { OrderRowProps } from '@/types/props';
-import { formatCurrencyAmount, getOrderStatusText } from '@/utils/eventUtils';
+import { formatCurrencyAmount, getOrderStatusText, getPacificMoment } from '@/utils/eventUtils';
 
 import AttendeeRow from './attendeeRowComponent';
 
@@ -37,9 +37,14 @@ export default function OrderRow(props: OrderRowProps) {
   const currencySymbol = order?.currencySymbol ?? '$';
   const exchangeRate = order?.exchangeRate ?? 1;
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
-  const purchaseDate = order?.purchaseTimestamp
-    ? moment(order.purchaseTimestamp).format('MM/DD/YYYY LT')
-    : 'n/a';
+  let purchaseDate: string = 'n/a';
+  if (order?.purchaseUnixTimestamp) {
+    const purchaseDateUtc = moment.unix(order.purchaseUnixTimestamp).utc();
+    const purchaseDateLocal = getPacificMoment(purchaseDateUtc);
+    purchaseDate = `${purchaseDateLocal.format('MM/DD/YYYY h:mm A zz')}`;
+  } else if (order?.purchaseTimestamp) {
+    purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
+  }
   const revenue = Number((order?.revenue ?? 0) - (order?.revenueRefunded ?? 0));
   const revenueUsd = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0));
   const serviceFees = Number((order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0));

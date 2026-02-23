@@ -85,13 +85,15 @@ function normalizeEvent(evt: VipEvent): VipEvent {
       }
     }
 
-    computedOrders = [...computedOrders].sort(
-      (a, b) =>
-        a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
-        a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
-        (a.purchaseTimestamp && b.purchaseTimestamp
-          ? moment(b.purchaseTimestamp).unix() - moment(a.purchaseTimestamp).unix()
-          : 0),
+    computedOrders = [...computedOrders].sort((a, b) =>
+      a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
+      a.purchaserFirstName?.localeCompare(b.purchaserFirstName) ||
+      (a.purchaseUnixTimestamp && b.purchaseUnixTimestamp
+        ? moment.unix(b.purchaseUnixTimestamp).unix() - moment.unix(a.purchaseUnixTimestamp).unix()
+        : 0) ||
+      (a.purchaseTimestamp && b.purchaseTimestamp)
+        ? moment(b.purchaseTimestamp).unix() - moment(a.purchaseTimestamp).unix()
+        : 0,
     );
   }
 

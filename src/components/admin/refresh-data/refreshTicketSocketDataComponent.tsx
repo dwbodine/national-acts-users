@@ -65,6 +65,10 @@ export default function RefreshTicketSocketData() {
       });
     } else if (history === undefined) {
       dispatch(setIsLoading(true));
+      const adminSelection = { ...currentAdminSelection };
+      adminSelection.start = undefined;
+      adminSelection.end = undefined;
+      dispatch(setAdminDates(adminSelection));
       void getRefreshHistory().then((response: GetRefreshHistoryResponse) => {
         setHistory(response.history);
         dispatch(setIsLoading(false));
