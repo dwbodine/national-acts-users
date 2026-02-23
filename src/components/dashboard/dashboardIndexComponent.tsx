@@ -98,6 +98,7 @@ export default function DashboardIndex() {
   const topLocations = currentDashboardSelection.currentDashboardData?.topLocations ?? undefined;
   const topVenues = currentDashboardSelection.currentDashboardData?.topVenues ?? undefined;
   const dateRange = `${moment.unix(currentDashboardSelection.start).format('MM/DD/YYYY')} - ${moment.unix(currentDashboardSelection.end).format('MM/DD/YYYY')}`;
+  const lastUpdated = currentDashboardSelection.currentDashboardData?.lastUpdated;
 
   const chartSalesData: ITicketSalesData[] = [];
   if (ticketSalesData) {
@@ -271,6 +272,7 @@ export default function DashboardIndex() {
         />
         <Row>
           <Col xs={24}>
+            {lastUpdated && <div className="last-refresh">Last refreshed: {lastUpdated}</div>}
             <Table
               height={550}
               bordered

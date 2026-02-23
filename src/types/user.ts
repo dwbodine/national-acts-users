@@ -174,6 +174,7 @@ export interface IDailyOrderData {
   serviceFeeRevenueChargedBackUsd?: number;
   exchangeRate?: number;
   currencySymbol?: string;
+  lastUpdate?: string;
 }
 
 export interface IDashboardTotals {
@@ -273,6 +274,7 @@ export interface IDashboardData {
   yearlyAverages: IAverageDailyData;
   monthToDatePricePerTicketUsd: number;
   monthToDateServiceFeePerTicketUsd: number;
+  lastUpdated?: string;
 }
 
 export type AdminDashboardSelection = {

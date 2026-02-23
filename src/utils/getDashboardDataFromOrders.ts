@@ -13,7 +13,7 @@ import {
   ITotalsByAccount,
 } from '@/types/user';
 
-import { getLocationInfoFromDailyOrderData } from './eventUtils';
+import { getLocationInfoFromDailyOrderData, getPacificMoment } from './eventUtils';
 
 export default function getDashboardDataFromOrders(
   currentDashboardSelection: AdminDashboardSelection,
@@ -56,12 +56,19 @@ export default function getDashboardDataFromOrders(
   const salesPerMonthMap = new Map<number, number>();
   const salesPerDayMonthMap = new Map<number, number>();
   const salesPerDayYearMap = new Map<number, number>();
+  let lastUpdatedUtc: moment.Moment = moment.utc(0);
 
   if (totals.dailyOrderData && totals.dailyOrderData.length > 0) {
     // Loop through daily order data to compile stats
     totals.dailyOrderData.forEach((dailyOrderData: IDailyOrderData) => {
       // Purchase date for this iteration
       const dailyOrderPurchaseDate = moment(dailyOrderData.purchaseDate);
+
+      const dailyOrderLastUpdatedUtc = moment.utc(dailyOrderData.lastUpdate);
+
+      if (dailyOrderLastUpdatedUtc.unix() > lastUpdatedUtc.unix()) {
+        lastUpdatedUtc = dailyOrderLastUpdatedUtc;
+      }
 
       // Get stats per TicketSocket account (keyed by ticketSocketId and stored in USD)
       let accountOrderData: ITicketSalesData | undefined = totalsByAccountMap.get(
@@ -615,6 +622,9 @@ export default function getDashboardDataFromOrders(
   const projectedYearTotalRevenueUsd =
     totals.totalRevenueUsd + averageDailyTotalRevenuePerYearUsd * remainingDaysInYear;
 
+  const pacificLastUpdated = getPacificMoment(lastUpdatedUtc);
+  const lastUpdated = pacificLastUpdated.format('M/DD/YYYY h:mm A zz');
+
   // Add to object for use in dashboard
   const dashboardData: IDashboardData = {
     monthToDatePricePerTicketUsd,
@@ -657,6 +667,7 @@ export default function getDashboardDataFromOrders(
     totals,
     totalsByAccount,
     yearlyAverages,
+    lastUpdated,
   };
 
   return dashboardData;
