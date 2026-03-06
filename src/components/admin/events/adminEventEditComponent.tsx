@@ -898,21 +898,13 @@ export default function AdminEventEdit(props: EditProps) {
       if (response.success) {
         const newVenue = response.updatedVenue;
         const adminSelection = { ...currentAdminSelection };
-        const adminDataSelection = { ...currentAdminDataSelection };
-        if (
-          newVenue !== undefined &&
-          adminDataSelection.venues !== undefined &&
-          adminSelection.selectedEvent !== undefined &&
-          !adminDataSelection.venues.find((x) => x.venueId === newVenue.venueId)
-        ) {
-          dispatch(setAdminVenue(undefined));
-          const venueList = [...adminDataSelection.venues];
-          venueList.push(newVenue);
-          venueList.sort((a, b) => (a.venue < b.venue ? -1 : a.venue > b.venue ? 1 : 0));
-          dispatch(setVenues(venueList));
+        if (newVenue !== undefined && adminSelection.selectedEvent !== undefined) {
           const currentEvent = { ...adminSelection.selectedEvent };
           currentEvent.externalEventVenueId = newVenue.venueId;
           dispatch(setAdminEvent(currentEvent));
+          dispatch(setAdminVenue(undefined));
+          dispatch(setVenues(undefined));
+          dispatch(setReloadVenues(true));
           markDirty();
         } else {
           toast.error('Error occurred while saving venue');

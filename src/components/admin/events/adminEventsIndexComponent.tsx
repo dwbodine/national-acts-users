@@ -116,6 +116,7 @@ export default function AdminEventsIndex() {
         setEventIdList([]);
         setSelectedAction(null);
         dispatch(setReloadEvents(false));
+        dispatch(setReloadVenues(true));
         const adminSelection = { ...currentAdminSelection };
         const sellerId: number = adminSelection.sellerId ?? 0;
         if (sellerId === 0) {
