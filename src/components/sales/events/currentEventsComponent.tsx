@@ -376,7 +376,7 @@ export default function CurrentEvents() {
                   </tfoot>
                 </table>
                 {lastUpdated && (
-                  <div className="last-refresh">
+                  <div className="last-refresh no-print">
                     Last refreshed: {lastUpdated.format('M/DD/YYYY h:mm A zz')} (updates every 30
                     minutes)
                   </div>

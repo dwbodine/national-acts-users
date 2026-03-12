@@ -272,7 +272,9 @@ export default function DashboardIndex() {
         />
         <Row>
           <Col xs={24}>
-            {lastUpdated && <div className="last-refresh">Last refreshed: {lastUpdated}</div>}
+            {lastUpdated && (
+              <div className="last-refresh no-print">Last refreshed: {lastUpdated}</div>
+            )}
             <Table
               height={550}
               bordered

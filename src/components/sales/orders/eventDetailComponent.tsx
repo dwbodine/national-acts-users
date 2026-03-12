@@ -17,6 +17,7 @@ import {
   setFocusControl,
   setHideOrderRevenue,
   setHideOrderServiceFees,
+  setReloadEvents,
   setShowDeletedOrders,
   setShowInactiveOrders,
   setShowOnlyEmails,
@@ -260,9 +261,17 @@ export default function EventDetail(props: EditProps) {
   useEffect(() => {
     if (!user || !id) return;
     if (sellerId <= 0) return;
+    // If a reload was requested via redux, always re-fetch.
+    // Otherwise only fetch once per id (dedupe in StrictMode/dev).
+    const shouldReload = reportSelection.reloadEvents;
 
-    if (fetchedEventIdRef.current === id) return;
-    fetchedEventIdRef.current = id;
+    if (!shouldReload) {
+      if (fetchedEventIdRef.current === id) return;
+      fetchedEventIdRef.current = id;
+    } else {
+      // ensure we mark this id so repeated reloads don't double-fetch
+      fetchedEventIdRef.current = id;
+    }
 
     void (async () => {
       setIsLoading(true);
@@ -270,12 +279,15 @@ export default function EventDetail(props: EditProps) {
         const results = await getEventById(id);
         if (results?.event) {
           setCurrentDetailEvent(normalizeEvent(results.event));
+          document.title = `${results.event.title}`;
         }
       } finally {
         setIsLoading(false);
+        // clear the reload flag if it was set
+        if (reportSelection.reloadEvents) dispatch(setReloadEvents(false));
       }
     })();
-  }, [user, id, sellerId, getEventById]);
+  }, [user, id, sellerId, getEventById, reportSelection.reloadEvents, dispatch]);
 
   // 6) Focus control
   useEffect(() => {
@@ -765,7 +777,7 @@ export default function EventDetail(props: EditProps) {
                   <tbody>{orderRows}</tbody>
                 </table>
                 {lastUpdated && (
-                  <div className="last-refresh">
+                  <div className="last-refresh no-print">
                     Last refreshed: {lastUpdated.format('M/DD/YYYY h:mm A zz')} (updates every 30
                     minutes)
                   </div>
