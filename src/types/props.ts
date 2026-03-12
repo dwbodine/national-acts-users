@@ -124,6 +124,7 @@ export interface NavBarProps {
 
 export interface PrintButtonProps {
   ShowPrint?: boolean;
+  IsMobile?: boolean;
 }
 
 export interface ReportDatePickerProps {

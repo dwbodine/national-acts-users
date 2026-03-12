@@ -5,7 +5,7 @@ import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Checkbox, Col, Container, Input, Row } from 'rsuite';
+import { Button, Checkbox, Col, Container, Input, Radio, RadioGroup, Row } from 'rsuite';
 
 import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
@@ -137,6 +137,7 @@ export default function EventDetail(props: EditProps) {
   const [currentDetailEvent, setCurrentDetailEvent] = useState<VipEvent | undefined>(undefined);
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState<'purchaseDate' | 'purchaserName'>('purchaserName');
   const debouncedResults = useMemo(() => debouce(setSearchTerm, 300), []);
   useEffect(() => () => debouncedResults.cancel(), [debouncedResults]);
 
@@ -354,7 +355,29 @@ export default function EventDetail(props: EditProps) {
 
     const filteredOrders = filterOrders(currentDetailEvent.orders);
 
-    filteredOrders?.forEach((order, i) => {
+    // Apply user-selected sort
+    let sortedOrders: Order[] = filteredOrders ?? [];
+    if (sortedOrders.length > 0) {
+      if (sortBy === 'purchaseDate') {
+        sortedOrders = [...sortedOrders].sort((a, b) => {
+          const aUnix =
+            a.purchaseUnixTimestamp ??
+            (a.purchaseTimestamp ? moment(a.purchaseTimestamp).unix() : 0);
+          const bUnix =
+            b.purchaseUnixTimestamp ??
+            (b.purchaseTimestamp ? moment(b.purchaseTimestamp).unix() : 0);
+          return bUnix - aUnix; // newest first
+        });
+      } else {
+        sortedOrders = [...sortedOrders].sort(
+          (a, b) =>
+            a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
+            a.purchaserFirstName?.localeCompare(b.purchaserFirstName),
+        );
+      }
+    }
+
+    sortedOrders?.forEach((order, i) => {
       if (order.isActive && !order.isDeleted && !order.isComped) {
         totalTickets += order.numTickets;
       }
@@ -404,7 +427,7 @@ export default function EventDetail(props: EditProps) {
     });
 
     const ticketData: ITicketData | undefined = getTicketDataFromOrders(
-      filteredOrders,
+      sortedOrders,
       currentDetailEvent,
     );
     const ticketTypes = ticketData?.TicketTypes;
@@ -433,7 +456,7 @@ export default function EventDetail(props: EditProps) {
       });
     }
 
-    shirtData = getShirtDataFromOrders(filteredOrders);
+    shirtData = getShirtDataFromOrders(sortedOrders);
     const shirtSizes = shirtData?.ShirtSizes ?? [];
     const arr = new Map<string, number>();
 
@@ -644,12 +667,15 @@ export default function EventDetail(props: EditProps) {
               </Row>
 
               <Row className="no-print">
-                <Col md={10} sm={12} hidden={windowSize.isMobile}>
+                <Col md={10} sm={12}>
                   <div className="admin-button-row">
-                    <span className="admin-button" hidden={!canExportCustomerData}>
+                    <span
+                      className="admin-button"
+                      hidden={!canExportCustomerData || windowSize.isMobile}
+                    >
                       <Button onClick={exportOrdersToCsv}>Export to Csv</Button>
                     </span>
-                    <PrintButton ShowPrint={viewPrintButton} />
+                    <PrintButton IsMobile={windowSize.isMobile} ShowPrint={viewPrintButton} />
                   </div>
                 </Col>
               </Row>
@@ -713,6 +739,31 @@ export default function EventDetail(props: EditProps) {
                       Show Only Phones?
                     </Checkbox>
                   </span>
+                </Col>
+              </Row>
+              <Row className="no-print">
+                <Col md={20} sm={24}>
+                  <div
+                    className="sort-by-group no-print"
+                    style={{
+                      marginTop: 8,
+                      marginLeft: 15,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                    }}
+                  >
+                    <label style={{ marginRight: 8, fontWeight: 600 }}>Sort By</label>
+                    <RadioGroup
+                      name="sort-by"
+                      inline
+                      value={sortBy}
+                      onChange={(val) => setSortBy(val as 'purchaseDate' | 'purchaserName')}
+                    >
+                      <Radio value="purchaserName">Purchaser Name</Radio>
+                      <Radio value="purchaseDate">Purchase Date</Radio>
+                    </RadioGroup>
+                  </div>
                 </Col>
               </Row>
 
