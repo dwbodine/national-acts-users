@@ -15,8 +15,8 @@ import { useHasPermission } from '@/hooks/user/useHasPermission';
 import {
   setEventSeller,
   setFocusControl,
-  setHideRevenue,
-  setHideServiceFees,
+  setHideOrderRevenue,
+  setHideOrderServiceFees,
   setShowDeletedOrders,
   setShowInactiveOrders,
   setShowOnlyEmails,
@@ -189,15 +189,15 @@ export default function EventDetail(props: EditProps) {
     void (async () => {
       const next: UserReportSelection = { ...reportSelection };
 
-      if ((user.selectedSellerId ?? 0) > 0) {
-        const seller = user.sellers?.find((x) => x.sellerId === user.selectedSellerId);
+      if ((sellerId ?? 0) > 0) {
+        const seller = user.sellers?.find((x) => x.sellerId === sellerId);
         if (!seller) {
           router.push('/logout');
           return;
         }
         next.seller = seller;
-        next.hideRevenue = user.selectedHideRevenue;
-        next.hideServiceFees = user.selectedHideServiceFees;
+        next.hideOrderRevenue = true;
+        next.hideOrderServiceFees = true;
         dispatch(setEventSeller(next));
         return;
       }
@@ -205,8 +205,8 @@ export default function EventDetail(props: EditProps) {
       const sellerResult = await getUserSellerFromEventId(id, user.userId);
       if (sellerResult?.userSeller) {
         next.seller = sellerResult.userSeller;
-        next.hideRevenue = user.selectedHideRevenue;
-        next.hideServiceFees = user.selectedHideServiceFees;
+        next.hideOrderRevenue = true;
+        next.hideOrderServiceFees = true;
         dispatch(setEventSeller(next));
       } else {
         router.push('/logout');
@@ -226,7 +226,7 @@ export default function EventDetail(props: EditProps) {
     } else if (viewRevenueData === false) {
       setHideRevItem(true);
     } else {
-      setHideRevItem(reportSelection.hideRevenue ?? true);
+      setHideRevItem(reportSelection.hideOrderRevenue ?? true);
     }
 
     // Admin-only filters
@@ -240,7 +240,7 @@ export default function EventDetail(props: EditProps) {
 
     // Service fees
     if (viewServiceFees) {
-      setHideServiceFeeDisplay(reportSelection.hideServiceFees ?? true);
+      setHideServiceFeeDisplay(reportSelection.hideOrderServiceFees ?? true);
     } else {
       setHideServiceFeeDisplay(true);
     }
@@ -250,8 +250,8 @@ export default function EventDetail(props: EditProps) {
     alwaysShowRevenue,
     viewRevenueData,
     viewServiceFees,
-    reportSelection.hideRevenue,
-    reportSelection.hideServiceFees,
+    reportSelection.hideOrderRevenue,
+    reportSelection.hideOrderServiceFees,
     reportSelection.showOnlyEmails,
     reportSelection.showOnlyPhones,
   ]);
@@ -451,8 +451,8 @@ export default function EventDetail(props: EditProps) {
 
   const exportOrdersToCsv = () => {
     if (reportSelection && currentDetailEvent) {
-      const showServiceFees = viewServiceFees && !reportSelection.hideServiceFees;
-      const showRevenueData = viewRevenueData && !reportSelection.hideRevenue;
+      const showServiceFees = viewServiceFees && !reportSelection.hideOrderServiceFees;
+      const showRevenueData = viewRevenueData && !reportSelection.hideOrderRevenue;
       const showOnlyEmails = user?.isAdmin && reportSelection.showOnlyEmails;
       const showOnlyPhones = user?.isAdmin && reportSelection.showOnlyPhones;
 
@@ -475,8 +475,8 @@ export default function EventDetail(props: EditProps) {
   const handleShowInactive = (checked: boolean) => dispatch(setShowInactiveOrders(checked));
   const handleShowDeleted = (checked: boolean) => dispatch(setShowDeletedOrders(checked));
 
-  const handleHideRevenue = (checked: boolean) => dispatch(setHideRevenue(checked));
-  const handleHideServiceFees = (checked: boolean) => dispatch(setHideServiceFees(checked));
+  const handleHideRevenue = (checked: boolean) => dispatch(setHideOrderRevenue(checked));
+  const handleHideServiceFees = (checked: boolean) => dispatch(setHideOrderServiceFees(checked));
 
   const handleShowOnlyEmails = (checked: boolean) => {
     dispatch(setShowOnlyEmails(checked));
@@ -642,7 +642,7 @@ export default function EventDetail(props: EditProps) {
                 </Col>
               </Row>
 
-              <Row>
+              <Row className="no-print">
                 <Col md={20} sm={24}>
                   <span className="inactive-check" hidden={!viewInactiveOrders}>
                     <Checkbox
@@ -665,7 +665,7 @@ export default function EventDetail(props: EditProps) {
 
                   <span className="revenue-check" hidden={!hasOrders || !viewRevenueControls}>
                     <Checkbox
-                      checked={reportSelection.hideRevenue}
+                      checked={reportSelection.hideOrderRevenue ?? true}
                       onChange={(_, checked) => handleHideRevenue(checked)}
                     >
                       Hide Revenue Items?
@@ -674,7 +674,7 @@ export default function EventDetail(props: EditProps) {
 
                   <span className="service-fees-check" hidden={!hasOrders || !viewServiceFees}>
                     <Checkbox
-                      checked={reportSelection.hideServiceFees}
+                      checked={reportSelection.hideOrderServiceFees ?? true}
                       onChange={(_, checked) => handleHideServiceFees(checked)}
                     >
                       Hide Service Fees?
@@ -704,8 +704,8 @@ export default function EventDetail(props: EditProps) {
                 </Col>
               </Row>
 
-              <Row hidden={searchBarHidden}>
-                <Col md={20} sm={24} className="no-print">
+              <Row hidden={searchBarHidden} className="no-print">
+                <Col md={20} sm={24}>
                   <Input
                     value={searchTerm ?? ''}
                     onChange={setSearchTerm}

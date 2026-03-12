@@ -9,10 +9,9 @@ import { Button } from 'rsuite';
 import PrintButton from './printButtonComponent';
 
 export default function PdfExport() {
-  const hash = moment().unix();
-  const filename = `pdfExport_${hash}.pdf`;
-  const { toPDF, targetRef } = usePDF({ filename });
   const [htmlText, setHtmlText] = useState('');
+  const [filename, setFilename] = useState(`pdfExport_${moment().unix()}.pdf`);
+  const { toPDF, targetRef } = usePDF({ filename });
 
   const exportToPdf = () => {
     toPDF();
@@ -22,6 +21,8 @@ export default function PdfExport() {
     const title = localStorage.getItem('pdfTitle');
     if (title) {
       document.title = title;
+      const safeTitle = title.replace(/[^\w\d]+/g, '_');
+      setFilename(`${safeTitle}.pdf`);
       localStorage.removeItem('pdfTitle');
     }
     const txt = localStorage.getItem('htmlText');

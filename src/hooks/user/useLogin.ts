@@ -12,9 +12,6 @@ export const useLogin = () => {
     if (response && response.user && response.user.isAuthenticated) {
       const user: User = { ...response.user };
       await logActivityData(UserActivityType.Login, undefined, user.token);
-      user.selectedSellerId = 0;
-      user.selectedHideRevenue = true;
-      user.selectedHideServiceFees = true;
       localStorage.clear();
       localStorage.setItem('currentUser', JSON.stringify(user));
       const now = new Date().getTime();

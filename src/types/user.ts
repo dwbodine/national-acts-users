@@ -64,9 +64,6 @@ export type User = {
   category?: string;
   isActive: boolean;
   sellers?: UserSeller[];
-  selectedSellerId?: number;
-  selectedHideRevenue?: boolean;
-  selectedHideServiceFees?: boolean;
   requireResetPassword?: boolean;
   sendEmailReset?: boolean;
   sendTextReset?: boolean;
@@ -88,7 +85,9 @@ export type UserReportSelection = {
   showInactiveOrders?: boolean;
   showDeleted?: boolean;
   hideRevenue?: boolean;
+  hideOrderRevenue?: boolean;
   hideServiceFees?: boolean;
+  hideOrderServiceFees?: boolean;
   showDeletedOrders?: boolean;
   reloadEvents?: boolean;
   reloadTours?: boolean;

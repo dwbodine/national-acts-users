@@ -2,13 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { SellerType, Tour, VipEvent } from '@/types/event';
 
-import { User, UserReportSelection, UserSeller } from '../types/user';
+import { UserReportSelection, UserSeller } from '../types/user';
 
 const initialState: UserReportSelection = {
   currentEvents: [],
   end: 0,
   focusControl: '',
-  hideRevenue: false,
+  hideRevenue: true,
+  hideOrderRevenue: true,
   hideServiceFees: true,
   isForAdmin: false,
   reloadEvents: true,
@@ -51,7 +52,8 @@ export const userReportSelectionSlice = createSlice({
       state.showHidden = state.isForAdmin;
       state.showOnlyEmails = false;
       state.showOnlyPhones = false;
-      state.hideRevenue = false;
+      state.hideRevenue = true;
+      state.hideOrderRevenue = true;
       state.hideServiceFees = true;
       state.tours = undefined;
       state.selectedTourId = undefined;
@@ -82,6 +84,7 @@ export const userReportSelectionSlice = createSlice({
       state.seller = action.payload.seller;
       state.hideRevenue = action.payload.hideRevenue;
       state.hideServiceFees = action.payload.hideServiceFees;
+      state.hideOrderRevenue = true;
       return state;
     },
     setEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
@@ -110,30 +113,29 @@ export const userReportSelectionSlice = createSlice({
       if (state.hideRevenue) {
         state.hideServiceFees = true;
       }
-      const currentUserStr = localStorage.getItem('currentUser') || undefined;
-      if (currentUserStr) {
-        const currentUser = JSON.parse(currentUserStr) as User;
-        currentUser.selectedHideRevenue = action.payload;
-        currentUser.selectedHideServiceFees = state.hideServiceFees;
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      return state;
+    },
+    setHideOrderRevenue: (state, action: PayloadAction<boolean>) => {
+      state.hideOrderRevenue = action.payload;
+      if (state.hideOrderRevenue) {
+        state.hideOrderServiceFees = true;
       }
       return state;
     },
     setHideServiceFees: (state, action: PayloadAction<boolean>) => {
       state.hideServiceFees = action.payload;
       state.reloadEvents = false;
-      const currentUserStr = localStorage.getItem('currentUser') || undefined;
-      if (currentUserStr) {
-        const currentUser = JSON.parse(currentUserStr) as User;
-        currentUser.selectedHideServiceFees = action.payload;
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      }
+      return state;
+    },
+    setHideOrderServiceFees: (state, action: PayloadAction<boolean>) => {
+      state.hideOrderServiceFees = action.payload;
       return state;
     },
     setReloadEvents: (state, action: PayloadAction<boolean>) => {
       state.reloadEvents = action.payload;
       if (state.reloadEvents) {
         state.currentEvents = undefined;
+        state.hideOrderRevenue = true;
       }
       return state;
     },
@@ -158,18 +160,14 @@ export const userReportSelectionSlice = createSlice({
         state.seller = action.payload;
         state.reloadEvents = true;
         state.reloadTours = true;
-        const currentUserStr = localStorage.getItem('currentUser') || undefined;
-        if (currentUserStr) {
-          const currentUser = JSON.parse(currentUserStr) as User;
-          currentUser.selectedSellerId = action.payload.sellerId;
-          localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        }
       }
       state.start = 0;
       state.end = 0;
       state.showDeleted = false;
       state.showDeletedOrders = false;
       state.showInactive = false;
+      state.hideRevenue = true;
+      state.hideOrderRevenue = true;
       state.showHidden = state.isForAdmin;
       state.showInactiveOrders = true;
       state.retainDateSelection = false;
@@ -247,7 +245,9 @@ export const {
   setEvents,
   resetAll,
   setHideRevenue,
+  setHideOrderRevenue,
   setHideServiceFees,
+  setHideOrderServiceFees,
   setShowInactiveOrders,
   setShowDeletedOrders,
   setFocusControl,
