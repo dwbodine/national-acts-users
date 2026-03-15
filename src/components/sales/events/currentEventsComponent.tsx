@@ -312,6 +312,7 @@ export default function CurrentEvents() {
             value={searchTerm ?? ''}
             onChange={setSearchTerm}
             className="search-text-input no-print"
+            style={{ marginLeft: 10 }}
             placeholder="Search for events..."
           />
         </div>

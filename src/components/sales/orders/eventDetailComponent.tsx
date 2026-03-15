@@ -773,6 +773,7 @@ export default function EventDetail(props: EditProps) {
                     value={searchTerm ?? ''}
                     onChange={setSearchTerm}
                     className="search-text-input"
+                    style={{ marginLeft: 10 }}
                     placeholder="Search for orders..."
                     hidden={isLoading || orderRows.length === 0}
                   />
