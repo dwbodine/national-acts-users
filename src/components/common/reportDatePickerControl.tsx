@@ -27,13 +27,24 @@ export default function ReportDatePicker(props: ReportDatePickerProps) {
     }
     const startDate = moment(date).startOf('day');
     let newStart = startDate.unix();
-    if (newStart < MINIMUM_UNIX_TIMESTAMP) {
+    let newEnd = end;
+
+    if (!newStart) {
+      newEnd = undefined;
+    } else if (newStart < MINIMUM_UNIX_TIMESTAMP) {
       newStart = MINIMUM_UNIX_TIMESTAMP;
     }
 
+    if (newEnd && newStart > newEnd) {
+      newStart = newEnd;
+      newEnd = startDate.unix();
+    }
+
     setStart(newStart);
-    if (onChange && end && newStart <= end) {
-      onChange(newStart, end);
+    setEnd(newEnd);
+
+    if (onChange) {
+      onChange(newStart, newEnd);
     }
   };
 
@@ -42,13 +53,22 @@ export default function ReportDatePicker(props: ReportDatePickerProps) {
       return;
     }
     const endDate = moment(date).endOf('day');
+    let newStart = start;
     let newEnd = endDate.unix();
     if (newEnd < MINIMUM_UNIX_TIMESTAMP) {
-      newEnd = MINIMUM_UNIX_TIMESTAMP;
+      newStart = MINIMUM_UNIX_TIMESTAMP;
     }
+
+    if (newStart && newStart > newEnd) {
+      newEnd = newStart;
+      newStart = endDate.unix();
+    }
+
+    setStart(newStart);
     setEnd(newEnd);
-    if (onChange && start && start <= newEnd) {
-      onChange(start, newEnd);
+
+    if (onChange) {
+      onChange(newStart, newEnd);
     }
   };
 

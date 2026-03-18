@@ -83,10 +83,10 @@ export default function RefreshTicketSocketData() {
     dispatch(setAdminSellerId(sellerId));
   };
 
-  const onDateChange = (newStart: number, newEnd: number) => {
+  const onDateChange = (newStart: number | undefined, newEnd: number | undefined) => {
     const adminSelection = { ...currentAdminSelection };
-    adminSelection.start = newStart;
-    adminSelection.end = newEnd;
+    adminSelection.start = newStart ? newStart : undefined;
+    adminSelection.end = newEnd ? newEnd : undefined;
     dispatch(setAdminDates(adminSelection));
   };
 

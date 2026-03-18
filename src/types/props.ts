@@ -132,7 +132,7 @@ export interface ReportDatePickerProps {
   End?: number;
   Disabled?: boolean;
   LabelColumnWidth?: number;
-  OnChange?: (start: number, end: number) => void;
+  OnChange?: (start?: number, end?: number) => void;
   OnStartClear?: () => void;
   OnEndClear?: () => void;
 }
