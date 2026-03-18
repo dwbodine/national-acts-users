@@ -77,7 +77,9 @@ export default function EventMobileRow(props: EventRowProps) {
   const exchangeRate = currencySymbol === '$' ? 1 : 0;
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
   const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0));
+  const netRevenue = revenue - Number(revenue * (vipEvent.sellerRatePercent ?? 0));
   const revenueUsd = Number((vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0));
+  const netRevenueUsd = revenueUsd - Number(revenueUsd * (vipEvent.sellerRatePercent ?? 0));
   const serviceFees = Number(
     (vipEvent.totalServiceFees ?? 0) - (vipEvent.serviceFeeRevenueRefunded ?? 0),
   );
@@ -135,6 +137,18 @@ export default function EventMobileRow(props: EventRowProps) {
             <Col className="mobile-bold">Revenue:</Col>
             <Col className="mobile-data">
               {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
+            </Col>
+          </Row>
+          <Row hidden={hideRevItem} className={revClass}>
+            <Col className="mobile-bold">Net Revenue:</Col>
+            <Col className="mobile-data">
+              {formatCurrencyAmount(
+                netRevenue,
+                netRevenueUsd,
+                currencySymbol,
+                exchangeRate,
+                isAdmin,
+              )}
             </Col>
           </Row>
           <Row hidden={hideServiceFees} className="no-print">

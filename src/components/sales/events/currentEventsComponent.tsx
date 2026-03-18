@@ -238,6 +238,7 @@ export default function CurrentEvents() {
   let revenueRefunded = 0;
   let totalServiceFees = 0;
   let serviceFeesRefunded = 0;
+  let totalNetRevenue = 0;
   let lastUpdated: moment.Moment | undefined = undefined;
 
   if (vipEvents && vipEvents.length > 0) {
@@ -282,9 +283,11 @@ export default function CurrentEvents() {
         totalTickets += evt.totalTickets ?? 0;
         totalTicketsComped += evt.numTicketsComped ?? 0;
         revenueRefunded += evt.revenueRefundedUsd ?? 0;
-        totalRevenue += (evt.totalRevenueUsd ?? 0) - (evt.revenueRefundedUsd ?? 0);
+        const totalEventRevenue = (evt.totalRevenueUsd ?? 0) - (evt.revenueRefundedUsd ?? 0);
+        const eventFee = totalEventRevenue * (evt.sellerRatePercent ?? 0);
+        totalRevenue += totalEventRevenue;
+        totalNetRevenue += totalEventRevenue - eventFee;
         ticketsRefunded += evt.numTicketsRefunded ?? 0;
-
         totalShirts += evt.totalShirts ?? 0;
         serviceFeesRefunded += evt.serviceFeeRevenueRefundedUsd ?? 0;
         totalServiceFees +=
@@ -330,6 +333,7 @@ export default function CurrentEvents() {
           RevenueRefunded={revenueRefunded}
           ServiceFeesRefunded={serviceFeesRefunded}
           IsAdmin={user?.isAdmin ?? false}
+          TotalNetRevenue={totalNetRevenue}
         />
         <TicketSalesChart
           TicketSalesData={ticketSalesData}
@@ -355,6 +359,9 @@ export default function CurrentEvents() {
                       <th className={revClass} hidden={hideRevItem}>
                         Revenue
                       </th>
+                      <th className={revClass} hidden={hideRevItem}>
+                        Net Revenue
+                      </th>
                       <th className="no-print" hidden={hideServiceFees}>
                         Service Fees
                       </th>
@@ -369,6 +376,9 @@ export default function CurrentEvents() {
                       <td className="pull-right">{totalTicketsComped}</td>
                       <td className={`pull-right ${revClass}`} hidden={hideRevItem}>
                         ${totalRevenue.toFixed(2)}
+                      </td>
+                      <td className={`pull-right ${revClass}`} hidden={hideRevItem}>
+                        ${totalNetRevenue.toFixed(2)}
                       </td>
                       <td className="pull-right no-print" hidden={hideServiceFees}>
                         ${totalServiceFees.toFixed(2)}

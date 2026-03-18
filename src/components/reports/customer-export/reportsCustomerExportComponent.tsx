@@ -33,7 +33,7 @@ export default function ReportsCustomerExport() {
     // Do nothing, just refresh
   }, [currentAdminReportSelection, globalSelection.isLoading]);
 
-  const onDateChange = (newStart: number, newEnd: number) => {
+  const onDateChange = (newStart?: number, newEnd?: number) => {
     const reportSelection = { ...currentAdminReportSelection };
     reportSelection.start = newStart;
     reportSelection.end = newEnd;

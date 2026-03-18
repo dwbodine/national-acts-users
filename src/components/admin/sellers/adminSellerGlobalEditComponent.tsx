@@ -374,6 +374,44 @@ export default function AdminSellerGlobalEdit() {
     dispatch(setAdminSeller(sellerToUpdate));
   };
 
+  const updateSellerRatePercent = (
+    ticketSocketId: number,
+    eventCategoryId: number | undefined,
+    sellerRatePercent: number | undefined,
+  ) => {
+    if (
+      !currentAdminSelection.selectedSeller ||
+      !ticketSocketId ||
+      isNaN(ticketSocketId) ||
+      !eventCategoryId ||
+      isNaN(eventCategoryId)
+    ) {
+      return;
+    }
+
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    let currentCategories: SellerEventCategory[] = sellerToUpdate.sellerEventCategories
+      ? [...sellerToUpdate.sellerEventCategories]
+      : [];
+
+    const existingCategory = currentCategories.find((x) => x.ticketSocketId === ticketSocketId);
+    if (!existingCategory) {
+      return;
+    }
+
+    currentCategories = currentCategories.map((x) => {
+      if (x.ticketSocketId === ticketSocketId && x.eventCategoryId === eventCategoryId) {
+        const cat = { ...x };
+        cat.sellerRatePercent = sellerRatePercent ? sellerRatePercent / 100 : 0;
+        return cat;
+      }
+      return x;
+    });
+
+    sellerToUpdate.sellerEventCategories = currentCategories;
+    dispatch(setAdminSeller(sellerToUpdate));
+  };
+
   const updateSellerType = (sellerTypeValue: number | undefined) => {
     if (!currentAdminSelection.selectedSeller || !sellerTypeValue || isNaN(sellerTypeValue)) {
       return;
@@ -502,6 +540,9 @@ export default function AdminSellerGlobalEdit() {
         (x) => x.ticketSocketId === account.ticketSocketId,
       );
       const disabled = selectedCategory && selectedCategory.hasEvents;
+      const sellerRatePercent = selectedCategory?.sellerRatePercent
+        ? selectedCategory.sellerRatePercent * 100
+        : 0;
       const categoryId: number | null = selectedCategory?.eventCategoryId
         ? Number(selectedCategory.eventCategoryId)
         : null;
@@ -531,7 +572,7 @@ export default function AdminSellerGlobalEdit() {
               }
             />
           </Col>
-          <Col xs={4}>
+          <Col xs={3}>
             <Checkbox
               disabled={!selectedCategory}
               checked={selectedCategory?.isVisibleOnSite ?? false}
@@ -546,7 +587,7 @@ export default function AdminSellerGlobalEdit() {
               Visible on site?
             </Checkbox>
           </Col>
-          <Col xs={4}>
+          <Col xs={3}>
             <Checkbox
               disabled={!selectedCategory}
               checked={selectedCategory?.isVisibleOnPortal ?? false}
@@ -560,6 +601,25 @@ export default function AdminSellerGlobalEdit() {
             >
               Visible on portal?
             </Checkbox>
+          </Col>
+          <Col xs={3}>Seller Rate (ex: 10 for 10%):</Col>
+          <Col xs={2}>
+            <Input
+              disabled={!selectedCategory}
+              value={sellerRatePercent ?? ''}
+              type="number"
+              step="1"
+              style={{ width: '100px' }}
+              onChange={(value) => {
+                const sellerRatePercent = value ? Math.round(parseFloat(value)) : 0;
+                updateSellerRatePercent(
+                  parseInt(`${account.ticketSocketId}`),
+                  parseInt(`${selectedCategory?.eventCategoryId}`),
+                  sellerRatePercent,
+                );
+              }}
+              placeholder="Seller rate percent (ex: 10 for 10%)"
+            />
           </Col>
         </Row>,
       );

@@ -13,6 +13,7 @@ export default function WidgetBar(props: WidgetBarProps) {
   const totalShows = props.TotalShows;
   const totalTickets = props.TotalTickets;
   const totalRevenue = props.TotalRevenue;
+  const netRevenue = props.TotalNetRevenue;
   const totalShirts = props.TotalShirts;
   const ticketData = props.TicketData;
   const shirtData = props.ShirtData;
@@ -80,6 +81,7 @@ export default function WidgetBar(props: WidgetBarProps) {
         <div className="widget-stat-block">
           <RevenueWidget
             TotalRevenue={totalRevenue}
+            NetRevenue={netRevenue}
             TotalServiceFees={totalServiceFees}
             HideServiceFees={hideServiceFees}
           />

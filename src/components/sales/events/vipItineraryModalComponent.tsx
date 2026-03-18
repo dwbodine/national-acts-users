@@ -167,9 +167,9 @@ export default function VIPItineraryModal(props: VIPModalProps) {
     setEndUnix(0);
   };
 
-  const onDateRangeChange = (start: number, end: number) => {
-    setStartEventUnix(start);
-    setEndUnix(end);
+  const onDateRangeChange = (start?: number, end?: number) => {
+    setStartEventUnix(start ?? 0);
+    setEndUnix(end ?? 0);
   };
 
   const onFormatSelect = (value: ValueType) => {

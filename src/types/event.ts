@@ -14,6 +14,7 @@ export interface SellerEventCategory {
   hasEvents?: boolean;
   isVisibleOnSite?: boolean;
   isVisibleOnPortal?: boolean;
+  sellerRatePercent?: number;
 }
 
 export interface Seller {
@@ -224,6 +225,9 @@ export interface VipEvent {
   isVisibleOnPortal?: boolean;
   lastFetched?: number;
   lastUpdate?: string;
+  sellerRatePercent?: number;
+  netRevenue?: number;
+  netRevenueUsd?: number;
 }
 
 export interface TicketSocketRefreshHistory {

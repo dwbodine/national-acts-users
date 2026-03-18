@@ -151,6 +151,7 @@ export interface TicketSalesChartProps {
 
 export interface RevenueWidgetProps {
   TotalRevenue?: number;
+  NetRevenue?: number;
   TotalServiceFees?: number;
   HideServiceFees?: boolean;
 }
@@ -187,6 +188,7 @@ export interface WidgetBarProps {
   IsAdmin?: boolean;
   RevenueRefunded?: number;
   ServiceFeesRefunded?: number;
+  TotalNetRevenue?: number;
 }
 
 export interface AverageSalesWidgetProps {
