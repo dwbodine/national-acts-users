@@ -22,6 +22,7 @@ export type UserSeller = {
   roleId?: number;
   permissions?: number[];
   routes?: string[];
+  hideSellerRate?: boolean;
 };
 
 export type Role = {

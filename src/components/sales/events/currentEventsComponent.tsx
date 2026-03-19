@@ -43,6 +43,7 @@ export default function CurrentEvents() {
 
   const [chartsHidden, setChartsHidden] = useState(true);
   const [hideRevItem, setHideRevItem] = useState(true);
+  const [hideSellerRate, setHideSellerRate] = useState(false);
   const [hideServiceFees, setHideServiceFees] = useState(true);
   const windowSize = useWindowSize();
   const windowSizeJson = JSON.stringify(windowSize);
@@ -106,6 +107,8 @@ export default function CurrentEvents() {
     }
 
     if (currentReportSelection.seller.sellerId > 0) {
+      setHideSellerRate(currentReportSelection.seller.hideSellerRate ?? false);
+
       if (alwaysShowRevenue) {
         setHideRevItem(false);
       } else if (viewRevenueData === false) {
@@ -265,6 +268,7 @@ export default function CurrentEvents() {
             HideServiceFees={hideServiceFees}
             CanCheckInTickets={canCheckInTickets}
             IsAdmin={user?.isAdmin ?? false}
+            HideSellerRate={hideSellerRate}
           />,
         );
       } else {
@@ -275,6 +279,7 @@ export default function CurrentEvents() {
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFees}
             IsAdmin={user?.isAdmin ?? false}
+            HideSellerRate={hideSellerRate}
           />,
         );
       }
@@ -334,6 +339,7 @@ export default function CurrentEvents() {
           ServiceFeesRefunded={serviceFeesRefunded}
           IsAdmin={user?.isAdmin ?? false}
           TotalNetRevenue={totalNetRevenue}
+          HideSellerRate={hideSellerRate}
         />
         <TicketSalesChart
           TicketSalesData={ticketSalesData}
@@ -359,7 +365,7 @@ export default function CurrentEvents() {
                       <th className={revClass} hidden={hideRevItem}>
                         Revenue
                       </th>
-                      <th className={revClass} hidden={hideRevItem}>
+                      <th className={revClass} hidden={hideRevItem || hideSellerRate}>
                         Net Revenue
                       </th>
                       <th className="no-print" hidden={hideServiceFees}>
@@ -377,7 +383,10 @@ export default function CurrentEvents() {
                       <td className={`pull-right ${revClass}`} hidden={hideRevItem}>
                         ${totalRevenue.toFixed(2)}
                       </td>
-                      <td className={`pull-right ${revClass}`} hidden={hideRevItem}>
+                      <td
+                        className={`pull-right ${revClass}`}
+                        hidden={hideRevItem || hideSellerRate}
+                      >
                         ${totalNetRevenue.toFixed(2)}
                       </td>
                       <td className="pull-right no-print" hidden={hideServiceFees}>

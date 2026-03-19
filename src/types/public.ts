@@ -98,6 +98,8 @@ export interface Page {
   pageOrder?: number;
   lastUpdate?: string;
   sellers?: PageSeller[];
+  extraHtmlHead?: string;
+  extraHtmlBody?: string;
 }
 
 export interface NavItemData {

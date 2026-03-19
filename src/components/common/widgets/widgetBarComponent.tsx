@@ -23,6 +23,7 @@ export default function WidgetBar(props: WidgetBarProps) {
   const totalServiceFees = props.TotalServiceFees;
   const hideTicketBreakdown = props.HideTicketBreakDown;
   const isAdmin = props.IsAdmin;
+  const hideSellerRate = props.HideSellerRate;
 
   const hideTickets = !ticketData || totalTickets === 0;
   const hideShirts = !shirtData || totalShirts === 0;
@@ -84,6 +85,7 @@ export default function WidgetBar(props: WidgetBarProps) {
             NetRevenue={netRevenue}
             TotalServiceFees={totalServiceFees}
             HideServiceFees={hideServiceFees}
+            HideSellerRate={hideSellerRate}
           />
         </div>
       </Col>

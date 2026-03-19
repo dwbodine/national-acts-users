@@ -38,6 +38,7 @@ export interface Seller {
   isActive?: boolean;
   sellerType: SellerType;
   sellerEventCategories?: SellerEventCategory[];
+  hideSellerRate?: boolean;
 }
 
 export interface ShirtSales {
@@ -228,6 +229,7 @@ export interface VipEvent {
   sellerRatePercent?: number;
   netRevenue?: number;
   netRevenueUsd?: number;
+  excludeFromDashboard?: boolean;
 }
 
 export interface TicketSocketRefreshHistory {

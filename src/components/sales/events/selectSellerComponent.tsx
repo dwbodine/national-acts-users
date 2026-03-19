@@ -34,6 +34,7 @@ export default function SelectSeller() {
           sellerName: '',
           sellerType: 1,
           userSellerId: 0,
+          hideSellerRate: false,
         }
       );
     },

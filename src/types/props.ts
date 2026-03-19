@@ -111,6 +111,7 @@ export interface EventDataExpandedProps {
 export interface EventRowProps {
   VipEvent: VipEvent;
   HideRevenue?: boolean;
+  HideSellerRate?: boolean;
   HideServiceFees?: boolean;
   ShowNotes?: boolean;
   CanCheckInTickets?: boolean;
@@ -154,6 +155,7 @@ export interface RevenueWidgetProps {
   NetRevenue?: number;
   TotalServiceFees?: number;
   HideServiceFees?: boolean;
+  HideSellerRate?: boolean;
 }
 
 export interface ShirtSizesWidgetProps {
@@ -189,6 +191,7 @@ export interface WidgetBarProps {
   RevenueRefunded?: number;
   ServiceFeesRefunded?: number;
   TotalNetRevenue?: number;
+  HideSellerRate?: boolean;
 }
 
 export interface AverageSalesWidgetProps {

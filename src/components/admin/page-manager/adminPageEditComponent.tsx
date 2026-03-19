@@ -232,6 +232,34 @@ export default function AdminPageEdit() {
     }
   };
 
+  const setHtmlHeader = (html: string) => {
+    if (!currentAdminSelection.selectedPage || !route) {
+      return;
+    }
+    let htmlText: string = html;
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    htmlText = cleanHtmlText(htmlText);
+    if (pageToUpdate.extraHtmlHead !== htmlText) {
+      pageToUpdate.extraHtmlHead = htmlText;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  };
+
+  const setHtmlBody = (html: string) => {
+    if (!currentAdminSelection.selectedPage || !route) {
+      return;
+    }
+    let htmlText: string = html;
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    htmlText = cleanHtmlText(htmlText);
+    if (pageToUpdate.extraHtmlBody !== htmlText) {
+      pageToUpdate.extraHtmlBody = htmlText;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  };
+
   const setGoogleAnalyticsId = (gaId: string) => {
     if (!currentAdminSelection.selectedPage || !route) {
       return;
@@ -609,6 +637,8 @@ export default function AdminPageEdit() {
   const subtitle1 = currentAdminSelection.selectedPage?.subtitle1;
   const subtitle2 = currentAdminSelection.selectedPage?.subtitle2;
   const htmlText = currentAdminSelection.selectedPage?.htmlText;
+  const htmlHeader = currentAdminSelection.selectedPage?.extraHtmlHead;
+  const htmlBody = currentAdminSelection.selectedPage?.extraHtmlBody;
   const useIncludeDates = currentAdminSelection.selectedPage?.useIncludeDates ?? false;
   const includeStart = currentAdminSelection.selectedPage?.includeStart
     ? moment(currentAdminSelection.selectedPage.includeStart).toDate()
@@ -813,7 +843,33 @@ export default function AdminPageEdit() {
                 id="htmlText"
                 onChange={setHtmlText}
                 value={htmlText ?? ''}
+                placeholder="Free-form html text to be placed in page under titles"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>Extra HTML Header text (script only)</span>
+              <Textarea
+                className="form-control-half"
+                rows={10}
+                id="htmlTextHead"
+                onChange={setHtmlHeader}
+                value={htmlHeader ?? ''}
                 placeholder="Free-form html text to be placed in header"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>Extra HTML Body Text (iframe/script only, goes after opening body tag)</span>
+              <Textarea
+                className="form-control-half"
+                rows={10}
+                id="htmlText"
+                onChange={setHtmlBody}
+                value={htmlBody ?? ''}
+                placeholder="Free-form html text to be placed immediately after opening body tag"
               />
             </Col>
           </Row>

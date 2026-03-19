@@ -354,6 +354,16 @@ export default function AdminEventEdit(props: EditProps) {
     markDirty();
   };
 
+  const setIsExcludedFromDashboard = (isExcludedFromDashboard: boolean) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.excludeFromDashboard = isExcludedFromDashboard;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
   const setDisableLinkButton = (isDisabled: boolean) => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
@@ -1047,6 +1057,7 @@ export default function AdminEventEdit(props: EditProps) {
   const isDeleted = selectedEvent?.isDeleted ?? false;
   const isHidden = selectedEvent?.isHidden ?? false;
   const isAddedToBandsInTown = selectedEvent?.isAddedToBandsInTown ?? false;
+  const isExcludedFromDashboard = selectedEvent?.excludeFromDashboard ?? false;
 
   const thumbnail = selectedEvent?.externalThumbnail ?? undefined;
   const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;
@@ -1485,6 +1496,14 @@ export default function AdminEventEdit(props: EditProps) {
               onChange={(_, checked) => setIsAddedToBandsInTown(checked)}
             >
               Is Added to BandsInTown?
+            </Checkbox>
+            <br />
+            <Checkbox
+              checked={isExcludedFromDashboard}
+              disabled={isDeleted}
+              onChange={(_, checked) => setIsExcludedFromDashboard(checked)}
+            >
+              Is Excluded from Dashboard?
             </Checkbox>
           </Col>
         </Row>

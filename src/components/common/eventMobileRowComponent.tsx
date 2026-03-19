@@ -15,6 +15,7 @@ import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 export default function EventMobileRow(props: EventRowProps) {
   const vipEvent = props.VipEvent;
   const hideRevItem = props.HideRevenue;
+  const hideSellerRate = props.HideSellerRate;
   const hideServiceFees = props.HideServiceFees;
   const canCheckInTickets = props.CanCheckInTickets;
   const showNotes = props.ShowNotes;
@@ -139,7 +140,7 @@ export default function EventMobileRow(props: EventRowProps) {
               {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
             </Col>
           </Row>
-          <Row hidden={hideRevItem} className={revClass}>
+          <Row hidden={hideRevItem || hideSellerRate} className={revClass}>
             <Col className="mobile-bold">Net Revenue:</Col>
             <Col className="mobile-data">
               {formatCurrencyAmount(

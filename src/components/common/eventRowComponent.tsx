@@ -9,6 +9,7 @@ import { formatCurrencyAmount, getEventStatusSlug, getEventStatusText } from '@/
 export default function EventRow(props: EventRowProps) {
   const vipEvent = props.VipEvent;
   const hideRevItem = props.HideRevenue;
+  const hideSellerRate = props.HideSellerRate;
   const hideServiceFees = props.HideServiceFees;
   const showNotes = props.ShowNotes;
   const showNoteDialog = props.OnShowNoteDialog;
@@ -70,7 +71,7 @@ export default function EventRow(props: EventRowProps) {
       <td className={revClass} hidden={hideRevItem}>
         {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
-      <td className={revClass} hidden={hideRevItem}>
+      <td className={revClass} hidden={hideRevItem || hideSellerRate}>
         {formatCurrencyAmount(netRevenue, netRevenueUsd, currencySymbol, exchangeRate, isAdmin)}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees}>

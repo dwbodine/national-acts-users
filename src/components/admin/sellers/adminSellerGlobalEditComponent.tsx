@@ -30,6 +30,7 @@ export default function AdminSellerGlobalEdit() {
   const currentSeller = currentAdminSelection.selectedSeller;
   const selectedSellerType = Number(currentSeller?.sellerType ?? 1);
   const isArtist = selectedSellerType === Number(SellerType.Artist);
+  const allAccounts = currentAdminSelection.ticketSocketAccounts;
 
   const goBack = useCallback(() => {
     router.push('/admin/sellers');
@@ -246,6 +247,17 @@ export default function AdminSellerGlobalEdit() {
     const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
     if (sellerToUpdate.isActive !== isActive) {
       sellerToUpdate.isActive = isActive;
+      dispatch(setAdminSeller(sellerToUpdate));
+    }
+  };
+
+  const setHideSellerRate = (hideSellerRateChecked: boolean) => {
+    if (!currentAdminSelection.selectedSeller) {
+      return;
+    }
+    const sellerToUpdate: Seller = { ...currentAdminSelection.selectedSeller };
+    if (sellerToUpdate.hideSellerRate !== hideSellerRateChecked) {
+      sellerToUpdate.hideSellerRate = hideSellerRateChecked;
       dispatch(setAdminSeller(sellerToUpdate));
     }
   };
@@ -532,99 +544,102 @@ export default function AdminSellerGlobalEdit() {
     });
   };
 
-  const allAccounts = currentAdminSelection.ticketSocketAccounts;
-  const categoryRows: ReactElement[] = [];
-  if (allAccounts && allAccounts.length > 0 && currentAdminSelection.selectedSeller) {
-    allAccounts.forEach((account, index) => {
-      const selectedCategory = currentAdminSelection.selectedSeller?.sellerEventCategories?.find(
-        (x) => x.ticketSocketId === account.ticketSocketId,
-      );
-      const disabled = selectedCategory && selectedCategory.hasEvents;
-      const sellerRatePercent = selectedCategory?.sellerRatePercent
-        ? selectedCategory.sellerRatePercent * 100
-        : 0;
-      const categoryId: number | null = selectedCategory?.eventCategoryId
-        ? Number(selectedCategory.eventCategoryId)
-        : null;
-      const options: ItemDataType<number>[] = [];
-      account.categories?.forEach((x) => {
-        options.push({
-          label: x.name,
-          value: Number(x.eventCategoryId),
+  const getCategoryRows = () => {
+    const categoryRows: ReactElement[] = [];
+    const hideSellerRate = currentAdminSelection.selectedSeller?.hideSellerRate ?? false;
+    if (allAccounts && allAccounts.length > 0 && currentAdminSelection.selectedSeller) {
+      allAccounts.forEach((account, index) => {
+        const selectedCategory = currentAdminSelection.selectedSeller?.sellerEventCategories?.find(
+          (x) => x.ticketSocketId === account.ticketSocketId,
+        );
+        const disabled = selectedCategory && selectedCategory.hasEvents;
+        const sellerRatePercent = selectedCategory?.sellerRatePercent
+          ? selectedCategory.sellerRatePercent * 100
+          : 0;
+        const categoryId: number | null = selectedCategory?.eventCategoryId
+          ? Number(selectedCategory.eventCategoryId)
+          : null;
+        const options: ItemDataType<number>[] = [];
+        account.categories?.forEach((x) => {
+          options.push({
+            label: x.name,
+            value: Number(x.eventCategoryId),
+          });
         });
+        const rowKey = `accoutnRow${index}`;
+        categoryRows.push(
+          <Row key={rowKey}>
+            <Col xs={4}>
+              <span>Category for {account.name}</span>
+            </Col>
+            <Col xs={12} md={8}>
+              <SelectPicker
+                block
+                data={options}
+                disabled={disabled}
+                id={account.ticketSocketId.toString()}
+                value={categoryId}
+                size="lg"
+                onChange={(value) =>
+                  updateSellerEventCategory(account.ticketSocketId, value ?? undefined)
+                }
+              />
+            </Col>
+            <Col xs={3}>
+              <Checkbox
+                disabled={!selectedCategory}
+                checked={selectedCategory?.isVisibleOnSite ?? false}
+                onChange={(_, checked) =>
+                  updateSellerEventCategorySiteVisible(
+                    parseInt(`${account.ticketSocketId}`),
+                    parseInt(`${selectedCategory?.eventCategoryId}`),
+                    checked,
+                  )
+                }
+              >
+                Visible on site?
+              </Checkbox>
+            </Col>
+            <Col xs={3}>
+              <Checkbox
+                disabled={!selectedCategory}
+                checked={selectedCategory?.isVisibleOnPortal ?? false}
+                onChange={(_, checked) =>
+                  updateSellerEventCategoryPortalVisible(
+                    parseInt(`${account.ticketSocketId}`),
+                    parseInt(`${selectedCategory?.eventCategoryId}`),
+                    checked,
+                  )
+                }
+              >
+                Visible on portal?
+              </Checkbox>
+            </Col>
+            <Col xs={3}>Seller Rate (ex: 10 for 10%):</Col>
+            <Col xs={2}>
+              <Input
+                disabled={!selectedCategory || hideSellerRate}
+                value={sellerRatePercent ?? ''}
+                type="number"
+                step="1"
+                style={{ width: '100px' }}
+                onChange={(value) => {
+                  const sellerRatePercent = value ? Math.round(parseFloat(value)) : 0;
+                  updateSellerRatePercent(
+                    parseInt(`${account.ticketSocketId}`),
+                    parseInt(`${selectedCategory?.eventCategoryId}`),
+                    sellerRatePercent,
+                  );
+                }}
+                placeholder="Seller rate percent (ex: 10 for 10%)"
+              />
+            </Col>
+          </Row>,
+        );
       });
-      const rowKey = `accoutnRow${index}`;
-      categoryRows.push(
-        <Row key={rowKey}>
-          <Col xs={4}>
-            <span>Category for {account.name}</span>
-          </Col>
-          <Col xs={12} md={8}>
-            <SelectPicker
-              block
-              data={options}
-              disabled={disabled}
-              id={account.ticketSocketId.toString()}
-              value={categoryId}
-              size="lg"
-              onChange={(value) =>
-                updateSellerEventCategory(account.ticketSocketId, value ?? undefined)
-              }
-            />
-          </Col>
-          <Col xs={3}>
-            <Checkbox
-              disabled={!selectedCategory}
-              checked={selectedCategory?.isVisibleOnSite ?? false}
-              onChange={(_, checked) =>
-                updateSellerEventCategorySiteVisible(
-                  parseInt(`${account.ticketSocketId}`),
-                  parseInt(`${selectedCategory?.eventCategoryId}`),
-                  checked,
-                )
-              }
-            >
-              Visible on site?
-            </Checkbox>
-          </Col>
-          <Col xs={3}>
-            <Checkbox
-              disabled={!selectedCategory}
-              checked={selectedCategory?.isVisibleOnPortal ?? false}
-              onChange={(_, checked) =>
-                updateSellerEventCategoryPortalVisible(
-                  parseInt(`${account.ticketSocketId}`),
-                  parseInt(`${selectedCategory?.eventCategoryId}`),
-                  checked,
-                )
-              }
-            >
-              Visible on portal?
-            </Checkbox>
-          </Col>
-          <Col xs={3}>Seller Rate (ex: 10 for 10%):</Col>
-          <Col xs={2}>
-            <Input
-              disabled={!selectedCategory}
-              value={sellerRatePercent ?? ''}
-              type="number"
-              step="1"
-              style={{ width: '100px' }}
-              onChange={(value) => {
-                const sellerRatePercent = value ? Math.round(parseFloat(value)) : 0;
-                updateSellerRatePercent(
-                  parseInt(`${account.ticketSocketId}`),
-                  parseInt(`${selectedCategory?.eventCategoryId}`),
-                  sellerRatePercent,
-                );
-              }}
-              placeholder="Seller rate percent (ex: 10 for 10%)"
-            />
-          </Col>
-        </Row>,
-      );
-    });
-  }
+    }
+    return categoryRows;
+  };
 
   const sellerTypeOptions: ItemDataType<number>[] = [];
   const sellerTypeValues = Object.values(SellerType).filter((v) => !isNaN(Number(v)));
@@ -682,7 +697,18 @@ export default function AdminSellerGlobalEdit() {
               />
             </Col>
           </Row>
-          {categoryRows}
+          <Row>
+            <Col xs={4}></Col>
+            <Col xs={20} md={12}>
+              <Checkbox
+                checked={currentSeller?.hideSellerRate ?? false}
+                onChange={(_, checked) => setHideSellerRate(checked)}
+              >
+                Hide Seller Rate Data
+              </Checkbox>
+            </Col>
+          </Row>
+          {getCategoryRows()}
           <Row>
             <Col xs={4}></Col>
             <Col xs={20} md={12}>
