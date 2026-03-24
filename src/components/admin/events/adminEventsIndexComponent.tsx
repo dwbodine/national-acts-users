@@ -2,11 +2,11 @@
 
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FaArrowTurnDown } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Button, Checkbox, Col, Row, SelectPicker, Table } from 'rsuite';
+import { Button, Checkbox, Col, Nav, Row, SelectPicker, Table } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
@@ -60,6 +60,7 @@ import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminEventsIndex() {
   const { Column, HeaderCell, Cell } = Table;
+  type EventsTabKey = 'active' | 'inactive';
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
@@ -78,8 +79,33 @@ export default function AdminEventsIndex() {
   const router = useRouter();
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [eventIdList, setEventIdList] = useState<number[]>([]);
+  const [eventsTabKey, setEventsTabKey] = useState<EventsTabKey>('active');
   const allEventIds: number[] =
     currentAdminDataSelection.events?.map((evt) => evt.externalEventId) ?? [];
+  const allEvents = currentAdminDataSelection.events ?? [];
+  const activeEvents = useMemo(
+    () =>
+      allEvents.filter(
+        (evt) =>
+          !evt.isDeleted && evt.isActive && moment(evt.eventDate).isSameOrAfter(moment(), 'day'),
+      ),
+    [allEvents],
+  );
+  const inactiveEvents = useMemo(
+    () =>
+      allEvents
+        .filter(
+          (evt) =>
+            evt.isDeleted || !evt.isActive || moment(evt.eventDate).isBefore(moment(), 'day'),
+        )
+        .sort((a, b) => moment(b.eventDate).valueOf() - moment(a.eventDate).valueOf()),
+    [allEvents],
+  );
+  const visibleEvents = eventsTabKey === 'inactive' ? inactiveEvents : activeEvents;
+  const visibleEventIds = visibleEvents.map((evt) => evt.externalEventId);
+  const numVisibleSelected = visibleEventIds.filter((id) => eventIdList.includes(id)).length;
+  const allVisibleSelected =
+    visibleEventIds.length > 0 && numVisibleSelected === visibleEventIds.length;
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -206,6 +232,7 @@ export default function AdminEventsIndex() {
     dispatch(setReloadTours(true));
     dispatch(setTours([]));
     dispatch(setReloadEvents(true));
+    setEventsTabKey('active');
   };
 
   const onDateChange = (newStart: number | undefined, newEnd: number | undefined) => {
@@ -295,14 +322,14 @@ export default function AdminEventsIndex() {
     setEventIdList(idList);
   };
 
-  const selectAllEvents = (addToList: boolean) => {
-    if (!allEventIds) {
+  const selectAllEvents = (addToList: boolean, eventIds: number[]) => {
+    if (eventIds.length === 0) {
       return;
     }
     if (addToList) {
-      setEventIdList(allEventIds);
+      setEventIdList([...new Set([...eventIdList, ...eventIds])]);
     } else {
-      setEventIdList([]);
+      setEventIdList(eventIdList.filter((id) => !eventIds.includes(id)));
     }
   };
 
@@ -646,20 +673,36 @@ export default function AdminEventsIndex() {
         </Row>
         <Row>
           <Col xs={24}>
+            <Nav
+              appearance="tabs"
+              activeKey={eventsTabKey}
+              onSelect={(key) => setEventsTabKey(key as EventsTabKey)}
+            >
+              <Nav.Item eventKey="active">Upcoming Events ({activeEvents.length})</Nav.Item>
+              <Nav.Item eventKey="inactive">
+                Past/Inactive Events ({inactiveEvents.length})
+              </Nav.Item>
+            </Nav>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
             <Table
               autoHeight={true}
-              data={currentAdminDataSelection.events}
+              data={visibleEvents}
               bordered
               cellBordered
               loading={tableLoading}
+              locale={{ emptyMessage: 'No events found' }}
               rowClassName={(rowData: VipEvent) => getEventStatusSlug(rowData)}
             >
               <Column width={50}>
                 <HeaderCell>
                   <Checkbox
                     id={`evtId_selectAll`}
-                    checked={allEventIds.length > 0 && eventIdList.length === allEventIds.length}
-                    onChange={(_, checked) => selectAllEvents(checked)}
+                    checked={allVisibleSelected}
+                    indeterminate={numVisibleSelected > 0 && !allVisibleSelected}
+                    onChange={(_, checked) => selectAllEvents(checked, visibleEventIds)}
                   />
                 </HeaderCell>
                 <Cell>
