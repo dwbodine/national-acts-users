@@ -11,6 +11,12 @@
   --spinner-fade-duration: 0.35s;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   font-family: v.$main-font-family;
