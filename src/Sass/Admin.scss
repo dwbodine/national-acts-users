@@ -232,10 +232,11 @@ a.edit-event-link {
 }
 
 .ticket-type-table {
-  margin: 15px 0;
+  margin: 0 0 15px 0;
   border: 1px solid black;
 }
 
+.ticket-type-table th,
 .ticket-type-table td {
   padding-right: 10px;
   border: 1px solid black;

@@ -454,6 +454,28 @@ export default function AdminEventEdit(props: EditProps) {
     markDirty();
   };
 
+  const setTicketTypeOrder = (ticketTypeId: number, order: string) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
+    if (currentEvent.ticketTypes) {
+      const orderNum = parseInt(order);
+      if (isNaN(orderNum)) {
+        return;
+      }
+      currentEvent.ticketTypes = currentEvent.ticketTypes.map((ticketType) => {
+        const newTicketType = { ...ticketType };
+        if (newTicketType.ticketTypeId === ticketTypeId) {
+          newTicketType.ticketTypeOrder = orderNum;
+        }
+        return newTicketType;
+      });
+    }
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
   const onCleanAnnounceDate = () => {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
@@ -1139,6 +1161,13 @@ export default function AdminEventEdit(props: EditProps) {
               ''
             )}
           </td>
+          <td>
+            <Input
+              style={{ width: '80px' }}
+              value={ticketType.ticketTypeOrder}
+              onChange={(value) => setTicketTypeOrder(ticketType.ticketTypeId, value)}
+            />
+          </td>
         </tr>,
       );
     });
@@ -1530,6 +1559,13 @@ export default function AdminEventEdit(props: EditProps) {
         <Row hidden={isExternalEvent}>
           <Col>
             <table className="ticket-type-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Is Active?</th>
+                  <th>Order</th>
+                </tr>
+              </thead>
               <tbody>{ticketTypeRows}</tbody>
             </table>
           </Col>

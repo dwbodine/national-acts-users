@@ -79,6 +79,7 @@ export interface Ticket {
   purchaseLocation?: string;
   shirtSize?: string;
   lastUpdate?: string;
+  ticketTypeOrder?: number;
 }
 
 export interface Order {
@@ -153,6 +154,7 @@ export interface TicketType {
   ticketTypeName: string;
   totalAvailable: number;
   isActive: boolean;
+  ticketTypeOrder?: number;
 }
 
 export interface VipEvent {

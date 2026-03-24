@@ -137,12 +137,16 @@ export default function EventDetail(props: EditProps) {
   const [currentDetailEvent, setCurrentDetailEvent] = useState<VipEvent | undefined>(undefined);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'purchaseDate' | 'purchaserName'>('purchaserName');
+  const [sortBy, setSortBy] = useState<'purchaseDate' | 'purchaserName' | 'ticketType'>(
+    'purchaserName',
+  );
   const debouncedResults = useMemo(() => debouce(setSearchTerm, 300), []);
   useEffect(() => () => debouncedResults.cancel(), [debouncedResults]);
 
   // Dedupe event fetches (prevents double-fetch in StrictMode/dev and redux-triggered reruns)
   const fetchedEventIdRef = useRef<string | number | null>(null);
+  const ordersTableBodyRef = useRef<HTMLTableSectionElement | null>(null);
+  const focusAnimationFrameRef = useRef<number | null>(null);
 
   // 1) Load user once
   useEffect(() => {
@@ -290,15 +294,6 @@ export default function EventDetail(props: EditProps) {
     })();
   }, [user, id, sellerId, getEventById, reportSelection.reloadEvents, dispatch]);
 
-  // 6) Focus control
-  useEffect(() => {
-    if (!reportSelection.focusControl) return;
-
-    const fc = reportSelection.focusControl;
-    setTimeout(() => setFocusToControl(fc), 300);
-    dispatch(setFocusControl(''));
-  }, [reportSelection.focusControl, dispatch]);
-
   // ---------------------------------------------------------------------------
   // Everything below here is your existing render/build logic (unchanged)
   // ---------------------------------------------------------------------------
@@ -366,13 +361,39 @@ export default function EventDetail(props: EditProps) {
           const bUnix =
             b.purchaseUnixTimestamp ??
             (b.purchaseTimestamp ? moment(b.purchaseTimestamp).unix() : 0);
-          return bUnix - aUnix; // newest first
+
+          const dateDiff = bUnix - aUnix; // newest first
+          if (dateDiff !== 0) return dateDiff;
+
+          const lastCmp = (a.purchaserLastName ?? '').localeCompare(b.purchaserLastName ?? '');
+          if (lastCmp !== 0) return lastCmp;
+          return (a.purchaserFirstName ?? '').localeCompare(b.purchaserFirstName ?? '');
+        });
+      } else if (sortBy === 'ticketType') {
+        sortedOrders = [...sortedOrders].sort((a, b) => {
+          const aOrder = a.tickets?.[0]?.ticketTypeOrder;
+          const bOrder = b.tickets?.[0]?.ticketTypeOrder;
+
+          if (aOrder === undefined && bOrder === undefined) {
+            const lastCmp = (a.purchaserLastName ?? '').localeCompare(b.purchaserLastName ?? '');
+            if (lastCmp !== 0) return lastCmp;
+            return (a.purchaserFirstName ?? '').localeCompare(b.purchaserFirstName ?? '');
+          }
+          if (aOrder === undefined) return -1;
+          if (bOrder === undefined) return 1;
+
+          const orderDiff = Number(aOrder) - Number(bOrder);
+          if (orderDiff !== 0) return orderDiff;
+
+          const lastCmp = (a.purchaserLastName ?? '').localeCompare(b.purchaserLastName ?? '');
+          if (lastCmp !== 0) return lastCmp;
+          return (a.purchaserFirstName ?? '').localeCompare(b.purchaserFirstName ?? '');
         });
       } else {
         sortedOrders = [...sortedOrders].sort(
           (a, b) =>
-            a.purchaserLastName?.localeCompare(b.purchaserLastName) ||
-            a.purchaserFirstName?.localeCompare(b.purchaserFirstName),
+            (a.purchaserLastName ?? '').localeCompare(b.purchaserLastName ?? '') ||
+            (a.purchaserFirstName ?? '').localeCompare(b.purchaserFirstName ?? ''),
         );
       }
     }
@@ -559,6 +580,78 @@ export default function EventDetail(props: EditProps) {
   const revClass = hideRevItem ? 'no-print' : '';
 
   const lastUpdated = getPacificMoment(lastUpdatedUtc);
+
+  // 6) Focus control after the page has finished loading and the orders table has rendered
+  useEffect(() => {
+    if (!reportSelection.focusControl || isLoading || !currentDetailEvent) return;
+
+    const fc = reportSelection.focusControl;
+    const expectedRowCount = orderRows.length;
+    const startTime = performance.now();
+    let stableFrameCount = 0;
+    let lastLayoutKey = '';
+
+    const cancelPendingFocus = () => {
+      if (focusAnimationFrameRef.current !== null) {
+        window.cancelAnimationFrame(focusAnimationFrameRef.current);
+        focusAnimationFrameRef.current = null;
+      }
+    };
+
+    const focusWhenReady = () => {
+      const pageLoaded = document.readyState === 'complete';
+      const fontsLoaded = !('fonts' in document) || document.fonts.status === 'loaded';
+      const renderedRowCount = ordersTableBodyRef.current?.children.length ?? 0;
+      const tableRendered = renderedRowCount >= expectedRowCount;
+      const target = document.getElementById(fc);
+
+      if (pageLoaded && fontsLoaded && tableRendered && target) {
+        const targetRect = target.getBoundingClientRect();
+        const tableHeight = ordersTableBodyRef.current
+          ?.closest('table')
+          ?.getBoundingClientRect().height;
+        const layoutKey = [
+          Math.round(targetRect.top),
+          Math.round(targetRect.left),
+          Math.round(targetRect.height),
+          renderedRowCount,
+          Math.round(tableHeight ?? 0),
+          document.body.scrollHeight,
+        ].join(':');
+
+        if (layoutKey === lastLayoutKey) {
+          stableFrameCount += 1;
+        } else {
+          lastLayoutKey = layoutKey;
+          stableFrameCount = 0;
+        }
+      } else {
+        stableFrameCount = 0;
+        lastLayoutKey = '';
+      }
+
+      if (pageLoaded && fontsLoaded && tableRendered && target && stableFrameCount >= 2) {
+        focusAnimationFrameRef.current = window.requestAnimationFrame(() => {
+          setFocusToControl(fc);
+          dispatch(setFocusControl(''));
+          focusAnimationFrameRef.current = null;
+        });
+        return;
+      }
+
+      if (performance.now() - startTime >= 10000) {
+        dispatch(setFocusControl(''));
+        cancelPendingFocus();
+        return;
+      }
+
+      focusAnimationFrameRef.current = window.requestAnimationFrame(focusWhenReady);
+    };
+
+    focusAnimationFrameRef.current = window.requestAnimationFrame(focusWhenReady);
+
+    return cancelPendingFocus;
+  }, [reportSelection.focusControl, isLoading, currentDetailEvent, orderRows.length, dispatch]);
 
   return (
     <>
@@ -758,10 +851,13 @@ export default function EventDetail(props: EditProps) {
                       name="sort-by"
                       inline
                       value={sortBy}
-                      onChange={(val) => setSortBy(val as 'purchaseDate' | 'purchaserName')}
+                      onChange={(val) =>
+                        setSortBy(val as 'purchaseDate' | 'purchaserName' | 'ticketType')
+                      }
                     >
                       <Radio value="purchaserName">Purchaser Name</Radio>
                       <Radio value="purchaseDate">Purchase Date</Radio>
+                      <Radio value="ticketType">Ticket Type</Radio>
                     </RadioGroup>
                   </div>
                 </Col>
@@ -826,7 +922,7 @@ export default function EventDetail(props: EditProps) {
                       )}
                     </tr>
                   </thead>
-                  <tbody>{orderRows}</tbody>
+                  <tbody ref={ordersTableBodyRef}>{orderRows}</tbody>
                 </table>
                 {lastUpdated && (
                   <div className="last-refresh no-print">
