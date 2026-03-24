@@ -734,15 +734,19 @@ export default function AdminEventsIndex() {
                 </Cell>
               </Column>
               <Column flexGrow={1}>
-                <HeaderCell>Tickets sold</HeaderCell>
+                <HeaderCell>Sold</HeaderCell>
                 <Cell>{(rowData: VipEvent) => rowData.totalTickets}</Cell>
               </Column>
               <Column flexGrow={1}>
-                <HeaderCell>Tickets comped</HeaderCell>
+                <HeaderCell>Comped</HeaderCell>
                 <Cell>{(rowData: VipEvent) => rowData.numTicketsComped}</Cell>
               </Column>
               <Column flexGrow={1}>
-                <HeaderCell>Event Status</HeaderCell>
+                <HeaderCell>Refunded</HeaderCell>
+                <Cell>{(rowData: VipEvent) => rowData.numTicketsRefunded}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Status</HeaderCell>
                 <Cell>{(rowData: VipEvent) => getEventStatusText(rowData)}</Cell>
               </Column>
               <Column flexGrow={1}>
