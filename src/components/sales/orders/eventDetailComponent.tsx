@@ -581,6 +581,8 @@ export default function EventDetail(props: EditProps) {
 
   const lastUpdated = getPacificMoment(lastUpdatedUtc);
 
+  const numTicketTypes = currentDetailEvent?.ticketTypes?.length ?? 0;
+
   // 6) Focus control after the page has finished loading and the orders table has rendered
   useEffect(() => {
     if (!reportSelection.focusControl || isLoading || !currentDetailEvent) return;
@@ -857,7 +859,9 @@ export default function EventDetail(props: EditProps) {
                     >
                       <Radio value="purchaserName">Purchaser Name</Radio>
                       <Radio value="purchaseDate">Purchase Date</Radio>
-                      <Radio value="ticketType">Ticket Type</Radio>
+                      <Radio value="ticketType" hidden={numTicketTypes <= 1}>
+                        Ticket Type
+                      </Radio>
                     </RadioGroup>
                   </div>
                 </Col>
