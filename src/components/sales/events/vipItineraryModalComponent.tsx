@@ -113,9 +113,10 @@ export default function VIPItineraryModal(props: VIPModalProps) {
       ...currentReportSelection,
       start: start,
       end: end,
+      reloadEvents: true,
     };
 
-    void getEvents(reportSelection).then((response: GetEventsResponse) => {
+    void getEvents(reportSelection, false).then((response: GetEventsResponse) => {
       if (response.events && !response.error) {
         const eventsToExport = response.events;
         if (formatValue === '1') {
