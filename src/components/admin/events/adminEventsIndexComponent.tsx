@@ -741,7 +741,7 @@ export default function AdminEventsIndex() {
                 <HeaderCell>Tickets comped</HeaderCell>
                 <Cell>{(rowData: VipEvent) => rowData.numTicketsComped}</Cell>
               </Column>
-              <Column flexGrow={2}>
+              <Column flexGrow={1}>
                 <HeaderCell>Event Status</HeaderCell>
                 <Cell>{(rowData: VipEvent) => getEventStatusText(rowData)}</Cell>
               </Column>

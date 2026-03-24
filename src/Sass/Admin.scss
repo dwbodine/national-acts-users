@@ -297,6 +297,12 @@ a.edit-event-link {
   margin: 0;
 }
 
+@media (max-width: 1400px) {
+  .admin-container {
+    padding: 15px 0 0 10px;
+  }
+}
+
 @media (max-width: 1200px) {
   .refresh-results-header-col {
     margin-bottom: 25px;
