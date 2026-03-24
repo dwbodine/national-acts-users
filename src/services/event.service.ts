@@ -449,14 +449,17 @@ export class EventService {
     return response;
   };
 
-  cancelEvent = async (eventId: number, isCancelled: boolean): Promise<ModifyEventResponse> => {
+  cancelEvents = async (
+    eventIdList: number[],
+    isCancelled: boolean,
+  ): Promise<ModifyEventResponse> => {
     const url = '/admin/events/cancel';
 
     const response: ModifyEventResponse = {};
 
     const eventData = {
       cancelled: isCancelled,
-      eventId,
+      eventIdList,
     };
 
     const data = JSON.stringify(eventData);

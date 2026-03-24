@@ -295,8 +295,8 @@ export default function AdminOrdersIndex(props: EditProps) {
       value: 'inactive',
     },
     {
-      label: 'Deactivate',
-      value: 'inactive',
+      label: 'Activate',
+      value: 'active',
     },
     {
       label: 'Delete',

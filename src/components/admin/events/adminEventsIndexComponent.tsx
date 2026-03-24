@@ -10,6 +10,7 @@ import { Button, Checkbox, Col, Nav, Row, SelectPicker, Table } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
+import { useCancelEvents } from '@/hooks/admin/useCancelEvent';
 import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
@@ -72,6 +73,7 @@ export default function AdminEventsIndex() {
   const { setEventsInactive } = useSetEventsInactive();
   const { setEventsDeleted } = useSetEventsDeleted();
   const { setEventsHidden } = useSetEventsHidden();
+  const { cancelEvents } = useCancelEvents();
   const { setEventsLiveInBandsInTown } = useSetEventsLiveInBandsInTown();
   const { getTours } = useGetTours();
   const { getTicketSocketEventsOnly } = useGetTicketSocketEventsOnly();
@@ -445,6 +447,28 @@ export default function AdminEventsIndex() {
     });
   };
 
+  const cancelTicketSocketEvents = (isCancelled: boolean) => {
+    if (eventIdList.length === 0) {
+      return;
+    }
+    if (!globalSelection.isLoading) {
+      dispatch(setIsLoading(true));
+    }
+
+    void cancelEvents(eventIdList, isCancelled).then((response: ModifyEventResponse) => {
+      const { success } = response;
+      dispatch(setIsLoading(false));
+      if (success) {
+        const message = isCancelled ? 'Cancellation succeeded' : 'Uncancellation succeeded';
+        toast.success(message);
+        dispatch(setReloadEvents(true));
+      } else {
+        const message = isCancelled ? 'Cancellation failed' : 'Uncancellation failed';
+        toast.error(message);
+      }
+    });
+  };
+
   const handleBulkEdit = () => {
     toast.dismiss();
     if (eventIdList.length === 0 || !selectedAction) {
@@ -472,6 +496,12 @@ export default function AdminEventsIndex() {
         break;
       case 'bandsintown':
         setLiveInBandsInTown();
+        break;
+      case 'cancel':
+        cancelTicketSocketEvents(true);
+        break;
+      case 'uncancel':
+        cancelTicketSocketEvents(false);
         break;
       default:
         break;
@@ -505,6 +535,12 @@ export default function AdminEventsIndex() {
         break;
       case 'bandsintown':
         message = `You are about to mark ${eventIdList.length} events as live in BandsInTown`;
+        break;
+      case 'cancel':
+        message = `You are about to cancel ${eventIdList.length} events`;
+        break;
+      case 'uncancel':
+        message = `You are about to uncancel ${eventIdList.length} events`;
         break;
       default:
         break;
@@ -584,6 +620,14 @@ export default function AdminEventsIndex() {
     {
       label: 'Mark Live In BandsInTown',
       value: 'bandsintown',
+    },
+    {
+      label: 'Cancel',
+      value: 'cancel',
+    },
+    {
+      label: 'Uncancel',
+      value: 'uncancel',
     },
   ];
 

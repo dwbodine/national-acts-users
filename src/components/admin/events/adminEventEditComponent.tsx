@@ -23,7 +23,6 @@ import Textarea from '@/components/common/Textarea';
 import { ImageType } from '@/constants';
 import { useAddCompedOrder } from '@/hooks/admin/useAddCompOrder';
 import { useAddNote } from '@/hooks/admin/useAddNote';
-import { useCancelEvent } from '@/hooks/admin/useCancelEvent';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useGetAllVenues } from '@/hooks/admin/useGetAllVenues';
 import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
@@ -80,7 +79,6 @@ export default function AdminEventEdit(props: EditProps) {
   const { getAllCountries } = useGetAllCountries();
   const router = useRouter();
   const { refundEvent } = useRefundEvent();
-  const { cancelEvent } = useCancelEvent();
   const { updateEvent } = useUpdateEvent();
   const [markCancelled, setMarkCancelled] = useState<boolean>(true);
   const [numCompedTickets, setNumCompedTickets] = useState<number>(0);
@@ -340,6 +338,16 @@ export default function AdminEventEdit(props: EditProps) {
     }
     const currentEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.isDeleted = isDeleted;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
+  const setIsCancelled = (isCancelled: boolean) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    const currentEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.isCancelled = isCancelled;
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -785,36 +793,6 @@ export default function AdminEventEdit(props: EditProps) {
     });
   };
 
-  const cancelTicketSocketEvent = () => {
-    if (!currentAdminSelection.selectedEvent) {
-      return;
-    }
-
-    const eventId = currentAdminSelection.selectedEvent.externalEventId;
-    const isCancelled = !currentAdminSelection.selectedEvent.isCancelled;
-
-    dispatch(setIsLoading(true));
-
-    void cancelEvent(eventId, isCancelled).then((response: ModifyEventResponse) => {
-      const { success } = response;
-      dispatch(setIsLoading(false));
-      if (success) {
-        const message = isCancelled ? 'Cancellation succeeded' : 'Uncancellation succeeded';
-        toast.success(message);
-        if (hasId) {
-          loadEventById();
-        } else {
-          dispatch(setReloadEvents(true));
-          dispatch(setAdminEvent(undefined));
-          goBack(false);
-        }
-      } else {
-        const message = isCancelled ? 'Cancellation failed' : 'Uncancellation failed';
-        toast.error(message);
-      }
-    });
-  };
-
   const onFileUpload = (fileUploadName: string, filename: string) => {
     if (!currentAdminSelection.selectedEvent || !fileUploadName || !filename) {
       return;
@@ -1071,7 +1049,6 @@ export default function AdminEventEdit(props: EditProps) {
     selectedEvent === undefined || selectedEvent.totalTickets === 0 || ticketSocketEventId === 0;
 
   const isCancelled = selectedEvent?.isCancelled ?? false;
-  const cancelButtonText = isCancelled ? 'Uncancel Event' : 'Mark Cancelled';
   const refundCancelDisabled = isCancelled;
   const refundCancelTitle = refundCancelDisabled ? 'Event has already been cancelled' : '';
 
@@ -1515,6 +1492,10 @@ export default function AdminEventEdit(props: EditProps) {
               Is Hidden?
             </Checkbox>
             <br />
+            <Checkbox checked={isCancelled} onChange={(_, checked) => setIsCancelled(checked)}>
+              Is Cancelled?
+            </Checkbox>
+            <br />
             <Checkbox checked={isDeleted} onChange={(_, checked) => setIsDeleted(checked)}>
               Is Deleted?
             </Checkbox>
@@ -1615,9 +1596,6 @@ export default function AdminEventEdit(props: EditProps) {
         </Row>
         <Row className="refund-section">
           <Col>
-            <Button onClick={cancelTicketSocketEvent}>{cancelButtonText}</Button>
-            <br />
-            <br />
             <Button onClick={handleNotesOpen}>Add Note</Button>
             <Modal open={notesOpen} onClose={handleNotesClose}>
               <Modal.Header>

@@ -2,9 +2,11 @@ import { ModifyEventResponse } from '@/types/responses';
 
 import { eventService } from '../../services';
 
-export const useCancelEvent = () => {
-  const cancelEvent = async (eventId: number, isCancelled: boolean): Promise<ModifyEventResponse> =>
-    await eventService.cancelEvent(eventId, isCancelled);
+export const useCancelEvents = () => {
+  const cancelEvents = async (
+    eventIdList: number[],
+    isCancelled: boolean,
+  ): Promise<ModifyEventResponse> => await eventService.cancelEvents(eventIdList, isCancelled);
 
-  return { cancelEvent };
+  return { cancelEvents };
 };
