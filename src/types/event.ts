@@ -135,6 +135,7 @@ export interface Order {
   revenue: number;
   serviceFees?: number;
   lastUpdate?: string;
+  notes?: string;
 }
 
 export interface Venue {

@@ -10,6 +10,7 @@ import { Button, Checkbox, Col, DatePicker, Input, Row, SelectPicker } from 'rsu
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
+import Textarea from '@/components/common/Textarea';
 import { useRefundOrder } from '@/hooks/admin/useRefundOrder';
 import { useRefundTicket } from '@/hooks/admin/useRefundTicket';
 import { useUpdateOrder } from '@/hooks/admin/useUpdateOrder';
@@ -42,6 +43,11 @@ export default function AdminOrderEdit(props: EditProps) {
   const allTicketIds: number[] =
     currentAdminSelection.selectedOrder?.tickets?.map((t) => t.ticketSocketOrderTicketId) ?? [];
 
+  const beforeOnUnload = (ev: BeforeUnloadEvent) => {
+    ev.preventDefault();
+    return ev;
+  };
+
   const loadOrderById = useCallback(() => {
     if (!hasId) {
       return;
@@ -72,7 +78,10 @@ export default function AdminOrderEdit(props: EditProps) {
   }, [currentAdminSelection, dispatch, id, loadOrderById]);
 
   const markDirty = () => {
-    markDirty();
+    dispatch(setMustSaveOrder(true));
+    if (id) {
+      window.addEventListener('beforeunload', beforeOnUnload);
+    }
   };
 
   const setPrice = (ticketId: number, newPrice: number) => {
@@ -102,6 +111,16 @@ export default function AdminOrderEdit(props: EditProps) {
 
       markDirty();
     }
+  };
+
+  const setNotes = (newNote: string) => {
+    if (!currentAdminSelection.selectedOrder) {
+      return;
+    }
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
+    currentOrder.notes = newNote;
+    dispatch(setAdminOrder(currentOrder));
+    markDirty();
   };
 
   const goBack = (dismissToast: boolean = true) => {
@@ -1101,6 +1120,18 @@ export default function AdminOrderEdit(props: EditProps) {
             >
               Refund service fees?
             </Checkbox>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <span>Notes:</span>
+            <Textarea
+              className="form-control-half"
+              rows={3}
+              id="userNotes"
+              onChange={(e) => setNotes(e)}
+              value={currentAdminSelection.selectedOrder?.notes ?? ''}
+            />
           </Col>
         </Row>
         <Row>
