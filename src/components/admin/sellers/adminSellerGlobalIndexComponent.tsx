@@ -39,6 +39,7 @@ export default function AdminSellerGlobalIndex() {
         void getTicketSocketAccounts().then((response: GetTicketSocketAccountsResponse) => {
           if (!response.error && response.accounts) {
             dispatch(setTicketSocketAccounts(response.accounts));
+            dispatch(setReloadSellers(true));
           }
         });
       } else if (currentAdminSelection.reloadSellers) {
@@ -76,6 +77,10 @@ export default function AdminSellerGlobalIndex() {
     router.push('/admin/sellers/edit');
   };
 
+  const refreshSellers = () => {
+    dispatch(setTicketSocketAccounts(undefined));
+  };
+
   const editSeller = (sellerId: number) => {
     if (!sellerId || isNaN(sellerId)) {
       return;
@@ -103,6 +108,7 @@ export default function AdminSellerGlobalIndex() {
     <>
       <PageHeader pageTitle="Manage Sellers" />
       <div className="admin-container">
+        <Button onClick={refreshSellers}>Refresh Sellers</Button>
         <Input
           value={searchTerm}
           onChange={setSearchTerm}

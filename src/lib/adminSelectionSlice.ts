@@ -238,7 +238,7 @@ export const adminSelectionSlice = createSlice({
       state.selectedUser = action.payload;
       return state;
     },
-    setTicketSocketAccounts: (state, action: PayloadAction<TicketSocketAccount[]>) => {
+    setTicketSocketAccounts: (state, action: PayloadAction<TicketSocketAccount[] | undefined>) => {
       state.ticketSocketAccounts = action.payload;
       return state;
     },

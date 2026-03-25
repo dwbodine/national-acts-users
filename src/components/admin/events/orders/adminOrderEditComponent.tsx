@@ -706,6 +706,9 @@ export default function AdminOrderEdit(props: EditProps) {
   const isActive = currentAdminSelection.selectedOrder?.isActive ?? false;
   const isDeleted = currentAdminSelection.selectedOrder?.isDeleted ?? false;
   const isComped = currentAdminSelection.selectedOrder?.isComped ?? false;
+  const orderNumber = currentAdminSelection.selectedOrder?.orderId ?? 'n/a';
+  const purchaserEmail = currentAdminSelection.selectedOrder?.email ?? 'n/a';
+  const purchaserPhone = currentAdminSelection.selectedOrder?.phone ?? 'n/a';
 
   const ticketRows: ReactElement[] = [];
   let hasRefunds = false;
@@ -923,12 +926,18 @@ export default function AdminOrderEdit(props: EditProps) {
         </Row>
         <Row>
           <Col className="form-header">
+            <span className="title">Order #:</span> {orderNumber}
+            <br />
             <span className="title">Purchase Date:</span> {purchaseDate}
             <br />
             <span className="title">Order Status:</span>{' '}
             {getOrderStatusText(currentAdminSelection.selectedOrder)}
             <br />
             <span className="title">Purchaser Name:</span> {purchaserName}
+            <br />
+            <span className="title">Purchaser Email:</span> {purchaserEmail}
+            <br />
+            <span className="title">Purchaser Phone:</span> {purchaserPhone}
             <br />
             <span className="title">Number Tickets Sold:</span>{' '}
             {currentAdminSelection.selectedOrder?.numTickets}
