@@ -758,6 +758,7 @@ export default function AdminOrderEdit(props: EditProps) {
             />
           </td>
           <td>{ticket.ticketSocketOrderTicketId}</td>
+          <td>{ticket.ticketType}</td>
           <td>
             {isComped ? (
               <Input
@@ -1075,6 +1076,7 @@ export default function AdminOrderEdit(props: EditProps) {
                     />
                   </th>
                   <th>Ticket Id</th>
+                  <th>Ticket Type</th>
                   <th>Attendee First Name</th>
                   <th>Attendee Last Name</th>
                   <th hidden={!isComped}>Attendee Phone</th>
