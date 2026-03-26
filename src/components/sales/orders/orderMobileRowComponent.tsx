@@ -34,6 +34,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
 
   const orderStatus = getOrderStatusText(order);
   const orderId = order?.orderId;
+  const numTicketTypes = ticketTypes?.length ?? 0;
 
   const id = `order_${order?.ticketSocketOrderId}`;
   const currencySymbol = order?.currencySymbol ?? '$';
@@ -112,10 +113,22 @@ export default function OrderMobileRow(props: OrderRowProps) {
   const attendeeNameRows: ReactElement[] = [];
   if (order?.tickets && order.tickets.length > 0) {
     let i = 0;
-    order.tickets.forEach((ticket) => {
+    const sortedTickets = [...order.tickets].sort((a, b) => {
+      const lastNameCompare = (a.attendeeLastName ?? '').localeCompare(b.attendeeLastName ?? '');
+      if (lastNameCompare !== 0) {
+        return lastNameCompare;
+      }
+      return (a.attendeeFirstName ?? '').localeCompare(b.attendeeFirstName ?? '');
+    });
+    sortedTickets.forEach((ticket) => {
       const key = `anr${i}`;
       attendeeNameRows.push(
-        <AttendeeRow key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />,
+        <AttendeeRow
+          key={key}
+          Ticket={ticket}
+          CanCheckInTickets={canCheckInTickets}
+          ShowTicketType={numTicketTypes > 1}
+        />,
       );
       i += 1;
     });

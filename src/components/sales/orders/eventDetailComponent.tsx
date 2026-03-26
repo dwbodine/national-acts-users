@@ -304,6 +304,7 @@ export default function EventDetail(props: EditProps) {
   let hasShirtData = false;
   const hasNonUsaOrders = currentDetailEvent?.hasNonUSAOrders ?? false;
   const currencySymbol: string | undefined = currentDetailEvent?.nonUsaCurrencySymbol;
+  const numTicketTypes = currentDetailEvent?.ticketTypes?.length ?? 0;
 
   const ticketBreakdownRows: ReactElement[] = [];
   const shirtSizeBreakdownRows: ReactElement[] = [];
@@ -580,8 +581,6 @@ export default function EventDetail(props: EditProps) {
   const revClass = hideRevItem ? 'no-print' : '';
 
   const lastUpdated = getPacificMoment(lastUpdatedUtc);
-
-  const numTicketTypes = currentDetailEvent?.ticketTypes?.length ?? 0;
 
   // 6) Focus control after the page has finished loading and the orders table has rendered
   useEffect(() => {
