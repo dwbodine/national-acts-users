@@ -49,7 +49,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
       if (nowUnix > enUnix) {
         setDateRangeValue('1');
       }
-      if (startEventUnix === 0 || startEventUnix !== seUnix) {
+      if (startEventUnix === 0) {
         setStartEventUnix(seUnix);
       }
       if (startCurrentUnix === 0) {
@@ -61,7 +61,7 @@ export default function VIPItineraryModal(props: VIPModalProps) {
           setStartCurrentUnix(nowUnix);
         }
       }
-      if (endUnix === 0 || endUnix !== enUnix) {
+      if (endUnix === 0) {
         setEndUnix(enUnix);
       }
     } else {
@@ -119,6 +119,11 @@ export default function VIPItineraryModal(props: VIPModalProps) {
     void getEvents(reportSelection, false).then((response: GetEventsResponse) => {
       if (response.events && !response.error) {
         const eventsToExport = response.events;
+        if (response.events.length === 0) {
+          toast.warn('No events found for selected date range');
+          setIsReportLoading(false);
+          return;
+        }
         if (formatValue === '1') {
           void exportVipItineraryToCSV(eventsToExport, isAdmin).then((csvData: string) => {
             const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
