@@ -232,7 +232,7 @@ export default function SalesBar() {
         </Col>
       </Row>
       <Row className="admin-check-row no-print">
-        <Col>
+        <Col xs={12} sm={12} md={8} lg={6} xl={6} xxl={4}>
           {viewInactiveEvents &&
           currentReportSelection.seller.sellerId > 0 &&
           (currentReportSelection.selectedTourId ?? 0) === 0 ? (
@@ -240,6 +240,8 @@ export default function SalesBar() {
           ) : (
             ''
           )}
+        </Col>
+        <Col xs={12} sm={12} md={8} lg={6} xl={6} xxl={4}>
           {viewDeletedEvents &&
           currentReportSelection.seller.sellerId > 0 &&
           (currentReportSelection.selectedTourId ?? 0) === 0 ? (
@@ -247,6 +249,8 @@ export default function SalesBar() {
           ) : (
             ''
           )}
+        </Col>
+        <Col xs={12} sm={12} md={8} lg={6} xl={6} xxl={4}>
           {viewHiddenEvents &&
           currentReportSelection.seller.sellerId > 0 &&
           (currentReportSelection.selectedTourId ?? 0) === 0 ? (
@@ -254,11 +258,15 @@ export default function SalesBar() {
           ) : (
             ''
           )}
+        </Col>
+        <Col xs={12} sm={12} md={8} lg={6} xl={6} xxl={4}>
           {viewRevenueControls && currentReportSelection.seller.sellerId > 0 && hasEvents ? (
             <RevenueCheck />
           ) : (
             ''
           )}
+        </Col>
+        <Col xs={12} sm={12} md={8} lg={6} xl={6} xxl={4}>
           {viewServiceFees && currentReportSelection.seller.sellerId > 0 && hasEvents ? (
             <ServiceFeesCheck />
           ) : (

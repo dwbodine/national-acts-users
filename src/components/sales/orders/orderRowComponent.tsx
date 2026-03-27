@@ -4,16 +4,15 @@ import moment from 'moment';
 import { ReactElement } from 'react';
 
 import { OrderRowProps } from '@/types/props';
-import { formatCurrencyAmount, getOrderStatusText, getPacificMoment } from '@/utils/eventUtils';
+import { getOrderStatusText, getPacificMoment } from '@/utils/eventUtils';
 
 import AttendeeRow from './attendeeRowComponent';
 
 export default function OrderRow(props: OrderRowProps) {
   const ticketTypes = props.TicketTypes;
-  const eventDate = props.EventDate;
-  const eventName = props.EventName;
   const order = props.Order;
   const hasPhoneData = props.HasPhoneData;
+  const hasNonUsaOrders = props.HasNonUsaOrders;
   const hasShirtData = (order?.totalShirts ?? 0) > 0;
   const hideRev = props.HideRevenue;
   const hideServiceFees = props.HideServiceFees;
@@ -33,10 +32,8 @@ export default function OrderRow(props: OrderRowProps) {
 
   const orderStatus = getOrderStatusText(order);
   const orderId = order?.orderId;
-  const numTicketTypes = ticketTypes?.length ?? 0;
-
   const currencySymbol = order?.currencySymbol ?? '$';
-  const exchangeRate = order?.exchangeRate ?? 1;
+
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
   let purchaseDate: string = 'n/a';
   if (order?.purchaseUnixTimestamp) {
@@ -120,19 +117,14 @@ export default function OrderRow(props: OrderRowProps) {
     sortedTickets.forEach((ticket, i) => {
       const key = `anr${i}`;
       attendeeNameRows.push(
-        <AttendeeRow
-          key={key}
-          Ticket={ticket}
-          CanCheckInTickets={canCheckInTickets}
-          ShowTicketType={numTicketTypes > 1}
-        />,
+        <AttendeeRow key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />,
       );
     });
   }
 
   const phone = order?.phone?.startsWith('+1 ') ? order.phone.replace('+1 ', '') : order?.phone;
 
-  const revClass = hideRev ? 'no-print' : '';
+  const revClass = hideRev ? ' no-print' : '';
 
   return (
     <tr className={statusClass}>
@@ -143,18 +135,27 @@ export default function OrderRow(props: OrderRowProps) {
       </td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{orderId}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{orderStatus}</td>
-      <td hidden={showOnlyEmails || showOnlyPhones}>{moment(eventDate).format('MM/DD/YYYY')}</td>
-      <td hidden={showOnlyEmails || showOnlyPhones}>{eventName}</td>
-      <td hidden={showOnlyEmails || showOnlyPhones}>{ticketTypeRows}</td>
       <td hidden={showOnlyEmails || showOnlyPhones}>{order?.numTickets}</td>
-      <td className={`pull-right ${revClass}`} hidden={hideRev || showOnlyEmails || showOnlyPhones}>
-        {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
+      <td
+        className={`pull-right${revClass}`}
+        hidden={!hasNonUsaOrders || hideRev || showOnlyEmails || showOnlyPhones}
+      >
+        {`${currencySymbol}${revenue.toFixed(2)}`}
+      </td>
+      <td className={`pull-right${revClass}`} hidden={hideRev || showOnlyEmails || showOnlyPhones}>
+        ${revenueUsd.toFixed(2)}
       </td>
       <td
         className="pull-right no-print"
-        hidden={hideServiceFees || showOnlyEmails || showOnlyPhones}
+        hidden={!isAdmin || !hasNonUsaOrders || hideServiceFees || showOnlyEmails || showOnlyPhones}
       >
-        {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}
+        {`${currencySymbol}${serviceFees.toFixed(2)}`}
+      </td>
+      <td
+        className="pull-right no-print"
+        hidden={!isAdmin || hideServiceFees || showOnlyEmails || showOnlyPhones}
+      >
+        ${serviceFeesUsd.toFixed(2)}
       </td>
       <td hidden={showOnlyPhones} className="email">
         {order?.email}

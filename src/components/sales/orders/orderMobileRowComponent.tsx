@@ -5,16 +5,15 @@ import { ReactElement } from 'react';
 import { Col, Container, Row } from 'rsuite';
 
 import { OrderRowProps } from '@/types/props';
-import { formatCurrencyAmount, getOrderStatusText, getPacificMoment } from '@/utils/eventUtils';
+import { getOrderStatusText, getPacificMoment } from '@/utils/eventUtils';
 
 import AttendeeRow from './attendeeRowComponent';
 
 export default function OrderMobileRow(props: OrderRowProps) {
   const ticketTypes = props.TicketTypes;
-  const eventDate = props.EventDate;
-  const eventName = props.EventName;
   const order = props.Order;
   const hasPhoneData = props.HasPhoneData;
+  const hasNonUsaOrders = props.HasNonUsaOrders;
   const hasShirtData = (order?.totalShirts ?? 0) > 0;
   const hideRev = props.HideRevenue;
   const hideServiceFees = props.HideServiceFees;
@@ -34,11 +33,10 @@ export default function OrderMobileRow(props: OrderRowProps) {
 
   const orderStatus = getOrderStatusText(order);
   const orderId = order?.orderId;
-  const numTicketTypes = ticketTypes?.length ?? 0;
 
   const id = `order_${order?.ticketSocketOrderId}`;
   const currencySymbol = order?.currencySymbol ?? '$';
-  const exchangeRate = order?.exchangeRate ?? 1;
+
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
   let purchaseDate: string = 'n/a';
   if (order?.purchaseUnixTimestamp) {
@@ -123,12 +121,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
     sortedTickets.forEach((ticket) => {
       const key = `anr${i}`;
       attendeeNameRows.push(
-        <AttendeeRow
-          key={key}
-          Ticket={ticket}
-          CanCheckInTickets={canCheckInTickets}
-          ShowTicketType={numTicketTypes > 1}
-        />,
+        <AttendeeRow key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />,
       );
       i += 1;
     });
@@ -172,45 +165,46 @@ export default function OrderMobileRow(props: OrderRowProps) {
             </Col>
             <Col className="mobile-data">{orderStatus}</Col>
           </Row>
-          <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col xs={10} className="mobile-bold">
-              Event Date:
-            </Col>
-            <Col className="mobile-data">{moment(eventDate).format('MM/DD/YYYY')}</Col>
-          </Row>
-          <Row hidden={showOnlyEmails || showOnlyPhones}>
-            <Col xs={10} className="mobile-bold">
-              Event Name:
-            </Col>
-            <Col className="mobile-data">{eventName}</Col>
-          </Row>
           <Row hidden={ticketTypeRows.length === 0 || showOnlyEmails || showOnlyPhones}>
             <Col xs={10} className="mobile-bold">
               Ticket breakdown:
             </Col>
             <Col className="mobile-data">{ticketTypeRows}</Col>
           </Row>
-          <Row hidden={hideRev || showOnlyEmails || showOnlyPhones} className={revClass}>
+          <Row
+            hidden={!isAdmin || !hasNonUsaOrders || hideRev || showOnlyEmails || showOnlyPhones}
+            className={revClass}
+          >
             <Col xs={10} className="mobile-bold">
               Revenue:
             </Col>
-            <Col className="mobile-data">
-              {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
-            </Col>
+            <Col className="mobile-data">{`${currencySymbol}${revenue.toFixed(2)}`}</Col>
           </Row>
-          <Row hidden={hideServiceFees || showOnlyEmails || showOnlyPhones} className="no-print">
+          <Row hidden={hideRev || showOnlyEmails || showOnlyPhones} className={revClass}>
+            <Col xs={10} className="mobile-bold">
+              Revenue<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>:
+            </Col>
+            <Col className="mobile-data">${revenueUsd.toFixed(2)}</Col>
+          </Row>
+          <Row
+            hidden={
+              !isAdmin || !hasNonUsaOrders || hideServiceFees || showOnlyEmails || showOnlyPhones
+            }
+            className="no-print"
+          >
             <Col xs={10} className="mobile-bold">
               Service Fees:
             </Col>
-            <Col className="mobile-data">
-              {formatCurrencyAmount(
-                serviceFees,
-                serviceFeesUsd,
-                currencySymbol,
-                exchangeRate,
-                isAdmin,
-              )}
+            <Col className="mobile-data">{`${currencySymbol}${serviceFees.toFixed(2)}`}</Col>
+          </Row>
+          <Row
+            hidden={!isAdmin || hideServiceFees || showOnlyEmails || showOnlyPhones}
+            className="no-print"
+          >
+            <Col xs={10} className="mobile-bold">
+              Service Fees<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>:
             </Col>
+            <Col className="mobile-data">${serviceFeesUsd.toFixed(2)}</Col>
           </Row>
           <Row hidden={showOnlyPhones}>
             <Col xs={10} className="mobile-bold">

@@ -327,13 +327,11 @@ export interface ExpandCellProps extends CellProps<VipEvent> {
 export interface AttendeeRowProps {
   Ticket?: Ticket;
   CanCheckInTickets?: boolean;
-  ShowTicketType?: boolean;
 }
 
 export interface OrderRowProps {
   TicketTypes?: TicketType[];
-  EventDate?: string;
-  EventName?: string;
+  HasNonUsaOrders?: boolean;
   Order?: Order;
   HasPhoneData?: boolean;
   HideRevenue?: boolean;

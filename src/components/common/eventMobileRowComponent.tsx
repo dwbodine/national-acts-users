@@ -9,7 +9,7 @@ import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { RootState } from '@/lib/store';
 import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
 import { EventRowProps } from '@/types/props';
-import { formatCurrencyAmount, getEventStatusSlug } from '@/utils/eventUtils';
+import { getEventStatusSlug } from '@/utils/eventUtils';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 
 export default function EventMobileRow(props: EventRowProps) {
@@ -17,6 +17,7 @@ export default function EventMobileRow(props: EventRowProps) {
   const hideRevItem = props.HideRevenue;
   const hideSellerRate = props.HideSellerRate;
   const hideServiceFees = props.HideServiceFees;
+  const showNonUsdColumns = props.ShowNonUsdColumns;
   const canCheckInTickets = props.CanCheckInTickets;
   const showNotes = props.ShowNotes;
   const showNoteDialog = props.OnShowNoteDialog;
@@ -75,10 +76,8 @@ export default function EventMobileRow(props: EventRowProps) {
   }
 
   const currencySymbol = vipEvent.nonUsaCurrencySymbol ?? '$';
-  const exchangeRate = currencySymbol === '$' ? 1 : 0;
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
   const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0));
-  const netRevenue = revenue - Number(revenue * (vipEvent.sellerRatePercent ?? 0));
   const revenueUsd = Number((vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0));
   const netRevenueUsd = revenueUsd - Number(revenueUsd * (vipEvent.sellerRatePercent ?? 0));
   const serviceFees = Number(
@@ -87,6 +86,7 @@ export default function EventMobileRow(props: EventRowProps) {
   const serviceFeesUsd = Number(
     (vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0),
   );
+  const hasNonUsaOrders = vipEvent.hasNonUsaOrders ?? false;
   const buttonText = currentSellerType === SellerType.Venue ? 'Customer List' : 'VIP List';
   const noOrders = !vipEvent.orders || vipEvent.orders.length === 0;
 
@@ -134,35 +134,33 @@ export default function EventMobileRow(props: EventRowProps) {
             <Col className="mobile-bold">Ticket type breakdown:</Col>
             <Col className="mobile-data">{ticketBreakdownRows}</Col>
           </Row>
-          <Row hidden={hideRevItem} className={revClass}>
+          <Row hidden={!isAdmin || !showNonUsdColumns || hideRevItem} className={revClass}>
             <Col className="mobile-bold">Revenue:</Col>
             <Col className="mobile-data">
-              {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
+              {hasNonUsaOrders && `${currencySymbol}${revenue.toFixed(2)}`}
             </Col>
           </Row>
-          <Row hidden={hideRevItem || hideSellerRate} className={revClass}>
-            <Col className="mobile-bold">Net Revenue:</Col>
+          <Row hidden={hideRevItem} className={revClass}>
+            <Col className="mobile-bold">
+              Revenue<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>:
+            </Col>
+            <Col className="mobile-data">${revenueUsd.toFixed(2)}</Col>
+          </Row>
+          <Row hidden={!isAdmin || !showNonUsdColumns || hideServiceFees} className="no-print">
+            <Col className="mobile-bold">Service Fees:</Col>
             <Col className="mobile-data">
-              {formatCurrencyAmount(
-                netRevenue,
-                netRevenueUsd,
-                currencySymbol,
-                exchangeRate,
-                isAdmin,
-              )}
+              {hasNonUsaOrders && `${currencySymbol}${serviceFees.toFixed(2)}`}
             </Col>
           </Row>
           <Row hidden={hideServiceFees} className="no-print">
-            <Col className="mobile-bold">Service Fees:</Col>
-            <Col className="mobile-data">
-              {formatCurrencyAmount(
-                serviceFees,
-                serviceFeesUsd,
-                currencySymbol,
-                exchangeRate,
-                isAdmin,
-              )}
+            <Col className="mobile-bold">
+              Service Fees<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>:
             </Col>
+            <Col className="mobile-data">${serviceFeesUsd.toFixed(2)}</Col>
+          </Row>
+          <Row hidden={hideRevItem || hideSellerRate} className={revClass}>
+            <Col className="mobile-bold">Net Revenue:</Col>
+            <Col className="mobile-data">${netRevenueUsd.toFixed(2)}</Col>
           </Row>
           <Row hidden={noOrders}>
             <Col>

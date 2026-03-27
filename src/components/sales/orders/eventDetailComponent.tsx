@@ -314,6 +314,7 @@ export default function EventDetail(props: EditProps) {
   let searchBarHidden = true;
   let visibleOrders: Order[] = [];
   let lastUpdatedUtc: moment.Moment = moment.utc([1970, 1, 1]);
+  const isAdmin = user?.isAdmin ?? false;
 
   const filterOrders = (orders: Order[] | undefined) => {
     visibleOrders = [];
@@ -415,9 +416,8 @@ export default function EventDetail(props: EditProps) {
         orderRows.push(
           <OrderMobileRow
             key={key}
-            EventDate={currentDetailEvent?.eventDate}
-            EventName={currentDetailEvent?.title}
             Order={order}
+            HasNonUsaOrders={hasNonUsaOrders}
             HasPhoneData={hasPhoneData}
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFeeDisplay}
@@ -432,9 +432,8 @@ export default function EventDetail(props: EditProps) {
         orderRows.push(
           <OrderRow
             key={key}
-            EventDate={currentDetailEvent?.eventDate}
-            EventName={currentDetailEvent?.title}
             Order={order}
+            HasNonUsaOrders={hasNonUsaOrders}
             HasPhoneData={hasPhoneData}
             HideRevenue={hideRevItem}
             HideServiceFees={hideServiceFeeDisplay}
@@ -895,19 +894,29 @@ export default function EventDetail(props: EditProps) {
                       </th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Order Id</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Order Status</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Date</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Event Name</th>
-                      <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}>Ticket Type</th>
                       <th hidden={showOnlyEmailsDisplay || showOnlyPhonesDisplay}># of tickets</th>
                       <th
-                        hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay}
+                        hidden={
+                          !hasNonUsaOrders ||
+                          hideRevItem ||
+                          showOnlyEmailsDisplay ||
+                          showOnlyPhonesDisplay
+                        }
                         className={revClass}
                       >
                         Revenue
                       </th>
                       <th
+                        hidden={hideRevItem || showOnlyEmailsDisplay || showOnlyPhonesDisplay}
+                        className={revClass}
+                      >
+                        Revenue<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>
+                      </th>
+                      <th
                         className="no-print"
                         hidden={
+                          !isAdmin ||
+                          !hasNonUsaOrders ||
                           hideServiceFeeDisplay ||
                           !viewServiceFees ||
                           showOnlyEmailsDisplay ||
@@ -915,6 +924,18 @@ export default function EventDetail(props: EditProps) {
                         }
                       >
                         Service Fees
+                      </th>
+                      <th
+                        className="no-print"
+                        hidden={
+                          !isAdmin ||
+                          hideServiceFeeDisplay ||
+                          !viewServiceFees ||
+                          showOnlyEmailsDisplay ||
+                          showOnlyPhonesDisplay
+                        }
+                      >
+                        Service Fees<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>
                       </th>
                       <th hidden={showOnlyPhonesDisplay}>Email</th>
                       {hasPhoneData && !showOnlyEmailsDisplay ? <th>Phone #</th> : ''}

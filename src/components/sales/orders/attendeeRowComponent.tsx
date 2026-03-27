@@ -20,7 +20,6 @@ export default function AttendeeRow(props: AttendeeRowProps) {
   const currentCheckIn = ticket?.isCheckedIn;
   const checkedInDate =
     currentCheckIn && ticket ? moment(ticket.checkedInDate).format('MM/DD/YYYY') : '';
-  const showTicketType = props.ShowTicketType ?? false;
 
   const id = `ticket_${ticket?.ticketSocketOrderTicketId}`;
   const className = canCheckInTickets
@@ -71,7 +70,7 @@ export default function AttendeeRow(props: AttendeeRowProps) {
         <FaCheck className={checkOutClass} />
         <FaX className={checkInClass} />
         <span>{attendeeName}</span>
-        {showTicketType && ticket?.ticketType && <span>&nbsp;({ticket.ticketType})</span>}
+        {ticket?.ticketType && <span>&nbsp;({ticket.ticketType})</span>}
       </div>
     </>
   );
