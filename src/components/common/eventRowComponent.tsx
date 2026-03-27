@@ -4,13 +4,14 @@ import moment from 'moment';
 
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { EventRowProps } from '@/types/props';
-import { formatCurrencyAmount, getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
 
 export default function EventRow(props: EventRowProps) {
   const vipEvent = props.VipEvent;
   const hideRevItem = props.HideRevenue;
   const hideSellerRate = props.HideSellerRate;
   const hideServiceFees = props.HideServiceFees;
+  const showNonUsdColumns = props.ShowNonUsdColumns;
   const showNotes = props.ShowNotes;
   const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
@@ -24,10 +25,8 @@ export default function EventRow(props: EventRowProps) {
   }
 
   const currencySymbol = vipEvent.nonUsaCurrencySymbol ?? '$';
-  const exchangeRate = currencySymbol === '$' ? 1 : 0;
   const eventDate = moment(vipEvent.eventDate).format('MM/DD/YYYY');
   const revenue = Number((vipEvent.totalRevenue ?? 0) - (vipEvent.revenueRefunded ?? 0));
-  const netRevenue = revenue - Number(revenue * (vipEvent.sellerRatePercent ?? 0));
   const revenueUsd = Number((vipEvent.totalRevenueUsd ?? 0) - (vipEvent.revenueRefundedUsd ?? 0));
   const netRevenueUsd = revenueUsd - Number(revenueUsd * (vipEvent.sellerRatePercent ?? 0));
   const serviceFees = Number(
@@ -36,6 +35,7 @@ export default function EventRow(props: EventRowProps) {
   const serviceFeesUsd = Number(
     (vipEvent.totalServiceFeesUsd ?? 0) - (vipEvent.serviceFeeRevenueRefundedUsd ?? 0),
   );
+  const hasNonUsaOrders = vipEvent.hasNonUsaOrders ?? false;
 
   const statusSlug = getEventStatusSlug(vipEvent);
   const statusText = getEventStatusText(vipEvent);
@@ -68,14 +68,23 @@ export default function EventRow(props: EventRowProps) {
       <td className="pull-right">{vipEvent.totalTickets}</td>
       <td className="pull-right">{vipEvent.numTicketsRefunded ?? 0}</td>
       <td className="pull-right">{vipEvent.numTicketsComped ?? 0}</td>
-      <td className={revClass} hidden={hideRevItem}>
-        {formatCurrencyAmount(revenue, revenueUsd, currencySymbol, exchangeRate, isAdmin)}
+      <td className={revClass} hidden={!isAdmin || !showNonUsdColumns || hideRevItem}>
+        {hasNonUsaOrders && `${currencySymbol}${revenue.toFixed(2)}`}
       </td>
-      <td className={revClass} hidden={hideRevItem || hideSellerRate}>
-        {formatCurrencyAmount(netRevenue, netRevenueUsd, currencySymbol, exchangeRate, isAdmin)}
+      <td className={revClass} hidden={hideRevItem}>
+        ${revenueUsd.toFixed(2)}
+      </td>
+      <td
+        className="pull-right no-print"
+        hidden={!isAdmin || !showNonUsdColumns || hideServiceFees}
+      >
+        {hasNonUsaOrders && `${currencySymbol}${serviceFees.toFixed(2)}`}
       </td>
       <td className="pull-right no-print" hidden={hideServiceFees}>
-        {formatCurrencyAmount(serviceFees, serviceFeesUsd, currencySymbol, exchangeRate, isAdmin)}
+        ${serviceFeesUsd.toFixed(2)}
+      </td>
+      <td className={revClass} hidden={hideRevItem || hideSellerRate}>
+        ${netRevenueUsd.toFixed(2)}
       </td>
       <td hidden={!showNotes}>
         <a onClick={() => (showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null)}>

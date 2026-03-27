@@ -302,7 +302,7 @@ export default function EventDetail(props: EditProps) {
   const hasPhoneData = currentDetailEvent?.hasPhoneData ?? false;
   let hasTicketData = false;
   let hasShirtData = false;
-  const hasNonUsaOrders = currentDetailEvent?.hasNonUSAOrders ?? false;
+  const hasNonUsaOrders = currentDetailEvent?.hasNonUsaOrders ?? false;
   const currencySymbol: string | undefined = currentDetailEvent?.nonUsaCurrencySymbol;
   const numTicketTypes = currentDetailEvent?.ticketTypes?.length ?? 0;
 

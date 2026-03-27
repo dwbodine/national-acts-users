@@ -3,40 +3,36 @@
 import HelpOutlineIcon from '@rsuite/icons/HelpOutline';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Dropdown, Popover, Stack, Whisper, WhisperInstance } from 'rsuite';
 
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { setCurrentUser } from '@/lib/globalSelectionSlice';
-import { RootState } from '@/lib/store';
 import { SpeakerRenderFn } from '@/types/public';
+import { User } from '@/types/user';
 
 export default function Header() {
-  const dispatch = useDispatch();
   const router = useRouter();
   const { getUser } = useCurrentUser();
+  const [user, setUser] = useState<User | undefined>(undefined);
   const [initials, setInitials] = useState('');
-  const globalSelection = useSelector((state: RootState) => state.globalSelection);
 
   useEffect(() => {
-    if (!globalSelection.currentUser) {
+    if (user === undefined) {
       const currentUser = getUser();
-      if (currentUser) {
-        dispatch(setCurrentUser(currentUser));
+      if (currentUser !== undefined) {
+        setUser(currentUser);
       }
     } else {
-      const currentUser = globalSelection.currentUser;
-      let init = currentUser.username.slice(0, 2);
-      if (currentUser.firstName && currentUser.lastName) {
-        init = `${currentUser.firstName.charAt(0)}${currentUser.lastName.charAt(0)}`;
-      } else if (currentUser.firstName) {
-        init = `${currentUser.firstName.charAt(0)}`;
-      } else if (currentUser.lastName) {
-        init = `${currentUser.lastName.charAt(0)}`;
+      let init = user.username.slice(0, 2);
+      if (user.firstName && user.lastName) {
+        init = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+      } else if (user.firstName) {
+        init = `${user.firstName.charAt(0)}`;
+      } else if (user.lastName) {
+        init = `${user.lastName.charAt(0)}`;
       }
       setInitials(init);
     }
-  }, [globalSelection.currentUser]);
+  }, [user]);
 
   const closeAdminPopover = () => {
     adminRef.current?.close();
@@ -58,15 +54,14 @@ export default function Header() {
       onClose();
     };
 
-    const currentUser = globalSelection.currentUser;
-    let userName = currentUser?.username ?? '';
-    if (currentUser) {
-      if (currentUser.firstName && currentUser.lastName) {
-        userName = `${currentUser.firstName} ${currentUser.lastName} (${currentUser.username})`;
-      } else if (currentUser.firstName) {
-        userName = `${currentUser.firstName} (${currentUser.username})`;
-      } else if (currentUser.lastName) {
-        userName = `${currentUser.lastName} (${currentUser.username})`;
+    let userName = user?.username ?? '';
+    if (user) {
+      if (user.firstName && user.lastName) {
+        userName = `${user.firstName} ${user.lastName} (${user.username})`;
+      } else if (user.firstName) {
+        userName = `${user.firstName} (${user.username})`;
+      } else if (user.lastName) {
+        userName = `${user.lastName} (${user.username})`;
       }
     }
 
@@ -97,9 +92,9 @@ export default function Header() {
   // Each Whisper MUST have its own ref
   const adminRef = useRef<WhisperInstance>(null);
 
-  const adminSpeaker = useCallback(renderAdminSpeaker, [globalSelection.currentUser]);
+  const adminSpeaker = useCallback(renderAdminSpeaker, [user]);
 
-  return globalSelection.currentUser ? (
+  return user ? (
     <Stack className="header" alignItems="flex-end" justifyContent="flex-end" spacing={8}>
       <Whisper placement="bottomEnd" trigger="click" ref={adminRef} speaker={adminSpeaker}>
         <div className="avatar">{initials}</div>

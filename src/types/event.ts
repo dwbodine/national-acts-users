@@ -192,7 +192,7 @@ export interface VipEvent {
   isExternal: boolean;
   hasShirtData?: boolean;
   hasPhoneData?: boolean;
-  hasNonUSAOrders?: boolean;
+  hasNonUsaOrders?: boolean;
   nonUsaCurrencySymbol?: string;
   nonUsaCurrencyAbbrev?: string;
   numTicketsRefunded?: number;

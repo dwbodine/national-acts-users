@@ -44,10 +44,10 @@ export default function ReportsCustomerExport() {
     if (vipEvents && vipEvents.length > 0) {
       const hasPhoneData = vipEvents.find((x) => x.hasPhoneData === true) !== undefined;
       const hasShirtData = vipEvents.find((x) => x.hasShirtData === true) !== undefined;
-      const hasNonUsaOrders = vipEvents.find((x) => x.hasNonUSAOrders === true) !== undefined;
+      const hasNonUsaOrders = vipEvents.find((x) => x.hasNonUsaOrders === true) !== undefined;
       let currencySymbol: string | undefined = undefined;
       if (hasNonUsaOrders) {
-        const symbolOrder = vipEvents.find((x) => x.hasNonUSAOrders === true);
+        const symbolOrder = vipEvents.find((x) => x.hasNonUsaOrders === true);
         if (symbolOrder !== undefined) {
           currencySymbol = symbolOrder.nonUsaCurrencySymbol;
         }

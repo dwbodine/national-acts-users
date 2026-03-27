@@ -116,6 +116,7 @@ export interface EventRowProps {
   ShowNotes?: boolean;
   CanCheckInTickets?: boolean;
   IsAdmin?: boolean;
+  ShowNonUsdColumns?: boolean;
   OnShowNoteDialog?: (eventId: number) => void;
 }
 

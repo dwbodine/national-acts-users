@@ -1,20 +1,20 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Container } from 'rsuite';
 
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 import { useWindowSize } from '@/hooks/common/useWindowSize';
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
-import { setCurrentUser } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { AdminPageProps } from '@/types/props';
+import { User } from '@/types/user';
 
 export default function AdminPage({ Title, UserActivity, children }: AdminPageProps) {
-  const dispatch = useDispatch();
   const { getUser } = useCurrentUser();
+  const [user, setUser] = useState<User | undefined>(undefined);
   const { logActivityData } = useLogActivityData();
   const globalSettings = useSelector((state: RootState) => state.globalSelection);
   const { isLoading } = globalSettings;
@@ -24,14 +24,13 @@ export default function AdminPage({ Title, UserActivity, children }: AdminPagePr
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (!globalSettings.currentUser) {
+      if (!user) {
         const currentUser = getUser();
         if (currentUser) {
-          dispatch(setCurrentUser(currentUser));
+          setUser(currentUser);
         }
       } else {
-        const currentUser = globalSettings.currentUser;
-        if (currentUser && currentUser.isAuthenticated) {
+        if (user && user.isAuthenticated) {
           document.title = Title;
           if (UserActivity) {
             void logActivityData(UserActivity);
@@ -42,16 +41,7 @@ export default function AdminPage({ Title, UserActivity, children }: AdminPagePr
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [
-    Title,
-    logActivityData,
-    UserActivity,
-    isLoading,
-    getUser,
-    windowSizeJson,
-    router,
-    globalSettings.currentUser,
-  ]);
+  }, [Title, logActivityData, UserActivity, isLoading, getUser, windowSizeJson, router, user]);
 
   return <Container>{children}</Container>;
 }

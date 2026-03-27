@@ -236,13 +236,18 @@ export default function CurrentEvents() {
   let totalTickets = 0;
   let totalTicketsComped = 0;
   let totalRevenue = 0.0;
+  let totalRevenueUsd = 0.0;
   let totalShirts = 0;
   let ticketsRefunded = 0;
   let revenueRefunded = 0;
   let totalServiceFees = 0;
+  let totalServiceFeesUsd = 0;
   let serviceFeesRefunded = 0;
   let totalNetRevenue = 0;
   let lastUpdated: moment.Moment | undefined = undefined;
+
+  const isAdmin = user?.isAdmin ?? false;
+  const hasNonUsaOrders = (vipEvents ?? []).some((x) => x.hasNonUsaOrders === true);
 
   if (vipEvents && vipEvents.length > 0) {
     let lastUpdatedUtc: moment.Moment = moment.utc([1970, 1, 1]);
@@ -269,6 +274,7 @@ export default function CurrentEvents() {
             CanCheckInTickets={canCheckInTickets}
             IsAdmin={user?.isAdmin ?? false}
             HideSellerRate={hideSellerRate}
+            ShowNonUsdColumns={hasNonUsaOrders && isAdmin}
           />,
         );
       } else {
@@ -280,6 +286,7 @@ export default function CurrentEvents() {
             HideServiceFees={hideServiceFees}
             IsAdmin={user?.isAdmin ?? false}
             HideSellerRate={hideSellerRate}
+            ShowNonUsdColumns={hasNonUsaOrders && isAdmin}
           />,
         );
       }
@@ -288,14 +295,16 @@ export default function CurrentEvents() {
         totalTickets += evt.totalTickets ?? 0;
         totalTicketsComped += evt.numTicketsComped ?? 0;
         revenueRefunded += evt.revenueRefundedUsd ?? 0;
-        const totalEventRevenue = (evt.totalRevenueUsd ?? 0) - (evt.revenueRefundedUsd ?? 0);
-        const eventFee = totalEventRevenue * (evt.sellerRatePercent ?? 0);
-        totalRevenue += totalEventRevenue;
-        totalNetRevenue += totalEventRevenue - eventFee;
+        totalRevenue += (evt.totalRevenue ?? 0) - (evt.revenueRefunded ?? 0);
+        const totalEventRevenueUsd = (evt.totalRevenueUsd ?? 0) - (evt.revenueRefundedUsd ?? 0);
+        const eventFeeUsd = totalEventRevenueUsd * (evt.sellerRatePercent ?? 0);
+        totalRevenueUsd += totalEventRevenueUsd;
+        totalNetRevenue += totalEventRevenueUsd - eventFeeUsd;
         ticketsRefunded += evt.numTicketsRefunded ?? 0;
         totalShirts += evt.totalShirts ?? 0;
         serviceFeesRefunded += evt.serviceFeeRevenueRefundedUsd ?? 0;
-        totalServiceFees +=
+        totalServiceFees += (evt.totalServiceFees ?? 0) - (evt.serviceFeeRevenueRefunded ?? 0);
+        totalServiceFeesUsd +=
           (evt.totalServiceFeesUsd ?? 0) - (evt.serviceFeeRevenueRefundedUsd ?? 0);
 
         const evtLastUpdated = moment.utc(evt.lastUpdate);
@@ -362,14 +371,23 @@ export default function CurrentEvents() {
                       <th>Tickets Sold</th>
                       <th>Tickets Refunded</th>
                       <th>Tickets Comped</th>
-                      <th className={revClass} hidden={hideRevItem}>
+                      <th className={revClass} hidden={!isAdmin || !hasNonUsaOrders || hideRevItem}>
                         Revenue
                       </th>
-                      <th className={revClass} hidden={hideRevItem || hideSellerRate}>
-                        Net Revenue
+                      <th className={revClass} hidden={hideRevItem}>
+                        Revenue<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>
                       </th>
-                      <th className="no-print" hidden={hideServiceFees}>
+                      <th
+                        className="no-print"
+                        hidden={!isAdmin || !hasNonUsaOrders || hideServiceFees}
+                      >
                         Service Fees
+                      </th>
+                      <th className="no-print" hidden={!isAdmin || hideServiceFees}>
+                        Service Fees<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>
+                      </th>
+                      <th className={revClass} hidden={hideRevItem || hideSellerRate}>
+                        Net Revenue<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>
                       </th>
                     </tr>
                   </thead>
@@ -380,17 +398,29 @@ export default function CurrentEvents() {
                       <td className="pull-right">{totalTickets}</td>
                       <td className="pull-right">{ticketsRefunded}</td>
                       <td className="pull-right">{totalTicketsComped}</td>
+                      <td
+                        className={`pull-right ${revClass}`}
+                        hidden={!isAdmin || !hasNonUsaOrders || hideRevItem}
+                      >
+                        &nbsp;
+                      </td>
                       <td className={`pull-right ${revClass}`} hidden={hideRevItem}>
-                        ${totalRevenue.toFixed(2)}
+                        ${totalRevenueUsd.toFixed(2)}
+                      </td>
+                      <td
+                        className="pull-right no-print"
+                        hidden={!isAdmin || !hasNonUsaOrders || hideServiceFees}
+                      >
+                        &nbsp;
+                      </td>
+                      <td className="pull-right no-print" hidden={!isAdmin || hideServiceFees}>
+                        ${totalServiceFeesUsd.toFixed(2)}
                       </td>
                       <td
                         className={`pull-right ${revClass}`}
                         hidden={hideRevItem || hideSellerRate}
                       >
                         ${totalNetRevenue.toFixed(2)}
-                      </td>
-                      <td className="pull-right no-print" hidden={hideServiceFees}>
-                        ${totalServiceFees.toFixed(2)}
                       </td>
                     </tr>
                   </tfoot>

@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useLogActivityData } from '@/hooks/common/useLogActivityData';
 import { useResetStores } from '@/hooks/common/useResetStores';
 import { useLogout } from '@/hooks/user/useLogout';
+import { persistor } from '@/lib/store';
 import { UserActivityType } from '@/types/user';
 
 export default function LogoutComponent() {
@@ -18,8 +19,8 @@ export default function LogoutComponent() {
     const timeoutId = setTimeout(() => {
       const searchParams = new URLSearchParams(window.location.search);
       const err = searchParams.get('err');
-      void logActivityData(UserActivityType.Logout).then(() => {
-        resetStores();
+      void logActivityData(UserActivityType.Logout).then(async () => {
+        await persistor.purge();
         localStorage.clear();
         void logout().then(() => {
           let loginUrl = '/login';
