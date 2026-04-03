@@ -306,6 +306,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
             <Checkbox
               checked={vipEvent?.emailSentToVips ?? false}
               disabled={!vipEvent.isActive || !hasVips}
+              onClick={(e) => e.stopPropagation()}
               onChange={(_, checked) => setSentEmail(checked)}
             >
               Email Sent To VIPs?
@@ -313,6 +314,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
             <Checkbox
               checked={vipEvent?.textSentToVips ?? false}
               disabled={!vipEvent.isActive || !hasVips}
+              onClick={(e) => e.stopPropagation()}
               onChange={(_, checked) => setSentText(checked)}
             >
               Text Sent To VIPs?
@@ -320,6 +322,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
             <Checkbox
               checked={vipEvent?.listSentToBand ?? false}
               disabled={!vipEvent.isActive || !hasVips}
+              onClick={(e) => e.stopPropagation()}
               onChange={(_, checked) => setSentList(checked)}
             >
               List Sent To Band?
