@@ -235,7 +235,6 @@ export default function CurrentEvents() {
   let totalEvents = 0;
   let totalTickets = 0;
   let totalTicketsComped = 0;
-  let totalRevenue = 0.0;
   let totalRevenueUsd = 0.0;
   let totalShirts = 0;
   let ticketsRefunded = 0;
@@ -295,17 +294,24 @@ export default function CurrentEvents() {
         totalTickets += evt.totalTickets ?? 0;
         totalTicketsComped += evt.numTicketsComped ?? 0;
         revenueRefunded += evt.revenueRefundedUsd ?? 0;
-        totalRevenue += (evt.totalRevenue ?? 0) - (evt.revenueRefunded ?? 0);
-        const totalEventRevenueUsd = (evt.totalRevenueUsd ?? 0) - (evt.revenueRefundedUsd ?? 0);
-        const eventFeeUsd = totalEventRevenueUsd * (evt.sellerRatePercent ?? 0);
-        totalRevenueUsd += totalEventRevenueUsd;
-        totalNetRevenue += totalEventRevenueUsd - eventFeeUsd;
-        ticketsRefunded += evt.numTicketsRefunded ?? 0;
-        totalShirts += evt.totalShirts ?? 0;
-        serviceFeesRefunded += evt.serviceFeeRevenueRefundedUsd ?? 0;
-        totalServiceFees += (evt.totalServiceFees ?? 0) - (evt.serviceFeeRevenueRefunded ?? 0);
-        totalServiceFeesUsd +=
+        const eventRevenueUsd = (evt.totalRevenueUsd ?? 0) - (evt.revenueRefundedUsd ?? 0);
+        const eventFeeUsd = eventRevenueUsd * (evt.sellerRatePercent ?? 0);
+        const netRevenueUsd = eventRevenueUsd - eventFeeUsd;
+        const serviceFeeRevenue =
+          (evt.totalServiceFees ?? 0) - (evt.serviceFeeRevenueRefunded ?? 0);
+        const serviceFeeRevenueUsd =
           (evt.totalServiceFeesUsd ?? 0) - (evt.serviceFeeRevenueRefundedUsd ?? 0);
+        const numTicketsRefunded = evt.numTicketsRefunded ?? 0;
+        const numShirtsSold = evt.totalShirts ?? 0;
+        const serviceFeesRefundedUsd = evt.serviceFeeRevenueRefundedUsd ?? 0;
+
+        totalRevenueUsd += eventRevenueUsd;
+        totalNetRevenue += netRevenueUsd;
+        ticketsRefunded += numTicketsRefunded;
+        totalShirts += numShirtsSold;
+        serviceFeesRefunded += serviceFeesRefundedUsd;
+        totalServiceFees += serviceFeeRevenue;
+        totalServiceFeesUsd += serviceFeeRevenueUsd;
 
         const evtLastUpdated = moment.utc(evt.lastUpdate);
         if (evtLastUpdated.unix() > lastUpdatedUtc.unix()) {
@@ -339,7 +345,7 @@ export default function CurrentEvents() {
           TotalTickets={totalTickets + totalTicketsComped}
           ShirtData={shirtData}
           TotalShirts={totalShirts}
-          TotalRevenue={totalRevenue}
+          TotalRevenue={totalRevenueUsd}
           HideRevenue={hideRevItem}
           TicketsRefunded={ticketsRefunded}
           TotalServiceFees={totalServiceFees}
