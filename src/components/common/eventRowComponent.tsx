@@ -46,18 +46,14 @@ export default function EventRow(props: EventRowProps) {
 
   const revClass = hideRevItem ? 'pull-right no-print' : 'pull-right';
 
-  const openEvent = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const url = `/event/?id=${vipEvent.externalEventId}`;
-    window.open(url, '_blank');
-  };
-
   return (
     <tr className={statusClass} id={id}>
       <td>{eventDate}</td>
       <td>
         {(vipEvent.orders?.length ?? 0) > 0 ? (
-          <a onClick={openEvent}>{vipEvent.title}</a>
+          <a href={`/event/?id=${vipEvent.externalEventId}`} target="_blank">
+            {vipEvent.title}
+          </a>
         ) : (
           vipEvent.title
         )}
