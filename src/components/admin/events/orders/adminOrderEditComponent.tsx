@@ -1011,7 +1011,18 @@ export default function AdminOrderEdit(props: EditProps) {
             <br />
           </Col>
         </Row>
-
+        <Row>
+          <Col xs={24}>
+            <span>Notes:</span>
+            <Textarea
+              className="form-control-half"
+              rows={3}
+              id="userNotes"
+              onChange={(e) => setNotes(e)}
+              value={currentAdminSelection.selectedOrder?.notes ?? ''}
+            />
+          </Col>
+        </Row>
         <Row>
           <Col>
             <Checkbox
@@ -1122,18 +1133,6 @@ export default function AdminOrderEdit(props: EditProps) {
             >
               Refund service fees?
             </Checkbox>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={24}>
-            <span>Notes:</span>
-            <Textarea
-              className="form-control-half"
-              rows={3}
-              id="userNotes"
-              onChange={(e) => setNotes(e)}
-              value={currentAdminSelection.selectedOrder?.notes ?? ''}
-            />
           </Col>
         </Row>
         <Row>
