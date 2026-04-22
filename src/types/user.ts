@@ -55,6 +55,7 @@ export type User = {
   userId: number;
   isAdmin: boolean;
   username: string;
+  password?: string;
   firstName?: string;
   lastName?: string;
   mobile?: string;

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Col, Input, Row, Table } from 'rsuite';
+import { Button, Col, Input, Row, Table } from 'rsuite';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
 import { useGetAllRoles } from '@/hooks/admin/useGetAllRoles';
@@ -13,6 +13,7 @@ import { useGetAllUsers } from '@/hooks/admin/useGetAllUsers';
 import { setSelectedUser, setUsers } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
+import { SellerType } from '@/types/event';
 import { GetRolesResponse, GetUsersResponse } from '@/types/responses';
 import { Role, User } from '@/types/user';
 
@@ -28,6 +29,7 @@ export default function AdminUsersIndex() {
   const router = useRouter();
 
   const debouncedResults = useMemo(() => debouce(setSearchTerm, 300), []);
+  const { users, reloadUsers } = currentAdminSelection;
 
   useEffect(() => {
     if (allRoles === undefined) {
@@ -39,7 +41,7 @@ export default function AdminUsersIndex() {
         dispatch(setIsLoading(false));
         setTableLoading(false);
       });
-    } else if (!currentAdminSelection.users || currentAdminSelection.reloadUsers) {
+    } else if (!users || reloadUsers) {
       setTableLoading(true);
       dispatch(setIsLoading(true));
       void getAllUsers().then((response: GetUsersResponse) => {
@@ -52,18 +54,33 @@ export default function AdminUsersIndex() {
         setTableLoading(false);
       });
     }
+  }, [getAllUsers, dispatch, allRoles, getAllRoles, users, reloadUsers]);
+
+  useEffect(() => {
     return () => {
       debouncedResults.cancel();
     };
-  }, [
-    getAllUsers,
-    dispatch,
-    currentAdminSelection,
-    debouncedResults,
-    tableLoading,
-    allRoles,
-    getAllRoles,
-  ]);
+  }, [debouncedResults]);
+
+  const addUser = () => {
+    const user: User = {
+      userId: 0,
+      isAdmin: false,
+      username: '',
+      isActive: true,
+      requireResetPassword: true,
+      sellers: [
+        {
+          sellerId: 0,
+          sellerName: '',
+          sellerType: SellerType.Artist,
+        },
+      ],
+    };
+    dispatch(setSelectedUser(user));
+    setTableLoading(true);
+    router.push('/admin/users/edit');
+  };
 
   const editUser = (userId: number) => {
     if (!userId || isNaN(userId)) {
@@ -101,12 +118,17 @@ export default function AdminUsersIndex() {
     return '';
   };
 
-  const filteredUsers = filterUsers(currentAdminSelection.users);
+  const filteredUsers = filterUsers(users);
 
   return (
     <>
       <PageHeader pageTitle="Users Admin" />
       <div className="admin-container">
+        <Row>
+          <Col xs={24}>
+            <Button onClick={addUser}>Add User</Button>
+          </Col>
+        </Row>
         <Row>
           <Col xs={4}>
             <Input
@@ -114,7 +136,7 @@ export default function AdminUsersIndex() {
               onChange={setSearchTerm}
               className="search-text-input no-print"
               placeholder="Search for users by name, username or client name..."
-              hidden={currentAdminSelection.users === undefined}
+              hidden={users === undefined}
             />
           </Col>
         </Row>

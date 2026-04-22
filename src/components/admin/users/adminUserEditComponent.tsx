@@ -45,6 +45,7 @@ export default function AdminUserEdit() {
   const [allSellers, setAllSellers] = useState<Seller[] | undefined>(undefined);
   const [allRoles, setAllRoles] = useState<Role[] | undefined>(undefined);
   const [username, setUsername] = useState<string | undefined>('');
+  const [password, setPassword] = useState<string | undefined>('');
   const [firstName, setFirstName] = useState<string | undefined>('');
   const [lastName, setLastName] = useState<string | undefined>('');
   const [mobile, setMobile] = useState<string | undefined>('');
@@ -77,12 +78,13 @@ export default function AdminUserEdit() {
     } else if (username === undefined || allSellers === undefined || allRoles === undefined) {
       dispatch(setIsLoading(true));
       setUsername(currentAdminSelection.selectedUser.username ?? '');
+      setPassword(undefined);
       setFirstName(currentAdminSelection.selectedUser.firstName ?? '');
       setLastName(currentAdminSelection.selectedUser.lastName ?? '');
       setMobile(currentAdminSelection.selectedUser.mobile ?? '');
       setNotes(currentAdminSelection.selectedUser.notes ?? '');
       setIsActive(currentAdminSelection.selectedUser.isActive ?? false);
-      setRequireResetPassword(currentAdminSelection.selectedUser.requireResetPassword ?? false);
+      setRequireResetPassword(currentAdminSelection.selectedUser.requireResetPassword ?? true);
       setSendEmailReset(currentAdminSelection.selectedUser.sendEmailReset ?? false);
       setSendTextReset(currentAdminSelection.selectedUser.sendTextReset ?? false);
       setDisableCheckIn(currentAdminSelection.selectedUser.disableCheckIn ?? false);
@@ -226,14 +228,31 @@ export default function AdminUserEdit() {
       />,
       {
         autoClose: false,
-        closeOnClick: false,
+        closeOnClick: true,
         position: 'top-center',
       },
     );
   };
 
   const onSubmit = () => {
-    if (!currentAdminSelection.selectedUser) {
+    const { users, selectedUser } = currentAdminSelection;
+
+    if (!selectedUser) {
+      return;
+    }
+
+    if (!username) {
+      toast.warn('Username cannot be blank');
+      return;
+    }
+
+    if (users && users.find((x) => x.username === username && x.userId !== selectedUser.userId)) {
+      toast.warn('Username already exists, please choose another');
+      return;
+    }
+
+    if (selectedUser.userId <= 0 && !password) {
+      toast.warn('Password cannot be blank');
       return;
     }
 
@@ -248,22 +267,28 @@ export default function AdminUserEdit() {
     }
 
     const userToUpdate: User = {
-      ...currentAdminSelection.selectedUser,
+      ...selectedUser,
+      username: username,
       disableCheckIn: disableCheckIn || false,
-      firstName: firstName || '',
-      isActive: isActive || false,
-      lastName: lastName || '',
+      firstName: firstName,
+      isActive: isActive || true,
+      lastName: lastName,
       mobile: mobile || '',
       notes: notes || '',
-      requireResetPassword: requireResetPassword || false,
+      requireResetPassword: requireResetPassword || true,
       sendEmailReset: sendEmailReset || false,
       sendTextReset: sendTextReset || false,
     };
 
+    if (selectedUser.userId <= 0) {
+      userToUpdate.password = password;
+    }
+
     const sellersInvalid =
       userToUpdate.sellers === undefined ||
       userToUpdate.sellers.length === 0 ||
-      userToUpdate.sellers.find((x) => x.sellerId === 0) !== undefined;
+      userToUpdate.sellers.find((x) => x.sellerId === 0) !== undefined ||
+      userToUpdate.sellers.find((x) => x.roleId === undefined || x.roleId === 0) !== undefined;
     if (sellersInvalid) {
       toast.warning('Seller selection invalid, please correct before submitting');
       return;
@@ -287,31 +312,34 @@ export default function AdminUserEdit() {
     allSellers !== undefined &&
     allRoles !== undefined &&
     currentAdminSelection.selectedUser &&
-    !currentAdminSelection.selectedUser.isAdmin &&
-    currentAdminSelection.selectedUser.sellers &&
-    currentAdminSelection.selectedUser.sellers.length > 0
+    !currentAdminSelection.selectedUser.isAdmin
   ) {
-    currentAdminSelection.selectedUser.sellers.forEach((item, index) => {
-      sellerRows.push(
-        <AdminSellerSelect
-          Id={item.sellerId.toString()}
-          key={item.sellerId}
-          Number={index + 1}
-          Sellers={allSellers}
-          Roles={allRoles}
-          SellerId={item.sellerId}
-          RoleId={item.roleId}
-          OnSellerChange={(newSellerId: number | null) =>
-            updateSeller(parseInt(`${item.sellerId}`), newSellerId)
-          }
-          OnRoleChange={(newRoleId: number | null) =>
-            updateRole(parseInt(`${item.sellerId}`), newRoleId)
-          }
-          OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
-          Countries={currentAdminSelection.countries}
-        />,
-      );
-    });
+    if (
+      currentAdminSelection.selectedUser.sellers &&
+      currentAdminSelection.selectedUser.sellers.length > 0
+    ) {
+      currentAdminSelection.selectedUser.sellers.forEach((item, index) => {
+        sellerRows.push(
+          <AdminSellerSelect
+            Id={item.sellerId.toString()}
+            key={item.sellerId}
+            Number={index + 1}
+            Sellers={allSellers}
+            Roles={allRoles}
+            SellerId={item.sellerId}
+            RoleId={item.roleId}
+            OnSellerChange={(newSellerId: number | null) =>
+              updateSeller(parseInt(`${item.sellerId}`), newSellerId)
+            }
+            OnRoleChange={(newRoleId: number | null) =>
+              updateRole(parseInt(`${item.sellerId}`), newRoleId)
+            }
+            OnDelete={() => removeSeller(parseInt(`${item.sellerId}`))}
+            Countries={currentAdminSelection.countries}
+          />,
+        );
+      });
+    }
     sellerRows.push(
       <div title="Add Seller" key="addSeller" className="admin-click-cell" onClick={addSeller}>
         <FaPlus></FaPlus> Add Seller
@@ -325,7 +353,26 @@ export default function AdminUserEdit() {
       <PageHeader pageTitle="Edit User" />
       <div className="admin-container">
         <div className="admin-user-row">
-          <span>Username: {username}</span>
+          <span>Username:</span>
+          <span hidden={currentAdminSelection.selectedUser.userId <= 0}>&nbsp;{username}</span>
+          <Input
+            hidden={currentAdminSelection.selectedUser.userId > 0}
+            value={username ?? ''}
+            type="email"
+            onChange={setUsername}
+            className="form-control-half"
+            placeholder="Username (must be email)"
+          />
+        </div>
+        <div className="admin-user-row" hidden={currentAdminSelection.selectedUser.userId > 0}>
+          <span>Password:</span>
+          <Input
+            value={password ?? ''}
+            type="password"
+            onChange={setPassword}
+            className="form-control-half"
+            placeholder="Password"
+          />
         </div>
         <div className="admin-user-row">
           <span>First Name</span>
@@ -333,7 +380,7 @@ export default function AdminUserEdit() {
             value={firstName ?? ''}
             onChange={setFirstName}
             className="form-control-half"
-            placeholder="first name"
+            placeholder="First Name"
           />
         </div>
         <div className="admin-user-row">
@@ -342,7 +389,7 @@ export default function AdminUserEdit() {
             value={lastName ?? ''}
             onChange={setLastName}
             className="form-control-half"
-            placeholder="last name"
+            placeholder="Last Name"
           />
         </div>
         <div className="admin-user-row">
@@ -351,7 +398,7 @@ export default function AdminUserEdit() {
             value={mobile ?? ''}
             onChange={setMobile}
             className="form-control-half"
-            placeholder="mobile number"
+            placeholder="Mobile Number"
           />
         </div>
         <div className="admin-user-row">
@@ -359,6 +406,7 @@ export default function AdminUserEdit() {
             Is Active?
           </Checkbox>
           <Checkbox
+            disabled={currentAdminSelection.selectedUser.userId <= 0}
             checked={requireResetPassword}
             onChange={(_, checked) => setRequireResetPassword(checked)}
           >
@@ -390,7 +438,12 @@ export default function AdminUserEdit() {
         </div>
         <div className="admin-button-group">
           <Button onClick={onSubmit}>Submit</Button>{' '}
-          <Button onClick={confirmDeleteUser}>Delete User</Button>
+          <Button
+            onClick={confirmDeleteUser}
+            hidden={currentAdminSelection.selectedUser.userId <= 0}
+          >
+            Delete User
+          </Button>
         </div>
         <div className="admin-button-group">
           <Button onClick={goBack}>Back</Button>
