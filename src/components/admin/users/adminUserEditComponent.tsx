@@ -22,17 +22,27 @@ import {
 } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
-import { Seller, SellerType } from '@/types/event';
+import { Seller } from '@/types/event';
 import {
   GetCountriesResponse,
   GetRolesResponse,
   GetSellersResponse,
   UpdateUserResponse,
 } from '@/types/responses';
-import { Role, User, UserSeller } from '@/types/user';
+import { Role } from '@/types/user';
 
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import AdminSellerSelect from '../common/adminSellerSelectComponent';
+import {
+  addSellerToUser,
+  buildUserUpdatePayload,
+  getAdminUserFormValues,
+  hasInvalidSellerAssignments,
+  removeSellerFromUser,
+  updateUserRoleAssignment,
+  updateUserSellerAssignment,
+  validateAdminUserSubmission,
+} from './adminUserEdit.helpers';
 
 export default function AdminUserEdit() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -77,17 +87,18 @@ export default function AdminUserEdit() {
       });
     } else if (username === undefined || allSellers === undefined || allRoles === undefined) {
       dispatch(setIsLoading(true));
-      setUsername(currentAdminSelection.selectedUser.username ?? '');
-      setPassword(undefined);
-      setFirstName(currentAdminSelection.selectedUser.firstName ?? '');
-      setLastName(currentAdminSelection.selectedUser.lastName ?? '');
-      setMobile(currentAdminSelection.selectedUser.mobile ?? '');
-      setNotes(currentAdminSelection.selectedUser.notes ?? '');
-      setIsActive(currentAdminSelection.selectedUser.isActive ?? false);
-      setRequireResetPassword(currentAdminSelection.selectedUser.requireResetPassword ?? true);
-      setSendEmailReset(currentAdminSelection.selectedUser.sendEmailReset ?? false);
-      setSendTextReset(currentAdminSelection.selectedUser.sendTextReset ?? false);
-      setDisableCheckIn(currentAdminSelection.selectedUser.disableCheckIn ?? false);
+      const nextValues = getAdminUserFormValues(currentAdminSelection.selectedUser);
+      setUsername(nextValues.username);
+      setPassword(nextValues.password);
+      setFirstName(nextValues.firstName);
+      setLastName(nextValues.lastName);
+      setMobile(nextValues.mobile);
+      setNotes(nextValues.notes);
+      setIsActive(nextValues.isActive);
+      setRequireResetPassword(nextValues.requireResetPassword);
+      setSendEmailReset(nextValues.sendEmailReset);
+      setSendTextReset(nextValues.sendTextReset);
+      setDisableCheckIn(nextValues.disableCheckIn);
       void getSellers().then((response: GetSellersResponse) => {
         setAllSellers(response.sellers);
         void getAllRoles().then((resp: GetRolesResponse) => {
@@ -109,26 +120,16 @@ export default function AdminUserEdit() {
   ]);
 
   const updateSeller = (sellerId: number, newSellerId: number | null) => {
-    if (isNaN(sellerId) || !newSellerId || isNaN(newSellerId)) {
-      return;
-    }
     if (currentAdminSelection.selectedUser) {
-      const user: User = { ...currentAdminSelection.selectedUser };
-      const userSellers = user.sellers ? [...user.sellers] : [];
-      const newSeller = allSellers?.find((x) => x.sellerId === newSellerId);
-      if (newSeller) {
-        for (let i = 0; i < userSellers.length; i += 1) {
-          const userSeller = { ...userSellers[i] } as UserSeller;
-          if (userSeller?.sellerId === sellerId) {
-            userSeller.sellerId = newSellerId;
-            userSeller.sellerName = newSeller.name;
-            userSeller.sellerType = newSeller.sellerType;
-            userSellers[i] = userSeller;
-            break;
-          }
-        }
-        user.sellers = userSellers;
-        dispatch(setSelectedUser(user));
+      const updatedUser = updateUserSellerAssignment(
+        currentAdminSelection.selectedUser,
+        allSellers,
+        sellerId,
+        newSellerId,
+      );
+
+      if (updatedUser) {
+        dispatch(setSelectedUser(updatedUser));
       }
     } else {
       goBack();
@@ -136,21 +137,16 @@ export default function AdminUserEdit() {
   };
 
   const updateRole = (sellerId: number, newRoleId: number | null) => {
-    if (!sellerId || isNaN(sellerId) || !newRoleId || isNaN(newRoleId)) {
-      return;
-    }
     if (currentAdminSelection.selectedUser) {
-      const user: User = { ...currentAdminSelection.selectedUser };
-      const newRole = allRoles?.find((x) => x.roleId === newRoleId);
-      if (newRole && user.sellers) {
-        user.sellers = user.sellers.map((us) => {
-          const userSeller = { ...us };
-          if (userSeller.sellerId === sellerId) {
-            userSeller.roleId = newRoleId;
-          }
-          return userSeller;
-        });
-        dispatch(setSelectedUser(user));
+      const updatedUser = updateUserRoleAssignment(
+        currentAdminSelection.selectedUser,
+        allRoles,
+        sellerId,
+        newRoleId,
+      );
+
+      if (updatedUser) {
+        dispatch(setSelectedUser(updatedUser));
       }
     } else {
       goBack();
@@ -159,17 +155,9 @@ export default function AdminUserEdit() {
 
   const addSeller = () => {
     if (currentAdminSelection.selectedUser) {
-      const user: User = { ...currentAdminSelection.selectedUser };
-      const userSellers = user.sellers ? [...user.sellers] : [];
-      const existingAdd = userSellers.find((x) => x.sellerId === 0);
-      if (!existingAdd) {
-        userSellers.push({
-          sellerId: 0,
-          sellerName: '',
-          sellerType: SellerType.Artist,
-        });
-        user.sellers = userSellers;
-        dispatch(setSelectedUser(user));
+      const updatedUser = addSellerToUser(currentAdminSelection.selectedUser);
+      if (updatedUser) {
+        dispatch(setSelectedUser(updatedUser));
       }
     } else {
       goBack();
@@ -177,16 +165,8 @@ export default function AdminUserEdit() {
   };
 
   const removeSeller = (sId: number) => {
-    let sellerId: number = sId;
-    if (!sellerId || isNaN(sellerId)) {
-      sellerId = 0;
-    }
     if (currentAdminSelection.selectedUser) {
-      const user: User = { ...currentAdminSelection.selectedUser };
-      let userSellers = user.sellers ? [...user.sellers] : [];
-      userSellers = userSellers.filter((x) => x.sellerId !== sellerId);
-      user.sellers = userSellers;
-      dispatch(setSelectedUser(user));
+      dispatch(setSelectedUser(removeSellerFromUser(currentAdminSelection.selectedUser, sId)));
     } else {
       goBack();
     }
@@ -241,55 +221,28 @@ export default function AdminUserEdit() {
       return;
     }
 
-    if (!username) {
-      toast.warn('Username cannot be blank');
-      return;
-    }
-
-    if (users && users.find((x) => x.username === username && x.userId !== selectedUser.userId)) {
-      toast.warn('Username already exists, please choose another');
-      return;
-    }
-
-    if (selectedUser.userId <= 0 && !password) {
-      toast.warn('Password cannot be blank');
-      return;
-    }
-
-    if (!firstName) {
-      toast.warn('First name cannot be blank');
-      return;
-    }
-
-    if (!lastName) {
-      toast.warn('Last name cannot be blank');
-      return;
-    }
-
-    const userToUpdate: User = {
-      ...selectedUser,
-      username: username,
-      disableCheckIn: disableCheckIn || false,
-      firstName: firstName,
-      isActive: isActive || true,
-      lastName: lastName,
-      mobile: mobile || '',
-      notes: notes || '',
-      requireResetPassword: requireResetPassword || true,
-      sendEmailReset: sendEmailReset || false,
-      sendTextReset: sendTextReset || false,
+    const formValues = {
+      disableCheckIn,
+      firstName,
+      isActive,
+      lastName,
+      mobile,
+      notes,
+      password,
+      requireResetPassword,
+      sendEmailReset,
+      sendTextReset,
+      username,
     };
 
-    if (selectedUser.userId <= 0) {
-      userToUpdate.password = password;
+    const validationError = validateAdminUserSubmission(selectedUser, users, formValues);
+    if (validationError) {
+      toast.warn(validationError);
+      return;
     }
 
-    const sellersInvalid =
-      userToUpdate.sellers === undefined ||
-      userToUpdate.sellers.length === 0 ||
-      userToUpdate.sellers.find((x) => x.sellerId === 0) !== undefined ||
-      userToUpdate.sellers.find((x) => x.roleId === undefined || x.roleId === 0) !== undefined;
-    if (sellersInvalid) {
+    const userToUpdate = buildUserUpdatePayload(selectedUser, formValues);
+    if (hasInvalidSellerAssignments(userToUpdate)) {
       toast.warning('Seller selection invalid, please correct before submitting');
       return;
     }

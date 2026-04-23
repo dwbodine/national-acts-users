@@ -12,6 +12,18 @@ import { useValidateResetCode } from '@/hooks/user/useValidateResetCode';
 import { UserResponse } from '@/types/responses';
 import { ForgotPasswordMode } from '@/types/user';
 
+import {
+  FORGOT_PASSWORD_RESET_ERROR,
+  FORGOT_PASSWORD_RESET_SUCCESS,
+  FORGOT_PASSWORD_SEND_ERROR,
+  FORGOT_PASSWORD_VALIDATE_ERROR,
+  getForgotPasswordBackNavigation,
+  getForgotPasswordTitle,
+  validateForgotPasswordCode,
+  validateForgotPasswordReset,
+  validateForgotPasswordUsername,
+} from './forgotPasswordComponent.helpers';
+
 export default function ForgotPasswordComponent() {
   const [mode, setMode] = useState(ForgotPasswordMode.SendPasswordReset);
   const [username, setUsername] = useState('');
@@ -26,25 +38,18 @@ export default function ForgotPasswordComponent() {
   const { resetPassword } = useResetPassword();
 
   useEffect(() => {
-    switch (mode) {
-      case ForgotPasswordMode.ValidateResetCode:
-        document.title = 'Client Portal - Validate Reset Code';
-        break;
-      case ForgotPasswordMode.ResetPassword:
-        document.title = 'Client Portal - Reset Password';
-        break;
-      default:
-        document.title = 'Client Portal - Forgot Password';
-        break;
-    }
+    document.title = getForgotPasswordTitle(mode);
   }, [mode]);
 
   const onForgotPassword = () => {
     setResetError('');
-    if (!username) {
-      setResetError('Username cannot be blank');
+
+    const validationError = validateForgotPasswordUsername(username);
+    if (validationError) {
+      setResetError(validationError);
       return;
     }
+
     forgotPassword(username)
       .then((response: UserResponse) => {
         if (response.error) {
@@ -54,18 +59,19 @@ export default function ForgotPasswordComponent() {
         }
       })
       .catch(() => {
-        setResetError(
-          'Unknown error during send of password reset email - please contact your administrator',
-        );
+        setResetError(FORGOT_PASSWORD_SEND_ERROR);
       });
   };
 
   const onValidateCode = () => {
     setResetError('');
-    if (!code || isNaN(code)) {
-      setResetError('Missing or invalid code');
+
+    const validationError = validateForgotPasswordCode(code);
+    if (validationError) {
+      setResetError(validationError);
       return;
     }
+
     validateResetCode(username, code)
       .then((response: UserResponse) => {
         if (response.error) {
@@ -75,49 +81,44 @@ export default function ForgotPasswordComponent() {
         }
       })
       .catch(() => {
-        setResetError('Unknown error while validating code - please contact your administrator');
+        setResetError(FORGOT_PASSWORD_VALIDATE_ERROR);
       });
   };
 
   const onResetPassword = () => {
     setResetError('');
     setResetSuccess('');
-    if (!password) {
-      setResetError('Password is required');
+
+    const validationError = validateForgotPasswordReset(password, confirmPassword);
+    if (validationError) {
+      setResetError(validationError);
       return;
     }
-    if (!confirmPassword) {
-      setResetError('Confirm password is required');
-      return;
-    }
-    if (password !== confirmPassword) {
-      setResetError('Passwords do not match');
-      return;
-    }
+
     resetPassword(username, password, confirmPassword, code)
       .then((response: UserResponse) => {
         if (response.error) {
           setResetError(response.error);
         } else {
-          setResetSuccess('Password changed successfully, redirecting to login...');
+          setResetSuccess(FORGOT_PASSWORD_RESET_SUCCESS);
           setTimeout(() => {
             router.push('/login');
           }, 2000);
         }
       })
       .catch(() => {
-        setResetError('Unknown error while resetting password - please contact your administrator');
+        setResetError(FORGOT_PASSWORD_RESET_ERROR);
       });
   };
 
   const onBack = () => {
-    if (mode === ForgotPasswordMode.ValidateResetCode) {
-      setMode(ForgotPasswordMode.SendPasswordReset);
-    } else if (mode === ForgotPasswordMode.ResetPassword) {
-      setMode(ForgotPasswordMode.ValidateResetCode);
-    } else {
-      router.push('/login');
+    const backNavigation = getForgotPasswordBackNavigation(mode);
+    if (backNavigation.mode !== undefined) {
+      setMode(backNavigation.mode);
+      return;
     }
+
+    router.push(backNavigation.route ?? '/login');
   };
 
   switch (mode) {

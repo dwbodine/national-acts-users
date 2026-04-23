@@ -14,6 +14,13 @@ import { setCountries } from '@/lib/adminSelectionSlice';
 import { setForAdmin } from '@/lib/reportSelectionSlice';
 import { GetCountriesResponse, UserLoginResponse } from '@/types/responses';
 
+import {
+  getLoginErrorMessage,
+  getLoginRedirectPath,
+  shouldShowLoginWelcome,
+  validateLoginCredentials,
+} from './loginComponent.helpers';
+
 export default function LoginComponent() {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
@@ -26,10 +33,7 @@ export default function LoginComponent() {
   const { getAllCountries } = useGetAllCountries();
 
   useEffect(() => {
-    const curDate = new Date().getTime();
-    const begin = new Date('2024-08-11').getTime();
-    const end = new Date('2024-08-18').getTime();
-    if (curDate <= end && curDate >= begin) {
+    if (shouldShowLoginWelcome()) {
       setShowWelcome(true);
     }
     document.title = 'Client Portal - Login';
@@ -46,38 +50,30 @@ export default function LoginComponent() {
   const onSubmit = () => {
     resetStores();
 
-    if (!name || !password) {
-      setLoginError('Please enter username and password');
-    } else {
-      void login(name, password).then((response: UserLoginResponse) => {
-        if (response) {
-          if (response.user && response.user.isAuthenticated) {
-            dispatch(setForAdmin(response.user.isAdmin));
-            const searchParams = new URLSearchParams(window.location.search);
-            const returnPath = searchParams.get('returnPath');
-            const isAdmin = response.user.isAdmin;
-            void getAllCountries().then((countryResponse: GetCountriesResponse) => {
-              if (countryResponse.countries && !countryResponse.error) {
-                dispatch(setCountries(countryResponse.countries));
-              }
-              if (returnPath) {
-                router.push(returnPath);
-              } else if (isAdmin) {
-                router.push('/dashboard');
-              } else {
-                router.push('/');
-              }
-            });
-          } else if (response.error) {
-            setLoginError(response.error);
-          } else {
-            setLoginError('Unknown error during login - please contact your administrator');
-          }
-        } else {
-          setLoginError('Unknown error during login - please contact your administrator');
-        }
-      });
+    const validationError = validateLoginCredentials(name, password);
+    if (validationError) {
+      setLoginError(validationError);
+      return;
     }
+
+    void login(name, password).then((response: UserLoginResponse) => {
+      if (response?.user?.isAuthenticated) {
+        dispatch(setForAdmin(response.user.isAdmin));
+        const searchParams = new URLSearchParams(window.location.search);
+        const returnPath = searchParams.get('returnPath');
+        void getAllCountries().then((countryResponse: GetCountriesResponse) => {
+          if (countryResponse.countries && !countryResponse.error) {
+            dispatch(setCountries(countryResponse.countries));
+          }
+
+          router.push(getLoginRedirectPath(returnPath, response.user?.isAdmin ?? false));
+        });
+
+        return;
+      }
+
+      setLoginError(getLoginErrorMessage(response) ?? '');
+    });
   };
 
   const submitOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {

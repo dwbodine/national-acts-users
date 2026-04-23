@@ -11,6 +11,12 @@ import { useRegister } from '@/hooks/user/useRegister';
 import { Seller } from '@/types/event';
 import { GetSellersResponse, UserResponse } from '@/types/responses';
 
+import {
+  getRegisterResponseState,
+  REGISTER_SELLERS_LOAD_ERROR,
+  REGISTER_SUBMIT_ERROR,
+  validateRegisterForm,
+} from './registerComponent.helpers';
 import Textarea from './Textarea';
 
 export default function RegisterComponent() {
@@ -42,7 +48,7 @@ export default function RegisterComponent() {
           }
         })
         .catch(() => {
-          setRegisterError('Unknown error occurred while fetching sellers');
+          setRegisterError(REGISTER_SELLERS_LOAD_ERROR);
         });
     }
   }, [dummyVal, getSellers]);
@@ -54,47 +60,34 @@ export default function RegisterComponent() {
   const onSubmit = () => {
     setRegisterError('');
     setRegisterSuccess('');
-    if (!username) {
-      setRegisterError('Username cannot be blank');
-      return;
-    }
-    if (!firstName) {
-      setRegisterError('First name cannot be blank');
-      return;
-    }
-    if (!lastName) {
-      setRegisterError('Last name cannot be blank');
-      return;
-    }
-    if (!sellerId || sellerId <= 0) {
-      setRegisterError('Must select an associated artist/venue');
-      return;
-    }
-    if (!password) {
-      setRegisterError('Password cannot be blank');
-      return;
-    }
-    if (!confirmPassword) {
-      setRegisterError('Confirm password cannot be blank');
-      return;
-    }
-    if (password !== confirmPassword) {
-      setRegisterError('Passwords do not match');
+
+    const validationError = validateRegisterForm({
+      confirmPassword,
+      firstName,
+      lastName,
+      notes,
+      password,
+      sellerId,
+      username,
+    });
+
+    if (validationError) {
+      setRegisterError(validationError);
       return;
     }
 
     register(username, firstName, lastName, sellerId, password, confirmPassword, notes)
       .then((response: UserResponse) => {
-        if (response.errorMessage) {
-          setRegisterError(response.errorMessage);
-        } else {
-          setRegisterSuccess(
-            'User registration succeeded, please wait for response from the administrator',
-          );
+        const nextState = getRegisterResponseState(response);
+        if (nextState.error) {
+          setRegisterError(nextState.error);
+        }
+        if (nextState.success) {
+          setRegisterSuccess(nextState.success);
         }
       })
       .catch(() => {
-        setRegisterError('Unknown error occurred during user registration');
+        setRegisterError(REGISTER_SUBMIT_ERROR);
       });
   };
 
