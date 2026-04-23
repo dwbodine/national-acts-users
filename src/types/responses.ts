@@ -10,6 +10,7 @@ export interface GetResponseBase {
 
 export interface PostReponseBase extends GetResponseBase {
   success?: boolean;
+  errorMessage?: string;
 }
 
 export interface GetFaqCategoriesResponse extends GetResponseBase {

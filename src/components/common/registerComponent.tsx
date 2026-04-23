@@ -85,8 +85,8 @@ export default function RegisterComponent() {
 
     register(username, firstName, lastName, sellerId, password, confirmPassword, notes)
       .then((response: UserResponse) => {
-        if (response.error) {
-          setRegisterError(response.error);
+        if (response.errorMessage) {
+          setRegisterError(response.errorMessage);
         } else {
           setRegisterSuccess(
             'User registration succeeded, please wait for response from the administrator',
