@@ -132,4 +132,40 @@ describe('AuthService', () => {
       statusCode: 200,
     });
   });
+
+  it('returns status and error details when secure password reset fails', async () => {
+    authServiceMocks.post.mockRejectedValueOnce({
+      message: 'Request failed with status code 403',
+      response: {
+        status: 403,
+      },
+    });
+
+    const service = new AuthService('https://service.example.com');
+    const response = await service.resetPasswordSecure(
+      'jane@example.com',
+      'secret123',
+      'secret123',
+    );
+
+    expect(getAuthorizationHeader).toHaveBeenCalledTimes(1);
+    expect(authServiceMocks.post).toHaveBeenCalledWith(
+      '/user/resetPasswordSecured',
+      {
+        confirmPassword: 'secret123',
+        password: 'secret123',
+        username: 'jane@example.com',
+      },
+      {
+        headers: {
+          Authorization: 'Bearer test-token',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    expect(response).toEqual({
+      error: 'Request failed with status code 403',
+      statusCode: 403,
+    });
+  });
 });

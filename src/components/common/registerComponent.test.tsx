@@ -185,4 +185,36 @@ describe('RegisterComponent', () => {
       ),
     ).toBeInTheDocument();
   });
+
+  it('shows a seller-loading fallback error when fetching sellers fails', async () => {
+    registerComponentMocks.getSellers.mockRejectedValueOnce(new Error('network error'));
+
+    render(<RegisterComponent />);
+
+    expect(
+      await screen.findByText('Unknown error occurred while fetching sellers'),
+    ).toBeInTheDocument();
+    expect(registerComponentMocks.register).not.toHaveBeenCalled();
+  });
+
+  it('blocks submit when the passwords do not match', async () => {
+    const user = userEvent.setup();
+
+    render(<RegisterComponent />);
+
+    await waitFor(() => {
+      expect(registerComponentMocks.getSellers).toHaveBeenCalledTimes(1);
+    });
+
+    await user.type(screen.getByPlaceholderText('Enter email address'), 'jane@example.com');
+    await user.type(screen.getByPlaceholderText('First name'), 'Jane');
+    await user.type(screen.getByPlaceholderText('Last name'), 'Doe');
+    await user.selectOptions(screen.getByLabelText('-- Select One --'), '12');
+    await user.type(screen.getByPlaceholderText('Password'), 'secret123');
+    await user.type(screen.getByPlaceholderText('Confirm Password'), 'different123');
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
+
+    expect(await screen.findByText('Passwords do not match')).toBeInTheDocument();
+    expect(registerComponentMocks.register).not.toHaveBeenCalled();
+  });
 });
