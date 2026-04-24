@@ -92,24 +92,17 @@ export default function getDashboardDataFromOrders(
       } else {
         accountOrderData.Purchases += dailyOrderData.orders;
         accountOrderData.Tickets += dailyOrderData.tickets;
-        accountOrderData.TicketsRefunded =
-          (accountOrderData.TicketsRefunded ?? 0) + (dailyOrderData.numTicketsRefunded ?? 0);
+        accountOrderData.TicketsRefunded += dailyOrderData.numTicketsRefunded ?? 0;
         accountOrderData.RevenueUsd += dailyOrderData.ticketRevenueUsd;
         accountOrderData.ServiceFeesUsd += dailyOrderData.serviceFeesRevenueUsd;
         accountOrderData.TotalRevenueUsd += dailyOrderData.totalRevenueUsd;
-        accountOrderData.RevenueRefundedUsd =
-          (accountOrderData.RevenueRefundedUsd ?? 0) + (dailyOrderData.revenueRefundedUsd ?? 0);
-        accountOrderData.ServiceFeeRevenueRefundedUsd =
-          (accountOrderData.ServiceFeeRevenueRefundedUsd ?? 0) +
-          (dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0);
-        accountOrderData.TicketsChargedBack =
-          (accountOrderData.TicketsChargedBack ?? 0) + (dailyOrderData.numTicketsChargedBack ?? 0);
-        accountOrderData.RevenueChargedBackUsd =
-          (accountOrderData.RevenueChargedBackUsd ?? 0) +
-          (dailyOrderData.revenueChargedBackUsd ?? 0);
-        accountOrderData.ServiceFeeRevenueChargedBackUsd =
-          (accountOrderData.ServiceFeeRevenueChargedBackUsd ?? 0) +
-          (dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0);
+        accountOrderData.RevenueRefundedUsd += dailyOrderData.revenueRefundedUsd ?? 0;
+        accountOrderData.ServiceFeeRevenueRefundedUsd +=
+          dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0;
+        accountOrderData.TicketsChargedBack += dailyOrderData.numTicketsChargedBack ?? 0;
+        accountOrderData.RevenueChargedBackUsd += dailyOrderData.revenueChargedBackUsd ?? 0;
+        accountOrderData.ServiceFeeRevenueChargedBackUsd +=
+          dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0;
       }
       totalsByAccountMap.set(dailyOrderData.ticketSocketId, accountOrderData);
 
@@ -303,130 +296,88 @@ export default function getDashboardDataFromOrders(
           salesData.ServiceFeesUsd += dailyOrderData.serviceFeesRevenueUsd;
           salesData.Purchases += dailyOrderData.orders;
           salesData.TotalRevenueUsd += dailyOrderData.totalRevenueUsd;
-          salesData.RevenueRefundedUsd =
-            (salesData.RevenueRefundedUsd ?? 0) + (dailyOrderData.revenueRefundedUsd ?? 0);
-          salesData.RevenueChargedBackUsd =
-            (salesData.RevenueChargedBackUsd ?? 0) + (dailyOrderData.revenueChargedBackUsd ?? 0);
-          salesData.ServiceFeeRevenueRefundedUsd =
-            (salesData.ServiceFeeRevenueRefundedUsd ?? 0) +
-            (dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0);
-          salesData.ServiceFeeRevenueChargedBackUsd =
-            (salesData.ServiceFeeRevenueChargedBackUsd ?? 0) +
-            (dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0);
-          if (salesData.children) {
-            if (salesData.children.find((x) => x.SellerName === esd.SellerName)) {
-              const sellerSalesData = salesData.children.map((seller) => {
-                if (seller.SellerName === esd.SellerName) {
-                  seller.Tickets += dailyOrderData.tickets;
-                  seller.RevenueUsd += dailyOrderData.ticketRevenueUsd;
-                  seller.ServiceFeesUsd += dailyOrderData.serviceFeesRevenueUsd;
-                  seller.Purchases += dailyOrderData.orders;
-                  seller.TotalRevenueUsd += dailyOrderData.totalRevenueUsd;
-                  seller.RevenueRefundedUsd =
-                    (seller.RevenueRefundedUsd ?? 0) + (dailyOrderData.revenueRefundedUsd ?? 0);
-                  seller.RevenueChargedBackUsd =
-                    (seller.RevenueChargedBackUsd ?? 0) +
-                    (dailyOrderData.revenueChargedBackUsd ?? 0);
-                  seller.ServiceFeeRevenueRefundedUsd =
-                    (seller.ServiceFeeRevenueRefundedUsd ?? 0) +
-                    (dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0);
-                  seller.ServiceFeeRevenueChargedBackUsd =
-                    (seller.ServiceFeeRevenueChargedBackUsd ?? 0) +
-                    (dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0);
-                  if (seller.children) {
-                    if (
-                      seller.children.find(
-                        (x) =>
-                          x.EventId === dailyOrderData.ticketSocketEventId &&
-                          x.SellerName === sellerName,
-                      )
-                    ) {
-                      const eventSalesData = seller.children.map((evt) => {
-                        if (evt.SellerName === esd.SellerName && evt.EventId === esd.EventId) {
-                          evt.Tickets += dailyOrderData.tickets;
-                          evt.Revenue += dailyOrderData.ticketRevenue;
-                          evt.RevenueUsd += dailyOrderData.ticketRevenueUsd;
-                          evt.ServiceFees += dailyOrderData.serviceFeesRevenue;
-                          evt.ServiceFeesUsd += dailyOrderData.serviceFeesRevenueUsd;
-                          evt.Purchases += dailyOrderData.orders;
-                          evt.TotalRevenue += dailyOrderData.totalRevenue;
-                          evt.TotalRevenueUsd += dailyOrderData.totalRevenueUsd;
-                          evt.RevenueRefunded =
-                            (evt.RevenueRefunded ?? 0) + (dailyOrderData.revenueRefunded ?? 0);
-                          evt.RevenueRefundedUsd =
-                            (evt.RevenueRefundedUsd ?? 0) +
-                            (dailyOrderData.revenueRefundedUsd ?? 0);
-                          evt.RevenueChargedBack =
-                            (evt.RevenueChargedBack ?? 0) +
-                            (dailyOrderData.revenueChargedBack ?? 0);
-                          evt.RevenueChargedBackUsd =
-                            (evt.RevenueChargedBackUsd ?? 0) +
-                            (dailyOrderData.revenueChargedBackUsd ?? 0);
-                          evt.ServiceFeeRevenueRefunded =
-                            (evt.ServiceFeeRevenueRefunded ?? 0) +
-                            (dailyOrderData.serviceFeeRevenueRefunded ?? 0);
-                          evt.ServiceFeeRevenueRefundedUsd =
-                            (evt.ServiceFeeRevenueRefundedUsd ?? 0) +
-                            (dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0);
-                          evt.ServiceFeeRevenueChargedBack =
-                            (evt.ServiceFeeRevenueChargedBack ?? 0) +
-                            (dailyOrderData.serviceFeeRevenueChargedBack ?? 0);
-                          evt.ServiceFeeRevenueChargedBackUsd =
-                            (evt.ServiceFeeRevenueChargedBackUsd ?? 0) +
-                            (dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0);
-                        }
-                        return evt;
-                      });
-                      seller.children = eventSalesData;
-                    } else {
-                      seller.children.push(esd);
+          salesData.RevenueRefundedUsd += dailyOrderData.revenueRefundedUsd ?? 0;
+          salesData.RevenueChargedBackUsd += dailyOrderData.revenueChargedBackUsd ?? 0;
+          salesData.ServiceFeeRevenueRefundedUsd +=
+            dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0;
+          salesData.ServiceFeeRevenueChargedBackUsd +=
+            dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0;
+
+          const salesChildren = salesData.children ?? [];
+          if (salesChildren?.find((x) => x.SellerName === esd.SellerName)) {
+            const sellerSalesData = salesChildren.map((seller) => {
+              if (seller.SellerName === esd.SellerName) {
+                seller.Tickets += dailyOrderData.tickets;
+                seller.RevenueUsd += dailyOrderData.ticketRevenueUsd;
+                seller.ServiceFeesUsd += dailyOrderData.serviceFeesRevenueUsd;
+                seller.Purchases += dailyOrderData.orders;
+                seller.TotalRevenueUsd += dailyOrderData.totalRevenueUsd;
+                seller.RevenueRefundedUsd += dailyOrderData.revenueRefundedUsd ?? 0;
+                seller.RevenueChargedBackUsd += dailyOrderData.revenueChargedBackUsd ?? 0;
+                seller.ServiceFeeRevenueRefundedUsd +=
+                  dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0;
+                seller.ServiceFeeRevenueChargedBackUsd +=
+                  dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0;
+
+                const sellerChildren = seller.children ?? [];
+                if (
+                  sellerChildren.find(
+                    (x) =>
+                      x.EventId === dailyOrderData.ticketSocketEventId &&
+                      x.SellerName === sellerName,
+                  )
+                ) {
+                  const eventSalesData = sellerChildren.map((evt) => {
+                    if (evt.SellerName === esd.SellerName && evt.EventId === esd.EventId) {
+                      evt.Tickets += dailyOrderData.tickets;
+                      evt.Revenue += dailyOrderData.ticketRevenue;
+                      evt.RevenueUsd += dailyOrderData.ticketRevenueUsd;
+                      evt.ServiceFees += dailyOrderData.serviceFeesRevenue;
+                      evt.ServiceFeesUsd += dailyOrderData.serviceFeesRevenueUsd;
+                      evt.Purchases += dailyOrderData.orders;
+                      evt.TotalRevenue += dailyOrderData.totalRevenue;
+                      evt.TotalRevenueUsd += dailyOrderData.totalRevenueUsd;
+                      evt.RevenueRefunded += dailyOrderData.revenueRefunded ?? 0;
+                      evt.RevenueRefundedUsd += dailyOrderData.revenueRefundedUsd ?? 0;
+                      evt.RevenueChargedBack += dailyOrderData.revenueChargedBack ?? 0;
+                      evt.RevenueChargedBackUsd += dailyOrderData.revenueChargedBackUsd ?? 0;
+                      evt.ServiceFeeRevenueRefunded +=
+                        dailyOrderData.serviceFeeRevenueRefunded ?? 0;
+                      evt.ServiceFeeRevenueRefundedUsd +=
+                        dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0;
+                      evt.ServiceFeeRevenueChargedBack +=
+                        dailyOrderData.serviceFeeRevenueChargedBack ?? 0;
+                      evt.ServiceFeeRevenueChargedBackUsd +=
+                        dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0;
                     }
-                  } else {
-                    seller.children = [esd];
-                  }
+                    return evt;
+                  });
+                  seller.children = eventSalesData;
+                } else {
+                  sellerChildren.push(esd);
+                  seller.children = sellerChildren;
                 }
-                return seller;
-              });
-              salesData.children = sellerSalesData;
-            } else {
-              salesData.children.push({
-                PurchaseDate: `${sellerName} (${moment(dailyOrderData.purchaseDate).format('M/D/YYYY')})`,
-                Purchases: dailyOrderData.orders,
-                RevenueChargedBackUsd: dailyOrderData.revenueChargedBackUsd ?? 0,
-                RevenueRefundedUsd: dailyOrderData.revenueRefundedUsd ?? 0,
-                RevenueUsd: dailyOrderData.ticketRevenueUsd,
-                SellerName: sellerName,
-                ServiceFeeRevenueChargedBackUsd:
-                  dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
-                ServiceFeeRevenueRefundedUsd: dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0,
-                ServiceFeesUsd: dailyOrderData.serviceFeesRevenueUsd,
-                Tickets: dailyOrderData.tickets,
-                TicketsChargedBack: dailyOrderData.numTicketsChargedBack ?? 0,
-                TicketsRefunded: dailyOrderData.numTicketsRefunded ?? 0,
-                TotalRevenueUsd: dailyOrderData.totalRevenueUsd,
-                children: [esd],
-              });
-            }
+              }
+              return seller;
+            });
+            salesData.children = sellerSalesData;
           } else {
-            salesData.children = [
-              {
-                PurchaseDate: `${sellerName} (${moment(dailyOrderData.purchaseDate).format('M/D/YYYY')})`,
-                Purchases: dailyOrderData.orders,
-                RevenueChargedBackUsd: dailyOrderData.revenueChargedBack ?? 0,
-                RevenueRefundedUsd: dailyOrderData.revenueRefunded ?? 0,
-                RevenueUsd: dailyOrderData.ticketRevenueUsd,
-                SellerName: sellerName,
-                ServiceFeeRevenueChargedBackUsd:
-                  dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
-                ServiceFeeRevenueRefundedUsd: dailyOrderData.serviceFeeRevenueRefunded ?? 0,
-                ServiceFeesUsd: dailyOrderData.serviceFeesRevenueUsd,
-                Tickets: dailyOrderData.tickets,
-                TicketsChargedBack: dailyOrderData.numTicketsChargedBack ?? 0,
-                TicketsRefunded: dailyOrderData.numTicketsRefunded ?? 0,
-                TotalRevenueUsd: dailyOrderData.totalRevenueUsd,
-                children: [esd],
-              },
-            ];
+            salesChildren.push({
+              PurchaseDate: `${sellerName} (${moment(dailyOrderData.purchaseDate).format('M/D/YYYY')})`,
+              Purchases: dailyOrderData.orders,
+              RevenueChargedBackUsd: dailyOrderData.revenueChargedBackUsd ?? 0,
+              RevenueRefundedUsd: dailyOrderData.revenueRefundedUsd ?? 0,
+              RevenueUsd: dailyOrderData.ticketRevenueUsd,
+              SellerName: sellerName,
+              ServiceFeeRevenueChargedBackUsd: dailyOrderData.serviceFeeRevenueChargedBackUsd ?? 0,
+              ServiceFeeRevenueRefundedUsd: dailyOrderData.serviceFeeRevenueRefundedUsd ?? 0,
+              ServiceFeesUsd: dailyOrderData.serviceFeesRevenueUsd,
+              Tickets: dailyOrderData.tickets,
+              TicketsChargedBack: dailyOrderData.numTicketsChargedBack ?? 0,
+              TicketsRefunded: dailyOrderData.numTicketsRefunded ?? 0,
+              TotalRevenueUsd: dailyOrderData.totalRevenueUsd,
+              children: [esd],
+            });
           }
           orderMap.set(key, salesData);
         }
@@ -463,11 +414,9 @@ export default function getDashboardDataFromOrders(
         };
         ticketSalesData.push(data);
       } else {
-        if (salesData.children && salesData.children.length > 0) {
-          salesData.children.sort((a, b) =>
-            a.SellerName > b.SellerName ? 1 : b.SellerName > a.SellerName ? -1 : 0,
-          );
-        }
+        salesData.children = [...(salesData.children ?? [])].sort((a, b) =>
+          a.SellerName.localeCompare(b.SellerName),
+        );
         ticketSalesData.push(salesData);
       }
       end = end.add(-1, 'days');
@@ -481,7 +430,7 @@ export default function getDashboardDataFromOrders(
     keys.forEach((key) => {
       salesByMonth.push({
         key,
-        value: salesPerMonthMap.get(key) ?? 0,
+        value: salesPerMonthMap.get(key)!,
       });
     });
   }
@@ -493,7 +442,7 @@ export default function getDashboardDataFromOrders(
     keys.forEach((key) => {
       salesPerDayMonth.push({
         key,
-        value: salesPerDayMonthMap.get(key) ?? 0,
+        value: salesPerDayMonthMap.get(key)!,
       });
     });
   }
@@ -505,7 +454,7 @@ export default function getDashboardDataFromOrders(
     keys.forEach((key) => {
       salesPerDayYear.push({
         key,
-        value: salesPerDayYearMap.get(key) ?? 0,
+        value: salesPerDayYearMap.get(key)!,
       });
     });
   }

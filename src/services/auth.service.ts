@@ -1,6 +1,12 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
 import {
+  getErrorMessage,
+  getObjectData,
+  getOptionalData,
+  getStatusCode,
+} from '@/lib/serviceResponses';
+import {
   LogResponse,
   UserLoginResponse,
   UserLoginResponseData,
@@ -31,12 +37,14 @@ export class AuthService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.logs = res.data ? (res.data as string) : undefined;
+      response.logs = getOptionalData<string>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching logs - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching logs - please contact your administrator',
+      );
     }
 
     return response;
@@ -52,13 +60,14 @@ export class AuthService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.logs = res.data ? (res.data as string) : undefined;
+      response.logs = getOptionalData<string>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching cron logs - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching cron logs - please contact your administrator',
+      );
     }
 
     return response;
@@ -82,10 +91,10 @@ export class AuthService {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
       response.success = res.status === 200;
-      response.user = res.data ? (res.data as User) : undefined;
+      response.user = getOptionalData<User>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
+      response.statusCode = getStatusCode(err);
       const errData = err?.response?.data as UserLoginResponseData;
       const errorMessage = errData?.msg ?? err?.message;
       response.error =
@@ -111,14 +120,15 @@ export class AuthService {
 
     try {
       const res = await this.instance.post(url, data, { headers });
-      return res.data ? (res.data as UserResponse) : {};
+      return getObjectData<UserResponse>(res.data);
     } catch (e) {
       const err = e as AxiosError;
       const response: UserResponse = {};
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while resetting password - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while resetting password - please contact your administrator',
+      );
       return response;
     }
   };
@@ -134,14 +144,15 @@ export class AuthService {
 
     try {
       const res = await this.instance.post(url, data, { headers });
-      return res.data ? (res.data as UserResponse) : {};
+      return getObjectData<UserResponse>(res.data);
     } catch (e) {
       const err = e as AxiosError;
       const response: UserResponse = {};
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error during send of password reset email - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error during send of password reset email - please contact your administrator',
+      );
       return response;
     }
   };
@@ -157,14 +168,15 @@ export class AuthService {
 
     try {
       const res = await this.instance.post(url, data, { headers });
-      return res.data ? (res.data as UserResponse) : {};
+      return getObjectData<UserResponse>(res.data);
     } catch (e) {
       const err = e as AxiosError;
       const response: UserResponse = {};
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while validating reset code - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while validating reset code - please contact your administrator',
+      );
       return response;
     }
   };
@@ -190,14 +202,15 @@ export class AuthService {
 
     try {
       const res = await this.instance.post(url, data, { headers });
-      return res.data ? (res.data as UserResponse) : {};
+      return getObjectData<UserResponse>(res.data);
     } catch (e) {
       const err = e as AxiosError;
       const response: UserResponse = {};
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while resetting password - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while resetting password - please contact your administrator',
+      );
       return response;
     }
   };
@@ -229,13 +242,15 @@ export class AuthService {
 
     try {
       const res = await this.instance.post(url, data, { headers });
-      return res.data ? (res.data as UserResponse) : {};
+      return getObjectData<UserResponse>(res.data);
     } catch (e) {
       const err = e as AxiosError;
       const response: UserResponse = {};
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while registering user - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while registering user - please contact your administrator',
+      );
       return response;
     }
   };

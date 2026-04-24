@@ -29,4 +29,12 @@ describe('getAuthorizationHeader', () => {
     expect(cookiesMock.get).toHaveBeenCalledWith('authToken');
     expect(authorizationHeader).toBe('Bearer cookie-token');
   });
+
+  it('uses an empty bearer token when neither an argument nor a cookie exists', () => {
+    cookiesMock.get.mockReturnValue(undefined);
+
+    const headers = getAuthorizationHeader();
+
+    expect(headers.get('Authorization')).toBe('Bearer ');
+  });
 });

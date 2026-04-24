@@ -68,12 +68,42 @@ describe('file name and date utils', () => {
         'summary',
       ),
     ).toBe(`National Acts_summary_10_20_${hash}.csv`);
+
+    expect(
+      getFileNameFromEvent({
+        eventDate: '2026-05-01T00:00:00Z',
+        externalEventId: 1,
+        isActive: true,
+        isDeleted: false,
+        isExternal: false,
+        title: 'VIP / Event!',
+      } as never),
+    ).toBe(`VIP_Event__${hash}.csv`);
+
+    expect(
+      getCsvFileNameFromReportSelection({
+        seller: {
+          sellerId: 7,
+          sellerName: 'National Acts',
+        },
+        end: 20,
+        start: 10,
+      } as never),
+    ).toBe(`National Acts_10_20_${hash}.csv`);
   });
 
   it('returns empty filenames when required selection data is missing', () => {
     expect(getFileNameFromReportAdminSelection('activity', undefined)).toBe('');
     expect(getFileNameFromDashboardReportSelection('dashboard', undefined)).toBe('');
     expect(getCsvFileNameFromReportSelection(undefined)).toBe('');
+    expect(
+      getCsvFileNameFromReportSelection({
+        seller: {
+          sellerId: 0,
+          sellerName: 'Nobody',
+        },
+      } as never),
+    ).toBe('');
   });
 
   it('computes date ranges for week, month, and agenda views', () => {

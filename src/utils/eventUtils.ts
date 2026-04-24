@@ -560,19 +560,14 @@ const getAccountNameFromTicketSocketId = (ticketSocketId: number): string => {
   switch (ticketSocketId) {
     case 2:
       return 'European VIP Tickets';
-      break;
     case 3:
       return 'Australian VIP tickets';
-      break;
     case 4:
       return 'USA Concert tickets';
-      break;
     case 5:
       return 'Japanese VIP Tickets';
-      break;
     default:
       return 'USA VIP Tickets';
-      break;
   }
 };
 

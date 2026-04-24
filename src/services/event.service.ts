@@ -3,6 +3,12 @@ import moment from 'moment';
 
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import {
+  getArrayData,
+  getErrorMessage,
+  getOptionalData,
+  getStatusCode,
+} from '@/lib/serviceResponses';
+import {
   GetDashboardOrdersResponse,
   GetEventResponse,
   GetEventsResponse,
@@ -82,7 +88,7 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      const events = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = getOptionalData<VipEvent[]>(res.data);
       response.events = events?.map((x) => {
         const evt = { ...x };
         evt.lastFetched = moment().unix();
@@ -90,9 +96,11 @@ export class EventService {
       });
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching events - please contact your administrator',
+      );
     }
 
     return response;
@@ -108,12 +116,14 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.tours = res.data ? (res.data as Tour[]) : undefined;
+      response.tours = getOptionalData<Tour[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching tours - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching tours - please contact your administrator',
+      );
     }
 
     return response;
@@ -141,7 +151,7 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      const events = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = getOptionalData<VipEvent[]>(res.data);
       response.events = events?.map((x) => {
         const evt = { ...x };
         evt.lastFetched = moment().unix();
@@ -149,9 +159,11 @@ export class EventService {
       });
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching events - please contact your administrator',
+      );
     }
 
     return response;
@@ -167,7 +179,7 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      const events = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = getOptionalData<VipEvent[]>(res.data);
       response.events = events?.map((x) => {
         const evt = { ...x };
         evt.lastFetched = moment().unix();
@@ -175,9 +187,11 @@ export class EventService {
       });
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching events - please contact your administrator',
+      );
     }
 
     return response;
@@ -197,7 +211,7 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      const events = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = getOptionalData<VipEvent[]>(res.data);
       response.events = events?.map((x) => {
         const evt = { ...x };
         evt.lastFetched = moment().unix();
@@ -205,9 +219,11 @@ export class EventService {
       });
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching events - please contact your administrator',
+      );
     }
 
     return response;
@@ -223,12 +239,14 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.orders = res.data ? (res.data as Order[]) : undefined;
+      response.orders = getOptionalData<Order[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching orders - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching orders - please contact your administrator',
+      );
     }
 
     return response;
@@ -252,13 +270,14 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.totals = res.data ? (res.data as IDashboardTotals) : undefined;
+      response.totals = getOptionalData<IDashboardTotals>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching dashboard data - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching dashboard data - please contact your administrator',
+      );
     }
 
     return response;
@@ -304,7 +323,7 @@ export class EventService {
     try {
       const res = await apiInstance.get(url, { headers });
       response.statusCode = res.status;
-      const events = res.data ? (res.data as VipEvent[]) : undefined;
+      const events = getOptionalData<VipEvent[]>(res.data);
       response.events = events?.map((x) => {
         const evt = { ...x };
         evt.lastFetched = moment().unix();
@@ -312,9 +331,11 @@ export class EventService {
       });
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching events - please contact your administrator',
+      );
     }
 
     return response;
@@ -330,7 +351,7 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      const vipEvents = res.data ? (res.data as VipEvent[]) : undefined;
+      const vipEvents = getOptionalData<VipEvent[]>(res.data);
       const events = vipEvents?.map((x) => {
         const evt = { ...x };
         evt.lastFetched = moment().unix();
@@ -339,9 +360,11 @@ export class EventService {
       response.event = events && events.length > 0 ? events[0] : undefined;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching event - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching event - please contact your administrator',
+      );
     }
 
     return response;
@@ -357,13 +380,15 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      const orders = res.data as Order[];
-      response.order = orders && orders.length > 0 ? orders[0] : undefined;
+      const orders = getArrayData<Order>(res.data);
+      response.order = orders.length > 0 ? orders[0] : undefined;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching order - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching order - please contact your administrator',
+      );
     }
 
     return response;
@@ -384,9 +409,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while updating event - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating event - please contact your administrator',
+      );
     }
 
     return response;
@@ -407,9 +434,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while updating tour - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating tour - please contact your administrator',
+      );
     }
 
     return response;
@@ -440,10 +469,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while issuing event refund - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while issuing event refund - please contact your administrator',
+      );
     }
 
     return response;
@@ -472,9 +502,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while cancelling event - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while cancelling event - please contact your administrator',
+      );
     }
 
     return response;
@@ -498,14 +530,17 @@ export class EventService {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
       response.success = res.status === 200;
-      response.updatedEvent = res.data as VipEvent;
-      response.updatedEvent.lastFetched = moment().unix();
+      response.updatedEvent = getOptionalData<VipEvent>(res.data);
+      if (response.updatedEvent) {
+        response.updatedEvent.lastFetched = moment().unix();
+      }
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while marking list as sent to band - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while marking list as sent to band - please contact your administrator',
+      );
     }
 
     return response;
@@ -536,10 +571,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while issuing order refund - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while issuing order refund - please contact your administrator',
+      );
     }
 
     return response;
@@ -568,10 +604,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while issuing ticket refund - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while issuing ticket refund - please contact your administrator',
+      );
     }
 
     return response;
@@ -592,9 +629,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while updating order - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating order - please contact your administrator',
+      );
     }
 
     return response;
@@ -618,9 +657,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while adding comp order - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while adding comp order - please contact your administrator',
+      );
     }
 
     return response;
@@ -648,13 +689,14 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.results = res.data ? (res.data as TicketSocketRefreshHistory) : undefined;
+      response.results = getOptionalData<TicketSocketRefreshHistory>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while refreshing events from TicketSocket - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while refreshing events from TicketSocket - please contact your administrator',
+      );
     }
 
     return response;
@@ -670,13 +712,14 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.history = res.data ? (res.data as TicketSocketRefreshHistory[]) : undefined;
+      response.history = getOptionalData<TicketSocketRefreshHistory[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching event refresh history from TicketSocket - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching event refresh history from TicketSocket - please contact your administrator',
+      );
     }
 
     return response;
@@ -714,9 +757,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while adding note - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while adding note - please contact your administrator',
+      );
     }
 
     return response;
@@ -748,9 +793,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while editing note - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while editing note - please contact your administrator',
+      );
     }
 
     return response;
@@ -770,9 +817,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while deleting note - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while deleting note - please contact your administrator',
+      );
     }
 
     return response;
@@ -788,13 +837,14 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.notes = res.data ? (res.data as Note[]) : undefined;
+      response.notes = getOptionalData<Note[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching calendar notes - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching calendar notes - please contact your administrator',
+      );
     }
 
     return response;
@@ -810,13 +860,14 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.events = res.data ? (res.data as VipEvent[]) : undefined;
+      response.events = getOptionalData<VipEvent[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching missing events - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching missing events - please contact your administrator',
+      );
     }
 
     return response;
@@ -832,12 +883,14 @@ export class EventService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.orders = res.data ? (res.data as Order[]) : undefined;
+      response.orders = getOptionalData<Order[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while searching orders - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while searching orders - please contact your administrator',
+      );
     }
 
     return response;
@@ -863,9 +916,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while modifying event - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while modifying event - please contact your administrator',
+      );
     }
 
     return response;
@@ -891,9 +946,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while modifying event - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while modifying event - please contact your administrator',
+      );
     }
 
     return response;
@@ -919,9 +976,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while modifying event - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while modifying event - please contact your administrator',
+      );
     }
 
     return response;
@@ -947,9 +1006,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while modifying order - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while modifying order - please contact your administrator',
+      );
     }
 
     return response;
@@ -971,10 +1032,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while modifying event(s) - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while modifying event(s) - please contact your administrator',
+      );
     }
 
     return response;
@@ -1000,9 +1062,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while modifying order - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while modifying order - please contact your administrator',
+      );
     }
 
     return response;
@@ -1028,9 +1092,11 @@ export class EventService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while modifying ticket - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while modifying ticket - please contact your administrator',
+      );
     }
 
     return response;

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -149,33 +149,44 @@ describe('RegisterComponent', () => {
   });
 
   it('submits the form and shows a success message when registration succeeds', async () => {
-    const user = userEvent.setup();
     const { container } = render(<RegisterComponent />);
 
     await waitFor(() => {
       expect(registerComponentMocks.getSellers).toHaveBeenCalledTimes(1);
     });
 
-    await user.type(screen.getByPlaceholderText('Enter email address'), 'jane@example.com');
-    await user.type(screen.getByPlaceholderText('First name'), 'Jane');
-    await user.type(screen.getByPlaceholderText('Last name'), 'Doe');
-    await user.selectOptions(screen.getByLabelText('-- Select One --'), '12');
-    await user.type(screen.getByPlaceholderText('Password'), 'secret123');
-    await user.type(screen.getByPlaceholderText('Confirm Password'), 'secret123');
+    fireEvent.change(screen.getByPlaceholderText('Enter email address'), {
+      target: { value: 'a@b.co' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('First name'), {
+      target: { value: 'Ja' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Last name'), {
+      target: { value: 'Do' },
+    });
+    fireEvent.change(screen.getByLabelText('-- Select One --'), {
+      target: { value: '12' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Password'), {
+      target: { value: 'secret' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Confirm Password'), {
+      target: { value: 'secret' },
+    });
     const notesField = container.querySelector('textarea');
     expect(notesField).not.toBeNull();
-    await user.type(notesField!, 'Please approve quickly');
-    await user.click(screen.getByRole('button', { name: 'Submit' }));
+    fireEvent.change(notesField!, { target: { value: 'ok' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await waitFor(() => {
       expect(registerComponentMocks.register).toHaveBeenCalledWith(
-        'jane@example.com',
-        'Jane',
-        'Doe',
+        'a@b.co',
+        'Ja',
+        'Do',
         12,
-        'secret123',
-        'secret123',
-        'Please approve quickly',
+        'secret',
+        'secret',
+        'ok',
       );
     });
 
@@ -198,21 +209,31 @@ describe('RegisterComponent', () => {
   });
 
   it('blocks submit when the passwords do not match', async () => {
-    const user = userEvent.setup();
-
     render(<RegisterComponent />);
 
     await waitFor(() => {
       expect(registerComponentMocks.getSellers).toHaveBeenCalledTimes(1);
     });
 
-    await user.type(screen.getByPlaceholderText('Enter email address'), 'jane@example.com');
-    await user.type(screen.getByPlaceholderText('First name'), 'Jane');
-    await user.type(screen.getByPlaceholderText('Last name'), 'Doe');
-    await user.selectOptions(screen.getByLabelText('-- Select One --'), '12');
-    await user.type(screen.getByPlaceholderText('Password'), 'secret123');
-    await user.type(screen.getByPlaceholderText('Confirm Password'), 'different123');
-    await user.click(screen.getByRole('button', { name: 'Submit' }));
+    fireEvent.change(screen.getByPlaceholderText('Enter email address'), {
+      target: { value: 'jane@example.com' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('First name'), {
+      target: { value: 'Jane' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Last name'), {
+      target: { value: 'Doe' },
+    });
+    fireEvent.change(screen.getByLabelText('-- Select One --'), {
+      target: { value: '12' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Password'), {
+      target: { value: 'secret123' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Confirm Password'), {
+      target: { value: 'different123' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     expect(await screen.findByText('Passwords do not match')).toBeInTheDocument();
     expect(registerComponentMocks.register).not.toHaveBeenCalled();

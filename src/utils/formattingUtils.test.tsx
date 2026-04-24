@@ -32,4 +32,14 @@ describe('formatting utils', () => {
     expect(highlightValue(0)).toBe('0');
     expect(highlightValue(999)).toBe('< 1k');
   });
+
+  it('renders highlighted values for millions, billions, and negatives', () => {
+    const { rerender, container } = render(<div>{highlightValue(2500000)}</div>);
+    expect(container.textContent).toContain('M');
+
+    rerender(<div>{highlightValue(3500000000)}</div>);
+    expect(container.textContent).toContain('B');
+
+    expect(highlightValue(-5)).toBe('--');
+  });
 });

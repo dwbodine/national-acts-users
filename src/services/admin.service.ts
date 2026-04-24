@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
+import { getErrorMessage, getOptionalData, getStatusCode } from '@/lib/serviceResponses';
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Seller } from '@/types/event';
 import { Country, Faq, FaqCategory, Page, SiteSetting } from '@/types/public';
@@ -44,12 +45,14 @@ export class AdminService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.faqs = res.data ? (res.data as Faq[]) : undefined;
+      response.faqs = getOptionalData<Faq[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching faqs - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching faqs - please contact your administrator',
+      );
     }
 
     return response;
@@ -68,13 +71,14 @@ export class AdminService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.categories = res.data ? (res.data as FaqCategory[]) : undefined;
+      response.categories = getOptionalData<FaqCategory[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching faq categories - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching faq categories - please contact your administrator',
+      );
     }
 
     return response;
@@ -95,9 +99,11 @@ export class AdminService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while updating FAQ - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating FAQ - please contact your administrator',
+      );
     }
 
     return response;
@@ -118,9 +124,11 @@ export class AdminService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while deleting FAQ - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while deleting FAQ - please contact your administrator',
+      );
     }
 
     return response;
@@ -143,9 +151,11 @@ export class AdminService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while moving up FAQ - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while moving up FAQ - please contact your administrator',
+      );
     }
 
     return response;
@@ -166,9 +176,11 @@ export class AdminService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while moving down FAQ - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while moving down FAQ - please contact your administrator',
+      );
     }
 
     return response;
@@ -184,12 +196,14 @@ export class AdminService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.pages = res.data ? (res.data as Page[]) : undefined;
+      response.pages = getOptionalData<Page[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching pages - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching pages - please contact your administrator',
+      );
     }
 
     return response;
@@ -208,12 +222,14 @@ export class AdminService {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
       response.success = res.status === 200;
-      response.updatedPage = res.data ? (res.data as Page) : undefined;
+      response.updatedPage = getOptionalData<Page>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while updating page - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating page - please contact your administrator',
+      );
     }
 
     return response;
@@ -232,13 +248,14 @@ export class AdminService {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
       response.success = res.status === 200;
-      response.updatedPage = res.data ? (res.data as Page) : undefined;
+      response.updatedPage = getOptionalData<Page>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while updating page order - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating page order - please contact your administrator',
+      );
     }
 
     return response;
@@ -259,10 +276,11 @@ export class AdminService {
       response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while updating site setting - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating site setting - please contact your administrator',
+      );
     }
 
     return response;
@@ -281,12 +299,14 @@ export class AdminService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.venues = res.data ? (res.data as ExternalVenue[]) : undefined;
+      response.venues = getOptionalData<ExternalVenue[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching venues - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching venues - please contact your administrator',
+      );
     }
 
     return response;
@@ -302,13 +322,14 @@ export class AdminService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.countries = res.data ? (res.data as Country[]) : undefined;
+      response.countries = getOptionalData<Country[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching countries - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching countries - please contact your administrator',
+      );
     }
 
     return response;
@@ -327,12 +348,14 @@ export class AdminService {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
       response.success = res.status === 200;
-      response.updatedVenue = res.data ? (res.data as ExternalVenue) : undefined;
+      response.updatedVenue = getOptionalData<ExternalVenue>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while updating venue - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating venue - please contact your administrator',
+      );
     }
 
     return response;
@@ -352,9 +375,11 @@ export class AdminService {
       response.success = res.status === 200;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while deleting venue - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while deleting venue - please contact your administrator',
+      );
     }
 
     return response;
@@ -370,13 +395,14 @@ export class AdminService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.accounts = res.data ? (res.data as TicketSocketAccount[]) : undefined;
+      response.accounts = getOptionalData<TicketSocketAccount[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching ticket socket accounts - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching ticket socket accounts - please contact your administrator',
+      );
     }
 
     return response;
@@ -392,12 +418,14 @@ export class AdminService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.sellers = res.data ? (res.data as Seller[]) : undefined;
+      response.sellers = getOptionalData<Seller[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching sellers - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching sellers - please contact your administrator',
+      );
     }
 
     return response;
@@ -416,12 +444,14 @@ export class AdminService {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
       response.success = res.status === 200;
-      response.updatedSeller = res.data ? (res.data as Seller) : undefined;
+      response.updatedSeller = getOptionalData<Seller>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while updating seller - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating seller - please contact your administrator',
+      );
     }
 
     return response;

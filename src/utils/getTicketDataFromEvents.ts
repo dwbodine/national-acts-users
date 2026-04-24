@@ -59,11 +59,9 @@ export default function getTicketDataFromEvents(events: VipEvent[]): ITicketData
                 (item) => item.TicketType.toLowerCase() === ticketTypeName.toLowerCase(),
               );
               if (indexToUpdate >= 0) {
-                const item = collection[indexToUpdate];
-                if (item) {
-                  item.Number += 1;
-                  collection[indexToUpdate] = item;
-                }
+                const item = collection[indexToUpdate]!;
+                item.Number += 1;
+                collection[indexToUpdate] = item;
               } else {
                 collection.push({
                   Number: 1,

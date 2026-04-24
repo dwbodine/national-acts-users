@@ -6,20 +6,19 @@ describe('setFocusToControl', () => {
   it('scrolls and focuses the matching element', () => {
     document.body.innerHTML = '<button id="target">Focus me</button>';
 
-    const element = document.getElementById('target') as HTMLElement & {
-      focus: ReturnType<typeof vi.fn>;
-      scrollIntoView: ReturnType<typeof vi.fn>;
-    };
-    element.focus = vi.fn();
-    element.scrollIntoView = vi.fn();
+    const element = document.getElementById('target') as HTMLElement;
+    const focusMock = vi.fn<(options?: FocusOptions) => void>();
+    const scrollIntoViewMock = vi.fn<(arg?: boolean | ScrollIntoViewOptions) => void>();
+    element.focus = focusMock;
+    element.scrollIntoView = scrollIntoViewMock;
 
     setFocusToControl('target');
 
-    expect(element.scrollIntoView).toHaveBeenCalledWith({
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({
       behavior: 'smooth',
       block: 'nearest',
     });
-    expect(element.focus).toHaveBeenCalledTimes(1);
+    expect(focusMock).toHaveBeenCalledTimes(1);
   });
 
   it('does nothing when the id is missing or empty', () => {

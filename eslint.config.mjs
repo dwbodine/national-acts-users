@@ -99,6 +99,7 @@ export default defineConfig([
   {
     ignores: [
       '.next/**',
+      'coverage/**',
       'public/**',
       'out/**',
       'dist/**',

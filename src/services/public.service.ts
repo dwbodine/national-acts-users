@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
 import { ImageType, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
+import { getArrayData, getErrorMessage, getStatusCode } from '@/lib/serviceResponses';
 import { Page, PageType, SiteSetting } from '@/types/public';
 import {
   GetEventsResponse,
@@ -38,32 +39,22 @@ export class PublicService {
       endUnix = startUnix + 7 * 24 * 60 * 60;
     }
 
-    let url = `/public/events`;
-
-    if (startUnix > 0 || endUnix > 0 || sellerId > 0) {
-      url += '?';
-    }
+    const queryParams: string[] = [];
 
     if (startUnix > 0) {
-      if (!url.endsWith('?')) {
-        url += '&';
-      }
-      url += `start=${startUnix}`;
+      queryParams.push(`start=${startUnix}`);
     }
 
     if (endUnix > 0) {
-      if (!url.endsWith('?')) {
-        url += '&';
-      }
-      url += `end=${endUnix}`;
+      queryParams.push(`end=${endUnix}`);
     }
 
     if (sellerId > 0) {
-      if (!url.endsWith('?')) {
-        url += '&';
-      }
-      url += `sellerId=${sellerId}`;
+      queryParams.push(`sellerId=${sellerId}`);
     }
+
+    const url =
+      queryParams.length > 0 ? `/public/events?${queryParams.join('&')}` : `/public/events`;
 
     const response: GetEventsResponse = {};
 
@@ -75,12 +66,14 @@ export class PublicService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.events = res.data ? (res.data as VipEvent[]) : [];
+      response.events = getArrayData<VipEvent>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching events - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching events - please contact your administrator',
+      );
     }
 
     return response;
@@ -99,12 +92,14 @@ export class PublicService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.sellers = res.data ? (res.data as Seller[]) : [];
+      response.sellers = getArrayData<Seller>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching sellers - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching sellers - please contact your administrator',
+      );
     }
 
     return response;
@@ -123,13 +118,14 @@ export class PublicService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.pageTypes = res.data ? (res.data as PageType[]) : [];
+      response.pageTypes = getArrayData<PageType>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching page types - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching page types - please contact your administrator',
+      );
     }
 
     return response;
@@ -148,13 +144,14 @@ export class PublicService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.pages = res.data ? (res.data as Page[]) : [];
+      response.pages = getArrayData<Page>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching pages by type - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching pages by type - please contact your administrator',
+      );
     }
 
     return response;
@@ -173,12 +170,14 @@ export class PublicService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.settings = res.data ? (res.data as SiteSetting[]) : [];
+      response.settings = getArrayData<SiteSetting>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching settings - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching settings - please contact your administrator',
+      );
     }
 
     return response;

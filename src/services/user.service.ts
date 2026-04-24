@@ -1,6 +1,12 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
 import {
+  getArrayData,
+  getErrorMessage,
+  getOptionalData,
+  getStatusCode,
+} from '@/lib/serviceResponses';
+import {
   GetActivityResponse,
   GetPermissionsResponse,
   GetRolesResponse,
@@ -34,12 +40,14 @@ export class UserService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.users = res.data ? (res.data as User[]) : undefined;
+      response.users = getOptionalData<User[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching users - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching users - please contact your administrator',
+      );
     }
 
     return response;
@@ -55,12 +63,14 @@ export class UserService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.roles = res.data ? (res.data as Role[]) : undefined;
+      response.roles = getOptionalData<Role[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while fetching roles - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching roles - please contact your administrator',
+      );
     }
 
     return response;
@@ -76,13 +86,14 @@ export class UserService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.permissions = res.data ? (res.data as Permission[]) : undefined;
+      response.permissions = getOptionalData<Permission[]>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching permissions - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching permissions - please contact your administrator',
+      );
     }
 
     return response;
@@ -101,13 +112,14 @@ export class UserService {
     try {
       const res = await this.instance.get(url, { headers });
       response.statusCode = res.status;
-      response.userSeller = res.data ? (res.data as UserSeller) : undefined;
+      response.userSeller = getOptionalData<UserSeller>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching user seller - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching user seller - please contact your administrator',
+      );
     }
 
     return response;
@@ -128,9 +140,11 @@ export class UserService {
       response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while updating role - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating role - please contact your administrator',
+      );
     }
 
     return response;
@@ -151,9 +165,11 @@ export class UserService {
       response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while deleting roles - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while deleting roles - please contact your administrator',
+      );
     }
 
     return response;
@@ -174,9 +190,11 @@ export class UserService {
       response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while updating user - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating user - please contact your administrator',
+      );
     }
 
     return response;
@@ -197,9 +215,11 @@ export class UserService {
       response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ?? 'Unknown error while deleting user - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while deleting user - please contact your administrator',
+      );
     }
 
     return response;
@@ -227,10 +247,11 @@ export class UserService {
       response.success = res.data !== undefined;
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while logging activity data - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while logging activity data - please contact your administrator',
+      );
     }
 
     return response;
@@ -261,13 +282,14 @@ export class UserService {
       const res = await this.instance.post(url, data, { headers });
       response.statusCode = res.status;
       response.success = res.status === 200;
-      response.activities = res.data ? (res.data as UserActivity[]) : [];
+      response.activities = getArrayData<UserActivity>(res.data);
     } catch (e) {
       const err = e as AxiosError;
-      response.statusCode = err?.response?.status ?? 500;
-      response.error =
-        err?.message ??
-        'Unknown error while fetching activity data - please contact your administrator';
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching activity data - please contact your administrator',
+      );
     }
 
     return response;

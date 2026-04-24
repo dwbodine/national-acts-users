@@ -79,4 +79,73 @@ describe('exportVipItinerary', () => {
     expect(csv).toContain('"NO VIP"');
     expect(csv).not.toContain('Deleted Show');
   });
+
+  it('covers empty exports and US address formatting branches', async () => {
+    const emptyCsv = await exportVipItineraryToCSV([], false);
+    expect(emptyCsv).toBe('');
+
+    const html = await exportVipItineraryToHtml(
+      [
+        {
+          eventDate: '2026-05-05T12:00:00Z',
+          externalEventId: 4,
+          externalUrl: undefined,
+          isActive: true,
+          isAddedToBandsInTown: false,
+          isDeleted: false,
+          isExternal: false,
+          ticketSocketUrl: 'https://vip.example.com/live',
+          title: 'US Show',
+          venue: {
+            address1: '4 Main St',
+            city: 'Nashville',
+            country: { countryName: 'USA' },
+            name: 'Ryman',
+            postalCode: '37201',
+            state: 'TN',
+          },
+        },
+      ] as never,
+      'US Itinerary',
+      '',
+      false,
+    );
+
+    expect(html).not.toContain('Your homepage for all of your VIPs is located here');
+    expect(html).toContain('4 Main St, Nashville, TN 37201');
+    expect(html).toContain('Live');
+  });
+
+  it('exports non-US addresses and preserves non-live event statuses', async () => {
+    const internationalEvents = [
+      {
+        eventDate: '2026-05-06T12:00:00Z',
+        externalEventId: 5,
+        externalUrl: 'https://tickets.example.fr',
+        isActive: true,
+        isAddedToBandsInTown: false,
+        isCancelled: true,
+        isDeleted: false,
+        isExternal: false,
+        ticketSocketUrl: 'https://vip.example.fr',
+        title: 'Paris Show',
+        venue: {
+          address1: '5 Rue Example',
+          city: 'Paris',
+          country: { countryName: 'France' },
+          name: 'Olympia',
+          postalCode: '75009',
+          state: '',
+        },
+      },
+    ] as never;
+
+    const html = await exportVipItineraryToHtml(internationalEvents, 'Intl Itinerary', '', false);
+    const csv = await exportVipItineraryToCSV(internationalEvents, false);
+
+    expect(html).toContain('5 Rue Example, Paris 75009 France');
+    expect(html).toContain('Cancelled');
+    expect(csv).toContain('"5 Rue Example, Paris 75009 France"');
+    expect(csv).toContain('"Cancelled"');
+  });
 });
