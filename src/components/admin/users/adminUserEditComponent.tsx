@@ -56,6 +56,7 @@ export default function AdminUserEdit() {
   const [allRoles, setAllRoles] = useState<Role[] | undefined>(undefined);
   const [username, setUsername] = useState<string | undefined>('');
   const [password, setPassword] = useState<string | undefined>('');
+  const [editPassword, setEditPassword] = useState<boolean>(false);
   const [firstName, setFirstName] = useState<string | undefined>('');
   const [lastName, setLastName] = useState<string | undefined>('');
   const [mobile, setMobile] = useState<string | undefined>('');
@@ -87,7 +88,10 @@ export default function AdminUserEdit() {
       });
     } else if (username === undefined || allSellers === undefined || allRoles === undefined) {
       dispatch(setIsLoading(true));
-      const nextValues = getAdminUserFormValues(currentAdminSelection.selectedUser);
+      const isNewUser =
+        !currentAdminSelection.selectedUser.userId ||
+        currentAdminSelection.selectedUser.userId <= 0;
+      const nextValues = getAdminUserFormValues(currentAdminSelection.selectedUser, isNewUser);
       setUsername(nextValues.username);
       setPassword(nextValues.password);
       setFirstName(nextValues.firstName);
@@ -99,6 +103,7 @@ export default function AdminUserEdit() {
       setSendEmailReset(nextValues.sendEmailReset);
       setSendTextReset(nextValues.sendTextReset);
       setDisableCheckIn(nextValues.disableCheckIn);
+      setEditPassword(nextValues.editPassword);
       void getSellers().then((response: GetSellersResponse) => {
         setAllSellers(response.sellers);
         void getAllRoles().then((resp: GetRolesResponse) => {
@@ -233,6 +238,7 @@ export default function AdminUserEdit() {
       sendEmailReset,
       sendTextReset,
       username,
+      editPassword,
     };
 
     const validationError = validateAdminUserSubmission(selectedUser, users, formValues);
@@ -317,15 +323,27 @@ export default function AdminUserEdit() {
             placeholder="Username (must be email)"
           />
         </div>
-        <div className="admin-user-row" hidden={currentAdminSelection.selectedUser.userId > 0}>
-          <span>Password:</span>
-          <Input
-            value={password ?? ''}
-            type="password"
-            onChange={setPassword}
-            className="form-control-half"
-            placeholder="Password"
-          />
+        <div className="admin-user-row">
+          <Checkbox
+            hidden={
+              !currentAdminSelection.selectedUser.userId ||
+              currentAdminSelection.selectedUser.userId <= 0
+            }
+            checked={editPassword}
+            onChange={(_, checked) => setEditPassword(checked)}
+          >
+            Set password?
+          </Checkbox>
+          <div hidden={!editPassword}>
+            <span>Password:</span>
+            <Input
+              value={password ?? ''}
+              type="password"
+              onChange={setPassword}
+              className="form-control-half"
+              placeholder="Password"
+            />
+          </div>
         </div>
         <div className="admin-user-row">
           <span>First Name</span>
@@ -359,7 +377,6 @@ export default function AdminUserEdit() {
             Is Active?
           </Checkbox>
           <Checkbox
-            disabled={currentAdminSelection.selectedUser.userId <= 0}
             checked={requireResetPassword}
             onChange={(_, checked) => setRequireResetPassword(checked)}
           >

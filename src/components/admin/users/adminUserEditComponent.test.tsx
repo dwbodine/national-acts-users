@@ -289,20 +289,51 @@ describe('AdminUserEdit', () => {
     await user.click(screen.getByRole('button', { name: 'Submit' }));
 
     await waitFor(() => {
-      expect(adminUserEditMocks.updateUser).toHaveBeenCalledWith(
-        expect.objectContaining({
-          firstName: 'Janet',
-          userId: 7,
-          username: 'jane@example.com',
-        }),
-      );
+      expect(adminUserEditMocks.updateUser).toHaveBeenCalled();
       expect(adminUserEditMocks.push).toHaveBeenCalledWith('/admin/users');
     });
+
+    const submittedUser = adminUserEditMocks.updateUser.mock.calls[0]?.[0] as User;
+    expect(submittedUser).toEqual(
+      expect.objectContaining({
+        firstName: 'Janet',
+        userId: 7,
+        username: 'jane@example.com',
+      }),
+    );
+    expect(submittedUser).not.toHaveProperty('password');
 
     expect(adminUserEditMocks.dispatch).toHaveBeenCalledWith(setIsLoading(true));
     expect(adminUserEditMocks.dispatch).toHaveBeenCalledWith(setReloadUsers(true));
     expect(adminUserEditMocks.dispatch).toHaveBeenCalledWith(setIsLoading(false));
     expect(adminUserEditMocks.toast.success).toHaveBeenCalledWith('User updated successfully');
+  });
+
+  it('submits a password for an existing user only after password editing is enabled', async () => {
+    const user = userEvent.setup();
+
+    render(<AdminUserEdit />);
+
+    await waitFor(() => {
+      expect(adminUserEditMocks.getSellers).toHaveBeenCalled();
+      expect(adminUserEditMocks.getAllRoles).toHaveBeenCalled();
+    });
+
+    adminUserEditMocks.dispatch.mockClear();
+
+    await user.click(screen.getByRole('checkbox', { name: 'Set password?' }));
+    await user.type(screen.getByPlaceholderText('Password'), 'updated-secret');
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
+
+    await waitFor(() => {
+      expect(adminUserEditMocks.updateUser).toHaveBeenCalledWith(
+        expect.objectContaining({
+          password: 'updated-secret',
+          userId: 7,
+          username: 'jane@example.com',
+        }),
+      );
+    });
   });
 
   it('opens delete confirmation and deletes the current user when confirmed', async () => {

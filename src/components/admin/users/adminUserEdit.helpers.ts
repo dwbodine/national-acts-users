@@ -12,10 +12,15 @@ export type AdminUserFormValues = {
   requireResetPassword: boolean;
   sendEmailReset: boolean;
   sendTextReset: boolean;
+  userId?: number;
   username?: string;
+  editPassword: boolean;
 };
 
-export function getAdminUserFormValues(selectedUser: User): AdminUserFormValues {
+export function getAdminUserFormValues(
+  selectedUser: User,
+  editPassword: boolean = false,
+): AdminUserFormValues {
   return {
     disableCheckIn: selectedUser.disableCheckIn ?? false,
     firstName: selectedUser.firstName ?? '',
@@ -27,7 +32,9 @@ export function getAdminUserFormValues(selectedUser: User): AdminUserFormValues 
     requireResetPassword: selectedUser.requireResetPassword ?? true,
     sendEmailReset: selectedUser.sendEmailReset ?? false,
     sendTextReset: selectedUser.sendTextReset ?? false,
+    userId: selectedUser.userId,
     username: selectedUser.username ?? '',
+    editPassword: editPassword,
   };
 }
 
@@ -135,7 +142,7 @@ export function validateAdminUserSubmission(
     return 'Username already exists, please choose another';
   }
 
-  if (selectedUser.userId <= 0 && !values.password) {
+  if (values.editPassword && !values.password) {
     return 'Password cannot be blank';
   }
 
@@ -165,7 +172,7 @@ export function buildUserUpdatePayload(selectedUser: User, values: AdminUserForm
     username: values.username ?? '',
   };
 
-  if (selectedUser.userId <= 0) {
+  if (values.editPassword) {
     userToUpdate.password = values.password;
   }
 

@@ -51,8 +51,19 @@ describe('adminUserEdit helpers', () => {
       requireResetPassword: true,
       sendEmailReset: false,
       sendTextReset: false,
+      userId: 7,
       username: 'jane@example.com',
+      editPassword: false,
     });
+  });
+
+  it('marks form values as password-editable when requested', () => {
+    expect(getAdminUserFormValues(buildUser(), true)).toEqual(
+      expect.objectContaining({
+        editPassword: true,
+        userId: 7,
+      }),
+    );
   });
 
   it('updates seller assignments using the selected seller details', () => {
@@ -108,6 +119,7 @@ describe('adminUserEdit helpers', () => {
         sendEmailReset: false,
         sendTextReset: false,
         username: 'jane@example.com',
+        editPassword: false,
       }),
     ).toBe('Username already exists, please choose another');
 
@@ -139,6 +151,7 @@ describe('adminUserEdit helpers', () => {
       sendEmailReset: true,
       sendTextReset: true,
       username: 'janet@example.com',
+      editPassword: true,
     });
 
     expect(payload).toEqual(
@@ -154,5 +167,33 @@ describe('adminUserEdit helpers', () => {
         username: 'janet@example.com',
       }),
     );
+  });
+
+  it('does not require or submit a password unless password editing is enabled', () => {
+    const selectedUser = buildUser({ userId: 7 });
+    const values = {
+      disableCheckIn: false,
+      firstName: 'Jane',
+      isActive: true,
+      lastName: 'Doe',
+      mobile: '',
+      notes: '',
+      password: undefined,
+      requireResetPassword: true,
+      sendEmailReset: false,
+      sendTextReset: false,
+      username: 'jane@example.com',
+      editPassword: false,
+    };
+
+    expect(validateAdminUserSubmission(selectedUser, [selectedUser], values)).toBeUndefined();
+    expect(buildUserUpdatePayload(selectedUser, values)).not.toHaveProperty('password');
+
+    expect(
+      validateAdminUserSubmission(selectedUser, [selectedUser], {
+        ...values,
+        editPassword: true,
+      }),
+    ).toBe('Password cannot be blank');
   });
 });
