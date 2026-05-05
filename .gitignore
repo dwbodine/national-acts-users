@@ -53,7 +53,7 @@ coverage/
 # Environment Variables
 # -------------------------------------------------------
 .env
-.env.*
+.env.development
 !.env.example  # Keep example env files
 
 
