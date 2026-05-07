@@ -334,7 +334,9 @@ export default function EventDetail(props: EditProps) {
       fOrders = visibleOrders.filter(
         (order) =>
           order.purchaserFirstName.toLowerCase().includes(srch) ||
-          order.purchaserLastName.toLowerCase().includes(srch),
+          order.purchaserLastName.toLowerCase().includes(srch) ||
+          order.orderId.toString().includes(srch) ||
+          order.email.toLowerCase().includes(srch),
       );
     }
     return fOrders;
