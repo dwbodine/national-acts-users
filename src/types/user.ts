@@ -353,6 +353,7 @@ export type AdminSelection = {
   reloadRoles?: boolean;
   reloadEvents?: boolean;
   reloadPages?: boolean;
+  reloadPageSellers?: boolean;
   reloadTours?: boolean;
   reloadVenues?: boolean;
   reloadSellers?: boolean;
@@ -372,6 +373,7 @@ export type AdminSelection = {
   mustSavePage?: boolean;
   selectedFaqCategory?: number | undefined;
   countries: Country[] | undefined;
+  pageSellerTypes?: PageType[] | undefined;
   pageTypes?: PageType[] | undefined;
   roles?: Role[] | undefined;
   users?: User[] | undefined;

@@ -71,6 +71,7 @@ export const adminSelectionSlice = createSlice({
       state.selectedTour = undefined;
       state.selectedVenue = undefined;
       state.pageTypes = undefined;
+      state.pageSellerTypes = undefined;
       state.roles = undefined;
       state.users = undefined;
       state.mustSaveEvent = false;
@@ -81,6 +82,7 @@ export const adminSelectionSlice = createSlice({
       state.reloadSettings = true;
       state.uploadedFile = undefined;
       state.reloadSellers = true;
+      state.reloadPageSellers = true;
       state.venueSearchTerm = undefined;
       return state;
     },
@@ -143,6 +145,10 @@ export const adminSelectionSlice = createSlice({
       state.mustSavePage = action.payload;
       return state;
     },
+    setPageSellerTypes: (state, action: PayloadAction<PageType[]>) => {
+      state.pageSellerTypes = action.payload;
+      return state;
+    },
     setPageTypes: (state, action: PayloadAction<PageType[]>) => {
       state.pageTypes = action.payload;
       return state;
@@ -167,6 +173,10 @@ export const adminSelectionSlice = createSlice({
       if (state.reloadPages) {
         state.selectedPage = undefined;
       }
+      return state;
+    },
+    setReloadSellerPages: (state, action: PayloadAction<boolean>) => {
+      state.reloadPageSellers = action.payload;
       return state;
     },
     setReloadRoles: (state, action: PayloadAction<boolean>) => {
@@ -282,11 +292,13 @@ export const {
   setReloadVenues,
   setAdminVenue,
   setAdminSeller,
+  setReloadSellerPages,
   setReloadSellers,
   setTicketSocketAccounts,
   setReloadPages,
   setSelectedPage,
   setSelectedPageType,
+  setPageSellerTypes,
   setPageTypes,
   setCountries,
   setSelectedFaqCategory,

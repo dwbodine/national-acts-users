@@ -14,7 +14,11 @@ import { useUpdatePageOrder } from '@/hooks/admin/useUpdatePageOrder';
 import { useGetPagesByType } from '@/hooks/common/useGetPagesByType';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import { setAllPages, setPageOrders } from '@/lib/adminDataSelectionSlice';
-import { setPageTypes, setReloadPages, setSelectedPageType } from '@/lib/adminSelectionSlice';
+import {
+  setPageSellerTypes,
+  setReloadSellerPages,
+  setSelectedPageType,
+} from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Page } from '@/types/public';
@@ -126,12 +130,12 @@ export default function AdminPageOrderIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.pageTypes === undefined) {
+      if (currentAdminSelection.pageSellerTypes === undefined) {
         setTableLoading(true);
         dispatch(setIsLoading(true));
         void getPageTypes(true).then((response: GetPageTypesResponse) => {
           if (!response.error && response.pageTypes) {
-            dispatch(setPageTypes(response.pageTypes));
+            dispatch(setPageSellerTypes(response.pageTypes));
             const artistPageType = response.pageTypes.find(
               (x) => x.pageTypeId === ARTIST_SELLER_TYPE,
             );
@@ -141,10 +145,10 @@ export default function AdminPageOrderIndex() {
           }
         });
       } else if (
-        currentAdminSelection.reloadPages &&
+        currentAdminSelection.reloadPageSellers &&
         currentAdminSelection.selectedPageType !== undefined
       ) {
-        dispatch(setReloadPages(false));
+        dispatch(setReloadSellerPages(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
         void getPagesByType(currentAdminSelection.selectedPageType.pageTypeId).then(
@@ -172,9 +176,9 @@ export default function AdminPageOrderIndex() {
     };
   }, [
     dispatch,
-    currentAdminSelection.reloadPages,
     currentAdminSelection.selectedPageType,
-    currentAdminSelection.pageTypes,
+    currentAdminSelection.pageSellerTypes,
+    currentAdminSelection.reloadPageSellers,
     tableLoading,
     getPageTypes,
     getPagesByType,
@@ -182,10 +186,12 @@ export default function AdminPageOrderIndex() {
   ]);
 
   const onPageTypeChange = (pageTypeId: number | null) => {
-    const pageType = currentAdminSelection?.pageTypes?.find((x) => x.pageTypeId === pageTypeId);
+    const pageType = currentAdminSelection?.pageSellerTypes?.find(
+      (x) => x.pageTypeId === pageTypeId,
+    );
     if (pageType) {
       dispatch(setSelectedPageType(pageType));
-      dispatch(setReloadPages(true));
+      dispatch(setReloadSellerPages(true));
       dispatch(setAllPages(undefined));
     }
   };
@@ -238,7 +244,7 @@ export default function AdminPageOrderIndex() {
     dispatch(setIsLoading(true));
     void updatePageOrder(pages).then((response: ModifyPageResponse) => {
       if (response.success) {
-        dispatch(setReloadPages(true));
+        dispatch(setReloadSellerPages(true));
         dispatch(setAllPages(undefined));
         toast.success('Page order save succeeded');
       } else if (response.error) {
@@ -254,8 +260,8 @@ export default function AdminPageOrderIndex() {
   const pageTypeName = currentAdminSelection?.selectedPageType?.pageTypeName;
   const pageTypeId = currentAdminSelection?.selectedPageType?.pageTypeId ?? 0;
 
-  const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageTypes
-    ? currentAdminSelection.pageTypes.map((pageType) => ({
+  const pageTypeList: ItemDataType<number>[] = currentAdminSelection?.pageSellerTypes
+    ? currentAdminSelection.pageSellerTypes.map((pageType) => ({
         label: `${pageType.pageTypeName}`,
         value: pageType.pageTypeId,
       }))
