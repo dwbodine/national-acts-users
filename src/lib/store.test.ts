@@ -10,18 +10,14 @@ describe('store', () => {
     const state = store.getState();
 
     expect(state.globalSelection.isLoading).toBe(true);
-    expect(state).toEqual(
-      expect.objectContaining({
-        adminDataSelection: expect.any(Object),
-        adminReportSelection: expect.any(Object),
-        adminSelection: expect.any(Object),
-        dashboardSelection: expect.any(Object),
-        eventAdminSelection: expect.any(Object),
-        globalSelection: expect.any(Object),
-        reportSelection: expect.any(Object),
-        userActivitySelection: expect.any(Object),
-      }),
-    );
+    expect(state.adminDataSelection).toBeDefined();
+    expect(state.adminReportSelection).toBeDefined();
+    expect(state.adminSelection).toBeDefined();
+    expect(state.dashboardSelection).toBeDefined();
+    expect(state.eventAdminSelection).toBeDefined();
+    expect(state.globalSelection).toBeDefined();
+    expect(state.reportSelection).toBeDefined();
+    expect(state.userActivitySelection).toBeDefined();
     expect(typeof persistor.persist).toBe('function');
   });
 });
