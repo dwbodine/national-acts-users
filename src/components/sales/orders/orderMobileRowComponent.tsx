@@ -1,0 +1,231 @@
+'use client';
+
+import moment from 'moment';
+import { ReactElement } from 'react';
+import { Col, Container, Row } from 'rsuite';
+
+import { OrderRowProps } from '@/types/props';
+import { getOrderStatusText, getPacificMoment } from '@/utils/eventUtils';
+
+import AttendeeRow from './attendeeRowComponent';
+
+export default function OrderMobileRow(props: OrderRowProps) {
+  const ticketTypes = props.TicketTypes;
+  const order = props.Order;
+  const hasPhoneData = props.HasPhoneData;
+  const hasNonUsaOrders = props.HasNonUsaOrders;
+  const hasShirtData = (order?.totalShirts ?? 0) > 0;
+  const hideRev = props.HideRevenue;
+  const hideServiceFees = props.HideServiceFees;
+  const canCheckInTickets = props.CanCheckInTickets;
+  const showOnlyEmails = props.ShowOnlyEmails;
+  const showOnlyPhones = props.ShowOnlyPhones;
+  const isAdmin = props.IsAdmin;
+
+  let statusClass = '';
+  if (order?.isDeleted) {
+    statusClass += 'deleted';
+  } else if (!order?.isActive) {
+    statusClass += 'inactive';
+  } else if (order?.hasRefunds) {
+    statusClass += 'refunded';
+  }
+
+  const orderStatus = getOrderStatusText(order);
+  const orderId = order?.orderId;
+
+  const id = `order_${order?.ticketSocketOrderId}`;
+  const currencySymbol = order?.currencySymbol ?? '$';
+
+  const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
+  let purchaseDate: string = 'n/a';
+  if (order?.purchaseUnixTimestamp) {
+    const purchaseDateUtc = moment.unix(order.purchaseUnixTimestamp).utc();
+    const purchaseDateLocal = getPacificMoment(purchaseDateUtc);
+    purchaseDate = `${purchaseDateLocal.format('MM/DD/YYYY h:mm A zz')}`;
+  } else if (order?.purchaseTimestamp) {
+    purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
+  }
+  const revenue = Number((order?.revenue ?? 0) - (order?.revenueRefunded ?? 0));
+  const revenueUsd = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0));
+  const serviceFees = Number((order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0));
+  const serviceFeesUsd = Number(
+    (order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0),
+  );
+
+  const ticketTypeRows: ReactElement[] = [];
+  if (order?.tickets && order.tickets.length > 0) {
+    const ticketMap = new Map<string, number>();
+    order.tickets?.forEach((ticket) => {
+      let ticketTypeName = ticket.ticketType;
+      const ticketType = ticketTypes?.find((t) => t.ticketTypeId === ticket.ticketTypeId);
+      if (ticketType) {
+        ({ ticketTypeName } = ticketType);
+      }
+      const item = ticketMap.get(ticketTypeName);
+      let num: number = 1;
+      if (item && item > 0) {
+        num = item + 1;
+      }
+      ticketMap.set(ticketTypeName, num);
+    });
+    let i = 0;
+    ticketMap.forEach((tickets: number, ticketType: string) => {
+      const key = `ttr${i}`;
+      if (tickets > 0 || isAdmin) {
+        ticketTypeRows.push(
+          <div key={key}>
+            {ticketType} ({tickets.toString()})
+          </div>,
+        );
+      }
+      i += 1;
+    });
+  }
+
+  const shirtSizeRows: ReactElement[] = [];
+  if (hasShirtData) {
+    const shirtMap = new Map<string, number>();
+    order?.tickets?.forEach((ticket) => {
+      if (ticket.shirtSize) {
+        const item = shirtMap.get(ticket.shirtSize);
+        let num: number = 1;
+        if (item && item > 0) {
+          num = item + 1;
+        }
+        shirtMap.set(ticket.shirtSize, num);
+      }
+    });
+    let i = 0;
+    shirtMap.forEach((numShirts: number, shirtSize: string) => {
+      const key = `sm${i}`;
+      shirtSizeRows.push(
+        <div key={key}>
+          {shirtSize} ({numShirts.toString()})
+        </div>,
+      );
+      i += 1;
+    });
+  }
+
+  const attendeeNameRows: ReactElement[] = [];
+  if (order?.tickets && order.tickets.length > 0) {
+    let i = 0;
+    const sortedTickets = [...order.tickets].sort((a, b) => {
+      const lastNameCompare = (a.attendeeLastName ?? '').localeCompare(b.attendeeLastName ?? '');
+      if (lastNameCompare !== 0) {
+        return lastNameCompare;
+      }
+      return (a.attendeeFirstName ?? '').localeCompare(b.attendeeFirstName ?? '');
+    });
+    sortedTickets.forEach((ticket) => {
+      const key = `anr${i}`;
+      attendeeNameRows.push(
+        <AttendeeRow key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />,
+      );
+      i += 1;
+    });
+  }
+
+  const phone = order?.phone?.startsWith('+1 ') ? order.phone.replace('+1 ', '') : order?.phone;
+
+  const revClass = hideRev ? 'no-print' : '';
+
+  return (
+    <tr className={`mobile-event-card-container ${statusClass}`}>
+      <td>
+        <Container className="mobile-event-card" id={id}>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
+            <Col xs={10} className="mobile-bold">
+              Purchaser Name:
+            </Col>
+            <Col className="mobile-data">{purchaserName}</Col>
+          </Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
+            <Col xs={10} className="mobile-bold">
+              Attendee Names:
+            </Col>
+            <Col className="mobile-data">{attendeeNameRows}</Col>
+          </Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones} className="no-print">
+            <Col xs={10} className="mobile-bold">
+              Purchase Date:
+            </Col>
+            <Col className="mobile-data">{purchaseDate}</Col>
+          </Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
+            <Col xs={10} className="mobile-bold">
+              Order Id:
+            </Col>
+            <Col className="mobile-data">{orderId}</Col>
+          </Row>
+          <Row hidden={showOnlyEmails || showOnlyPhones}>
+            <Col xs={10} className="mobile-bold">
+              Order Status:
+            </Col>
+            <Col className="mobile-data">{orderStatus}</Col>
+          </Row>
+          <Row hidden={ticketTypeRows.length === 0 || showOnlyEmails || showOnlyPhones}>
+            <Col xs={10} className="mobile-bold">
+              Ticket breakdown:
+            </Col>
+            <Col className="mobile-data">{ticketTypeRows}</Col>
+          </Row>
+          <Row
+            hidden={!isAdmin || !hasNonUsaOrders || hideRev || showOnlyEmails || showOnlyPhones}
+            className={revClass}
+          >
+            <Col xs={10} className="mobile-bold">
+              Revenue:
+            </Col>
+            <Col className="mobile-data">{`${currencySymbol}${revenue.toFixed(2)}`}</Col>
+          </Row>
+          <Row hidden={hideRev || showOnlyEmails || showOnlyPhones} className={revClass}>
+            <Col xs={10} className="mobile-bold">
+              Revenue<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>:
+            </Col>
+            <Col className="mobile-data">${revenueUsd.toFixed(2)}</Col>
+          </Row>
+          <Row
+            hidden={
+              !isAdmin || !hasNonUsaOrders || hideServiceFees || showOnlyEmails || showOnlyPhones
+            }
+            className="no-print"
+          >
+            <Col xs={10} className="mobile-bold">
+              Service Fees:
+            </Col>
+            <Col className="mobile-data">{`${currencySymbol}${serviceFees.toFixed(2)}`}</Col>
+          </Row>
+          <Row
+            hidden={!isAdmin || hideServiceFees || showOnlyEmails || showOnlyPhones}
+            className="no-print"
+          >
+            <Col xs={10} className="mobile-bold">
+              Service Fees<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>:
+            </Col>
+            <Col className="mobile-data">${serviceFeesUsd.toFixed(2)}</Col>
+          </Row>
+          <Row hidden={showOnlyPhones}>
+            <Col xs={10} className="mobile-bold">
+              Email:
+            </Col>
+            <Col className="mobile-data">{order?.email}</Col>
+          </Row>
+          <Row hidden={!hasPhoneData || showOnlyEmails}>
+            <Col xs={10} className="mobile-bold">
+              Phone:
+            </Col>
+            <Col className="mobile-data">{phone}</Col>
+          </Row>
+          <Row hidden={!hasShirtData || showOnlyEmails || showOnlyPhones}>
+            <Col xs={10} className="mobile-bold">
+              Shirts:
+            </Col>
+            <Col className="mobile-data">{shirtSizeRows}</Col>
+          </Row>
+        </Container>
+      </td>
+    </tr>
+  );
+}

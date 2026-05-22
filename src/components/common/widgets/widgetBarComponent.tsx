@@ -1,0 +1,94 @@
+'use client';
+
+import { Col, Row } from 'rsuite';
+
+import { WidgetBarProps } from '@/types/props';
+
+import RevenueWidget from './revenueWidgetComponent';
+import ShirtSizesWidget from './shirtSizesWidgetComponent';
+import ShowsListedWidget from './showsListedWidgetComponent';
+import TicketTypesWidget from './ticketTypesWidgetComponent';
+
+export default function WidgetBar(props: WidgetBarProps) {
+  const totalShows = props.TotalShows;
+  const totalTickets = props.TotalTickets;
+  const totalRevenue = props.TotalRevenue;
+  const netRevenue = props.TotalNetRevenue;
+  const totalShirts = props.TotalShirts;
+  const ticketData = props.TicketData;
+  const shirtData = props.ShirtData;
+  const hideRevItem = props.HideRevenue;
+  const hideServiceFees = props.HideServiceFees;
+  const ticketsRefunded = props.TicketsRefunded;
+  const totalServiceFees = props.TotalServiceFees;
+  const hideTicketBreakdown = props.HideTicketBreakDown;
+  const isAdmin = props.IsAdmin;
+  const hideSellerRate = props.HideSellerRate;
+
+  const hideTickets = !ticketData || totalTickets === 0;
+  const hideShirts = !shirtData || totalShirts === 0;
+
+  return (
+    <Row className="no-print widget-row" hidden={!totalShows}>
+      <Col xxl={6} xl={6} lg={6} md={12} sm={12} xs={24} className="widget-stat-block-container">
+        <div className="widget-stat-block">
+          <ShowsListedWidget TotalShows={totalShows} />
+        </div>
+      </Col>
+      <Col
+        xxl={6}
+        xl={6}
+        lg={6}
+        md={12}
+        sm={12}
+        xs={24}
+        hidden={hideTickets}
+        className="widget-stat-block-container"
+      >
+        <div className="widget-stat-block">
+          <TicketTypesWidget
+            TicketData={ticketData}
+            TotalTickets={totalTickets}
+            TicketsRefunded={ticketsRefunded}
+            HideTicketBreakDown={hideTicketBreakdown}
+            IsAdmin={isAdmin}
+          />
+        </div>
+      </Col>
+      <Col
+        xxl={6}
+        xl={6}
+        lg={6}
+        md={12}
+        sm={12}
+        xs={24}
+        hidden={hideShirts}
+        className="widget-stat-block-container"
+      >
+        <div className="widget-stat-block">
+          <ShirtSizesWidget ShirtData={shirtData} TotalShirts={totalShirts} />
+        </div>
+      </Col>
+      <Col
+        xxl={6}
+        xl={6}
+        lg={6}
+        md={12}
+        sm={12}
+        xs={24}
+        hidden={hideRevItem}
+        className="widget-stat-block-container"
+      >
+        <div className="widget-stat-block">
+          <RevenueWidget
+            TotalRevenue={totalRevenue}
+            NetRevenue={netRevenue}
+            TotalServiceFees={totalServiceFees}
+            HideServiceFees={hideServiceFees}
+            HideSellerRate={hideSellerRate}
+          />
+        </div>
+      </Col>
+    </Row>
+  );
+}

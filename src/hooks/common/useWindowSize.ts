@@ -1,0 +1,61 @@
+import { useEffect, useState } from 'react';
+
+import { MOBILE_WIDTH_BREAKPOINT } from '@/constants';
+import { WindowSize } from '@/types/windowSize';
+
+export const useWindowSize = (): WindowSize => {
+  const [windowSize, setWindowSize] = useState<WindowSize>({
+    angle: 0,
+    height: 0,
+    isMobile: false,
+    orientation: undefined,
+    width: 0,
+  });
+
+  const windowSizeJson = JSON.stringify(windowSize);
+
+  useEffect(() => {
+    const windowSizeHandler = () => {
+      if (!window || !window.screen || !window.screen.orientation) {
+        return;
+      }
+      const currentOrientation = window.screen.orientation.type.toString();
+      const isLandscape = currentOrientation?.toLowerCase().includes('landscape');
+      const currentAngle = Math.abs(window.screen.orientation.angle);
+      let windowWidth = window.outerWidth;
+      let windowHeight = window.outerHeight;
+      if (isLandscape && currentAngle > 0) {
+        if (windowHeight >= windowWidth) {
+          const temp = windowWidth;
+          windowWidth = windowHeight;
+          windowHeight = temp;
+        }
+      } else if (!isLandscape && currentAngle === 0) {
+        if (windowWidth >= windowHeight) {
+          const temp = windowWidth;
+          windowWidth = windowHeight;
+          windowHeight = temp;
+        }
+      }
+      const isMobileWidth: boolean = windowWidth < MOBILE_WIDTH_BREAKPOINT;
+      setWindowSize({
+        angle: currentAngle,
+        height: windowHeight,
+        isMobile: isMobileWidth,
+        orientation: currentOrientation,
+        width: windowWidth,
+      });
+    };
+    screen.orientation.addEventListener('change', windowSizeHandler);
+    window.addEventListener('resize', windowSizeHandler);
+    if (!windowSize.orientation || windowSize.width === 0) {
+      windowSizeHandler();
+    }
+    return () => {
+      window.removeEventListener('resize', windowSizeHandler);
+      screen.orientation.removeEventListener('change', windowSizeHandler);
+    };
+  }, [windowSize, windowSizeJson]);
+
+  return windowSize;
+};

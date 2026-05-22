@@ -1,0 +1,28 @@
+@use 'variables' as v;
+
+.header {
+  display: flex;
+  width: 100%;
+  cursor: pointer;
+  z-index: 1;
+  align-items: flex-end;
+}
+
+.avatar {
+  display: flex;
+  margin: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: v.$avatar-background-color;
+  color: v.$avatar-foreground-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .header {
+    display: none;
+  }
+}

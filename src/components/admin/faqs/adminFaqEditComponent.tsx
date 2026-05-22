@@ -1,0 +1,229 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Col, Input, Row, SelectPicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
+import Textarea from '@/components/common/Textarea';
+import { useGetAllFaqCategories } from '@/hooks/admin/useGetAllFaqCategories';
+import { useUpdateFaq } from '@/hooks/admin/useUpdateFaq';
+import { setAllFaqCategories, setAllFaqs } from '@/lib/adminDataSelectionSlice';
+import { setMustSavePage, setReloadFaqs, setSelectedFaq } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { Faq } from '@/types/public';
+import { GetFaqCategoriesResponse, ModifyFaqResponse } from '@/types/responses';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+
+export default function AdminFaqEdit() {
+  const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
+  const dispatch = useDispatch();
+  const { updateFaq } = useUpdateFaq();
+  const { getAllFaqCategories } = useGetAllFaqCategories();
+  const router = useRouter();
+
+  const goBack = useCallback(() => {
+    toast.dismiss();
+    router.push('/admin/faqs');
+  }, [router]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (currentAdminDataSelection.faqCategories === undefined) {
+        dispatch(setIsLoading(true));
+        void getAllFaqCategories().then((response: GetFaqCategoriesResponse) => {
+          dispatch(setAllFaqCategories(response.categories));
+        });
+        dispatch(setIsLoading(false));
+      } else if (
+        currentAdminDataSelection.allFaqs === undefined ||
+        currentAdminSelection.selectedFaq === undefined
+      ) {
+        goBack();
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [currentAdminSelection, dispatch, getAllFaqCategories, goBack]);
+
+  const confirmGoBack = () => {
+    if (!currentAdminSelection?.mustSavePage) {
+      goBack();
+      return;
+    }
+
+    const message: string =
+      'You have made changes to this faq, are you sure you want to discard them and leave?';
+    toast.warning(
+      <ConfirmationDialog
+        Message={message}
+        ConfirmText="Yes"
+        CancelText="No"
+        OnConfirm={goBack}
+        OnCancel={() => {
+          toast.dismiss();
+        }}
+      />,
+      {
+        autoClose: false,
+        closeOnClick: false,
+        position: 'top-center',
+      },
+    );
+  };
+
+  const markDirty = () => {
+    dispatch(setMustSavePage(true));
+  };
+
+  const setFaqCategory = (categoryId: number | null) => {
+    if (!currentAdminSelection.selectedFaq?.category || !categoryId) {
+      return;
+    }
+    const faqToUpdate: Faq = { ...currentAdminSelection.selectedFaq };
+    if (faqToUpdate.category.categoryId !== categoryId) {
+      faqToUpdate.category = { categoryId };
+      dispatch(setSelectedFaq(faqToUpdate));
+      markDirty();
+    }
+  };
+
+  const setQuestion = (question: string) => {
+    if (!currentAdminSelection.selectedFaq || !question) {
+      return;
+    }
+    const faqToUpdate: Faq = { ...currentAdminSelection.selectedFaq };
+    if (faqToUpdate.question !== question) {
+      faqToUpdate.question = question;
+      dispatch(setSelectedFaq(faqToUpdate));
+      markDirty();
+    }
+  };
+
+  const setAnswer = (answer: string) => {
+    if (!currentAdminSelection.selectedFaq || !answer) {
+      return;
+    }
+    const faqToUpdate: Faq = { ...currentAdminSelection.selectedFaq };
+    if (faqToUpdate.answer !== answer) {
+      faqToUpdate.answer = answer;
+      dispatch(setSelectedFaq(faqToUpdate));
+      markDirty();
+    }
+  };
+
+  const onSubmit = () => {
+    if (!currentAdminSelection.selectedFaq) {
+      return;
+    }
+
+    const faqToUpdate: Faq = {
+      ...currentAdminSelection.selectedFaq,
+    };
+
+    if (!faqToUpdate.category || !faqToUpdate.category.categoryId) {
+      toast.error('Must select a category');
+      return;
+    }
+
+    if (!faqToUpdate.question) {
+      toast.error('Question cannot be blank');
+      return;
+    }
+
+    if (!faqToUpdate.answer) {
+      toast.error('Answer cannot be blank');
+      return;
+    }
+
+    dispatch(setIsLoading(true));
+
+    void updateFaq(faqToUpdate).then((response: ModifyFaqResponse) => {
+      if (response.success) {
+        dispatch(setReloadFaqs(true));
+        dispatch(setAllFaqs(undefined));
+        toast.success('Save FAQ succeeded');
+        router.push('/admin/faqs');
+      } else {
+        toast.error(response.error ?? 'Error occurred while saving FAQ');
+      }
+      dispatch(setIsLoading(false));
+    });
+  };
+
+  const faqCategories: ItemDataType<number>[] = currentAdminDataSelection?.faqCategories
+    ? currentAdminDataSelection.faqCategories.map((category) => ({
+        label: `${category.categoryName ?? ''}`,
+        value: category.categoryId,
+      }))
+    : [];
+
+  const pageHeader = (currentAdminSelection.selectedFaq?.faqId ?? 0) > 0 ? 'Edit FAQ' : 'Add FAQ';
+
+  const categoryId = currentAdminSelection.selectedFaq?.category?.categoryId ?? 0;
+  const question = currentAdminSelection.selectedFaq?.question;
+  const answer = currentAdminSelection.selectedFaq?.answer;
+
+  return (
+    <>
+      <PageHeader pageTitle={pageHeader} />
+      <Row className="admin-container">
+        <Col xs={24}>
+          <Row>
+            <Col xs={24} md={12}>
+              <span>Category</span>
+              <br />
+              <SelectPicker
+                block
+                value={categoryId}
+                data={faqCategories}
+                size="lg"
+                onChange={(cId) => setFaqCategory(cId)}
+                cleanable={false}
+                menuAutoWidth={true}
+                searchable={false}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>Question</span>
+              <Input
+                value={question ?? ''}
+                onChange={setQuestion}
+                className="form-control-half"
+                placeholder="FAQ question"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <span>HTML Text</span>
+              <Textarea
+                className="form-control-half"
+                rows={3}
+                id="answer"
+                onChange={setAnswer}
+                value={answer ?? ''}
+                placeholder="Free-form html text to be used as answer"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={24}>
+              <Button onClick={onSubmit}>Submit</Button>{' '}
+              <Button onClick={confirmGoBack}>Back</Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </>
+  );
+}

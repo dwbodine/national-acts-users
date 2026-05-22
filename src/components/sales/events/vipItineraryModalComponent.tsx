@@ -1,0 +1,253 @@
+'use client';
+
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Button, Col, Container, Modal, Radio, RadioGroup, Row } from 'rsuite';
+import { ValueType } from 'rsuite/esm/Radio';
+
+import { useGetEvents } from '@/hooks/event/useGetEvents';
+import { RootState } from '@/lib/store';
+import { VipEvent } from '@/types/event';
+import { VIPModalProps } from '@/types/props';
+import { GetEventsResponse } from '@/types/responses';
+import { UserReportSelection } from '@/types/user';
+import { downloadCsvFile } from '@/utils/downloadFile';
+import { exportVipItineraryToCSV, exportVipItineraryToHtml } from '@/utils/exportVipItinerary';
+import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReportSelection';
+
+import ReportDatePicker from '../../common/reportDatePickerControl';
+
+export default function VIPItineraryModal(props: VIPModalProps) {
+  const isOpen = props.IsOpen ?? false;
+  const isAdmin = props.IsAdmin ?? false;
+  const sellerHomePage: string = props.SellerHomePage ?? '';
+  const currentEvents: VipEvent[] = props.Events ?? [];
+  const onClose = props.OnClose;
+  const [dateRangeValue, setDateRangeValue] = useState('0');
+  const [formatValue, setFormatValue] = useState('0');
+  const [isReportLoading, setIsReportLoading] = useState(false);
+  const [startCurrentUnix, setStartCurrentUnix] = useState(0);
+  const [startEventUnix, setStartEventUnix] = useState(0);
+  const [endUnix, setEndUnix] = useState(0);
+  const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
+  const { getEvents } = useGetEvents();
+
+  const currentSellerName = currentReportSelection?.seller?.sellerName;
+  const lastEvent = currentEvents[currentEvents.length - 1];
+  const startEventDateStr =
+    currentEvents.length > 0 && currentEvents[0] ? currentEvents[0].eventDate : '';
+  const endEventDateStr = currentEvents.length > 0 && lastEvent ? lastEvent.eventDate : '';
+  const nowUnix = moment().unix();
+  const firstEvent = currentEvents.find((x) => moment(x.eventDate).unix() >= nowUnix);
+
+  useEffect(() => {
+    if (startEventDateStr && endEventDateStr) {
+      const seUnix = moment(startEventDateStr).unix();
+      const enUnix = moment(endEventDateStr).unix();
+      if (nowUnix > enUnix) {
+        setDateRangeValue('1');
+      }
+      if (startEventUnix === 0) {
+        setStartEventUnix(seUnix);
+      }
+      if (startCurrentUnix === 0) {
+        if (seUnix > nowUnix) {
+          setStartCurrentUnix(seUnix);
+        } else if (firstEvent) {
+          setStartCurrentUnix(moment(firstEvent.eventDate).unix());
+        } else {
+          setStartCurrentUnix(nowUnix);
+        }
+      }
+      if (endUnix === 0) {
+        setEndUnix(enUnix);
+      }
+    } else {
+      setStartCurrentUnix(0);
+      setStartEventUnix(0);
+      setEndUnix(0);
+    }
+  }, [
+    endEventDateStr,
+    endUnix,
+    startCurrentUnix,
+    startEventDateStr,
+    startEventUnix,
+    firstEvent,
+    nowUnix,
+  ]);
+
+  const submitPdfToNewWindow = (htmlText: string) => {
+    localStorage.setItem('htmlText', htmlText);
+    window.open('/pdf');
+  };
+
+  const getVipItinerary = () => {
+    if (currentEvents.length === 0) {
+      toast.warn('No events to export');
+      return;
+    }
+    if (
+      (dateRangeValue === '0' && (startCurrentUnix === 0 || endUnix === 0)) ||
+      (dateRangeValue === '1' && (startEventUnix === 0 || endUnix === 0))
+    ) {
+      toast.warn('No dates supplied');
+      return;
+    }
+    if (
+      (dateRangeValue === '0' && startCurrentUnix > endUnix) ||
+      (dateRangeValue === '1' && startEventUnix > endUnix)
+    ) {
+      toast.warn('Start date cannot be later than end date');
+      return;
+    }
+
+    setIsReportLoading(true);
+
+    const start = dateRangeValue === '1' ? startEventUnix : startCurrentUnix;
+    const end = endUnix;
+
+    const reportSelection: UserReportSelection = {
+      ...currentReportSelection,
+      start: start,
+      end: end,
+      reloadEvents: true,
+    };
+
+    void getEvents(reportSelection, false).then((response: GetEventsResponse) => {
+      if (response.events && !response.error) {
+        const eventsToExport = response.events;
+        if (response.events.length === 0) {
+          toast.warn('No events found for selected date range');
+          setIsReportLoading(false);
+          return;
+        }
+        if (formatValue === '1') {
+          void exportVipItineraryToCSV(eventsToExport, isAdmin).then((csvData: string) => {
+            const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
+            downloadCsvFile(fileName, csvData);
+            setIsReportLoading(false);
+            if (onClose) {
+              onClose();
+            }
+          });
+        } else {
+          const title = `${currentSellerName} Event Itinerary`;
+          localStorage.setItem('pdfTitle', title);
+          void exportVipItineraryToHtml(eventsToExport, title, sellerHomePage, isAdmin).then(
+            (htmlString: string) => {
+              setIsReportLoading(false);
+              submitPdfToNewWindow(htmlString);
+              if (onClose) {
+                onClose();
+              }
+            },
+          );
+        }
+      } else {
+        const err = response.error
+          ? `Error: ${response.error}`
+          : 'Error occured while fetching events for itinerary';
+        toast.error(err);
+        setIsReportLoading(false);
+      }
+    });
+  };
+
+  const onDateRangeSelect = (value: ValueType) => {
+    const drVal = value ? value.toString() : '0';
+    setDateRangeValue(drVal);
+    setStartCurrentUnix(0);
+    setStartEventUnix(0);
+    setEndUnix(0);
+  };
+
+  const onStartClear = () => {
+    setStartCurrentUnix(0);
+    setStartEventUnix(0);
+  };
+
+  const onEndClear = () => {
+    setEndUnix(0);
+  };
+
+  const onDateRangeChange = (start?: number, end?: number) => {
+    setStartEventUnix(start ?? 0);
+    setEndUnix(end ?? 0);
+  };
+
+  const onFormatSelect = (value: ValueType) => {
+    const fmVal = value ? value.toString() : '0';
+    setFormatValue(fmVal);
+  };
+
+  let reportTitle = 'Export Event Itinerary';
+  if (currentSellerName) {
+    reportTitle = `${reportTitle} for ${currentSellerName}`;
+  }
+
+  const currentRangeLabel = `(${moment.unix(startCurrentUnix).format('MM/DD/YYYY')} - ${moment(endEventDateStr).format('MM/DD/YYYY')})`;
+
+  return (
+    <Modal open={isOpen} onClose={props.OnClose} size={'lg'}>
+      <Modal.Header>
+        <Modal.Title>{reportTitle}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Container className="fluid">
+          <Row>
+            <Col xs={16}>
+              <label htmlFor="date-radio-group">Date Range</label>
+              <RadioGroup
+                name="date-radio-group"
+                value={dateRangeValue}
+                onChange={onDateRangeSelect}
+                disabled={isReportLoading}
+              >
+                <Radio value="0" hidden={nowUnix > endUnix}>
+                  Upcoming dates only {currentRangeLabel}
+                </Radio>
+                <Radio value="1">
+                  Selected date range
+                  <div className="itinerary-dates">
+                    <ReportDatePicker
+                      Disabled={dateRangeValue !== '1' || isReportLoading}
+                      LabelColumnWidth={3}
+                      Start={startEventUnix}
+                      End={endUnix}
+                      OnChange={onDateRangeChange}
+                      OnEndClear={onEndClear}
+                      OnStartClear={onStartClear}
+                    />
+                  </div>
+                </Radio>
+              </RadioGroup>
+            </Col>
+            <Col xs={8}>
+              <label htmlFor="format-radio-group">Export To:</label>
+              <RadioGroup
+                name="format-radio-group"
+                value={formatValue}
+                onChange={onFormatSelect}
+                disabled={isReportLoading}
+              >
+                <Radio value="0">Print / PDF</Radio>
+                <Radio value="1">CSV</Radio>
+              </RadioGroup>
+            </Col>
+          </Row>
+        </Container>
+      </Modal.Body>
+      <Modal.Footer className="modal-notes-footer">
+        <Button onClick={getVipItinerary} disabled={isReportLoading}>
+          Ok
+        </Button>
+        <Button onClick={props.OnClose} disabled={isReportLoading}>
+          Cancel
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}

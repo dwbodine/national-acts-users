@@ -1,0 +1,197 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Col, Row, SelectPicker, Table } from 'rsuite';
+
+import PageHeader from '@/components/common/PageHeaderComponent';
+import { useDeleteFaq } from '@/hooks/admin/useDeleteFaq';
+import { useGetAllFaqs } from '@/hooks/admin/useGetAllFaqs';
+import { useMoveFaqDown } from '@/hooks/admin/useMoveFaqDown';
+import { useMoveFaqUp } from '@/hooks/admin/useMoveFaqUp';
+import { setAllFaqs } from '@/lib/adminDataSelectionSlice';
+import { setReloadFaqs, setSelectedFaq, setSelectedFaqCategory } from '@/lib/adminSelectionSlice';
+import { setIsLoading } from '@/lib/globalSelectionSlice';
+import { RootState } from '@/lib/store';
+import { Faq } from '@/types/public';
+import { GetFaqsResponse } from '@/types/responses';
+
+export default function AdminFaqsIndex() {
+  const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
+  const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
+  const dispatch = useDispatch();
+  const { getAllFaqs } = useGetAllFaqs();
+  const { moveFaqUp } = useMoveFaqUp();
+  const { moveFaqDown } = useMoveFaqDown();
+  const { deleteFaq } = useDeleteFaq();
+  const { Column, HeaderCell, Cell } = Table;
+  const [tableLoading, setTableLoading] = useState(true);
+  const router = useRouter();
+  const [currentCategory, setCurrentCategory] = useState(
+    currentAdminSelection.selectedFaqCategory ?? 0,
+  );
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (currentAdminSelection.reloadFaqs) {
+        dispatch(setReloadFaqs(false));
+        setTableLoading(true);
+        dispatch(setIsLoading(true));
+        void getAllFaqs().then((response: GetFaqsResponse) => {
+          if (!response.error && response.faqs) {
+            dispatch(setAllFaqs(response.faqs));
+          }
+          dispatch(setIsLoading(false));
+          setTableLoading(false);
+        });
+      } else if (tableLoading) {
+        setTimeout(() => {
+          dispatch(setIsLoading(false));
+          setTableLoading(false);
+        }, 300);
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [getAllFaqs, dispatch, currentAdminSelection, tableLoading]);
+
+  const addFaq = () => {
+    const faq: Faq = {
+      answer: '',
+      category: {
+        categoryId: 0,
+        categoryName: '',
+      },
+      faqId: 0,
+      order: 0,
+      question: '',
+    };
+    dispatch(setSelectedFaq(faq));
+    setTableLoading(true);
+    router.push('/admin/faqs/edit');
+  };
+
+  const editFaq = (faqId: number) => {
+    if (!faqId || isNaN(faqId)) {
+      return;
+    }
+    const faq = currentAdminDataSelection.allFaqs?.find((x) => x.faqId === faqId);
+    if (faq) {
+      dispatch(setSelectedFaq(faq));
+      setTableLoading(true);
+      router.push('/admin/faqs/edit');
+    }
+  };
+
+  const moveUp = (faqId: number) => {
+    if (!faqId || isNaN(faqId)) {
+      return;
+    }
+    void moveFaqUp(faqId).then(() => {
+      dispatch(setReloadFaqs(true));
+      dispatch(setAllFaqs(undefined));
+      dispatch(setIsLoading(true));
+    });
+  };
+
+  const moveDown = (faqId: number) => {
+    if (!faqId || isNaN(faqId)) {
+      return;
+    }
+    void moveFaqDown(faqId).then(() => {
+      dispatch(setReloadFaqs(true));
+      dispatch(setAllFaqs(undefined));
+      dispatch(setIsLoading(true));
+    });
+  };
+
+  const deleteOneFaq = (faqId: number) => {
+    if (!faqId || isNaN(faqId)) {
+      return;
+    }
+    void deleteFaq(faqId).then(() => {
+      dispatch(setReloadFaqs(true));
+      dispatch(setAllFaqs(undefined));
+      dispatch(setIsLoading(true));
+    });
+  };
+
+  const updateSelectedCategory = (categoryId: number) => {
+    setCurrentCategory(categoryId);
+    dispatch(setSelectedFaqCategory(categoryId));
+  };
+
+  const filteredFaqs = currentAdminDataSelection.allFaqs?.filter(
+    (x) => x.category.categoryId == currentCategory,
+  );
+
+  return (
+    <>
+      <PageHeader pageTitle="Manage FAQs" />
+      <div className="admin-container">
+        <Row>
+          <Col xs={24}>
+            <Button onClick={addFaq}>Add FAQ</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <SelectPicker
+              data={[
+                { label: '-- Select One --', value: 0 },
+                { label: 'General', value: 1 },
+                { label: 'VIP', value: 2 },
+              ]}
+              searchable={false}
+              cleanable={false}
+              onChange={(value) => updateSelectedCategory(value ?? 0)}
+              style={{ width: '250px', margin: '15px 0' }}
+            />
+          </Col>
+        </Row>
+        <Table autoHeight data={filteredFaqs} bordered cellBordered loading={tableLoading}>
+          <Column flexGrow={1}>
+            <HeaderCell>Category</HeaderCell>
+            <Cell>
+              {(rowData: Faq) => (
+                <span>{rowData.category ? rowData.category.categoryName : ''}</span>
+              )}
+            </Cell>
+          </Column>
+          <Column flexGrow={1}>
+            <HeaderCell>Order</HeaderCell>
+            <Cell dataKey="order" />
+          </Column>
+          <Column flexGrow={3}>
+            <HeaderCell>Question</HeaderCell>
+            <Cell dataKey="question" />
+          </Column>
+          <Column flexGrow={7}>
+            <HeaderCell> </HeaderCell>
+            <Cell>
+              {(rowData: Faq) => (
+                <span>
+                  <FaArrowUp
+                    className="admin-up-down-button"
+                    onClick={() => moveUp(rowData.faqId)}
+                    title="Move Up"
+                  />
+                  <FaArrowDown
+                    className="admin-up-down-button"
+                    onClick={() => moveDown(rowData.faqId)}
+                    title="Move Down"
+                  />
+                  <Button onClick={() => editFaq(rowData.faqId)}>Edit</Button>
+                  <Button onClick={() => deleteOneFaq(rowData.faqId)}>Delete</Button>
+                </span>
+              )}
+            </Cell>
+          </Column>
+        </Table>
+      </div>
+    </>
+  );
+}

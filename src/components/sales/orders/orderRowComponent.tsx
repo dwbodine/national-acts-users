@@ -1,0 +1,167 @@
+'use client';
+
+import moment from 'moment';
+import { ReactElement } from 'react';
+
+import { OrderRowProps } from '@/types/props';
+import { getOrderStatusText, getPacificMoment } from '@/utils/eventUtils';
+
+import AttendeeRow from './attendeeRowComponent';
+
+export default function OrderRow(props: OrderRowProps) {
+  const ticketTypes = props.TicketTypes;
+  const order = props.Order;
+  const hasPhoneData = props.HasPhoneData;
+  const hasNonUsaOrders = props.HasNonUsaOrders;
+  const hasShirtData = (order?.totalShirts ?? 0) > 0;
+  const hideRev = props.HideRevenue;
+  const hideServiceFees = props.HideServiceFees;
+  const canCheckInTickets = props.CanCheckInTickets;
+  const showOnlyEmails = props.ShowOnlyEmails;
+  const showOnlyPhones = props.ShowOnlyPhones;
+  const isAdmin = props.IsAdmin ?? false;
+
+  let statusClass = '';
+  if (order?.isDeleted) {
+    statusClass += 'deleted';
+  } else if (!order?.isActive) {
+    statusClass += 'inactive';
+  } else if (order?.hasRefunds) {
+    statusClass += 'refunded';
+  }
+
+  const orderStatus = getOrderStatusText(order);
+  const orderId = order?.orderId;
+  const currencySymbol = order?.currencySymbol ?? '$';
+
+  const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;
+  let purchaseDate: string = 'n/a';
+  if (order?.purchaseUnixTimestamp) {
+    const purchaseDateUtc = moment.unix(order.purchaseUnixTimestamp).utc();
+    const purchaseDateLocal = getPacificMoment(purchaseDateUtc);
+    purchaseDate = `${purchaseDateLocal.format('MM/DD/YYYY h:mm A zz')}`;
+  } else if (order?.purchaseTimestamp) {
+    purchaseDate = moment(order.purchaseTimestamp).format('MM/DD/YYYY LT');
+  }
+  const revenue = Number((order?.revenue ?? 0) - (order?.revenueRefunded ?? 0));
+  const revenueUsd = Number((order?.revenueUsd ?? 0) - (order?.revenueRefundedUsd ?? 0));
+  const serviceFees = Number((order?.serviceFees ?? 0) - (order?.serviceFeeRevenueRefunded ?? 0));
+  const serviceFeesUsd = Number(
+    (order?.serviceFeesUsd ?? 0) - (order?.serviceFeeRevenueRefundedUsd ?? 0),
+  );
+
+  const ticketTypeRows: ReactElement[] = [];
+
+  if (order?.tickets && order.tickets.length > 0) {
+    const ticketMap = new Map<string, number>();
+    order.tickets?.forEach((ticket) => {
+      let ticketTypeName = ticket.ticketType;
+      const ticketType = ticketTypes?.find((t) => t.ticketTypeId === ticket.ticketTypeId);
+      if (ticketType) {
+        ({ ticketTypeName } = ticketType);
+      }
+      const item = ticketMap.get(ticketTypeName);
+      let num: number = 1;
+      if (item && item > 0) {
+        num = item + 1;
+      }
+      ticketMap.set(ticketTypeName, num);
+    });
+    let i = 0;
+    ticketMap.forEach((tickets: number, ticketType: string) => {
+      const key = `ttr${i}`;
+      ticketTypeRows.push(
+        <div key={key}>
+          {ticketType} ({tickets.toString()})
+        </div>,
+      );
+      i += 1;
+    });
+  }
+
+  const shirtSizeRows: ReactElement[] = [];
+  if (hasShirtData) {
+    const shirtMap = new Map<string, number>();
+    order?.tickets?.forEach((ticket) => {
+      if (ticket.shirtSize) {
+        const item = shirtMap.get(ticket.shirtSize);
+        let num: number = 1;
+        if (item && item > 0) {
+          num = item + 1;
+        }
+        shirtMap.set(ticket.shirtSize, num);
+      }
+    });
+    let i = 0;
+
+    shirtMap.forEach((numShirts: number, shirtSize: string) => {
+      const key = `sm${i}`;
+      shirtSizeRows.push(
+        <div key={key}>
+          {shirtSize} ({numShirts.toString()})
+        </div>,
+      );
+      i += 1;
+    });
+  }
+
+  const attendeeNameRows: ReactElement[] = [];
+  if (order?.tickets && order.tickets.length > 0) {
+    const sortedTickets = [...order.tickets].sort((a, b) => {
+      const lastNameCompare = (a.attendeeLastName ?? '').localeCompare(b.attendeeLastName ?? '');
+      if (lastNameCompare !== 0) {
+        return lastNameCompare;
+      }
+      return (a.attendeeFirstName ?? '').localeCompare(b.attendeeFirstName ?? '');
+    });
+    sortedTickets.forEach((ticket, i) => {
+      const key = `anr${i}`;
+      attendeeNameRows.push(
+        <AttendeeRow key={key} Ticket={ticket} CanCheckInTickets={canCheckInTickets} />,
+      );
+    });
+  }
+
+  const phone = order?.phone?.startsWith('+1 ') ? order.phone.replace('+1 ', '') : order?.phone;
+
+  const revClass = hideRev ? ' no-print' : '';
+
+  return (
+    <tr className={statusClass}>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{purchaserName}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{attendeeNameRows}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones} className="purchase-date no-print">
+        {purchaseDate}
+      </td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{orderId}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{orderStatus}</td>
+      <td hidden={showOnlyEmails || showOnlyPhones}>{order?.numTickets}</td>
+      <td
+        className={`pull-right${revClass}`}
+        hidden={!hasNonUsaOrders || hideRev || showOnlyEmails || showOnlyPhones}
+      >
+        {`${currencySymbol}${revenue.toFixed(2)}`}
+      </td>
+      <td className={`pull-right${revClass}`} hidden={hideRev || showOnlyEmails || showOnlyPhones}>
+        ${revenueUsd.toFixed(2)}
+      </td>
+      <td
+        className="pull-right no-print"
+        hidden={!isAdmin || !hasNonUsaOrders || hideServiceFees || showOnlyEmails || showOnlyPhones}
+      >
+        {`${currencySymbol}${serviceFees.toFixed(2)}`}
+      </td>
+      <td
+        className="pull-right no-print"
+        hidden={!isAdmin || hideServiceFees || showOnlyEmails || showOnlyPhones}
+      >
+        ${serviceFeesUsd.toFixed(2)}
+      </td>
+      <td hidden={showOnlyPhones} className="email">
+        {order?.email}
+      </td>
+      {hasPhoneData && !showOnlyEmails ? <td>{phone}</td> : ''}
+      {hasShirtData && !(showOnlyEmails || showOnlyPhones) ? <td>{shirtSizeRows}</td> : ''}
+    </tr>
+  );
+}

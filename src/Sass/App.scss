@@ -1,0 +1,216 @@
+@use 'variables' as v;
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+:root {
+  --spinner-size: 150px;
+  --spinner-color: #d12610; /* NA red, customize as needed */
+  --spinner-backdrop: rgba(255, 255, 255, 0.85);
+  --spinner-label-color: #333;
+  --spinner-fade-duration: 0.35s;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: v.$main-font-family;
+  font-size: v.$main-font-size;
+  color: v.$main-text-color;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: v.$header-color;
+  font-family: v.$header-font-family;
+}
+
+button {
+  width: fit-content !important;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Begin - Vendor overrides */
+.rs-input {
+  display: flex;
+  padding: 12px;
+  border: 1px solid v.$input-border-color;
+  cursor: pointer;
+}
+
+.rs-picker-toggle-placeholder,
+.rs-picker-toggle-value {
+  font-family: v.$main-font-family;
+}
+
+.rs-picker-toggle:hover,
+.rs-picker:hover {
+  box-shadow: 0 0 5px #d90617 !important;
+  cursor: pointer;
+}
+
+.rs-btn {
+  white-space: nowrap;
+  color: v.$button-color;
+  border: v.$button-border;
+  background-color: v.$button-background-color;
+  font-family: v.$button-font-family;
+  text-transform: uppercase;
+}
+
+.rs-btn-subtle {
+  color: v.$button-color-subtle;
+  border: v.$button-border-subtle;
+  background-color: v.$button-background-color-subtle;
+}
+
+.rs-picker-select-menu-item,
+.rs-checkbox-label {
+  font-family: v.$control-title-font-family;
+}
+
+.recharts-responsive-container {
+  font-family: v.$control-title-font-family !important;
+}
+
+/* End - Vendor overrides */
+
+.danger {
+  color: v.$danger-color;
+  font-weight: bold;
+}
+
+.success {
+  color: v.$success-color;
+  font-weight: bold;
+}
+
+.date-range-title {
+  margin-right: 10px;
+}
+
+.custom-tooltip {
+  border-radius: 5px;
+  border: 2px solid red;
+  background-color: white;
+  padding: 10px;
+}
+
+.custom-tooltip .label {
+  color: black;
+  font-weight: bold;
+}
+
+.align-right {
+  text-align: right !important;
+}
+
+.confirmation-dialog {
+  min-width: 33%;
+  max-width: 100%;
+}
+
+.confirmation-dialog p {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.confirmation-dialog-buttons,
+.confirmation-dialog-sure {
+  width: 100%;
+  text-align: center;
+}
+
+.confirmation-dialog-buttons button {
+  margin: 0 10px;
+}
+
+.deleted .rs-table-cell {
+  color: white;
+  background-color: rgb(100, 100, 100) !important;
+  font-weight: bold;
+}
+
+.highlighted .rs-table-cell {
+  background-color: lightgray !important;
+  font-weight: bold;
+}
+
+.inactive .rs-table-cell {
+  color: red !important;
+  font-weight: bold;
+}
+
+.sold-out .rs-table-cell {
+  color: red !important;
+  font-weight: bold;
+}
+
+.cancelled .rs-table-cell {
+  color: rgb(0, 128, 255) !important;
+  font-weight: bold;
+}
+
+.hidden .rs-table-cell {
+  color: orange !important;
+  font-weight: bold;
+}
+
+.active-pending .rs-table-cell {
+  color: orange !important;
+  font-weight: bold;
+}
+
+.refunded .rs-table-cell {
+  color: blueviolet !important;
+  font-weight: bold;
+}
+
+.comped .rs-table-cell {
+  color: indigo !important;
+  font-weight: bold;
+}
+
+.rs-picker-toggle-value {
+  color: v.$main-text-color !important;
+}
+
+/* Bootstrap lg */
+@media (max-width: 992px) {
+  .admin-button {
+    width: 150px;
+    margin-top: 0;
+  }
+}
+
+/* Bootstrap sm */
+@media (max-width: 576px) {
+  .rs-content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .rs-btn-subtle {
+    border: 1px solid darkgray;
+    border-radius: 6px 6px 0 0;
+  }
+}

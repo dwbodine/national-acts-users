@@ -1,0 +1,70 @@
+# ---------------------------------------------------------
+# Node / Yarn
+# ---------------------------------------------------------
+node_modules
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
+.pnp.*
+.pnp.loader.mjs
+
+# Keep required Yarn directories ONLY:
+# .yarn/patches and .yarn/plugins are NEEDED for Yarn Berry.
+!/.yarn/patches
+!/.yarn/plugins
+
+# ---------------------------------------------------------
+# Next.js build output (not needed in Docker build context)
+# ---------------------------------------------------------
+.next
+out
+dist
+
+# ---------------------------------------------------------
+# Tests / test tooling
+# ---------------------------------------------------------
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+vitest.config.ts
+vitest.setup.ts
+coverage
+
+# ---------------------------------------------------------
+# Logs
+# ---------------------------------------------------------
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------------------------------------------------------
+# Runtime env files (you already load them via docker secrets)
+# ---------------------------------------------------------
+.env
+.env.production
+.env.local
+.env.development
+.env.test
+.env.*.local
+
+# ---------------------------------------------------------
+# OS / Editor files
+# ---------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE / Workspace settings
+.vscode
+.idea
+*.iml
+
+# ---------------------------------------------------------
+# Git
+# ---------------------------------------------------------
+.git
+.gitignore
+.gitmodules

@@ -1,0 +1,10 @@
+import { GetExternalVenuesResponse } from '@/types/responses';
+
+import { adminService } from '../../services';
+
+export const useGetAllVenues = () => {
+  const getAllVenues = async (searchTerm?: string): Promise<GetExternalVenuesResponse> =>
+    await adminService.getAllVenues(searchTerm);
+
+  return { getAllVenues };
+};

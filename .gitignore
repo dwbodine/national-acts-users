@@ -1,0 +1,115 @@
+# -------------------------------------------------------
+# Node / Package Manager
+# -------------------------------------------------------
+node_modules/
+.pnp/
+.pnp.cjs
+.pnp.data.json
+.yarn/*
+!.yarn/patches/
+!.yarn/plugins/
+!.yarn/releases/
+!.yarn/sdks/
+!.yarn/versions/
+.yarnrc.yml
+
+# Ignore Yarn error/debug logs
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+
+# -------------------------------------------------------
+# Next.js Build Output
+# -------------------------------------------------------
+.next/
+.out/
+dist/
+build/
+.next-static/
+.next/cache/
+
+# Standalone output (Next.js standalone build)
+.next/standalone/
+.next/static/
+
+
+# -------------------------------------------------------
+# TypeScript
+# -------------------------------------------------------
+*.tsbuildinfo
+next-env.d.ts
+tsconfig.eslint.tsbuildinfo
+
+
+# -------------------------------------------------------
+# Testing
+# -------------------------------------------------------
+coverage/
+*.lcov
+
+
+# -------------------------------------------------------
+# Environment Variables
+# -------------------------------------------------------
+.env
+.env.development
+!.env.example  # Keep example env files
+
+
+# -------------------------------------------------------
+# OS / Editor Junk
+# -------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+
+# JetBrains
+.idea/
+
+
+# -------------------------------------------------------
+# Logs
+# -------------------------------------------------------
+npm-debug.log*
+logs/
+*.log
+*.log.*
+
+
+# -------------------------------------------------------
+# SSL / Credentials
+# -------------------------------------------------------
+*.pem
+*.key
+
+
+# -------------------------------------------------------
+# Compiled or temporary files
+# -------------------------------------------------------
+*.tmp
+*.swp
+*.swo
+*.bak
+src/Css
+
+
+# -------------------------------------------------------
+# Project-specific ignores
+# -------------------------------------------------------
+# Remove if needed, but safe defaults:
+.vercel/
+.yarn/*
+.yarn/install-state.gz
