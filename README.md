@@ -17,3 +17,5 @@ Interesting points:
     - an event calendar for task/note tracking
     - reporting
     - user activity tracking
+- uses a combo of Redux and Redux Persist to allow for better performance
+- main dash and all UI elements use RSuite for display 
