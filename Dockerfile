@@ -1,10 +1,10 @@
 # ---------------------------------------------------------
 # 1) BUILDER STAGE — install deps, build Next.js standalone
 # ---------------------------------------------------------
-FROM node:24 AS builder
+FROM node:24-alpine AS builder
 
-# Enable Yarn 4.12.0
-RUN corepack enable && corepack prepare yarn@4.12.0 --activate
+# Enable Yarn 4.15.0
+RUN corepack enable && corepack prepare yarn@4.15.0 --activate
 
 WORKDIR /app
 
