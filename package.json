@@ -2,6 +2,9 @@
   "name": "national-acts-users",
   "version": "2.0.0",
   "private": true,
+  "resolutions": {
+    "postcss": "npm:8.5.15"
+  },
   "engines": {
     "node": ">=24 <25"
   },
