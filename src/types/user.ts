@@ -358,6 +358,7 @@ export type AdminSelection = {
   start?: number;
   end?: number;
   reloadCountries?: boolean;
+  reloadFanMoments?: boolean;
   reloadFaqs?: boolean;
   reloadUsers?: boolean;
   reloadRoles?: boolean;

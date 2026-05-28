@@ -30,6 +30,7 @@ const initialState: AdminSelection = {
   pageTypes: undefined,
   reloadCountries: true,
   reloadEvents: true,
+  reloadFanMoments: true,
   reloadFaqs: true,
   reloadFeaturedArtists: true,
   reloadPages: true,
@@ -71,6 +72,7 @@ export const adminSelectionSlice = createSlice({
       state.reloadUsers = true;
       state.reloadRoles = true;
       state.reloadEvents = true;
+      state.reloadFanMoments = true;
       state.reloadFeaturedArtists = true;
       state.reloadPages = true;
       state.reloadTours = true;
@@ -196,6 +198,10 @@ export const adminSelectionSlice = createSlice({
     },
     setReloadEvents: (state, action: PayloadAction<boolean>) => {
       state.reloadEvents = action.payload;
+      return state;
+    },
+    setReloadFanMoments: (state, action: PayloadAction<boolean>) => {
+      state.reloadFanMoments = action.payload;
       return state;
     },
     setReloadFeaturedArtists: (state, action: PayloadAction<boolean>) => {
@@ -357,6 +363,7 @@ export const {
   setReloadCountries,
   setSelectedFaq,
   setReloadFaqs,
+  setReloadFanMoments,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

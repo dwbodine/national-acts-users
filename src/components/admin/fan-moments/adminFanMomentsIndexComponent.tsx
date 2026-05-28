@@ -12,7 +12,7 @@ import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
 import { setAllPages } from '@/lib/adminDataSelectionSlice';
 import {
   setAllSellers,
-  setPageTypes,
+  setReloadFanMoments,
   setReloadPages,
   setReloadSellers,
   setSelectedPage,
@@ -20,7 +20,7 @@ import {
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Page } from '@/types/public';
-import { GetPagesResponse, GetPageTypesResponse, GetSellersResponse } from '@/types/responses';
+import { GetPagesResponse, GetSellersResponse } from '@/types/responses';
 
 export default function AdminFanMomentsIndex() {
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
@@ -36,17 +36,7 @@ export default function AdminFanMomentsIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.pageTypes === undefined) {
-        setTableLoading(true);
-        dispatch(setIsLoading(true));
-        void getPageTypes().then((response: GetPageTypesResponse) => {
-          if (!response.error && response.pageTypes) {
-            dispatch(setPageTypes(response.pageTypes));
-          }
-          dispatch(setIsLoading(false));
-          setTableLoading(false);
-        });
-      } else if (currentAdminSelection.reloadSellers) {
+      if (currentAdminSelection.reloadSellers) {
         dispatch(setReloadSellers(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
@@ -57,17 +47,17 @@ export default function AdminFanMomentsIndex() {
           dispatch(setIsLoading(false));
           setTableLoading(false);
         });
-      } else if (currentAdminSelection.reloadPages) {
-        dispatch(setReloadPages(false));
+      } else if (currentAdminSelection.reloadFanMoments) {
+        dispatch(setReloadFanMoments(false));
         setTableLoading(true);
         dispatch(setIsLoading(true));
-        void getAllPages().then((response: GetPagesResponse) => {
+        /* void getAllPages().then((response: GetPagesResponse) => {
           if (!response.error && response.pages) {
             dispatch(setAllPages(response.pages));
           }
           dispatch(setIsLoading(false));
           setTableLoading(false);
-        });
+        }); */
       } else if (tableLoading) {
         setTimeout(() => {
           setTableLoading(false);
@@ -80,9 +70,9 @@ export default function AdminFanMomentsIndex() {
   }, [
     getAllPages,
     dispatch,
-    currentAdminSelection.pageTypes,
+    currentAdminSelection.selectedSeller,
     currentAdminSelection.reloadSellers,
-    currentAdminSelection.reloadPages,
+    currentAdminSelection.reloadFanMoments,
     tableLoading,
     getAdminSellers,
     getPageTypes,
