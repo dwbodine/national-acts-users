@@ -703,8 +703,8 @@ export default function EventDetail(props: EditProps) {
                         <td>
                           $
                           {(
-                            (currentDetailEvent.totalRevenue ?? 0) -
-                            (currentDetailEvent.revenueRefunded ?? 0)
+                            (currentDetailEvent.totalRevenueUsd ?? 0) -
+                            (currentDetailEvent.revenueRefundedUsd ?? 0)
                           ).toFixed(2)}
                         </td>
                       </tr>
@@ -713,8 +713,8 @@ export default function EventDetail(props: EditProps) {
                         <td>
                           $
                           {(
-                            (currentDetailEvent.totalServiceFees ?? 0) -
-                            (currentDetailEvent.serviceFeeRevenueRefunded ?? 0)
+                            (currentDetailEvent.totalServiceFeesUsd ?? 0) -
+                            (currentDetailEvent.serviceFeeRevenueRefundedUsd ?? 0)
                           ).toFixed(2)}
                         </td>
                       </tr>
