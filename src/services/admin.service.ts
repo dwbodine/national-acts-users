@@ -353,10 +353,11 @@ export class AdminService {
   };
 
   getAllVenues = async (searchTerm?: string): Promise<GetExternalVenuesResponse> => {
-    let url = `/admin/venues`;
-    if (searchTerm) {
-      url += `?search=${encodeURIComponent(searchTerm)}`;
-    }
+    const trimmedSearchTerm = searchTerm?.trim();
+    const url =
+      trimmedSearchTerm && trimmedSearchTerm.length > 0
+        ? `/admin/venues?search=${encodeURIComponent(trimmedSearchTerm)}`
+        : '/admin/venues';
 
     const response: GetExternalVenuesResponse = {};
 
