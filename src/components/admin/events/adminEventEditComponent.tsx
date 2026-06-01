@@ -32,7 +32,7 @@ import { useUpdateVenue } from '@/hooks/admin/useUpdateVenue';
 import { useGetEventById } from '@/hooks/common/useGetEventById';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { setTicketSocketEventsOnly, setVenues } from '@/lib/adminDataSelectionSlice';
+import { setTicketSocketEventsOnly } from '@/lib/adminDataSelectionSlice';
 import {
   setAdminDates,
   setAdminEvent,
@@ -44,12 +44,11 @@ import {
   setReloadCountries,
   setReloadEvents,
   setReloadSellers,
-  setReloadVenues,
 } from '@/lib/adminSelectionSlice';
 import { setIsLoading, setSaveInProgress } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { ExternalVenue } from '@/types/admin';
-import { Note, Seller, VipEvent } from '@/types/event';
+import { Note, Seller, Venue, VipEvent } from '@/types/event';
 import { EditProps } from '@/types/props';
 import {
   GetCountriesResponse,
@@ -65,6 +64,35 @@ import {
 
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import AdminFileUpload from '../common/adminFileUploadComponent';
+
+const buildSelectedExternalVenue = (
+  venueId: number | undefined,
+  venue: Venue | undefined,
+): ExternalVenue | undefined => {
+  if (!venueId) {
+    return undefined;
+  }
+
+  if (!venue) {
+    return {
+      address: '',
+      city: '',
+      venue: `Venue #${venueId}`,
+      venueId,
+    };
+  }
+
+  return {
+    address: venue.address1 ?? venue.address2 ?? '',
+    city: venue.city ?? '',
+    country: venue.country,
+    state: venue.state,
+    timezone: venue.timezone ? { timezone: venue.timezone } : undefined,
+    venue: venue.name,
+    venueId,
+    zipCode: venue.postalCode,
+  };
+};
 
 export default function AdminEventEdit(props: EditProps) {
   const id: number | undefined = props.Id;
@@ -101,10 +129,18 @@ export default function AdminEventEdit(props: EditProps) {
   const [countryId, setCountryId] = useState<number | undefined>(undefined);
   const [timezone, setTimezone] = useState<string | undefined>(undefined);
   const [timeZoneList, setTimeZoneList] = useState<ItemDataType<string>[]>([]);
+  const [venueSearchTerm, setVenueSearchTerm] = useState('');
+  const [venueSearchResults, setVenueSearchResults] = useState<ExternalVenue[]>([]);
+  const [venueSearchLoading, setVenueSearchLoading] = useState(false);
+  const [selectedExternalVenue, setSelectedExternalVenue] = useState<ExternalVenue | undefined>(
+    undefined,
+  );
 
   const currentSeller: Seller | undefined = currentAdminSelection.allSellers?.find(
     (x) => x.sellerId === currentAdminSelection.sellerId,
   );
+  const selectedEventVenueId = currentAdminSelection.selectedEvent?.externalEventVenueId;
+  const selectedEventVenue = currentAdminSelection.selectedEvent?.venue;
 
   const beforeOnUnload = (ev: BeforeUnloadEvent) => {
     ev.preventDefault();
@@ -133,6 +169,69 @@ export default function AdminEventEdit(props: EditProps) {
       }
     });
   }, [dispatch, getEventById, id, getTicketSocketEventsOnly]);
+
+  useEffect(() => {
+    if (!selectedEventVenueId) {
+      setSelectedExternalVenue(undefined);
+      return;
+    }
+
+    const matchingSearchResult = venueSearchResults.find(
+      (venue) => venue.venueId === selectedEventVenueId,
+    );
+
+    if (matchingSearchResult) {
+      setSelectedExternalVenue(matchingSearchResult);
+      return;
+    }
+
+    setSelectedExternalVenue((currentVenue) => {
+      if (currentVenue?.venueId === selectedEventVenueId) {
+        return currentVenue;
+      }
+
+      return buildSelectedExternalVenue(selectedEventVenueId, selectedEventVenue);
+    });
+  }, [selectedEventVenue, selectedEventVenueId, venueSearchResults]);
+
+  useEffect(() => {
+    const trimmedSearchTerm = venueSearchTerm.trim();
+
+    if (trimmedSearchTerm.length < 3) {
+      setVenueSearchResults([]);
+      setVenueSearchLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setVenueSearchLoading(true);
+
+    const timeoutId = setTimeout(() => {
+      void getAllVenues(trimmedSearchTerm)
+        .then((response: GetExternalVenuesResponse) => {
+          if (cancelled) {
+            return;
+          }
+
+          if (!response.error) {
+            setVenueSearchResults(response.venues ?? []);
+          } else {
+            setVenueSearchResults([]);
+            toast.error(response.error);
+          }
+        })
+        .finally(() => {
+          if (!cancelled) {
+            setVenueSearchLoading(false);
+          }
+        });
+    }, 500);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [getAllVenues, venueSearchTerm]);
 
   useEffect(() => {
     const run = async () => {
@@ -170,30 +269,12 @@ export default function AdminEventEdit(props: EditProps) {
         }
       }
 
-      // Branch 3: reload venues
-      if (currentAdminSelection.reloadVenues) {
-        if (!globalSelection.isLoading) {
-          dispatch(setIsLoading(true));
-        }
-        dispatch(setReloadVenues(false));
-
-        const response: GetExternalVenuesResponse = await getAllVenues();
-
-        if (response.venues && !response.error) {
-          dispatch(setVenues(response.venues));
-        } else {
-          toast.error(response.error);
-          dispatch(setIsLoading(false));
-        }
-      }
-
       // Branch 4: load event
       const canLoadEvent =
         currentAdminSelection.selectedEvent === undefined &&
         hasId &&
         currentAdminSelection.countries !== undefined &&
-        currentAdminSelection.allSellers !== undefined &&
-        currentAdminDataSelection.venues !== undefined;
+        currentAdminSelection.allSellers !== undefined;
 
       if (canLoadEvent) {
         void loadEventById();
@@ -205,7 +286,7 @@ export default function AdminEventEdit(props: EditProps) {
         currentAdminSelection &&
         currentAdminSelection.countries &&
         currentAdminSelection.allSellers &&
-        currentAdminDataSelection.venues &&
+        (currentAdminSelection.selectedEvent || !hasId) &&
         globalSelection.isLoading &&
         !globalSelection.saveInProgress;
 
@@ -226,14 +307,12 @@ export default function AdminEventEdit(props: EditProps) {
     currentAdminSelection.selectedEvent,
     currentAdminSelection.countries,
     currentAdminSelection.allSellers,
-    currentAdminDataSelection.venues,
     id,
     globalSelection.isLoading,
     globalSelection.saveInProgress,
     dispatch,
     getAllCountries,
     getSellers,
-    getAllVenues,
     loadEventById,
   ]);
 
@@ -259,8 +338,25 @@ export default function AdminEventEdit(props: EditProps) {
     if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
+    const selectedVenue = value
+      ? (venueSearchResults.find((venue) => venue.venueId === value) ?? selectedExternalVenue)
+      : undefined;
     const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
     currentEvent.externalEventVenueId = value ?? undefined;
+    if (selectedVenue) {
+      currentEvent.venue = {
+        address1: selectedVenue.address,
+        city: selectedVenue.city,
+        country: selectedVenue.country,
+        name: selectedVenue.venue,
+        postalCode: selectedVenue.zipCode,
+        state: selectedVenue.state,
+        timezone: selectedVenue.timezone?.timezone,
+      };
+    } else if (!value) {
+      currentEvent.venue = undefined;
+    }
+    setSelectedExternalVenue(selectedVenue);
     dispatch(setAdminEvent(currentEvent));
     markDirty();
   };
@@ -913,8 +1009,11 @@ export default function AdminEventEdit(props: EditProps) {
           currentEvent.externalEventVenueId = newVenue.venueId;
           dispatch(setAdminEvent(currentEvent));
           dispatch(setAdminVenue(undefined));
-          dispatch(setVenues(undefined));
-          dispatch(setReloadVenues(true));
+          setSelectedExternalVenue(newVenue);
+          setVenueSearchResults((venues) => [
+            newVenue,
+            ...venues.filter((venue) => venue.venueId !== newVenue.venueId),
+          ]);
           markDirty();
         } else {
           toast.error('Error occurred while saving venue');
@@ -1176,12 +1275,20 @@ export default function AdminEventEdit(props: EditProps) {
     notes.push(<div key="note_00">n/a</div>);
   }
 
-  const venueList: ItemDataType<number>[] = currentAdminDataSelection?.venues
-    ? currentAdminDataSelection?.venues?.map((venue) => ({
-        label: `${venue.venue} ${getExternalVenueLocation(venue)}`,
-        value: venue.venueId,
-      }))
-    : [];
+  const getVenueListItem = (venue: ExternalVenue): ItemDataType<number> => {
+    const location = venue.address || venue.city ? getExternalVenueLocation(venue) : '';
+    return {
+      label: location ? `${venue.venue} ${location}` : venue.venue,
+      value: venue.venueId,
+    };
+  };
+
+  const venueList: ItemDataType<number>[] = [
+    ...(selectedExternalVenue ? [getVenueListItem(selectedExternalVenue)] : []),
+    ...venueSearchResults
+      .filter((venue) => venue.venueId !== selectedExternalVenue?.venueId)
+      .map(getVenueListItem),
+  ];
 
   const eventList: ItemDataType<number>[] = currentAdminDataSelection?.ticketSocketEvents
     ? currentAdminDataSelection?.ticketSocketEvents?.map((evt) => ({
@@ -1254,7 +1361,10 @@ export default function AdminEventEdit(props: EditProps) {
               data={venueList}
               size="lg"
               block
+              loading={venueSearchLoading}
               onChange={onEventVenueChange}
+              onSearch={(searchKeyword) => setVenueSearchTerm(searchKeyword)}
+              placeholder="Search venues by name or address..."
             />
             <Button disabled={externalEventVenueId > 0} onClick={handleVenueOpen}>
               Add New Venue
