@@ -4,6 +4,7 @@ import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
 import {
   Country,
+  FanMoment,
   Faq,
   FeaturedArtist,
   Page,
@@ -78,6 +79,7 @@ export const adminSelectionSlice = createSlice({
       state.reloadTours = true;
       state.reloadSellers = true;
       state.reloadVenues = true;
+      state.selectedFanMoment = undefined;
       state.selectedFaq = undefined;
       state.selectedFeaturedArtist = undefined;
       state.selectedUser = undefined;
@@ -138,6 +140,10 @@ export const adminSelectionSlice = createSlice({
     },
     setAdminVenue: (state, action: PayloadAction<ExternalVenue | undefined>) => {
       state.selectedVenue = action.payload;
+      return state;
+    },
+    setSelectedFanMoment: (state, action: PayloadAction<FanMoment | undefined>) => {
+      state.selectedFanMoment = action.payload;
       return state;
     },
     setSelectedFaqCategory: (state, action: PayloadAction<number | undefined>) => {
@@ -324,6 +330,7 @@ export const {
   setAdminSellerId,
   setReloadFeaturedArtists,
   setSelectedFeaturedArtist,
+  setSelectedFanMoment,
   setReloadUsers,
   setSelectedUser,
   setUsers,

@@ -2,9 +2,11 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 
 import { ImageType, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { getArrayData, getErrorMessage, getStatusCode } from '@/lib/serviceResponses';
-import { FeaturedArtist, Page, PageType, SiteSetting } from '@/types/public';
+import { FanMomentFilter } from '@/types/props';
+import { FanMoment, FeaturedArtist, Page, PageType, SiteSetting } from '@/types/public';
 import {
   GetEventsResponse,
+  GetFanMomentsResponse,
   GetFeaturedArtistsResponse,
   GetPagesResponse,
   GetPageTypesResponse,
@@ -228,6 +230,39 @@ export class PublicService {
       response.error =
         err?.message ??
         'Unknown error while fetching featured artists - please contact your administrator';
+    }
+
+    return response;
+  };
+
+  getFanMoments = async (filter: FanMomentFilter): Promise<GetFanMomentsResponse> => {
+    const url = `/public/fan-moments/filter?startDate=${filter.startDate}&endDate=${filter.endDate}`;
+
+    if (filter.sellerId) {
+      url.concat(`&sellerId=${filter.sellerId}`);
+    }
+
+    if (filter.eventId) {
+      url.concat(`&eventId=${filter.eventId}`);
+    }
+
+    const response: GetFanMomentsResponse = {};
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
+    };
+
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.fanMoments = res.data ? (res.data as FanMoment[]) : [];
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while fetching fan moments - please contact your administrator';
     }
 
     return response;

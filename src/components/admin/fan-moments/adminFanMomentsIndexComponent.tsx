@@ -1,149 +1,792 @@
 'use client';
 
+import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { FaArrowTurnDown } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Input, Table } from 'rsuite';
+import { toast } from 'react-toastify';
+import { Button, Checkbox, Col, Nav, Row, SelectPicker, Table } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
-import { useGetAdminSellers } from '@/hooks/admin/useGetAdminSellers';
-import { useGetAllPages } from '@/hooks/admin/useGetAllPages';
-import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
-import { setAllPages } from '@/lib/adminDataSelectionSlice';
+import { useCancelEvents } from '@/hooks/admin/useCancelEvent';
+import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
+import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
+import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
+import { useGetTours } from '@/hooks/admin/useGetTours';
+import { useGetFanMoments } from '@/hooks/common/useGetFanMoments';
+import { useGetLocation } from '@/hooks/common/useGetLocation';
+import { useGetSellers } from '@/hooks/common/useGetSellers';
+import { useSetEventsDeleted } from '@/hooks/event/useSetEventsDeleted';
+import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
+import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
+import { useSetEventsLiveInBandsInTown } from '@/hooks/event/useSetEventsLiveInBandsInTown';
 import {
+  setAdminEvents,
+  setTicketSocketEventsOnly,
+  setTours,
+  setVenues,
+} from '@/lib/adminDataSelectionSlice';
+import { setReloadAdminEvents } from '@/lib/adminEventsSelectionSlice';
+import {
+  setAdminDates,
+  setAdminEvent,
+  setAdminOrder,
+  setAdminSellerId,
+  setAdminTour,
   setAllSellers,
+  setCountries,
+  setReloadCountries,
+  setReloadEvents,
   setReloadFanMoments,
-  setReloadPages,
   setReloadSellers,
-  setSelectedPage,
+  setReloadTours,
+  setReloadVenues,
 } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
-import { Page } from '@/types/public';
-import { GetPagesResponse, GetSellersResponse } from '@/types/responses';
+import { VipEvent } from '@/types/event';
+import {
+  GetCountriesResponse,
+  GetEventsResponse,
+  GetSellersResponse,
+  GetToursResponse,
+  ModifyEventResponse,
+} from '@/types/responses';
+import { AdminSelection } from '@/types/user';
+import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+
+import ConfirmationDialog from '../../common/confirmationDialogComponent';
+import ReportDatePicker from '../../common/reportDatePickerControl';
+import AdminSellerSelect from '../common/adminSellerSelectComponent';
 
 export default function AdminFanMomentsIndex() {
+  const { Column, HeaderCell, Cell } = Table;
+  type EventsTabKey = 'active' | 'inactive';
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
+  const globalSelection = useSelector((state: RootState) => state.globalSelection);
+  const { getSellers } = useGetSellers();
+  const { getFanMoments } = useGetFanMoments();
+  const { getLocation } = useGetLocation();
   const dispatch = useDispatch();
-  const { getAllPages } = useGetAllPages();
-  const { getPageTypes } = useGetPageTypes();
-  const { Column, HeaderCell, Cell } = Table;
-  const [tableLoading, setTableLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const { getAdminSellers } = useGetAdminSellers();
+  const [tableLoading, setTableLoading] = useState(false);
+  const { getAllCountries } = useGetAllCountries();
   const router = useRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.reloadSellers) {
-        dispatch(setReloadSellers(false));
-        setTableLoading(true);
+      if (currentAdminSelection.reloadCountries) {
+        dispatch(setReloadCountries(false));
         dispatch(setIsLoading(true));
-        void getAdminSellers().then((response: GetSellersResponse) => {
-          if (!response.error && response.sellers) {
-            dispatch(setAllSellers(response.sellers));
+        void getAllCountries().then((response: GetCountriesResponse) => {
+          if (response.countries && !response.error) {
+            dispatch(setCountries(response.countries));
+          } else {
+            toast.error(response.error);
+            dispatch(setIsLoading(false));
           }
-          dispatch(setIsLoading(false));
-          setTableLoading(false);
+        });
+      } else if (currentAdminSelection.reloadSellers) {
+        dispatch(setReloadSellers(false));
+        if (!globalSelection.isLoading) {
+          dispatch(setIsLoading(true));
+        }
+        dispatch(setReloadFanMoments(true));
+        void getSellers().then((response: GetSellersResponse) => {
+          if (response.sellers && !response.error) {
+            dispatch(setAllSellers(response.sellers));
+          } else {
+            toast.error(response.error);
+            dispatch(setIsLoading(false));
+          }
         });
       } else if (currentAdminSelection.reloadFanMoments) {
         dispatch(setReloadFanMoments(false));
-        setTableLoading(true);
-        dispatch(setIsLoading(true));
-        /* void getAllPages().then((response: GetPagesResponse) => {
-          if (!response.error && response.pages) {
-            dispatch(setAllPages(response.pages));
-          }
+        const adminSelection = { ...currentAdminSelection };
+        const sellerId: number = adminSelection.sellerId ?? 0;
+        if (sellerId === 0) {
+          setTableLoading(false);
           dispatch(setIsLoading(false));
-          setTableLoading(false);
-        }); */
-      } else if (tableLoading) {
-        setTimeout(() => {
-          setTableLoading(false);
-        }, 300);
+          return;
+        }
+
+        if (!tableLoading) {
+          setTableLoading(true);
+        }
+        if (!globalSelection.isLoading) {
+          dispatch(setIsLoading(true));
+        }
+        void getFanMoments(adminSelection).then((response: GetEventsResponse) => {
+          if (response.events && !response.error) {
+            dispatch(setAdminEvents(response.events));
+            dispatch(setAdminEvent(undefined));
+            dispatch(setAdminOrder(undefined));
+            dispatch(setReloadEvents(false));
+            if (response.events?.length > 0) {
+              const [firstEvent] = response.events;
+              const lastEvent = response.events[response.events.length - 1];
+              if (firstEvent && lastEvent) {
+                const start = moment(firstEvent.eventDate).unix();
+                const end = moment(lastEvent.eventDate).unix();
+                const selection: AdminSelection = {
+                  ...adminSelection,
+                  end,
+                  start,
+                };
+                dispatch(setAdminDates(selection));
+                void getTours(sellerId).then((tourResponse: GetToursResponse) => {
+                  dispatch(setReloadTours(false));
+                  if (!tourResponse.error && tourResponse.tours) {
+                    dispatch(setTours(tourResponse.tours));
+                    void getTicketSocketEventsOnly(adminSelection.sellerId).then(
+                      (resp: GetEventsResponse) => {
+                        if (resp.events && !resp.error) {
+                          dispatch(setTicketSocketEventsOnly(response.events));
+                        } else {
+                          toast.error(resp.error);
+                        }
+                        dispatch(setIsLoading(false));
+                        setTableLoading(false);
+                      },
+                    );
+                  } else {
+                    dispatch(setIsLoading(false));
+                    setTableLoading(false);
+                  }
+                });
+              }
+            } else {
+              dispatch(setIsLoading(false));
+              setTableLoading(false);
+            }
+          } else {
+            toast.error(response.error);
+            dispatch(setIsLoading(false));
+            setTableLoading(false);
+          }
+        });
       }
     }, 500);
     return () => {
       clearTimeout(timeoutId);
     };
   }, [
-    getAllPages,
     dispatch,
-    currentAdminSelection.selectedSeller,
-    currentAdminSelection.reloadSellers,
-    currentAdminSelection.reloadFanMoments,
+    getSellers,
+    currentAdminSelection,
+    getAdminEvents,
     tableLoading,
-    getAdminSellers,
-    getPageTypes,
+    getTours,
+    getTicketSocketEventsOnly,
+    getAllCountries,
   ]);
 
-  const addPage = () => {
-    const page: Page = {
-      isActive: true,
-      pageId: 0,
-      pageType: {
-        pageTypeId: 1,
-        pageTypeName: '',
-      },
-      route: '',
-      title: '',
-    };
-    dispatch(setSelectedPage(page));
-    setTableLoading(true);
-    router.push('/admin/pages/edit/');
-  };
-
-  const editPage = (pageId: number) => {
-    if (!pageId || isNaN(pageId)) {
+  const updateSeller = (sellerId: number | null) => {
+    if (!sellerId || isNaN(sellerId)) {
       return;
     }
-    const page = currentAdminDataSelection.allPages?.find((x) => x.pageId === pageId);
-    if (page) {
-      dispatch(setSelectedPage(page));
-      setTableLoading(true);
-      router.push('/admin/pages/edit/');
+    dispatch(setAdminSellerId(sellerId));
+    dispatch(setAdminTour(undefined));
+    dispatch(setTicketSocketEventsOnly(undefined));
+    dispatch(setReloadTours(true));
+    dispatch(setTours([]));
+    dispatch(setReloadEvents(true));
+    setEventsTabKey('active');
+  };
+
+  const onDateChange = (newStart: number | undefined, newEnd: number | undefined) => {
+    const adminSelection = { ...currentAdminSelection };
+    adminSelection.start = newStart;
+    adminSelection.end = newEnd;
+    dispatch(setAdminDates(adminSelection));
+    dispatch(setReloadEvents(true));
+  };
+
+  const onStartClear = () => {
+    onDateChange(undefined, currentAdminSelection.end);
+  };
+
+  const onEndClear = () => {
+    onDateChange(currentAdminSelection.start, undefined);
+  };
+
+  const addEvent = () => {
+    if (!currentAdminSelection.sellerId) {
+      return;
+    }
+    const vipEvent: VipEvent = {
+      announceDate: undefined,
+      disableLinkButton: false,
+      disableLinkReason: undefined,
+      disableVipLinkButton: false,
+      disableVipLinkReason: undefined,
+      eventDate: '',
+      externalEventId: 0,
+      externalUrl: undefined,
+      externalVipLink: undefined,
+      isActive: true,
+      isDeleted: false,
+      isExternal: true,
+      sellerId: currentAdminSelection.sellerId,
+      title: '',
+    };
+    dispatch(setReloadAdminEvents(false));
+    dispatch(setReloadVenues(true));
+    dispatch(setVenues(undefined));
+    dispatch(setAdminEvent(vipEvent));
+    router.push('/admin/events/edit');
+  };
+
+  const editEvent = (eventId: number) => {
+    if (
+      !eventId ||
+      isNaN(eventId) ||
+      !currentAdminDataSelection.events ||
+      currentAdminDataSelection.events.length === 0
+    ) {
+      return;
+    }
+    const vipEvent = currentAdminDataSelection.events.find((x) => x.externalEventId === eventId);
+    if (!vipEvent) {
+      return;
+    }
+    dispatch(setAdminEvent(vipEvent));
+    router.push('/admin/events/edit');
+  };
+
+  const manageOrders = (eventId: number) => {
+    if (
+      isNaN(eventId) ||
+      !currentAdminDataSelection.events ||
+      currentAdminDataSelection.events.length === 0
+    ) {
+      return;
+    }
+    const vipEvent = currentAdminDataSelection.events.find((x) => x.externalEventId === eventId);
+    if (!vipEvent || !vipEvent.orders || vipEvent.orders.length === 0) {
+      return;
+    }
+    dispatch(setAdminEvent(vipEvent));
+    setTableLoading(true);
+    router.push('/admin/events/orders');
+  };
+
+  const updateEventIdList = (eventId: number | undefined, addToList: boolean) => {
+    let idList: number[] = eventIdList ? [...eventIdList] : [];
+    if (!addToList && eventId && idList.includes(eventId)) {
+      idList = idList.filter((id) => id !== eventId);
+    } else if (addToList && eventId && !idList.includes(eventId)) {
+      idList.push(eventId);
+    }
+    setEventIdList(idList);
+  };
+
+  const selectAllEvents = (addToList: boolean, eventIds: number[]) => {
+    if (eventIds.length === 0) {
+      return;
+    }
+    if (addToList) {
+      setEventIdList([...new Set([...eventIdList, ...eventIds])]);
+    } else {
+      setEventIdList(eventIdList.filter((id) => !eventIds.includes(id)));
     }
   };
 
-  const filterPages = (pages: Page[] | undefined) => {
-    let filteredPages: Page[] | undefined = pages;
-    if (searchTerm && searchTerm.length >= 2 && pages && pages.length > 0) {
-      const srch = searchTerm.toLowerCase();
-      filteredPages = pages.filter((page) => page.title.toLowerCase().includes(srch));
+  const deactivateEvents = (isActive: boolean) => {
+    if (eventIdList.length === 0) {
+      return;
     }
-    return filteredPages;
+    if (!globalSelection.isLoading) {
+      dispatch(setIsLoading(true));
+    }
+    void setEventsInactive(eventIdList, isActive).then((response: ModifyEventResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = isActive
+          ? 'Events activated successfully'
+          : 'Events deactivated successfully';
+        toast.success(successMessage);
+        setEventIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = isActive
+            ? 'Unexpected error occurred while activating events'
+            : 'Unexpected error occurred while deactivating events';
+        }
+        toast.error(errorMessage);
+      }
+      dispatch(setIsLoading(false));
+    });
   };
 
-  const filteredPages = filterPages(currentAdminDataSelection.allPages);
+  const deleteEvents = (setDeleted: boolean) => {
+    if (eventIdList.length === 0) {
+      return;
+    }
+    if (!globalSelection.isLoading) {
+      dispatch(setIsLoading(true));
+    }
+    void setEventsDeleted(eventIdList, setDeleted).then((response: ModifyEventResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = setDeleted
+          ? 'Events deleted successfully'
+          : 'Events undeleted successfully';
+        toast.success(successMessage);
+        setEventIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = setDeleted
+            ? 'Unexpected error occurred while deleting events'
+            : 'Unexpected error occurred while undeleting events';
+        }
+        toast.error(errorMessage);
+      }
+      dispatch(setIsLoading(false));
+    });
+  };
+
+  const setLiveInBandsInTown = () => {
+    if (eventIdList.length === 0) {
+      return;
+    }
+    if (!globalSelection.isLoading) {
+      dispatch(setIsLoading(true));
+    }
+    void setEventsLiveInBandsInTown(eventIdList).then((response: ModifyEventResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = 'Events updated successfully';
+        toast.success(successMessage);
+        setEventIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = 'Unexpected error occurred while updating events';
+        }
+        toast.error(errorMessage);
+      }
+      dispatch(setIsLoading(false));
+    });
+  };
+
+  const hideEvents = (setHidden: boolean) => {
+    if (eventIdList.length === 0) {
+      return;
+    }
+    if (!globalSelection.isLoading) {
+      dispatch(setIsLoading(true));
+    }
+    void setEventsHidden(eventIdList, setHidden).then((response: ModifyEventResponse) => {
+      if (response.success && !response.error) {
+        const successMessage = setHidden
+          ? 'Events hidden successfully'
+          : 'Events unhidden successfully';
+        toast.success(successMessage);
+        setEventIdList([]);
+        setSelectedAction(null);
+        dispatch(setReloadEvents(true));
+      } else {
+        let errorMessage = response.error;
+        if (!errorMessage) {
+          errorMessage = setHidden
+            ? 'Unexpected error occurred while hiding events'
+            : 'Unexpected error occurred while unhiding events';
+        }
+        toast.error(errorMessage);
+      }
+      dispatch(setIsLoading(false));
+    });
+  };
+
+  const cancelTicketSocketEvents = (isCancelled: boolean) => {
+    if (eventIdList.length === 0) {
+      return;
+    }
+    if (!globalSelection.isLoading) {
+      dispatch(setIsLoading(true));
+    }
+
+    void cancelEvents(eventIdList, isCancelled).then((response: ModifyEventResponse) => {
+      const { success } = response;
+      dispatch(setIsLoading(false));
+      if (success) {
+        const message = isCancelled ? 'Cancellation succeeded' : 'Uncancellation succeeded';
+        toast.success(message);
+        dispatch(setReloadEvents(true));
+      } else {
+        const message = isCancelled ? 'Cancellation failed' : 'Uncancellation failed';
+        toast.error(message);
+      }
+    });
+  };
+
+  const handleBulkEdit = () => {
+    toast.dismiss();
+    if (eventIdList.length === 0 || !selectedAction) {
+      return;
+    }
+
+    switch (selectedAction) {
+      case 'inactive':
+        deactivateEvents(false);
+        break;
+      case 'active':
+        deactivateEvents(true);
+        break;
+      case 'delete':
+        deleteEvents(true);
+        break;
+      case 'undelete':
+        deleteEvents(false);
+        break;
+      case 'hidden':
+        hideEvents(true);
+        break;
+      case 'unhide':
+        hideEvents(false);
+        break;
+      case 'bandsintown':
+        setLiveInBandsInTown();
+        break;
+      case 'cancel':
+        cancelTicketSocketEvents(true);
+        break;
+      case 'uncancel':
+        cancelTicketSocketEvents(false);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const bulkEditConfirm = () => {
+    if (eventIdList.length === 0 || !selectedAction) {
+      return;
+    }
+
+    let message = '';
+    switch (selectedAction) {
+      case 'inactive':
+        message = `You are about to deactivate ${eventIdList.length} events`;
+        break;
+      case 'active':
+        message = `You are about to activate ${eventIdList.length} events`;
+        break;
+      case 'delete':
+        message = `You are about to delete ${eventIdList.length} events`;
+        break;
+      case 'undelete':
+        message = `You are about to undelete ${eventIdList.length} events`;
+        break;
+      case 'hidden':
+        message = `You are about to hide ${eventIdList.length} events`;
+        break;
+      case 'unhide':
+        message = `You are about to unhide ${eventIdList.length} events`;
+        break;
+      case 'bandsintown':
+        message = `You are about to mark ${eventIdList.length} events as live in BandsInTown`;
+        break;
+      case 'cancel':
+        message = `You are about to cancel ${eventIdList.length} events`;
+        break;
+      case 'uncancel':
+        message = `You are about to uncancel ${eventIdList.length} events`;
+        break;
+      default:
+        break;
+    }
+
+    if (!message) {
+      return;
+    }
+
+    toast.warning(
+      <ConfirmationDialog
+        Message={message}
+        ConfirmText="Yes"
+        CancelText="No"
+        OnConfirm={handleBulkEdit}
+        OnCancel={() => {
+          toast.dismiss();
+        }}
+      />,
+      {
+        autoClose: false,
+        closeOnClick: false,
+        position: 'top-center',
+      },
+    );
+  };
+
+  const setSelectedTour = (selectedTourId: number | null) => {
+    let tourId = selectedTourId;
+    if (!tourId || isNaN(tourId) || tourId <= 0) {
+      tourId = 0;
+    }
+    const tour = currentAdminDataSelection.tours?.find((x) => x.tourId === tourId);
+    dispatch(setAdminTour(tour));
+    dispatch(setReloadEvents(true));
+  };
+
+  const tourList: ItemDataType<number>[] = currentAdminDataSelection?.tours
+    ? currentAdminDataSelection?.tours?.map((tour) => ({
+        label: `${tour.tourName}`,
+        value: tour.tourId,
+      }))
+    : [];
+
+  const resetEvents = () => {
+    onDateChange(undefined, undefined);
+  };
+
+  const selectedTourId = currentAdminSelection.selectedTour?.tourId ?? 0;
+  const sellectedSellerId = currentAdminSelection.sellerId;
+
+  const actions = [
+    {
+      label: 'Deactivate',
+      value: 'inactive',
+    },
+    {
+      label: 'Activate',
+      value: 'active',
+    },
+    {
+      label: 'Delete',
+      value: 'delete',
+    },
+    {
+      label: 'Undelete',
+      value: 'undelete',
+    },
+    {
+      label: 'Hide',
+      value: 'hidden',
+    },
+    {
+      label: 'Unhide',
+      value: 'unhide',
+    },
+    {
+      label: 'Mark Live In BandsInTown',
+      value: 'bandsintown',
+    },
+    {
+      label: 'Cancel',
+      value: 'cancel',
+    },
+    {
+      label: 'Uncancel',
+      value: 'uncancel',
+    },
+  ];
+
+  const actionList: ItemDataType<string>[] = actions.map((action) => ({
+    label: action.label,
+    value: action.value,
+  }));
 
   return (
     <>
-      <PageHeader pageTitle="Manage Pages" />
+      <PageHeader pageTitle="Manage Events" />
       <div className="admin-container">
-        <Input
-          value={searchTerm}
-          onChange={setSearchTerm}
-          className="search-text-input no-print"
-          placeholder="Search for pages by title..."
-          hidden={currentAdminDataSelection.allPages === undefined}
-        />
-        <Button onClick={addPage}>Add Page</Button>
-        <Table height={600} data={filteredPages} bordered cellBordered loading={tableLoading}>
-          <Column width={300}>
-            <HeaderCell>Page Title</HeaderCell>
-            <Cell className="admin-click-cell">
-              {(rowData) => (
-                <div
-                  id={`${rowData['pageId']}`}
-                  onClick={() => editPage(parseInt(`${rowData['pageId']}`))}
-                >
-                  {rowData['title']}
-                </div>
-              )}
-            </Cell>
-          </Column>
-        </Table>
+        <Row>
+          <Col>
+            <Button hidden={sellectedSellerId === undefined} onClick={addEvent}>
+              Add New Event
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <AdminSellerSelect
+              Id="refresh"
+              Sellers={currentAdminSelection.allSellers}
+              SellerId={currentAdminSelection.sellerId}
+              OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
+              Countries={currentAdminSelection.countries}
+            />
+          </Col>
+        </Row>
+        <Row className="admin-select" hidden={tourList.length === 0}>
+          <Col xs={2}>Tour:</Col>
+          <Col xs={8}>
+            <SelectPicker
+              value={selectedTourId}
+              data={tourList}
+              size="lg"
+              onChange={(tId) => setSelectedTour(tId)}
+              cleanable={true}
+              placeholder="All Events"
+              menuAutoWidth={true}
+              className="admin-seller-select-value"
+              onClean={() => setSelectedTour(0)}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <ReportDatePicker
+              OnChange={onDateChange}
+              OnStartClear={onStartClear}
+              OnEndClear={onEndClear}
+              Start={currentAdminSelection.start}
+              End={currentAdminSelection.end}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button disabled={sellectedSellerId === undefined} onClick={resetEvents}>
+              Reset
+            </Button>
+          </Col>
+        </Row>
+        <Row hidden={allEventIds.length === 0}>
+          <Col className="bulk-arrow-row">
+            <div>
+              <FaArrowTurnDown className="bulk-arrow" />
+            </div>
+            <div>With selected:</div>
+            <div>
+              <SelectPicker
+                className="bulk-select"
+                value={selectedAction}
+                data={actionList}
+                size="lg"
+                onChange={(a) => setSelectedAction(a)}
+                cleanable={true}
+                menuAutoWidth={true}
+                onClean={() => setSelectedAction(null)}
+              />
+            </div>
+            <div>
+              <Button onClick={bulkEditConfirm}>Update</Button>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <Nav
+              appearance="tabs"
+              activeKey={eventsTabKey}
+              onSelect={(key) => setEventsTabKey(key as EventsTabKey)}
+            >
+              <Nav.Item eventKey="active">Upcoming Events ({activeEvents.length})</Nav.Item>
+              <Nav.Item eventKey="inactive">
+                Past/Inactive Events ({inactiveEvents.length})
+              </Nav.Item>
+            </Nav>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <Table
+              autoHeight={true}
+              data={visibleEvents}
+              bordered
+              cellBordered
+              loading={tableLoading}
+              locale={{ emptyMessage: 'No events found' }}
+              rowClassName={(rowData: VipEvent) => getEventStatusSlug(rowData)}
+            >
+              <Column width={50}>
+                <HeaderCell>
+                  <Checkbox
+                    id={`evtId_selectAll`}
+                    checked={allVisibleSelected}
+                    indeterminate={numVisibleSelected > 0 && !allVisibleSelected}
+                    onChange={(_, checked) => selectAllEvents(checked, visibleEventIds)}
+                  />
+                </HeaderCell>
+                <Cell>
+                  {(rowData: VipEvent) => (
+                    <Checkbox
+                      id={`evtId_${rowData.externalEventId}`}
+                      checked={eventIdList.includes(rowData.externalEventId)}
+                      onChange={(_, checked) => updateEventIdList(rowData.externalEventId, checked)}
+                    />
+                  )}
+                </Cell>
+              </Column>
+              <Column flexGrow={1} minWidth={100}>
+                <HeaderCell>Date</HeaderCell>
+                <Cell>{(rowData: VipEvent) => moment(rowData.eventDate).format('MM/DD/YYYY')}</Cell>
+              </Column>
+              <Column flexGrow={3}>
+                <HeaderCell>Title</HeaderCell>
+                <Cell>{(rowData: VipEvent) => rowData.title}</Cell>
+              </Column>
+              <Column flexGrow={2}>
+                <HeaderCell>Venue</HeaderCell>
+                <Cell>{(rowData: VipEvent) => (rowData.venue ? rowData.venue.name : '')}</Cell>
+              </Column>
+              <Column flexGrow={3}>
+                <HeaderCell>Location</HeaderCell>
+                <Cell>
+                  {(rowData: VipEvent) => (rowData.venue ? getLocation(rowData.venue) : '')}
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Sold</HeaderCell>
+                <Cell>{(rowData: VipEvent) => rowData.totalTickets}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Comped</HeaderCell>
+                <Cell>{(rowData: VipEvent) => rowData.numTicketsComped}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Refunded</HeaderCell>
+                <Cell>{(rowData: VipEvent) => rowData.numTicketsRefunded}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>Status</HeaderCell>
+                <Cell>{(rowData: VipEvent) => getEventStatusText(rowData)}</Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>&nbsp;</HeaderCell>
+                <Cell>
+                  {(rowData: VipEvent) => (
+                    <a
+                      href="#"
+                      id={`${rowData.externalEventId}_event`}
+                      onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
+                    >
+                      Edit
+                    </a>
+                  )}
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>&nbsp;</HeaderCell>
+                <Cell>
+                  {(rowData: VipEvent) =>
+                    rowData.orders && rowData.orders.length > 0 ? (
+                      <a
+                        href="#"
+                        id={`${rowData.externalEventId}_orders`}
+                        onClick={() => manageOrders(parseInt(`${rowData.externalEventId}`))}
+                      >
+                        Manage Orders
+                      </a>
+                    ) : (
+                      ''
+                    )
+                  }
+                </Cell>
+              </Column>
+            </Table>
+          </Col>
+        </Row>
       </div>
     </>
   );

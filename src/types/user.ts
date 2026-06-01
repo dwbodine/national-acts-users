@@ -2,6 +2,7 @@ import { ExternalVenue, TicketSocketAccount } from './admin';
 import { ITicketSalesData, Note, Order, Seller, SellerType, Tour, VipEvent } from './event';
 import {
   Country,
+  FanMoment,
   Faq,
   FaqCategory,
   FeaturedArtist,
@@ -371,6 +372,7 @@ export type AdminSelection = {
   reloadSellers?: boolean;
   reloadSettings?: boolean;
   selectedFaq?: Faq | undefined;
+  selectedFanMoment?: FanMoment | undefined;
   selectedFeaturedArtist?: FeaturedArtist | undefined;
   selectedUser?: User | undefined;
   selectedRole?: Role | undefined;
@@ -402,6 +404,7 @@ export type AdminDataSelection = {
   allPages?: Page[] | undefined;
   events?: VipEvent[] | undefined;
   featuredArtists?: FeaturedArtist[] | undefined;
+  fanMoments?: FanMoment[] | undefined;
   pageOrders?: Page[] | undefined;
   allFaqs?: Faq[] | undefined;
   faqCategories?: FaqCategory[] | undefined;

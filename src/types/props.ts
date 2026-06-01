@@ -440,3 +440,10 @@ export interface RenderNavProps {
   navs?: NavItemData[];
   onItemClick?: () => void;
 }
+
+export interface FanMomentFilter {
+  startDate: string;
+  endDate: string;
+  sellerId?: number;
+  eventId?: number;
+}
