@@ -2,7 +2,7 @@
 
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaArrowTurnDown } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -10,20 +10,13 @@ import { Button, Checkbox, Col, Nav, Row, SelectPicker, Table } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
-import { useCancelEvents } from '@/hooks/admin/useCancelEvent';
-import { useGetAdminEvents } from '@/hooks/admin/useGetAdminEvents';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
-import { useGetTicketSocketEventsOnly } from '@/hooks/admin/useGetTicketSocketEventsOnly';
-import { useGetTours } from '@/hooks/admin/useGetTours';
 import { useGetFanMoments } from '@/hooks/common/useGetFanMoments';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
-import { useSetEventsDeleted } from '@/hooks/event/useSetEventsDeleted';
-import { useSetEventsHidden } from '@/hooks/event/useSetEventsHidden';
-import { useSetEventsInactive } from '@/hooks/event/useSetEventsInactive';
-import { useSetEventsLiveInBandsInTown } from '@/hooks/event/useSetEventsLiveInBandsInTown';
 import {
   setAdminEvents,
+  setFanMoments,
   setTicketSocketEventsOnly,
   setTours,
   setVenues,
@@ -47,9 +40,11 @@ import {
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
+import { FanMomentFilter } from '@/types/props';
 import {
   GetCountriesResponse,
   GetEventsResponse,
+  GetFanMomentsResponse,
   GetSellersResponse,
   GetToursResponse,
   ModifyEventResponse,
@@ -118,12 +113,16 @@ export default function AdminFanMomentsIndex() {
         if (!globalSelection.isLoading) {
           dispatch(setIsLoading(true));
         }
-        void getFanMoments(adminSelection).then((response: GetEventsResponse) => {
-          if (response.events && !response.error) {
-            dispatch(setAdminEvents(response.events));
-            dispatch(setAdminEvent(undefined));
-            dispatch(setAdminOrder(undefined));
-            dispatch(setReloadEvents(false));
+
+        const filter: FanMomentFilter = {
+          sellerId,
+          startDate: moment().unix(),
+        };
+
+        void getFanMoments(filter).then((response: GetFanMomentsResponse) => {
+          if (response.fanMoments && !response.error) {
+            dispatch(setFanMoments(response.fanMoments));
+
             if (response.events?.length > 0) {
               const [firstEvent] = response.events;
               const lastEvent = response.events[response.events.length - 1];

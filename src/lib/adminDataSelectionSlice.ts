@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { ExternalVenue } from '@/types/admin';
 import { Order, Tour, VipEvent } from '@/types/event';
-import { Faq, FaqCategory, FeaturedArtist, Page } from '@/types/public';
+import { FanMoment, Faq, FaqCategory, FeaturedArtist, Page } from '@/types/public';
 
 import { AdminDataSelection } from '../types/user';
 
@@ -24,6 +24,7 @@ export const adminDataSelectionSlice = createSlice({
   name: 'adminSelection',
   reducers: {
     resetAdminData: (state) => {
+      state.fanMoments = undefined;
       state.pageOrders = undefined;
       state.events = undefined;
       state.allPages = undefined;
@@ -53,6 +54,10 @@ export const adminDataSelectionSlice = createSlice({
     },
     setAllPages: (state, action: PayloadAction<Page[] | undefined>) => {
       state.allPages = action.payload;
+      return state;
+    },
+    setFanMoments: (state, action: PayloadAction<FanMoment[] | undefined>) => {
+      state.fanMoments = action.payload;
       return state;
     },
     setFeaturedArtists: (state, action: PayloadAction<FeaturedArtist[] | undefined>) => {
@@ -90,6 +95,7 @@ export const {
   setTicketSocketEventsOnly,
   setTours,
   setVenues,
+  setFanMoments,
 } = adminDataSelectionSlice.actions;
 
 export default adminDataSelectionSlice.reducer;

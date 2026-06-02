@@ -442,8 +442,8 @@ export interface RenderNavProps {
 }
 
 export interface FanMomentFilter {
-  startDate: string;
-  endDate: string;
+  startDate: number;
+  endDate?: number;
   sellerId?: number;
   eventId?: number;
 }
