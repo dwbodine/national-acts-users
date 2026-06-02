@@ -39,10 +39,6 @@ export default function LoginComponent() {
     document.title = 'Client Portal - Login';
   }, [name, password, loginError, login]);
 
-  const register = () => {
-    router.push('/register');
-  };
-
   const forgotPassword = () => {
     router.push('/forgot-password');
   };
@@ -152,18 +148,12 @@ export default function LoginComponent() {
         </Row>
         <Row>
           <Col className="auth-control-container">
-            <p>
-              Don&apos;t have an account?{' '}
-              <a onClick={register} title="Sign up now">
-                Sign up now
-              </a>
-            </p>
-            <p>
+            <span>
               Forgot Password?{' '}
               <a onClick={forgotPassword} title="Forgot Password?">
                 Click here.
               </a>
-            </p>
+            </span>
           </Col>
         </Row>
       </Container>
