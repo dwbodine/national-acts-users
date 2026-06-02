@@ -48,10 +48,20 @@ export default function SelectSeller() {
     }
 
     if (selectedSellerId <= 0) {
-      const seller = getSelectedSeller(selectedSellerId);
+      document.title = 'Client Portal - Sales Overview';
+    }
+  }, [selectedSellerId, user, getUser]);
+
+  useEffect(() => {
+    if (!user?.sellers || user.sellers.length !== 1) {
+      return;
+    }
+
+    const [seller] = user.sellers;
+    if (seller && seller.sellerId !== selectedSellerId) {
       dispatch(setSeller(seller));
     }
-  }, [selectedSellerId, dispatch, user, getSelectedSeller, getUser]);
+  }, [dispatch, selectedSellerId, user?.sellers]);
 
   const handleChange = (sellerId: number | null) => {
     const seller = sellerId ? getSelectedSeller(sellerId) : undefined;
@@ -90,9 +100,6 @@ export default function SelectSeller() {
       );
     } else if (user && user.sellers) {
       const [seller] = user.sellers;
-      if (seller && seller.sellerId !== selectedSellerId) {
-        dispatch(setSeller(seller));
-      }
       return (
         <Row className="no-print admin-seller-row">
           <Col>{seller?.sellerName}</Col>
