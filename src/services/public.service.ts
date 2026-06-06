@@ -236,14 +236,18 @@ export class PublicService {
   };
 
   getFanMoments = async (filter: FanMomentFilter): Promise<GetFanMomentsResponse> => {
-    const url = `/public/fan-moments/filter?startDate=${filter.startDate}&endDate=${filter.endDate}`;
+    let url = `/public/fan-moments/filter?startDate=${filter.startDate}`;
+
+    if (filter.endDate) {
+      url += `&endDate=${filter.endDate}`;
+    }
 
     if (filter.sellerId) {
-      url.concat(`&sellerId=${filter.sellerId}`);
+      url += `&sellerId=${filter.sellerId}`;
     }
 
     if (filter.eventId) {
-      url.concat(`&eventId=${filter.eventId}`);
+      url += `&eventId=${filter.eventId}`;
     }
 
     const response: GetFanMomentsResponse = {};
