@@ -78,6 +78,7 @@ export const userReportSelectionSlice = createSlice({
     setDateRange: (state, action: PayloadAction<UserReportSelection>) => {
       state.start = action.payload.start;
       state.end = action.payload.end;
+      state.retainDateSelection = action.payload.retainDateSelection;
       return state;
     },
     setEventSeller: (state, action: PayloadAction<UserReportSelection>) => {

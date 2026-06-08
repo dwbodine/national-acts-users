@@ -139,7 +139,7 @@ export default function SalesBar() {
     const reportSelection = { ...currentReportSelection };
     reportSelection.start = selectedStart;
     reportSelection.end = selectedEnd;
-    reportSelection.retainDateSelection = true;
+    reportSelection.retainDateSelection = selectedStart > 0 && selectedEnd > 0;
     dispatch(setDateRange(reportSelection));
     dispatch(setReloadEvents(true));
     dispatch(setIsLoading(true));
@@ -156,6 +156,11 @@ export default function SalesBar() {
       stId = selectedTourId;
     }
     dispatch(setSelectedTourId(stId ? stId : undefined));
+    const reportSelection = { ...currentReportSelection };
+    reportSelection.start = 0;
+    reportSelection.end = 0;
+    reportSelection.retainDateSelection = false;
+    dispatch(setDateRange(reportSelection));
     dispatch(setReloadEvents(true));
     dispatch(setIsLoading(true));
   };
