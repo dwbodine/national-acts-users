@@ -130,17 +130,19 @@ export default function CurrentEvents() {
           if (!response.error) {
             if (response.events && response.events.length > 0) {
               dispatch(setEvents(response.events));
-              const [firstEvent] = response.events;
-              const lastEvent = response.events[response.events.length - 1];
-              if (firstEvent && lastEvent) {
-                const start = moment(firstEvent.eventDate).unix();
-                const end = moment(lastEvent.eventDate).unix();
-                const selection: UserReportSelection = {
-                  ...currentReportSelection,
-                  end,
-                  start,
-                };
-                dispatch(setDateRange(selection));
+              if (!currentReportSelection.retainDateSelection) {
+                const [firstEvent] = response.events;
+                const lastEvent = response.events[response.events.length - 1];
+                if (firstEvent && lastEvent) {
+                  const start = moment(firstEvent.eventDate).unix();
+                  const end = moment(lastEvent.eventDate).unix();
+                  const selection: UserReportSelection = {
+                    ...currentReportSelection,
+                    end,
+                    start,
+                  };
+                  dispatch(setDateRange(selection));
+                }
               }
             } else {
               dispatch(setEvents([]));
