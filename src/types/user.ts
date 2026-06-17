@@ -1,5 +1,6 @@
 import { ExternalVenue, TicketSocketAccount } from './admin';
 import { ITicketSalesData, Note, Order, Seller, SellerType, Tour, VipEvent } from './event';
+import { FanMomentFilter } from './props';
 import {
   Country,
   FanMoment,
@@ -355,6 +356,7 @@ export type AdminSelection = {
   allSellers?: Seller[] | undefined;
   allSettings?: SiteSetting[] | undefined;
   allPageSellers?: PageSeller[] | undefined;
+  fanFilter?: FanMomentFilter | undefined;
   sellerId?: number;
   start?: number;
   end?: number;

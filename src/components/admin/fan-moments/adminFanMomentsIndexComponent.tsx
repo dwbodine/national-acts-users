@@ -17,6 +17,7 @@ import {
   setAdminSellerId,
   setAllSellers,
   setCountries,
+  setFanFilter,
   setReloadCountries,
   setReloadFanMoments,
   setReloadSellers,
@@ -97,9 +98,11 @@ export default function AdminFanMomentsIndex() {
           dispatch(setIsLoading(true));
         }
 
-        const filter: FanMomentFilter = {
-          sellerId: sellerId,
-        };
+        const filter: FanMomentFilter = adminSelection.fanFilter
+          ? { ...adminSelection.fanFilter }
+          : {};
+        filter.sellerId = sellerId;
+        dispatch(setFanFilter(filter));
 
         void getFanMoments(filter)
           .then((response: GetFanMomentsResponse) => {
@@ -151,6 +154,11 @@ export default function AdminFanMomentsIndex() {
       return;
     }
     dispatch(setAdminSellerId(sellerId));
+    const filter: FanMomentFilter = currentAdminSelection.fanFilter
+      ? { ...currentAdminSelection.fanFilter }
+      : {};
+    filter.sellerId = sellerId;
+    dispatch(setFanFilter(filter));
     onDateChange(undefined, undefined);
   };
 
@@ -158,7 +166,11 @@ export default function AdminFanMomentsIndex() {
     const adminSelection = { ...currentAdminSelection };
     adminSelection.start = newStart;
     adminSelection.end = newEnd;
+    const filter: FanMomentFilter = adminSelection.fanFilter ? { ...adminSelection.fanFilter } : {};
+    filter.startDate = newStart;
+    filter.endDate = newEnd;
     dispatch(setAdminDates(adminSelection));
+    dispatch(setFanFilter(filter));
     dispatch(setReloadFanMoments(true));
   };
 
@@ -208,6 +220,17 @@ export default function AdminFanMomentsIndex() {
     router.push('/admin/fan-moments/edit');
   };
 
+  const refrehshData = () => {
+    const filter: FanMomentFilter = currentAdminSelection.fanFilter
+      ? { ...currentAdminSelection.fanFilter }
+      : {};
+    filter.startDate = undefined;
+    filter.endDate = undefined;
+    filter.eventId = undefined;
+    dispatch(setFanFilter(filter));
+    dispatch(setReloadFanMoments(true));
+  };
+
   const sellectedSellerId = currentAdminSelection.sellerId;
 
   return (
@@ -241,6 +264,11 @@ export default function AdminFanMomentsIndex() {
               Start={currentAdminSelection.start}
               End={currentAdminSelection.end}
             />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <Button onClick={() => refrehshData()}>Refresh</Button>
           </Col>
         </Row>
         <Row>

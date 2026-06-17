@@ -236,18 +236,44 @@ export class PublicService {
   };
 
   getFanMoments = async (filter: FanMomentFilter): Promise<GetFanMomentsResponse> => {
-    let url = `/public/fan-moments/filter?startDate=${filter.startDate}`;
+    let url = `/public/fan-moments/filter`;
+
+    if (filter.startDate || filter.endDate || filter.sellerId || filter.eventId) {
+      url += '?';
+    }
+
+    let firstParam = true;
+
+    if (filter.startDate) {
+      url += `startDate=${filter.startDate}`;
+      firstParam = false;
+    }
 
     if (filter.endDate) {
-      url += `&endDate=${filter.endDate}`;
+      if (!firstParam) {
+        url += '&';
+      } else {
+        firstParam = false;
+      }
+      url += `endDate=${filter.endDate}`;
     }
 
     if (filter.sellerId) {
-      url += `&sellerId=${filter.sellerId}`;
+      if (!firstParam) {
+        url += '&';
+      } else {
+        firstParam = false;
+      }
+      url += `sellerId=${filter.sellerId}`;
     }
 
     if (filter.eventId) {
-      url += `&eventId=${filter.eventId}`;
+      if (!firstParam) {
+        url += '&';
+      } else {
+        firstParam = false;
+      }
+      url += `eventId=${filter.eventId}`;
     }
 
     const response: GetFanMomentsResponse = {};

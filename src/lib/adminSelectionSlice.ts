@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
+import { FanMomentFilter } from '@/types/props';
 import {
   Country,
   FanMoment,
@@ -21,6 +22,7 @@ const initialState: AdminSelection = {
   allSettings: undefined,
   countries: undefined,
   end: undefined,
+  fanFilter: undefined,
   mustSaveEvent: false,
   mustSaveOrder: false,
   mustSavePage: false,
@@ -69,6 +71,7 @@ export const adminSelectionSlice = createSlice({
       state.sellerId = undefined;
       state.start = undefined;
       state.end = undefined;
+      state.fanFilter = undefined;
       state.reloadFaqs = true;
       state.reloadUsers = true;
       state.reloadRoles = true;
@@ -322,6 +325,10 @@ export const adminSelectionSlice = createSlice({
       state.venueSearchTerm = action.payload;
       return state;
     },
+    setFanFilter: (state, action: PayloadAction<FanMomentFilter | undefined>) => {
+      state.fanFilter = action.payload;
+      return state;
+    },
   },
 });
 
@@ -371,6 +378,7 @@ export const {
   setSelectedFaq,
   setReloadFaqs,
   setReloadFanMoments,
+  setFanFilter,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;
