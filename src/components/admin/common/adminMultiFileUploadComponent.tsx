@@ -19,6 +19,7 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
     FileUploadName: fileUploadName = '',
     ImageType: imageType,
     IsDirty: isDirty = false,
+    SubfolderName: subfolderName = '',
     OnFileRemove: onFileRemove,
     OnUpload: onUpload,
     OnUploadComplete: onUploadComplete,
@@ -30,22 +31,34 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
   const { uploadImage } = useUploadImage();
 
   const getBaseUrl = (uploadType: ImageType) => {
+    let baseUrl: string | undefined;
     switch (uploadType) {
       case ImageType.HEADERS:
-        return process.env['NEXT_PUBLIC_HEADERS_URL'];
+        baseUrl = process.env['NEXT_PUBLIC_HEADERS_URL'];
+        break;
       case ImageType.HOMEBANNERS:
-        return process.env['NEXT_PUBLIC_HOMEBANNERS_URL'];
+        baseUrl = process.env['NEXT_PUBLIC_HOMEBANNERS_URL'];
+        break;
       case ImageType.LOGOS:
-        return process.env['NEXT_PUBLIC_LOGOS_URL'];
+        baseUrl = process.env['NEXT_PUBLIC_LOGOS_URL'];
+        break;
       case ImageType.PREVIEWS:
-        return process.env['NEXT_PUBLIC_PREVIEW_URL'];
+        baseUrl = process.env['NEXT_PUBLIC_PREVIEW_URL'];
+        break;
       case ImageType.THUMBNAILS:
-        return process.env['NEXT_PUBLIC_THUMBNAILS_URL'];
+        baseUrl = process.env['NEXT_PUBLIC_THUMBNAILS_URL'];
+        break;
       case ImageType.FEATURED_ARTISTS:
-        return process.env['NEXT_PUBLIC_FEATURED_ARTISTS_URL'];
+        baseUrl = process.env['NEXT_PUBLIC_FEATURED_ARTISTS_URL'];
+        break;
+      case ImageType.FAN_MOMENTS:
+        baseUrl = process.env['NEXT_PUBLIC_FAN_MOMENTS_URL'];
+        break;
       default:
-        return '';
+        baseUrl = '';
+        break;
     }
+    return subfolderName ? `${baseUrl}/${subfolderName}` : baseUrl;
   };
 
   const baseUrl = getBaseUrl(imageType);
@@ -57,12 +70,10 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
   const [failedFileNames, setFailedFileNames] = useState<string[]>([]);
 
   const normalizeFileName = (fileName: string) =>
-    fileName.startsWith('http') ? fileName : `${baseUrl}/${fileName}`;
+    fileName.startsWith('http') || !baseUrl ? fileName : `${baseUrl}/${fileName}`;
 
   const currentFileNames =
-    CurrentFileNames?.filter((fileName) => fileName && fileName !== 'None').map(
-      normalizeFileName,
-    ) ?? [];
+    CurrentFileNames?.filter((fileName) => fileName && fileName !== 'None') ?? [];
 
   const isAcceptedImage = (file: File) => {
     const fileName = file.name.toLowerCase();
@@ -111,13 +122,15 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
     setIsUploading(false);
     setFailedFileNames(failedUploads.map((result) => result.originalFileName));
 
-    if (uploadedFileNames.length && onUpload) {
-      onUpload(fileUploadName, uploadedFileNames);
-      setIsUploaded(true);
-
-      if (onUploadComplete) {
-        onUploadComplete(uploadedFileNames);
+    if (uploadedFileNames.length) {
+      if (onUpload) {
+        onUpload(fileUploadName, uploadedFileNames);
       }
+      setIsUploaded(true);
+    }
+
+    if (onUploadComplete) {
+      onUploadComplete(uploadedFileNames.length ? uploadedFileNames : undefined);
     }
 
     setFileList([]);
@@ -129,22 +142,26 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
     }
   };
 
-  const currentFileLinks = currentFileNames.map((currentFileName) => (
-    <div key={currentFileName}>
-      <a href={currentFileName} target="_blank" rel="noreferrer">
-        {currentFileName}
-      </a>
-      {showRemoveButton && (
-        <FaTimesCircle
-          className="admin-current-file-remove"
-          title={`Remove ${currentFileName}`}
-          onClick={() => {
-            handleFileRemove(currentFileName);
-          }}
-        />
-      )}
-    </div>
-  ));
+  const currentFileLinks = currentFileNames.map((currentFileName) => {
+    const currentFileUrl = normalizeFileName(currentFileName);
+
+    return (
+      <div key={currentFileName}>
+        <a href={currentFileUrl} target="_blank" rel="noreferrer">
+          {currentFileName}
+        </a>
+        {showRemoveButton && (
+          <FaTimesCircle
+            className="admin-current-file-remove"
+            title={`Remove ${currentFileName}`}
+            onClick={() => {
+              handleFileRemove(currentFileName);
+            }}
+          />
+        )}
+      </div>
+    );
+  });
 
   return (
     <div className="admin-file-upload">
