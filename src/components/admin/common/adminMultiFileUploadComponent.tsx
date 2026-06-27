@@ -11,11 +11,13 @@ import { AdminMultiFileUploadProps } from '@/types/props';
 
 const ACCEPTED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png'];
 const ACCEPTED_IMAGE_TYPES = ACCEPTED_IMAGE_EXTENSIONS.join(',');
+const GALLERY_COLUMN_COUNT = 4;
 
 export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
   const {
     CurrentFileNames,
     CurrentFileTitle: currentFileTitle = 'Current files: ',
+    DisplayAsGallery: displayAsGallery = false,
     FileUploadName: fileUploadName = '',
     ImageType: imageType,
     IsDirty: isDirty = false,
@@ -81,7 +83,7 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
   };
 
   const uploadFile = async (file: File) => {
-    const uploadedFileName = await uploadImage(file, imageType);
+    const uploadedFileName = await uploadImage(file, imageType, subfolderName);
 
     return {
       originalFileName: file.name,
@@ -163,6 +165,54 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
     );
   });
 
+  const galleryRows: string[][] = [];
+  for (let i = 0; i < currentFileNames.length; i += GALLERY_COLUMN_COUNT) {
+    galleryRows.push(currentFileNames.slice(i, i + GALLERY_COLUMN_COUNT));
+  }
+
+  const currentFileGallery = (
+    <table className="admin-current-file-gallery">
+      <tbody>
+        {galleryRows.map((galleryRow, rowIndex) => (
+          <tr key={`gallery-row-${rowIndex}`}>
+            {galleryRow.map((currentFileName) => {
+              const currentFileUrl = normalizeFileName(currentFileName);
+
+              return (
+                <td className="admin-current-file-gallery-cell" key={currentFileName}>
+                  <div className="admin-current-file-gallery-image-container">
+                    <a
+                      aria-label={`View ${currentFileName}`}
+                      href={currentFileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      title={currentFileName}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="admin-current-file-gallery-image"
+                        style={{ backgroundImage: `url("${currentFileUrl}")` }}
+                      />
+                    </a>
+                    {showRemoveButton && (
+                      <FaTimesCircle
+                        className="admin-current-file-gallery-remove"
+                        title={`Remove ${currentFileName}`}
+                        onClick={() => {
+                          handleFileRemove(currentFileName);
+                        }}
+                      />
+                    )}
+                  </div>
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
   return (
     <div className="admin-file-upload">
       <div className="admin-setting-title">{title}</div>
@@ -184,7 +234,9 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
           void handleFileChange(newList);
         }}
       >
-        <Button appearance="primary">Select or Drop Image Files</Button>
+        <Button className="admin-file-multi-upload-button" appearance="primary">
+          Select or Drop Image Files
+        </Button>
       </Uploader>
 
       <span className="danger" hidden={!isUploading}>
@@ -201,7 +253,7 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
       </span>
 
       <div className="admin-current-file-title" hidden={!currentFileNames.length}>
-        {currentFileTitle} {currentFileLinks}
+        {currentFileTitle} {displayAsGallery ? currentFileGallery : currentFileLinks}
       </div>
     </div>
   );

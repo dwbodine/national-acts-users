@@ -63,6 +63,7 @@ export interface AdminMultiFileUploadProps {
   Title?: string;
   CurrentFileTitle?: string;
   FileUploadName?: string;
+  DisplayAsGallery?: boolean;
   ShowRemoveButton?: boolean;
   CurrentFileNames?: string[];
   IsDirty?: boolean;

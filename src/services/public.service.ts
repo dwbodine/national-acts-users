@@ -186,12 +186,20 @@ export class PublicService {
     return response;
   };
 
-  uploadImageFile = async (file: File, imageType: ImageType): Promise<string | undefined> => {
+  uploadImageFile = async (
+    file: File,
+    imageType: ImageType,
+    subfolder?: string,
+  ): Promise<string | undefined> => {
     if (!file || !file.name || !imageType) {
       return undefined;
     }
 
-    const url = `/public/uploadImage/${imageType.valueOf()}`;
+    let url = `/public/uploadImage/${imageType.valueOf()}`;
+
+    if (subfolder) {
+      url += `?subfolder=${encodeURIComponent(subfolder)}`;
+    }
 
     const data = new FormData();
     data.append('tempFile', file);

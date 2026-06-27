@@ -140,11 +140,61 @@ a.edit-event-link {
 
 .admin-current-file-title {
   font-size: 12px;
+  margin-top: 50px;
 }
 
 .admin-current-file-remove {
   font-size: 15px;
   cursor: pointer;
+}
+
+.admin-current-file-gallery {
+  border-collapse: separate;
+  border-spacing: 10px;
+  margin-top: 5px;
+}
+
+.admin-current-file-gallery-cell {
+  padding: 0;
+  vertical-align: top;
+}
+
+.admin-current-file-gallery-image-container {
+  border: 1px solid #ddd;
+  height: 300px;
+  position: relative;
+  width: 300px;
+}
+
+.admin-current-file-gallery-image {
+  background-position: center;
+  background-size: cover;
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.admin-current-file-gallery-remove {
+  background-color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  position: absolute;
+  right: -7px;
+  top: -7px;
+}
+
+.admin-file-multi-upload-button {
+  color: black !important;
+  height: 120px;
+  margin-bottom: 5px;
+  border: 2px dashed #00f !important;
+}
+
+.admin-file-multi-upload-button:hover {
+  background-color: steelblue !important;
+  color: white !important;
+  border-color: white !important;
 }
 
 .admin-report-datepicker-label {

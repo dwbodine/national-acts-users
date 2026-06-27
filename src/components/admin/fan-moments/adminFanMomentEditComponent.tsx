@@ -2,19 +2,23 @@
 
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Button, Col, Row } from 'rsuite';
+import { Button, Col, Row, SelectPicker } from 'rsuite';
+import { ItemDataType } from 'rsuite/esm/internals/types';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
 import { ImageType } from '@/constants';
-import { useAddFanMoments } from '@/hooks/admin/useAddFanMoments';
+import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
+import { useUpdateFanMoment } from '@/hooks/admin/useUpdateFanMoments';
 import { setReloadFanMoments, setSelectedFanMoment } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
+import { VipEvent } from '@/types/event';
 import { FanMoment } from '@/types/public';
-import { ModifyFanMomentResponse } from '@/types/responses';
+import { GetEventsResponse, ModifyFanMomentResponse } from '@/types/responses';
+import { getLocationInfoFromVenue } from '@/utils/eventUtils';
 
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import AdminMultiFileUpload from '../common/adminMultiFileUploadComponent';
@@ -24,9 +28,16 @@ export default function AdminFanMomentEdit() {
   const fanMoment = currentAdminSelection.selectedFanMoment;
   const router = useRouter();
   const dispatch = useDispatch();
-  const { addFanMoments } = useAddFanMoments();
+  const { updateFanMoment } = useUpdateFanMoment();
+  const { getAdminSellerEvents } = useGetAdminSellerEvents();
   const [isDirty, setIsDirty] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [sellerEvents, setSellerEvents] = useState<VipEvent[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(false);
+  const [isNewFanMoment] = useState(
+    () => !!fanMoment && !fanMoment.key.eventTitle && !fanMoment.key.eventLocation,
+  );
+  const sellerEventsRequestSellerId = useRef<number | undefined>(undefined);
 
   const goBack = () => {
     toast.dismiss();
@@ -37,14 +48,34 @@ export default function AdminFanMomentEdit() {
     if (!fanMoment) {
       toast.dismiss();
       router.push('/admin/fan-moments');
+      return;
     }
-  }, [fanMoment, router]);
+
+    const sellerId = fanMoment.key.sellerId;
+    if (!isNewFanMoment || !sellerId || sellerEventsRequestSellerId.current === sellerId) {
+      return;
+    }
+
+    sellerEventsRequestSellerId.current = sellerId;
+    setEventsLoading(true);
+    void getAdminSellerEvents([sellerId])
+      .then((response: GetEventsResponse) => {
+        if (response.events && !response.error) {
+          setSellerEvents(response.events);
+        } else {
+          toast.error(response.error ?? 'Error occurred while loading events');
+        }
+      })
+      .finally(() => {
+        setEventsLoading(false);
+      });
+  }, [fanMoment, getAdminSellerEvents, isNewFanMoment, router]);
 
   const markDirty = () => {
     setIsDirty(true);
   };
 
-  const updateFanMoment = (updatedFanMoment: FanMoment) => {
+  const updateFanMomentLocal = (updatedFanMoment: FanMoment) => {
     dispatch(setSelectedFanMoment(updatedFanMoment));
     markDirty();
   };
@@ -63,7 +94,7 @@ export default function AdminFanMomentEdit() {
       }
     });
 
-    updateFanMoment({
+    updateFanMomentLocal({
       ...fanMoment,
       images: nextImages,
     });
@@ -74,9 +105,35 @@ export default function AdminFanMomentEdit() {
       return;
     }
 
-    updateFanMoment({
+    updateFanMomentLocal({
       ...fanMoment,
       images: (fanMoment.images ?? []).filter((image) => image !== filename),
+    });
+  };
+
+  const getFanMomentEventLocation = (event: VipEvent) => {
+    return event.venue ? getLocationInfoFromVenue(event.venue) : '';
+  };
+
+  const setFanMomentEvent = (eventId: number | null) => {
+    if (!fanMoment || !eventId) {
+      return;
+    }
+
+    const selectedEvent = sellerEvents.find((event) => event.externalEventId === eventId);
+    if (!selectedEvent) {
+      return;
+    }
+
+    updateFanMomentLocal({
+      ...fanMoment,
+      key: {
+        ...fanMoment.key,
+        eventId: selectedEvent.externalEventId,
+        eventLocation: getFanMomentEventLocation(selectedEvent),
+        eventTitle: selectedEvent.title,
+        momentDate: moment(selectedEvent.eventDate).format('YYYY-MM-DD'),
+      },
     });
   };
 
@@ -98,12 +155,17 @@ export default function AdminFanMomentEdit() {
       return;
     }
 
+    if (isNewFanMoment && !fanMoment.key.eventId) {
+      toast.error('Must select an event');
+      return;
+    }
+
     dispatch(setIsLoading(true));
 
-    void addFanMoments(fanMoment).then((response: ModifyFanMomentResponse) => {
+    void updateFanMoment(fanMoment).then((response: ModifyFanMomentResponse) => {
       if (response.success) {
         dispatch(setReloadFanMoments(true));
-        dispatch(setSelectedFanMoment(response.updatedFanMoment ?? fanMoment));
+        dispatch(setSelectedFanMoment(undefined));
         setIsDirty(false);
         toast.success('Fan moment saved successfully');
         router.push('/admin/fan-moments');
@@ -144,9 +206,25 @@ export default function AdminFanMomentEdit() {
   const momentDate = fanMoment?.key.momentDate
     ? moment(fanMoment.key.momentDate).format('MM/DD/YYYY')
     : '';
+  const sellerId = fanMoment?.key.sellerId ?? currentAdminSelection.sellerId;
+  const sellerName =
+    fanMoment?.key.sellerName ??
+    currentAdminSelection.allSellers?.find((seller) => seller.sellerId === sellerId)?.name ??
+    '';
   const pageHeader = fanMoment?.key.eventTitle
     ? `Edit Fan Moment - ${fanMoment.key.eventTitle}`
     : 'Edit Fan Moment';
+
+  const eventList: ItemDataType<number>[] = sellerEvents
+    .filter((event) => !moment(event.eventDate).isAfter(moment(), 'day'))
+    .sort((a, b) => moment(b.eventDate).valueOf() - moment(a.eventDate).valueOf())
+    .map((event) => {
+      const venueName = event.venue?.name ? ` - ${event.venue.name}` : '';
+      return {
+        label: `${moment(event.eventDate).format('MM/DD/YYYY')} - ${event.title}${venueName}`,
+        value: event.externalEventId,
+      };
+    });
 
   const subFolder =
     fanMoment?.key.momentDate && fanMoment?.key.eventId
@@ -158,15 +236,37 @@ export default function AdminFanMomentEdit() {
       <PageHeader pageTitle={pageHeader} />
       <Row className="admin-container">
         <Col xs={24}>
-          <Row hidden={!momentDate}>
+          <Row hidden={!sellerName}>
+            <Col xs={24}>
+              <div className="admin-setting-title">Seller</div>
+              <div>{sellerName}</div>
+            </Col>
+          </Row>
+          <Row hidden={isNewFanMoment || !momentDate}>
             <Col xs={24}>
               <div className="admin-setting-title">Date</div>
               <div>{momentDate}</div>
             </Col>
           </Row>
-          <Row hidden={!fanMoment?.key.eventLocation}>
+          <Row hidden={!isNewFanMoment}>
+            <Col xs={24} md={12}>
+              <div className="admin-setting-title">Event</div>
+              <SelectPicker
+                block
+                cleanable={false}
+                data={eventList}
+                loading={eventsLoading}
+                menuAutoWidth={true}
+                onChange={(eventId) => setFanMomentEvent(eventId)}
+                placeholder="Select an event"
+                size="lg"
+                value={fanMoment?.key.eventId}
+              />
+            </Col>
+          </Row>
+          <Row hidden={isNewFanMoment || !fanMoment?.key.eventLocation}>
             <Col xs={24}>
-              <div className="admin-setting-title">Location</div>
+              <div className="admin-setting-title">Event</div>
               <div>{fanMoment?.key.eventLocation}</div>
             </Col>
           </Row>
@@ -176,6 +276,7 @@ export default function AdminFanMomentEdit() {
                 ImageType={ImageType.FAN_MOMENTS}
                 Title="Fan Moment Images"
                 FileUploadName="FanMomentImages"
+                DisplayAsGallery={true}
                 CurrentFileNames={fanMoment?.images}
                 CurrentFileTitle="Current fan moment images:"
                 IsDirty={isDirty}

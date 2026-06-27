@@ -303,8 +303,8 @@ export class AdminService {
     return response;
   };
 
-  addFanMomment = async (fmToUpdate: FanMoment): Promise<ModifyFanMomentResponse> => {
-    const url = `/admin/fan-moments/add`;
+  updateFanMoment = async (fmToUpdate: FanMoment): Promise<ModifyFanMomentResponse> => {
+    const url = `/admin/moments/update`;
 
     const response: ModifyFanMomentResponse = {};
 
@@ -322,7 +322,7 @@ export class AdminService {
       response.statusCode = getStatusCode(err);
       response.error = getErrorMessage(
         err,
-        'Unknown error while adding fan moment - please contact your administrator',
+        'Unknown error while updating fan moment - please contact your administrator',
       );
     }
 
