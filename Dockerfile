@@ -1,7 +1,7 @@
 # ---------------------------------------------------------
 # 1) BUILDER STAGE — install deps, build Next.js standalone
 # ---------------------------------------------------------
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 # Enable Yarn 4.15.0
 RUN corepack enable && corepack prepare yarn@4.15.0 --activate
@@ -31,7 +31,7 @@ RUN yarn standalone
 # ---------------------------------------------------------
 # 2) RUNTIME STAGE — small, secure, minimal dependencies
 # ---------------------------------------------------------
-FROM node:24-alpine AS runner
+FROM node:26-alpine AS runner
 
 # Add ICU for full Intl support
 RUN apk add --no-cache icu-data-full
