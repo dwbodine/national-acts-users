@@ -363,11 +363,11 @@ export default function AdminFanMomentsIndex() {
                 <Cell>{(rowData: FanMoment) => rowData.key.eventTitle}</Cell>
               </Column>
               <Column flexGrow={2}>
-                <HeaderCell>Location</HeaderCell>
+                <HeaderCell>Venue</HeaderCell>
                 <Cell>{(rowData: FanMoment) => rowData.key.eventLocation}</Cell>
               </Column>
               <Column flexGrow={3}>
-                <HeaderCell>Images</HeaderCell>
+                <HeaderCell># of Images</HeaderCell>
                 <Cell>{(rowData: FanMoment) => (rowData.images ? rowData.images.length : 0)}</Cell>
               </Column>
               <Column flexGrow={1}>

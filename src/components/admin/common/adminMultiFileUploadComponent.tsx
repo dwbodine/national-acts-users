@@ -16,6 +16,7 @@ const GALLERY_COLUMN_COUNT = 4;
 export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
   const {
     CurrentFileNames,
+    Disabled: disabled = false,
     CurrentFileTitle: currentFileTitle = 'Current files: ',
     DisplayAsGallery: displayAsGallery = false,
     FileUploadName: fileUploadName = '',
@@ -221,7 +222,7 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
         accept={ACCEPTED_IMAGE_TYPES}
         action=""
         autoUpload={false}
-        disabled={isUploading}
+        disabled={isUploading || disabled}
         draggable
         fileList={fileList}
         fileListVisible={false}

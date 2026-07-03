@@ -69,6 +69,7 @@ export interface AdminMultiFileUploadProps {
   IsDirty?: boolean;
   ImageType: ImageType;
   SubfolderName?: string;
+  Disabled?: boolean;
   OnUpload?: (fileUploadName: string, fileNames: string[]) => void;
   OnUploadStart?: () => void;
   OnUploadComplete?: (fileNames?: string[]) => void;

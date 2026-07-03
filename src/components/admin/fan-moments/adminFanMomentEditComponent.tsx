@@ -12,13 +12,20 @@ import PageHeader from '@/components/common/PageHeaderComponent';
 import { ImageType } from '@/constants';
 import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 import { useUpdateFanMoment } from '@/hooks/admin/useUpdateFanMoments';
+import { useGetFanMoments } from '@/hooks/common/useGetFanMoments';
 import { setReloadFanMoments, setSelectedFanMoment } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
+import { FanMomentFilter } from '@/types/props';
 import { FanMoment } from '@/types/public';
-import { GetEventsResponse, ModifyFanMomentResponse } from '@/types/responses';
+import {
+  GetEventsResponse,
+  GetFanMomentsResponse,
+  ModifyFanMomentResponse,
+} from '@/types/responses';
 import { getLocationInfoFromVenue } from '@/utils/eventUtils';
+import { filterEventsWithoutFanMomentFolders } from '@/utils/fanMomentUtils';
 
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import AdminMultiFileUpload from '../common/adminMultiFileUploadComponent';
@@ -30,6 +37,7 @@ export default function AdminFanMomentEdit() {
   const dispatch = useDispatch();
   const { updateFanMoment } = useUpdateFanMoment();
   const { getAdminSellerEvents } = useGetAdminSellerEvents();
+  const { getFanMoments } = useGetFanMoments();
   const [isDirty, setIsDirty] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [sellerEvents, setSellerEvents] = useState<VipEvent[]>([]);
@@ -56,18 +64,31 @@ export default function AdminFanMomentEdit() {
 
     sellerEventsRequestSellerId.current = sellerId;
     setEventsLoading(true);
-    void getAdminSellerEvents([sellerId])
-      .then((response: GetEventsResponse) => {
-        if (response.events && !response.error) {
-          setSellerEvents(response.events);
-        } else {
-          toast.error(response.error ?? 'Error occurred while loading events');
+    const filter: FanMomentFilter = { sellerId };
+    void Promise.all([getAdminSellerEvents([sellerId]), getFanMoments(filter)])
+      .then(([eventsResponse, fanMomentsResponse]: [GetEventsResponse, GetFanMomentsResponse]) => {
+        if (!eventsResponse.events || eventsResponse.error) {
+          toast.error(eventsResponse.error ?? 'Error occurred while loading events');
         }
+
+        if (fanMomentsResponse.error) {
+          toast.error(fanMomentsResponse.error);
+        }
+
+        if (!eventsResponse.events || eventsResponse.error || fanMomentsResponse.error) {
+          return;
+        }
+
+        const availableEvents = filterEventsWithoutFanMomentFolders(
+          eventsResponse.events,
+          fanMomentsResponse.fanMoments,
+        );
+        setSellerEvents(availableEvents);
       })
       .finally(() => {
         setEventsLoading(false);
       });
-  }, [fanMoment, getAdminSellerEvents, isNewFanMoment, router]);
+  }, [fanMoment, getAdminSellerEvents, getFanMoments, isNewFanMoment, router]);
 
   const markDirty = () => {
     setIsDirty(true);
@@ -264,7 +285,7 @@ export default function AdminFanMomentEdit() {
           </Row>
           <Row hidden={isNewFanMoment || !fanMoment?.key.eventLocation}>
             <Col xs={24}>
-              <div className="admin-setting-title">Event</div>
+              <div className="admin-setting-title">Venue</div>
               <div>{fanMoment?.key.eventLocation}</div>
             </Col>
           </Row>
@@ -284,15 +305,18 @@ export default function AdminFanMomentEdit() {
                 ShowRemoveButton={true}
                 OnFileRemove={onFileRemove}
                 SubfolderName={subFolder}
+                Disabled={eventsLoading}
               />
             </Col>
           </Row>
           <Row>
             <Col xs={24}>
-              <Button onClick={onSubmit} disabled={isUploading || !fanMoment}>
+              <Button onClick={onSubmit} disabled={isUploading || eventsLoading || !fanMoment}>
                 Submit
               </Button>{' '}
-              <Button onClick={confirmGoBack}>Back</Button>
+              <Button disabled={isUploading || eventsLoading} onClick={confirmGoBack}>
+                Back
+              </Button>
             </Col>
           </Row>
         </Col>
