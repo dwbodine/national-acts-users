@@ -6,6 +6,7 @@ import { Seller } from '@/types/event';
 import {
   Country,
   FanMoment,
+  FanMomentKey,
   Faq,
   FaqCategory,
   FeaturedArtist,
@@ -329,12 +330,12 @@ export class AdminService {
     return response;
   };
 
-  deleteFanMomment = async (fmToUpdate: FanMoment): Promise<ModifyFanMomentResponse> => {
-    const url = `/admin/fan-moments/delete`;
+  deleteFanMomment = async (fmKey: FanMomentKey): Promise<ModifyFanMomentResponse> => {
+    const url = `/admin/moments/delete`;
 
     const response: ModifyFanMomentResponse = {};
 
-    const data = JSON.stringify(fmToUpdate);
+    const data = JSON.stringify(fmKey);
 
     const headers = getAuthorizationHeader();
 

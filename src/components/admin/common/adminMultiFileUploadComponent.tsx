@@ -242,7 +242,7 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
       <span className="danger" hidden={!isUploading}>
         Uploading...
       </span>
-      <span className="success" hidden={!isUploaded && !isDirty}>
+      <span className="success" hidden={(!isUploaded && !isDirty) || !currentFileNames.length}>
         Updated!
       </span>
       <span className="danger" hidden={!invalidFileNames.length}>

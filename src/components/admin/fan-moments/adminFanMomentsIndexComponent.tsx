@@ -7,7 +7,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Button, Col, Row, Table } from 'rsuite';
 
+import ConfirmationDialog from '@/components/common/confirmationDialogComponent';
 import PageHeader from '@/components/common/PageHeaderComponent';
+import { useDeleteFanMoment } from '@/hooks/admin/useDeleteFanMoment';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useGetFanMoments } from '@/hooks/common/useGetFanMoments';
 import { useGetSellers } from '@/hooks/common/useGetSellers';
@@ -27,7 +29,12 @@ import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { FanMomentFilter } from '@/types/props';
 import { FanMoment } from '@/types/public';
-import { GetCountriesResponse, GetFanMomentsResponse, GetSellersResponse } from '@/types/responses';
+import {
+  GetCountriesResponse,
+  GetFanMomentsResponse,
+  GetSellersResponse,
+  ModifyFanMomentResponse,
+} from '@/types/responses';
 import { AdminSelection } from '@/types/user';
 
 import ReportDatePicker from '../../common/reportDatePickerControl';
@@ -40,6 +47,7 @@ export default function AdminFanMomentsIndex() {
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
   const { getSellers } = useGetSellers();
   const { getFanMoments } = useGetFanMoments();
+  const { deleteFanMoment } = useDeleteFanMoment();
   const dispatch = useDispatch();
   const [tableLoading, setTableLoading] = useState(false);
   const fanMomentsRequestInFlight = useRef(false);
@@ -220,7 +228,7 @@ export default function AdminFanMomentsIndex() {
     router.push('/admin/fan-moments/edit');
   };
 
-  const refrehshData = () => {
+  const refreshData = () => {
     const filter: FanMomentFilter = currentAdminSelection.fanFilter
       ? { ...currentAdminSelection.fanFilter }
       : {};
@@ -229,6 +237,67 @@ export default function AdminFanMomentsIndex() {
     filter.eventId = undefined;
     dispatch(setFanFilter(filter));
     dispatch(setReloadFanMoments(true));
+  };
+
+  const confirmDelete = (eventId: number) => {
+    const message =
+      'By clicking Yes this gallery and all images will be permanently deleted from the server.';
+
+    toast.warning(
+      <ConfirmationDialog
+        Message={message}
+        ConfirmText="Yes"
+        CancelText="No"
+        ConfirmSureText="Are you sure you want to delete this fan moment gallery?"
+        OnConfirm={() => deleteMoment(eventId)}
+        OnCancel={() => {
+          toast.dismiss();
+        }}
+      />,
+      {
+        autoClose: false,
+        closeOnClick: false,
+        position: 'top-center',
+      },
+    );
+  };
+
+  const deleteMoment = (eventId: number) => {
+    if (
+      !eventId ||
+      isNaN(eventId) ||
+      !currentAdminDataSelection.fanMoments ||
+      currentAdminDataSelection.fanMoments.length === 0
+    ) {
+      return;
+    }
+    const fanMoment: FanMoment | undefined = currentAdminDataSelection.fanMoments.find(
+      (x) => x.key.eventId === eventId,
+    );
+    if (
+      !fanMoment ||
+      !fanMoment.key ||
+      !fanMoment.key.eventId ||
+      !fanMoment.key.sellerId ||
+      !fanMoment.key.momentDate
+    ) {
+      return;
+    }
+
+    toast.dismiss();
+
+    dispatch(setIsLoading(true));
+
+    void deleteFanMoment(fanMoment.key).then((response: ModifyFanMomentResponse) => {
+      if (response.success) {
+        dispatch(setReloadFanMoments(true));
+        dispatch(setSelectedFanMoment(undefined));
+        toast.success('Fan moment deleted successfully');
+      } else {
+        toast.error(response.error ?? 'Error occurred while deleting fan moment');
+      }
+      dispatch(setIsLoading(false));
+    });
   };
 
   const sellectedSellerId = currentAdminSelection.sellerId;
@@ -240,7 +309,7 @@ export default function AdminFanMomentsIndex() {
         <Row>
           <Col>
             <Button hidden={sellectedSellerId === undefined} onClick={addMoment}>
-              Add New Event
+              Add Event Gallery
             </Button>
           </Col>
         </Row>
@@ -256,7 +325,7 @@ export default function AdminFanMomentsIndex() {
           </Col>
         </Row>
         <Row>
-          <Col xs={24}>
+          <Col xs={24} hidden={sellectedSellerId === undefined}>
             <ReportDatePicker
               OnChange={onDateChange}
               OnStartClear={onStartClear}
@@ -268,7 +337,9 @@ export default function AdminFanMomentsIndex() {
         </Row>
         <Row>
           <Col xs={24}>
-            <Button onClick={() => refrehshData()}>Refresh</Button>
+            <Button hidden={sellectedSellerId === undefined} onClick={() => refreshData()}>
+              Refresh
+            </Button>
           </Col>
         </Row>
         <Row>
@@ -305,10 +376,24 @@ export default function AdminFanMomentsIndex() {
                   {(rowData: FanMoment) => (
                     <a
                       href="#"
-                      id={`${rowData.key.eventId}_event`}
+                      id={`${rowData.key.eventId}_edit_event`}
                       onClick={() => editMoment(parseInt(`${rowData.key.eventId}`))}
                     >
                       Edit
+                    </a>
+                  )}
+                </Cell>
+              </Column>
+              <Column flexGrow={1}>
+                <HeaderCell>&nbsp;</HeaderCell>
+                <Cell>
+                  {(rowData: FanMoment) => (
+                    <a
+                      href="#"
+                      id={`${rowData.key.eventId}_delete_event`}
+                      onClick={() => confirmDelete(parseInt(`${rowData.key.eventId}`))}
+                    >
+                      Delete
                     </a>
                   )}
                 </Cell>

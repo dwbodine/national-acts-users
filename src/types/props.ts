@@ -101,6 +101,7 @@ export interface ConfirmationDialogProps {
   Message?: string;
   ConfirmText?: string;
   CancelText?: string;
+  ConfirmSureText?: string;
   OnConfirm?: () => void;
   OnCancel?: () => void;
 }

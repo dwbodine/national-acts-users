@@ -1,11 +1,11 @@
-import { FanMoment } from '@/types/public';
+import { FanMomentKey } from '@/types/public';
 import { ModifyFanMomentResponse } from '@/types/responses';
 
 import { adminService } from '../../services';
 
 export const useDeleteFanMoment = () => {
-  const deleteFanMoment = async (fanMoment: FanMoment): Promise<ModifyFanMomentResponse> =>
-    await adminService.deleteFanMomment(fanMoment);
+  const deleteFanMoment = async (fanMomentKey: FanMomentKey): Promise<ModifyFanMomentResponse> =>
+    await adminService.deleteFanMomment(fanMomentKey);
 
   return { deleteFanMoment };
 };

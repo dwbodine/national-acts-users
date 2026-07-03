@@ -34,9 +34,7 @@ export default function AdminFanMomentEdit() {
   const [isUploading, setIsUploading] = useState(false);
   const [sellerEvents, setSellerEvents] = useState<VipEvent[]>([]);
   const [eventsLoading, setEventsLoading] = useState(false);
-  const [isNewFanMoment] = useState(
-    () => !!fanMoment && !fanMoment.key.eventTitle && !fanMoment.key.eventLocation,
-  );
+  const [isNewFanMoment] = useState(() => fanMoment?.key.eventId === undefined);
   const sellerEventsRequestSellerId = useRef<number | undefined>(undefined);
 
   const goBack = () => {

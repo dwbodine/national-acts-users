@@ -244,7 +244,7 @@ export class PublicService {
   };
 
   getFanMoments = async (filter: FanMomentFilter): Promise<GetFanMomentsResponse> => {
-    let url = `/public/fan-moments/filter`;
+    let url = `/public/moments/filter`;
 
     if (filter.startDate || filter.endDate || filter.sellerId || filter.eventId) {
       url += '?';
