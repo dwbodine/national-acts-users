@@ -2,8 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
+import { FanMomentFilter } from '@/types/props';
 import {
   Country,
+  FanMoment,
   Faq,
   FeaturedArtist,
   Page,
@@ -20,6 +22,7 @@ const initialState: AdminSelection = {
   allSettings: undefined,
   countries: undefined,
   end: undefined,
+  fanFilter: undefined,
   mustSaveEvent: false,
   mustSaveOrder: false,
   mustSavePage: false,
@@ -30,6 +33,7 @@ const initialState: AdminSelection = {
   pageTypes: undefined,
   reloadCountries: true,
   reloadEvents: true,
+  reloadFanMoments: true,
   reloadFaqs: true,
   reloadFeaturedArtists: true,
   reloadPages: true,
@@ -67,15 +71,18 @@ export const adminSelectionSlice = createSlice({
       state.sellerId = undefined;
       state.start = undefined;
       state.end = undefined;
+      state.fanFilter = undefined;
       state.reloadFaqs = true;
       state.reloadUsers = true;
       state.reloadRoles = true;
       state.reloadEvents = true;
+      state.reloadFanMoments = true;
       state.reloadFeaturedArtists = true;
       state.reloadPages = true;
       state.reloadTours = true;
       state.reloadSellers = true;
       state.reloadVenues = true;
+      state.selectedFanMoment = undefined;
       state.selectedFaq = undefined;
       state.selectedFeaturedArtist = undefined;
       state.selectedUser = undefined;
@@ -138,6 +145,10 @@ export const adminSelectionSlice = createSlice({
       state.selectedVenue = action.payload;
       return state;
     },
+    setSelectedFanMoment: (state, action: PayloadAction<FanMoment | undefined>) => {
+      state.selectedFanMoment = action.payload;
+      return state;
+    },
     setSelectedFaqCategory: (state, action: PayloadAction<number | undefined>) => {
       state.selectedFaqCategory = action.payload;
       return state;
@@ -196,6 +207,10 @@ export const adminSelectionSlice = createSlice({
     },
     setReloadEvents: (state, action: PayloadAction<boolean>) => {
       state.reloadEvents = action.payload;
+      return state;
+    },
+    setReloadFanMoments: (state, action: PayloadAction<boolean>) => {
+      state.reloadFanMoments = action.payload;
       return state;
     },
     setReloadFeaturedArtists: (state, action: PayloadAction<boolean>) => {
@@ -310,6 +325,10 @@ export const adminSelectionSlice = createSlice({
       state.venueSearchTerm = action.payload;
       return state;
     },
+    setFanFilter: (state, action: PayloadAction<FanMomentFilter | undefined>) => {
+      state.fanFilter = action.payload;
+      return state;
+    },
   },
 });
 
@@ -318,6 +337,7 @@ export const {
   setAdminSellerId,
   setReloadFeaturedArtists,
   setSelectedFeaturedArtist,
+  setSelectedFanMoment,
   setReloadUsers,
   setSelectedUser,
   setUsers,
@@ -357,6 +377,8 @@ export const {
   setReloadCountries,
   setSelectedFaq,
   setReloadFaqs,
+  setReloadFanMoments,
+  setFanFilter,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;

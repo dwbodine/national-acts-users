@@ -2,9 +2,11 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 
 import { ImageType, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
 import { getArrayData, getErrorMessage, getStatusCode } from '@/lib/serviceResponses';
-import { FeaturedArtist, Page, PageType, SiteSetting } from '@/types/public';
+import { FanMomentFilter } from '@/types/props';
+import { FanMoment, FeaturedArtist, Page, PageType, SiteSetting } from '@/types/public';
 import {
   GetEventsResponse,
+  GetFanMomentsResponse,
   GetFeaturedArtistsResponse,
   GetPagesResponse,
   GetPageTypesResponse,
@@ -184,12 +186,20 @@ export class PublicService {
     return response;
   };
 
-  uploadImageFile = async (file: File, imageType: ImageType): Promise<string | undefined> => {
+  uploadImageFile = async (
+    file: File,
+    imageType: ImageType,
+    subfolder?: string,
+  ): Promise<string | undefined> => {
     if (!file || !file.name || !imageType) {
       return undefined;
     }
 
-    const url = `/public/uploadImage/${imageType.valueOf()}`;
+    let url = `/public/uploadImage/${imageType.valueOf()}`;
+
+    if (subfolder) {
+      url += `?subfolder=${encodeURIComponent(subfolder)}`;
+    }
 
     const data = new FormData();
     data.append('tempFile', file);
@@ -228,6 +238,69 @@ export class PublicService {
       response.error =
         err?.message ??
         'Unknown error while fetching featured artists - please contact your administrator';
+    }
+
+    return response;
+  };
+
+  getFanMoments = async (filter: FanMomentFilter): Promise<GetFanMomentsResponse> => {
+    let url = `/public/moments/filter`;
+
+    if (filter.startDate || filter.endDate || filter.sellerId || filter.eventId) {
+      url += '?';
+    }
+
+    let firstParam = true;
+
+    if (filter.startDate) {
+      url += `startDate=${filter.startDate}`;
+      firstParam = false;
+    }
+
+    if (filter.endDate) {
+      if (!firstParam) {
+        url += '&';
+      } else {
+        firstParam = false;
+      }
+      url += `endDate=${filter.endDate}`;
+    }
+
+    if (filter.sellerId) {
+      if (!firstParam) {
+        url += '&';
+      } else {
+        firstParam = false;
+      }
+      url += `sellerId=${filter.sellerId}`;
+    }
+
+    if (filter.eventId) {
+      if (!firstParam) {
+        url += '&';
+      } else {
+        firstParam = false;
+      }
+      url += `eventId=${filter.eventId}`;
+    }
+
+    const response: GetFanMomentsResponse = {};
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
+    };
+
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.fanMoments = res.data ? (res.data as FanMoment[]) : [];
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = err?.response?.status ?? 500;
+      response.error =
+        err?.message ??
+        'Unknown error while fetching fan moments - please contact your administrator';
     }
 
     return response;

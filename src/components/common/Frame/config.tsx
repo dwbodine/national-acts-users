@@ -73,6 +73,11 @@ export const adminAppNavs = [
         title: 'Manage Featured Artists',
         to: '/admin/featured-artists',
       },
+      {
+        eventKey: 'site-fan-moments',
+        title: 'Manage Fan Moments',
+        to: '/admin/fan-moments',
+      },
     ],
     eventKey: 'site-admin',
     icon: <Icon as={MdWebAsset} />,

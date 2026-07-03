@@ -123,3 +123,18 @@ export interface FeaturedArtist {
   href?: string;
   lastUpdate?: string;
 }
+
+export interface FanMomentKey {
+  momentDate: string;
+  sellerId?: number;
+  eventId?: number;
+  filename?: string;
+  sellerName?: string;
+  eventTitle?: string;
+  eventLocation?: string;
+}
+
+export interface FanMoment {
+  key: FanMomentKey;
+  images: string[];
+}

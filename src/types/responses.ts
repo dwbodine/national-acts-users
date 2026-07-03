@@ -2,6 +2,7 @@ import { ExternalVenue, TicketSocketAccount } from './admin';
 import { Note, Order, Seller, Ticket, TicketSocketRefreshHistory, Tour, VipEvent } from './event';
 import {
   Country,
+  FanMoment,
   Faq,
   FaqCategory,
   FeaturedArtist,
@@ -48,6 +49,10 @@ export interface ModifyPageResponse extends PostReponseBase {
 
 export interface ModifyFeaturedArtistResponse extends PostReponseBase {
   updatedFeaturedArtist?: FeaturedArtist;
+}
+
+export interface ModifyFanMomentResponse extends PostReponseBase {
+  updatedFanMoment?: FanMoment;
 }
 
 export interface ModifyFeaturedArtistsResponse extends PostReponseBase {
@@ -212,4 +217,8 @@ export interface GetActivityResponse extends PostReponseBase {
 
 export interface GetFeaturedArtistsResponse extends GetResponseBase {
   featuredArtists?: FeaturedArtist[];
+}
+
+export interface GetFanMomentsResponse extends GetResponseBase {
+  fanMoments?: FanMoment[];
 }

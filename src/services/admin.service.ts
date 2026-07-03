@@ -5,6 +5,8 @@ import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Seller } from '@/types/event';
 import {
   Country,
+  FanMoment,
+  FanMomentKey,
   Faq,
   FaqCategory,
   FeaturedArtist,
@@ -23,6 +25,7 @@ import {
   GetTicketSocketAccountsResponse,
   ModifyExternalEventResponse,
   ModifyExternalVenueResponse,
+  ModifyFanMomentResponse,
   ModifyFaqResponse,
   ModifyFeaturedArtistResponse,
   ModifyFeaturedArtistsResponse,
@@ -295,6 +298,57 @@ export class AdminService {
       response.error = getErrorMessage(
         err,
         'Unknown error while updating featured artist - please contact your administrator',
+      );
+    }
+
+    return response;
+  };
+
+  updateFanMoment = async (fmToUpdate: FanMoment): Promise<ModifyFanMomentResponse> => {
+    const url = `/admin/moments/update`;
+
+    const response: ModifyFanMomentResponse = {};
+
+    const data = JSON.stringify(fmToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+      response.updatedFanMoment = getOptionalData<FanMoment>(res.data);
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating fan moment - please contact your administrator',
+      );
+    }
+
+    return response;
+  };
+
+  deleteFanMomment = async (fmKey: FanMomentKey): Promise<ModifyFanMomentResponse> => {
+    const url = `/admin/moments/delete`;
+
+    const response: ModifyFanMomentResponse = {};
+
+    const data = JSON.stringify(fmKey);
+
+    const headers = getAuthorizationHeader();
+
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while deleting fan moment - please contact your administrator',
       );
     }
 

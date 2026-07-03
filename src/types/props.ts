@@ -63,10 +63,13 @@ export interface AdminMultiFileUploadProps {
   Title?: string;
   CurrentFileTitle?: string;
   FileUploadName?: string;
+  DisplayAsGallery?: boolean;
   ShowRemoveButton?: boolean;
   CurrentFileNames?: string[];
   IsDirty?: boolean;
   ImageType: ImageType;
+  SubfolderName?: string;
+  Disabled?: boolean;
   OnUpload?: (fileUploadName: string, fileNames: string[]) => void;
   OnUploadStart?: () => void;
   OnUploadComplete?: (fileNames?: string[]) => void;
@@ -99,6 +102,7 @@ export interface ConfirmationDialogProps {
   Message?: string;
   ConfirmText?: string;
   CancelText?: string;
+  ConfirmSureText?: string;
   OnConfirm?: () => void;
   OnCancel?: () => void;
 }
@@ -439,4 +443,11 @@ export interface RenderNavProps {
   isMobile?: boolean;
   navs?: NavItemData[];
   onItemClick?: () => void;
+}
+
+export interface FanMomentFilter {
+  startDate?: number;
+  endDate?: number;
+  sellerId?: number;
+  eventId?: number;
 }

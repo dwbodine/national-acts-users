@@ -25,4 +25,5 @@ export enum ImageType {
   PREVIEWS = 'previews',
   THUMBNAILS = 'thumbnails',
   FEATURED_ARTISTS = 'featured-artist',
+  FAN_MOMENTS = 'fan-moments',
 }
