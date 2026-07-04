@@ -3,8 +3,8 @@
 # ---------------------------------------------------------
 FROM node:26-alpine AS builder
 
-# Enable Yarn 4.15.0
-RUN corepack enable && corepack prepare yarn@4.15.0 --activate
+# Enable Yarn 4.17.0
+RUN npm install -g corepack && corepack enable && corepack prepare yarn@4.17.0 --activate
 
 WORKDIR /app
 
