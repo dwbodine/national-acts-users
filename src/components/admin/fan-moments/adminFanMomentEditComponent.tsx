@@ -305,7 +305,7 @@ export default function AdminFanMomentEdit() {
                 ShowRemoveButton={true}
                 OnFileRemove={onFileRemove}
                 SubfolderName={subFolder}
-                Disabled={eventsLoading}
+                Disabled={eventsLoading || !fanMoment?.key.eventId}
               />
             </Col>
           </Row>

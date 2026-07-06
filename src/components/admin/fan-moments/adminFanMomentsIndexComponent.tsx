@@ -304,7 +304,7 @@ export default function AdminFanMomentsIndex() {
 
   return (
     <>
-      <PageHeader pageTitle="Manage Events" />
+      <PageHeader pageTitle="Manage Fan Moments" />
       <div className="admin-container">
         <Row>
           <Col>
