@@ -5,9 +5,8 @@ on:
   push:
     branches:
       - main
-      - master
       - features/**
-      - fix/**
+      - bugs/**
 
 jobs:
   validate:
