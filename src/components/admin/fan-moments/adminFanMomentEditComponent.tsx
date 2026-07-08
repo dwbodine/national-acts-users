@@ -14,7 +14,6 @@ import { useGetAdminSellerEvents } from '@/hooks/admin/useGetAdminSellerEvents';
 import { useUpdateFanMoment } from '@/hooks/admin/useUpdateFanMoments';
 import { useGetFanMoments } from '@/hooks/common/useGetFanMoments';
 import { setReloadFanMoments, setSelectedFanMoment } from '@/lib/adminSelectionSlice';
-import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { VipEvent } from '@/types/event';
 import { FanMomentFilter } from '@/types/props';
@@ -97,6 +96,15 @@ export default function AdminFanMomentEdit() {
   const updateFanMomentLocal = (updatedFanMoment: FanMoment) => {
     dispatch(setSelectedFanMoment(updatedFanMoment));
     markDirty();
+    void updateFanMoment(updatedFanMoment).then((response: ModifyFanMomentResponse) => {
+      if (response.success) {
+        dispatch(setReloadFanMoments(true));
+        setIsDirty(false);
+        toast.success('Fan moment saved successfully');
+      } else {
+        toast.error(response.error ?? 'Error occurred while saving fan moment');
+      }
+    });
   };
 
   const onFileUpload = (_fileUploadName: string, filenames: string[]) => {
@@ -162,37 +170,9 @@ export default function AdminFanMomentEdit() {
 
   const onUploadComplete = (filenames: string[] | undefined) => {
     setIsUploading(false);
-    if (filenames?.length) {
-      toast.success('Files uploaded successfully - click submit to save');
-    } else {
+    if (!filenames?.length) {
       toast.error('File upload failed!');
     }
-  };
-
-  const onSubmit = () => {
-    if (!fanMoment) {
-      return;
-    }
-
-    if (isNewFanMoment && !fanMoment.key.eventId) {
-      toast.error('Must select an event');
-      return;
-    }
-
-    dispatch(setIsLoading(true));
-
-    void updateFanMoment(fanMoment).then((response: ModifyFanMomentResponse) => {
-      if (response.success) {
-        dispatch(setReloadFanMoments(true));
-        dispatch(setSelectedFanMoment(undefined));
-        setIsDirty(false);
-        toast.success('Fan moment saved successfully');
-        router.push('/admin/fan-moments');
-      } else {
-        toast.error(response.error ?? 'Error occurred while saving fan moment');
-      }
-      dispatch(setIsLoading(false));
-    });
   };
 
   const confirmGoBack = () => {
@@ -311,9 +291,6 @@ export default function AdminFanMomentEdit() {
           </Row>
           <Row>
             <Col xs={24}>
-              <Button onClick={onSubmit} disabled={isUploading || eventsLoading || !fanMoment}>
-                Submit
-              </Button>{' '}
               <Button disabled={isUploading || eventsLoading} onClick={confirmGoBack}>
                 Back
               </Button>
