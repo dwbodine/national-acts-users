@@ -79,6 +79,7 @@ export interface Page {
   route: string;
   title: string;
   pageType: PageType;
+  artistTemplateTypeId?: number;
   image?: string;
   thumbnail?: string;
   linkPreviewImage?: string;

@@ -11,7 +11,7 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
 import Textarea from '@/components/common/Textarea';
-import { ImageType } from '@/constants';
+import { ARTIST_SELLER_TYPE, ArtistTemplate, ImageType } from '@/constants';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
@@ -72,7 +72,8 @@ export default function AdminPageEdit() {
           if (response.countries && !response.error) {
             dispatch(setCountries(response.countries));
           } else {
-            toast.error(response.error);
+            const errMsg = response.error ? String(response.error) : 'Error loading countries';
+            toast.error(errMsg);
             dispatch(setIsLoading(false));
           }
         });
@@ -170,9 +171,25 @@ export default function AdminPageEdit() {
       const pageType = currentAdminSelection.pageTypes.find((x) => x.pageTypeId === pageTypeId);
       if (pageType) {
         pageToUpdate.pageType = pageType;
+        if (pageTypeId === ARTIST_SELLER_TYPE && pageToUpdate.artistTemplateTypeId === undefined) {
+          pageToUpdate.artistTemplateTypeId = ArtistTemplate.Original;
+        }
         dispatch(setSelectedPage(pageToUpdate));
         markDirty();
       }
+    }
+  };
+
+  const setArtistTemplateType = (artistTemplateTypeId: number | null) => {
+    if (!currentAdminSelection.selectedPage || artistTemplateTypeId === null) {
+      return;
+    }
+
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    if (pageToUpdate.artistTemplateTypeId !== artistTemplateTypeId) {
+      pageToUpdate.artistTemplateTypeId = artistTemplateTypeId;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
     }
   };
 
@@ -552,6 +569,13 @@ export default function AdminPageEdit() {
       return;
     }
 
+    if (
+      pageToUpdate.pageType.pageTypeId === ARTIST_SELLER_TYPE &&
+      pageToUpdate.artistTemplateTypeId === undefined
+    ) {
+      pageToUpdate.artistTemplateTypeId = ArtistTemplate.Original;
+    }
+
     if (pageSellerTypeIds.includes(pageToUpdate.pageType.pageTypeId)) {
       const pageSellers = pageToUpdate.sellers?.filter((x) => (x.sellerId ?? 0) > 0);
 
@@ -624,6 +648,21 @@ export default function AdminPageEdit() {
       }))
     : [];
 
+  const getArtistTemplateLabel = (label: string) => {
+    switch (label) {
+      case 'NewTemplateFullHeader':
+        return 'New Template (Full Header)';
+      case 'NewTemplateThumbnailHeader':
+        return 'New Template (Thumbnail Header)';
+      default:
+        return 'Original Template';
+    }
+  };
+
+  const artistTemplateList: ItemDataType<number>[] = Object.entries(ArtistTemplate)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([label, value]) => ({ label: getArtistTemplateLabel(label), value: value as number }));
+
   const pageHeader =
     (currentAdminSelection.selectedPage?.pageId ?? 0) > 0 ? 'Edit page' : 'Add page';
 
@@ -695,6 +734,9 @@ export default function AdminPageEdit() {
     );
   }
 
+  const artistTemplateTypeId =
+    currentAdminSelection.selectedPage?.artistTemplateTypeId ?? ArtistTemplate.Original;
+
   return (
     <>
       <PageHeader pageTitle={pageHeader} />
@@ -744,6 +786,23 @@ export default function AdminPageEdit() {
               />
             </Col>
           </Row>
+          {selectedPageTypeId === ARTIST_SELLER_TYPE && (
+            <Row>
+              <Col xs={24} md={12}>
+                <span>Artist Template</span>
+                <SelectPicker
+                  value={artistTemplateTypeId}
+                  data={artistTemplateList}
+                  size="lg"
+                  onChange={setArtistTemplateType}
+                  cleanable={false}
+                  menuAutoWidth={true}
+                  className="admin-seller-select-value"
+                  searchable={false}
+                />
+              </Col>
+            </Row>
+          )}
           <Row>
             <Col xs={24}>
               <AdminFileUpload

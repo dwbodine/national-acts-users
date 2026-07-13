@@ -27,3 +27,9 @@ export enum ImageType {
   FEATURED_ARTISTS = 'featured-artist',
   FAN_MOMENTS = 'fan-moments',
 }
+
+export enum ArtistTemplate {
+  Original = 1,
+  NewTemplateFullHeader = 2,
+  NewTemplateThumbnailHeader = 3,
+}
