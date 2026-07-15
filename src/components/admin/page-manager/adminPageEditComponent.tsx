@@ -29,7 +29,7 @@ import {
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { SellerType } from '@/types/event';
-import { Page, PageSeller } from '@/types/public';
+import { ArtistPageSettings, ArtistTitlePosition, Page, PageSeller } from '@/types/public';
 import {
   GetCountriesResponse,
   GetPageTypesResponse,
@@ -171,8 +171,14 @@ export default function AdminPageEdit() {
       const pageType = currentAdminSelection.pageTypes.find((x) => x.pageTypeId === pageTypeId);
       if (pageType) {
         pageToUpdate.pageType = pageType;
-        if (pageTypeId === ARTIST_SELLER_TYPE && pageToUpdate.artistTemplateTypeId === undefined) {
-          pageToUpdate.artistTemplateTypeId = ArtistTemplate.Original;
+        if (pageTypeId === ARTIST_SELLER_TYPE) {
+          const artistSettings = {
+            ...(pageToUpdate.artistPageSettings || { artistTemplateTypeId: 0 }),
+          };
+          if (artistSettings.artistTemplateTypeId === undefined) {
+            artistSettings.artistTemplateTypeId = ArtistTemplate.Original;
+            pageToUpdate.artistPageSettings = artistSettings;
+          }
         }
         dispatch(setSelectedPage(pageToUpdate));
         markDirty();
@@ -181,13 +187,52 @@ export default function AdminPageEdit() {
   };
 
   const setArtistTemplateType = (artistTemplateTypeId: number | null) => {
-    if (!currentAdminSelection.selectedPage || artistTemplateTypeId === null) {
+    if (!currentAdminSelection.selectedPage || !artistTemplateTypeId) {
       return;
     }
 
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    if (pageToUpdate.artistTemplateTypeId !== artistTemplateTypeId) {
-      pageToUpdate.artistTemplateTypeId = artistTemplateTypeId;
+    const artistSettings: ArtistPageSettings = {
+      ...(pageToUpdate.artistPageSettings || { artistTemplateTypeId: 0 }),
+    };
+    if (artistSettings.artistTemplateTypeId !== artistTemplateTypeId) {
+      artistSettings.artistTemplateTypeId = artistTemplateTypeId;
+      pageToUpdate.artistPageSettings = artistSettings;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  };
+
+  const setTitlePosition = (titlePosition: ArtistTitlePosition | null) => {
+    if (!currentAdminSelection.selectedPage || titlePosition === null) {
+      return;
+    }
+
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const artistSettings: ArtistPageSettings = {
+      ...(pageToUpdate.artistPageSettings || { artistTemplateTypeId: 0 }),
+    };
+    if (artistSettings.titlePosition !== titlePosition) {
+      artistSettings.titlePosition = titlePosition;
+      pageToUpdate.artistPageSettings = artistSettings;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  };
+
+  const setGradientStart = (hexCode: string | null) => {
+    if (!currentAdminSelection.selectedPage) {
+      return;
+    }
+
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const artistSettings: ArtistPageSettings = {
+      ...(pageToUpdate.artistPageSettings || { artistTemplateTypeId: 0 }),
+    };
+    const gradientStartColor = hexCode === 'undefined' ? undefined : (hexCode ?? undefined);
+    if (artistSettings.gradientStartColor !== gradientStartColor) {
+      artistSettings.gradientStartColor = gradientStartColor;
+      pageToUpdate.artistPageSettings = artistSettings;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
@@ -231,7 +276,6 @@ export default function AdminPageEdit() {
     htmlText = htmlText.replace(/<\/html.*?>/gi, '');
     htmlText = htmlText.replace(/\\n\\n\\n/gi, '\\n');
     htmlText = htmlText.replace(/\\n\\n/gi, '\\n');
-    htmlText = htmlText.trim();
     return htmlText;
   };
 
@@ -244,6 +288,38 @@ export default function AdminPageEdit() {
     htmlText = cleanHtmlText(htmlText);
     if (pageToUpdate.htmlText !== htmlText) {
       pageToUpdate.htmlText = htmlText;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  };
+
+  const setVipContents = (contents: string) => {
+    if (!currentAdminSelection.selectedPage || !route) {
+      return;
+    }
+    let htmlText: string = contents;
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const artistSettings = { ...(pageToUpdate.artistPageSettings || { artistTemplateTypeId: 0 }) };
+    htmlText = cleanHtmlText(htmlText);
+    if (artistSettings.vipPackageContents !== htmlText) {
+      artistSettings.vipPackageContents = htmlText;
+      pageToUpdate.artistPageSettings = artistSettings;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  };
+
+  const setArtistDescription = (description: string) => {
+    if (!currentAdminSelection.selectedPage || !route) {
+      return;
+    }
+    let htmlText: string = description;
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const artistSettings = { ...(pageToUpdate.artistPageSettings || { artistTemplateTypeId: 0 }) };
+    htmlText = cleanHtmlText(htmlText);
+    if (artistSettings.artistDescription !== htmlText) {
+      artistSettings.artistDescription = htmlText;
+      pageToUpdate.artistPageSettings = artistSettings;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
@@ -308,6 +384,22 @@ export default function AdminPageEdit() {
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
     if (pageToUpdate.useIncludeDates !== useIncludeDates) {
       pageToUpdate.useIncludeDates = useIncludeDates;
+      dispatch(setSelectedPage(pageToUpdate));
+      markDirty();
+    }
+  };
+
+  const showTitleInHeader = (showTitle: boolean) => {
+    if (!currentAdminSelection.selectedPage) {
+      return;
+    }
+    const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
+    const artistSettings: ArtistPageSettings = {
+      ...(pageToUpdate.artistPageSettings || { artistTemplateTypeId: 0 }),
+    };
+    if (artistSettings.showTitle != showTitle) {
+      artistSettings.showTitle = showTitle;
+      pageToUpdate.artistPageSettings = artistSettings;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
@@ -571,9 +663,13 @@ export default function AdminPageEdit() {
 
     if (
       pageToUpdate.pageType.pageTypeId === ARTIST_SELLER_TYPE &&
-      pageToUpdate.artistTemplateTypeId === undefined
+      !pageToUpdate.artistPageSettings
     ) {
-      pageToUpdate.artistTemplateTypeId = ArtistTemplate.Original;
+      const artistSettings = {
+        ...(pageToUpdate.artistPageSettings || { artistTemplateTypeId: 0 }),
+      };
+      artistSettings.artistTemplateTypeId = ArtistTemplate.Original;
+      pageToUpdate.artistPageSettings = artistSettings;
     }
 
     if (pageSellerTypeIds.includes(pageToUpdate.pageType.pageTypeId)) {
@@ -606,6 +702,15 @@ export default function AdminPageEdit() {
 
     if (pageToUpdate.htmlText) {
       pageToUpdate.htmlText = cleanHtmlText(pageToUpdate.htmlText);
+    }
+
+    if (pageToUpdate.artistPageSettings?.vipPackageContents) {
+      const artistSettings = { ...pageToUpdate.artistPageSettings };
+      let contents = artistSettings.vipPackageContents || '';
+      contents = cleanHtmlText(contents);
+      contents = contents.trim();
+      artistSettings.vipPackageContents = contents || undefined;
+      pageToUpdate.artistPageSettings = artistSettings;
     }
 
     dispatch(setIsLoading(true));
@@ -647,6 +752,44 @@ export default function AdminPageEdit() {
         value: pageType.pageTypeId,
       }))
     : [];
+
+  const titlePositionList: ItemDataType<number>[] = [
+    {
+      label: 'TOP',
+      value: ArtistTitlePosition.TOP,
+    },
+    {
+      label: 'BOTTOM',
+      value: ArtistTitlePosition.BOTTOM,
+    },
+  ];
+
+  const gradientStartList: ItemDataType<string>[] = [
+    {
+      label: 'None',
+      value: 'undefined',
+    },
+    {
+      label: 'Gray',
+      value: 'B3B3B3',
+    },
+    {
+      label: 'Green',
+      value: '3B4938',
+    },
+    {
+      label: 'Red',
+      value: '553838',
+    },
+    {
+      label: 'White',
+      value: 'FFFCFC',
+    },
+    {
+      label: 'Blue',
+      value: '5851D6',
+    },
+  ];
 
   const getArtistTemplateLabel = (label: string) => {
     switch (label) {
@@ -735,7 +878,20 @@ export default function AdminPageEdit() {
   }
 
   const artistTemplateTypeId =
-    currentAdminSelection.selectedPage?.artistTemplateTypeId ?? ArtistTemplate.Original;
+    currentAdminSelection.selectedPage?.artistPageSettings?.artistTemplateTypeId ??
+    ArtistTemplate.Original;
+
+  const showTitle = currentAdminSelection.selectedPage?.artistPageSettings?.showTitle ?? false;
+  const titleLocation =
+    currentAdminSelection.selectedPage?.artistPageSettings?.titlePosition ??
+    ArtistTitlePosition.BOTTOM;
+  const vipPackageContents =
+    currentAdminSelection.selectedPage?.artistPageSettings?.vipPackageContents;
+  const gradientStartColor =
+    currentAdminSelection.selectedPage?.artistPageSettings?.gradientStartColor ?? 'undefined';
+
+  const artistDescription =
+    currentAdminSelection.selectedPage?.artistPageSettings?.artistDescription;
 
   return (
     <>
@@ -747,28 +903,6 @@ export default function AdminPageEdit() {
               <Checkbox checked={!isActive} onChange={(_, checked) => setIsActive(!checked)}>
                 Page inactive on website?
               </Checkbox>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={24}>
-              <span>Main Page Title (most viewed on the site)</span>
-              <Input
-                value={title ?? ''}
-                onChange={setPageTitle}
-                className="form-control-half"
-                placeholder="page title"
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={24}>
-              <span>Route (how it shows up in the url)</span>
-              <Input
-                value={route ?? ''}
-                onChange={setPageRoute}
-                className="form-control-half"
-                placeholder="page route"
-              />
             </Col>
           </Row>
           <Row>
@@ -794,7 +928,7 @@ export default function AdminPageEdit() {
                   value={artistTemplateTypeId}
                   data={artistTemplateList}
                   size="lg"
-                  onChange={setArtistTemplateType}
+                  onChange={(atId) => setArtistTemplateType(atId)}
                   cleanable={false}
                   menuAutoWidth={true}
                   className="admin-seller-select-value"
@@ -803,6 +937,112 @@ export default function AdminPageEdit() {
               </Col>
             </Row>
           )}
+          <Row>
+            <Col xs={24}>
+              <span>Main Page Title (most viewed on the site)</span>
+              <Input
+                value={title ?? ''}
+                onChange={setPageTitle}
+                className="form-control-half"
+                placeholder="page title"
+              />
+            </Col>
+          </Row>
+          {selectedPageTypeId === ARTIST_SELLER_TYPE &&
+            artistTemplateTypeId != Number(ArtistTemplate.Original) && (
+              <Row>
+                <Col xs={24}>
+                  <Checkbox
+                    checked={showTitle}
+                    onChange={(_, checked) => showTitleInHeader(checked)}
+                  >
+                    Show Title in Header?
+                  </Checkbox>
+                </Col>
+              </Row>
+            )}
+          {selectedPageTypeId === ARTIST_SELLER_TYPE &&
+            artistTemplateTypeId == Number(ArtistTemplate.NewTemplateFullHeader) &&
+            showTitle && (
+              <Row>
+                <Col xs={24} md={12}>
+                  <span>Title Position in Header:</span>
+                  <SelectPicker
+                    value={titleLocation}
+                    data={titlePositionList}
+                    size="lg"
+                    onChange={(tPos) => setTitlePosition(tPos)}
+                    cleanable={false}
+                    menuAutoWidth={true}
+                    className="admin-seller-select-value"
+                    searchable={false}
+                  />
+                </Col>
+              </Row>
+            )}
+          {selectedPageTypeId === ARTIST_SELLER_TYPE &&
+            showTitle &&
+            artistTemplateTypeId != Number(ArtistTemplate.Original) && (
+              <Row>
+                <Col xs={24}>
+                  <span>Artist Description:</span>
+                  <Textarea
+                    className="form-control-half"
+                    rows={5}
+                    id="artistDescription"
+                    onChange={setArtistDescription}
+                    value={artistDescription ?? ''}
+                    placeholder="Free-form HTML for artist description (new templates only)"
+                  />
+                </Col>
+              </Row>
+            )}
+          {selectedPageTypeId === ARTIST_SELLER_TYPE &&
+            artistTemplateTypeId == Number(ArtistTemplate.NewTemplateThumbnailHeader) &&
+            showTitle && (
+              <Row>
+                <Col xs={24} md={12}>
+                  <span>Header Gradient Start Color:</span>
+                  <SelectPicker
+                    value={gradientStartColor}
+                    data={gradientStartList}
+                    size="lg"
+                    onChange={(hexCode) => setGradientStart(hexCode)}
+                    cleanable={false}
+                    menuAutoWidth={true}
+                    className="admin-seller-select-value"
+                    searchable={false}
+                  />
+                </Col>
+              </Row>
+            )}
+          {selectedPageTypeId === ARTIST_SELLER_TYPE &&
+            artistTemplateTypeId != Number(ArtistTemplate.Original) && (
+              <Row>
+                <Col xs={24}>
+                  <span>VIP Package Contents</span>
+                  <Textarea
+                    className="form-control-half"
+                    rows={10}
+                    id="vipPackageContents"
+                    onChange={setVipContents}
+                    value={vipPackageContents ?? ''}
+                    placeholder="Free-form HTML for package contents"
+                  />
+                </Col>
+              </Row>
+            )}
+          <Row>
+            <Col xs={24}>
+              <span>Route (how it shows up in the url)</span>
+              <Input
+                value={route ?? ''}
+                onChange={setPageRoute}
+                className="form-control-half"
+                placeholder="page route"
+              />
+            </Col>
+          </Row>
           <Row>
             <Col xs={24}>
               <AdminFileUpload

@@ -104,6 +104,11 @@ export default function AdminPagesIndex() {
     router.push('/admin/pages/edit/');
   };
 
+  const refreshPages = () => {
+    dispatch(setReloadPages(true));
+    setTableLoading(true);
+  };
+
   const editPage = (pageId: number) => {
     if (!pageId || isNaN(pageId)) {
       return;
@@ -131,6 +136,7 @@ export default function AdminPagesIndex() {
     <>
       <PageHeader pageTitle="Manage Pages" />
       <div className="admin-container">
+        <Button onClick={refreshPages}>Refresh</Button>
         <Input
           value={searchTerm}
           onChange={setSearchTerm}

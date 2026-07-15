@@ -233,6 +233,7 @@ export interface VipEvent {
   netRevenue?: number;
   netRevenueUsd?: number;
   excludeFromDashboard?: boolean;
+  eventNote?: string;
 }
 
 export interface TicketSocketRefreshHistory {

@@ -528,6 +528,16 @@ export default function AdminEventEdit(props: EditProps) {
     markDirty();
   };
 
+  const setEventNote = (note: string | undefined) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedEvent) {
+      return;
+    }
+    const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
+    currentEvent.eventNote = note && note.length > 0 ? note : undefined;
+    dispatch(setAdminEvent(currentEvent));
+    markDirty();
+  };
+
   const onEventDateChange = (date: Date | null) => {
     if (!date || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
@@ -1140,6 +1150,8 @@ export default function AdminEventEdit(props: EditProps) {
 
   const eventTime = selectedEvent?.eventTime ? moment(selectedEvent.eventTime).toDate() : null;
 
+  const eventNote = selectedEvent?.eventNote ?? undefined;
+
   const announceDate = selectedEvent?.announceDate
     ? moment(selectedEvent.announceDate).toDate()
     : null;
@@ -1558,6 +1570,18 @@ export default function AdminEventEdit(props: EditProps) {
               onChange={setDisableVipLinkReason}
               className="form-control"
               placeholder="Alternate text for VIP button"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <span className="edit-event-link">Event Note (shows in newer templates):</span>
+            <Textarea
+              rows={3}
+              id="eventNote"
+              onChange={setEventNote}
+              value={eventNote ?? ''}
+              placeholder="Event Note"
             />
           </Col>
         </Row>

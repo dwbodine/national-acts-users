@@ -9,6 +9,11 @@ export enum SiteSettingType {
   Text = 'Text',
 }
 
+export enum ArtistTitlePosition {
+  TOP = 0,
+  BOTTOM = 1,
+}
+
 export interface TimeZone {
   timezone: string;
   displayName?: string;
@@ -74,12 +79,21 @@ export interface PageSeller {
   sellerName?: string;
 }
 
+export interface ArtistPageSettings {
+  artistTemplateTypeId: number;
+  showTitle?: boolean;
+  titlePosition?: ArtistTitlePosition;
+  vipPackageContents?: string;
+  gradientStartColor?: string;
+  artistDescription?: string;
+  lastUpdate?: string;
+}
+
 export interface Page {
   pageId: number;
   route: string;
   title: string;
   pageType: PageType;
-  artistTemplateTypeId?: number;
   image?: string;
   thumbnail?: string;
   linkPreviewImage?: string;
@@ -102,6 +116,7 @@ export interface Page {
   sellers?: PageSeller[];
   extraHtmlHead?: string;
   extraHtmlBody?: string;
+  artistPageSettings?: ArtistPageSettings;
 }
 
 export interface NavItemData {
