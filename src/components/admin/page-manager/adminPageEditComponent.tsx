@@ -11,7 +11,7 @@ import { ItemDataType } from 'rsuite/esm/internals/types';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
 import Textarea from '@/components/common/Textarea';
-import { ARTIST_SELLER_TYPE, ArtistTemplate, ImageType } from '@/constants';
+import { ARTIST_SELLER_TYPE, ArtistTemplate, ImageType, VENUE_SELLER_TYPE } from '@/constants';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useUpdatePage } from '@/hooks/admin/useUpdatePage';
 import { useGetPageTypes } from '@/hooks/common/useGetPageTypes';
@@ -226,13 +226,9 @@ export default function AdminPageEdit() {
     }
 
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
-    const artistSettings: ArtistPageSettings = {
-      ...(pageToUpdate.artistPageSettings || { artistTemplateTypeId: 0 }),
-    };
     const gradientStartColor = hexCode === 'undefined' ? undefined : (hexCode ?? undefined);
-    if (artistSettings.gradientStartColor !== gradientStartColor) {
-      artistSettings.gradientStartColor = gradientStartColor;
-      pageToUpdate.artistPageSettings = artistSettings;
+    if (pageToUpdate.gradientStartColor !== gradientStartColor) {
+      pageToUpdate.gradientStartColor = gradientStartColor;
       dispatch(setSelectedPage(pageToUpdate));
       markDirty();
     }
@@ -887,8 +883,7 @@ export default function AdminPageEdit() {
     ArtistTitlePosition.BOTTOM;
   const vipPackageContents =
     currentAdminSelection.selectedPage?.artistPageSettings?.vipPackageContents;
-  const gradientStartColor =
-    currentAdminSelection.selectedPage?.artistPageSettings?.gradientStartColor ?? 'undefined';
+  const gradientStartColor = currentAdminSelection.selectedPage?.gradientStartColor ?? 'undefined';
 
   const artistDescription =
     currentAdminSelection.selectedPage?.artistPageSettings?.artistDescription;
@@ -997,25 +992,25 @@ export default function AdminPageEdit() {
                 </Col>
               </Row>
             )}
-          {selectedPageTypeId === ARTIST_SELLER_TYPE &&
-            artistTemplateTypeId == Number(ArtistTemplate.NewTemplateThumbnailHeader) &&
-            showTitle && (
-              <Row>
-                <Col xs={24} md={12}>
-                  <span>Header Gradient Start Color:</span>
-                  <SelectPicker
-                    value={gradientStartColor}
-                    data={gradientStartList}
-                    size="lg"
-                    onChange={(hexCode) => setGradientStart(hexCode)}
-                    cleanable={false}
-                    menuAutoWidth={true}
-                    className="admin-seller-select-value"
-                    searchable={false}
-                  />
-                </Col>
-              </Row>
-            )}
+          {(selectedPageTypeId == VENUE_SELLER_TYPE ||
+            (selectedPageTypeId === ARTIST_SELLER_TYPE &&
+              artistTemplateTypeId == Number(ArtistTemplate.NewTemplateThumbnailHeader))) && (
+            <Row>
+              <Col xs={24} md={12}>
+                <span>Header Gradient Start Color:</span>
+                <SelectPicker
+                  value={gradientStartColor}
+                  data={gradientStartList}
+                  size="lg"
+                  onChange={(hexCode) => setGradientStart(hexCode)}
+                  cleanable={false}
+                  menuAutoWidth={true}
+                  className="admin-seller-select-value"
+                  searchable={false}
+                />
+              </Col>
+            </Row>
+          )}
           {selectedPageTypeId === ARTIST_SELLER_TYPE &&
             artistTemplateTypeId != Number(ArtistTemplate.Original) && (
               <Row>

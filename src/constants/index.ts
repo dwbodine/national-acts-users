@@ -7,6 +7,7 @@ export const EVENTS_AGENDA_VIEW_BREAKPOINT: number = 992;
 export const DEFAULT_EVENT_TAB_VIEW = EventTabView.Month;
 export const DEFAULT_COUNTRY_ID = 235;
 export const ARTIST_SELLER_TYPE = 7;
+export const VENUE_SELLER_TYPE = 14;
 export const EVENT_REFRESH_TIMEOUT: number = 300;
 
 export enum ActivePageKey {
