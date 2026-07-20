@@ -6,8 +6,8 @@ import {
   MdDashboard,
   MdEvent,
   MdMoneyOff,
-  MdOutlineMoney,
   MdOutlineVerifiedUser,
+  MdPhotoCamera,
   MdReport,
   MdSupervisedUserCircle,
   MdWebAsset,
@@ -16,9 +16,15 @@ import {
 export const userAppNavs = [
   {
     eventKey: 'sales',
-    icon: <Icon as={MdOutlineMoney} />,
+    icon: <Icon as={MdMoneyOff} />,
     title: 'Sales Overview',
     to: '/sellers',
+  },
+  {
+    eventKey: 'site-fan-moments',
+    icon: <Icon as={MdPhotoCamera} />,
+    title: 'Manage Fan Moments',
+    to: '/fan-moments',
   },
 ];
 
@@ -40,6 +46,12 @@ export const adminAppNavs = [
     icon: <Icon as={MdMoneyOff} />,
     title: 'Sales Overview',
     to: '/sellers',
+  },
+  {
+    eventKey: 'site-fan-moments',
+    icon: <Icon as={MdPhotoCamera} />,
+    title: 'Manage Fan Moments',
+    to: '/fan-moments',
   },
   {
     children: [
@@ -72,11 +84,6 @@ export const adminAppNavs = [
         eventKey: 'site-featured-artists',
         title: 'Manage Featured Artists',
         to: '/admin/featured-artists',
-      },
-      {
-        eventKey: 'site-fan-moments',
-        title: 'Manage Fan Moments',
-        to: '/admin/fan-moments',
       },
     ],
     eventKey: 'site-admin',

@@ -26,11 +26,11 @@ import { getCsvFileNameFromReportSelection } from '@/utils/getFileNameFromReport
 import type { RootState } from '../../../lib/store';
 import PrintButton from '../../common/printButtonComponent';
 import ResetButton from '../../common/resetButtonComponent';
+import SelectSeller from '../../common/selectSellerComponent';
 import DeletedCheck from './deletedCheckComponent';
 import HiddenCheck from './hiddenCheckComponent';
 import InactiveCheck from './inactiveCheckComponent';
 import RevenueCheck from './revenueCheckComponent';
-import SelectSeller from './selectSellerComponent';
 import ServiceFeesCheck from './serviceFeesCheckComponent';
 import VIPItineraryModal from './vipItineraryModalComponent';
 
