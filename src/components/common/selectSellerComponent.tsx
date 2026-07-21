@@ -1,23 +1,41 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Col, Row, SelectPicker } from 'rsuite';
 import { ItemDataType } from 'rsuite/esm/internals/types';
 
 import { useCurrentUser } from '@/hooks/user/useCurrentUser';
+import { setReloadFanMoments } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { setSeller } from '@/lib/reportSelectionSlice';
-import { User } from '@/types/user';
+import { Permission, User } from '@/types/user';
 
-import type { RootState } from '../../../lib/store';
+import type { RootState } from '../../lib/store';
 
-export default function SelectSeller() {
+export interface SelectSellerProps {
+  filterByPermissions?: Permission[];
+}
+
+export default function SelectSeller(props: SelectSellerProps) {
   const dispatch = useDispatch();
   const { getUser } = useCurrentUser();
   const [user, setUser] = useState<User | undefined>(undefined);
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const selectedSellerId = currentReportSelection.seller.sellerId;
+  const filteredSellers = useMemo(() => {
+    const sellers = user?.sellers ?? [];
+    const permissionIds =
+      props.filterByPermissions?.map((permission) => permission.permissionId) ?? [];
+
+    if (permissionIds.length === 0 || user?.isAdmin) {
+      return sellers;
+    }
+
+    return sellers.filter((seller) =>
+      seller.permissions?.some((permissionId) => permissionIds.includes(permissionId)),
+    );
+  }, [props.filterByPermissions, user?.sellers]);
 
   const getSelectedSeller = useCallback(
     (sellerId: number) => {
@@ -53,30 +71,29 @@ export default function SelectSeller() {
   }, [selectedSellerId, user, getUser]);
 
   useEffect(() => {
-    if (!user?.sellers || user.sellers.length !== 1) {
+    if (filteredSellers.length !== 1) {
       return;
     }
 
-    const [seller] = user.sellers;
+    const [seller] = filteredSellers;
     if (seller && seller.sellerId !== selectedSellerId) {
       dispatch(setSeller(seller));
     }
-  }, [dispatch, selectedSellerId, user?.sellers]);
+  }, [dispatch, filteredSellers, selectedSellerId]);
 
   const handleChange = (sellerId: number | null) => {
     const seller = sellerId ? getSelectedSeller(sellerId) : undefined;
     if (seller) {
       dispatch(setSeller(seller));
       dispatch(setIsLoading(true));
+      dispatch(setReloadFanMoments(true));
     }
   };
 
-  const userSellerList: ItemDataType<number>[] = user?.sellers
-    ? user.sellers.map((seller) => ({
-        label: `${seller.sellerName}`,
-        value: seller.sellerId,
-      }))
-    : [];
+  const userSellerList: ItemDataType<number>[] = filteredSellers.map((seller) => ({
+    label: `${seller.sellerName}`,
+    value: seller.sellerId,
+  }));
 
   if (userSellerList.length > 0) {
     if (userSellerList.length > 1) {
@@ -98,8 +115,8 @@ export default function SelectSeller() {
           </Col>
         </Row>
       );
-    } else if (user && user.sellers) {
-      const [seller] = user.sellers;
+    } else {
+      const [seller] = filteredSellers;
       return (
         <Row className="no-print admin-seller-row">
           <Col>{seller?.sellerName}</Col>

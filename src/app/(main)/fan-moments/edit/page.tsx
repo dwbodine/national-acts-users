@@ -1,5 +1,5 @@
-import AdminFanMomentEdit from '@/components/admin/fan-moments/adminFanMomentEditComponent';
 import AdminPage from '@/components/common/adminPageComponent';
+import AdminFanMomentEdit from '@/components/fan-moments/adminFanMomentEditComponent';
 
 export default function AdminFanMomentsEditPage() {
   const title = 'Client Portal - Edit Fan Moment';

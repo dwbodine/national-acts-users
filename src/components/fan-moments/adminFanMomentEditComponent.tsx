@@ -26,10 +26,11 @@ import {
 import { getLocationInfoFromVenue } from '@/utils/eventUtils';
 import { filterEventsWithoutFanMomentFolders } from '@/utils/fanMomentUtils';
 
-import ConfirmationDialog from '../../common/confirmationDialogComponent';
-import AdminMultiFileUpload from '../common/adminMultiFileUploadComponent';
+import AdminMultiFileUpload from '../admin/common/adminMultiFileUploadComponent';
+import ConfirmationDialog from '../common/confirmationDialogComponent';
 
 export default function AdminFanMomentEdit() {
+  const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const fanMoment = currentAdminSelection.selectedFanMoment;
   const router = useRouter();
@@ -46,13 +47,13 @@ export default function AdminFanMomentEdit() {
 
   const goBack = () => {
     toast.dismiss();
-    router.push('/admin/fan-moments');
+    router.push('/fan-moments');
   };
 
   useEffect(() => {
     if (!fanMoment) {
       toast.dismiss();
-      router.push('/admin/fan-moments');
+      router.push('/fan-moments');
       return;
     }
 
@@ -205,7 +206,7 @@ export default function AdminFanMomentEdit() {
   const momentDate = fanMoment?.key.momentDate
     ? moment(fanMoment.key.momentDate).format('MM/DD/YYYY')
     : '';
-  const sellerId = fanMoment?.key.sellerId ?? currentAdminSelection.sellerId;
+  const sellerId = fanMoment?.key.sellerId ?? currentReportSelection.seller?.sellerId;
   const sellerName =
     fanMoment?.key.sellerName ??
     currentAdminSelection.allSellers?.find((seller) => seller.sellerId === sellerId)?.name ??

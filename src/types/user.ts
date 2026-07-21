@@ -44,7 +44,7 @@ export type Role = {
 
 export type Permission = {
   permissionId: number;
-  permissionName: string;
+  permissionName?: string;
 };
 
 export enum EnumPermission {
@@ -60,6 +60,7 @@ export enum EnumPermission {
   ViewHiddenEvents = 12,
   ViewTourSelect = 13,
   ViewVIPItinerary = 14,
+  UploadFanMoments = 15,
 }
 
 export type User = {

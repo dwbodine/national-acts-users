@@ -12,40 +12,29 @@ import PageHeader from '@/components/common/PageHeaderComponent';
 import { useDeleteFanMoment } from '@/hooks/admin/useDeleteFanMoment';
 import { useGetAllCountries } from '@/hooks/admin/useGetAllCountries';
 import { useGetFanMoments } from '@/hooks/common/useGetFanMoments';
-import { useGetSellers } from '@/hooks/common/useGetSellers';
 import { setFanMoments } from '@/lib/adminDataSelectionSlice';
 import {
   setAdminDates,
-  setAdminSellerId,
-  setAllSellers,
-  setCountries,
   setFanFilter,
-  setReloadCountries,
   setReloadFanMoments,
-  setReloadSellers,
   setSelectedFanMoment,
 } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { FanMomentFilter } from '@/types/props';
 import { FanMoment } from '@/types/public';
-import {
-  GetCountriesResponse,
-  GetFanMomentsResponse,
-  GetSellersResponse,
-  ModifyFanMomentResponse,
-} from '@/types/responses';
-import { AdminSelection } from '@/types/user';
+import { GetFanMomentsResponse, ModifyFanMomentResponse } from '@/types/responses';
+import { AdminSelection, EnumPermission, Permission } from '@/types/user';
 
-import ReportDatePicker from '../../common/reportDatePickerControl';
-import AdminSellerSelect from '../common/adminSellerSelectComponent';
+import ReportDatePicker from '../common/reportDatePickerControl';
+import SelectSeller from '../common/selectSellerComponent';
 
 export default function AdminFanMomentsIndex() {
   const { Column, HeaderCell, Cell } = Table;
+  const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const currentAdminSelection = useSelector((state: RootState) => state.adminSelection);
   const currentAdminDataSelection = useSelector((state: RootState) => state.adminDataSelection);
   const globalSelection = useSelector((state: RootState) => state.globalSelection);
-  const { getSellers } = useGetSellers();
   const { getFanMoments } = useGetFanMoments();
   const { deleteFanMoment } = useDeleteFanMoment();
   const dispatch = useDispatch();
@@ -55,9 +44,8 @@ export default function AdminFanMomentsIndex() {
   const { getAllCountries } = useGetAllCountries();
   const router = useRouter();
   const reloadCountries = currentAdminSelection.reloadCountries;
-  const reloadSellers = currentAdminSelection.reloadSellers;
   const reloadFanMoments = currentAdminSelection.reloadFanMoments;
-  const selectedSellerId = currentAdminSelection.sellerId;
+  const selectedSellerId = currentReportSelection.seller?.sellerId;
 
   useEffect(() => {
     currentAdminSelectionRef.current = currentAdminSelection;
@@ -65,32 +53,7 @@ export default function AdminFanMomentsIndex() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (reloadCountries) {
-        dispatch(setReloadCountries(false));
-        dispatch(setIsLoading(true));
-        void getAllCountries().then((response: GetCountriesResponse) => {
-          if (response.countries && !response.error) {
-            dispatch(setCountries(response.countries));
-          } else {
-            toast.error(response.error);
-            dispatch(setIsLoading(false));
-          }
-        });
-      } else if (reloadSellers) {
-        dispatch(setReloadSellers(false));
-        if (!globalSelection.isLoading) {
-          dispatch(setIsLoading(true));
-        }
-        void getSellers().then((response: GetSellersResponse) => {
-          if (response.sellers && !response.error) {
-            dispatch(setAllSellers(response.sellers));
-          } else {
-            toast.error(response.error);
-            dispatch(setIsLoading(false));
-          }
-          dispatch(setReloadFanMoments(true));
-        });
-      } else if (reloadFanMoments && !fanMomentsRequestInFlight.current) {
+      if (reloadFanMoments && !fanMomentsRequestInFlight.current) {
         dispatch(setReloadFanMoments(false));
         const adminSelection = { ...currentAdminSelectionRef.current };
         const sellerId: number = selectedSellerId ?? 0;
@@ -149,26 +112,11 @@ export default function AdminFanMomentsIndex() {
     dispatch,
     getAllCountries,
     getFanMoments,
-    getSellers,
     globalSelection.isLoading,
     reloadCountries,
     reloadFanMoments,
-    reloadSellers,
     selectedSellerId,
   ]);
-
-  const updateSeller = (sellerId: number | null) => {
-    if (!sellerId || isNaN(sellerId)) {
-      return;
-    }
-    dispatch(setAdminSellerId(sellerId));
-    const filter: FanMomentFilter = currentAdminSelection.fanFilter
-      ? { ...currentAdminSelection.fanFilter }
-      : {};
-    filter.sellerId = sellerId;
-    dispatch(setFanFilter(filter));
-    onDateChange(undefined, undefined);
-  };
 
   const onDateChange = (newStart: number | undefined, newEnd: number | undefined) => {
     const adminSelection = { ...currentAdminSelection };
@@ -191,14 +139,14 @@ export default function AdminFanMomentsIndex() {
   };
 
   const addMoment = () => {
-    if (!currentAdminSelection.sellerId) {
+    if (!currentReportSelection.seller?.sellerId) {
       return;
     }
 
     const fanMoment: FanMoment = {
       key: {
         momentDate: moment().format('YYYY-MM-DD'),
-        sellerId: currentAdminSelection.sellerId,
+        sellerId: currentReportSelection.seller.sellerId,
         eventId: currentAdminSelection.selectedEvent?.externalEventId,
       },
       images: [],
@@ -206,7 +154,7 @@ export default function AdminFanMomentsIndex() {
 
     dispatch(setSelectedFanMoment(fanMoment));
     dispatch(setReloadFanMoments(true));
-    router.push('/admin/fan-moments/edit');
+    router.push('/fan-moments/edit');
   };
 
   const editMoment = (eventId: number) => {
@@ -225,7 +173,7 @@ export default function AdminFanMomentsIndex() {
       return;
     }
     dispatch(setSelectedFanMoment(fanMoment));
-    router.push('/admin/fan-moments/edit');
+    router.push('/fan-moments/edit');
   };
 
   const refreshData = () => {
@@ -300,7 +248,9 @@ export default function AdminFanMomentsIndex() {
     });
   };
 
-  const sellectedSellerId = currentAdminSelection.sellerId;
+  const sellectedSellerId = currentReportSelection.seller?.sellerId;
+
+  const filterByPermissions: Permission[] = [{ permissionId: EnumPermission.UploadFanMoments }];
 
   return (
     <>
@@ -315,13 +265,7 @@ export default function AdminFanMomentsIndex() {
         </Row>
         <Row>
           <Col xs={24}>
-            <AdminSellerSelect
-              Id="refresh"
-              Sellers={currentAdminSelection.allSellers}
-              SellerId={currentAdminSelection.sellerId}
-              OnSellerChange={(sellerId: number | null) => updateSeller(sellerId)}
-              Countries={currentAdminSelection.countries}
-            />
+            <SelectSeller filterByPermissions={filterByPermissions} />
           </Col>
         </Row>
         <Row>

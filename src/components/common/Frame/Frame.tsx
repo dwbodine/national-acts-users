@@ -8,7 +8,7 @@ import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { RootState } from '@/lib/store';
 import { FrameProps } from '@/types/props';
 import { NavItemData } from '@/types/public';
-import { User } from '@/types/user';
+import { EnumPermission, User } from '@/types/user';
 
 import WaitSpinner from '../WaitSpinnerComponent';
 import Brand from './Brand';
@@ -31,10 +31,15 @@ const Frame = (props: FrameProps) => {
       if (user.isAdmin) {
         setNavs(adminAppNavs);
       } else {
-        setNavs(userAppNavs);
+        const canUploadFanMoments = user.sellers?.some((seller) =>
+          seller.permissions?.includes(EnumPermission.UploadFanMoments),
+        );
+        setNavs(
+          userAppNavs.filter((nav) => nav.eventKey !== 'site-fan-moments' || canUploadFanMoments),
+        );
       }
     }
-  }, [user, navs, globalSelection.isLoading]);
+  }, [user, globalSelection.isLoading]);
 
   return (
     <Suspense fallback={<WaitSpinner />}>
