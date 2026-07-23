@@ -145,7 +145,7 @@ export default function AdminPageEdit() {
   };
 
   const setPageTitle = (title: string) => {
-    if (!currentAdminSelection.selectedPage || !title) {
+    if (!currentAdminSelection.selectedPage) {
       return;
     }
     const pageToUpdate: Page = { ...currentAdminSelection.selectedPage };
