@@ -26,7 +26,6 @@ import { FanMoment } from '@/types/public';
 import { GetFanMomentsResponse, ModifyFanMomentResponse } from '@/types/responses';
 import { AdminSelection, EnumPermission, Permission } from '@/types/user';
 
-import ReportDatePicker from '../common/reportDatePickerControl';
 import SelectSeller from '../common/selectSellerComponent';
 
 export default function AdminFanMomentsIndex() {
@@ -117,26 +116,6 @@ export default function AdminFanMomentsIndex() {
     reloadFanMoments,
     selectedSellerId,
   ]);
-
-  const onDateChange = (newStart: number | undefined, newEnd: number | undefined) => {
-    const adminSelection = { ...currentAdminSelection };
-    adminSelection.start = newStart;
-    adminSelection.end = newEnd;
-    const filter: FanMomentFilter = adminSelection.fanFilter ? { ...adminSelection.fanFilter } : {};
-    filter.startDate = newStart;
-    filter.endDate = newEnd;
-    dispatch(setAdminDates(adminSelection));
-    dispatch(setFanFilter(filter));
-    dispatch(setReloadFanMoments(true));
-  };
-
-  const onEndClear = () => {
-    onDateChange(currentAdminSelection.start, undefined);
-  };
-
-  const onStartClear = () => {
-    onDateChange(undefined, currentAdminSelection.end);
-  };
 
   const addMoment = () => {
     if (!currentReportSelection.seller?.sellerId) {
@@ -257,30 +236,18 @@ export default function AdminFanMomentsIndex() {
       <PageHeader pageTitle="Manage Fan Moments" />
       <div className="admin-container">
         <Row>
-          <Col>
-            <Button hidden={sellectedSellerId === undefined} onClick={addMoment}>
-              Add Event Gallery
-            </Button>
-          </Col>
-        </Row>
-        <Row>
           <Col xs={24}>
             <SelectSeller filterByPermissions={filterByPermissions} />
           </Col>
         </Row>
-        <Row>
-          <Col xs={24} hidden={sellectedSellerId === undefined}>
-            <ReportDatePicker
-              OnChange={onDateChange}
-              OnStartClear={onStartClear}
-              OnEndClear={onEndClear}
-              Start={currentAdminSelection.start}
-              End={currentAdminSelection.end}
-            />
+        <Row className="admin-seller-row">
+          <Col xs={2} className="admin-seller-title">
+            &nbsp;
           </Col>
-        </Row>
-        <Row>
-          <Col xs={24}>
+          <Col xs={22} className="fan-moments-buttons">
+            <Button hidden={sellectedSellerId === undefined} onClick={addMoment}>
+              Add Photos
+            </Button>
             <Button hidden={sellectedSellerId === undefined} onClick={() => refreshData()}>
               Refresh
             </Button>

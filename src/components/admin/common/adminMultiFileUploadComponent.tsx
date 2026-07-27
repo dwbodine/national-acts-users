@@ -9,8 +9,6 @@ import { ImageType } from '@/constants';
 import { useUploadImage } from '@/hooks/common/useUploadImage';
 import { AdminMultiFileUploadProps } from '@/types/props';
 
-const ACCEPTED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png'];
-const ACCEPTED_IMAGE_TYPES = ACCEPTED_IMAGE_EXTENSIONS.join(',');
 const GALLERY_COLUMN_COUNT = 4;
 
 export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
@@ -69,7 +67,6 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
   const [fileList, setFileList] = useState<FileType[]>([]);
-  const [invalidFileNames, setInvalidFileNames] = useState<string[]>([]);
   const [failedFileNames, setFailedFileNames] = useState<string[]>([]);
 
   const normalizeFileName = (fileName: string) =>
@@ -77,11 +74,6 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
 
   const currentFileNames =
     CurrentFileNames?.filter((fileName) => fileName && fileName !== 'None') ?? [];
-
-  const isAcceptedImage = (file: File) => {
-    const fileName = file.name.toLowerCase();
-    return ACCEPTED_IMAGE_EXTENSIONS.some((extension) => fileName.endsWith(extension));
-  };
 
   const uploadFile = async (file: File) => {
     const uploadedFileName = await uploadImage(file, imageType, subfolderName);
@@ -97,13 +89,9 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
       .map((fileItem) => fileItem.blobFile)
       .filter((file): file is File => Boolean(file));
 
-    const validFiles = selectedFiles.filter(isAcceptedImage);
-    const invalidFiles = selectedFiles.filter((file) => !isAcceptedImage(file));
-
-    setInvalidFileNames(invalidFiles.map((file) => file.name));
     setFailedFileNames([]);
 
-    if (!validFiles.length) {
+    if (!selectedFiles.length) {
       setFileList([]);
       return;
     }
@@ -115,7 +103,7 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
     setIsUploaded(false);
     setIsUploading(true);
 
-    const uploadResults = await Promise.all(validFiles.map(uploadFile));
+    const uploadResults = await Promise.all(selectedFiles.map(uploadFile));
     const uploadedFileNames = uploadResults
       .map((result) => result.uploadedFileName)
       .filter((fileName): fileName is string => Boolean(fileName));
@@ -219,7 +207,7 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
       <div className="admin-setting-title">{title}</div>
 
       <Uploader
-        accept={ACCEPTED_IMAGE_TYPES}
+        accept=".jpg,.jpeg,.png,.webp,.heif,.heic"
         action=""
         autoUpload={false}
         disabled={isUploading || disabled}
@@ -228,9 +216,7 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
         fileListVisible={false}
         multiple
         onChange={(newList) => {
-          const validList = newList.filter(
-            (fileItem) => fileItem.blobFile && isAcceptedImage(fileItem.blobFile),
-          );
+          const validList = newList.filter((fileItem) => fileItem.blobFile);
           setFileList(validList);
           void handleFileChange(newList);
         }}
@@ -245,9 +231,6 @@ export default function AdminMultiFileUpload(props: AdminMultiFileUploadProps) {
       </span>
       <span className="success" hidden={(!isUploaded && !isDirty) || !currentFileNames.length}>
         Updated!
-      </span>
-      <span className="danger" hidden={!invalidFileNames.length}>
-        Only JPG, JPEG, and PNG files are supported: {invalidFileNames.join(', ')}
       </span>
       <span className="danger" hidden={!failedFileNames.length}>
         Upload failed: {failedFileNames.join(', ')}
