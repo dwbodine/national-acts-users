@@ -236,6 +236,18 @@ export default function AdminFanMomentEdit() {
       <PageHeader pageTitle={pageHeader} />
       <Row className="admin-container">
         <Col xs={24}>
+          <Row>
+            <Col xs={24}>
+              <div className="fan-moments-instructions">
+                Instructions: <br />
+                <ol>
+                  <li hidden={Boolean(fanMoment?.key.eventId)}>Select an event</li>
+                  <li>Upload (or remove) one or more photos</li>
+                  <li>Page updates the gallery automatically as you go</li>
+                </ol>
+              </div>
+            </Col>
+          </Row>
           <Row hidden={!sellerName}>
             <Col xs={24}>
               <div className="admin-setting-title">Seller</div>
@@ -255,6 +267,7 @@ export default function AdminFanMomentEdit() {
                 block
                 cleanable={false}
                 data={eventList}
+                disabled={Boolean(fanMoment?.key.eventId && fanMoment.images?.length)}
                 loading={eventsLoading}
                 menuAutoWidth={true}
                 onChange={(eventId) => setFanMomentEvent(eventId)}
