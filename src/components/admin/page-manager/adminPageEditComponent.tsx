@@ -675,6 +675,17 @@ export default function AdminPageEdit() {
         toast.error('Must select at least one seller for this page');
         return;
       }
+
+      if (pageToUpdate.pageType.pageTypeId === ARTIST_SELLER_TYPE) {
+        const primarySellers = pageSellers.filter((x) => x.isPrimary);
+        if (!primarySellers || primarySellers.length === 0) {
+          toast.error('Must mark one seller as the primary seller for this page');
+          return;
+        } else if (primarySellers.length !== 1) {
+          toast.error('Only one seller can be marked as the primary seller for this page');
+          return;
+        }
+      }
     }
 
     if (pageToUpdate.useIncludeDates && (!pageToUpdate.includeStart || !pageToUpdate.includeEnd)) {

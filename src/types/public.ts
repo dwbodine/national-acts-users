@@ -77,6 +77,7 @@ export interface PageSeller {
   website?: string;
   websiteDisplayText?: string;
   sellerName?: string;
+  isPrimary?: boolean;
 }
 
 export interface ArtistPageSettings {

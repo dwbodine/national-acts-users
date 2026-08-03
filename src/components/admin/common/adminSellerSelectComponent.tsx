@@ -77,12 +77,19 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
     ps.spotify = spotify;
     ps.website = website;
     ps.websiteDisplayText = websiteDisplayText;
+    ps.isPrimary = isArtist ? pageSeller.isPrimary : false;
     onPageSellerChange(ps);
     handlePageSellerSettingsClose();
   };
 
   const onCountryChange = (cId: number | null) => {
     setCountryId(cId ?? undefined);
+  };
+
+  const onPrimaryChange = (_: unknown, checked: boolean) => {
+    if (pageSeller && onPageSellerChange) {
+      onPageSellerChange({ ...pageSeller, isPrimary: checked });
+    }
   };
 
   const sellerList: ItemDataType<number>[] = sellers
@@ -376,6 +383,11 @@ export default function AdminSellerSelect(props: AdminSellerSelectProps) {
           id={`${id}_remove`}
           onClick={onDelete}
         ></FaMinus>
+      </Col>
+      <Col xs={2} hidden={!isArtist || !pageSeller || !onPageSellerChange}>
+        <Checkbox checked={pageSeller?.isPrimary ?? false} onChange={onPrimaryChange}>
+          Primary
+        </Checkbox>
       </Col>
     </Row>
   );
