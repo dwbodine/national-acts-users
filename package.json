@@ -5,6 +5,7 @@
   "resolutions": {
     "postcss": "npm:8.5.23",
     "jsdom/undici": "npm:^7.29.0",
+    "undici@npm:^8.4.1": "npm:^8.9.0",
     "brace-expansion@npm:^1.1.7": "npm:^1.1.16"
   },
   "scripts": {
