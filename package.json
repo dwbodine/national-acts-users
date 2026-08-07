@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "resolutions": {
-    "postcss": "npm:8.5.15",
+    "postcss": "npm:8.5.23",
     "jsdom/undici": "npm:^7.29.0"
   },
   "scripts": {
@@ -57,7 +57,7 @@
     "sharp": "^0.35.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/eslintrc": "^3.3.6",
     "@eslint/js": "^9.39.1",
     "@next/eslint-plugin-next": "^16.2.6",
     "@reduxjs/toolkit": "^2.9.2",
