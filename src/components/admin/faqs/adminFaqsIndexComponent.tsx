@@ -147,6 +147,7 @@ export default function AdminFaqsIndex() {
               ]}
               searchable={false}
               cleanable={false}
+              defaultValue={currentCategory ?? 0}
               onChange={(value) => updateSelectedCategory(value ?? 0)}
               style={{ width: '250px', margin: '15px 0' }}
             />
