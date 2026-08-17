@@ -1,20 +1,26 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
 import { ImageType, MINIMUM_UNIX_TIMESTAMP } from '@/constants';
-import { getArrayData, getErrorMessage, getStatusCode } from '@/lib/serviceResponses';
+import {
+  getArrayData,
+  getErrorMessage,
+  getOptionalData,
+  getStatusCode,
+} from '@/lib/serviceResponses';
 import { FanMomentFilter } from '@/types/props';
 import { FanMoment, FeaturedArtist, Page, PageType, SiteSetting } from '@/types/public';
 import {
   GetEventsResponse,
   GetFanMomentsResponse,
   GetFeaturedArtistsResponse,
+  GetOrdersResponse,
   GetPagesResponse,
   GetPageTypesResponse,
   GetSellersResponse,
   GetSettingsResponse,
 } from '@/types/responses';
 
-import { Seller, VipEvent } from '../types/event';
+import { Order, Seller, VipEvent } from '../types/event';
 
 export class PublicService {
   protected readonly instance: AxiosInstance;
@@ -301,6 +307,32 @@ export class PublicService {
       response.error =
         err?.message ??
         'Unknown error while fetching fan moments - please contact your administrator';
+    }
+
+    return response;
+  };
+
+  getRecentOrders = async (): Promise<GetOrdersResponse> => {
+    const url = `/public/recent_orders`;
+
+    const response: GetOrdersResponse = {};
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
+    };
+
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.orders = getOptionalData<Order[]>(res.data);
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching orders - please contact your administrator',
+      );
     }
 
     return response;

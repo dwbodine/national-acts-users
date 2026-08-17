@@ -8,13 +8,14 @@ import { Button, Col, Input, Row, Table } from 'rsuite';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
 import { useSearchOrders } from '@/hooks/admin/useSearchOrders';
+import { useGetRecentOrders } from '@/hooks/order/useGetRecentOrders';
 import { setAdminOrders } from '@/lib/adminDataSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
 import { RootState } from '@/lib/store';
 import { Order } from '@/types/event';
 import { GetOrdersResponse } from '@/types/responses';
 import { AdminDataSelection } from '@/types/user';
-import { getOrderStatusSlug, getOrderStatusText } from '@/utils/eventUtils';
+import { getOrderStatusSlug, getOrderStatusText, getPacificMoment } from '@/utils/eventUtils';
 
 export default function AdminOrdersSearch() {
   const { Column, HeaderCell, Cell } = Table;
@@ -24,7 +25,31 @@ export default function AdminOrdersSearch() {
   const [tableLoading, setTableLoading] = useState(true);
   const dispatch = useDispatch();
   const { searchOrders } = useSearchOrders();
+  const { getRecentOrders } = useGetRecentOrders();
   const [searchTerm, setSearchTerm] = useState('');
+  const [showingRecentOrders, setShowingRecentOrders] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    void getRecentOrders().then((response: GetOrdersResponse) => {
+      if (!isMounted) {
+        return;
+      }
+
+      if (response.orders && !response.error) {
+        dispatch(setAdminOrders(response.orders));
+      } else {
+        toast.error(response.error);
+        dispatch(setAdminOrders(undefined));
+      }
+      setTableLoading(false);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [dispatch, getRecentOrders]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -47,6 +72,7 @@ export default function AdminOrdersSearch() {
       toast.warn('Need to enter at least three characters to search');
       return;
     }
+    setShowingRecentOrders(false);
     dispatch(setIsLoading(true));
     setTableLoading(true);
     void searchOrders(searchTerm).then((response: GetOrdersResponse) => {
@@ -99,8 +125,9 @@ export default function AdminOrdersSearch() {
             <Button disabled={!searchTerm || searchTerm.length < 3} onClick={searchAllOrders}>
               Search
             </Button>
-            <div hidden={numOrders === 0} className="success">
+            <div hidden={numOrders === 0} className="success order-search-message">
               {numOrders} order(s) found
+              {showingRecentOrders ? ' in the past 48 hours' : ''}
             </div>
           </Col>
         </Row>
@@ -134,9 +161,19 @@ export default function AdminOrdersSearch() {
                   }
                 </Cell>
               </Column>
-              <Column flexGrow={1}>
-                <HeaderCell>Purchase Date</HeaderCell>
-                <Cell>{(rowData: Order) => moment(rowData.purchaseDate).format('MM/DD/YYYY')}</Cell>
+              <Column flexGrow={2}>
+                <HeaderCell>Purchase Time</HeaderCell>
+                <Cell>
+                  {(rowData: Order) => {
+                    if (rowData.purchaseUnixTimestamp) {
+                      const purchaseDateUtc = moment.unix(rowData.purchaseUnixTimestamp).utc();
+                      const purchaseDateLocal = getPacificMoment(purchaseDateUtc);
+                      return purchaseDateLocal.format('MM/DD/YYYY hh:mm A');
+                    } else {
+                      return '';
+                    }
+                  }}
+                </Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Ticket Socket OrderId</HeaderCell>
