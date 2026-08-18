@@ -240,11 +240,10 @@ export default function CurrentEvents() {
   let totalRevenueUsd = 0.0;
   let totalShirts = 0;
   let ticketsRefunded = 0;
-  let revenueRefunded = 0;
-  let totalServiceFees = 0;
+  let revenueRefundedUsd = 0;
   let totalServiceFeesUsd = 0;
-  let serviceFeesRefunded = 0;
-  let totalNetRevenue = 0;
+  let serviceFeesRefundedUsd = 0;
+  let totalNetRevenueUsd = 0;
   let lastUpdated: moment.Moment | undefined = undefined;
 
   const isAdmin = user?.isAdmin ?? false;
@@ -295,24 +294,21 @@ export default function CurrentEvents() {
       if (!evt.isDeleted) {
         totalTickets += evt.totalTickets ?? 0;
         totalTicketsComped += evt.numTicketsComped ?? 0;
-        revenueRefunded += evt.revenueRefundedUsd ?? 0;
+        revenueRefundedUsd += evt.revenueRefundedUsd ?? 0;
         const eventRevenueUsd = (evt.totalRevenueUsd ?? 0) - (evt.revenueRefundedUsd ?? 0);
         const eventFeeUsd = eventRevenueUsd * (evt.sellerRatePercent ?? 0);
         const netRevenueUsd = eventRevenueUsd - eventFeeUsd;
-        const serviceFeeRevenue =
-          (evt.totalServiceFees ?? 0) - (evt.serviceFeeRevenueRefunded ?? 0);
         const serviceFeeRevenueUsd =
           (evt.totalServiceFeesUsd ?? 0) - (evt.serviceFeeRevenueRefundedUsd ?? 0);
         const numTicketsRefunded = evt.numTicketsRefunded ?? 0;
         const numShirtsSold = evt.totalShirts ?? 0;
-        const serviceFeesRefundedUsd = evt.serviceFeeRevenueRefundedUsd ?? 0;
+        const eventServiceFeesRefundedUsd = evt.serviceFeeRevenueRefundedUsd ?? 0;
 
         totalRevenueUsd += eventRevenueUsd;
-        totalNetRevenue += netRevenueUsd;
+        totalNetRevenueUsd += netRevenueUsd;
         ticketsRefunded += numTicketsRefunded;
         totalShirts += numShirtsSold;
-        serviceFeesRefunded += serviceFeesRefundedUsd;
-        totalServiceFees += serviceFeeRevenue;
+        serviceFeesRefundedUsd += eventServiceFeesRefundedUsd;
         totalServiceFeesUsd += serviceFeeRevenueUsd;
 
         const evtLastUpdated = moment.utc(evt.lastUpdate);
@@ -350,12 +346,12 @@ export default function CurrentEvents() {
           TotalRevenue={totalRevenueUsd}
           HideRevenue={hideRevItem}
           TicketsRefunded={ticketsRefunded}
-          TotalServiceFees={totalServiceFees}
+          TotalServiceFees={totalServiceFeesUsd}
           HideServiceFees={hideServiceFees}
-          RevenueRefunded={revenueRefunded}
-          ServiceFeesRefunded={serviceFeesRefunded}
+          RevenueRefunded={revenueRefundedUsd}
+          ServiceFeesRefunded={serviceFeesRefundedUsd}
           IsAdmin={user?.isAdmin ?? false}
-          TotalNetRevenue={totalNetRevenue}
+          TotalNetRevenue={totalNetRevenueUsd}
           HideSellerRate={hideSellerRate}
         />
         <TicketSalesChart
@@ -428,7 +424,7 @@ export default function CurrentEvents() {
                         className={`pull-right ${revClass}`}
                         hidden={hideRevItem || hideSellerRate}
                       >
-                        ${totalNetRevenue.toFixed(2)}
+                        ${totalNetRevenueUsd.toFixed(2)}
                       </td>
                     </tr>
                   </tfoot>
