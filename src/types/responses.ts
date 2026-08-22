@@ -9,6 +9,8 @@ import {
   Page,
   PageSeller,
   PageType,
+  RefundCategory,
+  RefundPolicy,
   SiteSetting,
 } from './public';
 import { IDashboardTotals, Permission, Role, User, UserActivity, UserSeller } from './user';
@@ -27,12 +29,24 @@ export interface GetFaqCategoriesResponse extends GetResponseBase {
   categories?: FaqCategory[];
 }
 
+export interface GetRefundCategoriesResponse extends GetResponseBase {
+  categories?: RefundCategory[];
+}
+
 export interface GetFaqsResponse extends GetResponseBase {
   faqs?: Faq[];
 }
 
+export interface GetRefundPoliciesResponse extends GetResponseBase {
+  refundPolicies?: RefundPolicy[];
+}
+
 export interface ModifyFaqResponse extends PostReponseBase {
   updatedFaq?: Faq;
+}
+
+export interface ModifyRefundPolicyResponse extends PostReponseBase {
+  updatedRefundPolicy?: RefundPolicy;
 }
 
 export interface GetPagesResponse extends GetResponseBase {

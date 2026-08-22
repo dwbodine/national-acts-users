@@ -153,7 +153,14 @@ export default function AdminFaqsIndex() {
             />
           </Col>
         </Row>
-        <Table autoHeight data={filteredFaqs} bordered cellBordered loading={tableLoading}>
+        <Table
+          autoHeight
+          rowHeight={56}
+          data={filteredFaqs}
+          bordered
+          cellBordered
+          loading={tableLoading}
+        >
           <Column flexGrow={1}>
             <HeaderCell>Category</HeaderCell>
             <Cell>

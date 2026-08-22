@@ -2,18 +2,28 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { ExternalVenue } from '@/types/admin';
 import { Order, Tour, VipEvent } from '@/types/event';
-import { FanMoment, Faq, FaqCategory, FeaturedArtist, Page } from '@/types/public';
+import {
+  FanMoment,
+  Faq,
+  FaqCategory,
+  FeaturedArtist,
+  Page,
+  RefundCategory,
+  RefundPolicy,
+} from '@/types/public';
 
 import { AdminDataSelection } from '../types/user';
 
 const initialState: AdminDataSelection = {
   allFaqs: undefined,
+  allRefundPolicies: undefined,
   allPages: undefined,
   events: undefined,
   faqCategories: undefined,
   featuredArtists: undefined,
   orders: undefined,
   pageOrders: undefined,
+  refundCategories: undefined,
   tours: undefined,
   ticketSocketEvents: undefined,
   venues: undefined,
@@ -34,6 +44,8 @@ export const adminDataSelectionSlice = createSlice({
       state.venues = undefined;
       state.orders = undefined;
       state.faqCategories = undefined;
+      state.refundCategories = undefined;
+      state.allRefundPolicies = undefined;
       return state;
     },
     setAdminEvents: (state, action: PayloadAction<VipEvent[]>) => {
@@ -50,6 +62,14 @@ export const adminDataSelectionSlice = createSlice({
     },
     setAllFaqs: (state, action: PayloadAction<Faq[] | undefined>) => {
       state.allFaqs = action.payload;
+      return state;
+    },
+    setAllRefundCategories: (state, action: PayloadAction<RefundCategory[] | undefined>) => {
+      state.refundCategories = action.payload;
+      return state;
+    },
+    setAllRefundPolicies: (state, action: PayloadAction<RefundPolicy[] | undefined>) => {
+      state.allRefundPolicies = action.payload;
       return state;
     },
     setAllPages: (state, action: PayloadAction<Page[] | undefined>) => {
@@ -96,6 +116,8 @@ export const {
   setTours,
   setVenues,
   setFanMoments,
+  setAllRefundCategories,
+  setAllRefundPolicies,
 } = adminDataSelectionSlice.actions;
 
 export default adminDataSelectionSlice.reducer;

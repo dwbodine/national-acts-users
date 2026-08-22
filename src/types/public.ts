@@ -51,6 +51,17 @@ export interface Faq {
   answer: string;
 }
 
+export interface RefundCategory {
+  refundCategoryId: number;
+  categoryName?: string;
+}
+
+export interface RefundPolicy {
+  refundPolicyId: number;
+  category: RefundCategory;
+  policyText: string;
+}
+
 export interface PageType {
   pageTypeId: number;
   pageTypeName: string;

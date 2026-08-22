@@ -10,6 +10,8 @@ import {
   Page,
   PageSeller,
   PageType,
+  RefundCategory,
+  RefundPolicy,
   SiteSetting,
 } from './public';
 
@@ -370,6 +372,7 @@ export type AdminSelection = {
   reloadFeaturedArtists?: boolean;
   reloadPages?: boolean;
   reloadPageSellers?: boolean;
+  reloadRefundPolicies?: boolean;
   reloadTours?: boolean;
   reloadVenues?: boolean;
   reloadSellers?: boolean;
@@ -382,6 +385,7 @@ export type AdminSelection = {
   selectedEvent?: VipEvent | undefined;
   selectedPage?: Page | undefined;
   selectedPageType?: PageType | undefined;
+  selectedRefundPolicy?: RefundPolicy | undefined;
   selectedTour?: Tour | undefined;
   selectedVenue?: ExternalVenue | undefined;
   selectedOrder?: Order | undefined;
@@ -393,6 +397,7 @@ export type AdminSelection = {
   mustSaveFeaturedArtistOrder?: boolean;
   mustSavePageOrder?: boolean;
   selectedFaqCategory?: number | undefined;
+  selectedRefundCategory?: number | undefined;
   countries: Country[] | undefined;
   pageSellerTypes?: PageType[] | undefined;
   pageTypes?: PageType[] | undefined;
@@ -410,8 +415,10 @@ export type AdminDataSelection = {
   fanMoments?: FanMoment[] | undefined;
   pageOrders?: Page[] | undefined;
   allFaqs?: Faq[] | undefined;
+  allRefundPolicies?: RefundPolicy[] | undefined;
   faqCategories?: FaqCategory[] | undefined;
   orders?: Order[] | undefined;
+  refundCategories?: RefundCategory[] | undefined;
   ticketSocketEvents?: VipEvent[] | undefined;
   tours?: Tour[] | undefined;
   venues?: ExternalVenue[] | undefined;

@@ -12,6 +12,8 @@ import {
   FeaturedArtist,
   Page,
   PageSeller,
+  RefundCategory,
+  RefundPolicy,
   SiteSetting,
 } from '@/types/public';
 import {
@@ -21,6 +23,8 @@ import {
   GetFaqsResponse,
   GetPageSellersResponse,
   GetPagesResponse,
+  GetRefundCategoriesResponse,
+  GetRefundPoliciesResponse,
   GetSellersResponse,
   GetTicketSocketAccountsResponse,
   ModifyExternalEventResponse,
@@ -30,6 +34,7 @@ import {
   ModifyFeaturedArtistResponse,
   ModifyFeaturedArtistsResponse,
   ModifyPageResponse,
+  ModifyRefundPolicyResponse,
   ModifySellerResponse,
   UpdateSettingResponse,
 } from '@/types/responses';
@@ -72,6 +77,32 @@ export class AdminService {
     return response;
   };
 
+  getAllRefundPolicies = async (): Promise<GetRefundPoliciesResponse> => {
+    const url = `/public/refund/0`;
+
+    const response: GetRefundPoliciesResponse = {};
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
+    };
+
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.refundPolicies = getOptionalData<RefundPolicy[]>(res.data);
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching refund policies - please contact your administrator',
+      );
+    }
+
+    return response;
+  };
+
   getAllFaqCategories = async (): Promise<GetFaqCategoriesResponse> => {
     const url = `/public/faq_categories`;
 
@@ -98,6 +129,32 @@ export class AdminService {
     return response;
   };
 
+  getAllRefundCategories = async (): Promise<GetRefundCategoriesResponse> => {
+    const url = `/public/refund/categories`;
+
+    const response: GetRefundCategoriesResponse = {};
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': `${process.env['NEXT_PUBLIC_API_KEY']}`,
+    };
+
+    try {
+      const res = await this.instance.get(url, { headers });
+      response.statusCode = res.status;
+      response.categories = getOptionalData<RefundCategory[]>(res.data);
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while fetching refund categories - please contact your administrator',
+      );
+    }
+
+    return response;
+  };
+
   updateFaq = async (faqToUpdate: Faq): Promise<ModifyFaqResponse> => {
     const url = `/admin/faq/update`;
 
@@ -117,6 +174,33 @@ export class AdminService {
       response.error = getErrorMessage(
         err,
         'Unknown error while updating FAQ - please contact your administrator',
+      );
+    }
+
+    return response;
+  };
+
+  updateRefundPolicy = async (
+    refundPolicyToUpdate: RefundPolicy,
+  ): Promise<ModifyRefundPolicyResponse> => {
+    const url = `/admin/refund/policy/update`;
+
+    const response: ModifyRefundPolicyResponse = {};
+
+    const data = JSON.stringify(refundPolicyToUpdate);
+
+    const headers = getAuthorizationHeader();
+
+    try {
+      const res = await this.instance.post(url, data, { headers });
+      response.statusCode = res.status;
+      response.success = res.status === 200;
+    } catch (e) {
+      const err = e as AxiosError;
+      response.statusCode = getStatusCode(err);
+      response.error = getErrorMessage(
+        err,
+        'Unknown error while updating refund policy - please contact your administrator',
       );
     }
 

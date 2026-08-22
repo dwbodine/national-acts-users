@@ -81,6 +81,11 @@ export const adminAppNavs = [
         to: '/admin/faqs',
       },
       {
+        eventKey: 'site-refund-policies',
+        title: 'Manage Refund Policies',
+        to: '/admin/refunds',
+      },
+      {
         eventKey: 'site-featured-artists',
         title: 'Manage Featured Artists',
         to: '/admin/featured-artists',

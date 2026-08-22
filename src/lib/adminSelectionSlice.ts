@@ -11,6 +11,7 @@ import {
   Page,
   PageSeller,
   PageType,
+  RefundPolicy,
   SiteSetting,
 } from '@/types/public';
 
@@ -37,6 +38,7 @@ const initialState: AdminSelection = {
   reloadFaqs: true,
   reloadFeaturedArtists: true,
   reloadPages: true,
+  reloadRefundPolicies: true,
   reloadRoles: true,
   reloadSellers: true,
   reloadSettings: true,
@@ -50,6 +52,7 @@ const initialState: AdminSelection = {
   selectedOrder: undefined,
   selectedPage: undefined,
   selectedPageType: undefined,
+  selectedRefundPolicy: undefined,
   selectedRole: undefined,
   selectedSeller: undefined,
   selectedTour: undefined,
@@ -79,6 +82,7 @@ export const adminSelectionSlice = createSlice({
       state.reloadFanMoments = true;
       state.reloadFeaturedArtists = true;
       state.reloadPages = true;
+      state.reloadRefundPolicies = true;
       state.reloadTours = true;
       state.reloadSellers = true;
       state.reloadVenues = true;
@@ -96,6 +100,7 @@ export const adminSelectionSlice = createSlice({
       state.selectedVenue = undefined;
       state.pageTypes = undefined;
       state.pageSellerTypes = undefined;
+      state.selectedRefundPolicy = undefined;
       state.roles = undefined;
       state.users = undefined;
       state.mustSaveEvent = false;
@@ -151,6 +156,10 @@ export const adminSelectionSlice = createSlice({
     },
     setSelectedFaqCategory: (state, action: PayloadAction<number | undefined>) => {
       state.selectedFaqCategory = action.payload;
+      return state;
+    },
+    setSelectedRefundCategory: (state, action: PayloadAction<number | undefined>) => {
+      state.selectedRefundCategory = action.payload;
       return state;
     },
     setAllSellers: (state, action: PayloadAction<Seller[] | undefined>) => {
@@ -224,6 +233,13 @@ export const adminSelectionSlice = createSlice({
       }
       return state;
     },
+    setReloadRefundPolicies: (state, action: PayloadAction<boolean>) => {
+      state.reloadRefundPolicies = action.payload;
+      if (state.reloadRefundPolicies) {
+        state.selectedRefundPolicy = undefined;
+      }
+      return state;
+    },
     setReloadPages: (state, action: PayloadAction<boolean>) => {
       state.reloadPages = action.payload;
       if (state.reloadPages) {
@@ -286,6 +302,10 @@ export const adminSelectionSlice = createSlice({
     },
     setSelectedFaq: (state, action: PayloadAction<Faq>) => {
       state.selectedFaq = action.payload;
+      return state;
+    },
+    setSelectedRefundPolicy: (state, action: PayloadAction<RefundPolicy>) => {
+      state.selectedRefundPolicy = action.payload;
       return state;
     },
     setSelectedFeaturedArtist: (state, action: PayloadAction<FeaturedArtist>) => {
@@ -379,6 +399,9 @@ export const {
   setReloadFaqs,
   setReloadFanMoments,
   setFanFilter,
+  setSelectedRefundPolicy,
+  setReloadRefundPolicies,
+  setSelectedRefundCategory,
 } = adminSelectionSlice.actions;
 
 export default adminSelectionSlice.reducer;
