@@ -62,7 +62,7 @@ export default function AdminFaqsIndex() {
     const faq: Faq = {
       answer: '',
       category: {
-        categoryId: 0,
+        categoryId: currentCategory,
         categoryName: '',
       },
       faqId: 0,
@@ -134,7 +134,9 @@ export default function AdminFaqsIndex() {
       <div className="admin-container">
         <Row>
           <Col xs={24}>
-            <Button onClick={addFaq}>Add FAQ</Button>
+            <Button onClick={addFaq} disabled={tableLoading || currentCategory === 0}>
+              Add FAQ
+            </Button>
           </Col>
         </Row>
         <Row>
@@ -180,18 +182,26 @@ export default function AdminFaqsIndex() {
           <Column flexGrow={7}>
             <HeaderCell> </HeaderCell>
             <Cell>
-              {(rowData: Faq) => (
+              {(rowData: Faq, rowIndex?: number) => (
                 <span>
-                  <FaArrowUp
+                  <Button
+                    appearance="subtle"
                     className="admin-up-down-button"
+                    disabled={rowIndex === 0}
                     onClick={() => moveUp(rowData.faqId)}
                     title="Move Up"
-                  />
-                  <FaArrowDown
+                  >
+                    <FaArrowUp />
+                  </Button>
+                  <Button
+                    appearance="subtle"
                     className="admin-up-down-button"
+                    disabled={rowIndex === (filteredFaqs?.length ?? 0) - 1}
                     onClick={() => moveDown(rowData.faqId)}
                     title="Move Down"
-                  />
+                  >
+                    <FaArrowDown />
+                  </Button>
                   <Button onClick={() => editFaq(rowData.faqId)}>Edit</Button>
                   <Button onClick={() => deleteOneFaq(rowData.faqId)}>Delete</Button>
                 </span>
