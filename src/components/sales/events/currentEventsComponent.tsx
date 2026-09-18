@@ -15,7 +15,14 @@ import { useCurrentUser } from '@/hooks/user/useCurrentUser';
 import { useHasPermission } from '@/hooks/user/useHasPermission';
 import { setReloadTours } from '@/lib/adminSelectionSlice';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
-import { setDateRange, setEvents, setReloadEvents, setTours } from '@/lib/reportSelectionSlice';
+import {
+  setDateRange,
+  setEvents,
+  setHideRevenue,
+  setHideServiceFees as setHideServiceFeesSelection,
+  setReloadEvents,
+  setTours,
+} from '@/lib/reportSelectionSlice';
 import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/event';
 import { GetEventsResponse, GetToursResponse } from '@/types/responses';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
@@ -63,6 +70,11 @@ export default function CurrentEvents() {
   let searchBarHidden = true;
 
   const debouncedResults = useMemo(() => debouce(setSearchTerm, 300), []);
+
+  useEffect(() => {
+    dispatch(setHideRevenue(true));
+    dispatch(setHideServiceFeesSelection(true));
+  }, [currentReportSelection.seller.sellerId, dispatch]);
 
   const getTicketData = (events: VipEvent[]): ITicketData | undefined => {
     if (!events || events.length === 0) {

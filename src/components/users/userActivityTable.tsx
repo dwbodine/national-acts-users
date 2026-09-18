@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Checkbox, Col, Row, Table } from 'rsuite';
+import { Button, Checkbox, Col, Row, Table } from 'rsuite';
 
 import { useGetActivityData } from '@/hooks/user/useGetActivityData';
 import { setIsLoading } from '@/lib/globalSelectionSlice';
@@ -17,6 +17,7 @@ import {
 } from '@/lib/userActivitySelectionSlice';
 import { GetActivityResponse } from '@/types/responses';
 import { UserActivity } from '@/types/user';
+import { getPacificMoment } from '@/utils/eventUtils';
 
 export default function UserActivityTable() {
   const { getActivityData } = useGetActivityData();
@@ -29,6 +30,17 @@ export default function UserActivityTable() {
 
   const onFilterClick = (checked: boolean) => {
     dispatch(setFilterAdmins(checked));
+  };
+
+  const submitReset = () => {
+    dispatch(
+      setUserActivityDateRange({
+        ...currentUserActivitySelection,
+        start: undefined,
+        end: undefined,
+      }),
+    );
+    dispatch(setReloadActivities(true));
   };
 
   const { start, end, reloadActivities, filterAdmins, currentActivities } = useSelector(
@@ -81,6 +93,11 @@ export default function UserActivityTable() {
           </Checkbox>
         </Col>
       </Row>
+      <Row className="admin-filter-row">
+        <Col>
+          <Button onClick={submitReset}>Reset</Button>
+        </Col>
+      </Row>
       <Row>
         <Col xs={24}>
           <Table
@@ -95,7 +112,7 @@ export default function UserActivityTable() {
               <HeaderCell>Time</HeaderCell>
               <Cell>
                 {(rowData: UserActivity) =>
-                  moment(rowData.activityTime).format('MM/DD/YYYY hh:mm:ss A')
+                  getPacificMoment(moment.utc(rowData.activityTime)).format('MM/DD/YYYY hh:mm:ss A')
                 }
               </Cell>
             </Column>
