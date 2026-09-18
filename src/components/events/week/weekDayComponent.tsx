@@ -297,6 +297,8 @@ export default function WeekDay(props: WeekDayProps) {
         SetNoteTitle={setNoteTitle}
         SetNoteText={setNoteText}
         AddNewNote={addNewNote}
+        NoteTitle={noteTitle}
+        NoteText={noteText}
       />
       <EditNoteModal
         Id="displayNoteModal"

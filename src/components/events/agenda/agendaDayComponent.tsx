@@ -306,6 +306,8 @@ export default function AgendaDay(props: AgendaDayProps) {
           SetNoteTitle={setNoteTitle}
           SetNoteText={setNoteText}
           AddNewNote={addNewNote}
+          NoteTitle={noteTitle}
+          NoteText={noteText}
         />
         <EditNoteModal
           Id="displayNoteModal"
