@@ -120,7 +120,6 @@ export default function EventDetail(props: EditProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [hideRevItem, setHideRevItem] = useState(true);
-  const [hideServiceFeeDisplay, setHideServiceFeeDisplay] = useState(true);
   const [showOnlyEmailsDisplay, setShowOnlyEmailsDisplay] = useState(false);
   const [showOnlyPhonesDisplay, setShowOnlyPhonesDisplay] = useState(false);
 
@@ -243,24 +242,19 @@ export default function EventDetail(props: EditProps) {
       setShowOnlyEmailsDisplay(false);
       setShowOnlyPhonesDisplay(false);
     }
-
-    // Service fees
-    if (viewServiceFees) {
-      setHideServiceFeeDisplay(reportSelection.hideOrderServiceFees ?? true);
-    } else {
-      setHideServiceFeeDisplay(true);
-    }
   }, [
     user,
     sellerId,
     alwaysShowRevenue,
     viewRevenueData,
-    viewServiceFees,
     reportSelection.hideOrderRevenue,
-    reportSelection.hideOrderServiceFees,
     reportSelection.showOnlyEmails,
     reportSelection.showOnlyPhones,
   ]);
+
+  // Keep fee visibility on the same source of truth as the checkbox. A local
+  // state copy can lag Redux for one render after navigation or a toggle.
+  const hideServiceFeeDisplay = !viewServiceFees || (reportSelection.hideOrderServiceFees ?? true);
 
   // 5) Fetch event ONCE per id after seller is ready
   useEffect(() => {

@@ -11,6 +11,7 @@ const initialState: UserReportSelection = {
   hideRevenue: true,
   hideOrderRevenue: true,
   hideServiceFees: true,
+  hideOrderServiceFees: true,
   isForAdmin: false,
   reloadEvents: true,
   reloadTours: true,
@@ -55,6 +56,7 @@ export const userReportSelectionSlice = createSlice({
       state.hideRevenue = true;
       state.hideOrderRevenue = true;
       state.hideServiceFees = true;
+      state.hideOrderServiceFees = true;
       state.tours = undefined;
       state.selectedTourId = undefined;
       return state;
@@ -65,7 +67,9 @@ export const userReportSelectionSlice = createSlice({
       state.showDeleted = false;
       state.showInactive = false;
       state.hideRevenue = true;
+      state.hideOrderRevenue = true;
       state.hideServiceFees = true;
+      state.hideOrderServiceFees = true;
       state.reloadEvents = true;
       state.reloadTours = true;
       state.retainDateSelection = false;
@@ -88,6 +92,7 @@ export const userReportSelectionSlice = createSlice({
       state.hideRevenue = action.payload.hideRevenue;
       state.hideServiceFees = action.payload.hideServiceFees;
       state.hideOrderRevenue = true;
+      state.hideOrderServiceFees = true;
       return state;
     },
     setEvents: (state, action: PayloadAction<VipEvent[] | undefined>) => {
@@ -139,6 +144,7 @@ export const userReportSelectionSlice = createSlice({
       if (state.reloadEvents) {
         state.currentEvents = undefined;
         state.hideOrderRevenue = true;
+        state.hideOrderServiceFees = true;
       }
       return state;
     },
@@ -172,6 +178,7 @@ export const userReportSelectionSlice = createSlice({
       state.hideRevenue = true;
       state.hideServiceFees = true;
       state.hideOrderRevenue = true;
+      state.hideOrderServiceFees = true;
       state.showHidden = state.isForAdmin;
       state.showInactiveOrders = true;
       state.retainDateSelection = false;
