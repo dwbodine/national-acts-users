@@ -184,7 +184,15 @@ export default function EventDetail(props: EditProps) {
     setAlwaysShowRevenue(vRevData && !vRevControls);
   }, [user, userHasPermission]);
 
-  // 3) Ensure seller is loaded into redux before fetching event
+  // 3) Every event opened via ?id= starts with service fees hidden, even when
+  // the seller is already loaded and the seller setup below is skipped.
+  useEffect(() => {
+    if (!id) return;
+    dispatch(setHideOrderServiceFees(true));
+    dispatch(setHideOrderRevenue(true));
+  }, [id, dispatch]);
+
+  // 4) Ensure seller is loaded into redux before fetching event
   useEffect(() => {
     if (!user || !id) return;
     if (user.userId <= 0 || !user.sellers) return;
@@ -220,7 +228,7 @@ export default function EventDetail(props: EditProps) {
     // intentionally NOT depending on the full reportSelection object
   }, [user, id, sellerId, dispatch, getUserSellerFromEventId, router]);
 
-  // 4) Sync UI toggles driven by redux selection + permissions
+  // 5) Sync UI toggles driven by redux selection + permissions
   useEffect(() => {
     if (!user) return;
     if (sellerId <= 0) return;
@@ -256,7 +264,7 @@ export default function EventDetail(props: EditProps) {
   // state copy can lag Redux for one render after navigation or a toggle.
   const hideServiceFeeDisplay = !viewServiceFees || (reportSelection.hideOrderServiceFees ?? true);
 
-  // 5) Fetch event ONCE per id after seller is ready
+  // 6) Fetch event ONCE per id after seller is ready
   useEffect(() => {
     if (!user || !id) return;
     if (sellerId <= 0) return;
