@@ -193,6 +193,18 @@ export default function AdminOrderEdit(props: EditProps) {
     markDirty();
   };
 
+  const setIsManualTransfer = (isManualTransfer: boolean) => {
+    if (!currentAdminSelection || !currentAdminSelection.selectedOrder) {
+      return;
+    }
+    const currentOrder = { ...currentAdminSelection.selectedOrder };
+    currentOrder.isManualTransfer = isManualTransfer;
+    currentOrder.isDeleted = false;
+    currentOrder.isActive = true;
+    dispatch(setAdminOrder(currentOrder));
+    markDirty();
+  };
+
   const setServiceFee = (ticketId: number, newServiceFee: number) => {
     if (
       !currentAdminSelection.selectedOrder ||
@@ -723,6 +735,7 @@ export default function AdminOrderEdit(props: EditProps) {
   const chargebackTitle = chargebackDisabled ? 'Order has already been charged back' : '';
   const currencyAbbrev = currentAdminSelection.selectedOrder?.currencyAbbrev;
   const isActive = currentAdminSelection.selectedOrder?.isActive ?? false;
+  const isManualTransfer = currentAdminSelection.selectedOrder?.isManualTransfer ?? false;
   const isDeleted = currentAdminSelection.selectedOrder?.isDeleted ?? false;
   const isComped = currentAdminSelection.selectedOrder?.isComped ?? false;
   const orderNumber = currentAdminSelection.selectedOrder?.orderId ?? 'n/a';
@@ -1041,6 +1054,12 @@ export default function AdminOrderEdit(props: EditProps) {
             </Checkbox>
             <Checkbox checked={isComped} onChange={(_, checked) => setIsComped(checked)}>
               Is Comped?
+            </Checkbox>
+            <Checkbox
+              checked={isManualTransfer}
+              onChange={(_, checked) => setIsManualTransfer(checked)}
+            >
+              Is Manual Transfer?
             </Checkbox>
           </Col>
         </Row>

@@ -136,6 +136,7 @@ export interface Order {
   serviceFees?: number;
   lastUpdate?: string;
   notes?: string;
+  isManualTransfer?: boolean;
 }
 
 export interface Venue {
