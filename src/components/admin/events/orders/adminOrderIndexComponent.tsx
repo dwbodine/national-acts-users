@@ -47,7 +47,7 @@ export default function AdminOrdersIndex(props: EditProps) {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [orderIdList, setOrderIdList] = useState<number[]>([]);
   const allOrderIds: number[] =
-    currentAdminSelection.selectedEvent?.orders?.map((o) => o.ticketSocketOrderId) ?? [];
+    currentAdminSelection.selectedEvent?.orders?.map((o) => o.ticketPartnerOrderId) ?? [];
 
   const loadEventById = useCallback(() => {
     if (!id) {
@@ -72,7 +72,7 @@ export default function AdminOrdersIndex(props: EditProps) {
         dispatch(setReloadEvents(false));
         setOrderIdList([]);
         const adminSelection = { ...currentAdminSelection };
-        const selectedEventId = adminSelection.selectedEvent?.externalEventId;
+        const selectedEventId = adminSelection.selectedEvent?.eventId;
         if (!adminSelection.sellerId || !selectedEventId) {
           setTableLoading(false);
           return;
@@ -86,7 +86,7 @@ export default function AdminOrdersIndex(props: EditProps) {
             dispatch(setAdminEvent(undefined));
             dispatch(setAdminOrder(undefined));
             dispatch(setReloadEvents(false));
-            const currentEvent = response.events.find((x) => x.externalEventId === selectedEventId);
+            const currentEvent = response.events.find((x) => x.eventId === selectedEventId);
             if (currentEvent) {
               dispatch(setAdminEvent(currentEvent));
             }
@@ -112,17 +112,17 @@ export default function AdminOrdersIndex(props: EditProps) {
     globalSelection,
   ]);
 
-  const viewOrder = (ticketSocketOrderId: number) => {
+  const viewOrder = (ticketPartnerOrderId: number) => {
     if (
-      !ticketSocketOrderId ||
-      isNaN(ticketSocketOrderId) ||
+      !ticketPartnerOrderId ||
+      isNaN(ticketPartnerOrderId) ||
       !currentAdminSelection.selectedEvent ||
       !currentAdminSelection.selectedEvent.orders
     ) {
       return;
     }
     const order = currentAdminSelection.selectedEvent.orders.find(
-      (x) => x.ticketSocketOrderId === ticketSocketOrderId,
+      (x) => x.ticketPartnerOrderId === ticketPartnerOrderId,
     );
     if (!order) {
       return;
@@ -131,7 +131,7 @@ export default function AdminOrdersIndex(props: EditProps) {
     setTableLoading(true);
     let path = '/admin/events/orders/edit/';
     if (id) {
-      path += `?id=${order.ticketSocketOrderId}`;
+      path += `?partnerOrderId=${order.ticketPartnerOrderId}`;
     }
     router.push(path);
   };
@@ -145,12 +145,12 @@ export default function AdminOrdersIndex(props: EditProps) {
     }
   };
 
-  const updateOrderIdList = (ticketSocketOrderId: number, addToList: boolean) => {
+  const updateOrderIdList = (ticketPartnerOrderId: number, addToList: boolean) => {
     let idList: number[] = orderIdList ? [...orderIdList] : [];
-    if (!addToList && idList.includes(ticketSocketOrderId)) {
-      idList = idList.filter((i) => i !== ticketSocketOrderId);
-    } else if (addToList && !idList.includes(ticketSocketOrderId)) {
-      idList.push(ticketSocketOrderId);
+    if (!addToList && idList.includes(ticketPartnerOrderId)) {
+      idList = idList.filter((i) => i !== ticketPartnerOrderId);
+    } else if (addToList && !idList.includes(ticketPartnerOrderId)) {
+      idList.push(ticketPartnerOrderId);
     }
     setOrderIdList(idList);
   };
@@ -390,10 +390,10 @@ export default function AdminOrdersIndex(props: EditProps) {
                 <Cell>
                   {(rowData: Order) => (
                     <Checkbox
-                      id={`oId_${rowData.ticketSocketOrderId}`}
-                      checked={orderIdList.includes(rowData.ticketSocketOrderId)}
+                      id={`oId_${rowData.ticketPartnerOrderId}`}
+                      checked={orderIdList.includes(rowData.ticketPartnerOrderId)}
                       onChange={(_, checked) =>
-                        updateOrderIdList(rowData.ticketSocketOrderId, checked)
+                        updateOrderIdList(rowData.ticketPartnerOrderId, checked)
                       }
                     />
                   )}
@@ -423,11 +423,11 @@ export default function AdminOrdersIndex(props: EditProps) {
                 <HeaderCell>&nbsp;</HeaderCell>
                 <Cell>
                   {(rowData: Order) =>
-                    rowData.ticketSocketOrderId ? (
+                    rowData.ticketPartnerOrderId ? (
                       <a
                         href="#"
-                        id={rowData.ticketSocketOrderId.toString()}
-                        onClick={() => viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))}
+                        id={rowData.ticketPartnerOrderId.toString()}
+                        onClick={() => viewOrder(parseInt(`${rowData.ticketPartnerOrderId}`))}
                       >
                         Edit
                       </a>

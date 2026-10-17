@@ -4,11 +4,11 @@ import { eventService } from '../../services';
 
 export const useRefundOrder = () => {
   const refundOrder = async (
-    ticketSocketOrderId: number,
+    ticketPartnerOrderId: number,
     refundServiceFees: boolean,
     markChargeback: boolean = false,
   ): Promise<ModifyOrderResponse> =>
-    await eventService.refundOrder(ticketSocketOrderId, refundServiceFees, markChargeback);
+    await eventService.refundOrder(ticketPartnerOrderId, refundServiceFees, markChargeback);
 
   return { refundOrder };
 };

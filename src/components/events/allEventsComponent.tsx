@@ -78,8 +78,7 @@ export default function AllEvents() {
                 );
                 if (currentReportSelection.expandedEvent !== undefined) {
                   const updatedEvent = filteredEvents.find(
-                    (x) =>
-                      x.externalEventId === currentReportSelection.expandedEvent?.externalEventId,
+                    (x) => x.eventId === currentReportSelection.expandedEvent?.eventId,
                   );
                   if (updatedEvent) {
                     dispatch(setExpandedEvent(updatedEvent));

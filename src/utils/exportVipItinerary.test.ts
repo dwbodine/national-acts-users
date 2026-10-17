@@ -6,7 +6,7 @@ describe('exportVipItinerary', () => {
   const events = [
     {
       eventDate: '2026-05-01T12:00:00Z',
-      externalEventId: 1,
+      eventId: 1,
       externalUrl: 'https://tickets.example.com',
       isActive: true,
       isAddedToBandsInTown: true,
@@ -24,7 +24,7 @@ describe('exportVipItinerary', () => {
     },
     {
       eventDate: '2026-05-02T12:00:00Z',
-      externalEventId: 2,
+      eventId: 2,
       isActive: true,
       isAddedToBandsInTown: false,
       isDeleted: false,
@@ -40,7 +40,7 @@ describe('exportVipItinerary', () => {
     },
     {
       eventDate: '2026-05-03T12:00:00Z',
-      externalEventId: 3,
+      eventId: 3,
       isActive: true,
       isDeleted: true,
       isExternal: false,
@@ -88,7 +88,7 @@ describe('exportVipItinerary', () => {
       [
         {
           eventDate: '2026-05-05T12:00:00Z',
-          externalEventId: 4,
+          eventId: 4,
           externalUrl: undefined,
           isActive: true,
           isAddedToBandsInTown: false,
@@ -120,7 +120,7 @@ describe('exportVipItinerary', () => {
     const internationalEvents = [
       {
         eventDate: '2026-05-06T12:00:00Z',
-        externalEventId: 5,
+        eventId: 5,
         externalUrl: 'https://tickets.example.fr',
         isActive: true,
         isAddedToBandsInTown: false,

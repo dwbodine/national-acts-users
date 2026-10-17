@@ -4,10 +4,10 @@ import { eventService } from '../../services';
 
 export const useSetOrdersInactive = () => {
   const setOrdersInactive = async (
-    ticketSocketOrderIdList: number[],
+    ticketPartnerOrderIdList: number[],
     isActive: boolean,
   ): Promise<ModifyOrderResponse> =>
-    await eventService.setOrdersInactive(ticketSocketOrderIdList, isActive);
+    await eventService.setOrdersInactive(ticketPartnerOrderIdList, isActive);
 
   return { setOrdersInactive };
 };

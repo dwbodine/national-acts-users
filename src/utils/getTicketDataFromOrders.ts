@@ -33,15 +33,15 @@ export default function getTicketDataFromOrders(
     order.tickets?.forEach((ticket) => {
       if (ticket.isActive) {
         if (
-          evt.ticketSocketEventId &&
+          evt.ticketPartnerEventId &&
           !eventHasTicketTypes &&
           !ticketTypes.find(
             (x) => x.ticketTypeName.toLowerCase() === ticket.ticketType.toLowerCase(),
           ) &&
-          evt.ticketSocketEventId !== undefined
+          evt.ticketPartnerEventId !== undefined
         ) {
           ticketTypes.push({
-            eventId: evt.ticketSocketEventId,
+            eventId: evt.ticketPartnerEventId,
             isActive: true,
             ticketTypeId: 0,
             ticketTypeName: ticket.ticketType,

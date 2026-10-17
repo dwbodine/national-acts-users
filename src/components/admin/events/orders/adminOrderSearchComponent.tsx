@@ -93,18 +93,18 @@ export default function AdminOrdersSearch() {
     }
   };
 
-  const viewOrder = (ticketSocketOrderId: number) => {
-    if (!ticketSocketOrderId || isNaN(ticketSocketOrderId) || !currentAdminDataSelection.orders) {
+  const viewOrder = (ticketPartnerOrderId: number) => {
+    if (!ticketPartnerOrderId || isNaN(ticketPartnerOrderId) || !currentAdminDataSelection.orders) {
       return;
     }
     const order = currentAdminDataSelection.orders?.find(
-      (x) => x.ticketSocketOrderId === ticketSocketOrderId,
+      (x) => x.ticketPartnerOrderId === ticketPartnerOrderId,
     );
     if (!order) {
       return;
     }
 
-    window.open(`/admin/events/orders/edit/?id=${order.ticketSocketOrderId}`);
+    window.open(`/admin/events/orders/edit/?partnerOrderId=${order.ticketPartnerOrderId}`);
   };
 
   const numOrders = currentAdminDataSelection.orders?.length ?? 0;
@@ -177,7 +177,9 @@ export default function AdminOrdersSearch() {
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell>Ticket Socket OrderId</HeaderCell>
-                <Cell>{(rowData: Order) => (rowData.orderId ? rowData.orderId : '')}</Cell>
+                <Cell>
+                  {(rowData: Order) => (rowData.originalOrderId ? rowData.originalOrderId : '')}
+                </Cell>
               </Column>
               <Column flexGrow={1}>
                 <HeaderCell># of Tickets</HeaderCell>
@@ -191,11 +193,11 @@ export default function AdminOrdersSearch() {
                 <HeaderCell>&nbsp;</HeaderCell>
                 <Cell>
                   {(rowData: Order) =>
-                    rowData.ticketSocketOrderId ? (
+                    rowData.ticketPartnerOrderId ? (
                       <a
                         href="#"
-                        id={rowData.ticketSocketOrderId.toString()}
-                        onClick={() => viewOrder(parseInt(`${rowData.ticketSocketOrderId}`))}
+                        id={rowData.ticketPartnerOrderId.toString()}
+                        onClick={() => viewOrder(parseInt(`${rowData.ticketPartnerOrderId}`))}
                       >
                         Edit
                       </a>

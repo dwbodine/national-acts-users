@@ -4,10 +4,10 @@ import { eventService } from '../../services';
 
 export const useSetOrdersDeleted = () => {
   const setOrdersDeleted = async (
-    ticketSocketOrderIdList: number[],
+    ticketPartnerOrderIdList: number[],
     isDeleted: boolean,
   ): Promise<ModifyOrderResponse> =>
-    await eventService.setOrdersDeleted(ticketSocketOrderIdList, isDeleted);
+    await eventService.setOrdersDeleted(ticketPartnerOrderIdList, isDeleted);
 
   return { setOrdersDeleted };
 };

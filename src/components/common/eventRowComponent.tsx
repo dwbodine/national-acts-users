@@ -15,7 +15,7 @@ export default function EventRow(props: EventRowProps) {
   const showNotes = props.ShowNotes;
   const showNoteDialog = props.OnShowNoteDialog;
   const { getLocation } = useGetLocation();
-  const id = `event_${vipEvent.externalEventId}`;
+  const id = `event_${vipEvent.eventId}`;
   const isAdmin = props.IsAdmin ?? false;
 
   const venueName = vipEvent.venue?.name;
@@ -51,7 +51,7 @@ export default function EventRow(props: EventRowProps) {
       <td>{eventDate}</td>
       <td>
         {(vipEvent.orders?.length ?? 0) > 0 ? (
-          <a href={`/event/?id=${vipEvent.externalEventId}`} target="_blank">
+          <a href={`/event/?id=${vipEvent.eventId}`} target="_blank">
             {vipEvent.title}
           </a>
         ) : (
@@ -83,9 +83,7 @@ export default function EventRow(props: EventRowProps) {
         ${netRevenueUsd.toFixed(2)}
       </td>
       <td hidden={!showNotes}>
-        <a onClick={() => (showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null)}>
-          Notes
-        </a>
+        <a onClick={() => (showNoteDialog ? showNoteDialog(vipEvent.eventId) : null)}>Notes</a>
       </td>
     </tr>
   );

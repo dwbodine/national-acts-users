@@ -69,7 +69,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
     if (!noteText || !vipEvent) {
       return;
     }
-    void addNote(noteText, vipEvent.externalEventId).then((response: ModifyNoteResponse) => {
+    void addNote(noteText, vipEvent.eventId).then((response: ModifyNoteResponse) => {
       setNotesOpen(false);
       if (response.success && !response.error) {
         toast.success('Note added successfully');
@@ -84,13 +84,13 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
   const editEvent = () => {
     if (vipEvent !== undefined) {
       dispatch(resetAdmin());
-      window.open(`/admin/events/edit?id=${vipEvent.externalEventId}`);
+      window.open(`/admin/events/edit?id=${vipEvent.eventId}`);
     }
   };
 
   const viewEvent = () => {
     if (vipEvent !== undefined) {
-      window.open(`/event/?id=${vipEvent.externalEventId}`);
+      window.open(`/event/?id=${vipEvent.eventId}`);
     }
   };
 
@@ -143,23 +143,22 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
       void updateEvent(currentEvent).then((response: ModifyEventResponse) => {
         if (response.success && !response.error) {
           if (updateListStatus) {
-            void sendListToBand(
-              vipEvent.externalEventId,
-              currentEvent.listSentToBand ?? false,
-            ).then((resp: ModifyEventResponse) => {
-              if (resp.success && !resp.error) {
-                toast.success('Event updated successfully');
-                if (resp.updatedEvent !== undefined) {
-                  dispatch(setExpandedEvent(resp.updatedEvent));
+            void sendListToBand(vipEvent.eventId, currentEvent.listSentToBand ?? false).then(
+              (resp: ModifyEventResponse) => {
+                if (resp.success && !resp.error) {
+                  toast.success('Event updated successfully');
+                  if (resp.updatedEvent !== undefined) {
+                    dispatch(setExpandedEvent(resp.updatedEvent));
+                  }
+                  dispatch(setReloadAdminEvents(true));
+                } else {
+                  dispatch(setIsLoading(false));
+                  const errMsg = response.error ?? 'unknown error';
+                  toast.error(`Send list failed - ${errMsg}`);
                 }
-                dispatch(setReloadAdminEvents(true));
-              } else {
-                dispatch(setIsLoading(false));
-                const errMsg = response.error ?? 'unknown error';
-                toast.error(`Send list failed - ${errMsg}`);
-              }
-              dispatch(setUpdateListStatus(false));
-            });
+                dispatch(setUpdateListStatus(false));
+              },
+            );
           } else {
             toast.success('Event updated successfully');
             dispatch(setReloadAdminEvents(true));
@@ -274,7 +273,7 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
   }
 
   if (notes.length === 0) {
-    notes.push(<div key={`note_${vipEvent?.externalEventId ?? 0}`}>n/a</div>);
+    notes.push(<div key={`note_${vipEvent?.eventId ?? 0}`}>n/a</div>);
   }
 
   const eventTitle = vipEvent?.title ?? '';
@@ -285,8 +284,8 @@ export default function EventDataExpanded(props: EventDataExpandedProps) {
   ) : (
     <Row
       className="expanded-event-row"
-      key={`expandedRow_${vipEvent.externalEventId}`}
-      id={`expandedRow_${vipEvent.externalEventId}`}
+      key={`expandedRow_${vipEvent.eventId}`}
+      id={`expandedRow_${vipEvent.eventId}`}
     >
       <Col xs={24}>
         <Row className="expanded-event-title-row">

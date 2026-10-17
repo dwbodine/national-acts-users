@@ -14,7 +14,7 @@ describe('sales aggregation utils', () => {
       currencyAbbrev: 'USD',
       currencySymbol: '$',
       email: 'a@example.com',
-      eventId: 1,
+      originalEventId: 1,
       eventTitle: 'Show One',
       exchangeRate: 1,
       hasChargebacks: false,
@@ -22,7 +22,7 @@ describe('sales aggregation utils', () => {
       isActive: true,
       isDeleted: false,
       numTickets: 2,
-      orderId: 10,
+      originalOrderId: 10,
       purchaseDate: '2026-04-20',
       purchaseTimestamp: '2026-04-20T12:00:00Z',
       purchaserFirstName: 'Jane',
@@ -31,20 +31,21 @@ describe('sales aggregation utils', () => {
       revenueUsd: 100,
       serviceFees: 10,
       serviceFeesUsd: 10,
-      ticketSocketEventId: 99,
-      ticketSocketOrderId: 1001,
+      ticketPartnerEventId: 99,
+      ticketPartnerId: 2,
+      ticketPartnerOrderId: 1001,
       tickets: [
         {
           isActive: true,
           shirtSize: 'M',
-          ticketSocketOrderTicketId: 1,
+          ticketPartnerOrderTicketId: 1,
           ticketType: 'GA',
           ticketTypeId: 1,
         },
         {
           isActive: true,
           shirtSize: 'XL',
-          ticketSocketOrderTicketId: 2,
+          ticketPartnerOrderTicketId: 2,
           ticketType: 'GA',
           ticketTypeId: 1,
         },
@@ -55,7 +56,7 @@ describe('sales aggregation utils', () => {
       currencyAbbrev: 'USD',
       currencySymbol: '$',
       email: 'b@example.com',
-      eventId: 1,
+      originalEventId: 1,
       eventTitle: 'Show One',
       exchangeRate: 1,
       hasChargebacks: false,
@@ -63,7 +64,7 @@ describe('sales aggregation utils', () => {
       isActive: true,
       isDeleted: false,
       numTickets: 1,
-      orderId: 11,
+      originalOrderId: 11,
       purchaseDate: '2026-04-22',
       purchaseTimestamp: '2026-04-22T12:00:00Z',
       purchaserFirstName: 'John',
@@ -72,13 +73,14 @@ describe('sales aggregation utils', () => {
       revenueUsd: 50,
       serviceFees: 5,
       serviceFeesUsd: 5,
-      ticketSocketEventId: 99,
-      ticketSocketOrderId: 1002,
+      ticketPartnerEventId: 99,
+      ticketPartnerId: 2,
+      ticketPartnerOrderId: 1002,
       tickets: [
         {
           isActive: true,
           shirtSize: 'S',
-          ticketSocketOrderTicketId: 3,
+          ticketPartnerOrderTicketId: 3,
           ticketType: 'VIP',
           ticketTypeId: 2,
         },
@@ -89,7 +91,7 @@ describe('sales aggregation utils', () => {
 
   const vipEvent = {
     eventDate: '2026-05-01T12:00:00Z',
-    externalEventId: 1,
+    eventId: 1,
     hasTicketTypeData: true,
     isActive: true,
     isDeleted: false,
@@ -99,7 +101,7 @@ describe('sales aggregation utils', () => {
       { size: 'XL', total: 1 },
       { size: 'M', total: 2 },
     ],
-    ticketSocketEventId: 99,
+    ticketPartnerEventId: 99,
     ticketTypes: [
       {
         eventId: 1,
@@ -157,7 +159,7 @@ describe('sales aggregation utils', () => {
           ...orders,
           {
             ...orders[0],
-            orderId: 12,
+            originalOrderId: 12,
             purchaseDate: '2026-04-20',
             revenueUsd: 25,
             serviceFeesUsd: 2,
@@ -165,13 +167,13 @@ describe('sales aggregation utils', () => {
           {
             ...orders[0],
             isActive: false,
-            orderId: 13,
+            originalOrderId: 13,
             purchaseDate: '2026-04-20',
           },
           {
             ...orders[0],
             isDeleted: true,
-            orderId: 14,
+            originalOrderId: 14,
             purchaseDate: '2026-04-20',
           },
         ],
@@ -197,7 +199,7 @@ describe('sales aggregation utils', () => {
         orders: [
           {
             ...orders[0],
-            orderId: 15,
+            originalOrderId: 15,
             purchaseDate: '2026-04-25',
             revenueRefundedUsd: undefined,
             serviceFeeRevenueChargedBackUsd: undefined,
@@ -207,7 +209,7 @@ describe('sales aggregation utils', () => {
           },
           {
             ...orders[1],
-            orderId: 16,
+            originalOrderId: 16,
             purchaseDate: '2026-04-25',
             revenueChargedBackUsd: undefined,
             revenueRefundedUsd: undefined,
@@ -238,12 +240,12 @@ describe('sales aggregation utils', () => {
         orders: [
           {
             ...orders[0],
-            orderId: 17,
+            originalOrderId: 17,
             purchaseDate: '2026-04-26',
           },
           {
             ...orders[1],
-            orderId: 18,
+            originalOrderId: 18,
             purchaseDate: '2026-04-26',
             revenueUsd: undefined,
             serviceFeesUsd: undefined,
@@ -319,7 +321,7 @@ describe('sales aggregation utils', () => {
           {
             isActive: true,
             shirtSize: 'L',
-            ticketSocketOrderTicketId: 99,
+            ticketPartnerOrderTicketId: 99,
             ticketType: 'VIP',
           },
         ],
@@ -327,7 +329,7 @@ describe('sales aggregation utils', () => {
       },
       {
         ...orders[1],
-        tickets: [{ isActive: true, ticketSocketOrderTicketId: 100, ticketType: 'VIP' }],
+        tickets: [{ isActive: true, ticketPartnerOrderTicketId: 100, ticketType: 'VIP' }],
         totalShirts: 0,
       },
     ] as Order[]);
@@ -367,18 +369,18 @@ describe('sales aggregation utils', () => {
           {
             isActive: true,
             shirtSize: 'M',
-            ticketSocketOrderTicketId: 201,
+            ticketPartnerOrderTicketId: 201,
             ticketType: 'GA',
           },
           {
             isActive: true,
             shirtSize: 'M',
-            ticketSocketOrderTicketId: 202,
+            ticketPartnerOrderTicketId: 202,
             ticketType: 'VIP',
           },
           {
             isActive: true,
-            ticketSocketOrderTicketId: 203,
+            ticketPartnerOrderTicketId: 203,
             ticketType: 'VIP',
           },
         ],
@@ -404,13 +406,13 @@ describe('sales aggregation utils', () => {
           {
             isActive: true,
             shirtSize: 'S',
-            ticketSocketOrderTicketId: 301,
+            ticketPartnerOrderTicketId: 301,
             ticketType: 'GA',
           },
           {
             isActive: true,
             shirtSize: 'XL',
-            ticketSocketOrderTicketId: 302,
+            ticketPartnerOrderTicketId: 302,
             ticketType: 'VIP',
           },
         ],
@@ -455,20 +457,20 @@ describe('sales aggregation utils', () => {
         {
           ...orders[0],
           isActive: false,
-          orderId: 20,
+          originalOrderId: 20,
         },
         {
           ...orders[1],
-          orderId: 21,
+          originalOrderId: 21,
           tickets: [
             {
               isActive: true,
-              ticketSocketOrderTicketId: 31,
+              ticketPartnerOrderTicketId: 31,
               ticketType: 'Meet & Greet',
             },
             {
               isActive: false,
-              ticketSocketOrderTicketId: 32,
+              ticketPartnerOrderTicketId: 32,
               ticketType: 'Ignored',
             },
           ],
@@ -491,7 +493,7 @@ describe('sales aggregation utils', () => {
       {
         ...vipEvent,
         eventDate: '2026-05-04T12:00:00Z',
-        orders: [{ ...orders[0], isActive: false, orderId: 30 }],
+        orders: [{ ...orders[0], isActive: false, originalOrderId: 30 }],
       } as VipEvent,
     ]);
     expect(noTicketsEventData.TicketData?.get('05/04/2026')).toEqual([]);
@@ -503,12 +505,12 @@ describe('sales aggregation utils', () => {
           tickets: [
             {
               isActive: true,
-              ticketSocketOrderTicketId: 41,
+              ticketPartnerOrderTicketId: 41,
               ticketType: 'New Type',
             },
             {
               isActive: true,
-              ticketSocketOrderTicketId: 42,
+              ticketPartnerOrderTicketId: 42,
               ticketType: 'New Type',
             },
           ],
@@ -609,7 +611,7 @@ describe('sales aggregation utils', () => {
           tickets: [
             {
               isActive: false,
-              ticketSocketOrderTicketId: 401,
+              ticketPartnerOrderTicketId: 401,
               ticketType: 'Skipped',
             },
           ],

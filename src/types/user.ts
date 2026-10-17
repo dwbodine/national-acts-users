@@ -157,7 +157,8 @@ export interface IDailyOrderData {
   sellerId: number;
   sellerName: string;
   purchaseDate: string;
-  ticketSocketEventId: number;
+  ticketPartnerEventId: number;
+  ticketPartnerId?: number;
   eventTitle: string;
   eventDate: string;
   venue?: string;
@@ -174,7 +175,7 @@ export interface IDailyOrderData {
   totalRevenue: number;
   totalRevenueUsd: number;
   ticketSocketId: number;
-  ticketSocketOrderId?: number;
+  ticketPartnerOrderId?: number;
   isRefunded?: boolean;
   isChargedBack?: boolean;
   numTicketsRefunded?: number;

@@ -148,7 +148,7 @@ export default function AdminFanMomentEdit() {
       return;
     }
 
-    const selectedEvent = sellerEvents.find((event) => event.externalEventId === eventId);
+    const selectedEvent = sellerEvents.find((event) => event.eventId === eventId);
     if (!selectedEvent) {
       return;
     }
@@ -157,7 +157,7 @@ export default function AdminFanMomentEdit() {
       ...fanMoment,
       key: {
         ...fanMoment.key,
-        eventId: selectedEvent.externalEventId,
+        eventId: selectedEvent.eventId,
         eventLocation: getFanMomentEventLocation(selectedEvent),
         eventTitle: selectedEvent.title,
         momentDate: moment(selectedEvent.eventDate).format('YYYY-MM-DD'),
@@ -222,7 +222,7 @@ export default function AdminFanMomentEdit() {
       const venueName = event.venue?.name ? ` - ${event.venue.name}` : '';
       return {
         label: `${moment(event.eventDate).format('MM/DD/YYYY')} - ${event.title}${venueName}`,
-        value: event.externalEventId,
+        value: event.eventId,
       };
     });
 

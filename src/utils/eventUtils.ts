@@ -244,7 +244,7 @@ const getOrderExportRow = (
   showOnlyPhones: boolean = false,
 ): string => {
   let exportStr = '';
-  const { email, phone, orderId, sellerName, numTickets, exchangeRate } = order;
+  const { email, phone, originalOrderId, sellerName, numTickets, exchangeRate } = order;
   if (showOnlyEmails) {
     exportStr += `"${email}"\n`;
   } else if (hasPhoneData && showOnlyPhones) {
@@ -298,7 +298,7 @@ const getOrderExportRow = (
       });
     }
 
-    exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${purchaserIpAddress}","${attendeeNames}","${purchaseDate}","${orderId}","${orderStatus}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
+    exportStr += `"${sellerName}","${purchaserName}","${purchaserZip}","${purchaserIpAddress}","${attendeeNames}","${purchaseDate}","${originalOrderId}","${orderStatus}","${eventDate}","${eventName}","${ticketTypeStr}","${numTickets}"`;
     if (hasNonUsaOrders) {
       if (showRevenueData) {
         if (order.currencyAbbrev !== 'USD' && order.currencySymbol !== '$') {

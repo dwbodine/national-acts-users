@@ -370,8 +370,9 @@ export class EventService {
     return response;
   };
 
-  getOrderById = async (orderId: number): Promise<GetOrderResponse> => {
-    const url = `/events/getOrderById?tsOrderId=${orderId}`;
+  getOrderById = async (ticketPartnerOrderId: number): Promise<GetOrderResponse> => {
+    // The API retains this query name but expects a partner order mapping ID.
+    const url = `/events/getOrderById?tsOrderId=${ticketPartnerOrderId}`;
 
     const response: GetOrderResponse = {};
 

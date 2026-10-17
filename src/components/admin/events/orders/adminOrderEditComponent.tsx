@@ -22,6 +22,7 @@ import { RootState } from '@/lib/store';
 import { EditProps } from '@/types/props';
 import { GetOrderResponse, ModifyOrderResponse, ModifyTicketResponse } from '@/types/responses';
 import { getOrderStatusText } from '@/utils/eventUtils';
+import { getOrderEventPath } from '@/utils/ticketPartnerUtils';
 
 import ConfirmationDialog from '../../../common/confirmationDialogComponent';
 
@@ -41,7 +42,7 @@ export default function AdminOrderEdit(props: EditProps) {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [ticketIdList, setTicketIdList] = useState<number[]>([]);
   const allTicketIds: number[] =
-    currentAdminSelection.selectedOrder?.tickets?.map((t) => t.ticketSocketOrderTicketId) ?? [];
+    currentAdminSelection.selectedOrder?.tickets?.map((t) => t.ticketPartnerOrderTicketId) ?? [];
 
   const beforeOnUnload = (ev: BeforeUnloadEvent) => {
     ev.preventDefault();
@@ -68,7 +69,7 @@ export default function AdminOrderEdit(props: EditProps) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (currentAdminSelection.selectedOrder === undefined && hasId) {
+      if (hasId && currentAdminSelection.selectedOrder?.ticketPartnerOrderId !== id) {
         loadOrderById();
       }
     }, 300);
@@ -76,6 +77,11 @@ export default function AdminOrderEdit(props: EditProps) {
       clearTimeout(timeoutId);
     };
   }, [currentAdminSelection, dispatch, id, loadOrderById]);
+
+  // A saved selection can belong to another order opened in a different tab.
+  if (hasId && currentAdminSelection.selectedOrder?.ticketPartnerOrderId !== id) {
+    return <p>Loading order...</p>;
+  }
 
   const markDirty = () => {
     dispatch(setMustSaveOrder(true));
@@ -93,7 +99,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets && !currentOrder.isComped) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId === ticketId) {
+        if (ticket.ticketPartnerOrderTicketId === ticketId) {
           ticket.price = newPrice;
           orderRevenue += newPrice;
         } else {
@@ -128,10 +134,9 @@ export default function AdminOrderEdit(props: EditProps) {
       toast.dismiss();
     }
     dispatch(setMustSaveOrder(false));
-    let path = '/admin/events/orders/';
-    if (hasId && currentAdminSelection.selectedOrder) {
-      path += `?id=${currentAdminSelection.selectedOrder.ticketSocketEventId}`;
-    }
+    const path = hasId
+      ? getOrderEventPath(currentAdminSelection.selectedOrder, currentAdminSelection.selectedEvent)
+      : '/admin/events/orders/';
     router.push(path);
   };
 
@@ -219,7 +224,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets && !currentOrder.isComped) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId === ticketId) {
+        if (ticket.ticketPartnerOrderTicketId === ticketId) {
           ticket.serviceFee = newServiceFee;
           orderServiceFees += newServiceFee;
         } else {
@@ -247,7 +252,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId === ticketId) {
+        if (ticket.ticketPartnerOrderTicketId === ticketId) {
           ticket.isActive = isActive;
         }
         return ticket;
@@ -267,7 +272,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId === ticketId) {
+        if (ticket.ticketPartnerOrderTicketId === ticketId) {
           ticket.isCheckedIn = isCheckedIn;
         }
         return ticket;
@@ -287,7 +292,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId === ticketId) {
+        if (ticket.ticketPartnerOrderTicketId === ticketId) {
           ticket.attendeeFirstName = firstName;
         }
         return ticket;
@@ -307,7 +312,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId === ticketId) {
+        if (ticket.ticketPartnerOrderTicketId === ticketId) {
           ticket.attendeeLastName = lastName;
         }
         return ticket;
@@ -327,7 +332,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId === ticketId) {
+        if (ticket.ticketPartnerOrderTicketId === ticketId) {
           ticket.attendeeEmail = email;
         }
         return ticket;
@@ -347,7 +352,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId === ticketId) {
+        if (ticket.ticketPartnerOrderTicketId === ticketId) {
           ticket.attendeePhone = phone;
         }
         return ticket;
@@ -367,7 +372,7 @@ export default function AdminOrderEdit(props: EditProps) {
     if (currentOrder.tickets) {
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId === ticketId) {
+        if (ticket.ticketPartnerOrderTicketId === ticketId) {
           ticket.shirtSize = shirtSize;
         }
         return ticket;
@@ -388,7 +393,7 @@ export default function AdminOrderEdit(props: EditProps) {
       const refundDate = moment(newDate).format('YYYY-MM-DD');
       currentOrder.tickets = currentOrder.tickets.map((t) => {
         const ticket = { ...t };
-        if (ticket.ticketSocketOrderTicketId === ticketId) {
+        if (ticket.ticketPartnerOrderTicketId === ticketId) {
           if (ticket.isChargedBack) {
             ticket.chargebackDate = refundDate;
           } else if (ticket.isRefunded) {
@@ -436,7 +441,7 @@ export default function AdminOrderEdit(props: EditProps) {
     }
 
     const ticket = currentAdminSelection.selectedOrder.tickets?.find(
-      (x) => x.ticketSocketOrderTicketId === ticketId,
+      (x) => x.ticketPartnerOrderTicketId === ticketId,
     );
     if (!ticket) {
       toast.warning('Ticket not found');
@@ -476,7 +481,7 @@ export default function AdminOrderEdit(props: EditProps) {
     }
 
     const ticket = currentAdminSelection.selectedOrder.tickets?.find(
-      (x) => x.ticketSocketOrderTicketId === ticketId,
+      (x) => x.ticketPartnerOrderTicketId === ticketId,
     );
     if (!ticket) {
       toast.warning('Ticket not found');
@@ -517,7 +522,7 @@ export default function AdminOrderEdit(props: EditProps) {
       return;
     }
     dispatch(setIsLoading(true));
-    const orderId = currentAdminSelection.selectedOrder.ticketSocketOrderId;
+    const orderId = currentAdminSelection.selectedOrder.ticketPartnerOrderId;
     void refundOrder(orderId, refundServiceFees, markChargeback).then(
       (response: ModifyOrderResponse) => {
         const { success } = response;
@@ -738,7 +743,7 @@ export default function AdminOrderEdit(props: EditProps) {
   const isManualTransfer = currentAdminSelection.selectedOrder?.isManualTransfer ?? false;
   const isDeleted = currentAdminSelection.selectedOrder?.isDeleted ?? false;
   const isComped = currentAdminSelection.selectedOrder?.isComped ?? false;
-  const orderNumber = currentAdminSelection.selectedOrder?.orderId ?? 'n/a';
+  const orderNumber = currentAdminSelection.selectedOrder?.originalOrderId ?? 'n/a';
   const purchaserEmail = currentAdminSelection.selectedOrder?.email ?? 'n/a';
   const purchaserPhone = currentAdminSelection.selectedOrder?.phone ?? 'n/a';
 
@@ -751,7 +756,7 @@ export default function AdminOrderEdit(props: EditProps) {
     currentAdminSelection.selectedOrder.tickets.length > 0
   ) {
     currentAdminSelection.selectedOrder.tickets.forEach((ticket) => {
-      const ticketId = ticket.ticketSocketOrderTicketId;
+      const ticketId = ticket.ticketPartnerOrderTicketId;
       let refundDate = undefined;
       if (ticket.isChargedBack) {
         hasChargebacks = true;
@@ -770,7 +775,7 @@ export default function AdminOrderEdit(props: EditProps) {
               onChange={(_, checked) => updateTicketIdList(ticketId, checked)}
             />
           </td>
-          <td>{ticket.ticketSocketOrderTicketId}</td>
+          <td>{ticket.ticketPartnerOrderTicketId}</td>
           <td>{ticket.ticketType}</td>
           <td>
             {isComped ? (
@@ -893,7 +898,7 @@ export default function AdminOrderEdit(props: EditProps) {
           </td>
           <td hidden={isComped}>
             <Button
-              title={`Refund ticket # ${ticket.ticketSocketOrderTicketId}`}
+              title={`Refund ticket # ${ticket.ticketPartnerOrderTicketId}`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               id={`refund_${ticketId}`}
               key={`refund_${ticketId}`}
@@ -902,7 +907,7 @@ export default function AdminOrderEdit(props: EditProps) {
               Refund Ticket
             </Button>
             <Button
-              title={`Refund ticket # ${ticket.ticketSocketOrderTicketId} with service fees`}
+              title={`Refund ticket # ${ticket.ticketPartnerOrderTicketId} with service fees`}
               disabled={ticket.isRefunded || ticket.isChargedBack}
               id={`refundSf_${ticketId}`}
               key={`refundSf_${ticketId}`}

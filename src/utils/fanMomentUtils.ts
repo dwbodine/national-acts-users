@@ -15,5 +15,5 @@ export const filterEventsWithoutFanMomentFolders = (
 ): VipEvent[] => {
   const existingFanMomentEventIds = getFanMomentEventIds(fanMoments);
 
-  return (events ?? []).filter((event) => !existingFanMomentEventIds.has(event.externalEventId));
+  return (events ?? []).filter((event) => !existingFanMomentEventIds.has(event.eventId));
 };
