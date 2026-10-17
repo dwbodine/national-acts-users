@@ -45,7 +45,7 @@ describe('file name and date utils', () => {
       getFileNameFromEvent(
         {
           eventDate: '2026-05-01T00:00:00Z',
-          externalEventId: 1,
+          eventId: 1,
           isActive: true,
           isDeleted: false,
           isExternal: false,
@@ -72,7 +72,7 @@ describe('file name and date utils', () => {
     expect(
       getFileNameFromEvent({
         eventDate: '2026-05-01T00:00:00Z',
-        externalEventId: 1,
+        eventId: 1,
         isActive: true,
         isDeleted: false,
         isExternal: false,

@@ -171,7 +171,7 @@ export default function AgendaDay(props: AgendaDayProps) {
   };
 
   const setRowExpanded = (vipEvent: VipEvent) => {
-    const eventId = vipEvent.externalEventId;
+    const eventId = vipEvent.eventId;
     let expandedRowKey = currentReportSelection.expandedRow;
     let expandedEvent: VipEvent | undefined = vipEvent;
     let focusControlId = `expandedRow_${eventId}`;
@@ -190,7 +190,7 @@ export default function AgendaDay(props: AgendaDayProps) {
   const noteRows: ReactElement[] = [];
   if (notes && notes.length > 0) {
     notes.forEach((note, i) => {
-      if (!note.ticketSocketEventId) {
+      if (!note.eventId) {
         const nText = note.noteTitle
           ? note.noteTitle
           : note.note.length > 35
@@ -271,9 +271,9 @@ export default function AgendaDay(props: AgendaDayProps) {
       if (
         currentReportSelection.expandedRow &&
         currentReportSelection.expandedEvent &&
-        currentReportSelection.expandedRow === evt.externalEventId
+        currentReportSelection.expandedRow === evt.eventId
       ) {
-        eventRows.push(<EventDataExpanded key={`exp_${evt.externalEventId}`} />);
+        eventRows.push(<EventDataExpanded key={`exp_${evt.eventId}`} />);
       }
     });
   }

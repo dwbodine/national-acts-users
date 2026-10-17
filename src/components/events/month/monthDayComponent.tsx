@@ -168,7 +168,7 @@ export default function MonthDay(props: MonthDayProps) {
   };
 
   const setRowExpanded = (vipEvent: VipEvent) => {
-    const eventId = vipEvent.externalEventId;
+    const eventId = vipEvent.eventId;
     let expandedRowKey = currentReportSelection.expandedRow;
     let expandedEvent: VipEvent | undefined = vipEvent;
     let focusControlId = `expandedRow_${eventId}`;
@@ -187,7 +187,7 @@ export default function MonthDay(props: MonthDayProps) {
   const noteRows: ReactElement[] = [];
   if (notes && notes.length > 0) {
     notes.forEach((note, i) => {
-      if (!note.ticketSocketEventId) {
+      if (!note.eventId) {
         const nText = note.noteTitle
           ? note.noteTitle
           : note.note.length > 35

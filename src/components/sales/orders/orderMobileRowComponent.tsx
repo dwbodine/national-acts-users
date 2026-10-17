@@ -32,9 +32,9 @@ export default function OrderMobileRow(props: OrderRowProps) {
   }
 
   const orderStatus = getOrderStatusText(order);
-  const orderId = order?.orderId;
+  const orderId = order?.originalOrderId;
 
-  const id = `order_${order?.ticketSocketOrderId}`;
+  const id = `order_${order?.ticketPartnerOrderId}`;
   const currencySymbol = order?.currencySymbol ?? '$';
 
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;

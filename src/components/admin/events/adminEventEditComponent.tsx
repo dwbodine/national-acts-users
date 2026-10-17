@@ -61,6 +61,7 @@ import {
   ModifyNoteResponse,
   ModifyOrderResponse,
 } from '@/types/responses';
+import { hasTicketSocketEvent, selectTicketPartnerEvent } from '@/utils/ticketPartnerUtils';
 
 import ConfirmationDialog from '../../common/confirmationDialogComponent';
 import AdminFileUpload from '../common/adminFileUploadComponent';
@@ -139,7 +140,7 @@ export default function AdminEventEdit(props: EditProps) {
   const currentSeller: Seller | undefined = currentAdminSelection.allSellers?.find(
     (x) => x.sellerId === currentAdminSelection.sellerId,
   );
-  const selectedEventVenueId = currentAdminSelection.selectedEvent?.externalEventVenueId;
+  const selectedEventVenueId = currentAdminSelection.selectedEvent?.venueId;
   const selectedEventVenue = currentAdminSelection.selectedEvent?.venue;
 
   const beforeOnUnload = (ev: BeforeUnloadEvent) => {
@@ -342,7 +343,7 @@ export default function AdminEventEdit(props: EditProps) {
       ? (venueSearchResults.find((venue) => venue.venueId === value) ?? selectedExternalVenue)
       : undefined;
     const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.externalEventVenueId = value ?? undefined;
+    currentEvent.venueId = value ?? undefined;
     if (selectedVenue) {
       currentEvent.venue = {
         address1: selectedVenue.address,
@@ -366,8 +367,11 @@ export default function AdminEventEdit(props: EditProps) {
       return;
     }
     const currentEvent: VipEvent = { ...currentAdminSelection.selectedEvent };
-    currentEvent.ticketSocketEventId = value ?? undefined;
-    dispatch(setAdminEvent(currentEvent));
+    const selected = currentAdminDataSelection.ticketSocketEvents?.find(
+      (event) => event.ticketPartnerEventId === value,
+    );
+    const updatedEvent = selectTicketPartnerEvent(currentEvent, selected);
+    dispatch(setAdminEvent(updatedEvent));
     markDirty();
   };
 
@@ -388,7 +392,7 @@ export default function AdminEventEdit(props: EditProps) {
     if (!noteText || !currentAdminSelection || !currentAdminSelection.selectedEvent) {
       return;
     }
-    void addNote(noteText, currentAdminSelection.selectedEvent.externalEventId).then(
+    void addNote(noteText, currentAdminSelection.selectedEvent.eventId).then(
       (response: ModifyNoteResponse) => {
         if (response.success && !response.error) {
           toast.success('Note added successfully');
@@ -793,7 +797,7 @@ export default function AdminEventEdit(props: EditProps) {
       return;
     }
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.externalEventId;
+    const eventId = currentAdminSelection.selectedEvent.eventId;
     void refundEvent(eventId, markCancelled, refundServiceFees).then(
       (response: ModifyEventResponse) => {
         const { success } = response;
@@ -871,7 +875,7 @@ export default function AdminEventEdit(props: EditProps) {
     if (!currentAdminSelection.selectedEvent) {
       return;
     }
-    if (!currentAdminSelection.selectedEvent.ticketSocketEventId) {
+    if (!hasTicketSocketEvent(currentAdminSelection.selectedEvent)) {
       toast.warn('Cannot currently comp orders for an event without tickets on sale');
       return;
     }
@@ -880,7 +884,7 @@ export default function AdminEventEdit(props: EditProps) {
       return;
     }
     dispatch(setIsLoading(true));
-    const eventId = currentAdminSelection.selectedEvent.externalEventId;
+    const eventId = currentAdminSelection.selectedEvent.eventId;
     void addCompedOrder(eventId, numCompedTickets).then((response: ModifyOrderResponse) => {
       const { success } = response;
       dispatch(setIsLoading(false));
@@ -1016,7 +1020,7 @@ export default function AdminEventEdit(props: EditProps) {
         const adminSelection = { ...currentAdminSelection };
         if (newVenue !== undefined && adminSelection.selectedEvent !== undefined) {
           const currentEvent = { ...adminSelection.selectedEvent };
-          currentEvent.externalEventVenueId = newVenue.venueId;
+          currentEvent.venueId = newVenue.venueId;
           dispatch(setAdminEvent(currentEvent));
           dispatch(setAdminVenue(undefined));
           setSelectedExternalVenue(newVenue);
@@ -1051,7 +1055,7 @@ export default function AdminEventEdit(props: EditProps) {
       return;
     }
 
-    if (!eventToUpdate.externalEventVenueId) {
+    if (!eventToUpdate.venueId) {
       toast.warning('Event venue must be set');
       return;
     }
@@ -1137,9 +1141,11 @@ export default function AdminEventEdit(props: EditProps) {
 
   const { selectedEvent } = currentAdminSelection;
 
-  const eventId = selectedEvent?.externalEventId ? selectedEvent.externalEventId : 0;
+  const eventId = selectedEvent?.eventId ? selectedEvent.eventId : 0;
 
-  const ticketSocketEventId = selectedEvent?.ticketSocketEventId ?? 0;
+  const ticketPartnerEventId = hasTicketSocketEvent(selectedEvent)
+    ? (selectedEvent?.ticketPartnerEventId ?? 0)
+    : 0;
 
   const pageHeader =
     eventId > 0 ? `Edit event for ${currentSeller?.name}` : `Add event for ${currentSeller?.name}`;
@@ -1157,7 +1163,9 @@ export default function AdminEventEdit(props: EditProps) {
     : null;
 
   const refundsDisabled =
-    selectedEvent === undefined || selectedEvent.totalTickets === 0 || ticketSocketEventId === 0;
+    selectedEvent === undefined ||
+    selectedEvent.totalTickets === 0 ||
+    !hasTicketSocketEvent(selectedEvent);
 
   const isCancelled = selectedEvent?.isCancelled ?? false;
   const refundCancelDisabled = isCancelled;
@@ -1170,7 +1178,7 @@ export default function AdminEventEdit(props: EditProps) {
   const isExcludedFromDashboard = selectedEvent?.excludeFromDashboard ?? false;
 
   const thumbnail = selectedEvent?.externalThumbnail ?? undefined;
-  const externalEventVenueId = selectedEvent?.externalEventVenueId ?? 0;
+  const venueId = selectedEvent?.venueId ?? 0;
 
   const externalUrl = selectedEvent?.externalUrl ?? '';
   const externalVipLink = selectedEvent?.externalVipLink ?? '';
@@ -1305,11 +1313,11 @@ export default function AdminEventEdit(props: EditProps) {
   const eventList: ItemDataType<number>[] = currentAdminDataSelection?.ticketSocketEvents
     ? currentAdminDataSelection?.ticketSocketEvents?.map((evt) => ({
         label: `${moment(evt.eventDate).format('MM/DD/YYYY')} - ${evt.title}`,
-        value: evt.ticketSocketEventId,
+        value: evt.ticketPartnerEventId,
       }))
     : [];
 
-  const isExternalEvent = (selectedEvent?.isExternal ?? false) && ticketSocketEventId === 0;
+  const isExternalEvent = (selectedEvent?.isExternal ?? false) && ticketPartnerEventId === 0;
 
   const countryList: ItemDataType<number>[] = currentAdminSelection.countries
     ? currentAdminSelection.countries.map((country) => ({
@@ -1357,7 +1365,7 @@ export default function AdminEventEdit(props: EditProps) {
           <Col>
             <div className="admin-setting-title">Associated Ticket Socket Event</div>
             <SelectPicker
-              value={ticketSocketEventId}
+              value={ticketPartnerEventId}
               data={eventList}
               size="lg"
               block
@@ -1369,7 +1377,7 @@ export default function AdminEventEdit(props: EditProps) {
           <Col>
             <div className="admin-setting-title">Event venue</div>
             <SelectPicker
-              value={externalEventVenueId}
+              value={venueId}
               data={venueList}
               size="lg"
               block
@@ -1378,7 +1386,7 @@ export default function AdminEventEdit(props: EditProps) {
               onSearch={(searchKeyword) => setVenueSearchTerm(searchKeyword)}
               placeholder="Search venues by name or address..."
             />
-            <Button disabled={externalEventVenueId > 0} onClick={handleVenueOpen}>
+            <Button disabled={venueId > 0} onClick={handleVenueOpen}>
               Add New Venue
             </Button>
             <Modal open={venueOpen} onClose={handleVenueClose} size={'lg'}>

@@ -126,7 +126,7 @@ export default function AdminFanMomentsIndex() {
       key: {
         momentDate: moment().format('YYYY-MM-DD'),
         sellerId: currentReportSelection.seller.sellerId,
-        eventId: currentAdminSelection.selectedEvent?.externalEventId,
+        eventId: currentAdminSelection.selectedEvent?.eventId,
       },
       images: [],
     };

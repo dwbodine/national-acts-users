@@ -164,7 +164,7 @@ export default function AdminTourEdit() {
     const selectedTour = { ...currentAdminSelection.selectedTour };
     const selectedEvents: VipEvent[] = [];
     eventIds.forEach((eventId) => {
-      const evt = currentAdminDataSelection.events?.find((x) => x.externalEventId === eventId);
+      const evt = currentAdminDataSelection.events?.find((x) => x.eventId === eventId);
       if (evt) {
         selectedEvents.push(evt);
       }
@@ -281,7 +281,7 @@ export default function AdminTourEdit() {
     } else {
       eventId = parseInt(item.value);
     }
-    const evt = currentAdminDataSelection.events?.find((x) => x.externalEventId === eventId);
+    const evt = currentAdminDataSelection.events?.find((x) => x.eventId === eventId);
     return evt ? (
       <span>
         {moment(evt.eventDate).format('M/D/YYYY')} - {label}
@@ -380,7 +380,7 @@ export default function AdminTourEdit() {
     currentAdminDataSelection.events && currentAdminDataSelection.events.length > 0
       ? currentAdminDataSelection.events?.map((evt) => ({
           label: `${evt.title}`,
-          value: evt.externalEventId,
+          value: evt.eventId,
         }))
       : [];
 
@@ -389,7 +389,7 @@ export default function AdminTourEdit() {
     currentAdminSelection.selectedTour?.events &&
     currentAdminSelection.selectedTour?.events.length > 0
   ) {
-    selectedEvents = currentAdminSelection.selectedTour.events.map((evt) => evt.externalEventId);
+    selectedEvents = currentAdminSelection.selectedTour.events.map((evt) => evt.eventId);
   }
 
   const announceDate =

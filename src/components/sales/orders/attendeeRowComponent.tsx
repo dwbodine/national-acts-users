@@ -14,14 +14,14 @@ export default function AttendeeRow(props: AttendeeRowProps) {
   const canCheckInTickets = props.CanCheckInTickets;
   const ticket = props.Ticket;
   const router = useRouter();
-  const ticketId = ticket?.ticketSocketOrderTicketId ?? 0;
+  const ticketId = ticket?.ticketPartnerOrderTicketId ?? 0;
   const dispatch = useDispatch();
   const attendeeName = `${ticket?.attendeeLastName}, ${ticket?.attendeeFirstName}`;
   const currentCheckIn = ticket?.isCheckedIn;
   const checkedInDate =
     currentCheckIn && ticket ? moment(ticket.checkedInDate).format('MM/DD/YYYY') : '';
 
-  const id = `ticket_${ticket?.ticketSocketOrderTicketId}`;
+  const id = `ticket_${ticket?.ticketPartnerOrderTicketId}`;
   const className = canCheckInTickets
     ? currentCheckIn
       ? 'attendee-check-highlight'

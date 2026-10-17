@@ -225,7 +225,7 @@ export default function getDashboardDataFromOrders(
 
         const esd: ITicketEventSalesData = {
           CurrencySymbol: dailyOrderData.currencySymbol ?? '$',
-          EventId: dailyOrderData.ticketSocketEventId,
+          EventId: dailyOrderData.ticketPartnerEventId,
           ExchangeRate: dailyOrderData.exchangeRate ?? 1,
           PurchaseDate: purchaseDate,
           Purchases: dailyOrderData.orders,
@@ -323,7 +323,7 @@ export default function getDashboardDataFromOrders(
                 if (
                   sellerChildren.find(
                     (x) =>
-                      x.EventId === dailyOrderData.ticketSocketEventId &&
+                      x.EventId === dailyOrderData.ticketPartnerEventId &&
                       x.SellerName === sellerName,
                   )
                 ) {

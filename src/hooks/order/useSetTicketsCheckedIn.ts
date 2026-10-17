@@ -4,10 +4,10 @@ import { eventService } from '../../services';
 
 export const useSetTicketsCheckedIn = () => {
   const setTicketsCheckedIn = async (
-    ticketSocketOrderTicketIdList: number[],
+    ticketPartnerOrderTicketIdList: number[],
     isCheckedIn: boolean,
   ): Promise<ModifyTicketResponse> =>
-    await eventService.setTicketsCheckedIn(ticketSocketOrderTicketIdList, isCheckedIn);
+    await eventService.setTicketsCheckedIn(ticketPartnerOrderTicketIdList, isCheckedIn);
 
   return { setTicketsCheckedIn };
 };

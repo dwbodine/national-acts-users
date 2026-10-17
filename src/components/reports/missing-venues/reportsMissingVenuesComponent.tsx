@@ -97,8 +97,8 @@ export default function ReportsMissingVenues() {
               {(rowData: VipEvent) => (
                 <a
                   href="#"
-                  id={`${rowData.externalEventId}_event`}
-                  onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
+                  id={`${rowData.eventId}_event`}
+                  onClick={() => editEvent(parseInt(`${rowData.eventId}`))}
                 >
                   Edit
                 </a>

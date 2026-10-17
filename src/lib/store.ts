@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import {
+  createMigrate,
   FLUSH,
   PAUSE,
   PERSIST,
@@ -16,6 +17,7 @@ import adminReportsSelectionReducer from './adminReportsSelectionSlice';
 import adminSelectionReducer from './adminSelectionSlice';
 import adminDashboardSelectionReducer from './dashboardSelectionSlice';
 import globalSelectionReducer from './globalSelectionSlice';
+import { discardLegacySelections } from './persistMigrations';
 import storage from './reduxPersistStorage';
 import userReportSelectionReducer from './reportSelectionSlice';
 import userActivitySelectionReducer from './userActivitySelectionSlice';
@@ -33,6 +35,8 @@ const rootReducer = combineReducers({
 
 const persistConfig = {
   key: 'root',
+  version: 1,
+  migrate: createMigrate({ 1: discardLegacySelections }),
   storage,
   whitelist: ['globalSelection', 'adminSelection', 'reportSelection'],
 };

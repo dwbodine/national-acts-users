@@ -22,7 +22,7 @@ import WeekView from './weekViewComponent';
 
 export default function AllEventsWeek() {
   const { Column, HeaderCell, Cell } = Table;
-  const rowKey = 'ticketSocketEventId';
+  const rowKey = 'eventId';
   const currentReportSelection = useSelector((state: RootState) => state.eventAdminSelection);
   const dispatch = useDispatch();
   const expandedRowKey = currentReportSelection.expandedRow ?? undefined;
@@ -69,7 +69,7 @@ export default function AllEventsWeek() {
         appearance="subtle"
         onClick={() => handleExpanded(props.rowData)}
         icon={
-          expandedRowKey === props.rowData?.externalEventId ? (
+          expandedRowKey === props.rowData?.eventId ? (
             <CollaspedOutlineIcon />
           ) : (
             <ExpandOutlineIcon />
@@ -90,9 +90,7 @@ export default function AllEventsWeek() {
       setNotes(currentReportSelection.notes);
       dispatch(setIsLoading(false));
       if (expandedRowKey) {
-        const evt = currentReportSelection.currentEvents.find(
-          (x) => x.externalEventId === expandedRowKey,
-        );
+        const evt = currentReportSelection.currentEvents.find((x) => x.eventId === expandedRowKey);
         if (evt) {
           handleExpanded(evt);
         }
@@ -136,7 +134,7 @@ export default function AllEventsWeek() {
             rowExpandedHeight={260}
             renderRowExpanded={renderRowExpanded}
             rowClassName={(evt: VipEvent) => {
-              if (evt && evt.externalEventId === expandedRowKey) {
+              if (evt && evt.eventId === expandedRowKey) {
                 return 'highlighted';
               } else if (evt) {
                 return getEventStatusSlug(evt);

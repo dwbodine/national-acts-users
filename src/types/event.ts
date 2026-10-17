@@ -1,5 +1,10 @@
 import { Country } from './public';
 
+export enum TicketPartner {
+  NationalActs = 1,
+  TicketSocket = 2,
+}
+
 export enum SellerType {
   Artist = 1,
   Venue = 2,
@@ -48,7 +53,7 @@ export interface ShirtSales {
 
 export interface Note {
   noteId: number;
-  ticketSocketEventId?: number;
+  eventId?: number;
   note: string;
   noteTitle?: string;
   noteTimestamp: string;
@@ -56,8 +61,9 @@ export interface Note {
 }
 
 export interface Ticket {
-  ticketSocketOrderTicketId: number;
-  ticketSocketOrderId?: number;
+  originalTicketId?: number;
+  ticketPartnerOrderTicketId: number;
+  ticketPartnerOrderId?: number;
   price?: number;
   isActive?: boolean;
   ticketType: string;
@@ -83,7 +89,8 @@ export interface Ticket {
 }
 
 export interface Order {
-  eventId: number;
+  originalEventId: number;
+  ticketPartnerId: TicketPartner;
   eventTitle?: string;
   venue?: string;
   eventDate?: string;
@@ -94,10 +101,10 @@ export interface Order {
   eventState?: string;
   eventZip?: string;
   eventCountry?: string;
-  ticketSocketEventId: number;
-  ticketSocketOrderId: number;
+  ticketPartnerEventId: number;
+  ticketPartnerOrderId: number;
   numTickets: number;
-  orderId: number;
+  originalOrderId: number;
   isActive: boolean;
   isDeleted: boolean;
   isComped?: boolean;
@@ -160,8 +167,10 @@ export interface TicketType {
 }
 
 export interface VipEvent {
-  externalEventId: number;
-  ticketSocketEventId?: number;
+  eventId: number;
+  ticketPartnerId?: TicketPartner;
+  originalEventId?: number;
+  ticketPartnerEventId?: number;
   title: string;
   venue?: Venue;
   eventDate: string;
@@ -182,7 +191,7 @@ export interface VipEvent {
   eventTime?: string;
   sellerId?: number;
   externalUrl?: string;
-  externalEventVenueId?: number;
+  venueId?: number;
   disableLinkButton?: boolean;
   disableLinkReason?: string;
   disableVipLinkButton?: boolean;

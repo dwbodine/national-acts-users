@@ -54,20 +54,21 @@ function normalizeEvent(evt: VipEvent): VipEvent {
     for (const order of evt.orders) {
       if (order.isComped && order.tickets) {
         for (const ticket of order.tickets) {
-          if (ticket.ticketTypeId !== 0 || !evt.ticketSocketEventId) continue;
+          if (ticket.ticketTypeId !== 0 || !evt.ticketPartnerEventId) continue;
 
           computedOrders.push({
             currencyAbbrev: '',
             currencySymbol: '',
             email: ticket.attendeeEmail ?? '',
-            eventId: 0,
+            originalEventId: order.originalEventId,
+            ticketPartnerId: order.ticketPartnerId,
             exchangeRate: 0,
             hasChargebacks: false,
             hasRefunds: false,
             isActive: true,
             isDeleted: false,
             numTickets: 1,
-            orderId: 0,
+            originalOrderId: 0,
             phone: ticket.attendeePhone,
             purchaseDate: order.purchaseDate,
             purchaseTimestamp: '',
@@ -75,8 +76,8 @@ function normalizeEvent(evt: VipEvent): VipEvent {
             purchaserLastName: ticket.attendeeLastName ?? '',
             revenue: 0,
             revenueUsd: 0,
-            ticketSocketEventId: evt.ticketSocketEventId,
-            ticketSocketOrderId: order.ticketSocketOrderId,
+            ticketPartnerEventId: evt.ticketPartnerEventId,
+            ticketPartnerOrderId: order.ticketPartnerOrderId,
             tickets: [ticket],
             totalShirts: order.totalShirts,
           });
@@ -337,7 +338,7 @@ export default function EventDetail(props: EditProps) {
         (order) =>
           order.purchaserFirstName.toLowerCase().includes(srch) ||
           order.purchaserLastName.toLowerCase().includes(srch) ||
-          order.orderId.toString().includes(srch) ||
+          order.originalOrderId.toString().includes(srch) ||
           order.email.toLowerCase().includes(srch),
       );
     }

@@ -82,8 +82,7 @@ export default function AdminEventsIndex() {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [eventIdList, setEventIdList] = useState<number[]>([]);
   const [eventsTabKey, setEventsTabKey] = useState<EventsTabKey>('active');
-  const allEventIds: number[] =
-    currentAdminDataSelection.events?.map((evt) => evt.externalEventId) ?? [];
+  const allEventIds: number[] = currentAdminDataSelection.events?.map((evt) => evt.eventId) ?? [];
   const allEvents = currentAdminDataSelection.events ?? [];
   const activeEvents = useMemo(
     () =>
@@ -104,7 +103,7 @@ export default function AdminEventsIndex() {
     [allEvents],
   );
   const visibleEvents = eventsTabKey === 'inactive' ? inactiveEvents : activeEvents;
-  const visibleEventIds = visibleEvents.map((evt) => evt.externalEventId);
+  const visibleEventIds = visibleEvents.map((evt) => evt.eventId);
   const numVisibleSelected = visibleEventIds.filter((id) => eventIdList.includes(id)).length;
   const allVisibleSelected =
     visibleEventIds.length > 0 && numVisibleSelected === visibleEventIds.length;
@@ -264,7 +263,7 @@ export default function AdminEventsIndex() {
       disableVipLinkButton: false,
       disableVipLinkReason: undefined,
       eventDate: '',
-      externalEventId: 0,
+      eventId: 0,
       externalUrl: undefined,
       externalVipLink: undefined,
       isActive: true,
@@ -289,7 +288,7 @@ export default function AdminEventsIndex() {
     ) {
       return;
     }
-    const vipEvent = currentAdminDataSelection.events.find((x) => x.externalEventId === eventId);
+    const vipEvent = currentAdminDataSelection.events.find((x) => x.eventId === eventId);
     if (!vipEvent) {
       return;
     }
@@ -305,7 +304,7 @@ export default function AdminEventsIndex() {
     ) {
       return;
     }
-    const vipEvent = currentAdminDataSelection.events.find((x) => x.externalEventId === eventId);
+    const vipEvent = currentAdminDataSelection.events.find((x) => x.eventId === eventId);
     if (!vipEvent || !vipEvent.orders || vipEvent.orders.length === 0) {
       return;
     }
@@ -752,9 +751,9 @@ export default function AdminEventsIndex() {
                 <Cell>
                   {(rowData: VipEvent) => (
                     <Checkbox
-                      id={`evtId_${rowData.externalEventId}`}
-                      checked={eventIdList.includes(rowData.externalEventId)}
-                      onChange={(_, checked) => updateEventIdList(rowData.externalEventId, checked)}
+                      id={`evtId_${rowData.eventId}`}
+                      checked={eventIdList.includes(rowData.eventId)}
+                      onChange={(_, checked) => updateEventIdList(rowData.eventId, checked)}
                     />
                   )}
                 </Cell>
@@ -799,8 +798,8 @@ export default function AdminEventsIndex() {
                   {(rowData: VipEvent) => (
                     <a
                       href="#"
-                      id={`${rowData.externalEventId}_event`}
-                      onClick={() => editEvent(parseInt(`${rowData.externalEventId}`))}
+                      id={`${rowData.eventId}_event`}
+                      onClick={() => editEvent(parseInt(`${rowData.eventId}`))}
                     >
                       Edit
                     </a>
@@ -814,8 +813,8 @@ export default function AdminEventsIndex() {
                     rowData.orders && rowData.orders.length > 0 ? (
                       <a
                         href="#"
-                        id={`${rowData.externalEventId}_orders`}
-                        onClick={() => manageOrders(parseInt(`${rowData.externalEventId}`))}
+                        id={`${rowData.eventId}_orders`}
+                        onClick={() => manageOrders(parseInt(`${rowData.eventId}`))}
                       >
                         Manage Orders
                       </a>

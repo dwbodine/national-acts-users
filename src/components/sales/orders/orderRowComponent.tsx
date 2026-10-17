@@ -31,7 +31,7 @@ export default function OrderRow(props: OrderRowProps) {
   }
 
   const orderStatus = getOrderStatusText(order);
-  const orderId = order?.orderId;
+  const orderId = order?.originalOrderId;
   const currencySymbol = order?.currencySymbol ?? '$';
 
   const purchaserName = `${order?.purchaserLastName}, ${order?.purchaserFirstName}`;

@@ -2,6 +2,7 @@ import moment from 'moment';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { MINIMUM_UNIX_TIMESTAMP } from '@/constants';
+import { Order, Ticket, TicketPartner, VipEvent } from '@/types/event';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
 
 const eventServiceMocks = vi.hoisted(() => ({
@@ -41,6 +42,64 @@ describe('EventService', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+  });
+
+  it('round-trips partner identifiers without substituting original provider IDs', async () => {
+    const ticket = {
+      originalTicketId: 9003,
+      ticketPartnerOrderId: 202,
+      ticketPartnerOrderTicketId: 303,
+      ticketType: 'VIP',
+    } satisfies Ticket;
+    const order = {
+      originalEventId: 9001,
+      originalOrderId: 9002,
+      ticketPartnerId: TicketPartner.TicketSocket,
+      ticketPartnerEventId: 101,
+      ticketPartnerOrderId: 202,
+      tickets: [ticket],
+    } as Order;
+    const event = {
+      eventId: 11,
+      originalEventId: 9001,
+      ticketPartnerEventId: 101,
+      ticketPartnerId: TicketPartner.TicketSocket,
+      venueId: 44,
+      orders: [order],
+    } as VipEvent;
+    eventServiceMocks.get.mockResolvedValue({ data: [order], status: 200 });
+    eventServiceMocks.post.mockResolvedValue({ status: 200 });
+    const service = createService();
+
+    const response = await service.getOrderById(order.ticketPartnerOrderId);
+    expect(response.order).toEqual(order);
+    expect(eventServiceMocks.get).toHaveBeenLastCalledWith(
+      '/events/getOrderById?tsOrderId=202',
+      expect.anything(),
+    );
+
+    await service.updateEvent(event);
+    expect(JSON.parse(eventServiceMocks.post.mock.lastCall![1] as string)).toEqual(event);
+    await service.updateOrder(order);
+    expect(JSON.parse(eventServiceMocks.post.mock.lastCall![1] as string)).toEqual(order);
+
+    await service.refundOrder(order.ticketPartnerOrderId, true);
+    expect(JSON.parse(eventServiceMocks.post.mock.lastCall![1] as string)).toEqual({
+      orderId: 202,
+      refundServiceFees: true,
+      markChargeback: false,
+    });
+    await service.refundTicket(ticket.ticketPartnerOrderTicketId, false);
+    expect(JSON.parse(eventServiceMocks.post.mock.lastCall![1] as string)).toEqual({
+      ticketId: 303,
+      refundServiceFees: false,
+    });
+    await service.setOrdersInactive([order.ticketPartnerOrderId], false);
+    expect(eventServiceMocks.post.mock.lastCall![1]).toMatchObject({ orderIdList: [202] });
+    await service.setOrdersDeleted([order.ticketPartnerOrderId], true);
+    expect(eventServiceMocks.post.mock.lastCall![1]).toMatchObject({ orderIdList: [202] });
+    await service.setTicketsCheckedIn([ticket.ticketPartnerOrderTicketId], true);
+    expect(eventServiceMocks.post.mock.lastCall![1]).toMatchObject({ ticketIdList: [303] });
   });
 
   it('covers event service success paths and URL-building branches', async () => {

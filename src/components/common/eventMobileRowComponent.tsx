@@ -24,12 +24,12 @@ export default function EventMobileRow(props: EventRowProps) {
   const { getLocation } = useGetLocation();
   const currentReportSelection = useSelector((state: RootState) => state.reportSelection);
   const currentSellerType = currentReportSelection.seller.sellerType;
-  const id = `event_${vipEvent.externalEventId}`;
+  const id = `event_${vipEvent.eventId}`;
   const isAdmin = props.IsAdmin;
 
   const setDetailEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const url = `/event/?id=${vipEvent.externalEventId}`;
+    const url = `/event/?id=${vipEvent.eventId}`;
     window.open(url, '_blank');
   };
 
@@ -169,9 +169,7 @@ export default function EventMobileRow(props: EventRowProps) {
           </Row>
           <Row hidden={!showNotes}>
             <Col>
-              <Button
-                onClick={() => (showNoteDialog ? showNoteDialog(vipEvent.externalEventId) : null)}
-              >
+              <Button onClick={() => (showNoteDialog ? showNoteDialog(vipEvent.eventId) : null)}>
                 Notes
               </Button>
             </Col>

@@ -19,9 +19,9 @@ describe('fanMomentUtils', () => {
 
   it('filters events that already have fan moment folders', () => {
     const events = [
-      { externalEventId: 10, eventDate: '2026-06-01', title: 'Existing Gallery' },
-      { externalEventId: 12, eventDate: '2026-06-02', title: 'Available Gallery' },
-      { externalEventId: 11, eventDate: '2026-06-03', title: 'Another Existing Gallery' },
+      { eventId: 10, eventDate: '2026-06-01', title: 'Existing Gallery' },
+      { eventId: 12, eventDate: '2026-06-02', title: 'Available Gallery' },
+      { eventId: 11, eventDate: '2026-06-03', title: 'Another Existing Gallery' },
     ] as VipEvent[];
 
     const fanMoments: FanMoment[] = [
@@ -30,7 +30,7 @@ describe('fanMomentUtils', () => {
     ];
 
     expect(filterEventsWithoutFanMomentFolders(events, fanMoments)).toEqual([
-      { externalEventId: 12, eventDate: '2026-06-02', title: 'Available Gallery' },
+      { eventId: 12, eventDate: '2026-06-02', title: 'Available Gallery' },
     ]);
   });
 
