@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Order, Seller, Tour, VipEvent } from '@/types/event';
+import { MissingPaymentOrder } from '@/types/missingPayments';
 import { FanMomentFilter } from '@/types/props';
 import {
   Country,
@@ -97,6 +98,7 @@ export const adminSelectionSlice = createSlice({
       state.selectedOrder = undefined;
       state.selectedSeller = undefined;
       state.selectedTour = undefined;
+      state.selectedMissingPaymentOrder = undefined;
       state.selectedVenue = undefined;
       state.pageTypes = undefined;
       state.pageSellerTypes = undefined;
@@ -144,6 +146,10 @@ export const adminSelectionSlice = createSlice({
       state.selectedTour = action.payload;
       state.start = undefined;
       state.end = undefined;
+      return state;
+    },
+    setMissingPaymentOrder: (state, action: PayloadAction<MissingPaymentOrder | undefined>) => {
+      state.selectedMissingPaymentOrder = action.payload;
       return state;
     },
     setAdminVenue: (state, action: PayloadAction<ExternalVenue | undefined>) => {
@@ -382,6 +388,7 @@ export const {
   setAllSettings,
   setReloadVenues,
   setAdminVenue,
+  setMissingPaymentOrder,
   setAdminSeller,
   setReloadSellerPages,
   setReloadSellers,

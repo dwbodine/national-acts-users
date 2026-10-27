@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import { getErrorMessage, getOptionalData, getStatusCode } from '@/lib/serviceResponses';
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Seller } from '@/types/event';
+import { MissingPaymentsReport, PaymentIntentInput } from '@/types/missingPayments';
 import {
   Country,
   FanMoment,
@@ -41,6 +42,47 @@ import {
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
 
 export class AdminService {
+  updatePaymentIntent = async (
+    payment: PaymentIntentInput,
+  ): Promise<{ success?: boolean; error?: string }> => {
+    try {
+      await this.instance.post('/stripe/payment-intents/update', payment, {
+        headers: getAuthorizationHeader(),
+      });
+      return { success: true };
+    } catch (e) {
+      const error = e as AxiosError<{ msg?: unknown }>;
+      const message = error.response?.data?.msg;
+      return {
+        error:
+          typeof message === 'string'
+            ? message
+            : getErrorMessage(error, 'Unable to save payment intent.'),
+      };
+    }
+  };
+
+  getMissingPayments = async (
+    startDate: string,
+    endDateExclusive: string,
+    offset = 0,
+  ): Promise<{ report?: MissingPaymentsReport; error?: string }> => {
+    try {
+      const res = await this.instance.get<MissingPaymentsReport>(
+        '/stripe/payment-intents/missing',
+        {
+          headers: getAuthorizationHeader(),
+          params: { start_date: startDate, end_date: endDateExclusive, limit: 100, offset },
+        },
+      );
+      return { report: res.data };
+    } catch (e) {
+      return {
+        error: getErrorMessage(e as AxiosError, 'Unable to load missing payments.'),
+      };
+    }
+  };
+
   protected readonly instance: AxiosInstance;
 
   public constructor(url: string) {

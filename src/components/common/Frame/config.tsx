@@ -141,6 +141,11 @@ export const adminAppNavs = [
         title: 'Manage Venues',
         to: '/admin/venues',
       },
+      {
+        eventKey: 'missing-payments',
+        title: 'Manage Missing Payments',
+        to: '/admin/missing-payments',
+      },
     ],
     eventKey: 'event-admin',
     icon: <Icon as={MdEvent} />,

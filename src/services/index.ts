@@ -10,4 +10,4 @@ export const authService = new AuthService(baseServiceUrl);
 export const eventService = new EventService(baseServiceUrl);
 export const publicService = new PublicService(baseServiceUrl);
 export const userService = new UserService(baseServiceUrl);
-export const adminService = new AdminService(baseServiceUrl);
+export const adminService: AdminService = new AdminService(baseServiceUrl);

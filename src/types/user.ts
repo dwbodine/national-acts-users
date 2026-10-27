@@ -1,5 +1,6 @@
 import { ExternalVenue, TicketSocketAccount } from './admin';
 import { ITicketSalesData, Note, Order, Seller, SellerType, Tour, VipEvent } from './event';
+import { MissingPaymentOrder } from './missingPayments';
 import { FanMomentFilter } from './props';
 import {
   Country,
@@ -388,6 +389,7 @@ export type AdminSelection = {
   selectedPageType?: PageType | undefined;
   selectedRefundPolicy?: RefundPolicy | undefined;
   selectedTour?: Tour | undefined;
+  selectedMissingPaymentOrder?: MissingPaymentOrder | undefined;
   selectedVenue?: ExternalVenue | undefined;
   selectedOrder?: Order | undefined;
   selectedSeller?: Seller | undefined;

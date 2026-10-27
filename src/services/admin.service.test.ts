@@ -23,6 +23,37 @@ import { AdminService } from './admin.service';
 const createService = () => new AdminService('https://admin.example.com');
 
 describe('AdminService', () => {
+  it('posts a manual payment with authorization and reports API errors', async () => {
+    const payment = { PaymentIntentId: 'pi_test', Total: '12.34' } as never;
+    adminServiceMocks.post.mockResolvedValueOnce({ status: 201 });
+    await expect(createService().updatePaymentIntent(payment)).resolves.toEqual({ success: true });
+    expect(adminServiceMocks.post).toHaveBeenCalledWith('/stripe/payment-intents/update', payment, {
+      headers: getAuthorizationHeader(),
+    });
+    adminServiceMocks.post.mockRejectedValueOnce({
+      response: { data: { msg: 'Duplicate payment' } },
+    });
+    await expect(createService().updatePaymentIntent(payment)).resolves.toEqual({
+      error: 'Duplicate payment',
+    });
+  });
+
+  it('fetches missing payments with authorization and date pagination filters', async () => {
+    const report = { orders: [], missingPaymentIntents: 0 };
+    adminServiceMocks.get.mockResolvedValueOnce({ data: report });
+    await expect(
+      createService().getMissingPayments('2026-10-01', '2026-10-27', 100),
+    ).resolves.toEqual({ report });
+    expect(adminServiceMocks.get).toHaveBeenCalledWith('/stripe/payment-intents/missing', {
+      headers: getAuthorizationHeader(),
+      params: { start_date: '2026-10-01', end_date: '2026-10-27', limit: 100, offset: 100 },
+    });
+    adminServiceMocks.get.mockRejectedValueOnce({ message: 'Request failed' });
+    await expect(createService().getMissingPayments('2026-10-01', '2026-10-27')).resolves.toEqual({
+      error: 'Request failed',
+    });
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
     adminServiceMocks.create.mockReturnValue({
