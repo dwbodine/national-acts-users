@@ -121,7 +121,7 @@ export const adminSelectionSlice = createSlice({
       state.venueSearchTerm = undefined;
       return state;
     },
-    setAdminDates: (state, action: PayloadAction<AdminSelection>) => {
+    setAdminDates: (state, action: PayloadAction<Pick<AdminSelection, 'start' | 'end'>>) => {
       state.start = action.payload.start;
       state.end = action.payload.end;
       return state;

@@ -3,11 +3,12 @@
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Table } from 'rsuite';
 
 import PageHeader from '@/components/common/PageHeaderComponent';
-import { setMissingPaymentOrder } from '@/lib/adminSelectionSlice';
+import { setAdminDates, setMissingPaymentOrder } from '@/lib/adminSelectionSlice';
+import { RootState } from '@/lib/store';
 import { adminService } from '@/services';
 import { MissingPaymentOrder, MissingPaymentsReport } from '@/types/missingPayments';
 
@@ -16,15 +17,28 @@ const { Column, HeaderCell, Cell } = Table;
 export default function AdminPaymentsIndex() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const savedDates = useSelector((state: RootState) => state.adminSelection);
   const [dates, setDates] = useState(() => ({
-    start: moment().startOf('month').format('YYYY-MM-DD'),
-    end: moment().format('YYYY-MM-DD'),
+    start: (savedDates.start == null
+      ? moment().startOf('month')
+      : moment.unix(savedDates.start)
+    ).format('YYYY-MM-DD'),
+    end: (savedDates.end == null ? moment() : moment.unix(savedDates.end)).format('YYYY-MM-DD'),
   }));
   const [selection, setSelection] = useState(() => ({ ...dates, offset: 0 }));
   const [report, setReport] = useState<MissingPaymentsReport>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const valid = Boolean(dates.start && dates.end && dates.start <= dates.end);
+
+  useEffect(() => {
+    dispatch(
+      setAdminDates({
+        start: moment(selection.start, 'YYYY-MM-DD').unix(),
+        end: moment(selection.end, 'YYYY-MM-DD').unix(),
+      }),
+    );
+  }, [dispatch, selection.start, selection.end]);
 
   useEffect(() => {
     let active = true;

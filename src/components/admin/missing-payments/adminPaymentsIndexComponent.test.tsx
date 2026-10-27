@@ -6,9 +6,16 @@ import { adminService } from '@/services';
 
 import AdminPaymentsIndex from './adminPaymentsIndexComponent';
 
-const navigation = vi.hoisted(() => ({ push: vi.fn(), dispatch: vi.fn() }));
+const navigation = vi.hoisted(() => ({
+  push: vi.fn(),
+  dispatch: vi.fn(),
+  dates: {},
+}));
 vi.mock('next/navigation', () => ({ useRouter: () => navigation }));
-vi.mock('react-redux', () => ({ useDispatch: () => navigation.dispatch }));
+vi.mock('react-redux', () => ({
+  useDispatch: () => navigation.dispatch,
+  useSelector: () => navigation.dates,
+}));
 
 vi.mock('@/services', () => ({ adminService: { getMissingPayments: vi.fn() } }));
 vi.mock('@/components/common/PageHeaderComponent', () => ({
@@ -29,6 +36,8 @@ const emptyReport = {
 
 describe('AdminPaymentsIndex', () => {
   beforeEach(() => {
+    vi.clearAllMocks();
+    navigation.dates = {};
     vi.mocked(adminService.getMissingPayments).mockResolvedValue({ report: emptyReport });
   });
 
@@ -43,6 +52,10 @@ describe('AdminPaymentsIndex', () => {
     fireEvent.change(screen.getByLabelText('From'), { target: { value: '2026-09-01' } });
     fireEvent.change(screen.getByLabelText('Through'), { target: { value: '2026-09-30' } });
     fireEvent.click(screen.getByRole('button', { name: 'Show missing payments' }));
+    expect(navigation.dispatch).toHaveBeenLastCalledWith({
+      type: 'adminSelection/setAdminDates',
+      payload: { start: moment('2026-09-01').unix(), end: moment('2026-09-30').unix() },
+    });
     await waitFor(() =>
       expect(adminService.getMissingPayments).toHaveBeenLastCalledWith(
         '2026-09-01',
@@ -50,6 +63,18 @@ describe('AdminPaymentsIndex', () => {
         0,
       ),
     );
+  });
+
+  it('restores the report range from Unix timestamps in Redux', async () => {
+    navigation.dates = {
+      start: moment('2026-09-01').unix(),
+      end: moment('2026-09-30').unix(),
+    };
+    render(<AdminPaymentsIndex />);
+    await screen.findByText(/No missing payments found/);
+    expect(screen.getByLabelText('From')).toHaveValue('2026-09-01');
+    expect(screen.getByLabelText('Through')).toHaveValue('2026-09-30');
+    expect(adminService.getMissingPayments).toHaveBeenCalledWith('2026-09-01', '2026-10-01', 0);
   });
 
   it('displays failures and allows retrying', async () => {
@@ -81,7 +106,7 @@ describe('AdminPaymentsIndex', () => {
     render(<AdminPaymentsIndex />);
     expect(await screen.findByText('customer@example.com')).toBeInTheDocument();
     fireEvent.click(screen.getByText('Add'));
-    expect(navigation.dispatch.mock.calls[0]?.[0]).toMatchObject({
+    expect(navigation.dispatch.mock.lastCall?.[0]).toMatchObject({
       type: 'adminSelection/setMissingPaymentOrder',
       payload: {
         TicketSocketOrderId: 1,
