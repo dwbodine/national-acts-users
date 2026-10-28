@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { RootState } from '@/lib/store';
 import { adminService } from '@/services';
 
 import AdminPaymentsEdit from './adminPaymentEditComponent';
@@ -10,18 +11,25 @@ const mocks = vi.hoisted(() => ({
   replace: vi.fn(),
   dispatch: vi.fn(),
   ticketSocketId: 4,
+  start: undefined as number | undefined,
 }));
 vi.mock('next/navigation', () => ({ useRouter: () => mocks }));
 vi.mock('react-redux', () => ({
   useDispatch: () => mocks.dispatch,
-  useSelector: () => ({
-    TicketSocketId: mocks.ticketSocketId,
-    NativeOrderId: 42,
-    NativeEventId: 5,
-    TicketPartnerOrderId: 9,
-    EventTitle: 'Test concert',
-    CustomerEmail: 'customer@example.com',
-  }),
+  useSelector: (selector: (state: RootState) => unknown) =>
+    selector({
+      adminSelection: {
+        start: mocks.start,
+        selectedMissingPaymentOrder: {
+          TicketSocketId: mocks.ticketSocketId,
+          NativeOrderId: 42,
+          NativeEventId: 5,
+          TicketPartnerOrderId: 9,
+          EventTitle: 'Test concert',
+          CustomerEmail: 'customer@example.com',
+        },
+      },
+    } as RootState),
 }));
 vi.mock('@/services', () => ({ adminService: { updatePaymentIntent: vi.fn() } }));
 vi.mock('@/components/common/PageHeaderComponent', () => ({
@@ -44,7 +52,16 @@ describe('AdminPaymentsEdit', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.ticketSocketId = 4;
+    mocks.start = undefined;
   });
+  it('defaults the received date to the saved start timestamp in Pacific time', () => {
+    mocks.start = Date.parse('2026-10-28T04:00:00Z') / 1000;
+    render(<AdminPaymentsEdit />);
+    expect(screen.getByLabelText('Payment Succeeded time (Pacific) *')).toHaveValue(
+      '2026-10-27T21:00',
+    );
+  });
+
   it('prefills order details and saves decimal strings and the selected order link', async () => {
     vi.mocked(adminService.updatePaymentIntent).mockResolvedValue({ success: true });
     render(<AdminPaymentsEdit />);

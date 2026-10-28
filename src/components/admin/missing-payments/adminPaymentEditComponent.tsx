@@ -31,7 +31,9 @@ const currencies: Partial<Record<number, string>> = {
 };
 
 export default function AdminPaymentsEdit() {
-  const order = useSelector((state: RootState) => state.adminSelection.selectedMissingPaymentOrder);
+  const { selectedMissingPaymentOrder: order, start } = useSelector(
+    (state: RootState) => state.adminSelection,
+  );
   const router = useRouter();
   const dispatch = useDispatch();
   const [saving, setSaving] = useState(false);
@@ -103,6 +105,8 @@ export default function AdminPaymentsEdit() {
   ];
 
   const defaults: Record<string, string> = {
+    DateReceived:
+      start == null ? '' : moment.unix(start).tz('America/Los_Angeles').format('YYYY-MM-DDTHH:mm'),
     Description: `${sourceUrls[order.TicketSocketId] ?? ''} - Order ${order.NativeOrderId}`,
     CustomerName: order.CustomerName ?? '',
     CustomerEmail: order.CustomerEmail ?? '',
