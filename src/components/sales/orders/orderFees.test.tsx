@@ -14,6 +14,7 @@ const order = {
   insurance: 1.23,
   radarFee: '0.07',
   netServiceFees: 2.34,
+  serviceFeesUsd: 10,
 } as Order;
 
 describe.each([
@@ -28,7 +29,7 @@ describe.each([
         </tbody>
       </table>,
     );
-    for (const amount of ['3.45', '1.23', '0.07', '2.34']) {
+    for (const amount of ['$3.45', '$1.23', '$0.07', '$2.34']) {
       expect(screen.getByText(amount)).toBeVisible();
     }
   });
@@ -43,7 +44,7 @@ describe.each([
           </tbody>
         </table>,
       );
-      expect(screen.queryByText('3.45')).not.toBeInTheDocument();
+      expect(screen.queryByText('$3.45')).not.toBeInTheDocument();
     },
   );
 
@@ -61,6 +62,8 @@ describe.each([
       </table>,
     );
     expect(screen.queryByText('Unknown')).not.toBeInTheDocument();
-    expect(screen.getByText('0.00')).toBeVisible();
+    expect(
+      screen.getAllByText('$0.00').filter((element) => !element.closest('[hidden]')),
+    ).toHaveLength(1);
   });
 });

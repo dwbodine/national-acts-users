@@ -112,13 +112,7 @@ export default function AdminFeesIndex() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const valid = Boolean(
-    dates.start &&
-    dates.end &&
-    dates.start <= dates.end &&
-    Number.isInteger(dates.days) &&
-    dates.days >= 1,
-  );
+  const valid = Boolean(dates.start && dates.end && dates.start <= dates.end);
 
   useEffect(() => {
     dispatch(

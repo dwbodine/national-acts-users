@@ -49,18 +49,17 @@ describe('AdminFeesIndex', () => {
     vi.mocked(adminService.updatePaymentIntent).mockResolvedValue({ success: true });
   });
 
-  it('applies inclusive through dates and age filters and paginates with the applied filters', async () => {
+  it('applies inclusive through dates and paginates with the applied filters', async () => {
     render(<AdminFeesIndex />);
     await screen.findByRole('button', { name: 'Edit fees for pi_existing' });
     fireEvent.change(screen.getByLabelText('From'), { target: { value: '2026-09-01' } });
     fireEvent.change(screen.getByLabelText('Through'), { target: { value: '2026-09-30' } });
-    fireEvent.change(screen.getByLabelText('Minimum age (days)'), { target: { value: '14' } });
     fireEvent.click(screen.getByRole('button', { name: 'Show missing fees' }));
     await waitFor(() =>
       expect(adminService.getMissingFees).toHaveBeenLastCalledWith(
         '2026-09-01',
         '2026-10-01',
-        14,
+        0,
         0,
       ),
     );
@@ -71,7 +70,7 @@ describe('AdminFeesIndex', () => {
       expect(adminService.getMissingFees).toHaveBeenLastCalledWith(
         '2026-09-01',
         '2026-10-01',
-        14,
+        0,
         100,
       ),
     );
@@ -94,6 +93,16 @@ describe('AdminFeesIndex', () => {
       Insurance: null,
     });
     expect(adminService.getMissingFees).toHaveBeenCalledTimes(2);
+  });
+
+  it('prevents loading a reversed date range', async () => {
+    render(<AdminFeesIndex />);
+    await screen.findByRole('button', { name: 'Edit fees for pi_existing' });
+    fireEvent.change(screen.getByLabelText('From'), { target: { value: '2026-11-01' } });
+    fireEvent.change(screen.getByLabelText('Through'), { target: { value: '2026-10-01' } });
+    expect(screen.getByRole('button', { name: 'Show missing fees' })).toBeDisabled();
+    expect(screen.getByRole('alert')).toHaveTextContent('Select a valid date range.');
+    expect(adminService.getMissingFees).toHaveBeenCalledTimes(1);
   });
 
   it('retains the form on API failure and permits retry or cancel', async () => {
