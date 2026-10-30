@@ -948,7 +948,6 @@ export default function EventDetail(props: EditProps) {
                             className="no-print"
                             hidden={
                               !isAdmin ||
-                              !hasNonUsaOrders ||
                               hideServiceFeeDisplay ||
                               !viewServiceFees ||
                               showOnlyEmailsDisplay ||
@@ -961,7 +960,6 @@ export default function EventDetail(props: EditProps) {
                             className="no-print"
                             hidden={
                               !isAdmin ||
-                              !hasNonUsaOrders ||
                               hideServiceFeeDisplay ||
                               !viewServiceFees ||
                               showOnlyEmailsDisplay ||
@@ -974,7 +972,6 @@ export default function EventDetail(props: EditProps) {
                             className="no-print"
                             hidden={
                               !isAdmin ||
-                              !hasNonUsaOrders ||
                               hideServiceFeeDisplay ||
                               !viewServiceFees ||
                               showOnlyEmailsDisplay ||
@@ -987,7 +984,6 @@ export default function EventDetail(props: EditProps) {
                             className="no-print"
                             hidden={
                               !isAdmin ||
-                              !hasNonUsaOrders ||
                               hideServiceFeeDisplay ||
                               !viewServiceFees ||
                               showOnlyEmailsDisplay ||

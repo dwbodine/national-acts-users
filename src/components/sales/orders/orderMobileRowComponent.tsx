@@ -207,6 +207,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
             <Col className="mobile-data">${serviceFeesUsd.toFixed(2)}</Col>
           </Row>
           {isAdmin &&
+            !hideServiceFees &&
             !showOnlyEmails &&
             !showOnlyPhones &&
             (
