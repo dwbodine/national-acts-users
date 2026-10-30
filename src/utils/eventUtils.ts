@@ -15,6 +15,7 @@ import {
 } from '@/types/event';
 import { AdminDashboardSelection, IDailyOrderData } from '@/types/user';
 
+import getEventOrderFees from './getEventOrderFees';
 import getShirtDataFromEvents from './getShirtData';
 import getTicketDataFromEvents from './getTicketDataFromEvents';
 
@@ -99,6 +100,7 @@ const exportEventsToCsv = (
   events: VipEvent[],
   viewServiceFees: boolean,
   showRevenueData: boolean,
+  showOrderFees = false,
 ): string => {
   if (!events || events.length === 0) {
     return '';
@@ -131,10 +133,13 @@ const exportEventsToCsv = (
     exportStr += '"Revenue (USD)",';
   }
   if (viewServiceFees) {
-    exportStr += '"Service Fees (USD)"\n';
-  } else {
-    exportStr += '\n';
+    exportStr += '"Service Fees (USD)"';
   }
+  if (showOrderFees && viewServiceFees) {
+    exportStr +=
+      ',"Processing Fees (USD)","Insurance (USD)","Radar Fees (USD)","Net Service Fees (USD)"';
+  }
+  exportStr += '\n';
 
   let totalTcketsSold = 0;
   let totalRevenue = 0.0;
@@ -160,10 +165,15 @@ const exportEventsToCsv = (
       exportStr += `"${(revenue ?? 0).toFixed(2)}",`;
     }
     if (viewServiceFees) {
-      exportStr += `"${(serviceFees ?? 0).toFixed(2)}"\n`;
-    } else {
-      exportStr += '\n';
+      exportStr += `"${(serviceFees ?? 0).toFixed(2)}"`;
     }
+    if (showOrderFees && viewServiceFees) {
+      exportStr += ',';
+      exportStr += getEventOrderFees(vipEvent.orders)
+        .map(({ display }) => `"${display.replace(/^\$/, '')}"`)
+        .join(',');
+    }
+    exportStr += '\n';
   });
 
   exportStr += `"Total","","","","","${totalTcketsSold}",`;
@@ -171,10 +181,18 @@ const exportEventsToCsv = (
     exportStr += `"${totalRevenue.toFixed(2)}",`;
   }
   if (viewServiceFees) {
-    exportStr += `"${totalServiceFees.toFixed(2)}"\n`;
-  } else {
-    exportStr += '\n';
+    exportStr += `"${totalServiceFees.toFixed(2)}"`;
   }
+  if (showOrderFees && viewServiceFees) {
+    exportStr += ',';
+    const orders = events.every((event) => event.orders?.length)
+      ? events.flatMap((event) => event.orders ?? [])
+      : undefined;
+    exportStr += getEventOrderFees(orders)
+      .map(({ display }) => `"${display.replace(/^\$/, '')}"`)
+      .join(',');
+  }
+  exportStr += '\n';
 
   return exportStr;
 };
@@ -189,6 +207,7 @@ const getOrderExportTableHeader = (
   hideCurrencyInHeaders: boolean = false,
   showOnlyEmails: boolean = false,
   showOnlyPhones: boolean = false,
+  showOrderFees = false,
 ): string => {
   let exportStr = '';
   if (showOnlyEmails) {
@@ -220,6 +239,10 @@ const getOrderExportTableHeader = (
     if (showRevenueData) {
       exportStr += ',"Revenue (USD)"';
     }
+    if (showOrderFees && viewServiceFees) {
+      exportStr +=
+        ',"Processing Fees (USD)","Insurance (USD)","Radar Fees (USD)","Net Service Fees (USD)"';
+    }
     exportStr += ',"Email"';
     if (hasPhoneData) {
       exportStr += ',"Phone"';
@@ -242,6 +265,7 @@ const getOrderExportRow = (
   hasNonUsaOrders: boolean,
   showOnlyEmails: boolean = false,
   showOnlyPhones: boolean = false,
+  showOrderFees = false,
 ): string => {
   let exportStr = '';
   const { email, phone, originalOrderId, sellerName, numTickets, exchangeRate } = order;
@@ -321,6 +345,13 @@ const getOrderExportRow = (
     if (showRevenueData) {
       exportStr += `,"${revenue}"`;
     }
+    if (showOrderFees && viewServiceFees) {
+      exportStr +=
+        ',' +
+        getEventOrderFees([order])
+          .map(({ display }) => `"${display.replace(/^\$/, '')}"`)
+          .join(',');
+    }
     exportStr += `,"${email}"`;
     if (hasPhoneData) {
       exportStr += `,"${phone}"`;
@@ -342,6 +373,7 @@ const getOrderExportTableFromEvent = (
   hasNonUsaOrders: boolean,
   showOnlyEmails: boolean = false,
   showOnlyPhones: boolean = false,
+  showOrderFees = false,
 ): string => {
   let exportStr = '';
   if (vipEvent.orders && vipEvent.orders.length > 0) {
@@ -355,6 +387,7 @@ const getOrderExportTableFromEvent = (
         hasNonUsaOrders,
         showOnlyEmails,
         showOnlyPhones,
+        showOrderFees,
       );
     });
   }
@@ -369,6 +402,7 @@ const exportCustomerDataToCsv = (
   hasShirtData: boolean,
   hasNonUsaOrders: boolean,
   currencyAbbrev?: string,
+  showOrderFees = false,
 ): string => {
   if (!events || events.length === 0) {
     return '';
@@ -381,6 +415,10 @@ const exportCustomerDataToCsv = (
     hasShirtData,
     hasNonUsaOrders,
     currencyAbbrev,
+    false,
+    false,
+    false,
+    showOrderFees,
   );
 
   events.forEach((vipEvent: VipEvent) => {
@@ -391,6 +429,9 @@ const exportCustomerDataToCsv = (
       hasPhoneData,
       hasShirtData,
       hasNonUsaOrders,
+      false,
+      false,
+      showOrderFees,
     );
   });
 
@@ -406,6 +447,7 @@ const exportEventCustomerDataToCsv = (
   currencyAbbrev?: string,
   showOnlyEmails?: boolean,
   showOnlyPhones?: boolean,
+  showOrderFees = false,
 ): string => {
   if (!vipEvent || !vipEvent?.orders || vipEvent.orders.length === 0) {
     return '';
@@ -456,6 +498,7 @@ const exportEventCustomerDataToCsv = (
     false,
     showOnlyEmails,
     showOnlyPhones,
+    showOrderFees,
   );
   exportStr += getOrderExportTableFromEvent(
     vipEvent,
@@ -466,6 +509,7 @@ const exportEventCustomerDataToCsv = (
     hasNonUsaOrders,
     showOnlyEmails,
     showOnlyPhones,
+    showOrderFees,
   );
 
   return exportStr;

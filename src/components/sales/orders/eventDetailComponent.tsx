@@ -526,6 +526,7 @@ export default function EventDetail(props: EditProps) {
         currencySymbol,
         showOnlyEmails,
         showOnlyPhones,
+        isAdmin,
       );
 
       const fileName = getFileNameFromEvent(currentDetailEvent, `orders`);

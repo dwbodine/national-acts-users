@@ -77,7 +77,12 @@ export default function SalesBar() {
           if (response && !response.error && response.events !== undefined) {
             const showServiceFees = viewServiceFees && !currentReportSelection.hideServiceFees;
             const showRevenueData = viewRevenueData && !currentReportSelection.hideRevenue;
-            const csvData = exportEventsToCsv(response.events, showServiceFees, showRevenueData);
+            const csvData = exportEventsToCsv(
+              response.events,
+              showServiceFees,
+              showRevenueData,
+              isAdmin,
+            );
             const fileName = getCsvFileNameFromReportSelection(currentReportSelection);
             downloadCsvFile(fileName, csvData);
           }
@@ -120,6 +125,7 @@ export default function SalesBar() {
               hasShirtData,
               hasNonUsaOrders,
               currencySymbol,
+              isAdmin,
             );
             const fileName = getCsvFileNameFromReportSelection(currentReportSelection, 'customer');
             downloadCsvFile(fileName, csvData);
