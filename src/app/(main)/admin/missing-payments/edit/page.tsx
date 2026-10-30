@@ -6,7 +6,7 @@ export default function AdminPaymentsEdit() {
 
   return (
     <AdminPage Title={title}>
-      <AdminPaymentEdit />
+      <AdminPaymentEdit returnTo={'/admin/missing-payments'} />
     </AdminPage>
   );
 }

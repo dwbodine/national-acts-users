@@ -23,6 +23,28 @@ import { AdminService } from './admin.service';
 const createService = () => new AdminService('https://admin.example.com');
 
 describe('AdminService', () => {
+  it('fetches missing fees with authorization, age and pagination filters', async () => {
+    const report = { payments: [], total: 0, limit: 100, offset: 100 };
+    adminServiceMocks.get.mockResolvedValueOnce({ data: report });
+    await expect(
+      createService().getMissingFees('2026-10-01', '2026-11-01', 14, 100),
+    ).resolves.toEqual({ report });
+    expect(adminServiceMocks.get).toHaveBeenCalledWith('/stripe/fees/missing', {
+      headers: getAuthorizationHeader(),
+      params: {
+        startDate: '2026-10-01',
+        endDate: '2026-11-01',
+        minimumAgeDays: 14,
+        limit: 100,
+        offset: 100,
+      },
+    });
+    adminServiceMocks.get.mockRejectedValueOnce({ message: 'Request failed' });
+    await expect(createService().getMissingFees('2026-10-01', '2026-11-01')).resolves.toEqual({
+      error: 'Request failed',
+    });
+  });
+
   it('posts a manual payment with authorization and reports API errors', async () => {
     const payment = { PaymentIntentId: 'pi_test', Total: '12.34' } as never;
     adminServiceMocks.post.mockResolvedValueOnce({ status: 201 });

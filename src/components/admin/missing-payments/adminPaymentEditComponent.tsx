@@ -30,7 +30,7 @@ const currencies: Partial<Record<number, string>> = {
   6: 'usd',
 };
 
-export default function AdminPaymentsEdit() {
+export default function AdminPaymentsEdit({ returnTo }: { returnTo?: string }) {
   const { selectedMissingPaymentOrder: order, start } = useSelector(
     (state: RootState) => state.adminSelection,
   );
@@ -39,9 +39,11 @@ export default function AdminPaymentsEdit() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
+  const returnPath = returnTo ?? '/admin/missing-payments';
+
   useEffect(() => {
-    if (!order) router.replace('/admin/missing-payments');
-  }, [order, router]);
+    if (!order) router.replace(returnPath);
+  }, [order, returnPath, router]);
 
   if (!order) return null;
 
@@ -162,7 +164,7 @@ export default function AdminPaymentsEdit() {
         return;
       }
       dispatch(setMissingPaymentOrder(undefined));
-      router.push('/admin/missing-payments');
+      router.push(returnPath);
     } catch {
       setError('Unable to save payment intent. Please try again.');
     } finally {
@@ -259,7 +261,7 @@ export default function AdminPaymentsEdit() {
               <Button appearance="primary" type="submit" loading={saving}>
                 Save payment intent
               </Button>{' '}
-              <Button onClick={() => router.push('/admin/missing-payments')}>Cancel</Button>
+              <Button onClick={() => router.push(returnPath)}>Cancel</Button>
             </div>
           </fieldset>
         </form>

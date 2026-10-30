@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import { getErrorMessage, getOptionalData, getStatusCode } from '@/lib/serviceResponses';
 import { ExternalVenue, TicketSocketAccount } from '@/types/admin';
 import { Seller } from '@/types/event';
+import { MissingFeesReport, PaymentIntentFeeUpdate } from '@/types/missingFees';
 import { MissingPaymentsReport, PaymentIntentInput } from '@/types/missingPayments';
 import {
   Country,
@@ -43,7 +44,7 @@ import getAuthorizationHeader from '@/utils/getAuthorizationHeader';
 
 export class AdminService {
   updatePaymentIntent = async (
-    payment: PaymentIntentInput,
+    payment: PaymentIntentInput | PaymentIntentFeeUpdate,
   ): Promise<{ success?: boolean; error?: string }> => {
     try {
       await this.instance.post('/stripe/payment-intents/update', payment, {
@@ -59,6 +60,23 @@ export class AdminService {
             ? message
             : getErrorMessage(error, 'Unable to save payment intent.'),
       };
+    }
+  };
+
+  getMissingFees = async (
+    startDate: string,
+    endDate: string,
+    minimumAgeDays = 7,
+    offset = 0,
+  ): Promise<{ report?: MissingFeesReport; error?: string }> => {
+    try {
+      const res = await this.instance.get<MissingFeesReport>('/stripe/fees/missing', {
+        headers: getAuthorizationHeader(),
+        params: { startDate, endDate, minimumAgeDays, limit: 100, offset },
+      });
+      return { report: res.data };
+    } catch (e) {
+      return { error: getErrorMessage(e as AxiosError, 'Unable to load missing fees.') };
     }
   };
 

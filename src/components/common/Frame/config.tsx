@@ -146,6 +146,11 @@ export const adminAppNavs = [
         title: 'Manage Missing Payments',
         to: '/admin/missing-payments',
       },
+      {
+        eventKey: 'missing-fees',
+        title: 'Manage Missing Fees',
+        to: '/admin/missing-fees',
+      },
     ],
     eventKey: 'event-admin',
     icon: <Icon as={MdEvent} />,

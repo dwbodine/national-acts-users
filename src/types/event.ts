@@ -144,6 +144,10 @@ export interface Order {
   lastUpdate?: string;
   notes?: string;
   isManualTransfer?: boolean;
+  stripeProcessingFee?: number;
+  insurance?: number;
+  radarFee?: string;
+  partnerProcessingFee?: number;
 }
 
 export interface Venue {
