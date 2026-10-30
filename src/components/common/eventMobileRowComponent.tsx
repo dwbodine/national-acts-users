@@ -10,6 +10,7 @@ import { RootState } from '@/lib/store';
 import { ITicketTypeData, SellerType, TicketType } from '@/types/event';
 import { EventRowProps } from '@/types/props';
 import { getEventStatusSlug } from '@/utils/eventUtils';
+import getEventOrderFees from '@/utils/getEventOrderFees';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
 
 export default function EventMobileRow(props: EventRowProps) {
@@ -158,6 +159,14 @@ export default function EventMobileRow(props: EventRowProps) {
             </Col>
             <Col className="mobile-data">${serviceFeesUsd.toFixed(2)}</Col>
           </Row>
+          {isAdmin &&
+            !hideServiceFees &&
+            getEventOrderFees(vipEvent.orders).map(({ field, label, display }) => (
+              <Row key={field} className="no-print">
+                <Col className="mobile-bold">{label}:</Col>
+                <Col className="mobile-data">{display}</Col>
+              </Row>
+            ))}
           <Row hidden={hideRevItem || hideSellerRate} className={revClass}>
             <Col className="mobile-bold">Net Revenue:</Col>
             <Col className="mobile-data">${netRevenueUsd.toFixed(2)}</Col>

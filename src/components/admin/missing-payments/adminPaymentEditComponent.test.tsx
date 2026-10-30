@@ -49,6 +49,19 @@ function fillRequiredFields() {
 }
 
 describe('AdminPaymentsEdit', () => {
+  it.each(['', '0', '0.07'])('saves the optional Radar fee "%s"', async (amount) => {
+    vi.mocked(adminService.updatePaymentIntent).mockResolvedValue({ success: true });
+    render(<AdminPaymentsEdit />);
+    fillRequiredFields();
+    fireEvent.change(screen.getByLabelText('Radar fee (USD)'), { target: { value: amount } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save payment intent' }));
+    await waitFor(() =>
+      expect(adminService.updatePaymentIntent).toHaveBeenCalledWith(
+        expect.objectContaining({ RadarFee: amount || undefined }),
+      ),
+    );
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.ticketSocketId = 4;

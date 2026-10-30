@@ -942,6 +942,62 @@ export default function EventDetail(props: EditProps) {
                       >
                         Service Fees<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>
                       </th>
+                      {isAdmin && !showOnlyEmailsDisplay && !showOnlyPhonesDisplay && (
+                        <>
+                          <th
+                            className="no-print"
+                            hidden={
+                              !isAdmin ||
+                              !hasNonUsaOrders ||
+                              hideServiceFeeDisplay ||
+                              !viewServiceFees ||
+                              showOnlyEmailsDisplay ||
+                              showOnlyPhonesDisplay
+                            }
+                          >
+                            Processing Fee (USD)
+                          </th>
+                          <th
+                            className="no-print"
+                            hidden={
+                              !isAdmin ||
+                              !hasNonUsaOrders ||
+                              hideServiceFeeDisplay ||
+                              !viewServiceFees ||
+                              showOnlyEmailsDisplay ||
+                              showOnlyPhonesDisplay
+                            }
+                          >
+                            Insurance (USD)
+                          </th>
+                          <th
+                            className="no-print"
+                            hidden={
+                              !isAdmin ||
+                              !hasNonUsaOrders ||
+                              hideServiceFeeDisplay ||
+                              !viewServiceFees ||
+                              showOnlyEmailsDisplay ||
+                              showOnlyPhonesDisplay
+                            }
+                          >
+                            Radar Fee (USD)
+                          </th>
+                          <th
+                            className="no-print"
+                            hidden={
+                              !isAdmin ||
+                              !hasNonUsaOrders ||
+                              hideServiceFeeDisplay ||
+                              !viewServiceFees ||
+                              showOnlyEmailsDisplay ||
+                              showOnlyPhonesDisplay
+                            }
+                          >
+                            Net Service Fees (USD)
+                          </th>
+                        </>
+                      )}
                       <th hidden={showOnlyPhonesDisplay}>Email</th>
                       {hasPhoneData && !showOnlyEmailsDisplay ? <th>Phone #</th> : ''}
                       {hasShirtData && !(showOnlyEmailsDisplay || showOnlyPhonesDisplay) ? (

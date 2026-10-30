@@ -5,6 +5,7 @@ import moment from 'moment';
 import { useGetLocation } from '@/hooks/common/useGetLocation';
 import { EventRowProps } from '@/types/props';
 import { getEventStatusSlug, getEventStatusText } from '@/utils/eventUtils';
+import getEventOrderFees from '@/utils/getEventOrderFees';
 
 export default function EventRow(props: EventRowProps) {
   const vipEvent = props.VipEvent;
@@ -79,6 +80,13 @@ export default function EventRow(props: EventRowProps) {
       <td className="pull-right no-print" hidden={hideServiceFees}>
         ${serviceFeesUsd.toFixed(2)}
       </td>
+      {isAdmin &&
+        !hideServiceFees &&
+        getEventOrderFees(vipEvent.orders).map(({ field, display }) => (
+          <td key={field} className="pull-right no-print">
+            {display}
+          </td>
+        ))}
       <td className={revClass} hidden={hideRevItem || hideSellerRate}>
         ${netRevenueUsd.toFixed(2)}
       </td>

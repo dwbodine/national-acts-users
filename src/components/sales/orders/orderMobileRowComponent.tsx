@@ -206,6 +206,26 @@ export default function OrderMobileRow(props: OrderRowProps) {
             </Col>
             <Col className="mobile-data">${serviceFeesUsd.toFixed(2)}</Col>
           </Row>
+          {isAdmin &&
+            !showOnlyEmails &&
+            !showOnlyPhones &&
+            (
+              [
+                ['stripeProcessingFee', 'Processing (USD)'],
+                ['insurance', 'Insurance (USD)'],
+                ['radarFee', 'Radar (USD)'],
+                ['netServiceFees', 'Net SF (USD)'],
+              ] as const
+            ).map(([field, label]) => (
+              <Row key={field} className="no-print">
+                <Col xs={10} className="mobile-bold">
+                  {label}:
+                </Col>
+                <Col className="mobile-data">
+                  {order?.[field] == null ? '' : `$${Number(order[field]).toFixed(2)}`}
+                </Col>
+              </Row>
+            ))}
           <Row hidden={showOnlyPhones}>
             <Col xs={10} className="mobile-bold">
               Email:

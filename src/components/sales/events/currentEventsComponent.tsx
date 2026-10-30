@@ -27,6 +27,7 @@ import { IShirtData, ITicketData, ITicketSalesData, VipEvent } from '@/types/eve
 import { GetEventsResponse, GetToursResponse } from '@/types/responses';
 import { EnumPermission, User, UserReportSelection } from '@/types/user';
 import { getPacificMoment, shouldRefreshEvent } from '@/utils/eventUtils';
+import { eventOrderFeeColumns } from '@/utils/getEventOrderFees';
 import getPurchaseDataFromEvents from '@/utils/getPurchaseData';
 import getShirtDataFromEvents from '@/utils/getShirtData';
 import getTicketDataFromEvents from '@/utils/getTicketDataFromEvents';
@@ -402,6 +403,13 @@ export default function CurrentEvents() {
                       <th className="no-print" hidden={!isAdmin || hideServiceFees}>
                         Service Fees<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>
                       </th>
+                      {isAdmin &&
+                        !hideServiceFees &&
+                        eventOrderFeeColumns.map(([field, label]) => (
+                          <th key={field} className="no-print">
+                            {label}
+                          </th>
+                        ))}
                       <th className={revClass} hidden={hideRevItem || hideSellerRate}>
                         Net Revenue<span hidden={!isAdmin || !hasNonUsaOrders}> (USD)</span>
                       </th>
@@ -432,6 +440,13 @@ export default function CurrentEvents() {
                       <td className="pull-right no-print" hidden={!isAdmin || hideServiceFees}>
                         ${totalServiceFeesUsd.toFixed(2)}
                       </td>
+                      {isAdmin &&
+                        !hideServiceFees &&
+                        eventOrderFeeColumns.map(([field]) => (
+                          <td key={field} className="no-print">
+                            &nbsp;
+                          </td>
+                        ))}
                       <td
                         className={`pull-right ${revClass}`}
                         hidden={hideRevItem || hideSellerRate}

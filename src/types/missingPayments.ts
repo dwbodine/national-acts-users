@@ -42,6 +42,7 @@ export interface PaymentIntentInput {
   DateReceived: string;
   Total: string;
   ProcessingFee: string;
+  RadarFee?: string;
   Currency: string;
   SourceUrl: string;
   ExchangeRate: string;

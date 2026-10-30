@@ -82,6 +82,13 @@ export default function AdminPaymentsEdit({ returnTo }: { returnTo?: string }) {
       max: 99999999.99,
     },
     {
+      name: 'RadarFee',
+      label: 'Radar fee (USD)',
+      type: 'number',
+      step: '0.01',
+      max: 99999999.99,
+    },
+    {
       name: 'Insurance',
       label: 'Insurance (TicketSocket Stripe Connect fee)',
       type: 'number',
@@ -137,6 +144,7 @@ export default function AdminPaymentsEdit({ returnTo }: { returnTo?: string }) {
       DateReceived: moment.tz(getValue('DateReceived'), 'America/Los_Angeles').utc().toISOString(),
       Total: getValue('Total'),
       ProcessingFee: getValue('ProcessingFee'),
+      RadarFee: getOptionalValue('RadarFee'),
       Currency: currency,
       SourceUrl: sourceUrl,
       ExchangeRate: showExchangeRate ? getValue('ExchangeRate') : '1',

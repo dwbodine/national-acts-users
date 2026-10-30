@@ -148,6 +148,7 @@ export interface Order {
   insurance?: number;
   radarFee?: string;
   partnerProcessingFee?: number;
+  netServiceFees?: number;
 }
 
 export interface Venue {
