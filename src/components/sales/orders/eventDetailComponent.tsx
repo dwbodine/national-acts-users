@@ -955,6 +955,18 @@ export default function EventDetail(props: EditProps) {
                               showOnlyPhonesDisplay
                             }
                           >
+                            TS PF (USD)
+                          </th>
+                          <th
+                            className="no-print"
+                            hidden={
+                              !isAdmin ||
+                              hideServiceFeeDisplay ||
+                              !viewServiceFees ||
+                              showOnlyEmailsDisplay ||
+                              showOnlyPhonesDisplay
+                            }
+                          >
                             Processing Fee (USD)
                           </th>
                           <th

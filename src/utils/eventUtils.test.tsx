@@ -36,6 +36,7 @@ describe('eventUtils', () => {
           insurance: 0,
           radarFee: undefined,
           netServiceFees: 2.34,
+          partnerProcessingFee: 0.75,
           email: 'buyer@example.com',
           phone: '555-1234',
         } as Order,
@@ -43,7 +44,7 @@ describe('eventUtils', () => {
     } as VipEvent;
     const csv = exportEventCustomerDataToCsv(
       event,
-      false,
+      true,
       false,
       true,
       false,
@@ -53,9 +54,9 @@ describe('eventUtils', () => {
       true,
     );
     expect(csv).toContain(
-      '"Processing Fees (USD)","Insurance (USD)","Radar Fees (USD)","Net Service Fees (USD)"',
+      '"TS PF (USD)","Processing Fees (USD)","Insurance (USD)","Radar Fees (USD)","Net Service Fees (USD)"',
     );
-    expect(csv).toContain('"3.45","0.00","","2.34"');
+    expect(csv).toContain('"0.75","3.45","0.00","","2.34"');
     const lines = csv.trim().split('\n');
     expect(lines[1]?.split(',')).toHaveLength(lines[0]!.split(',').length);
     expect(exportEventCustomerDataToCsv(event, false, false, true, false)).not.toContain(
@@ -77,6 +78,7 @@ describe('eventUtils', () => {
         insurance: 0,
         radarFee: '0.07',
         netServiceFees: 5.25,
+        partnerProcessingFee: 0.75,
       } as Order;
       const events = [
         { orders: [order, { ...order, insurance: undefined, radarFee: undefined }] },
@@ -95,16 +97,23 @@ describe('eventUtils', () => {
         .trim()
         .split('\n')
         .map((line) => line.slice(1, -1).split('\",\"'));
-      const feeIndex = header.indexOf('Processing Fees (USD)');
+      const feeIndex = header.indexOf('TS PF (USD)');
+      if (!showFinancials) {
+        expect(feeIndex).toBe(-1);
+        expect(header).not.toContain('TS PF (USD)');
+        expect(first).toHaveLength(header.length);
+        return;
+      }
       expect(feeIndex).toBeGreaterThan(-1);
-      expect(header.slice(feeIndex, feeIndex + 4)).toEqual([
+      expect(header.slice(feeIndex, feeIndex + 5)).toEqual([
+        'TS PF (USD)',
         'Processing Fees (USD)',
         'Insurance (USD)',
         'Radar Fees (USD)',
         'Net Service Fees (USD)',
       ]);
-      expect(first.slice(feeIndex, feeIndex + 4)).toEqual(['3.45', '0.00', '0.07', '5.25']);
-      expect(second.slice(feeIndex, feeIndex + 4)).toEqual(['3.45', '', '', '5.25']);
+      expect(first.slice(feeIndex, feeIndex + 5)).toEqual(['0.75', '3.45', '0.00', '0.07', '5.25']);
+      expect(second.slice(feeIndex, feeIndex + 5)).toEqual(['0.75', '3.45', '', '', '5.25']);
       expect(first).toHaveLength(header.length);
       expect(second).toHaveLength(header.length);
       expect(
@@ -118,20 +127,32 @@ describe('eventUtils', () => {
       title: 'Fee export',
       eventDate: '2026-10-30',
       orders: [
-        { stripeProcessingFee: 1.25, insurance: 0, radarFee: '0.07', netServiceFees: 2 },
-        { stripeProcessingFee: 2.5, insurance: 0, radarFee: '0.08', netServiceFees: 3 },
+        {
+          stripeProcessingFee: 1.25,
+          insurance: 0,
+          radarFee: '0.07',
+          partnerProcessingFee: 1,
+          netServiceFees: 2,
+        },
+        {
+          stripeProcessingFee: 2.5,
+          insurance: 0,
+          radarFee: '0.08',
+          partnerProcessingFee: 2,
+          netServiceFees: 3,
+        },
       ] as Order[],
     } as VipEvent;
     const csv = exportEventsToCsv([event, event], true, true, true);
     expect(csv).toContain(
-      '"Processing Fees (USD)","Insurance (USD)","Radar Fees (USD)","Net Service Fees (USD)"',
+      '"TS PF (USD)","Processing Fees (USD)","Insurance (USD)","Radar Fees (USD)","Net Service Fees (USD)"',
     );
-    expect(csv).toContain('"3.75","0.00","0.15","5.00"\n');
-    expect(csv).toContain('"7.50","0.00","0.30","10.00"\n');
+    expect(csv).toContain('"3.00","3.75","0.00","0.15","5.00"\n');
+    expect(csv).toContain('"6.00","7.50","0.00","0.30","10.00"\n');
     expect(exportEventsToCsv([event], true, true)).not.toContain('Processing Fees (USD)');
   });
 
-  it('leaves unknown exported fees blank and aligns columns when other financial columns are hidden', () => {
+  it('leaves unknown exported fees blank and aligns columns when revenue is hidden', () => {
     const event = {
       title: 'Missing fees',
       eventDate: '2026-10-30',
@@ -139,12 +160,13 @@ describe('eventUtils', () => {
         { stripeProcessingFee: 1, insurance: 0, radarFee: undefined, netServiceFees: 2 },
       ] as Order[],
     } as VipEvent;
-    const lines = exportEventsToCsv([event], false, false, true).trim().split('\n');
-    expect(lines.at(-2)).toContain('"1.00","0.00","","2.00"');
-    expect(lines.at(-1)).toContain('"1.00","0.00","","2.00"');
+    const lines = exportEventsToCsv([event], true, false, true).trim().split('\n');
+    expect(lines.at(-2)).toContain('"","1.00","0.00","","2.00"');
+    expect(lines.at(-1)).toContain('"","1.00","0.00","","2.00"');
     expect(lines.at(-2)?.split(',')).toHaveLength(lines.at(-3)!.split(',').length);
-    const missingCsv = exportEventsToCsv([{ ...event, orders: undefined }], false, false, true);
-    expect(missingCsv).toContain(',"","","",""\n');
+    const missingCsv = exportEventsToCsv([{ ...event, orders: undefined }], true, false, true);
+    expect(missingCsv).toContain(',"","","","",""\n');
+    expect(exportEventsToCsv([event], false, false, true)).not.toContain('TS PF (USD)');
   });
 
   beforeEach(() => {

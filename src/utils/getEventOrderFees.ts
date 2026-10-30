@@ -1,6 +1,7 @@
 import { Order } from '@/types/event';
 
 export const eventOrderFeeColumns = [
+  ['partnerProcessingFee', 'TS PF (USD)'],
   ['stripeProcessingFee', 'Processing (USD)'],
   ['insurance', 'Insurance (USD)'],
   ['radarFee', 'Radar (USD)'],

@@ -212,6 +212,7 @@ export default function OrderMobileRow(props: OrderRowProps) {
             !showOnlyPhones &&
             (
               [
+                ['partnerProcessingFee', 'TS PF (USD)'],
                 ['stripeProcessingFee', 'Processing (USD)'],
                 ['insurance', 'Insurance (USD)'],
                 ['radarFee', 'Radar (USD)'],

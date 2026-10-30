@@ -161,13 +161,19 @@ export default function OrderRow(props: OrderRowProps) {
         !hideServiceFees &&
         !showOnlyEmails &&
         !showOnlyPhones &&
-        (['stripeProcessingFee', 'insurance', 'radarFee', 'netServiceFees'] as const).map(
-          (field) => (
-            <td key={field} className="pull-right no-print">
-              {order?.[field] == null ? '' : `$${Number(order[field]).toFixed(2)}`}
-            </td>
-          ),
-        )}
+        (
+          [
+            'partnerProcessingFee',
+            'stripeProcessingFee',
+            'insurance',
+            'radarFee',
+            'netServiceFees',
+          ] as const
+        ).map((field) => (
+          <td key={field} className="pull-right no-print">
+            {order?.[field] == null ? '' : `$${Number(order[field]).toFixed(2)}`}
+          </td>
+        ))}
       <td hidden={showOnlyPhones} className="email">
         {order?.email}
       </td>

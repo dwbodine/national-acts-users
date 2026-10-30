@@ -7,10 +7,23 @@ import getEventOrderFees from './getEventOrderFees';
 describe('getEventOrderFees', () => {
   it('totals each fee independently and formats decimal strings and zero', () => {
     const orders = [
-      { stripeProcessingFee: 1.25, insurance: 0, radarFee: '0.07', netServiceFees: 2 },
-      { stripeProcessingFee: 2.5, insurance: 0, radarFee: '0.08', netServiceFees: 3 },
+      {
+        stripeProcessingFee: 1.25,
+        insurance: 0,
+        radarFee: '0.07',
+        partnerProcessingFee: 1,
+        netServiceFees: 2,
+      },
+      {
+        stripeProcessingFee: 2.5,
+        insurance: 0,
+        radarFee: '0.08',
+        partnerProcessingFee: 2,
+        netServiceFees: 3,
+      },
     ] as Order[];
     expect(getEventOrderFees(orders).map((fee) => fee.display)).toEqual([
+      '$3.00',
       '$3.75',
       '$0.00',
       '$0.15',
@@ -24,6 +37,7 @@ describe('getEventOrderFees', () => {
       { stripeProcessingFee: 2.5, insurance: 0, netServiceFees: 3 },
     ] as Order[];
     expect(getEventOrderFees(orders).map((fee) => fee.display)).toEqual([
+      '',
       '$3.75',
       '$0.00',
       '',

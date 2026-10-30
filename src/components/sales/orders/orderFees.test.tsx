@@ -14,6 +14,7 @@ const order = {
   insurance: 1.23,
   radarFee: '0.07',
   netServiceFees: 2.34,
+  partnerProcessingFee: 1.56,
   serviceFeesUsd: 10,
 } as Order;
 
@@ -29,7 +30,7 @@ describe.each([
         </tbody>
       </table>,
     );
-    for (const amount of ['$3.45', '$1.23', '$0.07', '$2.34']) {
+    for (const amount of ['$3.45', '$1.23', '$0.07', '$1.56', '$2.34']) {
       expect(screen.getByText(amount)).toBeVisible();
     }
   });

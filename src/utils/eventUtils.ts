@@ -137,7 +137,7 @@ const exportEventsToCsv = (
   }
   if (showOrderFees && viewServiceFees) {
     exportStr +=
-      ',"Processing Fees (USD)","Insurance (USD)","Radar Fees (USD)","Net Service Fees (USD)"';
+      ',"TS PF (USD)","Processing Fees (USD)","Insurance (USD)","Radar Fees (USD)","Net Service Fees (USD)"';
   }
   exportStr += '\n';
 
@@ -241,7 +241,7 @@ const getOrderExportTableHeader = (
     }
     if (showOrderFees && viewServiceFees) {
       exportStr +=
-        ',"Processing Fees (USD)","Insurance (USD)","Radar Fees (USD)","Net Service Fees (USD)"';
+        ',"TS PF (USD)","Processing Fees (USD)","Insurance (USD)","Radar Fees (USD)","Net Service Fees (USD)"';
     }
     exportStr += ',"Email"';
     if (hasPhoneData) {
